@@ -1,7 +1,7 @@
 /**
  * ###################################
  * @name Vertex Client PE
- * @version v1.0 Alpha
+ * @version v1.1 Alpha
  * @author peacestorm (@AgameR_Modder)
  * @credits Herqux_, MyNameIsTriXz
  * ###################################
@@ -11,7 +11,7 @@
 
 var VertexClientPE = {};
 
-const CURRENT_VERSION = "v1.0 Alpha";
+const CURRENT_VERSION = "v1.1 Alpha";
 const TARGET_VERSION = "MCPE v0.13.x alpha";
 
 var showingMenu = false;
