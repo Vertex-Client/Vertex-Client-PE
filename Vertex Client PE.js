@@ -694,79 +694,79 @@ VertexClientPE.healthTags = function() {
 
             /* You can disable it by removing the above script. */
             if(Entity.getEntityTypeId(mobs[i]) == 10) {
-                Entity.setNameTag(mobs[i], nameColor + "Chicken " + healthColor + Entity.getHealth(mobs[i]) + "/4"); //spawn your wither in x y and z
+                Entity.setNameTag(mobs[i], nameColor + "Chicken " + healthColor + Entity.getHealth(mobs[i]) + "/4");
             }
             if(Entity.getEntityTypeId(mobs[i]) == 11) {
-                Entity.setNameTag(mobs[i], nameColor + "Cow " + healthColor + Entity.getHealth(mobs[i]) + "/10"); //spawn your wither in x y and z
+                Entity.setNameTag(mobs[i], nameColor + "Cow " + healthColor + Entity.getHealth(mobs[i]) + "/10");
             }
             if(Entity.getEntityTypeId(mobs[i]) == 12) {
-                Entity.setNameTag(mobs[i], nameColor + "Pig " + healthColor + Entity.getHealth(mobs[i]) + "/10"); //spawn your wither in x y and z
+                Entity.setNameTag(mobs[i], nameColor + "Pig " + healthColor + Entity.getHealth(mobs[i]) + "/10");
             }
             if(Entity.getEntityTypeId(mobs[i]) == 13) {
-                Entity.setNameTag(mobs[i], nameColor + "Sheep " + healthColor + Entity.getHealth(mobs[i]) + "/8"); //spawn your wither in x y and z
+                Entity.setNameTag(mobs[i], nameColor + "Sheep " + healthColor + Entity.getHealth(mobs[i]) + "/8");
             }
             if(Entity.getEntityTypeId(mobs[i]) == 14) {
-                Entity.setNameTag(mobs[i], nameColor + "Wolf " + healthColor + Entity.getHealth(mobs[i]) + "/8"); //spawn your wither in x y and z
+                Entity.setNameTag(mobs[i], nameColor + "Wolf " + healthColor + Entity.getHealth(mobs[i]) + "/8");
             }
             if(Entity.getEntityTypeId(mobs[i]) == 15) {
-                Entity.setNameTag(mobs[i], nameColor + "Villager " + healthColor + Entity.getHealth(mobs[i]) + "/20"); //spawn your wither in x y and z
+                Entity.setNameTag(mobs[i], nameColor + "Villager " + healthColor + Entity.getHealth(mobs[i]) + "/20");
             }
             if(Entity.getEntityTypeId(mobs[i]) == 16) {
-                Entity.setNameTag(mobs[i], nameColor + "Mooshroom " + healthColor + Entity.getHealth(mobs[i]) + "/10"); //spawn your wither in x y and z
+                Entity.setNameTag(mobs[i], nameColor + "Mooshroom " + healthColor + Entity.getHealth(mobs[i]) + "/10");
             }
             if(Entity.getEntityTypeId(mobs[i]) == 17) {
-                Entity.setNameTag(mobs[i], nameColor + "Squid " + healthColor + Entity.getHealth(mobs[i]) + "/10"); //spawn your wither in x y and z
+                Entity.setNameTag(mobs[i], nameColor + "Squid " + healthColor + Entity.getHealth(mobs[i]) + "/10");
             }
-			if(Entity.getEntityTypeId(mobs[i]) == 18) {
-                Entity.setNameTag(mobs[i], nameColor + "Rabbit " + healthColor + Entity.getHealth(mobs[i]) + "/3"); //spawn your wither in x y and z
+	    if(Entity.getEntityTypeId(mobs[i]) == 18) {
+                Entity.setNameTag(mobs[i], nameColor + "Rabbit " + healthColor + Entity.getHealth(mobs[i]) + "/3");
             }
             if(Entity.getEntityTypeId(mobs[i]) == 19) {
-                Entity.setNameTag(mobs[i], nameColor + "Bat " + healthColor + Entity.getHealth(mobs[i]) + "/6"); //spawn your wither in x y and z
+                Entity.setNameTag(mobs[i], nameColor + "Bat " + healthColor + Entity.getHealth(mobs[i]) + "/6");
             }
             if(Entity.getEntityTypeId(mobs[i]) == 20) {
-                Entity.setNameTag(mobs[i], nameColor + "Iron Golem " + healthColor + Entity.getHealth(mobs[i]) + "/100"); //spawn your wither in x y and z
+                Entity.setNameTag(mobs[i], nameColor + "Iron Golem " + healthColor + Entity.getHealth(mobs[i]) + "/100");
             }
             if(Entity.getEntityTypeId(mobs[i]) == 21) {
-                Entity.setNameTag(mobs[i], nameColor + "Snow Golem " + healthColor + Entity.getHealth(mobs[i]) + "/10"); //spawn your wither in x y and z
+                Entity.setNameTag(mobs[i], nameColor + "Snow Golem " + healthColor + Entity.getHealth(mobs[i]) + "/10");
             }
             if(Entity.getEntityTypeId(mobs[i]) == 22) {
-                Entity.setNameTag(mobs[i], nameColor + "Ocelot " + healthColor + Entity.getHealth(mobs[i]) + "/10"); //spawn your wither in x y and z
+                Entity.setNameTag(mobs[i], nameColor + "Ocelot " + healthColor + Entity.getHealth(mobs[i]) + "/10");
             }
             if(Entity.getEntityTypeId(mobs[i]) == 32) {
-                Entity.setNameTag(mobs[i], nameColor + "Zombie " + healthColor + Entity.getHealth(mobs[i]) + "/20"); //spawn your wither in x y and z
+                Entity.setNameTag(mobs[i], nameColor + "Zombie " + healthColor + Entity.getHealth(mobs[i]) + "/20");
             }
             if(Entity.getEntityTypeId(mobs[i]) == 33) {
-                Entity.setNameTag(mobs[i], nameColor + "Creeper " + healthColor + Entity.getHealth(mobs[i]) + "/20"); //spawn your wither in x y and z
+                Entity.setNameTag(mobs[i], nameColor + "Creeper " + healthColor + Entity.getHealth(mobs[i]) + "/20");
             }
             if(Entity.getEntityTypeId(mobs[i]) == 34) {
-                Entity.setNameTag(mobs[i], nameColor + "Skeleton " + healthColor + Entity.getHealth(mobs[i]) + "/20"); //spawn your wither in x y and z
+                Entity.setNameTag(mobs[i], nameColor + "Skeleton " + healthColor + Entity.getHealth(mobs[i]) + "/20");
             }
             if(Entity.getEntityTypeId(mobs[i]) == 35) {
-                Entity.setNameTag(mobs[i], nameColor + "Spider " + healthColor + Entity.getHealth(mobs[i]) + "/16"); //spawn your wither in x y and z
+                Entity.setNameTag(mobs[i], nameColor + "Spider " + healthColor + Entity.getHealth(mobs[i]) + "/16");
             }
             if(Entity.getEntityTypeId(mobs[i]) == 36) {
-                Entity.setNameTag(mobs[i], nameColor + "Zombie Pigman " + healthColor + Entity.getHealth(mobs[i]) + "/20"); //spawn your wither in x y and z
+                Entity.setNameTag(mobs[i], nameColor + "Zombie Pigman " + healthColor + Entity.getHealth(mobs[i]) + "/20");
             }
             if(Entity.getEntityTypeId(mobs[i]) == 37) {
-                Entity.setNameTag(mobs[i], nameColor + "Slime " + healthColor + Entity.getHealth(mobs[i]) + "/16"); //spawn your wither in x y and z
+                Entity.setNameTag(mobs[i], nameColor + "Slime " + healthColor + Entity.getHealth(mobs[i]) + "/16");
             }
             if(Entity.getEntityTypeId(mobs[i]) == 38) {
-                Entity.setNameTag(mobs[i], nameColor + "Enderman " + healthColor + Entity.getHealth(mobs[i]) + "/40"); //spawn your wither in x y and z
+                Entity.setNameTag(mobs[i], nameColor + "Enderman " + healthColor + Entity.getHealth(mobs[i]) + "/40");
             }
             if(Entity.getEntityTypeId(mobs[i]) == 39) {
-                Entity.setNameTag(mobs[i], nameColor + "Silverfish " + healthColor + Entity.getHealth(mobs[i]) + "/8"); //spawn your wither in x y and z
+                Entity.setNameTag(mobs[i], nameColor + "Silverfish " + healthColor + Entity.getHealth(mobs[i]) + "/8");
             }
             if(Entity.getEntityTypeId(mobs[i]) == 40) {
-                Entity.setNameTag(mobs[i], nameColor + "Cave Spider " + healthColor + Entity.getHealth(mobs[i]) + "/12"); //spawn your wither in x y and z
+                Entity.setNameTag(mobs[i], nameColor + "Cave Spider " + healthColor + Entity.getHealth(mobs[i]) + "/12");
             }
             if(Entity.getEntityTypeId(mobs[i]) == 41) {
-                Entity.setNameTag(mobs[i], nameColor + "Ghast " + healthColor + Entity.getHealth(mobs[i]) + "/10"); //spawn your wither in x y and z
+                Entity.setNameTag(mobs[i], nameColor + "Ghast " + healthColor + Entity.getHealth(mobs[i]) + "/10");
             }
             if(Entity.getEntityTypeId(mobs[i]) == 42) {
-                Entity.setNameTag(mobs[i], nameColor + "Magma Cube " + healthColor + Entity.getHealth(mobs[i]) + "/16"); //spawn your wither in x y and z
+                Entity.setNameTag(mobs[i], nameColor + "Magma Cube " + healthColor + Entity.getHealth(mobs[i]) + "/16");
             }
             if(Entity.getEntityTypeId(mobs[i]) == 43) {
-                Entity.setNameTag(mobs[i], nameColor + "Blaze " + healthColor + Entity.getHealth(mobs[i]) + "/20"); //spawn your wither in x y and z
+                Entity.setNameTag(mobs[i], nameColor + "Blaze " + healthColor + Entity.getHealth(mobs[i]) + "/20");
             }
         }
     }
@@ -1625,7 +1625,7 @@ function showMainMenuList() {
 					var text = VertexClientPEMainMenuText + " - Welcome back " + ModPE.getPlayerName() + "!";
 					var TitleText = clientButton(text);
 					TitleText.setText(android.text.Html.fromHtml(text), android.widget.TextView.BufferType.SPANNABLE);
-                    TitleText.setTextSize(25);
+                    			TitleText.setTextSize(25);
 					TitleText.setGravity(android.view.Gravity.CENTER);
 					TitleText.setEllipsize(android.text.TextUtils.TruncateAt.MARQUEE);
 					TitleText.setMarqueeRepeatLimit(-1);
@@ -1772,13 +1772,11 @@ function settingsScreen() {
 					showHacksListSettingButton.setChecked(true);
 					VertexClientPE.saveMainSettings();
 					VertexClientPE.loadMainSettings();
-					//Your code
 					}else{
 					showHacksListSetting = "off";
 					showHacksListSettingButton.setChecked(false);
 					VertexClientPE.saveMainSettings();
 					VertexClientPE.loadMainSettings();
-					//Your code
 					}
 					}
 					}));
@@ -2108,7 +2106,7 @@ VertexClientPE.showBuildingMenu = function() {
     ctx.runOnUiThread(new java.lang.Runnable() {
         run: function() {
             try {
-				VertexClientPE.loadMainSettings();
+		VertexClientPE.loadMainSettings();
 
                 vertexclientpebuildingmenu = new android.widget.PopupWindow(ctx);
                 var buildingMenuLayout1 = new android.widget.LinearLayout(ctx);
@@ -2304,7 +2302,7 @@ VertexClientPE.showBuildingMenu = function() {
 				}));
 
 				buildingTitle.setOnClickListener(new android.view.View.OnClickListener() {
-                    onClick: function(viewarg) {
+                    		onClick: function(viewarg) {
 						if(buildingMenuShown == true) {
 							buildingMenuLayout1.removeView(buildingMenuScrollView);
 							buildingTitle.setText("Building [-]");
@@ -2554,7 +2552,7 @@ VertexClientPE.showMovementMenu = function() {
 				}));
 
 				movementTitle.setOnClickListener(new android.view.View.OnClickListener() {
-                    onClick: function(viewarg) {
+                    		onClick: function(viewarg) {
 						if(movementMenuShown == true) {
 							movementMenuLayout1.removeView(movementMenuScrollView);
 							movementTitle.setText("Movement [-]");
@@ -2623,7 +2621,7 @@ VertexClientPE.showChatMenu = function() {
     ctx.runOnUiThread(new java.lang.Runnable() {
         run: function() {
             try {
-				VertexClientPE.loadMainSettings();
+		VertexClientPE.loadMainSettings();
 
                 vertexclientpechatmenu = new android.widget.PopupWindow(ctx);
                 var chatMenuLayout1 = new android.widget.LinearLayout(ctx);
@@ -3983,14 +3981,14 @@ function entityRemovedHook(entity) {
 	
 var powerExplosionsStage = 0;
 
-	function explodeHook(entity, x, y, z, power, onFire) {
-		if(powerExplosionsState == true && powerExplosionsStage == 0) {
-			powerExplosionsStage = 1;
-			preventDefault();
-			Level.explode(x, y, z, 10);
-			powerExplosionsStage = 0;
-		}
+function explodeHook(entity, x, y, z, power, onFire) {
+	if(powerExplosionsState == true && powerExplosionsStage == 0) {
+		powerExplosionsStage = 1;
+		preventDefault();
+		Level.explode(x, y, z, 10);
+		powerExplosionsStage = 0;
 	}
+}
 	
 function chatHook(text) {
 	if(text.charAt(0) == ".") {
