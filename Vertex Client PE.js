@@ -601,7 +601,6 @@ VertexClientPE.commandManager = function(command) {
 	command = command.split(" ");
 	switch(command[0]) {
 		case ".help": //1
-			preventDefault();
 			if(command[1] == undefined || command[1] == null || command[1] ==  "1") {
 				VertexClientPE.clientMessage("Showing help page 1/2");
 				VertexClientPE.clientMessage(".help [<page>]");
@@ -623,12 +622,10 @@ VertexClientPE.commandManager = function(command) {
 			}
 			break;
 		case ".gm": //2
-			preventDefault();
 			VertexClientPE.switchGameMode();
 			VertexClientPE.clientMessage("Your gamemode has been updated!");
 			break;
 		case ".spectate": //3
-			preventDefault();
 			if(command[1] == null || command[1] == undefined) {
 				VertexClientPE.syntaxError(".spectate <player>");
 			} else {
@@ -637,7 +634,6 @@ VertexClientPE.commandManager = function(command) {
 			break;
 		case ".t": //4
 		case ".toggle": //4
-			preventDefault();
 			if(command[1] == null || command[1] == undefined) {
 				VertexClientPE.syntaxError(".toggle <module>");
 			} else {
@@ -645,7 +641,6 @@ VertexClientPE.commandManager = function(command) {
 			}
 			break;
 		case ".drop": //5
-			preventDefault();
 			if(command[1] == null || command[1] == undefined || command[1] == "infinite") {
 				for(var i = 0; i < 513; i++) {
 					p = ((Entity.getPitch(getPlayerEnt()) + 90) * Math.PI) / 180;
@@ -660,19 +655,18 @@ VertexClientPE.commandManager = function(command) {
 			}
 			break;
 		case ".version": //6
-			preventDefault();
 			VertexClientPE.clientMessage(VertexClientPE.getVersion(command[1]));
 			break;
 		case ".p": //7
 		case ".panic": //7
-			preventDefault();
 			panic();
 			updateHacksList();
 			break;
 		case ".js": //8
-			preventDefault();
 			VertexClientPE.showJavascriptConsoleDialog();
 			break;
+		default:
+			VertexClientPE.clientMessage(ChatColor.RED + "Error: command \"" + command + "\" not found!");
 	}
 }
 
@@ -3999,7 +3993,10 @@ var powerExplosionsStage = 0;
 	}
 	
 function chatHook(text) {
-	VertexClientPE.commandManager(text);
+	if(text.charAt(0) == ".") {
+		preventDefault();
+		VertexClientPE.commandManager(text);
+	}
 }
  
 //End
