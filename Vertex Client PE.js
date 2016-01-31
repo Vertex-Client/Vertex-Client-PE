@@ -600,7 +600,7 @@ var p, y, xx, yy, zz;
 VertexClientPE.commandManager = function(command) {
 	command = command.split(" ");
 	switch(command[0]) {
-		case ".help": //1
+		case "help": //1
 			if(command[1] == undefined || command[1] == null || command[1] ==  "1") {
 				VertexClientPE.clientMessage("Showing help page 1/2");
 				VertexClientPE.clientMessage(".help [<page>]");
@@ -621,26 +621,26 @@ VertexClientPE.commandManager = function(command) {
 				}
 			}
 			break;
-		case ".gm": //2
+		case "gm": //2
 			VertexClientPE.switchGameMode();
 			VertexClientPE.clientMessage("Your gamemode has been updated!");
 			break;
-		case ".spectate": //3
+		case "spectate": //3
 			if(command[1] == null || command[1] == undefined) {
 				VertexClientPE.syntaxError(".spectate <player>");
 			} else {
 				VertexClientPE.spectate(command[1]);
 			}
 			break;
-		case ".t": //4
-		case ".toggle": //4
+		case "t": //4
+		case "toggle": //4
 			if(command[1] == null || command[1] == undefined) {
 				VertexClientPE.syntaxError(".toggle <module>");
 			} else {
 				VertexClientPE.toggleModule(command[1]);
 			}
 			break;
-		case ".drop": //5
+		case "drop": //5
 			if(command[1] == null || command[1] == undefined || command[1] == "infinite") {
 				for(var i = 0; i < 513; i++) {
 					p = ((Entity.getPitch(getPlayerEnt()) + 90) * Math.PI) / 180;
@@ -654,19 +654,19 @@ VertexClientPE.commandManager = function(command) {
 				VertexClientPE.syntaxError(".drop [infinite]");
 			}
 			break;
-		case ".version": //6
+		case "version": //6
 			VertexClientPE.clientMessage(VertexClientPE.getVersion(command[1]));
 			break;
-		case ".p": //7
-		case ".panic": //7
+		case "p": //7
+		case "panic": //7
 			panic();
 			updateHacksList();
 			break;
-		case ".js": //8
+		case "js": //8
 			VertexClientPE.showJavascriptConsoleDialog();
 			break;
 		default:
-			VertexClientPE.clientMessage(ChatColor.RED + "Error: command \"" + command + "\" not found!");
+			VertexClientPE.clientMessage(ChatColor.RED + "Error: command \"." + command + "\" not found!");
 	}
 }
 
@@ -1429,16 +1429,12 @@ var getStretchedImage = function(bm, x, y, stretchWidth, stretchHeight, width, h
     return new android.graphics.drawable.BitmapDrawable(blank);
 };
 
-var mcpeBtn = getStretchedImage(android.graphics.Bitmap.createScaledBitmap(trimImage(GetSpritesheet(), 0, 32, 8, 8), 8 * GuiSize, 8 * GuiSize, false), 3.7 * GuiSize, 4 * GuiSize, 2 * GuiSize, 2 * GuiSize, getContext().getScreenWidth() / 11, getContext().getScreenHeight() / 14);
-var unmcpeBtn = getStretchedImage(android.graphics.Bitmap.createScaledBitmap(trimImage(GetSpritesheet(), 8, 32, 8, 8), 8 * GuiSize, 8 * GuiSize, false), 3.7 * GuiSize, 4 * GuiSize, 2 * GuiSize, 2 * GuiSize, getContext().getScreenWidth() / 11, getContext().getScreenHeight() / 14);
 var clicked_green_image = getStretchedImage(android.graphics.Bitmap.createScaledBitmap(trimImage(img2, 0, 0, 16, 16), 8 * GuiSize, 8 * GuiSize, false), 3.7 * GuiSize, 4 * GuiSize, 2 * GuiSize, 2 * GuiSize, getContext().getScreenWidth() / 2, getContext().getScreenHeight() / 10);
 var unclicked_green_image = getStretchedImage(android.graphics.Bitmap.createScaledBitmap(trimImage(img1, 0, 0, 16, 16), 8 * GuiSize, 8 * GuiSize, false), 3.7 * GuiSize, 4 * GuiSize, 2 * GuiSize, 2 * GuiSize, getContext().getScreenWidth() / 2, getContext().getScreenHeight() / 10);
 var clicked_red_image = getStretchedImage(android.graphics.Bitmap.createScaledBitmap(trimImage(img4, 0, 0, 16, 16), 8 * GuiSize, 8 * GuiSize, false), 3.7 * GuiSize, 4 * GuiSize, 2 * GuiSize, 2 * GuiSize, getContext().getScreenWidth() / 2, getContext().getScreenHeight() / 10);
 var unclicked_red_image = getStretchedImage(android.graphics.Bitmap.createScaledBitmap(trimImage(img3, 0, 0, 16, 16), 8 * GuiSize, 8 * GuiSize, false), 3.7 * GuiSize, 4 * GuiSize, 2 * GuiSize, 2 * GuiSize, getContext().getScreenWidth() / 2, getContext().getScreenHeight() / 10);
 var clicked_blue_image = getStretchedImage(android.graphics.Bitmap.createScaledBitmap(trimImage(img6, 0, 0, 16, 16), 8 * GuiSize, 8 * GuiSize, false), 3.7 * GuiSize, 4 * GuiSize, 2 * GuiSize, 2 * GuiSize, getContext().getScreenWidth() / 2, getContext().getScreenHeight() / 10);
 var unclicked_blue_image = getStretchedImage(android.graphics.Bitmap.createScaledBitmap(trimImage(img5, 0, 0, 16, 16), 8 * GuiSize, 8 * GuiSize, false), 3.7 * GuiSize, 4 * GuiSize, 2 * GuiSize, 2 * GuiSize, getContext().getScreenWidth() / 2, getContext().getScreenHeight() / 10);
-var unmcpeX = getStretchedImage(android.graphics.Bitmap.createScaledBitmap(trimImage(GetSpritesheet(), 8, 32, 8, 8), 8 * GuiSize, 8 * GuiSize, false), 3.7 * GuiSize, 4 * GuiSize, 2 * GuiSize, 2 * GuiSize, getContext().getScreenWidth() / 18.5, getContext().getScreenHeight() / 19);
-var mcpeX = getStretchedImage(android.graphics.Bitmap.createScaledBitmap(trimImage(GetSpritesheet(), 0, 32, 8, 8), 8 * GuiSize, 8 * GuiSize, false), 3.7 * GuiSize, 4 * GuiSize, 2 * GuiSize, 2 * GuiSize, getContext().getScreenWidth() / 19.5, getContext().getScreenHeight() / 19);
 
 function clientButton(text, desc) //menu buttons
 {
@@ -3984,7 +3980,7 @@ function explodeHook(entity, x, y, z, power, onFire) {
 function chatHook(text) {
 	if(text.charAt(0) == ".") {
 		preventDefault();
-		VertexClientPE.commandManager(text);
+		VertexClientPE.commandManager(text.split(".")[1]);
 	}
 }
  
