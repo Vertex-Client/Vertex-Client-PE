@@ -667,6 +667,7 @@ VertexClientPE.commandManager = function(command) {
 			break;
 		default:
 			VertexClientPE.clientMessage(ChatColor.RED + "Error: command \"." + command + "\" not found!");
+			break;
 	}
 }
 
