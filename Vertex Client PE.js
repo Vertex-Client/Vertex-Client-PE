@@ -3280,107 +3280,107 @@ function updateHacksList() {
                     } else if(xRayState == false) {
                         xRayStateText = "";
                     }
-					if(instaHealState == true) {
+		    if(instaHealState == true) {
                         instaHealStateText = " [InstaHeal] ";
                     } else if(instaHealState == false) {
                         instaHealStateText = "";
                     }
-					if(instaKillState == true) {
+		    if(instaKillState == true) {
                         instaKillStateText = " [InstaKill] ";
                     } else if(instaKillState == false) {
                         instaKillStateText = "";
                     }
-					if(walkOnLiquidsState == true) {
+		    if(walkOnLiquidsState == true) {
                         walkOnLiquidsStateText = " [Walk on Liquids] ";
                     } else if(walkOnLiquidsState == false) {
                         walkOnLiquidsStateText = "";
                     }
-					if(powerExplosionsState == true) {
+		    if(powerExplosionsState == true) {
                         powerExplosionsStateText = " [PowerExplosions] ";
                     } else if(powerExplosionsState == false) {
                         powerExplosionsStateText = "";
                     }
-					if(tapTeleporterState == true) {
+		    if(tapTeleporterState == true) {
                         tapTeleporterStateText = " [TapTeleporter] ";
                     } else if(tapTeleporterState == false) {
                         tapTeleporterStateText = "";
                     }
-					if(wallHackState == true) {
+		    if(wallHackState == true) {
                         wallHackStateText = " [WallHack] ";
                     } else if(wallHackState == false) {
                         wallHackStateText = "";
                     }
-					if(arrowGunState == true) {
+		    if(arrowGunState == true) {
                         arrowGunStateText = " [ArrowGun] ";
                     } else if(arrowGunState == false) {
                         arrowGunStateText = "";
                     }
-					if(autoMineState == true) {
+		    if(autoMineState == true) {
                         autoMineStateText = " [AutoMine] ";
                     } else if(autoMineState == false) {
                         autoMineStateText = "";
                     }
-					if(instaMineState == true) {
+		    if(instaMineState == true) {
                         instaMineStateText = " [InstaMine] ";
                     } else if(instaMineState == false) {
                         instaMineStateText = "";
                     }
-					if(stackDropState == true) {
+		    if(stackDropState == true) {
                         stackDropStateText = " [StackDrop] ";
                     } else if(stackDropState == false) {
                         stackDropStateText = "";
                     }
-					if(parachuteState == true) {
+		    if(parachuteState == true) {
                         parachuteStateText = " [Parachute] ";
                     } else if(parachuteState == false) {
                         parachuteStateText = "";
                     }
-					if(tapRemoverState == true) {
+		    if(tapRemoverState == true) {
                         tapRemoverStateText = " [TapRemover] ";
                     } else if(tapRemoverState == false) {
                         tapRemoverStateText = "";
                     }
-					if(killAuraState == true) {
+		    if(killAuraState == true) {
                         killAuraStateText = " [KillAura] ";
                     } else if(killAuraState == false) {
                         killAuraStateText = "";
                     }
-					if(nukerState == true) {
+		    if(nukerState == true) {
                         nukerStateText = " [Nuker] ";
                     } else if(nukerState == false) {
                         nukerStateText = "";
                     }
-					if(droneState == true) {
+		    if(droneState == true) {
                         droneStateText = " [Drone] ";
                     } else if(droneState == false) {
                         droneStateText = "";
                     }
-					if(derpState == true) {
+		    if(derpState == true) {
                         derpStateText = " [Derp] ";
                     } else if(derpState == false) {
                         derpStateText = "";
                     }
-					if(freeCamState == true) {
+		    if(freeCamState == true) {
                         freeCamStateText = " [FreeCam] ";
                     } else if(freeCamState) {
                         freeCamStateText = "";
                     }
-					if(signEditorState == true) {
+		    if(signEditorState == true) {
                         signEditorStateText = " [SignEditor] ";
                     } else if(signEditorState) {
                         signEditorStateText = "";
                     }
-					if(tapNukerState == true) {
+		    if(tapNukerState == true) {
                         tapNukerStateText = " [TapNuker] ";
                     } else if(tapNukerState) {
                         tapNukerStateText = "";
                     }
-					if(highJumpState == true) {
+		    if(highJumpState == true) {
                         highJumpStateText = " [HighJump] ";
                     } else if(highJumpState) {
                         highJumpStateText = "";
                     }
-					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + instaHealStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + parachuteStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freeCamStateText + signEditorStateText + tapNukerStateText + highJumpStateText);
+		    StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + instaHealStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + parachuteStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freeCamStateText + signEditorStateText + tapNukerStateText + highJumpStateText);
                 } catch(error) {
                     print('An error occured: ' + error);
                 }
@@ -3426,38 +3426,36 @@ function exit(){
     var xLayout = new android.widget.LinearLayout(ctxe);
     var xButton = new android.widget.Button(ctxe);
     xButton.setText('X');//Text
-	xButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
+    xButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
     xButton.setTextColor(android.graphics.Color.WHITE);
     xButton.setOnClickListener(new android.view.View.OnClickListener({
-    onClick: function(viewarg){
-	settingsUI.dismiss(); //Close
-    exitUI.dismiss(); //Close
-    //gamemodeUI.dismiss(); //Close
-    //panicUI.dismiss(); //Close
-	showingMenu = false;
-    vertexclientpecombatmenu.dismiss(); //Close
-    vertexclientpebuildingmenu.dismiss(); //Close
-    vertexclientpemovementmenu.dismiss(); //Close
-    vertexclientpechatmenu.dismiss(); //Close
-    vertexclientpemiscmenu.dismiss(); //Close
-	showMenuButton();
-	showHacksList();
-    }
+	    onClick: function(viewarg){
+		settingsUI.dismiss(); //Close
+	        exitUI.dismiss(); //Close
+		showingMenu = false;
+	        vertexclientpecombatmenu.dismiss(); //Close
+	        vertexclientpebuildingmenu.dismiss(); //Close
+	        vertexclientpemovementmenu.dismiss(); //Close
+	        vertexclientpechatmenu.dismiss(); //Close
+	        vertexclientpemiscmenu.dismiss(); //Close
+		showMenuButton();
+		showHacksList();
+	    }
     }));
-	xLayout.addView(xButton);
+    xLayout.addView(xButton);
 	
-	var settingsLayout = new android.widget.LinearLayout(ctxe);
+    var settingsLayout = new android.widget.LinearLayout(ctxe);
     var settingsButton = new android.widget.Button(ctxe);
     settingsButton.setText("Settings");
     settingsButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#1E90FF"), android.graphics.PorterDuff.Mode.MULTIPLY);
     settingsButton.setTextColor(android.graphics.Color.WHITE);
-	settingsButton.setOnLongClickListener(new android.view.View.OnLongClickListener() {
-		onLongClick: function(v, t) {
-			ctx.getSystemService(android.content.Context.VIBRATOR_SERVICE).vibrate(37);
-			android.widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> Opens the Settings menu"), 0).show();
-			return true;
-		}
-	});
+    settingsButton.setOnLongClickListener(new android.view.View.OnLongClickListener() {
+	    onLongClick: function(v, t) {
+		    ctx.getSystemService(android.content.Context.VIBRATOR_SERVICE).vibrate(37);
+		    android.widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> Opens the Settings menu"), 0).show();
+		    return true;
+	    }
+    });
     settingsButton.setOnClickListener(new android.view.View.OnClickListener({
     onClick: function(viewarg){
 		settingsUI.dismiss(); //Close
@@ -3480,7 +3478,7 @@ function exit(){
     exitUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
     exitUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
 	
-	settingsUI = new android.widget.PopupWindow(settingsLayout, dip2px(320), dip2px(40));
+    settingsUI = new android.widget.PopupWindow(settingsLayout, dip2px(320), dip2px(40));
     settingsUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
     settingsUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
     }catch(exception){
@@ -3496,7 +3494,7 @@ function exitSettings(){
     var xSettingsLayout = new android.widget.LinearLayout(ctxe);
     var xSettingsButton = new android.widget.Button(ctxe);
     xSettingsButton.setText('X');//Text
-	xSettingsButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
+    xSettingsButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
     xSettingsButton.setTextColor(android.graphics.Color.WHITE);
     xSettingsButton.setOnClickListener(new android.view.View.OnClickListener({
     onClick: function(viewarg){
@@ -3507,7 +3505,7 @@ function exitSettings(){
 	showHacksList();
     }
     }));
-	xSettingsLayout.addView(xSettingsButton);
+    xSettingsLayout.addView(xSettingsButton);
 	
     exitSettingsUI = new android.widget.PopupWindow(xSettingsLayout, dip2px(40), dip2px(40));
     exitSettingsUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
