@@ -407,11 +407,11 @@ VertexClientPE.toggleModule = function(module) {
 			}
 			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
 			break;
-		} case "instaheal": {
-			if(instaHealState == false) {
-				instaHealState = true;
-			} else if(instaHealState == true) {
-				instaHealState = false;
+		} case "regen": {
+			if(regenState == false) {
+				regenState = true;
+			} else if(regenState == true) {
+				regenState = false;
 			}
 			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
 			break;
@@ -1995,22 +1995,22 @@ VertexClientPE.showCombatMenu = function() {
 				}
 				}));
 				
-				var instaHealBtn = clientButton("InstaHeal", "Instantly refills your health");
-				instaHealBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
-				instaHealBtn.setAlpha(0.54);
-				if(instaHealState == false) {
-					instaHealBtn.setTextColor(android.graphics.Color.WHITE);
-				} else if(instaHealState == true) {
-					instaHealBtn.setTextColor(android.graphics.Color.GREEN);
+				var regenBtn = clientButton("Regen", "Instantly refills your health");
+				regenBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				regenBtn.setAlpha(0.54);
+				if(regenState == false) {
+					regenBtn.setTextColor(android.graphics.Color.WHITE);
+				} else if(regenState == true) {
+					regenBtn.setTextColor(android.graphics.Color.GREEN);
 				}
-				instaHealBtn.setOnClickListener(new android.view.View.OnClickListener({
+				regenBtn.setOnClickListener(new android.view.View.OnClickListener({
 				onClick: function(viewarg){
-					if(instaHealState == false) {
-						instaHealState = true;
-						instaHealBtn.setTextColor(android.graphics.Color.GREEN);
-					} else if(instaHealState == true) {
-						instaHealState = false;
-						instaHealBtn.setTextColor(android.graphics.Color.WHITE);
+					if(regenState == false) {
+						regenState = true;
+						regenBtn.setTextColor(android.graphics.Color.GREEN);
+					} else if(regenState == true) {
+						regenState = false;
+						regenBtn.setTextColor(android.graphics.Color.WHITE);
 					}
 				}
 				}));
@@ -2080,7 +2080,7 @@ VertexClientPE.showCombatMenu = function() {
                 combatMenuLayout.addView(killAuraBtn);
                 combatMenuLayout.addView(droneBtn);
                 combatMenuLayout.addView(instaKillBtn);
-                combatMenuLayout.addView(instaHealBtn);
+                combatMenuLayout.addView(regenBtn);
                 combatMenuLayout.addView(arrowGunBtn);
 
                 vertexclientpecombatmenu.setContentView(combatMenuLayout1);
@@ -3027,7 +3027,7 @@ var autoSpammerState = false;
 var zoomState = false;
 var timerState = false;
 var xRayState = false;
-var instaHealState = false;
+var regenState = false;
 var instaKillState = false;
 var walkOnLiquidsState = false;
 var powerExplosionsState = false;
@@ -3055,7 +3055,7 @@ var autoSpammerStateText = "";
 var zoomStateText = "";
 var timerStateText = "";
 var xRayStateText = "";
-var instaHealStateText = "";
+var regenStateText = "";
 var instaKillStateText = "";
 var walkOnLiquidsStateText = "";
 var powerExplosionsStateText = "";
@@ -3114,10 +3114,10 @@ function showHacksList() {
                     } else if(xRayState == false) {
                         xRayStateText = "";
                     }
-					if(instaHealState == true) {
-                        instaHealStateText = " [InstaHeal] ";
-                    } else if(instaHealState == false) {
-                        instaHealStateText = "";
+					if(regenState == true) {
+                        regenStateText = " [Regen] ";
+                    } else if(regenState == false) {
+                        regenStateText = "";
                     }
 					if(instaKillState == true) {
                         instaKillStateText = " [InstaKill] ";
@@ -3217,7 +3217,7 @@ function showHacksList() {
                     var VertexClientPEHacksListTextView = new android.widget.TextView(ctx);
                     VertexClientPEHacksListTextView.setText(VertexClientPEHacksListText);
 					StatesText = clientTextView("Placeholder text", true);
-					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + instaHealStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + parachuteStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freeCamStateText + signEditorStateText + tapNukerStateText + highJumpStateText);
+					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + parachuteStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freeCamStateText + signEditorStateText + tapNukerStateText + highJumpStateText);
                     VertexClientPEHacksListTextView.setTextSize(20);
                     VertexClientPEHacksListTextView.setTypeface(null, android.graphics.Typeface.BOLD);
 					VertexClientPEHacksListTextView.setTextColor(android.graphics.Color.GREEN);
@@ -3272,10 +3272,10 @@ function updateHacksList() {
                     } else if(xRayState == false) {
                         xRayStateText = "";
                     }
-					if(instaHealState == true) {
-                        instaHealStateText = " [InstaHeal] ";
-                    } else if(instaHealState == false) {
-                        instaHealStateText = "";
+					if(regenState == true) {
+                        regenStateText = " [Regen] ";
+                    } else if(regenState == false) {
+                        regenStateText = "";
                     }
 					if(instaKillState == true) {
                         instaKillStateText = " [InstaKill] ";
@@ -3372,7 +3372,7 @@ function updateHacksList() {
                     } else if(highJumpState) {
                         highJumpStateText = "";
                     }
-					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + instaHealStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + parachuteStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freeCamStateText + signEditorStateText + tapNukerStateText + highJumpStateText);
+					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + parachuteStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freeCamStateText + signEditorStateText + tapNukerStateText + highJumpStateText);
                 } catch(error) {
                     print('An error occured: ' + error);
                 }
@@ -3388,7 +3388,7 @@ function panic() {
 	ModPE.setGameSpeed(20);
 	xRayState = false;
 	VertexClientPE.xRay(0);
-	instaHealState = false;
+	regenState = false;
 	instaKillState = false;
 	walkOnLiquidsState = false;
 	powerExplosionsState = false;
@@ -3529,8 +3529,10 @@ function modTick() {
 		clientMessage("Spam!!!!!");
 		chatHook("Spam!!!!!");
 		Server.sendChat("Spam!!!!!");
-	}if(instaHealState == true) {
-		Player.setHealth(20);
+	}if(regenState == true) {
+		if(Player.getHealth() < 20) {
+			Player.setHealth(20);
+		}
 	}if(walkOnLiquidsState == true) {
 		if(Level.getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) == 8 || Level.getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) == 9 || Level.getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) == 10 || Level.getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) == 10) {
 			setVelY(Player.getEntity(), 0);
