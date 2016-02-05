@@ -547,6 +547,14 @@ VertexClientPE.toggleModule = function(module) {
 			}
 			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
 			break;
+		} case "autoswitch": {
+			if(autoSwitchState == false) {
+				autoSwitchState = true;
+			} else if(autoSwitchState == true) {
+				autoSwitchState = false;
+			}
+			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
+			break;
 		} default: {
 			VertexClientPE.clientMessage(ChatColor.RED + "Module \'" + module + "\' not found!");
 			break;
@@ -600,7 +608,7 @@ var p, y, xx, yy, zz;
 VertexClientPE.commandManager = function(command) {
 	command = command.split(" ");
 	switch(command[0]) {
-		case "help": //1
+		case ".help": //1
 			if(command[1] == undefined || command[1] == null || command[1] ==  "1") {
 				VertexClientPE.clientMessage("Showing help page 1/2");
 				VertexClientPE.clientMessage(".help [<page>]");
@@ -621,26 +629,26 @@ VertexClientPE.commandManager = function(command) {
 				}
 			}
 			break;
-		case "gm": //2
+		case ".gm": //2
 			VertexClientPE.switchGameMode();
 			VertexClientPE.clientMessage("Your gamemode has been updated!");
 			break;
-		case "spectate": //3
+		case ".spectate": //3
 			if(command[1] == null || command[1] == undefined) {
 				VertexClientPE.syntaxError(".spectate <player>");
 			} else {
 				VertexClientPE.spectate(command[1]);
 			}
 			break;
-		case "t": //4
-		case "toggle": //4
+		case ".t": //4
+		case ".toggle": //4
 			if(command[1] == null || command[1] == undefined) {
 				VertexClientPE.syntaxError(".toggle <module>");
 			} else {
 				VertexClientPE.toggleModule(command[1]);
 			}
 			break;
-		case "drop": //5
+		case ".drop": //5
 			if(command[1] == null || command[1] == undefined || command[1] == "infinite") {
 				for(var i = 0; i < 513; i++) {
 					p = ((Entity.getPitch(getPlayerEnt()) + 90) * Math.PI) / 180;
@@ -654,19 +662,19 @@ VertexClientPE.commandManager = function(command) {
 				VertexClientPE.syntaxError(".drop [infinite]");
 			}
 			break;
-		case "version": //6
+		case ".version": //6
 			VertexClientPE.clientMessage(VertexClientPE.getVersion(command[1]));
 			break;
-		case "p": //7
-		case "panic": //7
+		case ".p": //7
+		case ".panic":
 			panic();
 			updateHacksList();
 			break;
-		case "js": //8
+		case ".js": //8
 			VertexClientPE.showJavascriptConsoleDialog();
 			break;
 		default:
-			VertexClientPE.clientMessage(ChatColor.RED + "Error: command \"." + command + "\" not found!");
+			VertexClientPE.clientMessage(ChatColor.RED + "Error: command \"" + command + "\" not found!");
 			break;
 	}
 }
@@ -4023,7 +4031,7 @@ function explodeHook(entity, x, y, z, power, onFire) {
 function chatHook(text) {
 	if(text.charAt(0) == ".") {
 		preventDefault();
-		VertexClientPE.commandManager(text.split(".")[1]);
+		VertexClientPE.commandManager(text);
 	}
 }
  
