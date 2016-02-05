@@ -2879,6 +2879,26 @@ VertexClientPE.showMiscMenu = function() {
 				}
 				}));
 				
+				var autoSwitchBtn = clientButton("AutoSwitch", "Switches the item in your hand all the time");
+				autoSwitchBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				autoSwitchBtn.setAlpha(0.54);
+				if(autoSwitchState == false) {
+					autoSwitchBtn.setTextColor(android.graphics.Color.WHITE);
+				} else if(autoSwitchState == true) {
+					autoSwitchBtn.setTextColor(android.graphics.Color.GREEN);
+				}
+				autoSwitchBtn.setOnClickListener(new android.view.View.OnClickListener({
+				onClick: function(viewarg){
+					if(autoSwitchState == false) {
+						autoSwitchState = true;
+						autoSwitchBtn.setTextColor(android.graphics.Color.GREEN);
+					} else if(autoSwitchState == true) {
+						autoSwitchState = false;
+						autoSwitchBtn.setTextColor(android.graphics.Color.WHITE);
+					}
+				}
+				}));
+				
 				var zoomBtn = clientButton("Zoom");
 				zoomBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				zoomBtn.setAlpha(0.54);
@@ -2958,6 +2978,7 @@ VertexClientPE.showMiscMenu = function() {
                 miscMenuLayout.addView(switchGamemodeButton);
                 miscMenuLayout.addView(xRayBtn);
                 miscMenuLayout.addView(derpBtn);
+                miscMenuLayout.addView(autoSwitchBtn);
                 miscMenuLayout.addView(zoomBtn);
                 miscMenuLayout.addView(pizzaOrderButton);
 
@@ -3047,6 +3068,7 @@ var freeCamState = false;
 var signEditorState = false;
 var tapNukerState = false;
 var highJumpState = false;
+var autoSwitchState = false;
 
 var hacksList;
 var StatesText;
@@ -3075,6 +3097,7 @@ var freeCamStateText = "";
 var signEditorStateText = "";
 var tapNukerStateText = "";
 var highJumpStateText = "";
+var autoSwitchStateText = "";
 
 function showHacksList() {
         var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
@@ -3214,10 +3237,15 @@ function showHacksList() {
                     } else if(highJumpState) {
                         highJumpStateText = "";
                     }
+					if(autoSwitchState == true) {
+                        autoSwitchStateText = " [AutoSwitch] ";
+                    } else if(autoSwitchState) {
+                        autoSwitchStateText = "";
+                    }
                     var VertexClientPEHacksListTextView = new android.widget.TextView(ctx);
                     VertexClientPEHacksListTextView.setText(VertexClientPEHacksListText);
 					StatesText = clientTextView("Placeholder text", true);
-					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + parachuteStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freeCamStateText + signEditorStateText + tapNukerStateText + highJumpStateText);
+					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + parachuteStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freeCamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText);
                     VertexClientPEHacksListTextView.setTextSize(20);
                     VertexClientPEHacksListTextView.setTypeface(null, android.graphics.Typeface.BOLD);
 					VertexClientPEHacksListTextView.setTextColor(android.graphics.Color.GREEN);
@@ -3372,7 +3400,12 @@ function updateHacksList() {
                     } else if(highJumpState) {
                         highJumpStateText = "";
                     }
-					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + parachuteStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freeCamStateText + signEditorStateText + tapNukerStateText + highJumpStateText);
+					if(autoSwitchState == true) {
+                        autoSwitchStateText = " [AutoSwitch] ";
+                    } else if(autoSwitchState) {
+                        autoSwitchStateText = "";
+                    }
+					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + parachuteStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freeCamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText);
                 } catch(error) {
                     print('An error occured: ' + error);
                 }
@@ -3409,6 +3442,7 @@ function panic() {
 	signEditorState = false;
 	tapNukerState = false;
 	highJumpState = false;
+	autoSwitchState = false;
 }
 	
 function exit(){
@@ -3691,6 +3725,12 @@ function modTick() {
 			}
 
 
+		}
+	}if(autoSwitchState == true) {
+		if(Player.getSelectedSlotId() != 7) {
+			Player.setSelectedSlotId(Player.getSelectedSlotId() + 1);
+		} else {
+			Player.setSelectedSlotId(0);
 		}
 	}
 }
