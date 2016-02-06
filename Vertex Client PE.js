@@ -3227,27 +3227,27 @@ function showHacksList() {
                     }
 					if(freeCamState == true) {
                         freeCamStateText = " [FreeCam] ";
-                    } else if(freeCamState) {
+                    } else if(freeCamState == false) {
                         freeCamStateText = "";
                     }
 					if(signEditorState == true) {
                         signEditorStateText = " [SignEditor] ";
-                    } else if(signEditorState) {
+                    } else if(signEditorState == false) {
                         signEditorStateText = "";
                     }
 					if(tapNukerState == true) {
                         tapNukerStateText = " [TapNuker] ";
-                    } else if(tapNukerState) {
+                    } else if(tapNukerState == false) {
                         tapNukerStateText = "";
                     }
 					if(highJumpState == true) {
                         highJumpStateText = " [HighJump] ";
-                    } else if(highJumpState) {
+                    } else if(highJumpState == false) {
                         highJumpStateText = "";
                     }
 					if(autoSwitchState == true) {
                         autoSwitchStateText = " [AutoSwitch] ";
-                    } else if(autoSwitchState) {
+                    } else if(autoSwitchState == false) {
                         autoSwitchStateText = "";
                     }
                     var VertexClientPEHacksListTextView = new android.widget.TextView(ctx);
@@ -3390,27 +3390,27 @@ function updateHacksList() {
                     }
 					if(freeCamState == true) {
                         freeCamStateText = " [FreeCam] ";
-                    } else if(freeCamState) {
+                    } else if(freeCamState == false) {
                         freeCamStateText = "";
                     }
 					if(signEditorState == true) {
                         signEditorStateText = " [SignEditor] ";
-                    } else if(signEditorState) {
+                    } else if(signEditorState == false) {
                         signEditorStateText = "";
                     }
 					if(tapNukerState == true) {
                         tapNukerStateText = " [TapNuker] ";
-                    } else if(tapNukerState) {
+                    } else if(tapNukerState == false) {
                         tapNukerStateText = "";
                     }
 					if(highJumpState == true) {
                         highJumpStateText = " [HighJump] ";
-                    } else if(highJumpState) {
+                    } else if(highJumpState == false) {
                         highJumpStateText = "";
                     }
 					if(autoSwitchState == true) {
                         autoSwitchStateText = " [AutoSwitch] ";
-                    } else if(autoSwitchState) {
+                    } else if(autoSwitchState == false) {
                         autoSwitchStateText = "";
                     }
 					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + parachuteStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freeCamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText);
@@ -3572,7 +3572,7 @@ function modTick() {
 		chatHook("Spam!!!!!");
 		Server.sendChat("Spam!!!!!");
 	}if(regenState == true) {
-		if(Player.getHealth() < 20) {
+		if(Entity.getHealth(getPlayerEnt()) < 20) {
 			Player.setHealth(20);
 		}
 	}if(walkOnLiquidsState == true) {
