@@ -354,6 +354,7 @@ VertexClientPE.showJavascriptConsoleDialog = function() {
 }
 
 VertexClientPE.toggleModule = function(module) {
+	var sendMessage = true;
 	switch(module) {
 		case "nuker": {
 			if(nukerState == false) {
@@ -361,7 +362,6 @@ VertexClientPE.toggleModule = function(module) {
 			} else if(nukerState == true) {
 				nukerState = false;
 			}
-			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
 			break;
 		} case "derp": {
 			if(derpState == false) {
@@ -369,7 +369,6 @@ VertexClientPE.toggleModule = function(module) {
 			} else if(derpState == true) {
 				derpState = false;
 			}
-			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
 			break;
 		} case "xray": {
 			if(xRayState == false) {
@@ -379,7 +378,6 @@ VertexClientPE.toggleModule = function(module) {
 				xRayState = false;
 				VertexClientPE.xRay(0);
 			}
-			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
 			break;
 		/*} case "freecam": {
 			if(freeCamState == false) {
@@ -397,7 +395,6 @@ VertexClientPE.toggleModule = function(module) {
 			} else if(autoSpammerState == true) {
 				autoSpammerState = false;
 			}
-			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
 			break;
 		} case "drone": {
 			if(droneState == false) {
@@ -405,7 +402,6 @@ VertexClientPE.toggleModule = function(module) {
 			} else if(droneState == true) {
 				droneState = false;
 			}
-			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
 			break;
 		} case "regen": {
 			if(regenState == false) {
@@ -413,7 +409,6 @@ VertexClientPE.toggleModule = function(module) {
 			} else if(regenState == true) {
 				regenState = false;
 			}
-			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
 			break;
 		} case "instakill": {
 			if(instaKillState == false) {
@@ -421,7 +416,6 @@ VertexClientPE.toggleModule = function(module) {
 			} else if(instaKillState == true) {
 				instaKillState = false;
 			}
-			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
 			break;
 		} case "instamine": {
 			if(instaMineState == false) {
@@ -431,7 +425,6 @@ VertexClientPE.toggleModule = function(module) {
 				instaMineState = false;
 				Block.setDestroyTimeDefaultAll();
 			}
-			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
 			break;
 		} case "parachute": {
 			if(parachuteState == false) {
@@ -439,7 +432,6 @@ VertexClientPE.toggleModule = function(module) {
 			} else if(parachuteState == true) {
 				parachuteState = false;
 			}
-			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
 			break;
 		} case "arrowgun": {
 			if(arrowGunState == false) {
@@ -447,7 +439,6 @@ VertexClientPE.toggleModule = function(module) {
 			} else if(arrowGunState == true) {
 				arrowGunState = false;
 			}
-			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
 			break;
 		} case "automine": {
 			if(autoMineState == false) {
@@ -455,7 +446,6 @@ VertexClientPE.toggleModule = function(module) {
 			} else if(autoMineState == true) {
 				autoMineState = false;
 			}
-			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
 			break;
 		} case "killaura": {
 			if(killAuraState == false) {
@@ -463,7 +453,6 @@ VertexClientPE.toggleModule = function(module) {
 			} else if(killAuraState == true) {
 				killAuraState = false;
 			}
-			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
 			break;
 		} case "powerexplosions": {
 			if(powerExplosionsState == false) {
@@ -471,7 +460,6 @@ VertexClientPE.toggleModule = function(module) {
 			} else if(powerExplosionsState == true) {
 				powerExplosionsState = false;
 			}
-			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
 			break;
 		} case "stackdrop": {
 			if(stackDropState == false) {
@@ -479,7 +467,6 @@ VertexClientPE.toggleModule = function(module) {
 			} else if(stackDropState == true) {
 				stackDropState = false;
 			}
-			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
 			break;
 		} case "tapremover": {
 			if(tapRemoverState == false) {
@@ -487,7 +474,6 @@ VertexClientPE.toggleModule = function(module) {
 			} else if(tapRemoverState == true) {
 				tapRemoverState = false;
 			}
-			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
 			break;
 		} case "timer": {
 			if(timerState == false) {
@@ -495,7 +481,6 @@ VertexClientPE.toggleModule = function(module) {
 			} else if(timerState == true) {
 				timerState = false;
 			}
-			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
 			break;
 		} case "walkonliquids": {
 			if(walkOnLiquidsState == false) {
@@ -503,7 +488,6 @@ VertexClientPE.toggleModule = function(module) {
 			} else if(walkOnLiquidsState == true) {
 				walkOnLiquidsState = false;
 			}
-			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
 			break;
 		} case "wallhack": {
 			if(walkOnLiquidsState == false) {
@@ -511,7 +495,6 @@ VertexClientPE.toggleModule = function(module) {
 			} else if(walkOnLiquidsState == true) {
 				walkOnLiquidsState = false;
 			}
-			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
 			break;
 		} case "zoom": {
 			if(zoomState == false) {
@@ -521,7 +504,6 @@ VertexClientPE.toggleModule = function(module) {
 				zoomState = false;
 				ModPE.resetFov();
 			}
-			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
 			break;
 		} case "signeditor": {
 			if(signEditorState == false) {
@@ -529,7 +511,6 @@ VertexClientPE.toggleModule = function(module) {
 			} else if(signEditorState == true) {
 				signEditorState = false;
 			}
-			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
 			break;
 		} case "tapnuker": {
 			if(tapNukerState == false) {
@@ -537,7 +518,6 @@ VertexClientPE.toggleModule = function(module) {
 			} else if(tapNukerState == true) {
 				tapNukerState = false;
 			}
-			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
 			break;
 		} case "highjump": {
 			if(highJumpState == false) {
@@ -545,7 +525,6 @@ VertexClientPE.toggleModule = function(module) {
 			} else if(highJumpState == true) {
 				highJumpState = false;
 			}
-			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
 			break;
 		} case "autoswitch": {
 			if(autoSwitchState == false) {
@@ -553,14 +532,26 @@ VertexClientPE.toggleModule = function(module) {
 			} else if(autoSwitchState == true) {
 				autoSwitchState = false;
 			}
-			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
+			break;
+		} case "flight": {
+			if(flightState == false) {
+				flightState = true;
+				VertexClientPE.flight(1);
+			} else if(flightState == true) {
+				flightState = false;
+				VertexClientPE.flight(0);
+			}
 			break;
 		} default: {
 			VertexClientPE.clientMessage(ChatColor.RED + "Module \'" + module + "\' not found!");
+			sendMessage = false;
 			break;
 		}
 	}
-	updateHacksList();
+	if(sendMessage == true) {
+		VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
+		updateHacksList();
+	}
 }
 
 VertexClientPE.switchGameMode = function() {
@@ -599,7 +590,7 @@ VertexClientPE.getVersion = function(type) {
 			break;
 		default:
 			VertexClientPE.clientMessage(ChatColor.DARK_RED + "Syntax error!");
-			return ".version <current||target>";
+			return ".version <current|target>";
 	}
 }
 
@@ -617,7 +608,7 @@ VertexClientPE.commandManager = function(command) {
 				VertexClientPE.clientMessage(".toggle <module>");
 				VertexClientPE.clientMessage(".t <module>");
 				VertexClientPE.clientMessage(".drop [infinite]");
-				VertexClientPE.clientMessage(".version <current||target>");
+				VertexClientPE.clientMessage(".version <current|target>");
 				VertexClientPE.clientMessage(".panic");
 			} else {
 				if(command[1] == "2") {
@@ -667,7 +658,7 @@ VertexClientPE.commandManager = function(command) {
 			break;
 		case ".p": //7
 		case ".panic":
-			panic();
+			VertexClientPE.panic();
 			updateHacksList();
 			break;
 		case ".js": //8
@@ -1317,6 +1308,21 @@ VertexClientPE.nuker = function(x, y, z) {
 				setTile(x + blockX, y + blockY, z + blockZ, 0);
 			}
 		}
+	}
+}
+
+VertexClientPE.flight = function(onOrOff) {
+	switch(onOrOff) {
+		case 0:
+			Player.setFlying(0);
+			if(Level.getGameMode() == 0) {
+				Player.setCanFly(0);
+			}
+			break;
+		case 1:
+			Player.setCanFly(1);
+			Player.setFlying(1);
+			break;
 	}
 }
 
@@ -2410,7 +2416,29 @@ VertexClientPE.showMovementMenu = function() {
 				var display = new android.util.DisplayMetrics();
 				com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
 				
-				var wallHackBtn = clientButton("WallHack", "Makes you able to walk through walls");
+				var flightBtn = clientButton("Flight", "Makes you able to fly even when you're in survival");
+				flightBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				flightBtn.setAlpha(0.54);
+				if(flightState == false) {
+					flightBtn.setTextColor(android.graphics.Color.WHITE);
+				} else if(flightState == true) {
+					flightBtn.setTextColor(android.graphics.Color.GREEN);
+				}
+				flightBtn.setOnClickListener(new android.view.View.OnClickListener({
+				onClick: function(viewarg){
+					if(flightState == false) {
+						flightState = true;
+						VertexClientPE.flight(1);
+						flightBtn.setTextColor(android.graphics.Color.GREEN);
+					} else if(flightState == true) {
+						flightState = false;
+						VertexClientPE.flight(0);
+						flightBtn.setTextColor(android.graphics.Color.WHITE);
+					}
+				}
+				}));
+				
+				var wallHackBtn = clientButton("Wallhack", "Makes you able to walk through walls");
 				wallHackBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				wallHackBtn.setAlpha(0.54);
 				if(wallHackState == false) {
@@ -2598,6 +2626,7 @@ VertexClientPE.showMovementMenu = function() {
                     }
                 }));
 
+                movementMenuLayout.addView(flightBtn);
                 movementMenuLayout.addView(wallHackBtn);
                 movementMenuLayout.addView(tapTeleporterBtn);
                 movementMenuLayout.addView(parachuteBtn);
@@ -2793,7 +2822,7 @@ VertexClientPE.showMiscMenu = function() {
 				panicBtn.setAlpha(0.54);
 				panicBtn.setOnClickListener(new android.view.View.OnClickListener({
 				onClick: function(viewarg){
-				 panic();
+				 VertexClientPE.panic();
 				 settingsUI.dismiss(); //Close
 				 exitUI.dismiss(); //Close
 			     showingMenu = false;
@@ -3077,6 +3106,7 @@ var signEditorState = false;
 var tapNukerState = false;
 var highJumpState = false;
 var autoSwitchState = false;
+var flightState = false;
 
 var hacksList;
 var StatesText;
@@ -3106,6 +3136,7 @@ var signEditorStateText = "";
 var tapNukerStateText = "";
 var highJumpStateText = "";
 var autoSwitchStateText = "";
+var flightStateText = "";
 
 function showHacksList() {
         var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
@@ -3171,7 +3202,7 @@ function showHacksList() {
                         tapTeleporterStateText = "";
                     }
 					if(wallHackState == true) {
-                        wallHackStateText = " [WallHack] ";
+                        wallHackStateText = " [Wallhack] ";
                     } else if(wallHackState == false) {
                         wallHackStateText = "";
                     }
@@ -3250,10 +3281,15 @@ function showHacksList() {
                     } else if(autoSwitchState == false) {
                         autoSwitchStateText = "";
                     }
+					if(flightState == true) {
+                        flightStateText = " [Flight] ";
+                    } else if(flightState == false) {
+                        flightStateText = "";
+                    }
                     var VertexClientPEHacksListTextView = new android.widget.TextView(ctx);
                     VertexClientPEHacksListTextView.setText(VertexClientPEHacksListText);
 					StatesText = clientTextView("Placeholder text", true);
-					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + parachuteStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freeCamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText);
+					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + parachuteStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freeCamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText);
                     VertexClientPEHacksListTextView.setTextSize(20);
                     VertexClientPEHacksListTextView.setTypeface(null, android.graphics.Typeface.BOLD);
 					VertexClientPEHacksListTextView.setTextColor(android.graphics.Color.GREEN);
@@ -3334,7 +3370,7 @@ function updateHacksList() {
                         tapTeleporterStateText = "";
                     }
 					if(wallHackState == true) {
-                        wallHackStateText = " [WallHack] ";
+                        wallHackStateText = " [Wallhack] ";
                     } else if(wallHackState == false) {
                         wallHackStateText = "";
                     }
@@ -3413,7 +3449,12 @@ function updateHacksList() {
                     } else if(autoSwitchState == false) {
                         autoSwitchStateText = "";
                     }
-					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + parachuteStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freeCamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText);
+					if(flightState == true) {
+                        flightStateText = " [Flight] ";
+                    } else if(flightState == false) {
+                        flightStateText = "";
+                    }
+					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + parachuteStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freeCamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText);
                 } catch(error) {
                     print('An error occured: ' + error);
                 }
@@ -3421,7 +3462,7 @@ function updateHacksList() {
         }));
 }
 
-function panic() {
+VertexClientPE.panic = function() {
 	autoSpammerState = false;
 	zoomState = false;
 	ModPE.resetFov();
@@ -3451,6 +3492,8 @@ function panic() {
 	tapNukerState = false;
 	highJumpState = false;
 	autoSwitchState = false;
+	flightState = false;
+	VertexClientPE.flight(0);
 }
 	
 function exit(){
@@ -3558,7 +3601,7 @@ var count = 0;
 
 function modTick() {
 	var ctxe = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
-	randomAki = Math.floor((Math.random() * 5));
+	randomAki = Math.floor((Math.random() * 5));
 	if(healthTagsSetting == "on") {
 		VertexClientPE.healthTags();
 	}if(showingMenu == true) {
@@ -3740,6 +3783,8 @@ function modTick() {
 		} else {
 			Player.setSelectedSlotId(0);
 		}
+	}if(flightState == true) {
+		Player.setFlying(1);
 	}
 }
 	
