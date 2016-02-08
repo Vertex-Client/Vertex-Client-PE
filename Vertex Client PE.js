@@ -542,6 +542,13 @@ VertexClientPE.toggleModule = function(module) {
 				VertexClientPE.flight(0);
 			}
 			break;
+		} case "autowalk": {
+			if(autoWalkState == false) {
+				autoWalkState = true;
+			} else if(autoWalkState == true) {
+				autoWalkState = false;
+			}
+			break;
 		} default: {
 			VertexClientPE.clientMessage(ChatColor.RED + "Module \'" + module + "\' not found!");
 			sendMessage = false;
@@ -1324,6 +1331,23 @@ VertexClientPE.flight = function(onOrOff) {
 			Player.setFlying(1);
 			break;
 	}
+}
+
+var playerDir = [0, 0, 0];
+var DEG_TO_RAD = Math.PI / 180;
+var playerWalkSpeed = 0.2;
+
+VertexClientPE.autoWalk = function() { //some parts of this function are made by @zhuowei
+	toDirectionalVector(playerDir, (getYaw() + 90) * DEG_TO_RAD, getPitch() * DEG_TO_RAD * -1);
+    var player = getPlayerEnt();
+    setVelX(player, playerWalkSpeed * playerDir[0]);
+    setVelZ(player, playerWalkSpeed * playerDir[2]);
+}
+
+function toDirectionalVector(vector, yaw, pitch) { //some parts of this function are made by @zhuowei
+    vector[0] = Math.cos(yaw) * Math.cos(pitch);
+    vector[1] = Math.sin(pitch);
+    vector[2] = Math.sin(yaw) * Math.cos(pitch);
 }
 
 var freeCamEntity;
@@ -2438,6 +2462,26 @@ VertexClientPE.showMovementMenu = function() {
 				}
 				}));
 				
+				var autoWalkBtn = clientButton("AutoWalk", "Makes your player walk automatically");
+				autoWalkBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				autoWalkBtn.setAlpha(0.54);
+				if(autoWalkState == false) {
+					autoWalkBtn.setTextColor(android.graphics.Color.WHITE);
+				} else if(autoWalkState == true) {
+					autoWalkBtn.setTextColor(android.graphics.Color.GREEN);
+				}
+				autoWalkBtn.setOnClickListener(new android.view.View.OnClickListener({
+				onClick: function(viewarg){
+					if(autoWalkState == false) {
+						autoWalkState = true;
+						autoWalkBtn.setTextColor(android.graphics.Color.GREEN);
+					} else if(autoWalkState == true) {
+						autoWalkState = false;
+						autoWalkBtn.setTextColor(android.graphics.Color.WHITE);
+					}
+				}
+				}));
+				
 				var wallHackBtn = clientButton("Wallhack", "Makes you able to walk through walls");
 				wallHackBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				wallHackBtn.setAlpha(0.54);
@@ -2627,6 +2671,7 @@ VertexClientPE.showMovementMenu = function() {
                 }));
 
                 movementMenuLayout.addView(flightBtn);
+                movementMenuLayout.addView(autoWalkBtn);
                 movementMenuLayout.addView(wallHackBtn);
                 movementMenuLayout.addView(tapTeleporterBtn);
                 movementMenuLayout.addView(parachuteBtn);
@@ -3107,6 +3152,7 @@ var tapNukerState = false;
 var highJumpState = false;
 var autoSwitchState = false;
 var flightState = false;
+var autoWalkState = false;
 
 var hacksList;
 var StatesText;
@@ -3137,6 +3183,7 @@ var tapNukerStateText = "";
 var highJumpStateText = "";
 var autoSwitchStateText = "";
 var flightStateText = "";
+var autoWalkStateText = "";
 
 function showHacksList() {
         var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
@@ -3286,10 +3333,15 @@ function showHacksList() {
                     } else if(flightState == false) {
                         flightStateText = "";
                     }
+					if(autoWalkState == true) {
+                        autoWalkStateText = " [AutoWalk] ";
+                    } else if(autoWalkState == false) {
+                        autoWalkStateText = "";
+                    }
                     var VertexClientPEHacksListTextView = new android.widget.TextView(ctx);
                     VertexClientPEHacksListTextView.setText(VertexClientPEHacksListText);
 					StatesText = clientTextView("Placeholder text", true);
-					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + parachuteStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freeCamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText);
+					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + parachuteStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freeCamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText);
                     VertexClientPEHacksListTextView.setTextSize(20);
                     VertexClientPEHacksListTextView.setTypeface(null, android.graphics.Typeface.BOLD);
 					VertexClientPEHacksListTextView.setTextColor(android.graphics.Color.GREEN);
@@ -3454,7 +3506,12 @@ function updateHacksList() {
                     } else if(flightState == false) {
                         flightStateText = "";
                     }
-					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + parachuteStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freeCamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText);
+					if(autoWalkState == true) {
+                        autoWalkStateText = " [AutoWalk] ";
+                    } else if(autoWalkState == false) {
+                        autoWalkStateText = "";
+                    }
+					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + parachuteStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freeCamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText);
                 } catch(error) {
                     print('An error occured: ' + error);
                 }
@@ -3494,6 +3551,7 @@ VertexClientPE.panic = function() {
 	autoSwitchState = false;
 	flightState = false;
 	VertexClientPE.flight(0);
+	autoWalkState = false;
 }
 	
 function exit(){
@@ -3785,6 +3843,8 @@ function modTick() {
 		}
 	}if(flightState == true) {
 		Player.setFlying(1);
+	}if(autoWalkState == true) {
+		VertexClientPE.autoWalk();
 	}
 }
 	
