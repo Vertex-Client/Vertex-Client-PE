@@ -13,6 +13,8 @@ var VertexClientPE = {};
 
 const CURRENT_VERSION = "v1.1 Alpha";
 const TARGET_VERSION = "MCPE v0.13.x alpha";
+var latestVersion;
+var latestPocketEditionVersion;
 
 var showingMenu = false;
 
@@ -248,7 +250,6 @@ VertexClientPE.showSignEditorDialog = function() {
 				dialog.show();
 				btn.setOnClickListener(new android.view.View.OnClickListener() {
 					onClick: function(view) {
-						Level.playSound(Player.getX(), Player.getY(), Player.getZ(), "random.click", 100, 0);
 						line0 = inputBar.getText();
 						line1 = inputBar1.getText();
 						line2 = inputBar2.getText();
@@ -262,7 +263,82 @@ VertexClientPE.showSignEditorDialog = function() {
 				});
 				btn1.setOnClickListener(new android.view.View.OnClickListener() {
 					onClick: function(view) {
-						Level.playSound(Player.getX(), Player.getY(), Player.getZ(), "random.click", 100, 0);
+						dialog.dismiss();
+					}
+				});
+			} catch(e) {
+				print("Error: " + e)
+			}
+		}
+	});
+}
+
+VertexClientPE.showMoreDialog = function() {
+	ctx.runOnUiThread(new java.lang.Runnable() {
+		run: function() {
+			try {
+				dialogGUI = new android.widget.PopupWindow();
+				var moreTitle = clientTextView("More", true);
+				var settingsButton = clientButton("Settings");
+				var informationButton = clientButton("Information");
+				var newLineText = new android.widget.TextView(ctx);
+				newLineText.setText("\n");
+				var cancelButton = clientButton("Cancel");
+				var dialogLayout = new android.widget.LinearLayout(ctx);
+				var spritesheet = android.graphics.Bitmap.createScaledBitmap(trimImage(GetSpritesheet(), 0, 0, 16, 16), 16 * GuiSize, 16 * GuiSize, false);
+				dialogLayout.setBackgroundDrawable(backgroundClientGUI);
+				if(themeSetting == "red") {
+					dialogLayout.setBackgroundDrawable(backgroundRedClientGUI);
+				}if(themeSetting == "blue") {
+					dialogLayout.setBackgroundDrawable(backgroundBlueClientGUI);
+				}
+				dialogLayout.setOrientation(android.widget.LinearLayout.VERTICAL);
+				dialogLayout.addView(moreTitle);
+				dialogLayout.addView(settingsButton);
+				dialogLayout.addView(informationButton);
+				dialogLayout.addView(newLineText);
+				dialogLayout.addView(cancelButton);
+				var dialog = new android.app.Dialog(ctx);
+				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
+				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				dialog.setContentView(dialogLayout);
+				dialog.setTitle("More");
+				dialogGUI.setHeight(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+				dialogGUI.setWidth(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+				dialogGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.TOP, 0, 0);
+				dialog.show();
+				settingsButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+						exitUI.dismiss(); //Close
+						moreUI.dismiss(); //Close
+						showingMenu = false;
+						vertexclientpecombatmenu.dismiss(); //Close
+						vertexclientpebuildingmenu.dismiss(); //Close
+						vertexclientpemovementmenu.dismiss(); //Close
+						vertexclientpechatmenu.dismiss(); //Close
+						vertexclientpemiscmenu.dismiss(); //Close
+						settingsScreen();
+						exitSettings();
+					}
+				});
+				informationButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+						exitUI.dismiss(); //Close
+						moreUI.dismiss(); //Close
+						showingMenu = false;
+						vertexclientpecombatmenu.dismiss(); //Close
+						vertexclientpebuildingmenu.dismiss(); //Close
+						vertexclientpemovementmenu.dismiss(); //Close
+						vertexclientpechatmenu.dismiss(); //Close
+						vertexclientpemiscmenu.dismiss(); //Close
+						informationScreen();
+						exitInformation();
+					}
+				});
+				cancelButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
 						dialog.dismiss();
 					}
 				});
@@ -1039,7 +1115,7 @@ VertexClientPE.xRay = function(onOrOff) {
 	        Block.setRenderLayer(254, OpaqLayer);
 	        Block.setRenderLayer(255, OpaqLayer);
 	        break;
-	} case 1: {
+		} case 1: {
 	        var RenderLayer = 1;
 	        ///////// CHESTS ARE NOW GLOWING OR HAVE THE SAME BRIGHTNESS AS TORCHES, ITS GOOD TO TROLL YOUR FRIENDS, GLOWSTONE AND ANOTHER BLOCK HAS NOW NO BRIGHTNESS, THE PLAYER CAN SEE NOW BETTER THROUGH BLOCKS
 	        Block.setLightLevel(54, 15);
@@ -1299,7 +1375,7 @@ VertexClientPE.xRay = function(onOrOff) {
 	        Block.setRenderLayer(253, RenderLayer);
 	        Block.setRenderLayer(254, RenderLayer);
 	        Block.setRenderLayer(255, RenderLayer);
-		break;
+			break;
         }
     }
     var originalTile = getTile(Player.getX(), Player.getY(), Player.getZ());
@@ -1632,6 +1708,36 @@ function blueSubTitle(subtitle) // TextView with colored background (edited by p
 
 ModPE.langEdit("menu.copyright", "©Mojang AB | §2Vertex Client PE by peacestorm");
 
+VertexClientPE.checkForUpdates = function() {
+    try {
+        // download content
+        var url = new java.net.URL("https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/master/Updater/Version");
+        var connection = url.openConnection();
+
+        // get content
+        inputStream = connection.getInputStream();
+
+        // read result
+        var loadedVersion = "";
+        var bufferedVersionReader = new java.io.BufferedReader(new java.io.InputStreamReader(inputStream));
+        var rowVersion = "";
+        while((rowVersion = bufferedVersionReader.readLine()) != null) {
+            loadedVersion += rowVersion;
+        }
+        latestVersion = loadedVersion.split(" ")[0] + " " + loadedVersion.split(" ")[1];
+        latestPocketEditionVersion = loadedVersion.split(" ")[2];
+
+        // close what needs to be closed
+        bufferedVersionReader.close();
+
+        // test
+        //clientMessage(CURRENT_VERSION + " " + latestVersion);
+    } catch(err) {
+        VertexClientPE.clientMessage("Can't check for updates, please check your Internet connection.");
+        ModPE.log("[Vertex Client PE] VertexClientPE.checkForUpdates() caught an error: " + err);
+    }
+}
+
 function showMainMenuList() {
 	var display = new android.util.DisplayMetrics();
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
@@ -1761,6 +1867,20 @@ var coordsButton;
 
 function newLevel() {
 	VertexClientPE.loadMainSettings();
+	new java.lang.Thread(new java.lang.Runnable() {
+		run: function() {
+			VertexClientPE.checkForUpdates();
+			if(latestVersion != CURRENT_VERSION && latestVersion != undefined) {
+				VertexClientPE.clientMessage("There is a new version available (v" + latestVersion + " for Minecraft Pocket Edition v" + latestPocketEditionVersion + ")!");
+			} else {
+				currentActivity.runOnUiThread(new java.lang.Runnable() {
+					run: function() {
+						android.widget.Toast.makeText(currentActivity, new android.text.Html.fromHtml("<b>Vertex Client PE</b> You have the latest version"), 0).show();
+					}
+				});
+			}
+		}
+	}).start();
 	showHacksList();
 }
 
@@ -1902,6 +2022,49 @@ function settingsScreen() {
 						settingsMenu.setBackgroundDrawable(backgroundBlueClientGUI);
 					}
                     settingsMenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
+                } catch(error) {
+                    print('An error occured: ' + error);
+                }
+            }
+        }));
+}
+
+function informationScreen() {
+	var display = new android.util.DisplayMetrics();
+	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
+    var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+        ctx.runOnUiThread(new java.lang.Runnable({
+            run: function() {
+                try {
+                    var informationMenuLayout = new android.widget.LinearLayout(ctx);
+                    informationMenuLayout.setOrientation(1);
+                    informationMenuLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					
+					var informationTitle = clientTextView("Information", true);
+					informationTitle.setTextSize(25);
+					informationTitle.setGravity(android.view.Gravity.CENTER);
+					informationMenuLayout.addView(informationTitle);
+					
+					var informationText = clientTextView("© peacestorm 2015 - 2016. Some rights reserved.\nThanks to @Herqux_ and @MyNameIsTriXz for graphic designs.", true);
+					
+					var websiteButton = clientButton("Website", "Show a URL of the official Vertex Client PE website");
+					websiteButton.setOnClickListener(new android.view.View.OnClickListener({
+					onClick: function(viewarg){
+						android.widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> Vertex-Client.ml"), 0).show();
+					}
+					}));
+					
+					informationMenuLayout.addView(informationText);
+					informationMenuLayout.addView(websiteButton);
+
+                    informationMenu = new android.widget.PopupWindow(informationMenuLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
+                    informationMenu.setBackgroundDrawable(backgroundClientGUI);
+					if(themeSetting == "red") {
+						informationMenu.setBackgroundDrawable(backgroundRedClientGUI);
+					}if(themeSetting == "blue") {
+						informationMenu.setBackgroundDrawable(backgroundBlueClientGUI);
+					}
+                    informationMenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
                 } catch(error) {
                     print('An error occured: ' + error);
                 }
@@ -2870,6 +3033,7 @@ VertexClientPE.showMiscMenu = function() {
 				 VertexClientPE.panic();
 				 settingsUI.dismiss(); //Close
 				 exitUI.dismiss(); //Close
+				 moreUI.dismiss(); //Close
 			     showingMenu = false;
                  vertexclientpecombatmenu.dismiss(); //Close
                  vertexclientpebuildingmenu.dismiss(); //Close
@@ -2893,6 +3057,7 @@ VertexClientPE.showMiscMenu = function() {
 				    onClick: function(viewarg){
 						settingsUI.dismiss(); //Close
 						exitUI.dismiss(); //Close
+						moreUI.dismiss(); //Close
 						showingMenu = false;
 						vertexclientpecombatmenu.dismiss(); //Close
 						vertexclientpebuildingmenu.dismiss(); //Close
@@ -3565,8 +3730,8 @@ function exit(){
     xButton.setTextColor(android.graphics.Color.WHITE);
     xButton.setOnClickListener(new android.view.View.OnClickListener({
 	    onClick: function(viewarg){
-			settingsUI.dismiss(); //Close
 	        exitUI.dismiss(); //Close
+			moreUI.dismiss(); //Close
 			showingMenu = false;
 	        vertexclientpecombatmenu.dismiss(); //Close
 	        vertexclientpebuildingmenu.dismiss(); //Close
@@ -3579,41 +3744,33 @@ function exit(){
     }));
     xLayout.addView(xButton);
 	
-    var settingsLayout = new android.widget.LinearLayout(ctxe);
-    var settingsButton = new android.widget.Button(ctxe);
-    settingsButton.setText("Settings");
-    settingsButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#1E90FF"), android.graphics.PorterDuff.Mode.MULTIPLY);
-    settingsButton.setTextColor(android.graphics.Color.WHITE);
-    settingsButton.setOnLongClickListener(new android.view.View.OnLongClickListener() {
+    var moreLayout = new android.widget.LinearLayout(ctxe);
+    var moreButton = new android.widget.Button(ctxe);
+    moreButton.setText("...");
+    moreButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#1E90FF"), android.graphics.PorterDuff.Mode.MULTIPLY);
+    moreButton.setTextColor(android.graphics.Color.WHITE);
+    moreButton.setOnLongClickListener(new android.view.View.OnLongClickListener() {
 	    onLongClick: function(v, t) {
 		    ctx.getSystemService(android.content.Context.VIBRATOR_SERVICE).vibrate(37);
-		    android.widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> Opens the Settings menu"), 0).show();
+		    android.widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> Opens the \"More\" menu"), 0).show();
 		    return true;
 	    }
     });
-    settingsButton.setOnClickListener(new android.view.View.OnClickListener({
+    moreButton.setOnClickListener(new android.view.View.OnClickListener({
     onClick: function(viewarg){
-		settingsUI.dismiss(); //Close
-		exitUI.dismiss(); //Close
-		showingMenu = false;
-		vertexclientpecombatmenu.dismiss(); //Close
-		vertexclientpebuildingmenu.dismiss(); //Close
-		vertexclientpemovementmenu.dismiss(); //Close
-		vertexclientpechatmenu.dismiss(); //Close
-		vertexclientpemiscmenu.dismiss(); //Close
-		settingsScreen();
-		exitSettings();
+		//TODO: Show dialog.
+		VertexClientPE.showMoreDialog();
     }
     }));
-    settingsLayout.addView(settingsButton);
+    moreLayout.addView(moreButton);
 	
     exitUI = new android.widget.PopupWindow(xLayout, dip2px(40), dip2px(40));
     exitUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
     exitUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
 	
-    settingsUI = new android.widget.PopupWindow(settingsLayout, dip2px(320), dip2px(40));
-    settingsUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
-    settingsUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
+	moreUI = new android.widget.PopupWindow(moreLayout, dip2px(40), dip2px(40));
+    moreUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+    moreUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
     }catch(exception){
     print(exception);
     }
@@ -3633,7 +3790,6 @@ function exitSettings(){
     onClick: function(viewarg){
     exitSettingsUI.dismiss(); //Close
     settingsMenu.dismiss(); //Close
-	showingMenu = false;
 	showMenuButton();
 	showHacksList();
     }
@@ -3643,6 +3799,34 @@ function exitSettings(){
     exitSettingsUI = new android.widget.PopupWindow(xSettingsLayout, dip2px(40), dip2px(40));
     exitSettingsUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
     exitSettingsUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
+    }catch(exception){
+    print(exception);
+    }
+    }}));
+}
+
+function exitInformation(){
+    var ctxe = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+    ctxe.runOnUiThread(new java.lang.Runnable({ run: function(){
+    try{
+    var xInformationLayout = new android.widget.LinearLayout(ctxe);
+    var xInformationButton = new android.widget.Button(ctxe);
+    xInformationButton.setText('X');//Text
+    xInformationButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
+    xInformationButton.setTextColor(android.graphics.Color.WHITE);
+    xInformationButton.setOnClickListener(new android.view.View.OnClickListener({
+    onClick: function(viewarg){
+    exitInformationUI.dismiss(); //Close
+    informationMenu.dismiss(); //Close
+	showMenuButton();
+	showHacksList();
+    }
+    }));
+    xInformationLayout.addView(xInformationButton);
+	
+    exitInformationUI = new android.widget.PopupWindow(xInformationLayout, dip2px(40), dip2px(40));
+    exitInformationUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+    exitInformationUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
     }catch(exception){
     print(exception);
     }
