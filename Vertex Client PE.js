@@ -1706,7 +1706,17 @@ function blueSubTitle(subtitle) // TextView with colored background (edited by p
 	return title;
 }
 
-ModPE.langEdit("menu.copyright", "©Mojang AB | §2Vertex Client PE by peacestorm");
+VertexClientPE.editCopyrightText = function() {
+	VertexClientPE.loadMainSettings();
+	ModPE.langEdit("menu.copyright", "©Mojang AB | §2Vertex Client PE by peacestorm");
+	if(themeSetting == "red") {
+		ModPE.langEdit("menu.copyright", "©Mojang AB | §4Vertex Client PE by peacestorm");
+	} if(themeSetting == "blue") {
+		ModPE.langEdit("menu.copyright", "©Mojang AB | §1Vertex Client PE by peacestorm");
+	}
+}
+
+VertexClientPE.editCopyrightText();
 
 VertexClientPE.checkForUpdates = function() {
     try {
@@ -1750,13 +1760,6 @@ function showMainMenuList() {
                     mainMenuListLayout.setOrientation(1);
                     mainMenuListLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
                     //--------Add Buttons-------//
-                    /*var newLineText = new android.widget.TextView(ctx);
-                    var authorText = new android.widget.TextView(ctx);
-                    var currentModVersionText = new android.widget.TextView(ctx);
-                    var targetMCPEVersionText = new android.widget.TextView(ctx);
-                    var MCPEVersionText = new android.widget.TextView(ctx);
-                    var newLine2Text = new android.widget.TextView(ctx);
-                    var btn = new android.widget.Button(ctx);*/
 					var VertexClientPEMainMenuText = "<font color='#008000'>Vertex Client PE " + CURRENT_VERSION + "</font>";
 					if(themeSetting == "red") {
 						VertexClientPEMainMenuText = "<font color='#FF0000'>Vertex Client PE " + CURRENT_VERSION + "</font>";
@@ -1892,6 +1895,7 @@ function leaveGame() {
 				hacksList.dismiss();
 			}
 			VertexClientPE.saveMainSettings();
+			VertexClientPE.editCopyrightText();
 		}
 	}));
 }
