@@ -666,6 +666,8 @@ VertexClientPE.syntaxError = function(syntax) {
 VertexClientPE.getVersion = function(type) {
 	switch(type) {
 		case "current":
+		case undefined:
+		case null:
 			return CURRENT_VERSION;
 			break;
 		case "target":
