@@ -12,7 +12,7 @@
 var VertexClientPE = {};
 
 const CURRENT_VERSION = "v1.1 Alpha";
-const TARGET_VERSION = "MCPE v0.13.x alpha";
+const TARGET_VERSION = "MCPE v0.14.x alpha";
 var latestVersion;
 var latestPocketEditionVersion;
 
