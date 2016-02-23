@@ -17,6 +17,7 @@ var latestVersion;
 var latestPocketEditionVersion;
 
 var showingMenu = false;
+var serverEnabler = false;
 
 //settings
 var showHacksListSetting = "on";
@@ -30,6 +31,7 @@ var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
 var GUI;
 var menu;
 var exitUI;
+var vertexclientpemiscmenu;
 
 var nameColor = "§b";
 var healthColor = "§c";
@@ -1837,11 +1839,13 @@ function showMainMenuList() {
 						onClick: function(viewarg) {
 							mainMenuTextList.dismiss();
 							showMenuButton();
+							VertexClientPE.clientTick();
 					}}));
 					splashTwitterButton.setOnClickListener(new android.view.View.OnClickListener({
 						onClick: function(viewarg) {
 							mainMenuTextList.dismiss();
 							showMenuButton();
+							VertexClientPE.clientTick();
 							ModPE.goToUrl("https://twitter.com/AgameR_Modder");
 					}}))
                     mainMenuListLayout.addView(TitleText);
@@ -1895,9 +1899,22 @@ function leaveGame() {
         run: function() {
 			if(hacksList != null) {
 				hacksList.dismiss();
+				GUI.dismiss();
 			}
+			if(exitUI != null) {
+				exitUI.dismiss(); //Close
+				moreUI.dismiss(); //Close
+				showingMenu = false;
+				vertexclientpecombatmenu.dismiss(); //Close
+				vertexclientpebuildingmenu.dismiss(); //Close
+				vertexclientpemovementmenu.dismiss(); //Close
+				vertexclientpechatmenu.dismiss(); //Close
+				vertexclientpemiscmenu.dismiss(); //Close
+			}
+			showMenuButton();
 			VertexClientPE.saveMainSettings();
 			VertexClientPE.editCopyrightText();
+			serverEnabler = false;
 		}
 	}));
 }
@@ -3037,7 +3054,6 @@ VertexClientPE.showMiscMenu = function() {
 				panicBtn.setOnClickListener(new android.view.View.OnClickListener({
 				onClick: function(viewarg){
 				 VertexClientPE.panic();
-				 settingsUI.dismiss(); //Close
 				 exitUI.dismiss(); //Close
 				 moreUI.dismiss(); //Close
 			     showingMenu = false;
@@ -3061,7 +3077,6 @@ VertexClientPE.showMiscMenu = function() {
 			    serverEnablerButton.setTextColor(android.graphics.Color.WHITE);
 			    serverEnablerButton.setOnClickListener(new android.view.View.OnClickListener({
 				    onClick: function(viewarg){
-						settingsUI.dismiss(); //Close
 						exitUI.dismiss(); //Close
 						moreUI.dismiss(); //Close
 						showingMenu = false;
@@ -3071,12 +3086,11 @@ VertexClientPE.showMiscMenu = function() {
 						vertexclientpechatmenu.dismiss(); //Close
 						vertexclientpemiscmenu.dismiss(); //Close
 						var sender = "";
-						var str = "\u00a70BlockLauncher, enable scripts";
-						net.zhuoweizhang.mcpelauncher.ScriptManager.handleMessagePacketCallback(sender,str);
-						net.zhuoweizhang.mcpelauncher.ScriptManager.leaveGameCallback(true);
-						net.zhuoweizhang.mcpelauncher.ScriptManager.selectLevelCallback("Server","Server");
-						net.zhuoweizhang.mcpelauncher.ScriptManager.setLevelCallback(true, false);
+                        var str = "\u00a70BlockLauncher, enable scripts";
+                        net.zhuoweizhang.mcpelauncher.ScriptManager.handleMessagePacketCallback(sender, str);
+						serverEnabler = true;
 						showMenuButton();
+						showHacksList();
 				    }
 			    }));
 				
@@ -3227,7 +3241,9 @@ VertexClientPE.showMiscMenu = function() {
                 }));
 
                 miscMenuLayout.addView(panicBtn);
-                miscMenuLayout.addView(serverEnablerButton);
+				if(serverEnabler == false) {
+					miscMenuLayout.addView(serverEnablerButton);
+				}
                 miscMenuLayout.addView(switchGamemodeButton);
                 miscMenuLayout.addView(xRayBtn);
                 miscMenuLayout.addView(derpBtn);
@@ -3281,6 +3297,23 @@ function showMenuButton() {
 	}if(mainButtonPositionSetting == "bottom-right") {
 		GUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.BOTTOM, 90, 0);
 	}
+}
+
+VertexClientPE.clientTick = function() {
+    ctx.runOnUiThread(new java.lang.Runnable({
+        run: function() {
+            new android.os.Handler()
+                .postDelayed(new java.lang.Runnable({
+                    run: function() {
+						if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false)) {
+							showMenuButton();
+							showHacksList();
+						}
+                        eval(VertexClientPE.clientTick());
+                    }
+                }), 1000 / 70);
+        }
+    }))
 }
  
 function dip2px(dips){
