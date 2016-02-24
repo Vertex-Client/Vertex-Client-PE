@@ -11,6 +11,8 @@
 
 var VertexClientPE = {};
 
+VertexClientPE.isRemote = false;
+
 const CURRENT_VERSION = "v1.1 Alpha";
 const TARGET_VERSION = "MCPE v0.14.x alpha";
 var latestVersion;
@@ -1413,6 +1415,18 @@ VertexClientPE.flight = function(onOrOff) {
 	}
 }
 
+VertexClientPE.killAura = function() {
+	var mobs = Entity.getAll();
+	for(var i = 0; i < mobs.length; i++) {
+		var x = Entity.getX(mobs[i]) - getPlayerX();
+		var y = Entity.getY(mobs[i]) - getPlayerY();
+		var z = Entity.getZ(mobs[i]) - getPlayerZ();
+		if(x*x+y*y+z*z<=4*4 && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION) {
+			Entity.setHealth(mobs[i], 0);
+		}
+	}
+}
+
 var playerDir = [0, 0, 0];
 var DEG_TO_RAD = Math.PI / 180;
 var playerWalkSpeed = 0.2;
@@ -1915,6 +1929,7 @@ function leaveGame() {
 			VertexClientPE.saveMainSettings();
 			VertexClientPE.editCopyrightText();
 			serverEnabler = false;
+			VertexClientPE.isRemote = false;
 		}
 	}));
 }
@@ -3241,7 +3256,7 @@ VertexClientPE.showMiscMenu = function() {
                 }));
 
                 miscMenuLayout.addView(panicBtn);
-				if(serverEnabler == false) {
+				if(VertexClientPE.isRemote && !serverEnabler) {
 					miscMenuLayout.addView(serverEnablerButton);
 				}
                 miscMenuLayout.addView(switchGamemodeButton);
@@ -3306,6 +3321,7 @@ VertexClientPE.clientTick = function() {
                 .postDelayed(new java.lang.Runnable({
                     run: function() {
 						if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false)) {
+							VertexClientPE.isRemote = true;
 							showMenuButton();
 							showHacksList();
 						}
@@ -3921,15 +3937,7 @@ function modTick() {
 	}if(parachuteState == true) {
 		setVelY(Player.getEntity(), -0.1);
 	}if(killAuraState == true) {
-		var mobs = Entity.getAll();
-		for(var i = 0; i < mobs.length; i++) {
-			var x = Entity.getX(mobs[i]) - getPlayerX();
-			var y = Entity.getY(mobs[i]) - getPlayerY();
-			var z = Entity.getZ(mobs[i]) - getPlayerZ();
-			if(x*x+y*y+z*z<=4*4 && mobs[i] != getPlayerEnt()) {
-				Entity.setHealth(mobs[i], 0);
-			}
-		}
+		VertexClientPE.killAura();
 	}if(nukerState == true) {
 		VertexClientPE.nuker(Player.getX(), Player.getY(), Player.getZ());
 	}if(droneState == true) {
