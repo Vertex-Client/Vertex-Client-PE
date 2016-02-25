@@ -21,6 +21,8 @@ var latestPocketEditionVersion;
 var showingMenu = false;
 var serverEnabler = false;
 
+var setupColor = "green";
+
 //settings
 var showHacksListSetting = "on";
 var mainButtonPositionSetting = "top-right";
@@ -34,6 +36,8 @@ var GUI;
 var menu;
 var exitUI;
 var vertexclientpemiscmenu;
+var settingsMenu;
+var informationMenu;
 
 var nameColor = "§b";
 var healthColor = "§c";
@@ -1500,6 +1504,7 @@ VertexClientPE.loadMainSettings = function() {
     themeSetting = str.toString().split(",")[3]; //Here we split text by ","
 	}
     fos.close();
+	return true;
 }
 
 var getContext = function() {
@@ -1568,8 +1573,11 @@ var unclicked_red_image = getStretchedImage(android.graphics.Bitmap.createScaled
 var clicked_blue_image = getStretchedImage(android.graphics.Bitmap.createScaledBitmap(trimImage(img6, 0, 0, 16, 16), 8 * GuiSize, 8 * GuiSize, false), 3.7 * GuiSize, 4 * GuiSize, 2 * GuiSize, 2 * GuiSize, getContext().getScreenWidth() / 2, getContext().getScreenHeight() / 10);
 var unclicked_blue_image = getStretchedImage(android.graphics.Bitmap.createScaledBitmap(trimImage(img5, 0, 0, 16, 16), 8 * GuiSize, 8 * GuiSize, false), 3.7 * GuiSize, 4 * GuiSize, 2 * GuiSize, 2 * GuiSize, getContext().getScreenWidth() / 2, getContext().getScreenHeight() / 10);
 
-function clientButton(text, desc) //menu buttons
+function clientButton(text, desc, color) //menu buttons
 {
+	if(color == null) {
+		color = themeSetting;
+	}
     var display = new android.util.DisplayMetrics();
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
     var defaultButton = new android.widget.Button(ctx);
@@ -1590,9 +1598,11 @@ function clientButton(text, desc) //menu buttons
             var action = event.getActionMasked();
             if(action == android.view.MotionEvent.ACTION_CANCEL || action == android.view.MotionEvent.ACTION_UP) {
                 var bNP = unclicked_green_image;
-				if(themeSetting == "red") {
+				if(color == "green") {
+					bNP = unclicked_green_image;
+				}if(color == "red") {
 					bNP = unclicked_red_image;
-				} else if(themeSetting == "blue") {
+				}if(color == "blue") {
 					bNP = unclicked_blue_image;
 				}
                 bNP.setFilterBitmap(false);
@@ -1601,9 +1611,11 @@ function clientButton(text, desc) //menu buttons
                 //defaultButton.setPadding(0, 0, 0, 0);
             } else {
                 var bNP = clicked_green_image;
-				if(themeSetting == "red") {
+				if(color == "green") {
+					bNP = clicked_green_image;
+				}if(color == "red") {
 					bNP = clicked_red_image;
-				} else if(themeSetting == "blue") {
+				}if(color == "blue") {
 					bNP = clicked_blue_image;
 				}
                 bNP.setFilterBitmap(false);
@@ -1616,9 +1628,11 @@ function clientButton(text, desc) //menu buttons
     });
 
     var bNP = unclicked_green_image;
-	if(themeSetting == "red") {
+	if(color == "green") {
+		bNP = unclicked_green_image;
+	}if(color == "red") {
 		bNP = unclicked_red_image;
-	} else if(themeSetting == "blue") {
+	}if(color == "blue") {
 		bNP = unclicked_blue_image;
 	}
     bNP.setFilterBitmap(false);
@@ -1765,14 +1779,13 @@ VertexClientPE.checkForUpdates = function() {
     }
 }
 
-function showMainMenuList() {
+VertexClientPE.showSplashScreen = function() {
 	var display = new android.util.DisplayMetrics();
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
     var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
         ctx.runOnUiThread(new java.lang.Runnable({
             run: function() {
                 try {
-					VertexClientPE.loadMainSettings();
                     var mainMenuListLayout = new android.widget.LinearLayout(ctx);
                     mainMenuListLayout.setOrientation(1);
                     mainMenuListLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
@@ -1883,7 +1896,105 @@ function showMainMenuList() {
         }));
 }
 
-showMainMenuList();
+VertexClientPE.showSetupScreen = function() {
+	var display = new android.util.DisplayMetrics();
+	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
+    var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+        ctx.runOnUiThread(new java.lang.Runnable({
+            run: function() {
+                try {
+					var setupScreenLayout = new android.widget.LinearLayout(ctx);
+					setupScreenLayout.setOrientation(1);
+					setupScreenLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					
+					var setupScreenLayoutBottom = new android.widget.LinearLayout(ctx);
+					setupScreenLayoutBottom.setOrientation(android.widget.LinearLayout.HORIZONTAL);
+					
+					var setupScreenLayoutBottomLeft = new android.widget.LinearLayout(ctx);
+					setupScreenLayoutBottomLeft.setOrientation(1);
+					setupScreenLayoutBottomLeft.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					setupScreenLayoutBottomLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT));
+					setupScreenLayoutBottom.addView(setupScreenLayoutBottomLeft);
+					
+					var setupScreenLayoutBottomCenter = new android.widget.LinearLayout(ctx);
+					setupScreenLayoutBottomCenter.setOrientation(1);
+					setupScreenLayoutBottomCenter.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					setupScreenLayoutBottomCenter.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT));
+					setupScreenLayoutBottom.addView(setupScreenLayoutBottomCenter);
+					
+					var setupScreenLayoutBottomRight = new android.widget.LinearLayout(ctx);
+					setupScreenLayoutBottomRight.setOrientation(1);
+					setupScreenLayoutBottomRight.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					setupScreenLayoutBottomRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT));
+					setupScreenLayoutBottom.addView(setupScreenLayoutBottomRight);
+					
+					var logo3 = android.util.Base64.decode(logoImage, 0);
+					var logoViewer3 = new android.widget.ImageView(ctx);
+					logoViewer3.setImageBitmap(android.graphics.BitmapFactory.decodeByteArray(logo3, 0, logo3.length));
+					setupScreenLayout.addView(logoViewer3);
+					setupScreenLayout.addView(setupScreenLayoutBottom);
+					
+					var setupButtonGreen = clientButton("Green", null, "green");
+					setupButtonGreen.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+					setupButtonGreen.setTextColor(android.graphics.Color.GREEN);
+					setupButtonGreen.setOnClickListener(new android.view.View.OnClickListener({
+						onClick: function(viewarg) {
+							setupColor = "green";
+							setupButtonGreen.setTextColor(android.graphics.Color.GREEN);
+							setupButtonRed.setTextColor(android.graphics.Color.WHITE);
+							setupButtonBlue.setTextColor(android.graphics.Color.WHITE);
+						}
+					}));
+					setupScreenLayoutBottomLeft.addView(setupButtonGreen);
+					
+					var setupButtonRed = clientButton("Red", null, "red");
+					setupButtonRed.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+					setupButtonRed.setOnClickListener(new android.view.View.OnClickListener({
+						onClick: function(viewarg) {
+							setupColor = "red";
+							setupButtonGreen.setTextColor(android.graphics.Color.WHITE);
+							setupButtonRed.setTextColor(android.graphics.Color.RED);
+							setupButtonBlue.setTextColor(android.graphics.Color.WHITE);
+						}
+					}));
+					setupScreenLayoutBottomCenter.addView(setupButtonRed);
+					
+					var setupButtonBlue = clientButton("Blue", null, "blue");
+					setupButtonBlue.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+					setupButtonBlue.setOnClickListener(new android.view.View.OnClickListener({
+						onClick: function(viewarg) {
+							setupColor = "blue";
+							setupButtonGreen.setTextColor(android.graphics.Color.WHITE);
+							setupButtonRed.setTextColor(android.graphics.Color.WHITE);
+							setupButtonBlue.setTextColor(android.graphics.Color.BLUE);
+						}
+					}));
+					setupScreenLayoutBottomRight.addView(setupButtonBlue);
+					
+					var setupText = clientTextView("You can always change the color on the Settings Screen.");
+					setupText.setGravity(android.view.Gravity.CENTER);
+					setupScreenLayout.addView(setupText);
+					
+					setupScreen = new android.widget.PopupWindow(setupScreenLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
+					setupScreen.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.parseColor("#0080FF")));
+					setupScreen.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
+				} catch(error) {
+					print('An error occured: ' + error);
+			}
+		}
+	}));
+}
+
+VertexClientPE.setup = function() {
+	if(VertexClientPE.loadMainSettings() == null) {
+		VertexClientPE.showSetupScreen();
+		setupDone();
+	} else {
+		VertexClientPE.showSplashScreen();
+	}
+}
+
+VertexClientPE.setup();
 
 var coordsButton;
 
@@ -3319,7 +3430,7 @@ VertexClientPE.clientTick = function() {
             new android.os.Handler()
                 .postDelayed(new java.lang.Runnable({
                     run: function() {
-						if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false)) {
+						if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false)) {
 							VertexClientPE.isRemote = true;
 							showMenuButton();
 							showHacksList();
@@ -3771,6 +3882,36 @@ VertexClientPE.panic = function() {
 	flightState = false;
 	VertexClientPE.flight(0);
 	autoWalkState = false;
+}
+
+function setupDone() {
+	var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+    ctx.runOnUiThread(new java.lang.Runnable({ run: function(){
+		try{
+			var doneLayout = new android.widget.LinearLayout(ctx);
+			var doneButton = new android.widget.Button(ctx);
+			doneButton.setText("✓");//Text
+			doneButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#008000"), android.graphics.PorterDuff.Mode.MULTIPLY);
+			doneButton.setTextColor(android.graphics.Color.WHITE);
+			doneButton.setOnClickListener(new android.view.View.OnClickListener({
+				onClick: function(viewarg){
+					themeSetting = setupColor;
+					VertexClientPE.saveMainSettings();
+					VertexClientPE.editCopyrightText();
+					doneUI.dismiss(); //Close
+					setupScreen.dismiss();
+					showMenuButton();
+				}
+			}));
+			doneLayout.addView(doneButton);
+			
+			doneUI = new android.widget.PopupWindow(doneLayout, dip2px(40), dip2px(40));
+			doneUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+			doneUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
+		} catch(exception) {
+			print(exception);
+		}
+    }}));
 }
 	
 function exit(){
