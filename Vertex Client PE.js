@@ -130,10 +130,9 @@ var getContext = function() {
 };
 
 ModPE.goToURL = function(url) {
-	var ctx = getContext();
-    var uri = android.net.Uri.parse(url);
-    var intent = new android.content.Intent(android.content.Intent.ACTION_VIEW, uri);
-    ctx.startActivity(intent);
+	var uri = android.net.Uri.parse(url);
+	var intent = new android.content.Intent(android.content.Intent.ACTION_VIEW, uri);
+	ctx.startActivity(intent);
 };
 
 ModPE.getPlayerName = function() {
@@ -1739,7 +1738,7 @@ VertexClientPE.editCopyrightText();
 VertexClientPE.checkForUpdates = function() {
     try {
         // download content
-        var url = new java.net.URL("https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/master/Updater/Version");
+        var url = new java.net.URL("https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/update/Updater/Version");
         var connection = url.openConnection();
 
         // get content
@@ -1860,7 +1859,7 @@ function showMainMenuList() {
 							mainMenuTextList.dismiss();
 							showMenuButton();
 							VertexClientPE.clientTick();
-							ModPE.goToUrl("https://twitter.com/AgameR_Modder");
+							ModPE.goToUrl("http://twitter.com/AgameR_Modder");
 					}}))
                     mainMenuListLayout.addView(TitleText);
                     mainMenuListLayout.addView(newLineText);
