@@ -692,7 +692,7 @@ VertexClientPE.commandManager = function(command) {
 	command = command.split(" ");
 	switch(command[0]) {
 		case ".help": //1
-			if(command[1] == undefined || command[1] == null || command[1] ==  "1") {
+			if(command[1] == undefined || command[1] == null || command[1] == "1") {
 				VertexClientPE.clientMessage("Showing help page 1/2");
 				VertexClientPE.clientMessage(".help [<page>]");
 				VertexClientPE.clientMessage(".gm");
@@ -707,6 +707,7 @@ VertexClientPE.commandManager = function(command) {
 					VertexClientPE.clientMessage("Showing help page 2/2");
 					VertexClientPE.clientMessage(".p");
 					VertexClientPE.clientMessage(".js");
+					VertexClientPE.clientMessage(".say <message>");
 				} else {
 					VertexClientPE.clientMessage(ChatColor.RED + "Syntax error: " + ChatColor.WHITE + "Invalid page: " + command[1]);
 				}
@@ -755,6 +756,10 @@ VertexClientPE.commandManager = function(command) {
 			break;
 		case ".js": //8
 			VertexClientPE.showJavascriptConsoleDialog();
+			break;
+		case ".say": //9
+			clientMessage("<" + ModPE.getPlayerName() + "> " + command[1]);
+			Server.sendChat(command[1]);
 			break;
 		default:
 			VertexClientPE.clientMessage(ChatColor.RED + "Error: command \"" + command + "\" not found!");
@@ -2006,9 +2011,9 @@ function newLevel() {
 			if(latestVersion != CURRENT_VERSION && latestVersion != undefined) {
 				VertexClientPE.clientMessage("There is a new version available (v" + latestVersion + " for Minecraft Pocket Edition v" + latestPocketEditionVersion + ")!");
 			} else {
-				ctx.runOnUiThread(new java.lang.Runnable() {
+				currentActivity.runOnUiThread(new java.lang.Runnable() {
 					run: function() {
-						android.widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> You have the latest version"), 0).show();
+						android.widget.Toast.makeText(currentActivity, new android.text.Html.fromHtml("<b>Vertex Client PE</b> You have the latest version"), 0).show();
 					}
 				});
 			}
@@ -4048,7 +4053,7 @@ function modTick() {
 			}
 		}}));
 	}if(autoSpammerState == true) {
-		clientMessage("Spam!!!!!");
+		clientMessage("<" + ModPE.getPlayerName() + "> " + "Spam!!!!!");
 		chatHook("Spam!!!!!");
 		Server.sendChat("Spam!!!!!");
 	}if(regenState == true) {
