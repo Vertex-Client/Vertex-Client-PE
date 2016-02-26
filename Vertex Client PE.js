@@ -2006,9 +2006,9 @@ function newLevel() {
 			if(latestVersion != CURRENT_VERSION && latestVersion != undefined) {
 				VertexClientPE.clientMessage("There is a new version available (v" + latestVersion + " for Minecraft Pocket Edition v" + latestPocketEditionVersion + ")!");
 			} else {
-				currentActivity.runOnUiThread(new java.lang.Runnable() {
+				ctx.runOnUiThread(new java.lang.Runnable() {
 					run: function() {
-						android.widget.Toast.makeText(currentActivity, new android.text.Html.fromHtml("<b>Vertex Client PE</b> You have the latest version"), 0).show();
+						android.widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> You have the latest version"), 0).show();
 					}
 				});
 			}
