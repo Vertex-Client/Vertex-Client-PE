@@ -3553,16 +3553,18 @@ VertexClientPE.clientTick = function() {
 						try{
 							if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false)) {
 								VertexClientPE.isRemote = true;
-								VertexClientPE.serverEnabler();
+								net.zhuoweizhang.mcpelauncher.ScriptManager.isRemote = true;
+								net.zhuoweizhang.mcpelauncher.ScriptManager.setLevelFakeCallback(true, false);
+								//VertexClientPE.serverEnabler();
 							}
 						}catch(e) {
-							print("Use BlockLauncher v1.12.2 beta 4 or below!");
+							print("Use BlockLauncher v1.12.2 or above!");
 							ModPE.log(e);
 						}
 						if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false)) {
 							VertexClientPE.isRemote = true;
 							showMenuButton();
-							showHacksList();
+							//showHacksList();
 						}
                         eval(VertexClientPE.clientTick());
                     }
