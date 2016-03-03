@@ -1,7 +1,7 @@
 /**
  * ###################################
  * @name Vertex Client PE
- * @version v1.1 Alpha
+ * @version v1.2 Alpha
  * @author peacestorm (@AgameR_Modder)
  * @credits Herqux_, MyNameIsTriXz
  * ###################################
@@ -13,7 +13,7 @@ var VertexClientPE = {};
 
 VertexClientPE.isRemote = false;
 
-const CURRENT_VERSION = "v1.1 Alpha";
+const CURRENT_VERSION = "1.2 Alpha";
 const TARGET_VERSION = "MCPE v0.14.x alpha";
 var latestVersion;
 var latestPocketEditionVersion;
@@ -202,6 +202,13 @@ print("Cannot open window: "+err+".")
 ;
 }
 }}));
+}
+
+VertexClientPE.serverEnabler = function() {
+	var sender = "";
+	var str = "\u00a70BlockLauncher, enable scripts";
+	net.zhuoweizhang.mcpelauncher.ScriptManager.handleMessagePacketCallback(sender, str);
+	serverEnabler = true;
 }
 
 var line0, line1, line2, line3;
@@ -463,12 +470,12 @@ VertexClientPE.toggleModule = function(module) {
 			}
 			break;
 		/*} case "freecam": {
-			if(freeCamState == false) {
-				VertexClientPE.freeCam(1);
-				freeCamState = true;
-			} else if(freeCamState == true) {
-				freeCamState = false;
-				VertexClientPE.freeCam(0);
+			if(freecamState == false) {
+				VertexClientPE.freecam(1);
+				freecamState = true;
+			} else if(freecamState == true) {
+				freecamState = false;
+				VertexClientPE.freecam(0);
 			}
 			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
 			break;*/
@@ -682,7 +689,7 @@ VertexClientPE.getVersion = function(type) {
 		case "current":
 		case undefined:
 		case null:
-			return CURRENT_VERSION;
+			return "v" + CURRENT_VERSION;
 			break;
 		case "target":
 			return TARGET_VERSION;
@@ -1478,21 +1485,21 @@ function toDirectionalVector(vector, yaw, pitch) { //some parts of this function
     vector[2] = Math.sin(yaw) * Math.cos(pitch);
 }
 
-var freeCamEntity;
+var freecamEntity;
 
-VertexClientPE.freeCam = function(onOrOff) {
+VertexClientPE.freecam = function(onOrOff) {
 	switch(onOrOff) {
 		case 0: {
 			ModPE.setCamera(Player.getEntity());
-			if(freeCamEntity != null) {
-				Entity.remove(freeCamEntity);
+			if(freecamEntity != null) {
+				Entity.remove(freecamEntity);
 			}
-			freeCamEntity = null;
+			freecamEntity = null;
 			break;
 		} case 1: {
-			freeCamEntity = Level.spawnMob(getPlayerX(), getPlayerY(), getPlayerZ(), EntityType.VILLAGER);
-			ModPE.setCamera(freeCamEntity);
-			//Entity.setRenderType(freeCamEntity, EntityRenderType.player2);
+			freecamEntity = Level.spawnMob(getPlayerX(), getPlayerY(), getPlayerZ(), EntityType.VILLAGER);
+			ModPE.setCamera(freecamEntity);
+			//Entity.setRenderType(freecamEntity, EntityRenderType.player2);
 			break;
 		}
 	}
@@ -2923,24 +2930,24 @@ VertexClientPE.showMovementMenu = function() {
 				}
 				}));
 				
-				var freeCamBtn = clientButton("FreeCam", "Explore the world without moving the player");
-				freeCamBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
-				freeCamBtn.setAlpha(0.54);
-				if(freeCamState == false) {
-					freeCamBtn.setTextColor(android.graphics.Color.WHITE);
-				} else if(freeCamState == true) {
-					freeCamBtn.setTextColor(android.graphics.Color.GREEN);
+				var freecamBtn = clientButton("Freecam", "Explore the world without moving the player");
+				freecamBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				freecamBtn.setAlpha(0.54);
+				if(freecamState == false) {
+					freecamBtn.setTextColor(android.graphics.Color.WHITE);
+				} else if(freecamState == true) {
+					freecamBtn.setTextColor(android.graphics.Color.GREEN);
 				}
-				freeCamBtn.setOnClickListener(new android.view.View.OnClickListener({
+				freecamBtn.setOnClickListener(new android.view.View.OnClickListener({
 				onClick: function(viewarg){
-					if(freeCamState == false) {
-						VertexClientPE.freeCam(1);
-						freeCamState = true;
-						freeCamBtn.setTextColor(android.graphics.Color.GREEN);
-					} else if(freeCamState == true) {
-						freeCamState = false;
-						VertexClientPE.freeCam(0);
-						freeCamBtn.setTextColor(android.graphics.Color.WHITE);
+					if(freecamState == false) {
+						VertexClientPE.freecam(1);
+						freecamState = true;
+						freecamBtn.setTextColor(android.graphics.Color.GREEN);
+					} else if(freecamState == true) {
+						freecamState = false;
+						VertexClientPE.freecam(0);
+						freecamBtn.setTextColor(android.graphics.Color.WHITE);
 					}
 				}
 				}));
@@ -3035,7 +3042,7 @@ VertexClientPE.showMovementMenu = function() {
                 movementMenuLayout.addView(tapTeleporterBtn);
                 movementMenuLayout.addView(parachuteBtn);
                 movementMenuLayout.addView(walkOnLiquidsBtn);
-                //movementMenuLayout.addView(freeCamBtn);
+                //movementMenuLayout.addView(freecamBtn);
                 movementMenuLayout.addView(highJumpBtn);
                 movementMenuLayout.addView(timerBtn);
 
@@ -3258,10 +3265,7 @@ VertexClientPE.showMiscMenu = function() {
 						vertexclientpemovementmenu.dismiss(); //Close
 						vertexclientpechatmenu.dismiss(); //Close
 						vertexclientpemiscmenu.dismiss(); //Close
-						var sender = "";
-                        var str = "\u00a70BlockLauncher, enable scripts";
-                        net.zhuoweizhang.mcpelauncher.ScriptManager.handleMessagePacketCallback(sender, str);
-						serverEnabler = true;
+						VertexClientPE.serverEnabler();
 						showMenuButton();
 						showHacksList();
 				    }
@@ -3478,6 +3482,14 @@ VertexClientPE.clientTick = function() {
             new android.os.Handler()
                 .postDelayed(new java.lang.Runnable({
                     run: function() {
+						try{
+							if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false)) {
+								VertexClientPE.isRemote = true;
+								VertexClientPE.serverEnabler();
+							}
+						}catch(e) {
+							print(e);
+						}
 						if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false)) {
 							VertexClientPE.isRemote = true;
 							showMenuButton();
@@ -3524,7 +3536,7 @@ var killAuraState = false;
 var nukerState = false;
 var droneState = false;
 var derpState = false;
-var freeCamState = false;
+var freecamState = false;
 var signEditorState = false;
 var tapNukerState = false;
 var highJumpState = false;
@@ -3556,7 +3568,7 @@ var killAuraStateText = "";
 var nukerStateText = "";
 var droneStateText = "";
 var derpStateText = "";
-var freeCamStateText = "";
+var freecamStateText = "";
 var signEditorStateText = "";
 var tapNukerStateText = "";
 var highJumpStateText = "";
@@ -3683,10 +3695,10 @@ function showHacksList() {
                     } else if(derpState == false) {
                         derpStateText = "";
                     }
-					if(freeCamState == true) {
-                        freeCamStateText = " [FreeCam] ";
-                    } else if(freeCamState == false) {
-                        freeCamStateText = "";
+					if(freecamState == true) {
+                        freecamStateText = " [Freecam] ";
+                    } else if(freecamState == false) {
+                        freecamStateText = "";
                     }
 					if(signEditorState == true) {
                         signEditorStateText = " [SignEditor] ";
@@ -3726,7 +3738,7 @@ function showHacksList() {
                     var VertexClientPEHacksListTextView = new android.widget.TextView(ctx);
                     VertexClientPEHacksListTextView.setText(VertexClientPEHacksListText);
 					StatesText = clientTextView("Placeholder text", true);
-					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + parachuteStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freeCamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText);
+					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + parachuteStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText);
                     VertexClientPEHacksListTextView.setTextSize(20);
                     VertexClientPEHacksListTextView.setTypeface(null, android.graphics.Typeface.BOLD);
 					VertexClientPEHacksListTextView.setTextColor(android.graphics.Color.GREEN);
@@ -3861,10 +3873,10 @@ function updateHacksList() {
                     } else if(derpState == false) {
                         derpStateText = "";
                     }
-					if(freeCamState == true) {
-                        freeCamStateText = " [FreeCam] ";
-                    } else if(freeCamState == false) {
-                        freeCamStateText = "";
+					if(freecamState == true) {
+                        freecamStateText = " [Freecam] ";
+                    } else if(freecamState == false) {
+                        freecamStateText = "";
                     }
 					if(signEditorState == true) {
                         signEditorStateText = " [SignEditor] ";
@@ -3901,7 +3913,7 @@ function updateHacksList() {
                     } else if(bowAimbotState == false) {
                         bowAimbotStateText = "";
                     }
-					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + parachuteStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freeCamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText);
+					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + parachuteStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText);
                 } catch(error) {
                     print('An error occured: ' + error);
                 }
@@ -3933,8 +3945,8 @@ VertexClientPE.panic = function() {
 	nukerState = false;
 	droneState = false;
 	derpState = false;
-	freeCamState = false;
-	VertexClientPE.freeCam(0);
+	freecamState = false;
+	VertexClientPE.freecam(0);
 	signEditorState = false;
 	tapNukerState = false;
 	highJumpState = false;
@@ -4202,19 +4214,19 @@ function modTick() {
 		var yaw = Math.floor(Entity.getYaw(player));
 		var pitch = Math.floor(Entity.getPitch(player));
 		Entity.setRot(player, yaw + 3, pitch);
-	}if(freeCamState == true) {
-		if(freeCamEntity != null) {
+	}if(freecamState == true) {
+		if(freecamEntity != null) {
 			var hit = getYaw() + 90;
 			var hitY = getPitch() - 180;
 			var yaw = getYaw();
 			var pitch = getPitch();
-			setRot(freeCamEntity, yaw, pitch);
+			setRot(freecamEntity, yaw, pitch);
 			x = Math.cos(hit * (Math.PI / 180));
 			y = Math.sin(hitY * (Math.PI / 180));
 			z = Math.sin(hit * (Math.PI / 180));
-			setVelX(freeCamEntity, x * 1);
-			setVelY(freeCamEntity, y * 1);
-			setVelZ(freeCamEntity, z * 1);
+			setVelX(freecamEntity, x * 1);
+			setVelY(freecamEntity, y * 1);
+			setVelZ(freecamEntity, z * 1);
 		}
 	}if(highJumpState == true) {
 		if(Player.isFlying() == false) {
@@ -4542,7 +4554,7 @@ function destroyBlock(x, y, z, side) {
 				preventDefault();
 				Entity.remove(victim);
 			}
-		}if(freeCamState == true) {
+		}if(freecamState == true) {
 			preventDefault();
 		}
 	}
@@ -4556,9 +4568,11 @@ function entityAddedHook(entity) {
 }
 	
 function entityRemovedHook(entity) {
-	if(entity == freeCamEntity) {
+	if(entity == freecamEntity) {
 		ModPE.setCamera(Player.getEntity());
-		freeCamState = false;
+		freecamState = false;
+		VertexClientPE.freecam(1);
+		freecamState = true;
 	}
 }
 	
