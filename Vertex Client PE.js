@@ -28,6 +28,7 @@ var showHacksListSetting = "on";
 var mainButtonPositionSetting = "top-right";
 var healthTagsSetting = "off";
 var themeSetting = "green";
+var spamMessage = "Spam!!!!!";
 //End of settings
 
 var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
@@ -349,6 +350,61 @@ VertexClientPE.showMoreDialog = function() {
 						vertexclientpemiscmenu.dismiss(); //Close
 						informationScreen();
 						exitInformation();
+					}
+				});
+				cancelButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+					}
+				});
+			} catch(e) {
+				print("Error: " + e)
+			}
+		}
+	});
+}
+
+VertexClientPE.showSpamMessageDialog = function() {
+	ctx.runOnUiThread(new java.lang.Runnable() {
+		run: function() {
+			try {
+				VertexClientPE.loadMainSettings();
+				dialogGUI = new android.widget.PopupWindow();
+				var spamMessageTitle = clientTextView("Change spam message", true);
+				var spamMessageInput = new android.widget.EditText(ctx);
+				spamMessageInput.setText(spamMessage);
+				spamMessageInput.setTextColor(android.graphics.Color.WHITE);
+				spamMessageInput.setHint("Spam message");
+				var okButton = clientButton("Ok");
+				var cancelButton = clientButton("Cancel");
+				var dialogLayout = new android.widget.LinearLayout(ctx);
+				var spritesheet = android.graphics.Bitmap.createScaledBitmap(trimImage(GetSpritesheet(), 0, 0, 16, 16), 16 * GuiSize, 16 * GuiSize, false);
+				dialogLayout.setBackgroundDrawable(backgroundClientGUI);
+				if(themeSetting == "red") {
+					dialogLayout.setBackgroundDrawable(backgroundRedClientGUI);
+				}if(themeSetting == "blue") {
+					dialogLayout.setBackgroundDrawable(backgroundBlueClientGUI);
+				}
+				dialogLayout.setOrientation(android.widget.LinearLayout.VERTICAL);
+				dialogLayout.addView(spamMessageTitle);
+				dialogLayout.addView(spamMessageInput);
+				dialogLayout.addView(okButton);
+				dialogLayout.addView(cancelButton);
+				var dialog = new android.app.Dialog(ctx);
+				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
+				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				dialog.setContentView(dialogLayout);
+				dialog.setTitle("Change spam message");
+				dialogGUI.setHeight(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+				dialogGUI.setWidth(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+				dialogGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.TOP, 0, 0);
+				dialog.show();
+				okButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						spamMessage = spamMessageInput.getText();
+						VertexClientPE.saveMainSettings();
+						VertexClientPE.loadMainSettings();
+						dialog.dismiss();
 					}
 				});
 				cancelButton.setOnClickListener(new android.view.View.OnClickListener() {
@@ -1516,6 +1572,7 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + mainButtonPositionSetting.toString());
     outWrite.append("," + healthTagsSetting.toString());
     outWrite.append("," + themeSetting.toString());
+    outWrite.append("," + spamMessage.toString());
 
     outWrite.close();
 }
@@ -1540,6 +1597,9 @@ VertexClientPE.loadMainSettings = function() {
 	}
 	if(str.toString().split(",")[3] != null && str.toString().split(",")[3] != undefined) {
     themeSetting = str.toString().split(",")[3]; //Here we split text by ","
+	}
+	if(str.toString().split(",")[4] != null && str.toString().split(",")[4] != undefined) {
+    spamMessage = str.toString().split(",")[4]; //Here we split text by ","
 	}
     fos.close();
 	return true;
@@ -1824,11 +1884,11 @@ VertexClientPE.showSplashScreen = function() {
                     mainMenuListLayout.setOrientation(1);
                     mainMenuListLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
                     //--------Add Buttons-------//
-					var VertexClientPEMainMenuText = "<font color='#008000'>Vertex Client PE " + CURRENT_VERSION + "</font>";
+					var VertexClientPEMainMenuText = "<font color='#008000'>Vertex Client PE v" + CURRENT_VERSION + "</font>";
 					if(themeSetting == "red") {
-						VertexClientPEMainMenuText = "<font color='#FF0000'>Vertex Client PE " + CURRENT_VERSION + "</font>";
+						VertexClientPEMainMenuText = "<font color='#FF0000'>Vertex Client PE v" + CURRENT_VERSION + "</font>";
 					}if(themeSetting == "blue") {
-						VertexClientPEMainMenuText = "<font color='#0000FF'>Vertex Client PE " + CURRENT_VERSION + "</font>";
+						VertexClientPEMainMenuText = "<font color='#0000FF'>Vertex Client PE v" + CURRENT_VERSION + "</font>";
 					}
 					var text = VertexClientPEMainMenuText + " - Welcome back " + ModPE.getPlayerName() + "!";
 					var TitleText = clientButton(text);
@@ -2191,10 +2251,18 @@ function settingsScreen() {
 					}
 					}));
 					
+					var spamMessageSettingButton = clientButton("Change AutoSpammer message", "Allows you to change the AutoSpammer spam message");
+					spamMessageSettingButton.setOnClickListener(new android.view.View.OnClickListener({
+					onClick: function(viewarg){
+						VertexClientPE.showSpamMessageDialog();
+					}
+					}));
+					
 					settingsMenuLayout.addView(showHacksListSettingButton);
 					settingsMenuLayout.addView(mainButtonPositionSettingButton);
 					settingsMenuLayout.addView(healthTagsSettingButton);
 					settingsMenuLayout.addView(themeSettingButton);
+					settingsMenuLayout.addView(spamMessageSettingButton);
 
                     settingsMenu = new android.widget.PopupWindow(settingsMenuLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
                     settingsMenu.setBackgroundDrawable(backgroundClientGUI);
@@ -3488,7 +3556,8 @@ VertexClientPE.clientTick = function() {
 								VertexClientPE.serverEnabler();
 							}
 						}catch(e) {
-							print(e);
+							print("Use BlockLauncher v1.12.2 beta 4 or below!");
+							ModPE.log(e);
 						}
 						if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false)) {
 							VertexClientPE.isRemote = true;
@@ -4026,7 +4095,6 @@ function exit(){
     });
     moreButton.setOnClickListener(new android.view.View.OnClickListener({
     onClick: function(viewarg){
-		//TODO: Show dialog.
 		VertexClientPE.showMoreDialog();
     }
     }));
@@ -4121,9 +4189,9 @@ function modTick() {
 			}
 		}}));
 	}if(autoSpammerState == true) {
-		clientMessage("<" + ModPE.getPlayerName() + "> " + "Spam!!!!!");
-		chatHook("Spam!!!!!");
-		Server.sendChat("Spam!!!!!");
+		clientMessage("<" + ModPE.getPlayerName() + "> " + spamMessage);
+		chatHook(spamMessage);
+		Server.sendChat(spamMessage);
 	}if(regenState == true) {
 		if(Entity.getHealth(getPlayerEnt()) < 20) {
 			Player.setHealth(20);
