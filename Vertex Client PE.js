@@ -325,8 +325,7 @@ VertexClientPE.showMoreDialog = function() {
 				settingsButton.setOnClickListener(new android.view.View.OnClickListener() {
 					onClick: function(view) {
 						dialog.dismiss();
-						exitUI.dismiss(); //Close
-						moreUI.dismiss(); //Close
+						topBar.dismiss();
 						showingMenu = false;
 						vertexclientpecombatmenu.dismiss(); //Close
 						vertexclientpebuildingmenu.dismiss(); //Close
@@ -340,8 +339,7 @@ VertexClientPE.showMoreDialog = function() {
 				informationButton.setOnClickListener(new android.view.View.OnClickListener() {
 					onClick: function(view) {
 						dialog.dismiss();
-						exitUI.dismiss(); //Close
-						moreUI.dismiss(); //Close
+						topBar.dismiss();
 						showingMenu = false;
 						vertexclientpecombatmenu.dismiss(); //Close
 						vertexclientpebuildingmenu.dismiss(); //Close
@@ -700,6 +698,13 @@ VertexClientPE.toggleModule = function(module) {
 				bowAimbotState = true;
 			} else if(bowAimbotState == true) {
 				bowAimbotState = false;
+			}
+			break;
+		} case "autoplace": {
+			if(autoPlaceState == false) {
+				autoPlaceState = true;
+			} else if(autoPlaceState == true) {
+				autoPlaceState = false;
 			}
 			break;
 		} default: {
@@ -1478,6 +1483,18 @@ VertexClientPE.nuker = function(x, y, z) {
 	}
 }
 
+VertexClientPE.autoPlace = function() {
+	var x = Player.getPointedBlockX();
+	var y = Player.getPointedBlockY();
+	var z = Player.getPointedBlockZ();
+	var side = Player.getPointedBlockSide();
+	var blockId = Player.getCarriedItem();
+	var blockData = Player.getCarriedItemData();
+	if(blockId < 257 && ModPE.playerHasSplitControls()) {
+		setTile(x-(side==4?1:0)+(side==5?1:0)+0.5,y-(side==0?1:0)+(side==1?1:0)+0.5,z-(side==2?1:0)+(side==3?1:0)+0.5, blockId, blockData);
+	}
+}
+
 VertexClientPE.flight = function(onOrOff) {
 	switch(onOrOff) {
 		case 0:
@@ -2119,9 +2136,8 @@ function leaveGame() {
 				hacksList.dismiss();
 				GUI.dismiss();
 			}
-			if(exitUI != null) {
-				exitUI.dismiss(); //Close
-				moreUI.dismiss(); //Close
+			if(topBar != null) {
+				topBar.dismiss();
 				showingMenu = false;
 				vertexclientpecombatmenu.dismiss(); //Close
 				vertexclientpebuildingmenu.dismiss(); //Close
@@ -2322,18 +2338,132 @@ function informationScreen() {
         }));
 }
 
+VertexClientPE.showTopBar = function() {
+	var display = new android.util.DisplayMetrics();
+	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
+    var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+        ctx.runOnUiThread(new java.lang.Runnable({
+            run: function() {
+                try {
+					var topBarLayout = new android.widget.LinearLayout(ctx);
+					topBarLayout.setOrientation(android.widget.LinearLayout.HORIZONTAL);
+					topBarLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					
+					var topBarLayoutLeft = new android.widget.LinearLayout(ctx);
+					topBarLayoutLeft.setOrientation(1);
+					//topBarLayoutLeft.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					topBarLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 4, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT));
+					topBarLayout.addView(topBarLayoutLeft);
+					
+					var topBarLayoutCenter = new android.widget.LinearLayout(ctx);
+					topBarLayoutCenter.setOrientation(1);
+					topBarLayoutCenter.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					topBarLayoutCenter.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 2, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT));
+					topBarLayout.addView(topBarLayoutCenter);
+					
+					var topBarLayoutRight = new android.widget.LinearLayout(ctx);
+					topBarLayoutRight.setOrientation(1);
+					//topBarLayoutRight.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					topBarLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 4, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT));
+					topBarLayout.addView(topBarLayoutRight);
+					
+					var moreButton = new android.widget.Button(ctx);
+					moreButton.setText("...");
+					moreButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#00BFFF"), android.graphics.PorterDuff.Mode.MULTIPLY);
+					moreButton.setTextColor(android.graphics.Color.WHITE);
+					moreButton.setOnClickListener(new android.view.View.OnClickListener({
+						onClick: function(viewarg) {
+							VertexClientPE.showMoreDialog();
+						}
+					}));
+					topBarLayoutLeft.addView(moreButton);
+					
+					var exitButton = new android.widget.Button(ctx);
+					exitButton.setText("X");
+					exitButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
+					exitButton.setTextColor(android.graphics.Color.WHITE);
+					exitButton.setOnClickListener(new android.view.View.OnClickListener({
+						onClick: function(viewarg) {
+							topBar.dismiss();
+							vertexclientpecombatmenu.dismiss(); //Close
+							vertexclientpebuildingmenu.dismiss(); //Close
+							vertexclientpemovementmenu.dismiss(); //Close
+							vertexclientpechatmenu.dismiss(); //Close
+							vertexclientpemiscmenu.dismiss(); //Close
+							showMenuButton();
+							showHacksList();
+						}
+					}));
+					topBarLayoutRight.addView(exitButton);
+					
+					var logo4 = android.util.Base64.decode(logoImage, 0);
+					var logoViewer4 = new android.widget.ImageView(ctx);
+					logoViewer4.setImageBitmap(android.graphics.BitmapFactory.decodeByteArray(logo4, 0, logo4.length));
+					topBarLayoutCenter.addView(logoViewer4);
+					
+					/*var setupButtonGreen = clientButton("Green", null, "green");
+					setupButtonGreen.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+					setupButtonGreen.setTextColor(android.graphics.Color.GREEN);
+					setupButtonGreen.setOnClickListener(new android.view.View.OnClickListener({
+						onClick: function(viewarg) {
+							setupColor = "green";
+							setupButtonGreen.setTextColor(android.graphics.Color.GREEN);
+							setupButtonRed.setTextColor(android.graphics.Color.WHITE);
+							setupButtonBlue.setTextColor(android.graphics.Color.WHITE);
+						}
+					}));
+					setupScreenLayoutBottomLeft.addView(setupButtonGreen);
+					
+					var setupButtonRed = clientButton("Red", null, "red");
+					setupButtonRed.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+					setupButtonRed.setOnClickListener(new android.view.View.OnClickListener({
+						onClick: function(viewarg) {
+							setupColor = "red";
+							setupButtonGreen.setTextColor(android.graphics.Color.WHITE);
+							setupButtonRed.setTextColor(android.graphics.Color.RED);
+							setupButtonBlue.setTextColor(android.graphics.Color.WHITE);
+						}
+					}));
+					setupScreenLayoutBottomCenter.addView(setupButtonRed);
+					
+					var setupButtonBlue = clientButton("Blue", null, "blue");
+					setupButtonBlue.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+					setupButtonBlue.setOnClickListener(new android.view.View.OnClickListener({
+						onClick: function(viewarg) {
+							setupColor = "blue";
+							setupButtonGreen.setTextColor(android.graphics.Color.WHITE);
+							setupButtonRed.setTextColor(android.graphics.Color.WHITE);
+							setupButtonBlue.setTextColor(android.graphics.Color.BLUE);
+						}
+					}));
+					setupScreenLayoutBottomRight.addView(setupButtonBlue);
+					
+					var setupText = clientTextView("You can always change the color on the Settings Screen.");
+					setupText.setGravity(android.view.Gravity.CENTER);
+					setupScreenLayout.addView(setupText);*/
+					
+					topBar = new android.widget.PopupWindow(topBarLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight() / 10);
+					topBar.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.parseColor("#0080FF")));
+					topBar.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
+				} catch(error) {
+					print('An error occured: ' + error);
+			}
+		}
+	}));
+}
+
 var vertexclientpemenu = null;
 var menuBtn = null;
 
-var combattpopx=0,combattpopy=0;
+var combattpopx=400,combattpopy=0;
 var combatmX,combatmY;
 var combatdown=false;
 
-var buildingtpopx=0,buildingtpopy=0;
+var buildingtpopx=800,buildingtpopy=300;
 var buildingmX,buildingmY;
 var buildingdown=false;
 
-var movementtpopx=0,movementtpopy=0;
+var movementtpopx=400,movementtpopy=300;
 var movementmX,movementmY;
 var movementdown=false;
 
@@ -2341,11 +2471,11 @@ var chattpopx=0,chattpopy=0;
 var chatmX,chatmY;
 var chatdown=false;
 
-var misctpopx=0,misctpopy=0;
+var misctpopx=0,misctpopy=300;
 var miscmX,miscmY;
 var miscdown=false;
 
-var combatMenuShown = true;
+var combatMenuShown = false;
 
 VertexClientPE.showCombatMenu = function() {
 	var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
@@ -2548,12 +2678,14 @@ VertexClientPE.showCombatMenu = function() {
                     }
                 }));
 
-                combatMenuLayout.addView(killAuraBtn);
-                combatMenuLayout.addView(droneBtn);
-                combatMenuLayout.addView(bowAimbotBtn);
-                combatMenuLayout.addView(instaKillBtn);
-                combatMenuLayout.addView(regenBtn);
-                combatMenuLayout.addView(arrowGunBtn);
+				if(!VertexClientPE.isRemote) {
+					combatMenuLayout.addView(killAuraBtn);
+					combatMenuLayout.addView(droneBtn);
+					combatMenuLayout.addView(bowAimbotBtn);
+					combatMenuLayout.addView(instaKillBtn);
+					combatMenuLayout.addView(regenBtn);
+					combatMenuLayout.addView(arrowGunBtn);
+				}
 
                 vertexclientpecombatmenu.setContentView(combatMenuLayout1);
 				vertexclientpecombatmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -2568,7 +2700,7 @@ VertexClientPE.showCombatMenu = function() {
     });
 }
 
-var buildingMenuShown = true;
+var buildingMenuShown = false;
 
 VertexClientPE.showBuildingMenu = function() {
 	var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
@@ -2769,6 +2901,26 @@ VertexClientPE.showBuildingMenu = function() {
 					}
 				}
 				}));
+				
+				var autoPlaceBtn = clientButton("AutoPlace", "Automatically places the block you're holding wherever you look");
+				autoPlaceBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				autoPlaceBtn.setAlpha(0.54);
+				if(autoPlaceState == false) {
+					autoPlaceBtn.setTextColor(android.graphics.Color.WHITE);
+				} else if(autoPlaceState == true) {
+					autoPlaceBtn.setTextColor(android.graphics.Color.GREEN);
+				}
+				autoPlaceBtn.setOnClickListener(new android.view.View.OnClickListener({
+				onClick: function(viewarg){
+					if(autoPlaceState == false) {
+						autoPlaceState = true;
+						autoPlaceBtn.setTextColor(android.graphics.Color.GREEN);
+					} else if(autoPlaceState == true) {
+						autoPlaceState = false;
+						autoPlaceBtn.setTextColor(android.graphics.Color.WHITE);
+					}
+				}
+				}));
 
 				buildingTitle.setOnClickListener(new android.view.View.OnClickListener() {
                     		onClick: function(viewarg) {
@@ -2820,6 +2972,7 @@ VertexClientPE.showBuildingMenu = function() {
                 buildingMenuLayout.addView(tapRemoverBtn);
                 buildingMenuLayout.addView(signEditorBtn);
                 buildingMenuLayout.addView(tapNukerBtn);
+                buildingMenuLayout.addView(autoPlaceBtn);
 
                 vertexclientpebuildingmenu.setContentView(buildingMenuLayout1);
 				vertexclientpebuildingmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -2834,7 +2987,7 @@ VertexClientPE.showBuildingMenu = function() {
     });
 }
 
-var movementMenuShown = true;
+var movementMenuShown = false;
 
 VertexClientPE.showMovementMenu = function() {
 	var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
@@ -3104,14 +3257,16 @@ VertexClientPE.showMovementMenu = function() {
                     }
                 }));
 
-                movementMenuLayout.addView(flightBtn);
-                movementMenuLayout.addView(autoWalkBtn);
-                movementMenuLayout.addView(wallHackBtn);
-                movementMenuLayout.addView(tapTeleporterBtn);
-                movementMenuLayout.addView(parachuteBtn);
-                movementMenuLayout.addView(walkOnLiquidsBtn);
-                //movementMenuLayout.addView(freecamBtn);
-                movementMenuLayout.addView(highJumpBtn);
+				if(!VertexClientPE.isRemote) {
+					movementMenuLayout.addView(flightBtn);
+					movementMenuLayout.addView(autoWalkBtn);
+					movementMenuLayout.addView(wallHackBtn);
+					movementMenuLayout.addView(tapTeleporterBtn);
+					movementMenuLayout.addView(parachuteBtn);
+					movementMenuLayout.addView(walkOnLiquidsBtn);
+					//movementMenuLayout.addView(freecamBtn);
+					movementMenuLayout.addView(highJumpBtn);
+				}
                 movementMenuLayout.addView(timerBtn);
 
                 vertexclientpemovementmenu.setContentView(movementMenuLayout1);
@@ -3127,7 +3282,7 @@ VertexClientPE.showMovementMenu = function() {
     });
 }
 
-var chatMenuShown = true;
+var chatMenuShown = false;
 
 VertexClientPE.showChatMenu = function() {
 	var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
@@ -3246,7 +3401,7 @@ VertexClientPE.showChatMenu = function() {
                 vertexclientpechatmenu.setContentView(chatMenuLayout1);
                 vertexclientpechatmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
                 vertexclientpechatmenu.setWidth(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
-                vertexclientpechatmenu.setHeight(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+                vertexclientpechatmenu.setHeight(300);
                 vertexclientpechatmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, chattpopx, chattpopy);
 
             } catch(error) {
@@ -3256,7 +3411,7 @@ VertexClientPE.showChatMenu = function() {
     });
 }
 
-var miscMenuShown = true;
+var miscMenuShown = false;
 
 VertexClientPE.showMiscMenu = function() {
 	var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
@@ -3302,8 +3457,7 @@ VertexClientPE.showMiscMenu = function() {
 				panicBtn.setOnClickListener(new android.view.View.OnClickListener({
 				onClick: function(viewarg){
 				 VertexClientPE.panic();
-				 exitUI.dismiss(); //Close
-				 moreUI.dismiss(); //Close
+				 topBar.dismiss();
 			     showingMenu = false;
                  vertexclientpecombatmenu.dismiss(); //Close
                  vertexclientpebuildingmenu.dismiss(); //Close
@@ -3315,7 +3469,7 @@ VertexClientPE.showMiscMenu = function() {
 	             VertexClientPE.showMovementMenu();
 				 VertexClientPE.showChatMenu();
 	             VertexClientPE.showMiscMenu();
-	             exit();
+				 VertexClientPE.showTopBar();
 				}
 				}));
 				
@@ -3325,8 +3479,7 @@ VertexClientPE.showMiscMenu = function() {
 			    serverEnablerButton.setTextColor(android.graphics.Color.WHITE);
 			    serverEnablerButton.setOnClickListener(new android.view.View.OnClickListener({
 				    onClick: function(viewarg){
-						exitUI.dismiss(); //Close
-						moreUI.dismiss(); //Close
+						topBar.dismiss();
 						showingMenu = false;
 						vertexclientpecombatmenu.dismiss(); //Close
 						vertexclientpebuildingmenu.dismiss(); //Close
@@ -3491,7 +3644,9 @@ VertexClientPE.showMiscMenu = function() {
 				}
                 miscMenuLayout.addView(switchGamemodeButton);
                 miscMenuLayout.addView(xRayBtn);
-                miscMenuLayout.addView(derpBtn);
+				if(!VertexClientPE.isRemote) {
+					miscMenuLayout.addView(derpBtn);
+				}
                 miscMenuLayout.addView(autoSwitchBtn);
                 miscMenuLayout.addView(zoomBtn);
                 miscMenuLayout.addView(pizzaOrderButton);
@@ -3528,7 +3683,7 @@ function showMenuButton() {
 	VertexClientPE.showMovementMenu();
 	VertexClientPE.showChatMenu();
 	VertexClientPE.showMiscMenu();
-	exit();
+	VertexClientPE.showTopBar();
     //exitOld();
 	//showingMenu = true;
     }
@@ -3615,6 +3770,7 @@ var autoSwitchState = false;
 var flightState = false;
 var autoWalkState = false;
 var bowAimbotState = false;
+var autoPlaceState = false;
 
 var hacksList;
 var StatesText;
@@ -3647,6 +3803,7 @@ var autoSwitchStateText = "";
 var flightStateText = "";
 var autoWalkStateText = "";
 var bowAimbotStateText = "";
+var autoPlaceStateText = "";
 
 function showHacksList() {
         var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
@@ -3806,10 +3963,15 @@ function showHacksList() {
                     } else if(bowAimbotState == false) {
                         bowAimbotStateText = "";
                     }
+					if(autoPlaceState == true) {
+                        autoPlaceStateText = " [AutoPlace] ";
+                    } else if(autoPlaceState == false) {
+                        autoPlaceStateText = "";
+                    }
                     var VertexClientPEHacksListTextView = new android.widget.TextView(ctx);
                     VertexClientPEHacksListTextView.setText(VertexClientPEHacksListText);
 					StatesText = clientTextView("Placeholder text", true);
-					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + parachuteStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText);
+					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + parachuteStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText);
                     VertexClientPEHacksListTextView.setTextSize(20);
                     VertexClientPEHacksListTextView.setTypeface(null, android.graphics.Typeface.BOLD);
 					VertexClientPEHacksListTextView.setTextColor(android.graphics.Color.GREEN);
@@ -3984,7 +4146,12 @@ function updateHacksList() {
                     } else if(bowAimbotState == false) {
                         bowAimbotStateText = "";
                     }
-					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + parachuteStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText);
+					if(autoPlaceState == true) {
+                        autoPlaceStateText = " [AutoPlace] ";
+                    } else if(autoPlaceState == false) {
+                        autoPlaceStateText = "";
+                    }
+					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + parachuteStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText);
                 } catch(error) {
                     print('An error occured: ' + error);
                 }
@@ -4026,6 +4193,7 @@ VertexClientPE.panic = function() {
 	VertexClientPE.flight(0);
 	autoWalkState = false;
 	bowAimbotState = false;
+	autoPlaceState = false;
 }
 
 function setupDone() {
@@ -4058,19 +4226,18 @@ function setupDone() {
     }}));
 }
 	
-function exit(){
+function exit() {
     var ctxe = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
     ctxe.runOnUiThread(new java.lang.Runnable({ run: function(){
     try{
     var xLayout = new android.widget.LinearLayout(ctxe);
     var xButton = new android.widget.Button(ctxe);
-    xButton.setText('X');//Text
+    xButton.setText("X");//Text
     xButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
     xButton.setTextColor(android.graphics.Color.WHITE);
     xButton.setOnClickListener(new android.view.View.OnClickListener({
 	    onClick: function(viewarg){
-	        exitUI.dismiss(); //Close
-			moreUI.dismiss(); //Close
+			topBar.dismiss();
 			showingMenu = false;
 	        vertexclientpecombatmenu.dismiss(); //Close
 	        vertexclientpebuildingmenu.dismiss(); //Close
@@ -4359,6 +4526,8 @@ function modTick() {
 		Player.setFlying(1);
 	}if(autoWalkState == true) {
 		VertexClientPE.autoWalk();
+	}if(autoPlaceState == true) {
+		VertexClientPE.autoPlace();
 	}
 }
 	
