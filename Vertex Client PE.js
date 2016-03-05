@@ -570,11 +570,11 @@ VertexClientPE.toggleModule = function(module) {
 				Block.setDestroyTimeDefaultAll();
 			}
 			break;
-		} case "parachute": {
-			if(parachuteState == false) {
-				parachuteState = true;
-			} else if(parachuteState == true) {
-				parachuteState = false;
+		} case "glide": {
+			if(glideState == false) {
+				glideState = true;
+			} else if(glideState == true) {
+				glideState = false;
 			}
 			break;
 		} case "arrowgun": {
@@ -1490,7 +1490,7 @@ VertexClientPE.autoPlace = function() {
 	var side = Player.getPointedBlockSide();
 	var blockId = Player.getCarriedItem();
 	var blockData = Player.getCarriedItemData();
-	if(blockId < 257 && ModPE.playerHasSplitControls()) {
+	if(blockId < 257) {
 		setTile(x-(side==4?1:0)+(side==5?1:0)+0.5,y-(side==0?1:0)+(side==1?1:0)+0.5,z-(side==2?1:0)+(side==3?1:0)+0.5, blockId, blockData);
 	}
 }
@@ -1508,6 +1508,16 @@ VertexClientPE.flight = function(onOrOff) {
 			Player.setFlying(1);
 			break;
 	}
+}
+
+VertexClientPE.glide = function() {
+	if(Entity.getVelY(getPlayerEnt()) <= 0 && Player.isFlying() == false) {
+		setVelY(Player.getEntity(), - 0.07);
+	}
+}
+
+VertexClientPE.autoMine = function() {
+	Level.destroyBlock(Player.getPointedBlockX(), Player.getPointedBlockY(), Player.getPointedBlockZ());
 }
 
 VertexClientPE.killAura = function() {
@@ -3111,22 +3121,22 @@ VertexClientPE.showMovementMenu = function() {
 				}
 				}));
 				
-				var parachuteBtn = clientButton("Parachute", "Reduces fall damage by slowing the player down when falling");
-				parachuteBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
-				parachuteBtn.setAlpha(0.54);
-				if(parachuteState == false) {
-					parachuteBtn.setTextColor(android.graphics.Color.WHITE);
-				} else if(parachuteState == true) {
-					parachuteBtn.setTextColor(android.graphics.Color.GREEN);
+				var glideBtn = clientButton("Glide", "Reduces fall damage by slowing the player down when falling");
+				glideBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				glideBtn.setAlpha(0.54);
+				if(glideState == false) {
+					glideBtn.setTextColor(android.graphics.Color.WHITE);
+				} else if(glideState == true) {
+					glideBtn.setTextColor(android.graphics.Color.GREEN);
 				}
-				parachuteBtn.setOnClickListener(new android.view.View.OnClickListener({
+				glideBtn.setOnClickListener(new android.view.View.OnClickListener({
 				onClick: function(viewarg){
-					if(parachuteState == false) {
-						parachuteState = true;
-						parachuteBtn.setTextColor(android.graphics.Color.GREEN);
-					} else if(parachuteState == true) {
-						parachuteState = false;
-						parachuteBtn.setTextColor(android.graphics.Color.WHITE);
+					if(glideState == false) {
+						glideState = true;
+						glideBtn.setTextColor(android.graphics.Color.GREEN);
+					} else if(glideState == true) {
+						glideState = false;
+						glideBtn.setTextColor(android.graphics.Color.WHITE);
 					}
 				}
 				}));
@@ -3262,7 +3272,7 @@ VertexClientPE.showMovementMenu = function() {
 					movementMenuLayout.addView(autoWalkBtn);
 					movementMenuLayout.addView(wallHackBtn);
 					movementMenuLayout.addView(tapTeleporterBtn);
-					movementMenuLayout.addView(parachuteBtn);
+					movementMenuLayout.addView(glideBtn);
 					movementMenuLayout.addView(walkOnLiquidsBtn);
 					//movementMenuLayout.addView(freecamBtn);
 					movementMenuLayout.addView(highJumpBtn);
@@ -3756,7 +3766,7 @@ var arrowGunState = false;
 var autoMineState = false;
 var instaMineState = false;
 var stackDropState = false;
-var parachuteState = false;
+var glideState = false;
 var tapRemoverState = false;
 var killAuraState = false;
 var nukerState = false;
@@ -3789,7 +3799,7 @@ var arrowGunStateText = "";
 var autoMineStateText = "";
 var instaMineStateText = "";
 var stackDropStateText = "";
-var parachuteStateText = "";
+var glideStateText = "";
 var tapRemoverStateText = "";
 var killAuraStateText = "";
 var nukerStateText = "";
@@ -3893,10 +3903,10 @@ function showHacksList() {
                     } else if(stackDropState == false) {
                         stackDropStateText = "";
                     }
-					if(parachuteState == true) {
-                        parachuteStateText = " [Parachute] ";
-                    } else if(parachuteState == false) {
-                        parachuteStateText = "";
+					if(glideState == true) {
+                        glideStateText = " [Glide] ";
+                    } else if(glideState == false) {
+                        glideStateText = "";
                     }
 					if(tapRemoverState == true) {
                         tapRemoverStateText = " [TapRemover] ";
@@ -3971,7 +3981,7 @@ function showHacksList() {
                     var VertexClientPEHacksListTextView = new android.widget.TextView(ctx);
                     VertexClientPEHacksListTextView.setText(VertexClientPEHacksListText);
 					StatesText = clientTextView("Placeholder text", true);
-					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + parachuteStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText);
+					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText);
                     VertexClientPEHacksListTextView.setTextSize(20);
                     VertexClientPEHacksListTextView.setTypeface(null, android.graphics.Typeface.BOLD);
 					VertexClientPEHacksListTextView.setTextColor(android.graphics.Color.GREEN);
@@ -4076,10 +4086,10 @@ function updateHacksList() {
                     } else if(stackDropState == false) {
                         stackDropStateText = "";
                     }
-					if(parachuteState == true) {
-                        parachuteStateText = " [Parachute] ";
-                    } else if(parachuteState == false) {
-                        parachuteStateText = "";
+					if(glideState == true) {
+                        glideStateText = " [Glide] ";
+                    } else if(glideState == false) {
+                        glideStateText = "";
                     }
 					if(tapRemoverState == true) {
                         tapRemoverStateText = " [TapRemover] ";
@@ -4151,7 +4161,7 @@ function updateHacksList() {
                     } else if(autoPlaceState == false) {
                         autoPlaceStateText = "";
                     }
-					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + parachuteStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText);
+					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText);
                 } catch(error) {
                     print('An error occured: ' + error);
                 }
@@ -4177,7 +4187,7 @@ VertexClientPE.panic = function() {
 	autoMineState = false;
 	instaMineState = false;
 	stackDropState = false;
-	parachuteState = false;
+	glideState = false;
 	tapRemoverState = false;
 	killAuraState = false;
 	nukerState = false;
@@ -4382,10 +4392,10 @@ function modTick() {
 
 		//set it's speed by multiplying xx,yy,zz
 		//example : (paintball, 2*xx);
-	}if(autoMineState == true && ModPE.playerHasSplitControls() == "1") {
-		Level.destroyBlock(Player.getPointedBlockX(), Player.getPointedBlockY(), Player.getPointedBlockZ());
-	}if(parachuteState == true) {
-		setVelY(Player.getEntity(), -0.1);
+	}if(autoMineState == true) {
+		VertexClientPE.autoMine();
+	}if(glideState == true) {
+		VertexClientPE.glide();
 	}if(killAuraState == true) {
 		VertexClientPE.killAura();
 	}if(nukerState == true) {
