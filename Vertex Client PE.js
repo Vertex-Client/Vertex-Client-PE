@@ -7,9 +7,25 @@
  * ###################################
  */
 
+// #####################
+// # ANDROID FUNCTIONS #
+// #####################
+
+var widget = android.widget;
+var LinearLayout = widget.LinearLayout;
+var ScrollView = widget.ScrollView;
+var Button = widget.Button;
+var EditText = widget.EditText;
+
+// ####################
+// # CLIENT FUNCTIONS #
+// ####################
+
 //Don't copy anything without my permission!
 
-var VertexClientPE = {};
+var VertexClientPE = {
+	accounts: []
+};
 
 VertexClientPE.isRemote = false;
 
@@ -108,6 +124,7 @@ var imgPlayButtonClicked = new android.graphics.BitmapFactory.decodeFile("mnt/sd
 var imgTwitterButton = new android.graphics.BitmapFactory.decodeFile("mnt/sdcard/games/com.mojang/twitter_button.png");
 var imgTwitterButtonClicked = new android.graphics.BitmapFactory.decodeFile("mnt/sdcard/games/com.mojang/twitter_button_clicked.png");
 var imgCombatKit = new android.graphics.BitmapFactory.decodeFile("mnt/sdcard/games/com.mojang/combat_kit.png");
+var imgSkinFace = new android.graphics.BitmapFactory.decodeFile("mnt/sdcard/games/com.mojang/minecraftpe/custom.png");
 var buttonClientGUI = new android.graphics.drawable.BitmapDrawable(img1);
 var buttonClickedClientGUI = new android.graphics.drawable.BitmapDrawable(img2);
 var backgroundClientGUI = new android.graphics.drawable.BitmapDrawable(imgBackground);
@@ -158,6 +175,32 @@ ModPE.getPlayerName = function() {
     return username;
 };
 
+function saveSetting(article, value) {
+	var fileInputStream = new java.io.FileInputStream(new java.io.File(android.os.Environment.getExternalStorageDirectory() + "/games/com.mojang/minecraftpe/options.txt"));
+	var inputStreamReader = new java.io.InputStreamReader(fileInputStream);
+	var bufferedReader = new java.io.BufferedReader(inputStreamReader);
+	var tempRead, tempReadString;
+	var tempSaved = "";
+	while ((tempRead = bufferedReader.readLine()) != null) {
+	tempReadString = tempRead.toString();
+	if (tempReadString.split(":")[0] == article) continue;
+	tempSaved += tempReadString + "\n"
+	}
+	fileInputStream.close();
+	inputStreamReader.close();
+	bufferedReader.close();
+	var fileOutputStream = new java.io.FileOutputStream(new java.io.File(android.os.Environment.getExternalStorageDirectory() + "/games/com.mojang/minecraftpe/options.txt"));
+	var outputStreamWriter = new java.io.OutputStreamWriter(fileOutputStream);
+	outputStreamWriter.write(tempSaved + article + ":" + value);
+	outputStreamWriter.close();
+	fileOutputStream.close();
+	//net.zhuoweizhang.mcpelauncher.ScriptManager.requestGraphicsReset();
+};
+
+ModPE.setPlayerName = function(username) {
+	saveSetting("mp_username", username);
+}
+
 ModPE.playerHasSplitControls = function() {
     var file = new java.io.File("/sdcard/games/com.mojang/minecraftpe/options.txt");
     var br = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(file)));
@@ -170,6 +213,20 @@ ModPE.playerHasSplitControls = function() {
     }
     br.close();
     return splitcontrols;
+};
+
+ModPE.getCurrentUsedSkin = function() {
+    var file = new java.io.File("/sdcard/games/com.mojang/minecraftpe/options.txt");
+    var br = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(file)));
+    var read, skin;
+    while((read = br.readLine()) != null) {
+        if(read.split(":")[0] == "game_skintypefull") {
+            skin = read.split(":")[1];
+            break;
+        }
+    }
+    br.close();
+    return skin;
 };
 
 var URL = "https://www.dominos.com/en/pages/order/";
@@ -222,15 +279,15 @@ VertexClientPE.showSignEditorDialog = function() {
 	ctx.runOnUiThread(new java.lang.Runnable() {
 		run: function() {
 			try {
-				dialogGUI = new android.widget.PopupWindow();
+				dialogGUI = new widget.PopupWindow();
 				var signEditorTitle = clientTextView("SignEditor", true);
 				var btn = clientButton("Ok");
 				var btn1 = clientButton("Cancel");
-				var inputBar = new android.widget.EditText(ctx);
-				var inputBar1 = new android.widget.EditText(ctx);
-				var inputBar2 = new android.widget.EditText(ctx);
-				var inputBar3 = new android.widget.EditText(ctx);
-				var dialogLayout = new android.widget.LinearLayout(ctx);
+				var inputBar = new EditText(ctx);
+				var inputBar1 = new EditText(ctx);
+				var inputBar2 = new EditText(ctx);
+				var inputBar3 = new EditText(ctx);
+				var dialogLayout = new LinearLayout(ctx);
 				var spritesheet = android.graphics.Bitmap.createScaledBitmap(trimImage(GetSpritesheet(), 0, 0, 16, 16), 16 * GuiSize, 16 * GuiSize, false);
 				dialogLayout.setBackgroundDrawable(backgroundClientGUI);
 				if(themeSetting == "red") {
@@ -238,7 +295,7 @@ VertexClientPE.showSignEditorDialog = function() {
 				}if(themeSetting == "blue") {
 					dialogLayout.setBackgroundDrawable(backgroundBlueClientGUI);
 				}
-				dialogLayout.setOrientation(android.widget.LinearLayout.VERTICAL);
+				dialogLayout.setOrientation(LinearLayout.VERTICAL);
 				dialogLayout.addView(signEditorTitle);
 				dialogLayout.addView(inputBar);
 				dialogLayout.addView(inputBar1);
@@ -263,8 +320,8 @@ VertexClientPE.showSignEditorDialog = function() {
 				inputBar3.setHint("Line 4");
 				inputBar3.setText(Level.getSignText(signX, signY, signZ, 3));
 				inputBar3.setTextColor(android.graphics.Color.WHITE);
-				dialogGUI.setHeight(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
-				dialogGUI.setWidth(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+				dialogGUI.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
+				dialogGUI.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
 				dialogGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.TOP, 0, 0);
 				dialog.show();
 				btn.setOnClickListener(new android.view.View.OnClickListener() {
@@ -296,15 +353,15 @@ VertexClientPE.showMoreDialog = function() {
 	ctx.runOnUiThread(new java.lang.Runnable() {
 		run: function() {
 			try {
-				dialogGUI = new android.widget.PopupWindow();
+				dialogGUI = new widget.PopupWindow();
 				var moreTitle = clientTextView("More", true);
 				var settingsButton = clientButton("Settings");
 				var informationButton = clientButton("Information");
 				var kitsButton = clientButton("Kits");
-				var newLineText = new android.widget.TextView(ctx);
+				var newLineText = new widget.TextView(ctx);
 				newLineText.setText("\n");
 				var cancelButton = clientButton("Cancel");
-				var dialogLayout = new android.widget.LinearLayout(ctx);
+				var dialogLayout = new LinearLayout(ctx);
 				var spritesheet = android.graphics.Bitmap.createScaledBitmap(trimImage(GetSpritesheet(), 0, 0, 16, 16), 16 * GuiSize, 16 * GuiSize, false);
 				dialogLayout.setBackgroundDrawable(backgroundClientGUI);
 				if(themeSetting == "red") {
@@ -312,7 +369,7 @@ VertexClientPE.showMoreDialog = function() {
 				}if(themeSetting == "blue") {
 					dialogLayout.setBackgroundDrawable(backgroundBlueClientGUI);
 				}
-				dialogLayout.setOrientation(android.widget.LinearLayout.VERTICAL);
+				dialogLayout.setOrientation(LinearLayout.VERTICAL);
 				dialogLayout.addView(moreTitle);
 				dialogLayout.addView(settingsButton);
 				dialogLayout.addView(informationButton);
@@ -324,8 +381,8 @@ VertexClientPE.showMoreDialog = function() {
 				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
 				dialog.setTitle("More");
-				dialogGUI.setHeight(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
-				dialogGUI.setWidth(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+				dialogGUI.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
+				dialogGUI.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
 				dialogGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.TOP, 0, 0);
 				dialog.show();
 				settingsButton.setOnClickListener(new android.view.View.OnClickListener() {
@@ -386,15 +443,15 @@ VertexClientPE.showSpamMessageDialog = function() {
 		run: function() {
 			try {
 				VertexClientPE.loadMainSettings();
-				dialogGUI = new android.widget.PopupWindow();
+				dialogGUI = new widget.PopupWindow();
 				var spamMessageTitle = clientTextView("Change spam message", true);
-				var spamMessageInput = new android.widget.EditText(ctx);
+				var spamMessageInput = new EditText(ctx);
 				spamMessageInput.setText(spamMessage);
 				spamMessageInput.setTextColor(android.graphics.Color.WHITE);
 				spamMessageInput.setHint("Spam message");
 				var okButton = clientButton("Ok");
 				var cancelButton = clientButton("Cancel");
-				var dialogLayout = new android.widget.LinearLayout(ctx);
+				var dialogLayout = new LinearLayout(ctx);
 				var spritesheet = android.graphics.Bitmap.createScaledBitmap(trimImage(GetSpritesheet(), 0, 0, 16, 16), 16 * GuiSize, 16 * GuiSize, false);
 				dialogLayout.setBackgroundDrawable(backgroundClientGUI);
 				if(themeSetting == "red") {
@@ -402,7 +459,7 @@ VertexClientPE.showSpamMessageDialog = function() {
 				}if(themeSetting == "blue") {
 					dialogLayout.setBackgroundDrawable(backgroundBlueClientGUI);
 				}
-				dialogLayout.setOrientation(android.widget.LinearLayout.VERTICAL);
+				dialogLayout.setOrientation(LinearLayout.VERTICAL);
 				dialogLayout.addView(spamMessageTitle);
 				dialogLayout.addView(spamMessageInput);
 				dialogLayout.addView(okButton);
@@ -412,8 +469,8 @@ VertexClientPE.showSpamMessageDialog = function() {
 				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
 				dialog.setTitle("Change spam message");
-				dialogGUI.setHeight(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
-				dialogGUI.setWidth(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+				dialogGUI.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
+				dialogGUI.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
 				dialogGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.TOP, 0, 0);
 				dialog.show();
 				okButton.setOnClickListener(new android.view.View.OnClickListener() {
@@ -436,18 +493,19 @@ VertexClientPE.showSpamMessageDialog = function() {
 	});
 }
 
-var consoleInput;
-
-VertexClientPE.showJavascriptConsoleDialog = function() {
+VertexClientPE.showAddAccountDialog = function() {
 	ctx.runOnUiThread(new java.lang.Runnable() {
 		run: function() {
 			try {
-				dialogGUI = new android.widget.PopupWindow();
-				var javascriptConsoleTitle = clientTextView("Javascript Console", true);
-				var btn = clientButton("Send");
-				var btn1 = clientButton("Cancel");
-				var inputBar = new android.widget.EditText(ctx);
-				var dialogLayout = new android.widget.LinearLayout(ctx);
+				VertexClientPE.loadMainSettings();
+				dialogGUI = new widget.PopupWindow();
+				var accountTitle = clientTextView("Add account", true);
+				var accountInput = new EditText(ctx);
+				accountInput.setTextColor(android.graphics.Color.WHITE);
+				accountInput.setHint("Enter an username");
+				var okButton = clientButton("Ok");
+				var cancelButton = clientButton("Cancel");
+				var dialogLayout = new LinearLayout(ctx);
 				var spritesheet = android.graphics.Bitmap.createScaledBitmap(trimImage(GetSpritesheet(), 0, 0, 16, 16), 16 * GuiSize, 16 * GuiSize, false);
 				dialogLayout.setBackgroundDrawable(backgroundClientGUI);
 				if(themeSetting == "red") {
@@ -455,7 +513,78 @@ VertexClientPE.showJavascriptConsoleDialog = function() {
 				}if(themeSetting == "blue") {
 					dialogLayout.setBackgroundDrawable(backgroundBlueClientGUI);
 				}
-				dialogLayout.setOrientation(android.widget.LinearLayout.VERTICAL);
+				dialogLayout.setOrientation(LinearLayout.VERTICAL);
+				dialogLayout.addView(accountTitle);
+				dialogLayout.addView(accountInput);
+				dialogLayout.addView(okButton);
+				dialogLayout.addView(cancelButton);
+				var dialog = new android.app.Dialog(ctx);
+				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
+				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				dialog.setContentView(dialogLayout);
+				dialog.setTitle("Change spam message");
+				dialogGUI.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
+				dialogGUI.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
+				dialogGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.TOP, 0, 0);
+				dialog.show();
+				okButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						var accountName = accountInput.getText();
+						VertexClientPE.accounts.push({
+							username: accountName.toString()
+						})
+						VertexClientPE.saveMainSettings();
+						VertexClientPE.loadMainSettings();
+						dialog.dismiss();
+						accountManager.dismiss();
+						VertexClientPE.showAccountManager();
+						/*var usernameText = new widget.TextView(ctx);
+						usernameText.setText(accountName.toString() + "\n");
+						accountManagerLayoutLeft.addView(usernameText);
+						var useButton = clientButton("Use");
+						useButton.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+						useButton.setOnClickListener(new android.view.View.OnClickListener({
+							onClick: function(viewarg) {
+								ModPE.setPlayerName(VertexClientPE.accounts[i].username.toString());
+								//print(VertexClientPE.accounts[i].username.toString());
+								accountManager.dismiss();
+							}
+						}));
+						accountManagerLayoutRight.addView(useButton);*/
+					}
+				});
+				cancelButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+					}
+				});
+			} catch(e) {
+				print("Error: " + e)
+			}
+		}
+	});
+}
+
+var consoleInput;
+
+VertexClientPE.showJavascriptConsoleDialog = function() {
+	ctx.runOnUiThread(new java.lang.Runnable() {
+		run: function() {
+			try {
+				dialogGUI = new widget.PopupWindow();
+				var javascriptConsoleTitle = clientTextView("Javascript Console", true);
+				var btn = clientButton("Send");
+				var btn1 = clientButton("Cancel");
+				var inputBar = new EditText(ctx);
+				var dialogLayout = new LinearLayout(ctx);
+				var spritesheet = android.graphics.Bitmap.createScaledBitmap(trimImage(GetSpritesheet(), 0, 0, 16, 16), 16 * GuiSize, 16 * GuiSize, false);
+				dialogLayout.setBackgroundDrawable(backgroundClientGUI);
+				if(themeSetting == "red") {
+					dialogLayout.setBackgroundDrawable(backgroundRedClientGUI);
+				}if(themeSetting == "blue") {
+					dialogLayout.setBackgroundDrawable(backgroundBlueClientGUI);
+				}
+				dialogLayout.setOrientation(LinearLayout.VERTICAL);
 				dialogLayout.addView(javascriptConsoleTitle);
 				dialogLayout.addView(inputBar);
 				dialogLayout.addView(btn);
@@ -467,8 +596,8 @@ VertexClientPE.showJavascriptConsoleDialog = function() {
 				dialog.setTitle("Javascript Console");
 				inputBar.setHint("Javascript input");
 				inputBar.setTextColor(android.graphics.Color.WHITE);
-				dialogGUI.setHeight(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
-				dialogGUI.setWidth(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+				dialogGUI.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
+				dialogGUI.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
 				dialogGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.TOP, 0, 0);
 				dialog.show();
 				btn.setOnClickListener(new android.view.View.OnClickListener() {
@@ -523,39 +652,39 @@ VertexClientPE.showKitsScreen = function() {
         ctx.runOnUiThread(new java.lang.Runnable({
             run: function() {
                 try {
-					var kitsScreenLayout = new android.widget.LinearLayout(ctx);
+					var kitsScreenLayout = new LinearLayout(ctx);
 					kitsScreenLayout.setOrientation(0);
 					kitsScreenLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
 					
-					var kitsScreenScrollView = new android.widget.ScrollView(ctx);
+					var kitsScreenScrollView = new ScrollView(ctx);
 					kitsScreenLayout.addView(kitsScreenScrollView);
 					
-					var kitsScreenLayout1 = new android.widget.LinearLayout(ctx);
-					kitsScreenLayout1.setOrientation(android.widget.LinearLayout.HORIZONTAL);
+					var kitsScreenLayout1 = new LinearLayout(ctx);
+					kitsScreenLayout1.setOrientation(LinearLayout.HORIZONTAL);
 					kitsScreenLayout1.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
 					kitsScreenScrollView.addView(kitsScreenLayout1);
 					
-					var kitsScreenLayoutLeft = new android.widget.LinearLayout(ctx);
+					var kitsScreenLayoutLeft = new LinearLayout(ctx);
 					kitsScreenLayoutLeft.setOrientation(1);
 					kitsScreenLayoutLeft.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
-					kitsScreenLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT));
+					kitsScreenLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, LinearLayout.LayoutParams.WRAP_CONTENT));
 					kitsScreenLayout1.addView(kitsScreenLayoutLeft);
 					
-					var kitsScreenLayoutCenter = new android.widget.LinearLayout(ctx);
+					var kitsScreenLayoutCenter = new LinearLayout(ctx);
 					kitsScreenLayoutCenter.setOrientation(1);
 					kitsScreenLayoutCenter.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
-					kitsScreenLayoutCenter.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT));
+					kitsScreenLayoutCenter.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, LinearLayout.LayoutParams.WRAP_CONTENT));
 					kitsScreenLayout1.addView(kitsScreenLayoutCenter);
 					
-					var kitsScreenLayoutRight = new android.widget.LinearLayout(ctx);
+					var kitsScreenLayoutRight = new LinearLayout(ctx);
 					kitsScreenLayoutRight.setOrientation(1);
 					kitsScreenLayoutRight.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
-					kitsScreenLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT));
+					kitsScreenLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, LinearLayout.LayoutParams.WRAP_CONTENT));
 					kitsScreenLayout1.addView(kitsScreenLayoutRight);
 					
-					var combatKitButton = new android.widget.Button(ctx);
+					var combatKitButton = new Button(ctx);
 					combatKitButton.setText("Combat");
-					combatKitButton.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.widthPixels / 4, display.widthPixels / 4));
+					combatKitButton.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 4, display.widthPixels / 4));
 					combatKitButton.setBackgroundDrawable(combatKitClientGUI);
 					combatKitButton.setOnClickListener(new android.view.View.OnClickListener({
 						onClick: function(viewarg) {
@@ -565,7 +694,7 @@ VertexClientPE.showKitsScreen = function() {
 					kitsScreenLayoutLeft.addView(combatKitButton);
 					
 					var toolsKitButton = clientButton("Tools");
-					toolsKitButton.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+					toolsKitButton.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
 					toolsKitButton.setOnClickListener(new android.view.View.OnClickListener({
 						onClick: function(viewarg) {
 							//todo
@@ -574,7 +703,7 @@ VertexClientPE.showKitsScreen = function() {
 					//kitsScreenLayoutCenter.addView(toolsKitButton);
 					
 					var kitsButtonBlue = clientButton("Unknown");
-					kitsButtonBlue.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+					kitsButtonBlue.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
 					kitsButtonBlue.setOnClickListener(new android.view.View.OnClickListener({
 						onClick: function(viewarg) {
 							//todo
@@ -582,7 +711,7 @@ VertexClientPE.showKitsScreen = function() {
 					}));
 					//kitsScreenLayoutRight.addView(kitsButtonBlue);
 					
-					kitsScreen = new android.widget.PopupWindow(kitsScreenLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
+					kitsScreen = new widget.PopupWindow(kitsScreenLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
 					kitsScreen.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.parseColor("#0080FF")));
 					kitsScreen.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
 				} catch(error) {
@@ -800,6 +929,13 @@ VertexClientPE.toggleModule = function(module) {
 				autoPlaceState = true;
 			} else if(autoPlaceState == true) {
 				autoPlaceState = false;
+			}
+			break;
+		} case "godmode": {
+			if(godModeState == false) {
+				godModeState = true;
+			} else if(godModeState == true) {
+				godModeState = false;
 			}
 			break;
 		} default: {
@@ -1578,6 +1714,16 @@ VertexClientPE.nuker = function(x, y, z) {
 	}
 }
 
+VertexClientPE.regen = function() {
+	if(Entity.getHealth(getPlayerEnt()) < 20) {
+		Player.setHealth(20);
+	}
+}
+
+VertexClientPE.godMode = function() {
+	Player.setHealth(9999);
+}
+
 VertexClientPE.autoPlace = function() {
 	var x = Player.getPointedBlockX();
 	var y = Player.getPointedBlockY();
@@ -1788,6 +1934,7 @@ var clicked_red_image = getStretchedImage(android.graphics.Bitmap.createScaledBi
 var unclicked_red_image = getStretchedImage(android.graphics.Bitmap.createScaledBitmap(trimImage(img3, 0, 0, 16, 16), 8 * GuiSize, 8 * GuiSize, false), 3.7 * GuiSize, 4 * GuiSize, 2 * GuiSize, 2 * GuiSize, getContext().getScreenWidth() / 2, getContext().getScreenHeight() / 10);
 var clicked_blue_image = getStretchedImage(android.graphics.Bitmap.createScaledBitmap(trimImage(img6, 0, 0, 16, 16), 8 * GuiSize, 8 * GuiSize, false), 3.7 * GuiSize, 4 * GuiSize, 2 * GuiSize, 2 * GuiSize, getContext().getScreenWidth() / 2, getContext().getScreenHeight() / 10);
 var unclicked_blue_image = getStretchedImage(android.graphics.Bitmap.createScaledBitmap(trimImage(img5, 0, 0, 16, 16), 8 * GuiSize, 8 * GuiSize, false), 3.7 * GuiSize, 4 * GuiSize, 2 * GuiSize, 2 * GuiSize, getContext().getScreenWidth() / 2, getContext().getScreenHeight() / 10);
+var skin_face_image = android.graphics.Bitmap.createScaledBitmap(trimImage(imgSkinFace, 0, 0, 16, 16), 8 * GuiSize, 8 * GuiSize, false);
 
 function clientButton(text, desc, color) //menu buttons
 {
@@ -1796,14 +1943,14 @@ function clientButton(text, desc, color) //menu buttons
 	}
     var display = new android.util.DisplayMetrics();
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
-    var defaultButton = new android.widget.Button(ctx);
+    var defaultButton = new Button(ctx);
     defaultButton.setText(text);
     defaultButton.setTextColor(android.graphics.Color.WHITE);
 	if(desc != null && desc != undefined) {
 		defaultButton.setOnLongClickListener(new android.view.View.OnLongClickListener() {
 			onLongClick: function(v, t) {
 				ctx.getSystemService(android.content.Context.VIBRATOR_SERVICE).vibrate(37);
-				android.widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> " + desc), 0).show();
+				widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> " + desc), 0).show();
 				return true;
 			}
 		});
@@ -1869,7 +2016,7 @@ function clientButton(text, desc, color) //menu buttons
 
 function clientTextButton(text, shadow) //menu buttons
 {
-    var defaultTextButton = new android.widget.Button(ctx);
+    var defaultTextButton = new Button(ctx);
     defaultTextButton.setText(text);
 	
 	if(shadow == true && shadow != null && shadow != undefined) {
@@ -1886,7 +2033,7 @@ function clientTextButton(text, shadow) //menu buttons
 
 function clientTextView(text, shadow) //menu buttons
 {
-    var defaultTextView = new android.widget.TextView(ctx);
+    var defaultTextView = new widget.TextView(ctx);
     defaultTextView.setText(text);
     defaultTextView.setTextColor(android.graphics.Color.WHITE);
 	
@@ -2002,7 +2149,7 @@ VertexClientPE.showSplashScreen = function() {
         ctx.runOnUiThread(new java.lang.Runnable({
             run: function() {
                 try {
-                    var mainMenuListLayout = new android.widget.LinearLayout(ctx);
+                    var mainMenuListLayout = new LinearLayout(ctx);
                     mainMenuListLayout.setOrientation(1);
                     mainMenuListLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
                     //--------Add Buttons-------//
@@ -2014,7 +2161,7 @@ VertexClientPE.showSplashScreen = function() {
 					}
 					var text = VertexClientPEMainMenuText + " - Welcome back " + ModPE.getPlayerName() + "!";
 					var TitleText = clientButton(text);
-					TitleText.setText(android.text.Html.fromHtml(text), android.widget.TextView.BufferType.SPANNABLE);
+					TitleText.setText(android.text.Html.fromHtml(text), widget.TextView.BufferType.SPANNABLE);
                     			TitleText.setTextSize(25);
 					TitleText.setGravity(android.view.Gravity.CENTER);
 					TitleText.setEllipsize(android.text.TextUtils.TruncateAt.MARQUEE);
@@ -2022,13 +2169,13 @@ VertexClientPE.showSplashScreen = function() {
 					TitleText.setSingleLine();
 					TitleText.setHorizontallyScrolling(true);
 					TitleText.setSelected(true);
-					var newLineText = new android.widget.TextView(ctx);
+					var newLineText = new widget.TextView(ctx);
 					newLineText.setText("\n\n\n");
 					newLineText.setTextSize(10);
-					var playButton = new android.widget.Button(ctx);
+					var playButton = new Button(ctx);
 					playButton.setBackground(playButtonClientGUI);
 					playButton.setGravity(android.view.Gravity.CENTER);
-					playButton.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 3, display.heightPixels / 3));
+					playButton.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 3, display.heightPixels / 3));
 					playButton.setOnTouchListener(new android.view.View.OnTouchListener() {
 						onTouch: function(v, event) {
 							playButton.setSoundEffectsEnabled(false);
@@ -2049,13 +2196,13 @@ VertexClientPE.showSplashScreen = function() {
 							return false;
 						}
 					});
-					var newLineText2 = new android.widget.TextView(ctx);
+					var newLineText2 = new widget.TextView(ctx);
 					newLineText2.setText("\n");
 					newLineText2.setTextSize(10);
-					var splashTwitterButton = new android.widget.Button(ctx);
+					var splashTwitterButton = new Button(ctx);
 					splashTwitterButton.setBackgroundDrawable(splashTwitterButtonClientGUI);
 					splashTwitterButton.setGravity(android.view.Gravity.CENTER);
-					splashTwitterButton.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 5, display.heightPixels / 5));
+					splashTwitterButton.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 5, display.heightPixels / 5));
 					splashTwitterButton.setOnTouchListener(new android.view.View.OnTouchListener() {
 						onTouch: function(v, event) {
 							splashTwitterButton.setSoundEffectsEnabled(false);
@@ -2082,12 +2229,14 @@ VertexClientPE.showSplashScreen = function() {
 							mainMenuTextList.dismiss();
 							showMenuButton();
 							VertexClientPE.clientTick();
+							//showAccountManagerButton();
 					}}));
 					splashTwitterButton.setOnClickListener(new android.view.View.OnClickListener({
 						onClick: function(viewarg) {
 							mainMenuTextList.dismiss();
 							showMenuButton();
 							VertexClientPE.clientTick();
+							//showAccountManagerButton();
 							ModPE.goToUrl("http://twitter.com/AgameR_Modder");
 					}}))
                     mainMenuListLayout.addView(TitleText);
@@ -2097,7 +2246,7 @@ VertexClientPE.showSplashScreen = function() {
                     mainMenuListLayout.addView(splashTwitterButton);
 
                     //More buttons...
-                    mainMenuTextList = new android.widget.PopupWindow(mainMenuListLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
+                    mainMenuTextList = new widget.PopupWindow(mainMenuListLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
                     mainMenuTextList.setBackgroundDrawable(backgroundClientGUI);
 					if(themeSetting == "red") {
 						mainMenuTextList.setBackgroundDrawable(backgroundRedClientGUI);
@@ -2119,39 +2268,39 @@ VertexClientPE.showSetupScreen = function() {
         ctx.runOnUiThread(new java.lang.Runnable({
             run: function() {
                 try {
-					var setupScreenLayout = new android.widget.LinearLayout(ctx);
+					var setupScreenLayout = new LinearLayout(ctx);
 					setupScreenLayout.setOrientation(1);
 					setupScreenLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
 					
-					var setupScreenLayoutBottom = new android.widget.LinearLayout(ctx);
-					setupScreenLayoutBottom.setOrientation(android.widget.LinearLayout.HORIZONTAL);
+					var setupScreenLayoutBottom = new LinearLayout(ctx);
+					setupScreenLayoutBottom.setOrientation(LinearLayout.HORIZONTAL);
 					
-					var setupScreenLayoutBottomLeft = new android.widget.LinearLayout(ctx);
+					var setupScreenLayoutBottomLeft = new LinearLayout(ctx);
 					setupScreenLayoutBottomLeft.setOrientation(1);
 					setupScreenLayoutBottomLeft.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
-					setupScreenLayoutBottomLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT));
+					setupScreenLayoutBottomLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, LinearLayout.LayoutParams.WRAP_CONTENT));
 					setupScreenLayoutBottom.addView(setupScreenLayoutBottomLeft);
 					
-					var setupScreenLayoutBottomCenter = new android.widget.LinearLayout(ctx);
+					var setupScreenLayoutBottomCenter = new LinearLayout(ctx);
 					setupScreenLayoutBottomCenter.setOrientation(1);
 					setupScreenLayoutBottomCenter.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
-					setupScreenLayoutBottomCenter.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT));
+					setupScreenLayoutBottomCenter.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, LinearLayout.LayoutParams.WRAP_CONTENT));
 					setupScreenLayoutBottom.addView(setupScreenLayoutBottomCenter);
 					
-					var setupScreenLayoutBottomRight = new android.widget.LinearLayout(ctx);
+					var setupScreenLayoutBottomRight = new LinearLayout(ctx);
 					setupScreenLayoutBottomRight.setOrientation(1);
 					setupScreenLayoutBottomRight.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
-					setupScreenLayoutBottomRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT));
+					setupScreenLayoutBottomRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, LinearLayout.LayoutParams.WRAP_CONTENT));
 					setupScreenLayoutBottom.addView(setupScreenLayoutBottomRight);
 					
 					var logo3 = android.util.Base64.decode(logoImage, 0);
-					var logoViewer3 = new android.widget.ImageView(ctx);
+					var logoViewer3 = new widget.ImageView(ctx);
 					logoViewer3.setImageBitmap(android.graphics.BitmapFactory.decodeByteArray(logo3, 0, logo3.length));
 					setupScreenLayout.addView(logoViewer3);
 					setupScreenLayout.addView(setupScreenLayoutBottom);
 					
 					var setupButtonGreen = clientButton("Green", null, "green");
-					setupButtonGreen.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+					setupButtonGreen.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
 					setupButtonGreen.setTextColor(android.graphics.Color.GREEN);
 					setupButtonGreen.setOnClickListener(new android.view.View.OnClickListener({
 						onClick: function(viewarg) {
@@ -2164,7 +2313,7 @@ VertexClientPE.showSetupScreen = function() {
 					setupScreenLayoutBottomLeft.addView(setupButtonGreen);
 					
 					var setupButtonRed = clientButton("Red", null, "red");
-					setupButtonRed.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+					setupButtonRed.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
 					setupButtonRed.setOnClickListener(new android.view.View.OnClickListener({
 						onClick: function(viewarg) {
 							setupColor = "red";
@@ -2176,7 +2325,7 @@ VertexClientPE.showSetupScreen = function() {
 					setupScreenLayoutBottomCenter.addView(setupButtonRed);
 					
 					var setupButtonBlue = clientButton("Blue", null, "blue");
-					setupButtonBlue.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+					setupButtonBlue.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
 					setupButtonBlue.setOnClickListener(new android.view.View.OnClickListener({
 						onClick: function(viewarg) {
 							setupColor = "blue";
@@ -2191,9 +2340,136 @@ VertexClientPE.showSetupScreen = function() {
 					setupText.setGravity(android.view.Gravity.CENTER);
 					setupScreenLayout.addView(setupText);
 					
-					setupScreen = new android.widget.PopupWindow(setupScreenLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
+					setupScreen = new widget.PopupWindow(setupScreenLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
 					setupScreen.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.parseColor("#0080FF")));
 					setupScreen.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
+				} catch(error) {
+					print('An error occured: ' + error);
+			}
+		}
+	}));
+}
+
+var accountManager;
+var accountManagerLayoutLeft;
+var accountManagerLayoutCenter;
+var accountManagerLayoutRight;
+
+VertexClientPE.showAccountManager = function() {
+	var display = new android.util.DisplayMetrics();
+	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
+    var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+        ctx.runOnUiThread(new java.lang.Runnable({
+            run: function() {
+                try {
+					try {
+						ModPE.readData("account_manager");
+					} catch(e) {
+						//No accounts on the list
+					}
+					var accountManagerLayout = new LinearLayout(ctx);
+					accountManagerLayout.setOrientation(1);
+					accountManagerLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					
+					var addAccountButton = clientButton("Add account");
+					addAccountButton.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+					addAccountButton.setOnClickListener(new android.view.View.OnClickListener({
+						onClick: function(viewarg) {
+							//show add account dialog
+							VertexClientPE.showAddAccountDialog();
+						}
+					}));
+					accountManagerLayout.addView(addAccountButton);
+					
+					var accountManagerScrollView = new ScrollView(ctx);
+					
+					var accountManagerLayout1 = new LinearLayout(ctx);
+					accountManagerLayout1.setOrientation(LinearLayout.HORIZONTAL);
+					
+					accountManagerScrollView.addView(accountManagerLayout1);
+					accountManagerLayout.addView(accountManagerScrollView);
+					
+					accountManagerLayoutLeft = new LinearLayout(ctx);
+					accountManagerLayoutLeft.setOrientation(1);
+					accountManagerLayoutLeft.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					accountManagerLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, LinearLayout.LayoutParams.WRAP_CONTENT));
+					accountManagerLayout1.addView(accountManagerLayoutLeft);
+					
+					accountManagerLayoutCenter = new LinearLayout(ctx);
+					accountManagerLayoutCenter.setOrientation(1);
+					accountManagerLayoutCenter.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					accountManagerLayoutCenter.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, LinearLayout.LayoutParams.WRAP_CONTENT));
+					accountManagerLayout1.addView(accountManagerLayoutCenter);
+					
+					accountManagerLayoutRight = new LinearLayout(ctx);
+					accountManagerLayoutRight.setOrientation(1);
+					accountManagerLayoutRight.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					accountManagerLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, LinearLayout.LayoutParams.WRAP_CONTENT));
+					accountManagerLayout1.addView(accountManagerLayoutRight);
+					
+					var skinImage = new android.graphics.BitmapFactory.decodeFile(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/games/com.mojang/minecraftpe/custom.png");
+					var steveImage = new android.graphics.BitmapFactory.decodeStream(ModPE.openInputStreamFromTexturePack("images/mob/steve.png"));
+					var alexImage = new android.graphics.BitmapFactory.decodeStream(ModPE.openInputStreamFromTexturePack("images/mob/alex.png"));
+					var skinViewer = new widget.ImageView(ctx);
+					var skinViewerText = new widget.TextView(ctx);
+					skinViewerText.setText("Sorry, your skin can't be viewed");
+					if(ModPE.getCurrentUsedSkin() == "Standard_Alex") {
+						skinViewer.setImageBitmap(alexImage);
+					}if(ModPE.getCurrentUsedSkin() == "Standard_Steve") {
+						skinViewer.setImageBitmap(steveImage);
+					}if(ModPE.getCurrentUsedSkin() == "Standard_Custom") {
+						skinViewer.setImageBitmap(skinImage);
+					}if(ModPE.getCurrentUsedSkin() != "Standard_Alex" && ModPE.getCurrentUsedSkin() != "Standard_Steve" && ModPE.getCurrentUsedSkin() != "Standard_Custom") {
+						accountManagerLayout.addView(skinViewerText);
+					}
+					var layoutParams = new android.widget.LinearLayout.LayoutParams(750, 750);
+					skinViewer.setLayoutParams(layoutParams);
+					//accountManagerLayout.addView(skinViewer);
+					
+					if(VertexClientPE.accounts != null) {
+						for(var i in VertexClientPE.accounts) {
+							var usernameText = new widget.TextView(ctx);
+							usernameText.setText(VertexClientPE.accounts[i].username + "\n");
+							accountManagerLayoutLeft.addView(usernameText);
+							var useButton = clientButton("Use");
+							useButton.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+							useButton.setOnClickListener(new android.view.View.OnClickListener({
+								onClick: function(viewarg) {
+									ModPE.setPlayerName(VertexClientPE.accounts[i].username.toString());
+									accountManager.dismiss();
+									showMenuButton();
+								}
+							}));
+							accountManagerLayoutRight.addView(useButton);
+						}
+					}
+					
+					var setupButtonRed = clientButton("Two");
+					setupButtonRed.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+					setupButtonRed.setOnClickListener(new android.view.View.OnClickListener({
+						onClick: function(viewarg) {
+							//name
+						}
+					}));
+					//accountManagerLayoutCenter.addView(setupButtonRed);
+					
+					var setupButtonBlue = clientButton("Test");
+					setupButtonBlue.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+					setupButtonBlue.setOnClickListener(new android.view.View.OnClickListener({
+						onClick: function(viewarg) {
+							//use
+						}
+					}));
+					//accountManagerLayoutRight.addView(setupButtonBlue);
+					
+					accountManager = new widget.PopupWindow(accountManagerLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
+					accountManager.setBackgroundDrawable(backgroundClientGUI);
+					if(themeSetting == "red") {
+						accountManager.setBackgroundDrawable(backgroundRedClientGUI);
+					}if(themeSetting == "blue") {
+						accountManager.setBackgroundDrawable(backgroundBlueClientGUI);
+					}
+					accountManager.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
 				} catch(error) {
 					print('An error occured: ' + error);
 			}
@@ -2224,7 +2500,7 @@ function newLevel() {
 			} else {
 				ctx.runOnUiThread(new java.lang.Runnable() {
 					run: function() {
-						android.widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> You have the latest version"), 0).show();
+						widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> You have the latest version"), 0).show();
 					}
 				});
 			}
@@ -2265,7 +2541,7 @@ function settingsScreen() {
         ctx.runOnUiThread(new java.lang.Runnable({
             run: function() {
                 try {
-                    var settingsMenuLayout = new android.widget.LinearLayout(ctx);
+                    var settingsMenuLayout = new LinearLayout(ctx);
                     settingsMenuLayout.setOrientation(1);
                     settingsMenuLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
 					
@@ -2274,7 +2550,7 @@ function settingsScreen() {
 					settingsTitle.setGravity(android.view.Gravity.CENTER);
 					settingsMenuLayout.addView(settingsTitle);
 					
-					var showHacksListSettingButton = new android.widget.CheckBox(ctx);
+					var showHacksListSettingButton = new widget.CheckBox(ctx);
 					showHacksListSettingButton.setText("Show hacks list");
 					showHacksListSettingButton.setTextColor(android.graphics.Color.WHITE);
 					if(showHacksListSetting == "on"){
@@ -2384,7 +2660,7 @@ function settingsScreen() {
 					settingsMenuLayout.addView(themeSettingButton);
 					settingsMenuLayout.addView(spamMessageSettingButton);
 
-                    settingsMenu = new android.widget.PopupWindow(settingsMenuLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
+                    settingsMenu = new widget.PopupWindow(settingsMenuLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
                     settingsMenu.setBackgroundDrawable(backgroundClientGUI);
 					if(themeSetting == "red") {
 						settingsMenu.setBackgroundDrawable(backgroundRedClientGUI);
@@ -2406,7 +2682,7 @@ function informationScreen() {
         ctx.runOnUiThread(new java.lang.Runnable({
             run: function() {
                 try {
-                    var informationMenuLayout = new android.widget.LinearLayout(ctx);
+                    var informationMenuLayout = new LinearLayout(ctx);
                     informationMenuLayout.setOrientation(1);
                     informationMenuLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
 					
@@ -2420,14 +2696,14 @@ function informationScreen() {
 					var websiteButton = clientButton("Website", "Show a URL of the official Vertex Client PE website");
 					websiteButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(viewarg){
-						android.widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> Vertex-Client.ml"), 0).show();
+						widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> Vertex-Client.ml"), 0).show();
 					}
 					}));
 					
 					informationMenuLayout.addView(informationText);
 					informationMenuLayout.addView(websiteButton);
 
-                    informationMenu = new android.widget.PopupWindow(informationMenuLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
+                    informationMenu = new widget.PopupWindow(informationMenuLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
                     informationMenu.setBackgroundDrawable(backgroundClientGUI);
 					if(themeSetting == "red") {
 						informationMenu.setBackgroundDrawable(backgroundRedClientGUI);
@@ -2449,29 +2725,27 @@ VertexClientPE.showTopBar = function() {
         ctx.runOnUiThread(new java.lang.Runnable({
             run: function() {
                 try {
-					var topBarLayout = new android.widget.LinearLayout(ctx);
-					topBarLayout.setOrientation(android.widget.LinearLayout.HORIZONTAL);
+					var topBarLayout = new LinearLayout(ctx);
+					topBarLayout.setOrientation(LinearLayout.HORIZONTAL);
 					topBarLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
 					
-					var topBarLayoutLeft = new android.widget.LinearLayout(ctx);
+					var topBarLayoutLeft = new LinearLayout(ctx);
 					topBarLayoutLeft.setOrientation(1);
-					//topBarLayoutLeft.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
-					topBarLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 4, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT));
+					topBarLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 4, LinearLayout.LayoutParams.WRAP_CONTENT));
 					topBarLayout.addView(topBarLayoutLeft);
 					
-					var topBarLayoutCenter = new android.widget.LinearLayout(ctx);
+					var topBarLayoutCenter = new LinearLayout(ctx);
 					topBarLayoutCenter.setOrientation(1);
 					topBarLayoutCenter.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
-					topBarLayoutCenter.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 2, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT));
+					topBarLayoutCenter.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 2, LinearLayout.LayoutParams.WRAP_CONTENT));
 					topBarLayout.addView(topBarLayoutCenter);
 					
-					var topBarLayoutRight = new android.widget.LinearLayout(ctx);
+					var topBarLayoutRight = new LinearLayout(ctx);
 					topBarLayoutRight.setOrientation(1);
-					//topBarLayoutRight.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
-					topBarLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 4, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT));
+					topBarLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 4, LinearLayout.LayoutParams.WRAP_CONTENT));
 					topBarLayout.addView(topBarLayoutRight);
 					
-					var moreButton = new android.widget.Button(ctx);
+					var moreButton = new Button(ctx);
 					moreButton.setText("...");
 					moreButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#00BFFF"), android.graphics.PorterDuff.Mode.MULTIPLY);
 					moreButton.setTextColor(android.graphics.Color.WHITE);
@@ -2482,7 +2756,7 @@ VertexClientPE.showTopBar = function() {
 					}));
 					topBarLayoutLeft.addView(moreButton);
 					
-					var exitButton = new android.widget.Button(ctx);
+					var exitButton = new Button(ctx);
 					exitButton.setText("X");
 					exitButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
 					exitButton.setTextColor(android.graphics.Color.WHITE);
@@ -2501,52 +2775,11 @@ VertexClientPE.showTopBar = function() {
 					topBarLayoutRight.addView(exitButton);
 					
 					var logo4 = android.util.Base64.decode(logoImage, 0);
-					var logoViewer4 = new android.widget.ImageView(ctx);
+					var logoViewer4 = new widget.ImageView(ctx);
 					logoViewer4.setImageBitmap(android.graphics.BitmapFactory.decodeByteArray(logo4, 0, logo4.length));
 					topBarLayoutCenter.addView(logoViewer4);
 					
-					/*var setupButtonGreen = clientButton("Green", null, "green");
-					setupButtonGreen.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
-					setupButtonGreen.setTextColor(android.graphics.Color.GREEN);
-					setupButtonGreen.setOnClickListener(new android.view.View.OnClickListener({
-						onClick: function(viewarg) {
-							setupColor = "green";
-							setupButtonGreen.setTextColor(android.graphics.Color.GREEN);
-							setupButtonRed.setTextColor(android.graphics.Color.WHITE);
-							setupButtonBlue.setTextColor(android.graphics.Color.WHITE);
-						}
-					}));
-					setupScreenLayoutBottomLeft.addView(setupButtonGreen);
-					
-					var setupButtonRed = clientButton("Red", null, "red");
-					setupButtonRed.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
-					setupButtonRed.setOnClickListener(new android.view.View.OnClickListener({
-						onClick: function(viewarg) {
-							setupColor = "red";
-							setupButtonGreen.setTextColor(android.graphics.Color.WHITE);
-							setupButtonRed.setTextColor(android.graphics.Color.RED);
-							setupButtonBlue.setTextColor(android.graphics.Color.WHITE);
-						}
-					}));
-					setupScreenLayoutBottomCenter.addView(setupButtonRed);
-					
-					var setupButtonBlue = clientButton("Blue", null, "blue");
-					setupButtonBlue.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
-					setupButtonBlue.setOnClickListener(new android.view.View.OnClickListener({
-						onClick: function(viewarg) {
-							setupColor = "blue";
-							setupButtonGreen.setTextColor(android.graphics.Color.WHITE);
-							setupButtonRed.setTextColor(android.graphics.Color.WHITE);
-							setupButtonBlue.setTextColor(android.graphics.Color.BLUE);
-						}
-					}));
-					setupScreenLayoutBottomRight.addView(setupButtonBlue);
-					
-					var setupText = clientTextView("You can always change the color on the Settings Screen.");
-					setupText.setGravity(android.view.Gravity.CENTER);
-					setupScreenLayout.addView(setupText);*/
-					
-					topBar = new android.widget.PopupWindow(topBarLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight() / 10);
+					topBar = new widget.PopupWindow(topBarLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight() / 10);
 					topBar.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.parseColor("#0080FF")));
 					topBar.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
 				} catch(error) {
@@ -2589,10 +2822,10 @@ VertexClientPE.showCombatMenu = function() {
 				
 				VertexClientPE.loadMainSettings();
 
-                vertexclientpecombatmenu = new android.widget.PopupWindow(ctx);
-                var combatMenuLayout1 = new android.widget.LinearLayout(ctx);
-                var combatMenuScrollView = new android.widget.ScrollView(ctx);
-                var combatMenuLayout = new android.widget.LinearLayout(ctx);
+                vertexclientpecombatmenu = new widget.PopupWindow(ctx);
+                var combatMenuLayout1 = new LinearLayout(ctx);
+                var combatMenuScrollView = new ScrollView(ctx);
+                var combatMenuLayout = new LinearLayout(ctx);
 				
                 combatMenuLayout.setOrientation(1);
                 combatMenuLayout1.setOrientation(1);
@@ -2621,7 +2854,7 @@ VertexClientPE.showCombatMenu = function() {
 				com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
 				
 				var killAuraBtn = clientButton("KillAura", "Automatically kills all the near entities");
-				killAuraBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				killAuraBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				killAuraBtn.setAlpha(0.54);
 				if(killAuraState == false) {
 					killAuraBtn.setTextColor(android.graphics.Color.WHITE);
@@ -2641,7 +2874,7 @@ VertexClientPE.showCombatMenu = function() {
 				}));
 				
 				var droneBtn = clientButton("Drone", "Focuses on near entities to make it easier to kill them");
-				droneBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				droneBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				droneBtn.setAlpha(0.54);
 				if(droneState == false) {
 					droneBtn.setTextColor(android.graphics.Color.WHITE);
@@ -2661,7 +2894,7 @@ VertexClientPE.showCombatMenu = function() {
 				}));
 				
 				var bowAimbotBtn = clientButton("Bow Aimbot", "Makes shooting with a bow easier");
-				bowAimbotBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				bowAimbotBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				bowAimbotBtn.setAlpha(0.54);
 				if(bowAimbotState == false) {
 					bowAimbotBtn.setTextColor(android.graphics.Color.WHITE);
@@ -2681,7 +2914,7 @@ VertexClientPE.showCombatMenu = function() {
 				}));
 				
 				var instaKillBtn = clientButton("InstaKill", "Makes you able to kill an entity in one hit!");
-				instaKillBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				instaKillBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				instaKillBtn.setAlpha(0.54);
 				if(instaKillState == false) {
 					instaKillBtn.setTextColor(android.graphics.Color.WHITE);
@@ -2701,7 +2934,7 @@ VertexClientPE.showCombatMenu = function() {
 				}));
 				
 				var regenBtn = clientButton("Regen", "Instantly refills your health");
-				regenBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				regenBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				regenBtn.setAlpha(0.54);
 				if(regenState == false) {
 					regenBtn.setTextColor(android.graphics.Color.WHITE);
@@ -2721,7 +2954,7 @@ VertexClientPE.showCombatMenu = function() {
 				}));
 				
 				var arrowGunBtn = clientButton("ArrowGun", "Automatically shoots arrows wherever you look");
-				arrowGunBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				arrowGunBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				arrowGunBtn.setAlpha(0.54);
 				if(arrowGunState == false) {
 					arrowGunBtn.setTextColor(android.graphics.Color.WHITE);
@@ -2736,6 +2969,26 @@ VertexClientPE.showCombatMenu = function() {
 					} else if(arrowGunState == true) {
 						arrowGunState = false;
 						arrowGunBtn.setTextColor(android.graphics.Color.WHITE);
+					}
+				}
+				}));
+				
+				var godModeBtn = clientButton("God Mode", "Gives you many hearts");
+				godModeBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				godModeBtn.setAlpha(0.54);
+				if(godModeState == false) {
+					godModeBtn.setTextColor(android.graphics.Color.WHITE);
+				} else if(godModeState == true) {
+					godModeBtn.setTextColor(android.graphics.Color.GREEN);
+				}
+				godModeBtn.setOnClickListener(new android.view.View.OnClickListener({
+				onClick: function(viewarg){
+					if(godModeState == false) {
+						godModeState = true;
+						godModeBtn.setTextColor(android.graphics.Color.GREEN);
+					} else if(godModeState == true) {
+						godModeState = false;
+						godModeBtn.setTextColor(android.graphics.Color.WHITE);
 					}
 				}
 				}));
@@ -2757,7 +3010,7 @@ VertexClientPE.showCombatMenu = function() {
                     onLongClick: function(v, t) {
                         combatdown = true;
                         ctx.getSystemService(android.content.Context.VIBRATOR_SERVICE).vibrate(37);
-                        android.widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> Now you can move the menu!"), 0).show();
+                        widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> Now you can move the menu!"), 0).show();
                         return true;
                     }
                 });
@@ -2789,11 +3042,12 @@ VertexClientPE.showCombatMenu = function() {
 					combatMenuLayout.addView(instaKillBtn);
 					combatMenuLayout.addView(regenBtn);
 					combatMenuLayout.addView(arrowGunBtn);
+					combatMenuLayout.addView(godModeBtn);
 				}
 
                 vertexclientpecombatmenu.setContentView(combatMenuLayout1);
 				vertexclientpecombatmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
-                vertexclientpecombatmenu.setWidth(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+                vertexclientpecombatmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
                 vertexclientpecombatmenu.setHeight(300);
                 vertexclientpecombatmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, combattpopx, combattpopy);
 
@@ -2813,10 +3067,10 @@ VertexClientPE.showBuildingMenu = function() {
             try {
 		VertexClientPE.loadMainSettings();
 
-                vertexclientpebuildingmenu = new android.widget.PopupWindow(ctx);
-                var buildingMenuLayout1 = new android.widget.LinearLayout(ctx);
-                var buildingMenuScrollView = new android.widget.ScrollView(ctx);
-                var buildingMenuLayout = new android.widget.LinearLayout(ctx);
+                vertexclientpebuildingmenu = new widget.PopupWindow(ctx);
+                var buildingMenuLayout1 = new LinearLayout(ctx);
+                var buildingMenuScrollView = new ScrollView(ctx);
+                var buildingMenuLayout = new LinearLayout(ctx);
 				
                 buildingMenuLayout.setOrientation(1);
                 buildingMenuLayout1.setOrientation(1);
@@ -2845,7 +3099,7 @@ VertexClientPE.showBuildingMenu = function() {
 				com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
 				
 				var instaMineBtn = clientButton("InstaMine", "Makes block destroy times as if you were in creative mode");
-				instaMineBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				instaMineBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				instaMineBtn.setAlpha(0.54);
 				if(instaMineState == false) {
 					instaMineBtn.setTextColor(android.graphics.Color.WHITE);
@@ -2867,7 +3121,7 @@ VertexClientPE.showBuildingMenu = function() {
 				}));
 				
 				var autoMineBtn = clientButton("AutoMine", "Automatically mines the block you're looking at");
-				autoMineBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				autoMineBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				autoMineBtn.setAlpha(0.54);
 				if(autoMineState == false) {
 					autoMineBtn.setTextColor(android.graphics.Color.WHITE);
@@ -2887,7 +3141,7 @@ VertexClientPE.showBuildingMenu = function() {
 				}));
 				
 				var stackDropBtn = clientButton("StackDrop", "Makes every block drop itself 64 times");
-				stackDropBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				stackDropBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				stackDropBtn.setAlpha(0.54);
 				if(stackDropState == false) {
 					stackDropBtn.setTextColor(android.graphics.Color.WHITE);
@@ -2907,7 +3161,7 @@ VertexClientPE.showBuildingMenu = function() {
 				}));
 				
 				var nukerBtn = clientButton("Nuker", "Automatically destroys blocks around you");
-				nukerBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				nukerBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				nukerBtn.setAlpha(0.54);
 				if(nukerState == false) {
 					nukerBtn.setTextColor(android.graphics.Color.WHITE);
@@ -2927,7 +3181,7 @@ VertexClientPE.showBuildingMenu = function() {
 				}));
 				
 				var powerExplosionsBtn = clientButton("PowerExplosions", "Makes explosions more powerful!");
-				powerExplosionsBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				powerExplosionsBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				powerExplosionsBtn.setAlpha(0.54);
 				if(powerExplosionsState == false) {
 					powerExplosionsBtn.setTextColor(android.graphics.Color.WHITE);
@@ -2947,7 +3201,7 @@ VertexClientPE.showBuildingMenu = function() {
 				}));
 				
 				var tapRemoverBtn = clientButton("TapRemover", "Removes blocks and entities on tap");
-				tapRemoverBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				tapRemoverBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				tapRemoverBtn.setAlpha(0.54);
 				if(tapRemoverState == false) {
 					tapRemoverBtn.setTextColor(android.graphics.Color.WHITE);
@@ -2967,7 +3221,7 @@ VertexClientPE.showBuildingMenu = function() {
 				}));
 				
 				var signEditorBtn = clientButton("SignEditor", "Let's you edit a sign's text");
-				signEditorBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				signEditorBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				signEditorBtn.setAlpha(0.54);
 				if(signEditorState == false) {
 					signEditorBtn.setTextColor(android.graphics.Color.WHITE);
@@ -2987,7 +3241,7 @@ VertexClientPE.showBuildingMenu = function() {
 				}));
 				
 				var tapNukerBtn = clientButton("TapNuker", "Destroys blocks wherever you tap");
-				tapNukerBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				tapNukerBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				tapNukerBtn.setAlpha(0.54);
 				if(tapNukerState == false) {
 					tapNukerBtn.setTextColor(android.graphics.Color.WHITE);
@@ -3007,7 +3261,7 @@ VertexClientPE.showBuildingMenu = function() {
 				}));
 				
 				var autoPlaceBtn = clientButton("AutoPlace", "Automatically places the block you're holding wherever you look");
-				autoPlaceBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				autoPlaceBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				autoPlaceBtn.setAlpha(0.54);
 				if(autoPlaceState == false) {
 					autoPlaceBtn.setTextColor(android.graphics.Color.WHITE);
@@ -3043,7 +3297,7 @@ VertexClientPE.showBuildingMenu = function() {
                     onLongClick: function(v, t) {
                         buildingdown = true;
                         ctx.getSystemService(android.content.Context.VIBRATOR_SERVICE).vibrate(37);
-                        android.widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> Now you can move the menu!"), 0).show();
+                        widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> Now you can move the menu!"), 0).show();
                         return true;
                     }
                 });
@@ -3080,7 +3334,7 @@ VertexClientPE.showBuildingMenu = function() {
 
                 vertexclientpebuildingmenu.setContentView(buildingMenuLayout1);
 				vertexclientpebuildingmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
-                vertexclientpebuildingmenu.setWidth(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+                vertexclientpebuildingmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
                 vertexclientpebuildingmenu.setHeight(300);
                 vertexclientpebuildingmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, buildingtpopx, buildingtpopy);
 
@@ -3100,10 +3354,10 @@ VertexClientPE.showMovementMenu = function() {
             try {
 				VertexClientPE.loadMainSettings();
 
-                vertexclientpemovementmenu = new android.widget.PopupWindow(ctx);
-                var movementMenuLayout1 = new android.widget.LinearLayout(ctx);
-                var movementMenuScrollView = new android.widget.ScrollView(ctx);
-                var movementMenuLayout = new android.widget.LinearLayout(ctx);
+                vertexclientpemovementmenu = new widget.PopupWindow(ctx);
+                var movementMenuLayout1 = new LinearLayout(ctx);
+                var movementMenuScrollView = new ScrollView(ctx);
+                var movementMenuLayout = new LinearLayout(ctx);
 				
                 movementMenuLayout.setOrientation(1);
                 movementMenuLayout1.setOrientation(1);
@@ -3132,7 +3386,7 @@ VertexClientPE.showMovementMenu = function() {
 				com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
 				
 				var flightBtn = clientButton("Flight", "Makes you able to fly even when you're in survival");
-				flightBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				flightBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				flightBtn.setAlpha(0.54);
 				if(flightState == false) {
 					flightBtn.setTextColor(android.graphics.Color.WHITE);
@@ -3154,7 +3408,7 @@ VertexClientPE.showMovementMenu = function() {
 				}));
 				
 				var autoWalkBtn = clientButton("AutoWalk", "Makes your player walk automatically");
-				autoWalkBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				autoWalkBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				autoWalkBtn.setAlpha(0.54);
 				if(autoWalkState == false) {
 					autoWalkBtn.setTextColor(android.graphics.Color.WHITE);
@@ -3174,7 +3428,7 @@ VertexClientPE.showMovementMenu = function() {
 				}));
 				
 				var wallHackBtn = clientButton("Wallhack", "Makes you able to walk through walls");
-				wallHackBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				wallHackBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				wallHackBtn.setAlpha(0.54);
 				if(wallHackState == false) {
 					wallHackBtn.setTextColor(android.graphics.Color.WHITE);
@@ -3196,7 +3450,7 @@ VertexClientPE.showMovementMenu = function() {
 				}));
 				
 				var tapTeleporterBtn = clientButton("TapTeleporter", "Makes you teleport wherever you tap");
-				tapTeleporterBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				tapTeleporterBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				tapTeleporterBtn.setAlpha(0.54);
 				if(tapTeleporterState == false) {
 					tapTeleporterBtn.setTextColor(android.graphics.Color.WHITE);
@@ -3216,7 +3470,7 @@ VertexClientPE.showMovementMenu = function() {
 				}));
 				
 				var glideBtn = clientButton("Glide", "Reduces fall damage by slowing the player down when falling");
-				glideBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				glideBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				glideBtn.setAlpha(0.54);
 				if(glideState == false) {
 					glideBtn.setTextColor(android.graphics.Color.WHITE);
@@ -3236,7 +3490,7 @@ VertexClientPE.showMovementMenu = function() {
 				}));
 				
 				var walkOnLiquidsBtn = clientButton("Walk on Liquids", "Makes your player able to walk on liquids");
-				walkOnLiquidsBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				walkOnLiquidsBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				walkOnLiquidsBtn.setAlpha(0.54);
 				if(walkOnLiquidsState == false) {
 					walkOnLiquidsBtn.setTextColor(android.graphics.Color.WHITE);
@@ -3256,7 +3510,7 @@ VertexClientPE.showMovementMenu = function() {
 				}));
 				
 				var freecamBtn = clientButton("Freecam", "Explore the world without moving the player");
-				freecamBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				freecamBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				freecamBtn.setAlpha(0.54);
 				if(freecamState == false) {
 					freecamBtn.setTextColor(android.graphics.Color.WHITE);
@@ -3278,7 +3532,7 @@ VertexClientPE.showMovementMenu = function() {
 				}));
 				
 				var highJumpBtn = clientButton("HighJump", "Makes your player jump 2 blocks high");
-				highJumpBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				highJumpBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				highJumpBtn.setAlpha(0.54);
 				if(highJumpState == false) {
 					highJumpBtn.setTextColor(android.graphics.Color.WHITE);
@@ -3298,7 +3552,7 @@ VertexClientPE.showMovementMenu = function() {
 				}));
 				
 				var timerBtn = clientButton("Timer", "Makes the speed of the game 2 times faster");
-				timerBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				timerBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				timerBtn.setAlpha(0.54);
 				if(timerState == false) {
 					timerBtn.setTextColor(android.graphics.Color.WHITE);
@@ -3336,7 +3590,7 @@ VertexClientPE.showMovementMenu = function() {
                     onLongClick: function(v, t) {
                         movementdown = true;
                         ctx.getSystemService(android.content.Context.VIBRATOR_SERVICE).vibrate(37);
-                        android.widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> Now you can move the menu!"), 0).show();
+                        widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> Now you can move the menu!"), 0).show();
                         return true;
                     }
                 });
@@ -3375,7 +3629,7 @@ VertexClientPE.showMovementMenu = function() {
 
                 vertexclientpemovementmenu.setContentView(movementMenuLayout1);
 				vertexclientpemovementmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
-                vertexclientpemovementmenu.setWidth(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+                vertexclientpemovementmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
                 vertexclientpemovementmenu.setHeight(300);
                 vertexclientpemovementmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, movementtpopx, movementtpopy);
 
@@ -3395,10 +3649,10 @@ VertexClientPE.showChatMenu = function() {
             try {
 		VertexClientPE.loadMainSettings();
 
-                vertexclientpechatmenu = new android.widget.PopupWindow(ctx);
-                var chatMenuLayout1 = new android.widget.LinearLayout(ctx);
-                var chatMenuScrollView = new android.widget.ScrollView(ctx);
-                var chatMenuLayout = new android.widget.LinearLayout(ctx);
+                vertexclientpechatmenu = new widget.PopupWindow(ctx);
+                var chatMenuLayout1 = new LinearLayout(ctx);
+                var chatMenuScrollView = new ScrollView(ctx);
+                var chatMenuLayout = new LinearLayout(ctx);
 				
                 chatMenuLayout.setOrientation(1);
                 chatMenuLayout1.setOrientation(1);
@@ -3427,7 +3681,7 @@ VertexClientPE.showChatMenu = function() {
 				com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
 				
 				var autoSpammerBtn = clientButton("AutoSpammer", "Automatically spams the chat");
-				autoSpammerBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				autoSpammerBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				autoSpammerBtn.setAlpha(0.54);
 				if(autoSpammerState == false) {
 					autoSpammerBtn.setTextColor(android.graphics.Color.WHITE);
@@ -3447,7 +3701,7 @@ VertexClientPE.showChatMenu = function() {
 				}));
 				
 				var homeCommandBtn = clientButton("/home", "Runs the /home command if the server or world you're on has it");
-				homeCommandBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				homeCommandBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				homeCommandBtn.setAlpha(0.54);
 				homeCommandBtn.setTextColor(android.graphics.Color.WHITE);
 				homeCommandBtn.setOnClickListener(new android.view.View.OnClickListener({
@@ -3474,7 +3728,7 @@ VertexClientPE.showChatMenu = function() {
                     onLongClick: function(v, t) {
                         chatdown = true;
                         ctx.getSystemService(android.content.Context.VIBRATOR_SERVICE).vibrate(37);
-                        android.widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> Now you can move the menu!"), 0).show();
+                        widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> Now you can move the menu!"), 0).show();
                         return true;
                     }
                 });
@@ -3504,7 +3758,7 @@ VertexClientPE.showChatMenu = function() {
 
                 vertexclientpechatmenu.setContentView(chatMenuLayout1);
                 vertexclientpechatmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
-                vertexclientpechatmenu.setWidth(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+                vertexclientpechatmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
                 vertexclientpechatmenu.setHeight(300);
                 vertexclientpechatmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, chattpopx, chattpopy);
 
@@ -3524,10 +3778,10 @@ VertexClientPE.showMiscMenu = function() {
             try {
 				VertexClientPE.loadMainSettings();
 
-                vertexclientpemiscmenu = new android.widget.PopupWindow(ctx);
-                var miscMenuLayout1 = new android.widget.LinearLayout(ctx);
-                var miscMenuScrollView = new android.widget.ScrollView(ctx);
-                var miscMenuLayout = new android.widget.LinearLayout(ctx);
+                vertexclientpemiscmenu = new widget.PopupWindow(ctx);
+                var miscMenuLayout1 = new LinearLayout(ctx);
+                var miscMenuScrollView = new ScrollView(ctx);
+                var miscMenuLayout = new LinearLayout(ctx);
 				
                 miscMenuLayout.setOrientation(1);
                 miscMenuLayout1.setOrientation(1);
@@ -3556,7 +3810,7 @@ VertexClientPE.showMiscMenu = function() {
 				com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
 				
 				var panicBtn = clientButton("Panic", "Disables all the hacks at once");
-				panicBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				panicBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				panicBtn.setAlpha(0.54);
 				panicBtn.setOnClickListener(new android.view.View.OnClickListener({
 				onClick: function(viewarg){
@@ -3578,7 +3832,7 @@ VertexClientPE.showMiscMenu = function() {
 				}));
 				
 				var serverEnablerButton = clientButton("Server Enabler", "Makes more hacks work on multiplayer");
-				serverEnablerButton.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				serverEnablerButton.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				serverEnablerButton.setAlpha(0.54);
 			    serverEnablerButton.setTextColor(android.graphics.Color.WHITE);
 			    serverEnablerButton.setOnClickListener(new android.view.View.OnClickListener({
@@ -3597,7 +3851,7 @@ VertexClientPE.showMiscMenu = function() {
 			    }));
 				
 				var opPermButton = clientButton("OP Perm", "Gives you OP permission");
-				opPermButton.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				opPermButton.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				opPermButton.setAlpha(0.54);
 			    opPermButton.setTextColor(android.graphics.Color.WHITE);
 			    opPermButton.setOnClickListener(new android.view.View.OnClickListener({
@@ -3608,7 +3862,7 @@ VertexClientPE.showMiscMenu = function() {
 			    }));
 				
 				var leetServerCrasherButton = clientButton("Leet Server Crasher", "Crashes Leet servers");
-				leetServerCrasherButton.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				leetServerCrasherButton.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				leetServerCrasherButton.setAlpha(0.54);
 			    leetServerCrasherButton.setTextColor(android.graphics.Color.WHITE);
 			    leetServerCrasherButton.setOnClickListener(new android.view.View.OnClickListener({
@@ -3616,12 +3870,12 @@ VertexClientPE.showMiscMenu = function() {
 						Server.sendChat("//sphere 10 20");
 						Server.sendChat("//set stone");
 						ctx.getSystemService(android.content.Context.VIBRATOR_SERVICE).vibrate(37);
-                        android.widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> The server should crash now!"), 0).show();
+                        widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> The server should crash now!"), 0).show();
 				    }
 			    }));
 				
 				var switchGamemodeButton = clientButton("Switch Gamemode", "Switches your gamemode");
-				switchGamemodeButton.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				switchGamemodeButton.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				switchGamemodeButton.setAlpha(0.54);
 			    switchGamemodeButton.setTextColor(android.graphics.Color.WHITE);
 			    switchGamemodeButton.setOnClickListener(new android.view.View.OnClickListener({
@@ -3631,7 +3885,7 @@ VertexClientPE.showMiscMenu = function() {
 			    }));
 				
 				var xRayBtn = clientButton("X-Ray", "See ores through blocks (make sure Fancy Graphics is off)");
-				xRayBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				xRayBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				xRayBtn.setAlpha(0.54);
 				if(xRayState == false) {
 					xRayBtn.setTextColor(android.graphics.Color.WHITE);
@@ -3653,7 +3907,7 @@ VertexClientPE.showMiscMenu = function() {
 				}));
 				
 				var derpBtn = clientButton("Derp", "Rotates the player all the time");
-				derpBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				derpBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				derpBtn.setAlpha(0.54);
 				if(derpState == false) {
 					derpBtn.setTextColor(android.graphics.Color.WHITE);
@@ -3673,7 +3927,7 @@ VertexClientPE.showMiscMenu = function() {
 				}));
 				
 				var autoSwitchBtn = clientButton("AutoSwitch", "Switches the item in your hand all the time");
-				autoSwitchBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				autoSwitchBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				autoSwitchBtn.setAlpha(0.54);
 				if(autoSwitchState == false) {
 					autoSwitchBtn.setTextColor(android.graphics.Color.WHITE);
@@ -3693,7 +3947,7 @@ VertexClientPE.showMiscMenu = function() {
 				}));
 				
 				var zoomBtn = clientButton("Zoom");
-				zoomBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				zoomBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				zoomBtn.setAlpha(0.54);
 				if(zoomState == false) {
 					zoomBtn.setTextColor(android.graphics.Color.WHITE);
@@ -3715,7 +3969,7 @@ VertexClientPE.showMiscMenu = function() {
 				}));
 				
 				var pizzaOrderButton = clientButton("Order a Pizza", "Order a pizza of Domino's");
-				pizzaOrderButton.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				pizzaOrderButton.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				pizzaOrderButton.setAlpha(0.54);
 			    pizzaOrderButton.setTextColor(android.graphics.Color.WHITE);
 			    pizzaOrderButton.setOnClickListener(new android.view.View.OnClickListener({
@@ -3741,7 +3995,7 @@ VertexClientPE.showMiscMenu = function() {
                     onLongClick: function(v, t) {
                         miscdown = true;
                         ctx.getSystemService(android.content.Context.VIBRATOR_SERVICE).vibrate(37);
-                        android.widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> Now you can move the menu!"), 0).show();
+                        widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> Now you can move the menu!"), 0).show();
                         return true;
                     }
                 });
@@ -3785,7 +4039,7 @@ VertexClientPE.showMiscMenu = function() {
 
                 vertexclientpemiscmenu.setContentView(miscMenuLayout1);
                 vertexclientpemiscmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
-                vertexclientpemiscmenu.setWidth(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+                vertexclientpemiscmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
                 vertexclientpemiscmenu.setHeight(300);
                 vertexclientpemiscmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, misctpopx, misctpopy);
 
@@ -3798,13 +4052,13 @@ VertexClientPE.showMiscMenu = function() {
 
 function showMenuButton() {
 	VertexClientPE.loadMainSettings();
-	var layout = new android.widget.LinearLayout(ctx);
+	var layout = new LinearLayout(ctx);
     layout.setOrientation(1);
 	var display = new android.util.DisplayMetrics();
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
     var menuBtn = clientButton("V");
     menuBtn.setTextColor(android.graphics.Color.WHITE); //Color
-	menuBtn.setLayoutParams(new android.widget.LinearLayout.LayoutParams(display.heightPixels / 10, display.heightPixels / 10));
+	menuBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 10, display.heightPixels / 10));
     menuBtn.setOnClickListener(new android.view.View.OnClickListener({
     onClick: function(viewarg){
 	hacksList.dismiss();
@@ -3822,12 +4076,42 @@ function showMenuButton() {
     }));
     layout.addView(menuBtn);
      
-    GUI = new android.widget.PopupWindow(layout, dip2px(40), dip2px(40));
+    GUI = new widget.PopupWindow(layout, dip2px(40), dip2px(40));
     GUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
 	if(mainButtonPositionSetting == "top-right") {
 		GUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 90, 0);
 	}if(mainButtonPositionSetting == "bottom-right") {
 		GUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.BOTTOM, 90, 0);
+	}
+}
+
+function showAccountManagerButton() {
+	VertexClientPE.loadMainSettings();
+	var layout = new LinearLayout(ctx);
+    layout.setOrientation(1);
+	var display = new android.util.DisplayMetrics();
+	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
+    var menuBtn = clientButton("A");
+    menuBtn.setTextColor(android.graphics.Color.WHITE); //Color
+	menuBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 10, display.heightPixels / 10));
+    menuBtn.setOnClickListener(new android.view.View.OnClickListener({
+    onClick: function(viewarg){
+	if(hacksList != null) {
+		hacksList.dismiss();
+	}
+	GUI.dismiss();
+	accountManagerGUI.dismiss();
+	VertexClientPE.showAccountManager();
+    }
+    }));
+    layout.addView(menuBtn);
+     
+    accountManagerGUI = new widget.PopupWindow(layout, dip2px(40), dip2px(40));
+    accountManagerGUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+	if(mainButtonPositionSetting == "top-right") {
+		accountManagerGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.BOTTOM, 90, 0);
+	}if(mainButtonPositionSetting == "bottom-right") {
+		accountManagerGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 90, 0);
 	}
 }
 
@@ -3838,7 +4122,7 @@ VertexClientPE.clientTick = function() {
                 .postDelayed(new java.lang.Runnable({
                     run: function() {
 						try{
-							if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false)) {
+							if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false)) {
 								VertexClientPE.isRemote = true;
 								net.zhuoweizhang.mcpelauncher.ScriptManager.isRemote = true;
 								net.zhuoweizhang.mcpelauncher.ScriptManager.setLevelFakeCallback(true, false);
@@ -3848,7 +4132,7 @@ VertexClientPE.clientTick = function() {
 							print("Use BlockLauncher v1.12.2 or above!");
 							ModPE.log(e);
 						}
-						if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false)) {
+						if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false)) {
 							VertexClientPE.isRemote = true;
 							showMenuButton();
 							//showHacksList();
@@ -3903,6 +4187,7 @@ var flightState = false;
 var autoWalkState = false;
 var bowAimbotState = false;
 var autoPlaceState = false;
+var godModeState = false;
 
 var hacksList;
 var StatesText;
@@ -3936,6 +4221,9 @@ var flightStateText = "";
 var autoWalkStateText = "";
 var bowAimbotStateText = "";
 var autoPlaceStateText = "";
+var godModeStateText = "";
+
+var enabledHacksCounter = 0;
 
 function showHacksList() {
         var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
@@ -3944,166 +4232,203 @@ function showHacksList() {
                 try {
 					var display = new android.util.DisplayMetrics();
 					com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
+
+					enabledHacksCounter = 0;
 					
-                    var hacksListLayout = new android.widget.LinearLayout(ctx);
+                    var hacksListLayout = new LinearLayout(ctx);
                     hacksListLayout.setOrientation(1);
                     hacksListLayout.setGravity(android.view.Gravity.CENTER);
 					
 					var logo2 = android.util.Base64.decode(logoImage, 0);
-					var logoViewer2 = new android.widget.ImageView(ctx);
+					var logoViewer2 = new widget.ImageView(ctx);
 					logoViewer2.setImageBitmap(android.graphics.BitmapFactory.decodeByteArray(logo2, 0, logo2.length));
-					logoViewer2.setLayoutParams(new android.widget.LinearLayout.LayoutParams(ctx.getWindowManager().getDefaultDisplay().getWidth() / 4, ctx.getWindowManager().getDefaultDisplay().getWidth() / 16));
+					logoViewer2.setLayoutParams(new LinearLayout.LayoutParams(ctx.getWindowManager().getDefaultDisplay().getWidth() / 4, ctx.getWindowManager().getDefaultDisplay().getWidth() / 16));
 
 					var VertexClientPEHacksListText = "Vertex Client PE " + CURRENT_VERSION;
                     if(autoSpammerState == true) {
                         autoSpammerStateText = " [AutoSpammer] ";
+						enabledHacksCounter++;
                     } else if(autoSpammerState == false) {
                         autoSpammerStateText = "";
                     }
                     if(zoomState == true) {
                         zoomStateText = " [Zoom] ";
+						enabledHacksCounter++;
                     } else if(zoomState == false) {
                         zoomStateText = "";
                     }
                     if(timerState == true) {
                         timerStateText = " [Timer] ";
+						enabledHacksCounter++;
                     } else if(timerState == false) {
                         timerStateText = "";
                     }
                     if(xRayState == true) {
                         xRayStateText = " [X-Ray] ";
+						enabledHacksCounter++;
                     } else if(xRayState == false) {
                         xRayStateText = "";
                     }
 					if(regenState == true) {
                         regenStateText = " [Regen] ";
+						enabledHacksCounter++;
                     } else if(regenState == false) {
                         regenStateText = "";
                     }
 					if(instaKillState == true) {
                         instaKillStateText = " [InstaKill] ";
+						enabledHacksCounter++;
                     } else if(instaKillState == false) {
                         instaKillStateText = "";
                     }
 					if(walkOnLiquidsState == true) {
                         walkOnLiquidsStateText = " [Walk on Liquids] ";
+						enabledHacksCounter++;
                     } else if(walkOnLiquidsState == false) {
                         walkOnLiquidsStateText = "";
                     }
 					if(powerExplosionsState == true) {
                         powerExplosionsStateText = " [PowerExplosions] ";
+						enabledHacksCounter++;
                     } else if(powerExplosionsState == false) {
                         powerExplosionsStateText = "";
                     }
 					if(tapTeleporterState == true) {
                         tapTeleporterStateText = " [TapTeleporter] ";
+						enabledHacksCounter++;
                     } else if(tapTeleporterState == false) {
                         tapTeleporterStateText = "";
                     }
 					if(wallHackState == true) {
                         wallHackStateText = " [Wallhack] ";
+						enabledHacksCounter++;
                     } else if(wallHackState == false) {
                         wallHackStateText = "";
                     }
 					if(arrowGunState == true) {
                         arrowGunStateText = " [ArrowGun] ";
+						enabledHacksCounter++;
                     } else if(arrowGunState == false) {
                         arrowGunStateText = "";
                     }
 					if(autoMineState == true) {
                         autoMineStateText = " [AutoMine] ";
+						enabledHacksCounter++;
                     } else if(autoMineState == false) {
                         autoMineStateText = "";
                     }
 					if(instaMineState == true) {
                         instaMineStateText = " [InstaMine] ";
+						enabledHacksCounter++;
                     } else if(instaMineState == false) {
                         instaMineStateText = "";
                     }
 					if(stackDropState == true) {
                         stackDropStateText = " [StackDrop] ";
+						enabledHacksCounter++;
                     } else if(stackDropState == false) {
                         stackDropStateText = "";
                     }
 					if(glideState == true) {
                         glideStateText = " [Glide] ";
+						enabledHacksCounter++;
                     } else if(glideState == false) {
                         glideStateText = "";
                     }
 					if(tapRemoverState == true) {
                         tapRemoverStateText = " [TapRemover] ";
+						enabledHacksCounter++;
                     } else if(tapRemoverState == false) {
                         tapRemoverStateText = "";
                     }
 					if(killAuraState == true) {
                         killAuraStateText = " [KillAura] ";
+						enabledHacksCounter++;
                     } else if(killAuraState == false) {
                         killAuraStateText = "";
                     }
 					if(nukerState == true) {
                         nukerStateText = " [Nuker] ";
+						enabledHacksCounter++;
                     } else if(nukerState == false) {
                         nukerStateText = "";
                     }
 					if(droneState == true) {
                         droneStateText = " [Drone] ";
+						enabledHacksCounter++;
                     } else if(droneState == false) {
                         droneStateText = "";
                     }
 					if(derpState == true) {
                         derpStateText = " [Derp] ";
+						enabledHacksCounter++;
                     } else if(derpState == false) {
                         derpStateText = "";
                     }
 					if(freecamState == true) {
                         freecamStateText = " [Freecam] ";
+						enabledHacksCounter++;
                     } else if(freecamState == false) {
                         freecamStateText = "";
                     }
 					if(signEditorState == true) {
                         signEditorStateText = " [SignEditor] ";
+						enabledHacksCounter++;
                     } else if(signEditorState == false) {
                         signEditorStateText = "";
                     }
 					if(tapNukerState == true) {
                         tapNukerStateText = " [TapNuker] ";
+						enabledHacksCounter++;
                     } else if(tapNukerState == false) {
                         tapNukerStateText = "";
                     }
 					if(highJumpState == true) {
                         highJumpStateText = " [HighJump] ";
+						enabledHacksCounter++;
                     } else if(highJumpState == false) {
                         highJumpStateText = "";
                     }
 					if(autoSwitchState == true) {
                         autoSwitchStateText = " [AutoSwitch] ";
+						enabledHacksCounter++;
                     } else if(autoSwitchState == false) {
                         autoSwitchStateText = "";
                     }
 					if(flightState == true) {
                         flightStateText = " [Flight] ";
+						enabledHacksCounter++;
                     } else if(flightState == false) {
                         flightStateText = "";
                     }
 					if(autoWalkState == true) {
                         autoWalkStateText = " [AutoWalk] ";
+						enabledHacksCounter++;
                     } else if(autoWalkState == false) {
                         autoWalkStateText = "";
                     }
 					if(bowAimbotState == true) {
                         bowAimbotStateText = " [Bow Aimbot] ";
+						enabledHacksCounter++;
                     } else if(bowAimbotState == false) {
                         bowAimbotStateText = "";
                     }
 					if(autoPlaceState == true) {
                         autoPlaceStateText = " [AutoPlace] ";
+						enabledHacksCounter++;
                     } else if(autoPlaceState == false) {
                         autoPlaceStateText = "";
                     }
-                    var VertexClientPEHacksListTextView = new android.widget.TextView(ctx);
+					if(godModeState == true) {
+                        godModeStateText = " [God Mode] ";
+						enabledHacksCounter++;
+                    } else if(godModeState == false) {
+                        godModeStateText = "";
+                    }
+                    var VertexClientPEHacksListTextView = new widget.TextView(ctx);
                     VertexClientPEHacksListTextView.setText(VertexClientPEHacksListText);
 					StatesText = clientTextView("Placeholder text", true);
-					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText);
+					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText);
                     VertexClientPEHacksListTextView.setTextSize(20);
                     VertexClientPEHacksListTextView.setTypeface(null, android.graphics.Typeface.BOLD);
 					VertexClientPEHacksListTextView.setTextColor(android.graphics.Color.GREEN);
@@ -4115,7 +4440,7 @@ function showHacksList() {
 					StatesText.setSelected(true);
                     hacksListLayout.addView(logoViewer2);
                     hacksListLayout.addView(StatesText);
-                    hacksList = new android.widget.PopupWindow(hacksListLayout, ctx.getWindowManager().getDefaultDisplay().getWidth() / 2, ctx.getWindowManager().getDefaultDisplay().getWidth() / 8);
+                    hacksList = new widget.PopupWindow(hacksListLayout, ctx.getWindowManager().getDefaultDisplay().getWidth() / 2, ctx.getWindowManager().getDefaultDisplay().getWidth() / 8);
                     hacksList.setBackgroundDrawable(backgroundClientGUI);
 					if(themeSetting == "red") {
 						hacksList.setBackgroundDrawable(backgroundRedClientGUI);
@@ -4138,152 +4463,189 @@ function updateHacksList() {
         ctx.runOnUiThread(new java.lang.Runnable({
             run: function() {
                 try {
+					enabledHacksCounter = 0;
+					
                     if(autoSpammerState == true) {
                         autoSpammerStateText = " [AutoSpammer] ";
+						enabledHacksCounter++;
                     } else if(autoSpammerState == false) {
                         autoSpammerStateText = "";
                     }
                     if(zoomState == true) {
                         zoomStateText = " [Zoom] ";
+						enabledHacksCounter++;
                     } else if(zoomState == false) {
                         zoomStateText = "";
                     }
                     if(timerState == true) {
                         timerStateText = " [Timer] ";
+						enabledHacksCounter++;
                     } else if(timerState == false) {
                         timerStateText = "";
                     }
                     if(xRayState == true) {
                         xRayStateText = " [X-Ray] ";
+						enabledHacksCounter++;
                     } else if(xRayState == false) {
                         xRayStateText = "";
                     }
 					if(regenState == true) {
                         regenStateText = " [Regen] ";
+						enabledHacksCounter++;
                     } else if(regenState == false) {
                         regenStateText = "";
                     }
 					if(instaKillState == true) {
                         instaKillStateText = " [InstaKill] ";
+						enabledHacksCounter++;
                     } else if(instaKillState == false) {
                         instaKillStateText = "";
                     }
 					if(walkOnLiquidsState == true) {
                         walkOnLiquidsStateText = " [Walk on Liquids] ";
+						enabledHacksCounter++;
                     } else if(walkOnLiquidsState == false) {
                         walkOnLiquidsStateText = "";
                     }
 					if(powerExplosionsState == true) {
                         powerExplosionsStateText = " [PowerExplosions] ";
+						enabledHacksCounter++;
                     } else if(powerExplosionsState == false) {
                         powerExplosionsStateText = "";
                     }
 					if(tapTeleporterState == true) {
                         tapTeleporterStateText = " [TapTeleporter] ";
+						enabledHacksCounter++;
                     } else if(tapTeleporterState == false) {
                         tapTeleporterStateText = "";
                     }
 					if(wallHackState == true) {
                         wallHackStateText = " [Wallhack] ";
+						enabledHacksCounter++;
                     } else if(wallHackState == false) {
                         wallHackStateText = "";
                     }
 					if(arrowGunState == true) {
                         arrowGunStateText = " [ArrowGun] ";
+						enabledHacksCounter++;
                     } else if(arrowGunState == false) {
                         arrowGunStateText = "";
                     }
 					if(autoMineState == true) {
                         autoMineStateText = " [AutoMine] ";
+						enabledHacksCounter++;
                     } else if(autoMineState == false) {
                         autoMineStateText = "";
                     }
 					if(instaMineState == true) {
                         instaMineStateText = " [InstaMine] ";
+						enabledHacksCounter++;
                     } else if(instaMineState == false) {
                         instaMineStateText = "";
                     }
 					if(stackDropState == true) {
                         stackDropStateText = " [StackDrop] ";
+						enabledHacksCounter++;
                     } else if(stackDropState == false) {
                         stackDropStateText = "";
                     }
 					if(glideState == true) {
                         glideStateText = " [Glide] ";
+						enabledHacksCounter++;
                     } else if(glideState == false) {
                         glideStateText = "";
                     }
 					if(tapRemoverState == true) {
                         tapRemoverStateText = " [TapRemover] ";
+						enabledHacksCounter++;
                     } else if(tapRemoverState == false) {
                         tapRemoverStateText = "";
                     }
 					if(killAuraState == true) {
                         killAuraStateText = " [KillAura] ";
+						enabledHacksCounter++;
                     } else if(killAuraState == false) {
                         killAuraStateText = "";
                     }
 					if(nukerState == true) {
                         nukerStateText = " [Nuker] ";
+						enabledHacksCounter++;
                     } else if(nukerState == false) {
                         nukerStateText = "";
                     }
 					if(droneState == true) {
                         droneStateText = " [Drone] ";
+						enabledHacksCounter++;
                     } else if(droneState == false) {
                         droneStateText = "";
                     }
 					if(derpState == true) {
                         derpStateText = " [Derp] ";
+						enabledHacksCounter++;
                     } else if(derpState == false) {
                         derpStateText = "";
                     }
 					if(freecamState == true) {
                         freecamStateText = " [Freecam] ";
+						enabledHacksCounter++;
                     } else if(freecamState == false) {
                         freecamStateText = "";
                     }
 					if(signEditorState == true) {
                         signEditorStateText = " [SignEditor] ";
+						enabledHacksCounter++;
                     } else if(signEditorState == false) {
                         signEditorStateText = "";
                     }
 					if(tapNukerState == true) {
                         tapNukerStateText = " [TapNuker] ";
+						enabledHacksCounter++;
                     } else if(tapNukerState == false) {
                         tapNukerStateText = "";
                     }
 					if(highJumpState == true) {
                         highJumpStateText = " [HighJump] ";
+						enabledHacksCounter++;
                     } else if(highJumpState == false) {
                         highJumpStateText = "";
                     }
 					if(autoSwitchState == true) {
                         autoSwitchStateText = " [AutoSwitch] ";
+						enabledHacksCounter++;
                     } else if(autoSwitchState == false) {
                         autoSwitchStateText = "";
                     }
 					if(flightState == true) {
                         flightStateText = " [Flight] ";
+						enabledHacksCounter++;
                     } else if(flightState == false) {
                         flightStateText = "";
                     }
 					if(autoWalkState == true) {
                         autoWalkStateText = " [AutoWalk] ";
+						enabledHacksCounter++;
                     } else if(autoWalkState == false) {
                         autoWalkStateText = "";
                     }
 					if(bowAimbotState == true) {
                         bowAimbotStateText = " [Bow Aimbot] ";
+						enabledHacksCounter++;
                     } else if(bowAimbotState == false) {
                         bowAimbotStateText = "";
                     }
 					if(autoPlaceState == true) {
                         autoPlaceStateText = " [AutoPlace] ";
+						enabledHacksCounter++;
                     } else if(autoPlaceState == false) {
                         autoPlaceStateText = "";
                     }
-					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText);
+					if(godModeState == true) {
+                        godModeStateText = " [God Mode] ";
+						enabledHacksCounter++;
+                    } else if(godModeState == false) {
+                        godModeStateText = "";
+                    }
+					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText);
                 } catch(error) {
                     print('An error occured: ' + error);
                 }
@@ -4326,14 +4688,15 @@ VertexClientPE.panic = function() {
 	autoWalkState = false;
 	bowAimbotState = false;
 	autoPlaceState = false;
+	godModeState = false;
 }
 
 function setupDone() {
 	var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
     ctx.runOnUiThread(new java.lang.Runnable({ run: function(){
 		try{
-			var doneLayout = new android.widget.LinearLayout(ctx);
-			var doneButton = new android.widget.Button(ctx);
+			var doneLayout = new LinearLayout(ctx);
+			var doneButton = new Button(ctx);
 			doneButton.setText("✓");//Text
 			doneButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#008000"), android.graphics.PorterDuff.Mode.MULTIPLY);
 			doneButton.setTextColor(android.graphics.Color.WHITE);
@@ -4345,11 +4708,12 @@ function setupDone() {
 					doneUI.dismiss(); //Close
 					setupScreen.dismiss();
 					showMenuButton();
+					//showAccountManagerButton();
 				}
 			}));
 			doneLayout.addView(doneButton);
 			
-			doneUI = new android.widget.PopupWindow(doneLayout, dip2px(40), dip2px(40));
+			doneUI = new widget.PopupWindow(doneLayout, dip2px(40), dip2px(40));
 			doneUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
 			doneUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
 		} catch(exception) {
@@ -4362,8 +4726,8 @@ function exit() {
     var ctxe = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
     ctxe.runOnUiThread(new java.lang.Runnable({ run: function(){
     try{
-    var xLayout = new android.widget.LinearLayout(ctxe);
-    var xButton = new android.widget.Button(ctxe);
+    var xLayout = new LinearLayout(ctxe);
+    var xButton = new Button(ctxe);
     xButton.setText("X");//Text
     xButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
     xButton.setTextColor(android.graphics.Color.WHITE);
@@ -4382,15 +4746,15 @@ function exit() {
     }));
     xLayout.addView(xButton);
 	
-    var moreLayout = new android.widget.LinearLayout(ctxe);
-    var moreButton = new android.widget.Button(ctxe);
+    var moreLayout = new LinearLayout(ctxe);
+    var moreButton = new Button(ctxe);
     moreButton.setText("...");
     moreButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#1E90FF"), android.graphics.PorterDuff.Mode.MULTIPLY);
     moreButton.setTextColor(android.graphics.Color.WHITE);
     moreButton.setOnLongClickListener(new android.view.View.OnLongClickListener() {
 	    onLongClick: function(v, t) {
 		    ctx.getSystemService(android.content.Context.VIBRATOR_SERVICE).vibrate(37);
-		    android.widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> Opens the \"More\" menu"), 0).show();
+		    widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> Opens the \"More\" menu"), 0).show();
 		    return true;
 	    }
     });
@@ -4401,11 +4765,11 @@ function exit() {
     }));
     moreLayout.addView(moreButton);
 	
-    exitUI = new android.widget.PopupWindow(xLayout, dip2px(40), dip2px(40));
+    exitUI = new widget.PopupWindow(xLayout, dip2px(40), dip2px(40));
     exitUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
     exitUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
 	
-	moreUI = new android.widget.PopupWindow(moreLayout, dip2px(40), dip2px(40));
+	moreUI = new widget.PopupWindow(moreLayout, dip2px(40), dip2px(40));
     moreUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
     moreUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
     }catch(exception){
@@ -4418,8 +4782,8 @@ function exitSettings(){
     var ctxe = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
     ctxe.runOnUiThread(new java.lang.Runnable({ run: function(){
     try{
-    var xSettingsLayout = new android.widget.LinearLayout(ctxe);
-    var xSettingsButton = new android.widget.Button(ctxe);
+    var xSettingsLayout = new LinearLayout(ctxe);
+    var xSettingsButton = new Button(ctxe);
     xSettingsButton.setText('X');//Text
     xSettingsButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
     xSettingsButton.setTextColor(android.graphics.Color.WHITE);
@@ -4433,7 +4797,7 @@ function exitSettings(){
     }));
     xSettingsLayout.addView(xSettingsButton);
 	
-    exitSettingsUI = new android.widget.PopupWindow(xSettingsLayout, dip2px(40), dip2px(40));
+    exitSettingsUI = new widget.PopupWindow(xSettingsLayout, dip2px(40), dip2px(40));
     exitSettingsUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
     exitSettingsUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
     }catch(exception){
@@ -4446,8 +4810,8 @@ function exitInformation(){
     var ctxe = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
     ctxe.runOnUiThread(new java.lang.Runnable({ run: function(){
     try{
-    var xInformationLayout = new android.widget.LinearLayout(ctxe);
-    var xInformationButton = new android.widget.Button(ctxe);
+    var xInformationLayout = new LinearLayout(ctxe);
+    var xInformationButton = new Button(ctxe);
     xInformationButton.setText('X');//Text
     xInformationButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
     xInformationButton.setTextColor(android.graphics.Color.WHITE);
@@ -4461,7 +4825,7 @@ function exitInformation(){
     }));
     xInformationLayout.addView(xInformationButton);
 	
-    exitInformationUI = new android.widget.PopupWindow(xInformationLayout, dip2px(40), dip2px(40));
+    exitInformationUI = new widget.PopupWindow(xInformationLayout, dip2px(40), dip2px(40));
     exitInformationUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
     exitInformationUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
     }catch(exception){
@@ -4494,9 +4858,7 @@ function modTick() {
 		chatHook(spamMessage);
 		Server.sendChat(spamMessage);
 	}if(regenState == true) {
-		if(Entity.getHealth(getPlayerEnt()) < 20) {
-			Player.setHealth(20);
-		}
+		VertexClientPE.regen();
 	}if(walkOnLiquidsState == true) {
 		if(Level.getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) == 8 || Level.getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) == 9 || Level.getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) == 10 || Level.getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) == 10) {
 			setVelY(Player.getEntity(), 0);
@@ -4660,6 +5022,8 @@ function modTick() {
 		VertexClientPE.autoWalk();
 	}if(autoPlaceState == true) {
 		VertexClientPE.autoPlace();
+	}if(godModeState == true) {
+		VertexClientPE.godMode();
 	}
 }
 	
