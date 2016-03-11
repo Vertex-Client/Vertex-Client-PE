@@ -12,10 +12,12 @@
 // #####################
 
 var widget = android.widget;
+var graphics = android.graphics;
 var LinearLayout = widget.LinearLayout;
 var ScrollView = widget.ScrollView;
 var Button = widget.Button;
 var EditText = widget.EditText;
+var Point = graphics.Point;
 
 // ####################
 // # CLIENT FUNCTIONS #
@@ -33,6 +35,7 @@ const CURRENT_VERSION = "1.2 Alpha";
 const TARGET_VERSION = "MCPE v0.14.x alpha";
 var latestVersion;
 var latestPocketEditionVersion;
+var news;
 
 var showingMenu = false;
 var serverEnabler = false;
@@ -2142,6 +2145,48 @@ VertexClientPE.checkForUpdates = function() {
     }
 }
 
+VertexClientPE.loadNews = function() {
+    try {
+        // download content
+        var url = new java.net.URL("https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/news/News");
+        var connection = url.openConnection();
+
+        // get content
+        newsInputStream = connection.getInputStream();
+
+        // read result
+        var loadedNews = "";
+        var bufferedNewsReader = new java.io.BufferedReader(new java.io.InputStreamReader(newsInputStream));
+        var rowNews = "";
+        while((rowNews = bufferedNewsReader.readLine()) != null) {
+            loadedNews += rowNews;
+        }
+		news = loadedNews.toString();
+
+        // close what needs to be closed
+        bufferedNewsReader.close();
+
+        // test
+        //clientMessage(CURRENT_VERSION + " " + latestVersion);
+    } catch(err) {
+		news = "News couldn't be loaded";
+        ModPE.log("[Vertex Client PE] VertexClientPE.loadNews() caught an error: " + err);
+    }
+}
+
+new java.lang.Thread(new java.lang.Runnable() {
+	run: function() {
+		VertexClientPE.loadNews();
+		var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+        ctx.runOnUiThread(new java.lang.Runnable({
+            run: function() {
+				ctx.getSystemService(android.content.Context.VIBRATOR_SERVICE).vibrate(37);
+				widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> " + news), 0).show();
+			}
+		}));
+	}
+}).start();
+
 VertexClientPE.showSplashScreen = function() {
 	var display = new android.util.DisplayMetrics();
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
@@ -2162,7 +2207,7 @@ VertexClientPE.showSplashScreen = function() {
 					var text = VertexClientPEMainMenuText + " - Welcome back " + ModPE.getPlayerName() + "!";
 					var TitleText = clientButton(text);
 					TitleText.setText(android.text.Html.fromHtml(text), widget.TextView.BufferType.SPANNABLE);
-                    			TitleText.setTextSize(25);
+                    TitleText.setTextSize(25);
 					TitleText.setGravity(android.view.Gravity.CENTER);
 					TitleText.setEllipsize(android.text.TextUtils.TruncateAt.MARQUEE);
 					TitleText.setMarqueeRepeatLimit(-1);
@@ -2789,28 +2834,35 @@ VertexClientPE.showTopBar = function() {
 	}));
 }
 
+var display = new android.util.DisplayMetrics();
+com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
+var size = new Point();
+ctx.getWindowManager().getDefaultDisplay().getRealSize(size);
+var screenWidth = size.x;
+var screenHeight = size.y;
+
 var vertexclientpemenu = null;
 var menuBtn = null;
 
-var combattpopx=400,combattpopy=0;
-var combatmX,combatmY;
-var combatdown=false;
+var combattpopx = screenWidth / 3, combattpopy = 0;
+var combatmX, combatmY;
+var combatdown = false;
 
-var buildingtpopx=800,buildingtpopy=300;
-var buildingmX,buildingmY;
-var buildingdown=false;
+var buildingtpopx = Math.floor(screenWidth / 3 + screenWidth / 3), buildingtpopy = screenHeight / 2.25;
+var buildingmX, buildingmY;
+var buildingdown = false;
 
-var movementtpopx=400,movementtpopy=300;
-var movementmX,movementmY;
-var movementdown=false;
+var movementtpopx = screenWidth / 3, movementtpopy = screenHeight / 2.25;
+var movementmX, movementmY;
+var movementdown = false;
 
-var chattpopx=0,chattpopy=0;
-var chatmX,chatmY;
-var chatdown=false;
+var chattpopx = 0, chattpopy = 0;
+var chatmX, chatmY;
+var chatdown = false;
 
-var misctpopx=0,misctpopy=300;
-var miscmX,miscmY;
-var miscdown=false;
+var misctpopx = 0, misctpopy = screenHeight / 2.25;
+var miscmX, miscmY;
+var miscdown = false;
 
 var combatMenuShown = false;
 
@@ -3048,7 +3100,7 @@ VertexClientPE.showCombatMenu = function() {
                 vertexclientpecombatmenu.setContentView(combatMenuLayout1);
 				vertexclientpecombatmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
                 vertexclientpecombatmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
-                vertexclientpecombatmenu.setHeight(300);
+                vertexclientpecombatmenu.setHeight(screenHeight / 2.25);
                 vertexclientpecombatmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, combattpopx, combattpopy);
 
             } catch(error) {
@@ -3335,7 +3387,7 @@ VertexClientPE.showBuildingMenu = function() {
                 vertexclientpebuildingmenu.setContentView(buildingMenuLayout1);
 				vertexclientpebuildingmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
                 vertexclientpebuildingmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
-                vertexclientpebuildingmenu.setHeight(300);
+                vertexclientpebuildingmenu.setHeight(screenHeight / 2.25);
                 vertexclientpebuildingmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, buildingtpopx, buildingtpopy);
 
             } catch(error) {
@@ -3630,7 +3682,7 @@ VertexClientPE.showMovementMenu = function() {
                 vertexclientpemovementmenu.setContentView(movementMenuLayout1);
 				vertexclientpemovementmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
                 vertexclientpemovementmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
-                vertexclientpemovementmenu.setHeight(300);
+                vertexclientpemovementmenu.setHeight(screenHeight / 2.25);
                 vertexclientpemovementmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, movementtpopx, movementtpopy);
 
             } catch(error) {
@@ -3759,7 +3811,7 @@ VertexClientPE.showChatMenu = function() {
                 vertexclientpechatmenu.setContentView(chatMenuLayout1);
                 vertexclientpechatmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
                 vertexclientpechatmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
-                vertexclientpechatmenu.setHeight(300);
+                vertexclientpechatmenu.setHeight(screenHeight / 2.25);
                 vertexclientpechatmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, chattpopx, chattpopy);
 
             } catch(error) {
@@ -4040,7 +4092,7 @@ VertexClientPE.showMiscMenu = function() {
                 vertexclientpemiscmenu.setContentView(miscMenuLayout1);
                 vertexclientpemiscmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
                 vertexclientpemiscmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
-                vertexclientpemiscmenu.setHeight(300);
+                vertexclientpemiscmenu.setHeight(screenHeight / 2.25);
                 vertexclientpemiscmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, misctpopx, misctpopy);
 
             } catch(error) {
