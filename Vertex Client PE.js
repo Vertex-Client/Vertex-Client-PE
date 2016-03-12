@@ -2807,6 +2807,8 @@ function settingsScreen() {
 						settingsMenu.setBackgroundDrawable(backgroundRedClientGUI);
 					}if(themeSetting == "blue") {
 						settingsMenu.setBackgroundDrawable(backgroundBlueClientGUI);
+					}if(themeSetting == "purple") {
+						settingsMenu.setBackgroundDrawable(backgroundPurpleClientGUI);
 					}
                     settingsMenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
                 } catch(error) {
@@ -2850,6 +2852,8 @@ function informationScreen() {
 						informationMenu.setBackgroundDrawable(backgroundRedClientGUI);
 					}if(themeSetting == "blue") {
 						informationMenu.setBackgroundDrawable(backgroundBlueClientGUI);
+					}if(themeSetting == "purple") {
+						informationMenu.setBackgroundDrawable(backgroundPurpleClientGUI);
 					}
                     informationMenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
                 } catch(error) {
