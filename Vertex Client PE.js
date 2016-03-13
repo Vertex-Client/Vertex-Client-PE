@@ -43,7 +43,7 @@ var serverEnabler = false;
 var setupColor = "green";
 
 //settings
-var showHacksListSetting = "on";
+var hacksListModeSetting = "on";
 var mainButtonPositionSetting = "top-right";
 var healthTagsSetting = "off";
 var themeSetting = "green";
@@ -58,6 +58,7 @@ var exitUI;
 var vertexclientpemiscmenu;
 var settingsMenu;
 var informationMenu;
+var topBar;
 
 var nameColor = "§b";
 var healthColor = "§c";
@@ -1758,7 +1759,8 @@ VertexClientPE.regen = function() {
 }
 
 VertexClientPE.godMode = function() {
-	Player.setHealth(9999);
+	Entity.setMaxHealth(getPlayerEnt(), 10000);
+	Player.setHealth(10000);
 }
 
 VertexClientPE.autoPlace = function() {
@@ -1770,6 +1772,12 @@ VertexClientPE.autoPlace = function() {
 	var blockData = Player.getCarriedItemData();
 	if(blockId < 257) {
 		setTile(x-(side==4?1:0)+(side==5?1:0)+0.5,y-(side==0?1:0)+(side==1?1:0)+0.5,z-(side==2?1:0)+(side==3?1:0)+0.5, blockId, blockData);
+	}
+}
+
+VertexClientPE.autoLeave = function() {
+	if(Entity.getHealth(getPlayerEnt()) <= 4) {
+		ModPE.leaveGame();
 	}
 }
 
@@ -1873,7 +1881,7 @@ VertexClientPE.saveMainSettings = function() {
     var newFile = new java.io.File(settingsPath, "vertexclientpe_settings.txt");
     newFile.createNewFile();
     var outWrite = new java.io.OutputStreamWriter(new java.io.FileOutputStream(newFile));
-    outWrite.append(showHacksListSetting.toString());
+    outWrite.append(hacksListModeSetting.toString());
     outWrite.append("," + mainButtonPositionSetting.toString());
     outWrite.append("," + healthTagsSetting.toString());
     outWrite.append("," + themeSetting.toString());
@@ -1892,7 +1900,7 @@ VertexClientPE.loadMainSettings = function() {
     while((ch = fos.read()) != -1)
         str.append(java.lang.Character(ch));
 	if(str.toString().split(",")[0] != null && str.toString().split(",")[0] != undefined) {
-    mainButtonPositionSetting = str.toString().split(",")[0]; //Here we split text by ","
+    hacksListModeSetting = str.toString().split(",")[0]; //Here we split text by ","
 	}
 	if(str.toString().split(",")[1] != null && str.toString().split(",")[1] != undefined) {
     mainButtonPositionSetting = str.toString().split(",")[1]; //Here we split text by ","
@@ -2684,28 +2692,33 @@ function settingsScreen() {
 					settingsTitle.setGravity(android.view.Gravity.CENTER);
 					settingsMenuLayout.addView(settingsTitle);
 					
-					var showHacksListSettingButton = new widget.CheckBox(ctx);
-					showHacksListSettingButton.setText("Show hacks list");
-					showHacksListSettingButton.setTextColor(android.graphics.Color.WHITE);
-					if(showHacksListSetting == "on"){
-					showHacksListSettingButton.setChecked(true);
-					}else{
-					showHacksListSettingButton.setChecked(false);
+					var hacksListModeSettingButton = clientButton("Hacks List Mode");
+					if(hacksListModeSetting == "on") {
+						hacksListModeSettingButton.setText("Hacks List Mode | Normal");
+					} else if(hacksListModeSetting == "counter") {
+						hacksListModeSettingButton.setText("Hacks List Mode | Counter");
+					} else if(hacksListModeSetting == "off") {
+						hacksListModeSettingButton.setText("Hacks List Mode | Hidden");
 					}
-					showHacksListSettingButton.setOnClickListener(new android.view.View.OnClickListener({
-					onClick: function(viewarg){
-					if(showHacksListSetting == "off"){
-					showHacksListSetting = "on";
-					showHacksListSettingButton.setChecked(true);
-					VertexClientPE.saveMainSettings();
-					VertexClientPE.loadMainSettings();
-					}else{
-					showHacksListSetting = "off";
-					showHacksListSettingButton.setChecked(false);
-					VertexClientPE.saveMainSettings();
-					VertexClientPE.loadMainSettings();
-					}
-					}
+					hacksListModeSettingButton.setOnClickListener(new android.view.View.OnClickListener({
+						onClick: function(viewarg){
+							if(hacksListModeSetting == "off") {
+								hacksListModeSetting = "on";
+								hacksListModeSettingButton.setText("Hacks List Mode | Normal");
+								VertexClientPE.saveMainSettings();
+								VertexClientPE.loadMainSettings();
+							} else if(hacksListModeSetting == "on"){
+								hacksListModeSetting = "counter";
+								hacksListModeSettingButton.setText("Hacks List Mode | Counter");
+								VertexClientPE.saveMainSettings();
+								VertexClientPE.loadMainSettings();
+							} else if(hacksListModeSetting == "counter"){
+								hacksListModeSetting = "off";
+								hacksListModeSettingButton.setText("Hacks List Mode | Hidden");
+								VertexClientPE.saveMainSettings();
+								VertexClientPE.loadMainSettings();
+							}
+						}
 					}));
 					
 					var mainButtonPositionSettingButton = clientButton("Main button position", "Sets the main menu's button position");
@@ -2795,7 +2808,7 @@ function settingsScreen() {
 					}
 					}));
 					
-					settingsMenuLayout.addView(showHacksListSettingButton);
+					settingsMenuLayout.addView(hacksListModeSettingButton);
 					settingsMenuLayout.addView(mainButtonPositionSettingButton);
 					settingsMenuLayout.addView(healthTagsSettingButton);
 					settingsMenuLayout.addView(themeSettingButton);
@@ -3147,6 +3160,30 @@ VertexClientPE.showCombatMenu = function() {
 					} else if(godModeState == true) {
 						godModeState = false;
 						godModeBtn.setTextColor(android.graphics.Color.WHITE);
+						Entity.setMaxHealth(getPlayerEnt(), 20);
+						Player.setHealth(20);
+					}
+				}
+				}));
+				
+				var autoLeaveBtn = clientButton("AutoLeave", "Automatically leaves the world/server when your health is below 5");
+				autoLeaveBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				autoLeaveBtn.setAlpha(0.54);
+				if(autoLeaveState == false) {
+					autoLeaveBtn.setTextColor(android.graphics.Color.WHITE);
+				} else if(autoLeaveState == true) {
+					autoLeaveBtn.setTextColor(android.graphics.Color.GREEN);
+				}
+				autoLeaveBtn.setOnClickListener(new android.view.View.OnClickListener({
+				onClick: function(viewarg){
+					if(autoLeaveState == false) {
+						autoLeaveState = true;
+						autoLeaveBtn.setTextColor(android.graphics.Color.GREEN);
+					} else if(autoLeaveState == true) {
+						autoLeaveState = false;
+						autoLeaveBtn.setTextColor(android.graphics.Color.WHITE);
+						Entity.setMaxHealth(getPlayerEnt(), 20);
+						Player.setHealth(20);
 					}
 				}
 				}));
@@ -3202,6 +3239,7 @@ VertexClientPE.showCombatMenu = function() {
 					combatMenuLayout.addView(arrowGunBtn);
 					combatMenuLayout.addView(godModeBtn);
 				}
+				combatMenuLayout.addView(autoLeaveBtn);
 
                 vertexclientpecombatmenu.setContentView(combatMenuLayout1);
 				vertexclientpecombatmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -4334,15 +4372,6 @@ function dip2px(dips){
     var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
     return Math.ceil(dips * ctx.getResources().getDisplayMetrics().density);
 }
-    //Add menu button
-    var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
-    ctx.runOnUiThread(new java.lang.Runnable({ run: function(){
-    try{
-		//showMenuButton();
-    }catch(err){
-    print('An error occured: ' + err);
-    }
-    }}));
 	
 var autoSpammerState = false;
 var zoomState = false;
@@ -4374,6 +4403,7 @@ var autoWalkState = false;
 var bowAimbotState = false;
 var autoPlaceState = false;
 var godModeState = false;
+var autoLeaveState = false;
 
 var hacksList;
 var StatesText;
@@ -4408,6 +4438,7 @@ var autoWalkStateText = "";
 var bowAimbotStateText = "";
 var autoPlaceStateText = "";
 var godModeStateText = "";
+var autoLeaveStateText = "";
 
 var enabledHacksCounter = 0;
 
@@ -4611,10 +4642,20 @@ function showHacksList() {
                     } else if(godModeState == false) {
                         godModeStateText = "";
                     }
+					if(autoLeaveState == true) {
+                        autoLeaveStateText = " [AutoLeave] ";
+						enabledHacksCounter++;
+                    } else if(autoLeaveState == false) {
+                        autoLeaveStateText = "";
+                    }
                     var VertexClientPEHacksListTextView = new widget.TextView(ctx);
                     VertexClientPEHacksListTextView.setText(VertexClientPEHacksListText);
 					StatesText = clientTextView("Placeholder text", true);
-					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText);
+					if(hacksListModeSetting == "on") {
+						StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText);
+					} else if(hacksListModeSetting == "counter") {
+						StatesText.setText(enabledHacksCounter.toString());
+					}
                     VertexClientPEHacksListTextView.setTextSize(20);
                     VertexClientPEHacksListTextView.setTypeface(null, android.graphics.Typeface.BOLD);
 					VertexClientPEHacksListTextView.setTextColor(android.graphics.Color.GREEN);
@@ -4636,7 +4677,7 @@ function showHacksList() {
 						hacksList.setBackgroundDrawable(backgroundPurpleClientGUI);
 					}
                     hacksList.setTouchable(false);
-					if(showHacksListSetting != "off") {
+					if(hacksListModeSetting != "off") {
                     hacksList.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
 					}
                 } catch(error) {
@@ -4833,7 +4874,18 @@ function updateHacksList() {
                     } else if(godModeState == false) {
                         godModeStateText = "";
                     }
-					StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText);
+					if(autoLeaveState == true) {
+                        autoLeaveStateText = " [AutoLeave] ";
+						enabledHacksCounter++;
+                    } else if(autoLeaveState == false) {
+                        autoLeaveStateText = "";
+                    }
+					
+					if(hacksListModeSetting == "on") {
+						StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText);
+					} else if(hacksListModeSetting == "counter") {
+						StatesText.setText(enabledHacksCounter.toString());
+					}
                 } catch(error) {
                     print('An error occured: ' + error);
                 }
@@ -4877,6 +4929,7 @@ VertexClientPE.panic = function() {
 	bowAimbotState = false;
 	autoPlaceState = false;
 	godModeState = false;
+	autoLeaveState = false;
 }
 
 function setupDone() {
@@ -5212,6 +5265,8 @@ function modTick() {
 		VertexClientPE.autoPlace();
 	}if(godModeState == true) {
 		VertexClientPE.godMode();
+	}if(autoLeaveState == true) {
+		VertexClientPE.autoLeave();
 	}
 }
 	
