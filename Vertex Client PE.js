@@ -970,6 +970,13 @@ VertexClientPE.toggleModule = function(module) {
 				godModeState = false;
 			}
 			break;
+		} case "autoleave": {
+			if(autoLeaveState == false) {
+				autoLeaveState = true;
+			} else if(autoLeaveState == true) {
+				autoLeaveState = false;
+			}
+			break;
 		} default: {
 			VertexClientPE.clientMessage(ChatColor.RED + "Module \'" + module + "\' not found!");
 			sendMessage = false;
