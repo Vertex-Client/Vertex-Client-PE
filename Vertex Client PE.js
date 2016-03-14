@@ -977,6 +977,13 @@ VertexClientPE.toggleModule = function(module) {
 				autoLeaveState = false;
 			}
 			break;
+		} case "nohurt": {
+			if(noHurtState == false) {
+				noHurtState = true;
+			} else if(noHurtState == true) {
+				noHurtState = false;
+			}
+			break;
 		} default: {
 			VertexClientPE.clientMessage(ChatColor.RED + "Module \'" + module + "\' not found!");
 			sendMessage = false;
@@ -3194,6 +3201,26 @@ VertexClientPE.showCombatMenu = function() {
 					}
 				}
 				}));
+				
+				var noHurtBtn = clientButton("NoHurt", "Prevents you from getting hurt");
+				noHurtBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				noHurtBtn.setAlpha(0.54);
+				if(noHurtState == false) {
+					noHurtBtn.setTextColor(android.graphics.Color.WHITE);
+				} else if(noHurtState == true) {
+					noHurtBtn.setTextColor(android.graphics.Color.GREEN);
+				}
+				noHurtBtn.setOnClickListener(new android.view.View.OnClickListener({
+				onClick: function(viewarg){
+					if(noHurtState == false) {
+						noHurtState = true;
+						noHurtBtn.setTextColor(android.graphics.Color.GREEN);
+					} else if(noHurtState == true) {
+						noHurtState = false;
+						noHurtBtn.setTextColor(android.graphics.Color.WHITE);
+					}
+				}
+				}));
 
 				combatTitle.setOnClickListener(new android.view.View.OnClickListener() {
                     onClick: function(viewarg) {
@@ -3245,6 +3272,7 @@ VertexClientPE.showCombatMenu = function() {
 					combatMenuLayout.addView(regenBtn);
 					combatMenuLayout.addView(arrowGunBtn);
 					combatMenuLayout.addView(godModeBtn);
+					combatMenuLayout.addView(noHurtBtn);
 				}
 				combatMenuLayout.addView(autoLeaveBtn);
 
@@ -4411,6 +4439,7 @@ var bowAimbotState = false;
 var autoPlaceState = false;
 var godModeState = false;
 var autoLeaveState = false;
+var noHurtState = false;
 
 var hacksList;
 var StatesText;
@@ -4446,6 +4475,7 @@ var bowAimbotStateText = "";
 var autoPlaceStateText = "";
 var godModeStateText = "";
 var autoLeaveStateText = "";
+var noHurtStateText = "";
 
 var enabledHacksCounter = 0;
 
@@ -4655,11 +4685,17 @@ function showHacksList() {
                     } else if(autoLeaveState == false) {
                         autoLeaveStateText = "";
                     }
+					if(noHurtState == true) {
+                        noHurtStateText = " [NoHurt] ";
+						enabledHacksCounter++;
+                    } else if(noHurtState == false) {
+                        noHurtStateText = "";
+                    }
                     var VertexClientPEHacksListTextView = new widget.TextView(ctx);
                     VertexClientPEHacksListTextView.setText(VertexClientPEHacksListText);
 					StatesText = clientTextView("Placeholder text", true);
 					if(hacksListModeSetting == "on") {
-						StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText);
+						StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText);
 					} else if(hacksListModeSetting == "counter") {
 						StatesText.setText(enabledHacksCounter.toString());
 					}
@@ -4887,9 +4923,15 @@ function updateHacksList() {
                     } else if(autoLeaveState == false) {
                         autoLeaveStateText = "";
                     }
+					if(noHurtState == true) {
+                        noHurtStateText = " [NoHurt] ";
+						enabledHacksCounter++;
+                    } else if(noHurtState == false) {
+                        noHurtStateText = "";
+                    }
 					
 					if(hacksListModeSetting == "on") {
-						StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText);
+						StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText);
 					} else if(hacksListModeSetting == "counter") {
 						StatesText.setText(enabledHacksCounter.toString());
 					}
@@ -4937,6 +4979,7 @@ VertexClientPE.panic = function() {
 	autoPlaceState = false;
 	godModeState = false;
 	autoLeaveState = false;
+	noHurtState = false;
 }
 
 function setupDone() {
@@ -5528,22 +5571,30 @@ function destroyBlock(x, y, z, side) {
 			VertexClientPE.nuker(x, y, z);
 		}
 	}
-	
-	function attackHook(attacker, victim) {
-		if(instaKillState == true) {
-			if(Player.getEntity() == attacker) {
-				Entity.setHealth(victim, 1);
-			}
-		}if(tapRemoverState == true) {
-			if(Player.getEntity() == attacker) {
-				preventDefault();
-				Entity.remove(victim);
-			}
-		}if(freecamState == true) {
+
+function attackHook(attacker, victim) {
+	if(instaKillState == true) {
+		if(Player.getEntity() == attacker) {
+			Entity.setHealth(victim, 1);
+		}
+	}if(tapRemoverState == true) {
+		if(Player.getEntity() == attacker) {
+			preventDefault();
+			Entity.remove(victim);
+		}
+	}if(freecamState == true) {
+		preventDefault();
+	}
+}
+
+function entityHurtHook(a, v, halfhearts) {
+	if(noHurtState == true) {
+		if(v == getPlayerEnt()) {
 			preventDefault();
 		}
 	}
-	
+}
+
 function entityAddedHook(entity) {
 	if(bowAimbotState == true) {
 		if(Entity.getEntityTypeId(entity) == EntityType.ARROW) {
