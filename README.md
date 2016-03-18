@@ -5,6 +5,7 @@ More information: http://Vertex-Client.ml/
 
 ### Todo
 - [ ] Kits UI
+- [ ] Account Manager
 - [ ] Freecam
 - [ ] AutoBuild
 - [ ] BuildRandom
