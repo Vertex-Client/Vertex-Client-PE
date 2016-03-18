@@ -11,5 +11,8 @@ More information: http://Vertex-Client.ml/
 - [ ] ChestESP
 - [ ] EntityESP
 - [ ] Twerk
+- [ ] CoordsDisplay
+- [ ] FastWalk
+- [ ] EnderProjectiles
 
 ![Vertex Client PE](http://i.imgur.com/onBWDEI.png)
