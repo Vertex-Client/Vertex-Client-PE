@@ -8,7 +8,6 @@ More information: http://Vertex-Client.ml/
 - [ ] Freecam
 - [ ] AutoBuild
 - [ ] BuildRandom
-- [ ] ChestESP
 - [ ] EntityESP
 - [ ] Twerk
 - [ ] CoordsDisplay
