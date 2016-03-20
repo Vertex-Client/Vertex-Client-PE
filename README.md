@@ -13,6 +13,6 @@ More information: http://Vertex-Client.ml/
 - [ ] Twerk
 - [ ] CoordsDisplay
 - [ ] FastWalk
-- [ ] EnderProjectiles
+- [x] EnderProjectiles
 
 ![Vertex Client PE](http://i.imgur.com/onBWDEI.png)
