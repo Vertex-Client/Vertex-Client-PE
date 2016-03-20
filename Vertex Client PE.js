@@ -984,6 +984,13 @@ VertexClientPE.toggleModule = function(module) {
 				noHurtState = false;
 			}
 			break;
+		} case "enderprojectiles": {
+			if(enderProjectilesState == false) {
+				enderProjectilesState = true;
+			} else if(enderProjectilesState == true) {
+				enderProjectilesState = false;
+			}
+			break;
 		} default: {
 			VertexClientPE.clientMessage(ChatColor.RED + "Module \'" + module + "\' not found!");
 			sendMessage = false;
@@ -1110,7 +1117,6 @@ VertexClientPE.commandManager = function(command) {
 			VertexClientPE.showJavascriptConsoleDialog();
 			break;
 		case ".say": //9
-			clientMessage("<" + ModPE.getPlayerName() + "> " + command[1]);
 			Server.sendChat(command[1]);
 			break;
 		default:
@@ -3786,6 +3792,26 @@ VertexClientPE.showMovementMenu = function() {
 				}
 				}));
 				
+				var enderProjectilesBtn = clientButton("EnderProjectiles", "Turns every projectile into an Ender Pearl");
+				enderProjectilesBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				enderProjectilesBtn.setAlpha(0.54);
+				if(enderProjectilesState == false) {
+					enderProjectilesBtn.setTextColor(android.graphics.Color.WHITE);
+				} else if(enderProjectilesState == true) {
+					enderProjectilesBtn.setTextColor(android.graphics.Color.GREEN);
+				}
+				enderProjectilesBtn.setOnClickListener(new android.view.View.OnClickListener({
+				onClick: function(viewarg){
+					if(enderProjectilesState == false) {
+						enderProjectilesState = true;
+						enderProjectilesBtn.setTextColor(android.graphics.Color.GREEN);
+					} else if(enderProjectilesState == true) {
+						enderProjectilesState = false;
+						enderProjectilesBtn.setTextColor(android.graphics.Color.WHITE);
+					}
+				}
+				}));
+				
 				var timerBtn = clientButton("Timer", "Makes the speed of the game 2 times faster");
 				timerBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				timerBtn.setAlpha(0.54);
@@ -3859,6 +3885,7 @@ VertexClientPE.showMovementMenu = function() {
 					movementMenuLayout.addView(walkOnLiquidsBtn);
 					//movementMenuLayout.addView(freecamBtn);
 					movementMenuLayout.addView(highJumpBtn);
+					movementMenuLayout.addView(enderProjectilesBtn);
 				}
                 movementMenuLayout.addView(timerBtn);
 
@@ -4440,6 +4467,7 @@ var autoPlaceState = false;
 var godModeState = false;
 var autoLeaveState = false;
 var noHurtState = false;
+var enderProjectilesState = false;
 
 var hacksList;
 var StatesText;
@@ -4476,6 +4504,7 @@ var autoPlaceStateText = "";
 var godModeStateText = "";
 var autoLeaveStateText = "";
 var noHurtStateText = "";
+var enderProjectilesStateText = "";
 
 var enabledHacksCounter = 0;
 
@@ -4691,11 +4720,17 @@ function showHacksList() {
                     } else if(noHurtState == false) {
                         noHurtStateText = "";
                     }
+					if(enderProjectilesState == true) {
+                        enderProjectilesStateText = " [EnderProjectiles] ";
+						enabledHacksCounter++;
+                    } else if(enderProjectilesState == false) {
+                        enderProjectilesStateText = "";
+                    }
                     var VertexClientPEHacksListTextView = new widget.TextView(ctx);
                     VertexClientPEHacksListTextView.setText(VertexClientPEHacksListText);
 					StatesText = clientTextView("Placeholder text", true);
 					if(hacksListModeSetting == "on") {
-						StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText);
+						StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText);
 					} else if(hacksListModeSetting == "counter") {
 						StatesText.setText(enabledHacksCounter.toString());
 					}
@@ -4929,9 +4964,15 @@ function updateHacksList() {
                     } else if(noHurtState == false) {
                         noHurtStateText = "";
                     }
+					if(enderProjectilesState == true) {
+                        enderProjectilesStateText = " [EnderProjectiles] ";
+						enabledHacksCounter++;
+                    } else if(enderProjectilesState == false) {
+                        enderProjectilesStateText = "";
+                    }
 					
 					if(hacksListModeSetting == "on") {
-						StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText);
+						StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText);
 					} else if(hacksListModeSetting == "counter") {
 						StatesText.setText(enabledHacksCounter.toString());
 					}
@@ -5145,8 +5186,6 @@ function modTick() {
 			}
 		}}));
 	}if(autoSpammerState == true) {
-		clientMessage("<" + ModPE.getPlayerName() + "> " + spamMessage);
-		chatHook(spamMessage);
 		Server.sendChat(spamMessage);
 	}if(regenState == true) {
 		VertexClientPE.regen();
@@ -5611,7 +5650,16 @@ function entityRemovedHook(entity) {
 		freecamState = true;
 	}
 }
-	
+
+function projectileHitBlockHook(projectile, blockX, blockY, blockZ, side) {
+	if(enderProjectilesState == true) {
+		Entity.setPosition(getPlayerEnt(), blockX, blockY, blockZ);
+		while(getTile(getPlayerX(), getPlayerY()-2, getPlayerZ()) != 0) {
+			Entity.setPosition(getPlayerEnt(), getPlayerX(), getPlayerY()+1, getPlayerZ());
+		}
+	}
+}
+
 var powerExplosionsStage = 0;
 
 function explodeHook(entity, x, y, z, power, onFire) {
