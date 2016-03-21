@@ -14,5 +14,7 @@ More information: http://Vertex-Client.ml/
 - [ ] CoordsDisplay
 - [ ] FastWalk
 - [x] EnderProjectiles
+- [ ] FreezeAura
+- [ ] Ride
 
 ![Vertex Client PE](http://i.imgur.com/onBWDEI.png)
