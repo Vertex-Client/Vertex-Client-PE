@@ -3286,6 +3286,7 @@ VertexClientPE.showCombatMenu = function() {
 				vertexclientpecombatmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
                 vertexclientpecombatmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
                 vertexclientpecombatmenu.setHeight(screenHeight / 2.25);
+				vertexclientpecombatmenu.setAnimationStyle(android.R.style.Animation_Translucent);
                 vertexclientpecombatmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, combattpopx, combattpopy);
 
             } catch(error) {
@@ -3575,6 +3576,7 @@ VertexClientPE.showBuildingMenu = function() {
 				vertexclientpebuildingmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
                 vertexclientpebuildingmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
                 vertexclientpebuildingmenu.setHeight(screenHeight / 2.25);
+				vertexclientpebuildingmenu.setAnimationStyle(android.R.style.Animation_Translucent);
                 vertexclientpebuildingmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, buildingtpopx, buildingtpopy);
 
             } catch(error) {
@@ -3893,6 +3895,7 @@ VertexClientPE.showMovementMenu = function() {
 				vertexclientpemovementmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
                 vertexclientpemovementmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
                 vertexclientpemovementmenu.setHeight(screenHeight / 2.25);
+				vertexclientpemovementmenu.setAnimationStyle(android.R.style.Animation_Translucent);
                 vertexclientpemovementmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, movementtpopx, movementtpopy);
 
             } catch(error) {
@@ -4024,6 +4027,7 @@ VertexClientPE.showChatMenu = function() {
                 vertexclientpechatmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
                 vertexclientpechatmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
                 vertexclientpechatmenu.setHeight(screenHeight / 2.25);
+				vertexclientpechatmenu.setAnimationStyle(android.R.style.Animation_Translucent);
                 vertexclientpechatmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, chattpopx, chattpopy);
 
             } catch(error) {
@@ -4307,6 +4311,7 @@ VertexClientPE.showMiscMenu = function() {
                 vertexclientpemiscmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
                 vertexclientpemiscmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
                 vertexclientpemiscmenu.setHeight(screenHeight / 2.25);
+				vertexclientpemiscmenu.setAnimationStyle(android.R.style.Animation_Translucent);
                 vertexclientpemiscmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, misctpopx, misctpopy);
 
             } catch(error) {
