@@ -13,8 +13,12 @@ More information: http://Vertex-Client.ml/
 - [ ] Twerk
 - [ ] CoordsDisplay
 - [ ] FastWalk
+- [x] AutoPlace
+- [x] God Mode
+- [x] AutoLeave
+- [x] NoHurt
 - [x] EnderProjectiles
-- [ ] FreezeAura
+- [x] FreezeAura
 - [ ] Ride
 
 ![Vertex Client PE](http://i.imgur.com/onBWDEI.png)
