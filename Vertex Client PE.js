@@ -143,7 +143,7 @@ var imgPlayButtonClicked = new android.graphics.BitmapFactory.decodeFile("mnt/sd
 var imgTwitterButton = new android.graphics.BitmapFactory.decodeFile("mnt/sdcard/games/com.mojang/twitter_button.png");
 var imgTwitterButtonClicked = new android.graphics.BitmapFactory.decodeFile("mnt/sdcard/games/com.mojang/twitter_button_clicked.png");
 var imgCombatKit = new android.graphics.BitmapFactory.decodeFile("mnt/sdcard/games/com.mojang/combat_kit.png");
-var imgSkinFace = new android.graphics.BitmapFactory.decodeFile("mnt/sdcard/games/com.mojang/minecraftpe/custom.png");
+//var imgSkinFace = new android.graphics.BitmapFactory.decodeFile("mnt/sdcard/games/com.mojang/minecraftpe/custom.png");
 var iconClientGUI = new android.graphics.drawable.BitmapDrawable(imgIcon);
 var iconClickedClientGUI = new android.graphics.drawable.BitmapDrawable(imgIconClicked);
 var buttonClientGUI = new android.graphics.drawable.BitmapDrawable(img1);
@@ -991,6 +991,13 @@ VertexClientPE.toggleModule = function(module) {
 				enderProjectilesState = false;
 			}
 			break;
+		} case "freezeaura": {
+			if(freezeAuraState == false) {
+				freezeAuraState = true;
+			} else if(freezeAuraState == true) {
+				freezeAuraState = false;
+			}
+			break;
 		} default: {
 			VertexClientPE.clientMessage(ChatColor.RED + "Module \'" + module + "\' not found!");
 			sendMessage = false;
@@ -1826,6 +1833,12 @@ VertexClientPE.autoMine = function() {
 	Level.destroyBlock(Player.getPointedBlockX(), Player.getPointedBlockY(), Player.getPointedBlockZ());
 }
 
+VertexClientPE.instaKill = function(a, v) {
+	if(getPlayerEnt() == a) {
+		Entity.setHealth(v, 1);
+	}
+}
+
 VertexClientPE.killAura = function() {
 	var mobs = Entity.getAll();
 	for(var i = 0; i < mobs.length; i++) {
@@ -1837,6 +1850,21 @@ VertexClientPE.killAura = function() {
 				setRot(90, getPitch());
 			}
 			Entity.setHealth(mobs[i], 0);
+		}
+	}
+}
+
+VertexClientPE.freezeAura = function() {
+	var mobs = Entity.getAll();
+	for(var i = 0; i < mobs.length; i++) {
+		var x = Entity.getX(mobs[i]) - getPlayerX();
+		var y = Entity.getY(mobs[i]) - getPlayerY();
+		var z = Entity.getZ(mobs[i]) - getPlayerZ();
+		if(x*x+y*y+z*z<=4*4 && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION) {
+			if(Entity.getX(mobs[i]) > getPlayerX() && Entity.getZ(mobs[i]) > getPlayerZ()) {
+				setRot(90, getPitch());
+			}
+			Entity.setImmobile(mobs[i], true);
 		}
 	}
 }
@@ -2001,7 +2029,7 @@ var clicked_blue_image = getStretchedImage(android.graphics.Bitmap.createScaledB
 var unclicked_blue_image = getStretchedImage(android.graphics.Bitmap.createScaledBitmap(trimImage(img5, 0, 0, 16, 16), 8 * GuiSize, 8 * GuiSize, false), 3.7 * GuiSize, 4 * GuiSize, 2 * GuiSize, 2 * GuiSize, getContext().getScreenWidth() / 2, getContext().getScreenHeight() / 10);
 var clicked_purple_image = getStretchedImage(android.graphics.Bitmap.createScaledBitmap(trimImage(img8, 0, 0, 16, 16), 8 * GuiSize, 8 * GuiSize, false), 3.7 * GuiSize, 4 * GuiSize, 2 * GuiSize, 2 * GuiSize, getContext().getScreenWidth() / 2, getContext().getScreenHeight() / 10);
 var unclicked_purple_image = getStretchedImage(android.graphics.Bitmap.createScaledBitmap(trimImage(img7, 0, 0, 16, 16), 8 * GuiSize, 8 * GuiSize, false), 3.7 * GuiSize, 4 * GuiSize, 2 * GuiSize, 2 * GuiSize, getContext().getScreenWidth() / 2, getContext().getScreenHeight() / 10);
-var skin_face_image = android.graphics.Bitmap.createScaledBitmap(trimImage(imgSkinFace, 0, 0, 16, 16), 8 * GuiSize, 8 * GuiSize, false);
+//var skin_face_image = android.graphics.Bitmap.createScaledBitmap(trimImage(imgSkinFace, 0, 0, 16, 16), 8 * GuiSize, 8 * GuiSize, false);
 
 function clientButton(text, desc, color) //menu buttons
 {
@@ -3055,11 +3083,39 @@ VertexClientPE.showCombatMenu = function() {
 				killAuraBtn.setOnClickListener(new android.view.View.OnClickListener({
 				onClick: function(viewarg){
 					if(killAuraState == false) {
+						if(freezeAuraState == true) {
+							freezeAuraState = false;
+							freezeAuraBtn.setTextColor(android.graphics.Color.WHITE);
+						}
 						killAuraState = true;
 						killAuraBtn.setTextColor(android.graphics.Color.GREEN);
 					} else if(killAuraState == true) {
 						killAuraState = false;
 						killAuraBtn.setTextColor(android.graphics.Color.WHITE);
+					}
+				}
+				}));
+				
+				var freezeAuraBtn = clientButton("FreezeAura", "Automatically freezes all the near entities");
+				freezeAuraBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				freezeAuraBtn.setAlpha(0.54);
+				if(freezeAuraState == false) {
+					freezeAuraBtn.setTextColor(android.graphics.Color.WHITE);
+				} else if(freezeAuraState == true) {
+					freezeAuraBtn.setTextColor(android.graphics.Color.GREEN);
+				}
+				freezeAuraBtn.setOnClickListener(new android.view.View.OnClickListener({
+				onClick: function(viewarg){
+					if(freezeAuraState == false) {
+						if(killAuraState == true) {
+							killAuraState = false;
+							killAuraBtn.setTextColor(android.graphics.Color.WHITE);
+						}
+						freezeAuraState = true;
+						freezeAuraBtn.setTextColor(android.graphics.Color.GREEN);
+					} else if(freezeAuraState == true) {
+						freezeAuraState = false;
+						freezeAuraBtn.setTextColor(android.graphics.Color.WHITE);
 					}
 				}
 				}));
@@ -3272,6 +3328,7 @@ VertexClientPE.showCombatMenu = function() {
 
 				if(!VertexClientPE.isRemote) {
 					combatMenuLayout.addView(killAuraBtn);
+					combatMenuLayout.addView(freezeAuraBtn);
 					combatMenuLayout.addView(droneBtn);
 					combatMenuLayout.addView(bowAimbotBtn);
 					combatMenuLayout.addView(instaKillBtn);
@@ -3411,11 +3468,39 @@ VertexClientPE.showBuildingMenu = function() {
 				nukerBtn.setOnClickListener(new android.view.View.OnClickListener({
 				onClick: function(viewarg){
 					if(nukerState == false) {
+						if(tapNukerState == true) {
+							tapNukerState = false;
+							tapNukerBtn.setTextColor(android.graphics.Color.WHITE);
+						}
 						nukerState = true;
 						nukerBtn.setTextColor(android.graphics.Color.GREEN);
 					} else if(nukerState == true) {
 						nukerState = false;
 						nukerBtn.setTextColor(android.graphics.Color.WHITE);
+					}
+				}
+				}));
+				
+				var tapNukerBtn = clientButton("TapNuker", "Destroys blocks wherever you tap");
+				tapNukerBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				tapNukerBtn.setAlpha(0.54);
+				if(tapNukerState == false) {
+					tapNukerBtn.setTextColor(android.graphics.Color.WHITE);
+				} else if(tapNukerState == true) {
+					tapNukerBtn.setTextColor(android.graphics.Color.GREEN);
+				}
+				tapNukerBtn.setOnClickListener(new android.view.View.OnClickListener({
+				onClick: function(viewarg){
+					if(tapNukerState == false) {
+						if(nukerState == true) {
+							nukerState = false;
+							nukerBtn.setTextColor(android.graphics.Color.WHITE);
+						}
+						tapNukerState = true;
+						tapNukerBtn.setTextColor(android.graphics.Color.GREEN);
+					} else if(tapNukerState == true) {
+						tapNukerState = false;
+						tapNukerBtn.setTextColor(android.graphics.Color.WHITE);
 					}
 				}
 				}));
@@ -3476,26 +3561,6 @@ VertexClientPE.showBuildingMenu = function() {
 					} else if(signEditorState == true) {
 						signEditorState = false;
 						signEditorBtn.setTextColor(android.graphics.Color.WHITE);
-					}
-				}
-				}));
-				
-				var tapNukerBtn = clientButton("TapNuker", "Destroys blocks wherever you tap");
-				tapNukerBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
-				tapNukerBtn.setAlpha(0.54);
-				if(tapNukerState == false) {
-					tapNukerBtn.setTextColor(android.graphics.Color.WHITE);
-				} else if(tapNukerState == true) {
-					tapNukerBtn.setTextColor(android.graphics.Color.GREEN);
-				}
-				tapNukerBtn.setOnClickListener(new android.view.View.OnClickListener({
-				onClick: function(viewarg){
-					if(tapNukerState == false) {
-						tapNukerState = true;
-						tapNukerBtn.setTextColor(android.graphics.Color.GREEN);
-					} else if(tapNukerState == true) {
-						tapNukerState = false;
-						tapNukerBtn.setTextColor(android.graphics.Color.WHITE);
 					}
 				}
 				}));
@@ -3566,10 +3631,10 @@ VertexClientPE.showBuildingMenu = function() {
                 buildingMenuLayout.addView(autoMineBtn);
                 buildingMenuLayout.addView(stackDropBtn);
                 buildingMenuLayout.addView(nukerBtn);
+				buildingMenuLayout.addView(tapNukerBtn);
                 buildingMenuLayout.addView(powerExplosionsBtn);
                 buildingMenuLayout.addView(tapRemoverBtn);
                 buildingMenuLayout.addView(signEditorBtn);
-                buildingMenuLayout.addView(tapNukerBtn);
                 buildingMenuLayout.addView(autoPlaceBtn);
 
                 vertexclientpebuildingmenu.setContentView(buildingMenuLayout1);
@@ -4473,6 +4538,7 @@ var godModeState = false;
 var autoLeaveState = false;
 var noHurtState = false;
 var enderProjectilesState = false;
+var freezeAuraState = false;
 
 var hacksList;
 var StatesText;
@@ -4731,11 +4797,17 @@ function showHacksList() {
                     } else if(enderProjectilesState == false) {
                         enderProjectilesStateText = "";
                     }
+					if(freezeAuraState == true) {
+                        freezeAuraStateText = " [FreezeAura] ";
+						enabledHacksCounter++;
+                    } else if(freezeAuraState == false) {
+                        freezeAuraStateText = "";
+                    }
                     var VertexClientPEHacksListTextView = new widget.TextView(ctx);
                     VertexClientPEHacksListTextView.setText(VertexClientPEHacksListText);
 					StatesText = clientTextView("Placeholder text", true);
 					if(hacksListModeSetting == "on") {
-						StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText);
+						StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText);
 					} else if(hacksListModeSetting == "counter") {
 						StatesText.setText(enabledHacksCounter.toString());
 					}
@@ -4975,9 +5047,15 @@ function updateHacksList() {
                     } else if(enderProjectilesState == false) {
                         enderProjectilesStateText = "";
                     }
+					if(freezeAuraState == true) {
+                        freezeAuraStateText = " [FreezeAura] ";
+						enabledHacksCounter++;
+                    } else if(freezeAuraState == false) {
+                        freezeAuraStateText = "";
+                    }
 					
 					if(hacksListModeSetting == "on") {
-						StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText);
+						StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText);
 					} else if(hacksListModeSetting == "counter") {
 						StatesText.setText(enabledHacksCounter.toString());
 					}
@@ -5026,6 +5104,8 @@ VertexClientPE.panic = function() {
 	godModeState = false;
 	autoLeaveState = false;
 	noHurtState = false;
+	enderProjectilesState = false;
+	freezeAuraState = false;
 }
 
 function setupDone() {
@@ -5361,6 +5441,8 @@ function modTick() {
 		VertexClientPE.godMode();
 	}if(autoLeaveState == true) {
 		VertexClientPE.autoLeave();
+	}if(freezeAuraState == true) {
+		VertexClientPE.freezeAura();
 	}
 }
 	
@@ -5618,9 +5700,7 @@ function destroyBlock(x, y, z, side) {
 
 function attackHook(attacker, victim) {
 	if(instaKillState == true) {
-		if(Player.getEntity() == attacker) {
-			Entity.setHealth(victim, 1);
-		}
+		VertexClientPE.instaKill(attacker, victim);
 	}if(tapRemoverState == true) {
 		if(Player.getEntity() == attacker) {
 			preventDefault();
