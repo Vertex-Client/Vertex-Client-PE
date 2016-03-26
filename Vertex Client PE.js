@@ -38,7 +38,6 @@ var latestPocketEditionVersion;
 var news;
 
 var showingMenu = false;
-var serverEnabler = false;
 
 var setupColor = "green";
 
@@ -48,6 +47,8 @@ var mainButtonPositionSetting = "top-right";
 var healthTagsSetting = "off";
 var themeSetting = "green";
 var spamMessage = "Spam!!!!!";
+var showNewsSetting = "on";
+var menuAnimationsSetting = "on";
 //End of settings
 
 var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
@@ -286,13 +287,6 @@ print("Cannot open window: "+err+".")
 ;
 }
 }}));
-}
-
-VertexClientPE.serverEnabler = function() {
-	var sender = "";
-	var str = "\u00a70BlockLauncher, enable scripts";
-	net.zhuoweizhang.mcpelauncher.ScriptManager.handleMessagePacketCallback(sender, str);
-	serverEnabler = true;
 }
 
 var line0, line1, line2, line3;
@@ -996,6 +990,13 @@ VertexClientPE.toggleModule = function(module) {
 				freezeAuraState = true;
 			} else if(freezeAuraState == true) {
 				freezeAuraState = false;
+			}
+			break;
+		} case "coordsdisplay": {
+			if(coordsDisplayState == false) {
+				coordsDisplayState = true;
+			} else if(coordsDisplayState == true) {
+				coordsDisplayState = false;
 			}
 			break;
 		} default: {
@@ -1869,6 +1870,13 @@ VertexClientPE.freezeAura = function() {
 	}
 }
 
+VertexClientPE.coordsDisplay = function() {
+	var x = parseInt(getPlayerX());
+	var y = parseInt(getPlayerY());
+	var z = parseInt(getPlayerZ());
+	ModPE.showTipMessage("\n\n\n" + "X: " + parseInt(x) + " Y: " + parseInt(y) + " Z: " + parseInt(z));
+}
+
 var ent;
 
 VertexClientPE.bowAimbot = function(e) {
@@ -1934,6 +1942,8 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + healthTagsSetting.toString());
     outWrite.append("," + themeSetting.toString());
     outWrite.append("," + spamMessage.toString());
+    outWrite.append("," + showNewsSetting.toString());
+    outWrite.append("," + menuAnimationsSetting.toString());
 
     outWrite.close();
 }
@@ -1961,6 +1971,12 @@ VertexClientPE.loadMainSettings = function() {
 	}
 	if(str.toString().split(",")[4] != null && str.toString().split(",")[4] != undefined) {
     spamMessage = str.toString().split(",")[4]; //Here we split text by ","
+	}
+	if(str.toString().split(",")[5] != null && str.toString().split(",")[5] != undefined) {
+    showNewsSetting = str.toString().split(",")[5]; //Here we split text by ","
+	}
+	if(str.toString().split(",")[6] != null && str.toString().split(",")[6] != undefined) {
+    menuAnimationsSetting = str.toString().split(",")[6]; //Here we split text by ","
 	}
     fos.close();
 	return true;
@@ -2293,14 +2309,17 @@ VertexClientPE.loadNews = function() {
 
 new java.lang.Thread(new java.lang.Runnable() {
 	run: function() {
-		VertexClientPE.loadNews();
-		var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
-        ctx.runOnUiThread(new java.lang.Runnable({
-            run: function() {
-				ctx.getSystemService(android.content.Context.VIBRATOR_SERVICE).vibrate(37);
-				widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> " + news), 0).show();
-			}
-		}));
+		VertexClientPE.loadMainSettings();
+		if(showNewsSetting == "on") {
+			VertexClientPE.loadNews();
+			var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+			ctx.runOnUiThread(new java.lang.Runnable({
+				run: function() {
+					ctx.getSystemService(android.content.Context.VIBRATOR_SERVICE).vibrate(37);
+					widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> " + news), 0).show();
+				}
+			}));
+		}
 	}
 }).start();
 
@@ -2718,7 +2737,6 @@ function leaveGame() {
 			showMenuButton();
 			VertexClientPE.saveMainSettings();
 			VertexClientPE.editCopyrightText();
-			serverEnabler = false;
 			VertexClientPE.isRemote = false;
 		}
 	}));
@@ -2734,6 +2752,15 @@ function settingsScreen() {
                     var settingsMenuLayout = new LinearLayout(ctx);
                     settingsMenuLayout.setOrientation(1);
                     settingsMenuLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					
+					var settingsMenuScroll = new ScrollView(ctx);
+					
+					var settingsMenuLayout1 = new LinearLayout(ctx);
+                    settingsMenuLayout1.setOrientation(1);
+                    settingsMenuLayout1.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					
+					settingsMenuScroll.addView(settingsMenuLayout);
+					settingsMenuLayout1.addView(settingsMenuScroll);
 					
 					var settingsTitle = clientTextView("Settings", true);
 					settingsTitle.setTextSize(25);
@@ -2849,6 +2876,50 @@ function settingsScreen() {
 					}
 					}));
 					
+					var showNewsSettingButton = clientButton("Show news", "Show news at start");
+					if(showNewsSetting == "on") {
+						showNewsSettingButton.setText("Show news | ON");
+					} else if(showNewsSetting == "off") {
+						showNewsSettingButton.setText("Show news | OFF");
+					}
+					showNewsSettingButton.setOnClickListener(new android.view.View.OnClickListener({
+					onClick: function(viewarg){
+						if(showNewsSetting == "on") {
+							showNewsSetting = "off";
+							showNewsSettingButton.setText("Show news | OFF");
+							VertexClientPE.saveMainSettings();
+							VertexClientPE.loadMainSettings();
+						} else if(showNewsSetting == "off") {
+							showNewsSetting = "on";
+							showNewsSettingButton.setText("Show news | ON");
+							VertexClientPE.saveMainSettings();
+							VertexClientPE.loadMainSettings();
+						}
+					}
+					}));
+					
+					var menuAnimationsSettingButton = clientButton("Menu animations", "Show menu animations");
+					if(menuAnimationsSetting == "on") {
+						menuAnimationsSettingButton.setText("Menu animations | ON");
+					} else if(menuAnimationsSetting == "off") {
+						menuAnimationsSettingButton.setText("Menu animations | OFF");
+					}
+					menuAnimationsSettingButton.setOnClickListener(new android.view.View.OnClickListener({
+					onClick: function(viewarg){
+						if(menuAnimationsSetting == "on") {
+							menuAnimationsSetting = "off";
+							menuAnimationsSettingButton.setText("Menu animations | OFF");
+							VertexClientPE.saveMainSettings();
+							VertexClientPE.loadMainSettings();
+						} else if(menuAnimationsSetting == "off") {
+							menuAnimationsSetting = "on";
+							menuAnimationsSettingButton.setText("Menu animations | ON");
+							VertexClientPE.saveMainSettings();
+							VertexClientPE.loadMainSettings();
+						}
+					}
+					}));
+					
 					var spamMessageSettingButton = clientButton("Change AutoSpammer message", "Allows you to change the AutoSpammer spam message");
 					spamMessageSettingButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(viewarg){
@@ -2860,9 +2931,11 @@ function settingsScreen() {
 					settingsMenuLayout.addView(mainButtonPositionSettingButton);
 					settingsMenuLayout.addView(healthTagsSettingButton);
 					settingsMenuLayout.addView(themeSettingButton);
+					settingsMenuLayout.addView(showNewsSettingButton);
+					settingsMenuLayout.addView(menuAnimationsSettingButton);
 					settingsMenuLayout.addView(spamMessageSettingButton);
 
-                    settingsMenu = new widget.PopupWindow(settingsMenuLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
+                    settingsMenu = new widget.PopupWindow(settingsMenuLayout1, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
                     settingsMenu.setBackgroundDrawable(backgroundClientGUI);
 					if(themeSetting == "red") {
 						settingsMenu.setBackgroundDrawable(backgroundRedClientGUI);
@@ -3343,7 +3416,9 @@ VertexClientPE.showCombatMenu = function() {
 				vertexclientpecombatmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
                 vertexclientpecombatmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
                 vertexclientpecombatmenu.setHeight(screenHeight / 2.25);
-				vertexclientpecombatmenu.setAnimationStyle(android.R.style.Animation_Translucent);
+				if(menuAnimationsSetting == "on") {
+					vertexclientpecombatmenu.setAnimationStyle(android.R.style.Animation_Translucent);
+				}
                 vertexclientpecombatmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, combattpopx, combattpopy);
 
             } catch(error) {
@@ -3641,7 +3716,9 @@ VertexClientPE.showBuildingMenu = function() {
 				vertexclientpebuildingmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
                 vertexclientpebuildingmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
                 vertexclientpebuildingmenu.setHeight(screenHeight / 2.25);
-				vertexclientpebuildingmenu.setAnimationStyle(android.R.style.Animation_Translucent);
+				if(menuAnimationsSetting == "on") {
+					vertexclientpebuildingmenu.setAnimationStyle(android.R.style.Animation_Translucent);
+				}
                 vertexclientpebuildingmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, buildingtpopx, buildingtpopy);
 
             } catch(error) {
@@ -3960,7 +4037,9 @@ VertexClientPE.showMovementMenu = function() {
 				vertexclientpemovementmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
                 vertexclientpemovementmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
                 vertexclientpemovementmenu.setHeight(screenHeight / 2.25);
-				vertexclientpemovementmenu.setAnimationStyle(android.R.style.Animation_Translucent);
+				if(menuAnimationsSetting == "on") {
+					vertexclientpemovementmenu.setAnimationStyle(android.R.style.Animation_Translucent);
+				}
                 vertexclientpemovementmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, movementtpopx, movementtpopy);
 
             } catch(error) {
@@ -4092,7 +4171,9 @@ VertexClientPE.showChatMenu = function() {
                 vertexclientpechatmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
                 vertexclientpechatmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
                 vertexclientpechatmenu.setHeight(screenHeight / 2.25);
-				vertexclientpechatmenu.setAnimationStyle(android.R.style.Animation_Translucent);
+				if(menuAnimationsSetting == "on") {
+					vertexclientpechatmenu.setAnimationStyle(android.R.style.Animation_Translucent);
+				}
                 vertexclientpechatmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, chattpopx, chattpopy);
 
             } catch(error) {
@@ -4166,25 +4247,6 @@ VertexClientPE.showMiscMenu = function() {
 				}
 				}));
 				
-				var serverEnablerButton = clientButton("Server Enabler", "Makes more hacks work on multiplayer");
-				serverEnablerButton.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
-				serverEnablerButton.setAlpha(0.54);
-			    serverEnablerButton.setTextColor(android.graphics.Color.WHITE);
-			    serverEnablerButton.setOnClickListener(new android.view.View.OnClickListener({
-				    onClick: function(viewarg){
-						topBar.dismiss();
-						showingMenu = false;
-						vertexclientpecombatmenu.dismiss(); //Close
-						vertexclientpebuildingmenu.dismiss(); //Close
-						vertexclientpemovementmenu.dismiss(); //Close
-						vertexclientpechatmenu.dismiss(); //Close
-						vertexclientpemiscmenu.dismiss(); //Close
-						VertexClientPE.serverEnabler();
-						showMenuButton();
-						showHacksList();
-				    }
-			    }));
-				
 				var opPermButton = clientButton("OP Perm", "Gives you OP permission");
 				opPermButton.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				opPermButton.setAlpha(0.54);
@@ -4192,7 +4254,6 @@ VertexClientPE.showMiscMenu = function() {
 			    opPermButton.setOnClickListener(new android.view.View.OnClickListener({
 				    onClick: function(viewarg){
 						Server.sendChat("/setuperm " + ModPE.getPlayerName() + " command.pocketmine.op");
-						clientMessage("test");
 				    }
 			    }));
 				
@@ -4303,6 +4364,26 @@ VertexClientPE.showMiscMenu = function() {
 				}
 				}));
 				
+				var coordsDisplayBtn = clientButton("CoordsDisplay", "Displays the player's coordinates");
+				coordsDisplayBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				coordsDisplayBtn.setAlpha(0.54);
+				if(coordsDisplayState == false) {
+					coordsDisplayBtn.setTextColor(android.graphics.Color.WHITE);
+				} else if(coordsDisplayState == true) {
+					coordsDisplayBtn.setTextColor(android.graphics.Color.GREEN);
+				}
+				coordsDisplayBtn.setOnClickListener(new android.view.View.OnClickListener({
+				onClick: function(viewarg){
+					if(coordsDisplayState == false) {
+						coordsDisplayState = true;
+						coordsDisplayBtn.setTextColor(android.graphics.Color.GREEN);
+					} else if(coordsDisplayState == true) {
+						coordsDisplayState = false;
+						coordsDisplayBtn.setTextColor(android.graphics.Color.WHITE);
+					}
+				}
+				}));
+				
 				var pizzaOrderButton = clientButton("Order a Pizza", "Order a pizza of Domino's");
 				pizzaOrderButton.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				pizzaOrderButton.setAlpha(0.54);
@@ -4357,9 +4438,6 @@ VertexClientPE.showMiscMenu = function() {
 
                 miscMenuLayout.addView(panicBtn);
 				if(VertexClientPE.isRemote) {
-					if(!serverEnabler) {
-						//miscMenuLayout.addView(serverEnablerButton);
-					}
 					miscMenuLayout.addView(opPermButton);
 					miscMenuLayout.addView(leetServerCrasherButton);
 				}
@@ -4370,13 +4448,16 @@ VertexClientPE.showMiscMenu = function() {
 				}
                 miscMenuLayout.addView(autoSwitchBtn);
                 miscMenuLayout.addView(zoomBtn);
+                miscMenuLayout.addView(coordsDisplayBtn);
                 miscMenuLayout.addView(pizzaOrderButton);
 
                 vertexclientpemiscmenu.setContentView(miscMenuLayout1);
                 vertexclientpemiscmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
                 vertexclientpemiscmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
                 vertexclientpemiscmenu.setHeight(screenHeight / 2.25);
-				vertexclientpemiscmenu.setAnimationStyle(android.R.style.Animation_Translucent);
+				if(menuAnimationsSetting == "on") {
+					vertexclientpemiscmenu.setAnimationStyle(android.R.style.Animation_Translucent);
+				}
                 vertexclientpemiscmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, misctpopx, misctpopy);
 
             } catch(error) {
@@ -4482,7 +4563,6 @@ VertexClientPE.clientTick = function() {
 								VertexClientPE.isRemote = true;
 								net.zhuoweizhang.mcpelauncher.ScriptManager.isRemote = true;
 								net.zhuoweizhang.mcpelauncher.ScriptManager.setLevelFakeCallback(true, false);
-								//VertexClientPE.serverEnabler();
 							}
 						}catch(e) {
 							print("Use BlockLauncher v1.12.2 or above!");
@@ -4491,7 +4571,6 @@ VertexClientPE.clientTick = function() {
 						if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false)) {
 							VertexClientPE.isRemote = true;
 							showMenuButton();
-							//showHacksList();
 						}
                         eval(VertexClientPE.clientTick());
                     }
@@ -4539,6 +4618,7 @@ var autoLeaveState = false;
 var noHurtState = false;
 var enderProjectilesState = false;
 var freezeAuraState = false;
+var coordsDisplayState = false;
 
 var hacksList;
 var StatesText;
@@ -4576,6 +4656,8 @@ var godModeStateText = "";
 var autoLeaveStateText = "";
 var noHurtStateText = "";
 var enderProjectilesStateText = "";
+var freezeAuraStateText = "";
+var coordsDisplayStateText = "";
 
 var enabledHacksCounter = 0;
 
@@ -4803,11 +4885,17 @@ function showHacksList() {
                     } else if(freezeAuraState == false) {
                         freezeAuraStateText = "";
                     }
+					if(coordsDisplayState == true) {
+                        coordsDisplayStateText = " [CoordsDisplay] ";
+						enabledHacksCounter++;
+                    } else if(coordsDisplayState == false) {
+                        coordsDisplayStateText = "";
+                    }
                     var VertexClientPEHacksListTextView = new widget.TextView(ctx);
                     VertexClientPEHacksListTextView.setText(VertexClientPEHacksListText);
 					StatesText = clientTextView("Placeholder text", true);
 					if(hacksListModeSetting == "on") {
-						StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText);
+						StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + coordsDisplayStateText);
 					} else if(hacksListModeSetting == "counter") {
 						StatesText.setText(enabledHacksCounter.toString());
 					}
@@ -5053,9 +5141,15 @@ function updateHacksList() {
                     } else if(freezeAuraState == false) {
                         freezeAuraStateText = "";
                     }
+					if(coordsDisplayState == true) {
+                        coordsDisplayStateText = " [CoordsDisplay] ";
+						enabledHacksCounter++;
+                    } else if(coordsDisplayState == false) {
+                        coordsDisplayStateText = "";
+                    }
 					
 					if(hacksListModeSetting == "on") {
-						StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText);
+						StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + droneStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + coordsDisplayStateText);
 					} else if(hacksListModeSetting == "counter") {
 						StatesText.setText(enabledHacksCounter.toString());
 					}
@@ -5106,6 +5200,7 @@ VertexClientPE.panic = function() {
 	noHurtState = false;
 	enderProjectilesState = false;
 	freezeAuraState = false;
+	coordsDisplayState = false;
 }
 
 function setupDone() {
@@ -5443,6 +5538,8 @@ function modTick() {
 		VertexClientPE.autoLeave();
 	}if(freezeAuraState == true) {
 		VertexClientPE.freezeAura();
+	}if(coordsDisplayState == true) {
+		VertexClientPE.coordsDisplay();
 	}
 }
 	
