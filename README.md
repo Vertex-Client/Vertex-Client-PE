@@ -11,7 +11,7 @@ More information: http://Vertex-Client.ml/
 - [ ] BuildRandom
 - [ ] EntityESP
 - [ ] Twerk
-- [ ] CoordsDisplay
+- [x] CoordsDisplay
 - [ ] FastWalk
 - [x] AutoPlace
 - [x] God Mode
