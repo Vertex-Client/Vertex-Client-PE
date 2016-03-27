@@ -964,13 +964,13 @@ VertexClientPE.toggleModule = function(module) {
 				godModeState = false;
 			}
 			break;
-		} case "autoleave": {
+		/*} case "autoleave": {
 			if(autoLeaveState == false) {
 				autoLeaveState = true;
 			} else if(autoLeaveState == true) {
 				autoLeaveState = false;
 			}
-			break;
+			break;*/
 		} case "nohurt": {
 			if(noHurtState == false) {
 				noHurtState = true;
@@ -1803,11 +1803,11 @@ VertexClientPE.autoPlace = function() {
 	}
 }
 
-VertexClientPE.autoLeave = function() {
+/*VertexClientPE.autoLeave = function() {
 	if(Entity.getHealth(getPlayerEnt()) <= 4) {
 		ModPE.leaveGame();
 	}
-}
+}*/
 
 VertexClientPE.flight = function(onOrOff) {
 	switch(onOrOff) {
@@ -3410,7 +3410,7 @@ VertexClientPE.showCombatMenu = function() {
 					combatMenuLayout.addView(godModeBtn);
 					combatMenuLayout.addView(noHurtBtn);
 				}
-				combatMenuLayout.addView(autoLeaveBtn);
+				//combatMenuLayout.addView(autoLeaveBtn);
 
                 vertexclientpecombatmenu.setContentView(combatMenuLayout1);
 				vertexclientpecombatmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
