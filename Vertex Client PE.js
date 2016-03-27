@@ -1,7 +1,7 @@
 /**
  * ###################################
  * @name Vertex Client PE
- * @version v1.2 Alpha
+ * @version v1.0 Beta
  * @author peacestorm (@AgameR_Modder)
  * @credits Herqux_, MyNameIsTriXz
  * ###################################
@@ -31,7 +31,7 @@ var VertexClientPE = {
 
 VertexClientPE.isRemote = false;
 
-const CURRENT_VERSION = "1.2 Alpha";
+const CURRENT_VERSION = "1.0 Beta";
 const TARGET_VERSION = "MCPE v0.14.x alpha";
 var latestVersion;
 var latestPocketEditionVersion;
