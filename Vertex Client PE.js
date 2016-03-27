@@ -1,7 +1,7 @@
 /**
  * ###################################
  * @name Vertex Client PE
- * @version v1.0 Beta
+ * @version v1.2.1 Alpha
  * @author peacestorm (@AgameR_Modder)
  * @credits Herqux_, MyNameIsTriXz
  * ###################################
@@ -31,7 +31,7 @@ var VertexClientPE = {
 
 VertexClientPE.isRemote = false;
 
-const CURRENT_VERSION = "1.0 Beta";
+const CURRENT_VERSION = "1.2.1 Alpha";
 const TARGET_VERSION = "MCPE v0.14.x alpha";
 var latestVersion;
 var latestPocketEditionVersion;
@@ -2420,7 +2420,7 @@ VertexClientPE.showSplashScreen = function() {
 							showMenuButton();
 							VertexClientPE.clientTick();
 							//showAccountManagerButton();
-							ModPE.goToUrl("http://twitter.com/AgameR_Modder");
+							ModPE.goToURL("http://twitter.com/AgameR_Modder");
 					}}))
                     mainMenuListLayout.addView(TitleText);
                     mainMenuListLayout.addView(newLineText);
