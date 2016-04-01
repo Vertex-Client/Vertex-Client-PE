@@ -1,10 +1,10 @@
 /**
- * ###################################
+ * #######################################################
  * @name Vertex Client PE
  * @version v1.2.1 Alpha
  * @author peacestorm (@AgameR_Modder)
- * @credits Herqux_, MyNameIsTriXz
- * ###################################
+ * @credits Herqux_, MyNameIsTriXz, Godsoft029, ArceusMatt
+ * #######################################################
  */
 
 // #####################
