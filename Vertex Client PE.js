@@ -367,6 +367,75 @@ VertexClientPE.showSignEditorDialog = function() {
 	});
 }
 
+var itemId, amount, data;
+
+VertexClientPE.showItemGiverDialog = function() {
+	ctx.runOnUiThread(new java.lang.Runnable() {
+		run: function() {
+			try {
+				dialogGUI = new widget.PopupWindow();
+				var itemGiverTitle = clientTextView("ItemGiver", true);
+				var btn = clientButton("Add");
+				var btn1 = clientButton("Cancel");
+				var inputBar = new EditText(ctx);
+				var inputBar1 = new EditText(ctx);
+				var inputBar2 = new EditText(ctx);
+				inputBar.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+				inputBar1.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+				inputBar2.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+				var dialogLayout = new LinearLayout(ctx);
+				var spritesheet = android.graphics.Bitmap.createScaledBitmap(trimImage(GetSpritesheet(), 0, 0, 16, 16), 16 * GuiSize, 16 * GuiSize, false);
+				dialogLayout.setBackgroundDrawable(backgroundClientGUI);
+				if(themeSetting == "red") {
+					dialogLayout.setBackgroundDrawable(backgroundRedClientGUI);
+				}if(themeSetting == "blue") {
+					dialogLayout.setBackgroundDrawable(backgroundBlueClientGUI);
+				}if(themeSetting == "purple") {
+					dialogLayout.setBackgroundDrawable(backgroundPurpleClientGUI);
+				}
+				dialogLayout.setOrientation(LinearLayout.VERTICAL);
+				dialogLayout.addView(itemGiverTitle);
+				dialogLayout.addView(inputBar);
+				dialogLayout.addView(inputBar1);
+				dialogLayout.addView(inputBar2);
+				dialogLayout.addView(btn);
+				dialogLayout.addView(btn1);
+				var dialog = new android.app.Dialog(ctx);
+				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
+				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				dialog.setContentView(dialogLayout);
+				dialog.setTitle("ItemGiver");
+				inputBar.setHint("ID");
+				inputBar.setTextColor(android.graphics.Color.WHITE);
+				inputBar1.setHint("Amount");
+				inputBar1.setTextColor(android.graphics.Color.WHITE);
+				inputBar2.setHint("Data");
+				inputBar2.setTextColor(android.graphics.Color.WHITE);
+				dialogGUI.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
+				dialogGUI.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
+				dialogGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.TOP, 0, 0);
+				dialog.show();
+				btn.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						itemId = inputBar.getText();
+						amount = inputBar1.getText();
+						data = inputBar2.getText();
+						Player.addItemInventory(itemId, amount, data);
+						dialog.dismiss();
+					}
+				});
+				btn1.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+					}
+				});
+			} catch(e) {
+				print("Error: " + e)
+			}
+		}
+	});
+}
+
 VertexClientPE.showMoreDialog = function() {
 	ctx.runOnUiThread(new java.lang.Runnable() {
 		run: function() {
@@ -2171,9 +2240,9 @@ function greenSubTitle(subtitle) // TextView with colored background (edited by 
 	var padding = dip2px(8);
 
 	var bg = android.graphics.drawable.GradientDrawable();
-	bg.setColor(android.graphics.Color.parseColor("#216904"));
+	bg.setColor(android.graphics.Color.parseColor("#0B5B25"));
 	bg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
-	bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#3EC20A"));
+	bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#0F8219"));
 
 	var title = clientTextView(subtitle, true);
 	title.setTextColor(android.graphics.Color.WHITE);
@@ -2188,9 +2257,9 @@ function redSubTitle(subtitle) // TextView with colored background (edited by pe
 	var padding = dip2px(8);
 
 	var bg = android.graphics.drawable.GradientDrawable();
-	bg.setColor(android.graphics.Color.parseColor("#E42217"));
+	bg.setColor(android.graphics.Color.parseColor("#5B0C0C"));
 	bg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
-	bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#FF0000"));
+	bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#821010"));
 
 	var title = clientTextView(subtitle, true);
 	title.setTextColor(android.graphics.Color.WHITE);
@@ -2205,9 +2274,9 @@ function blueSubTitle(subtitle) // TextView with colored background (edited by p
 	var padding = dip2px(8);
 
 	var bg = android.graphics.drawable.GradientDrawable();
-	bg.setColor(android.graphics.Color.parseColor("#0000FF"));
+	bg.setColor(android.graphics.Color.parseColor("#0A175B"));
 	bg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
-	bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#1E90FF"));
+	bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#0E3882"));
 
 	var title = clientTextView(subtitle, true);
 	title.setTextColor(android.graphics.Color.WHITE);
@@ -2224,7 +2293,7 @@ function purpleSubTitle(subtitle) // TextView with colored background (edited by
 	var bg = android.graphics.drawable.GradientDrawable();
 	bg.setColor(android.graphics.Color.parseColor("#9F018C"));
 	bg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
-	bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#FF2DEA"));
+	bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#BC21AB"));
 
 	var title = clientTextView(subtitle, true);
 	title.setTextColor(android.graphics.Color.WHITE);
@@ -4247,6 +4316,15 @@ VertexClientPE.showMiscMenu = function() {
 				}
 				}));
 				
+				var itemGiverBtn = clientButton("ItemGiver", "Adds items to your inventory");
+				itemGiverBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				itemGiverBtn.setAlpha(0.54);
+				itemGiverBtn.setOnClickListener(new android.view.View.OnClickListener({
+					onClick: function(viewarg){
+						VertexClientPE.showItemGiverDialog();
+					}
+				}));
+				
 				var opPermButton = clientButton("OP Perm", "Gives you OP permission");
 				opPermButton.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				opPermButton.setAlpha(0.54);
@@ -4437,6 +4515,7 @@ VertexClientPE.showMiscMenu = function() {
                 }));
 
                 miscMenuLayout.addView(panicBtn);
+                miscMenuLayout.addView(itemGiverBtn);
 				if(VertexClientPE.isRemote) {
 					miscMenuLayout.addView(opPermButton);
 					miscMenuLayout.addView(leetServerCrasherButton);
