@@ -284,6 +284,7 @@ var a=b.create();
 a.show();
 }catch(err){
 print("Cannot open window: "+err+".")
+VertexClientPE.showBugReportDialog(err);
 ;
 }
 }}));
@@ -361,7 +362,8 @@ VertexClientPE.showSignEditorDialog = function() {
 					}
 				});
 			} catch(e) {
-				print("Error: " + e)
+				print("Error: " + e);
+				VertexClientPE.showBugReportDialog(err);
 			}
 		}
 	});
@@ -430,7 +432,65 @@ VertexClientPE.showItemGiverDialog = function() {
 					}
 				});
 			} catch(e) {
-				print("Error: " + e)
+				print("Error: " + e);
+				VertexClientPE.showBugReportDialog(err);
+			}
+		}
+	});
+}
+
+var reportName;
+
+VertexClientPE.showBugReportDialog = function(exception) {
+	ctx.runOnUiThread(new java.lang.Runnable() {
+		run: function() {
+			try {
+				dialogGUI = new widget.PopupWindow();
+				var bugReportTitle = clientTextView("An error occurred", true);
+				var btn = clientButton("Report on GitHub");
+				var btn1 = clientButton("Close");
+				var inputBar = new EditText(ctx);
+				var exceptionTextView = clientTextView(exception);
+				var dialogLayout = new LinearLayout(ctx);
+				dialogLayout.setBackgroundDrawable(backgroundClientGUI);
+				if(themeSetting == "red") {
+					dialogLayout.setBackgroundDrawable(backgroundRedClientGUI);
+				}if(themeSetting == "blue") {
+					dialogLayout.setBackgroundDrawable(backgroundBlueClientGUI);
+				}if(themeSetting == "purple") {
+					dialogLayout.setBackgroundDrawable(backgroundPurpleClientGUI);
+				}
+				dialogLayout.setOrientation(LinearLayout.VERTICAL);
+				dialogLayout.addView(bugReportTitle);
+				dialogLayout.addView(inputBar);
+				dialogLayout.addView(exceptionTextView);
+				dialogLayout.addView(btn);
+				dialogLayout.addView(btn1);
+				var dialog = new android.app.Dialog(ctx);
+				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
+				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				dialog.setContentView(dialogLayout);
+				dialog.setTitle("An error occurred");
+				inputBar.setHint("Title of the issue");
+				inputBar.setTextColor(android.graphics.Color.WHITE);
+				dialogGUI.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
+				dialogGUI.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
+				dialogGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.TOP, 0, 0);
+				dialog.show();
+				btn.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						reportName = inputBar.getText();
+						ModPE.goToURL("https://github.com/Vertex-Client/Vertex-Client-PE/issues/new?title=" + reportName + "&body=" + exception);
+						dialog.dismiss();
+					}
+				});
+				btn1.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+					}
+				});
+			} catch(e) {
+				print("Error: " + e);
 			}
 		}
 	});
@@ -521,7 +581,8 @@ VertexClientPE.showMoreDialog = function() {
 					}
 				});
 			} catch(e) {
-				print("Error: " + e)
+				print("Error: " + e);
+				VertexClientPE.showBugReportDialog(e);
 			}
 		}
 	});
@@ -578,7 +639,8 @@ VertexClientPE.showSpamMessageDialog = function() {
 					}
 				});
 			} catch(e) {
-				print("Error: " + e)
+				print("Error: " + e);
+				VertexClientPE.showBugReportDialog(e);
 			}
 		}
 	});
@@ -652,7 +714,8 @@ VertexClientPE.showAddAccountDialog = function() {
 					}
 				});
 			} catch(e) {
-				print("Error: " + e)
+				print("Error: " + e);
+				VertexClientPE.showBugReportDialog(e);
 			}
 		}
 	});
@@ -734,7 +797,8 @@ VertexClientPE.showJavascriptConsoleDialog = function() {
 					}
 				});
 			} catch(e) {
-				print("Error: " + e)
+				print("Error: " + e);
+				VertexClientPE.showBugReportDialog(e);
 			}
 		}
 	});
@@ -811,9 +875,10 @@ VertexClientPE.showKitsScreen = function() {
 					kitsScreen.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
 				} catch(error) {
 					print('An error occured: ' + error);
+					VertexClientPE.showBugReportDialog(error);
+				}
 			}
-		}
-	}));
+		}));
 }
 
 VertexClientPE.toggleModule = function(module) {
@@ -2785,6 +2850,7 @@ function newLevel() {
 		}
 	}).start();
 	showHacksList();
+	VertexClientPE.showBugReportDialog("HAHAHA");
 }
 
 function leaveGame() {
@@ -3016,6 +3082,7 @@ function settingsScreen() {
                     settingsMenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
                 } catch(error) {
                     print('An error occured: ' + error);
+					VertexClientPE.showBugReportDialog(error);
                 }
             }
         }));
@@ -3492,6 +3559,7 @@ VertexClientPE.showCombatMenu = function() {
 
             } catch(error) {
                 print("Error: " + error);
+				VertexClientPE.showBugReportDialog(error);
             }
         }
     });
@@ -3792,6 +3860,7 @@ VertexClientPE.showBuildingMenu = function() {
 
             } catch(error) {
                 print("Error: " + error);
+				VertexClientPE.showBugReportDialog(error);
             }
         }
     });
@@ -4113,6 +4182,7 @@ VertexClientPE.showMovementMenu = function() {
 
             } catch(error) {
                 print("Error: " + error);
+				VertexClientPE.showBugReportDialog(error);
             }
         }
     });
@@ -4247,6 +4317,7 @@ VertexClientPE.showChatMenu = function() {
 
             } catch(error) {
                 print("Error: " + error);
+				VertexClientPE.showBugReportDialog(error);
             }
         }
     });
@@ -4541,6 +4612,7 @@ VertexClientPE.showMiscMenu = function() {
 
             } catch(error) {
                 print("Error: " + error);
+				VertexClientPE.showBugReportDialog(error);
             }
         }
     });
@@ -5004,6 +5076,7 @@ function showHacksList() {
 					}
                 } catch(error) {
                     print('An error occured: ' + error);
+					VertexClientPE.showBugReportDialog(error);
                 }
             }
         }));
@@ -5234,6 +5307,7 @@ function updateHacksList() {
 					}
                 } catch(error) {
                     print('An error occured: ' + error);
+					VertexClientPE.showBugReportDialog(error);
                 }
             }
         }));
@@ -5309,6 +5383,7 @@ function setupDone() {
 			doneUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
 		} catch(exception) {
 			print(exception);
+			VertexClientPE.showBugReportDialog(exception);
 		}
     }}));
 }
@@ -5365,6 +5440,7 @@ function exit() {
     moreUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
     }catch(exception){
     print(exception);
+	VertexClientPE.showBugReportDialog(exception);
     }
     }}));
     }
@@ -5393,6 +5469,7 @@ function exitSettings(){
     exitSettingsUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
     }catch(exception){
     print(exception);
+	VertexClientPE.showBugReportDialog(exception);
     }
     }}));
 }
@@ -5421,6 +5498,7 @@ function exitInformation(){
     exitInformationUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
     }catch(exception){
     print(exception);
+	VertexClientPE.showBugReportDialog(exception);
     }
     }}));
 }
