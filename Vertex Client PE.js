@@ -2834,6 +2834,7 @@ VertexClientPE.setup();
 var coordsButton;
 
 function newLevel() {
+	VertexClientPE.isRemote = false;
 	VertexClientPE.loadMainSettings();
 	new java.lang.Thread(new java.lang.Runnable() {
 		run: function() {
@@ -2850,7 +2851,6 @@ function newLevel() {
 		}
 	}).start();
 	showHacksList();
-	VertexClientPE.showBugReportDialog("HAHAHA");
 }
 
 function leaveGame() {
