@@ -23,5 +23,7 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [x] EnderProjectiles
 - [x] FreezeAura
 - [ ] Ride
+- [ ] LSD
+- [ ] Music Player
 
 ![Vertex Client PE](http://i.imgur.com/onBWDEI.png)
