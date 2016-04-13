@@ -1,7 +1,7 @@
 /**
  * #######################################################
  * @name Vertex Client PE
- * @version v1.2.1 Alpha
+ * @version v1.2.2 Alpha
  * @author peacestorm (@AgameR_Modder)
  * @credits Herqux_, MyNameIsTriXz, Godsoft029, ArceusMatt
  * #######################################################
@@ -31,7 +31,7 @@ var VertexClientPE = {
 
 VertexClientPE.isRemote = false;
 
-const CURRENT_VERSION = "1.2.1 Alpha";
+const CURRENT_VERSION = "1.2.2 Alpha";
 const TARGET_VERSION = "MCPE v0.14.x alpha";
 var latestVersion;
 var latestPocketEditionVersion;
@@ -3199,7 +3199,15 @@ VertexClientPE.showTopBar = function() {
 					topBarLayoutCenter.addView(logoViewer4);
 					
 					topBar = new widget.PopupWindow(topBarLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight() / 10);
-					topBar.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.parseColor("#0080FF")));
+					//topBar.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.parseColor("#0080FF")));
+					topBar.setBackgroundDrawable(backgroundClientGUI);
+					if(themeSetting == "red") {
+						topBar.setBackgroundDrawable(backgroundRedClientGUI);
+					}if(themeSetting == "blue") {
+						topBar.setBackgroundDrawable(backgroundBlueClientGUI);
+					}if(themeSetting == "purple") {
+						topBar.setBackgroundDrawable(backgroundPurpleClientGUI);
+					}
 					topBar.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
 				} catch(error) {
 					print('An error occured: ' + error);
