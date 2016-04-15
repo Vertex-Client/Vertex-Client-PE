@@ -49,6 +49,7 @@ var themeSetting = "green";
 var spamMessage = "Spam!!!!!";
 var showNewsSetting = "on";
 var menuAnimationsSetting = "on";
+var nukerMode = "cube";
 //End of settings
 
 var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
@@ -646,6 +647,83 @@ VertexClientPE.showSpamMessageDialog = function() {
 	});
 }
 
+VertexClientPE.showNukerDialog = function() {
+	ctx.runOnUiThread(new java.lang.Runnable() {
+		run: function() {
+			try {
+				VertexClientPE.loadMainSettings();
+				dialogGUI = new widget.PopupWindow();
+				var nukerTitle = clientTextView("Nuker", true);
+				nukerTitle.setTextSize(20);
+				var nukerModeTitle = clientTextView("Mode");
+				var nukerModeCubeButton = clientButton("Cube", "Normal mode which destroys blocks in the shape of a cube");
+				var nukerModeFlatButton = clientButton("Flat", "Flat mode which flats the ground");
+				var nukerEnter = clientTextView("\n");
+				var closeButton = clientButton("Close");
+				var dialogLayout = new LinearLayout(ctx);
+				var spritesheet = android.graphics.Bitmap.createScaledBitmap(trimImage(GetSpritesheet(), 0, 0, 16, 16), 16 * GuiSize, 16 * GuiSize, false);
+				dialogLayout.setBackgroundDrawable(backgroundClientGUI);
+				if(themeSetting == "red") {
+					dialogLayout.setBackgroundDrawable(backgroundRedClientGUI);
+				}if(themeSetting == "blue") {
+					dialogLayout.setBackgroundDrawable(backgroundBlueClientGUI);
+				}if(themeSetting == "purple") {
+					dialogLayout.setBackgroundDrawable(backgroundPurpleClientGUI);
+				}
+				dialogLayout.setOrientation(LinearLayout.VERTICAL);
+				dialogLayout.addView(nukerTitle);
+				dialogLayout.addView(nukerModeTitle);
+				dialogLayout.addView(nukerModeCubeButton);
+				dialogLayout.addView(nukerModeFlatButton);
+				dialogLayout.addView(nukerEnter);
+				dialogLayout.addView(closeButton);
+				if(nukerMode == "cube") {
+					nukerModeCubeButton.setTextColor(android.graphics.Color.GREEN);
+				}if(nukerMode == "flat") {
+					nukerModeFlatButton.setTextColor(android.graphics.Color.GREEN);
+				}
+				var dialog = new android.app.Dialog(ctx);
+				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
+				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				dialog.setContentView(dialogLayout);
+				dialog.setTitle("Nuker");
+				dialogGUI.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
+				dialogGUI.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
+				dialogGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.TOP, 0, 0);
+				dialog.show();
+				nukerModeCubeButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						nukerMode = "cube";
+						nukerModeCubeButton.setTextColor(android.graphics.Color.GREEN);
+						nukerModeFlatButton.setTextColor(android.graphics.Color.WHITE);
+						VertexClientPE.saveMainSettings();
+						VertexClientPE.loadMainSettings();
+					}
+				});
+				nukerModeFlatButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						nukerMode = "flat";
+						nukerModeCubeButton.setTextColor(android.graphics.Color.WHITE);
+						nukerModeFlatButton.setTextColor(android.graphics.Color.GREEN);
+						VertexClientPE.saveMainSettings();
+						VertexClientPE.loadMainSettings();
+					}
+				});
+				closeButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						VertexClientPE.saveMainSettings();
+						VertexClientPE.loadMainSettings();
+						dialog.dismiss();
+					}
+				});
+			} catch(e) {
+				print("Error: " + e);
+				VertexClientPE.showBugReportDialog(e);
+			}
+		}
+	});
+}
+
 VertexClientPE.showAddAccountDialog = function() {
 	ctx.runOnUiThread(new java.lang.Runnable() {
 		run: function() {
@@ -693,19 +771,6 @@ VertexClientPE.showAddAccountDialog = function() {
 						dialog.dismiss();
 						accountManager.dismiss();
 						VertexClientPE.showAccountManager();
-						/*var usernameText = new widget.TextView(ctx);
-						usernameText.setText(accountName.toString() + "\n");
-						accountManagerLayoutLeft.addView(usernameText);
-						var useButton = clientButton("Use");
-						useButton.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
-						useButton.setOnClickListener(new android.view.View.OnClickListener({
-							onClick: function(viewarg) {
-								ModPE.setPlayerName(VertexClientPE.accounts[i].username.toString());
-								//print(VertexClientPE.accounts[i].username.toString());
-								accountManager.dismiss();
-							}
-						}));
-						accountManagerLayoutRight.addView(useButton);*/
 					}
 				});
 				cancelButton.setOnClickListener(new android.view.View.OnClickListener() {
@@ -1905,10 +1970,20 @@ VertexClientPE.xRay = function(onOrOff) {
 }
 
 VertexClientPE.nuker = function(x, y, z) {
-	for(var blockX = - 3; blockX < 4; blockX++) {
-		for(var blockY = - 3; blockY < 4; blockY++) {
-			for(var blockZ = - 3; blockZ < 4; blockZ++) {
-				setTile(x + blockX, y + blockY, z + blockZ, 0);
+	if(nukerMode == "cube") {
+		for(var blockX = - 3; blockX < 4; blockX++) {
+			for(var blockY = - 3; blockY < 4; blockY++) {
+				for(var blockZ = - 3; blockZ < 4; blockZ++) {
+					setTile(x + blockX, y + blockY, z + blockZ, 0);
+				}
+			}
+		}
+	}if(nukerMode == "flat") {
+		for(blockX = - 3; blockX < 4; blockX++) {
+			for(var blockY = - 1; blockY < 4; blockY++) {
+				for(var blockZ = - 3; blockZ < 4; blockZ++) {
+					setTile(x + blockX, y + blockY, z + blockZ, 0);
+				}
 			}
 		}
 	}
@@ -2078,6 +2153,7 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + spamMessage.toString());
     outWrite.append("," + showNewsSetting.toString());
     outWrite.append("," + menuAnimationsSetting.toString());
+    outWrite.append("," + nukerMode.toString());
 
     outWrite.close();
 }
@@ -2111,6 +2187,9 @@ VertexClientPE.loadMainSettings = function() {
 	}
 	if(str.toString().split(",")[6] != null && str.toString().split(",")[6] != undefined) {
     menuAnimationsSetting = str.toString().split(",")[6]; //Here we split text by ","
+	}
+	if(str.toString().split(",")[7] != null && str.toString().split(",")[7] != undefined) {
+    nukerMode = str.toString().split(",")[7]; //Here we split text by ","
 	}
     fos.close();
 	return true;
@@ -3580,7 +3659,7 @@ VertexClientPE.showBuildingMenu = function() {
     ctx.runOnUiThread(new java.lang.Runnable() {
         run: function() {
             try {
-		VertexClientPE.loadMainSettings();
+				VertexClientPE.loadMainSettings();
 
                 vertexclientpebuildingmenu = new widget.PopupWindow(ctx);
                 var buildingMenuLayout1 = new LinearLayout(ctx);
@@ -3677,8 +3756,21 @@ VertexClientPE.showBuildingMenu = function() {
 				}
 				}));
 				
+				var nukerLayout = new LinearLayout(ctx);
+				nukerLayout.setOrientation(LinearLayout.HORIZONTAL);
+				
+				var nukerLayoutLeft = new LinearLayout(ctx);
+				nukerLayoutLeft.setOrientation(1);
+				nukerLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.heightPixels / 3, display.heightPixels / 10 + display.heightPixels / 10));
+				nukerLayout.addView(nukerLayoutLeft);
+				
+				var nukerLayoutRight = new LinearLayout(ctx);
+				nukerLayoutRight.setOrientation(1);
+				nukerLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.heightPixels / 2 - display.heightPixels / 3, display.heightPixels / 10 + display.heightPixels / 10));
+				nukerLayout.addView(nukerLayoutRight);
+				
 				var nukerBtn = clientButton("Nuker", "Automatically destroys blocks around you");
-				nukerBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				nukerBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 3, display.heightPixels / 10));
 				nukerBtn.setAlpha(0.54);
 				if(nukerState == false) {
 					nukerBtn.setTextColor(android.graphics.Color.WHITE);
@@ -3702,7 +3794,7 @@ VertexClientPE.showBuildingMenu = function() {
 				}));
 				
 				var tapNukerBtn = clientButton("TapNuker", "Destroys blocks wherever you tap");
-				tapNukerBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				tapNukerBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 3, display.heightPixels / 10));
 				tapNukerBtn.setAlpha(0.54);
 				if(tapNukerState == false) {
 					tapNukerBtn.setTextColor(android.graphics.Color.WHITE);
@@ -3722,6 +3814,15 @@ VertexClientPE.showBuildingMenu = function() {
 						tapNukerState = false;
 						tapNukerBtn.setTextColor(android.graphics.Color.WHITE);
 					}
+				}
+				}));
+				
+				var nukerInfoBtn = clientButton("...", "Nuker settings");
+				nukerInfoBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2 - display.heightPixels / 3, display.heightPixels / 10 + display.heightPixels / 10));
+				nukerInfoBtn.setAlpha(0.54);
+				nukerInfoBtn.setOnClickListener(new android.view.View.OnClickListener({
+				onClick: function(viewarg){
+					VertexClientPE.showNukerDialog();
 				}
 				}));
 				
@@ -3850,8 +3951,10 @@ VertexClientPE.showBuildingMenu = function() {
                 buildingMenuLayout.addView(instaMineBtn);
                 buildingMenuLayout.addView(autoMineBtn);
                 buildingMenuLayout.addView(stackDropBtn);
-                buildingMenuLayout.addView(nukerBtn);
-				buildingMenuLayout.addView(tapNukerBtn);
+                buildingMenuLayout.addView(nukerLayout);
+                nukerLayoutLeft.addView(nukerBtn);
+				nukerLayoutLeft.addView(tapNukerBtn);
+				nukerLayoutRight.addView(nukerInfoBtn);
                 buildingMenuLayout.addView(powerExplosionsBtn);
                 buildingMenuLayout.addView(tapRemoverBtn);
                 buildingMenuLayout.addView(signEditorBtn);
