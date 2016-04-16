@@ -658,6 +658,7 @@ VertexClientPE.showNukerDialog = function() {
 				var nukerModeTitle = clientTextView("Mode");
 				var nukerModeCubeButton = clientButton("Cube", "Normal mode which destroys blocks in the shape of a cube");
 				var nukerModeFlatButton = clientButton("Flat", "Flat mode which flats the ground");
+				var nukerModeSmashButton = clientButton("Smash", "Smash mode which only breaks blocks with a destroy time of 0");
 				var nukerEnter = clientTextView("\n");
 				var closeButton = clientButton("Close");
 				var dialogLayout = new LinearLayout(ctx);
@@ -675,12 +676,15 @@ VertexClientPE.showNukerDialog = function() {
 				dialogLayout.addView(nukerModeTitle);
 				dialogLayout.addView(nukerModeCubeButton);
 				dialogLayout.addView(nukerModeFlatButton);
+				dialogLayout.addView(nukerModeSmashButton);
 				dialogLayout.addView(nukerEnter);
 				dialogLayout.addView(closeButton);
 				if(nukerMode == "cube") {
 					nukerModeCubeButton.setTextColor(android.graphics.Color.GREEN);
 				}if(nukerMode == "flat") {
 					nukerModeFlatButton.setTextColor(android.graphics.Color.GREEN);
+				}if(nukerMode == "smash") {
+					nukerModeSmashButton.setTextColor(android.graphics.Color.GREEN);
 				}
 				var dialog = new android.app.Dialog(ctx);
 				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
@@ -696,6 +700,7 @@ VertexClientPE.showNukerDialog = function() {
 						nukerMode = "cube";
 						nukerModeCubeButton.setTextColor(android.graphics.Color.GREEN);
 						nukerModeFlatButton.setTextColor(android.graphics.Color.WHITE);
+						nukerModeSmashButton.setTextColor(android.graphics.Color.WHITE);
 						VertexClientPE.saveMainSettings();
 						VertexClientPE.loadMainSettings();
 					}
@@ -705,6 +710,17 @@ VertexClientPE.showNukerDialog = function() {
 						nukerMode = "flat";
 						nukerModeCubeButton.setTextColor(android.graphics.Color.WHITE);
 						nukerModeFlatButton.setTextColor(android.graphics.Color.GREEN);
+						nukerModeSmashButton.setTextColor(android.graphics.Color.WHITE);
+						VertexClientPE.saveMainSettings();
+						VertexClientPE.loadMainSettings();
+					}
+				});
+				nukerModeFlatButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						nukerMode = "smash";
+						nukerModeCubeButton.setTextColor(android.graphics.Color.WHITE);
+						nukerModeFlatButton.setTextColor(android.graphics.Color.WHITE);
+						nukerModeSmashButton.setTextColor(android.graphics.Color.GREEN);
 						VertexClientPE.saveMainSettings();
 						VertexClientPE.loadMainSettings();
 					}
@@ -1964,9 +1980,10 @@ VertexClientPE.xRay = function(onOrOff) {
         }
     }
     var originalTile = getTile(Player.getX(), Player.getY(), Player.getZ());
+	var originalTileData = Level.getData(Player.getX(), Player.getY(), Player.getZ());
     setTile(Player.getX(), Player.getY(), Player.getZ(), 1, 0);
     setTile(Player.getX(), Player.getY(), Player.getZ(), 2, 0);
-    setTile(Player.getX(), Player.getY(), Player.getZ(), originalTile, 0);
+    setTile(Player.getX(), Player.getY(), Player.getZ(), originalTile, originalTileData);
 }
 
 VertexClientPE.nuker = function(x, y, z) {
@@ -1983,6 +2000,16 @@ VertexClientPE.nuker = function(x, y, z) {
 			for(var blockY = - 1; blockY < 4; blockY++) {
 				for(var blockZ = - 3; blockZ < 4; blockZ++) {
 					setTile(x + blockX, y + blockY, z + blockZ, 0);
+				}
+			}
+		}
+	}if(nukerMode == "smash") {
+		for(blockX = - 3; blockX < 4; blockX++) {
+			for(var blockY = - 3; blockY < 4; blockY++) {
+				for(var blockZ = - 3; blockZ < 4; blockZ++) {
+					if(Block.getDestroyTime(getTile(x + blockX, y + blockY, z + blockZ)) == 0) {
+						setTile(x + blockX, y + blockY, z + blockZ, 0);
+					}
 				}
 			}
 		}
