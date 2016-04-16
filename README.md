@@ -15,7 +15,7 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [ ] EntityESP
 - [ ] Twerk
 - [x] CoordsDisplay
-- [ ] FastWalk
+- [x] FastWalk
 - [x] AutoPlace
 - [x] God Mode
 - [x] AutoLeave
