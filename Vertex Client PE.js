@@ -41,6 +41,8 @@ var showingMenu = false;
 
 var setupColor = "green";
 
+var f = 0;
+
 //settings
 var hacksListModeSetting = "on";
 var mainButtonPositionSetting = "top-right";
@@ -1208,7 +1210,7 @@ VertexClientPE.toggleModule = function(module) {
 			}
 			break;
 		} case "fastwalk": {
-			if(fastWaklState == false) {
+			if(fastWalkState == false) {
 				fastWalkState = true;
 			} else if(fastWalkState == true) {
 				fastWalkState = false;
@@ -1220,6 +1222,15 @@ VertexClientPE.toggleModule = function(module) {
 				coordsDisplayState = true;
 			} else if(coordsDisplayState == true) {
 				coordsDisplayState = false;
+			}
+			break;
+		} case "fastwalk": {
+			if(fastWalkState == false) {
+				fastWalkState = true;
+				f = 1;
+			} else if(fastWalkState == true) {
+				fastWalkState = false;
+				f = 0;
 			}
 			break;
 		} default: {
@@ -2231,7 +2242,7 @@ VertexClientPE.freecam = function(onOrOff) {
 }
 
 VertexClientPE.fastWalk = function() {
-if(f == 1) {
+		if(f == 1) {
             Xpos = getPlayerX();
             Zpos = getPlayerZ();
             f = f + 1;
@@ -2246,7 +2257,6 @@ if(f == 1) {
         }
         if(f != 1) {
             f = f + 1;
-
         }
 }
 
@@ -4337,6 +4347,28 @@ VertexClientPE.showMovementMenu = function() {
 					}
 				}
 				}));
+				
+				var fastWalkBtn = clientButton("FastWalk", "Makes you walk faster");
+				fastWalkBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				fastWalkBtn.setAlpha(0.54);
+				if(fastWalkState == false) {
+					fastWalkBtn.setTextColor(android.graphics.Color.WHITE);
+				} else if(fastWalkState == true) {
+					fastWalkBtn.setTextColor(android.graphics.Color.GREEN);
+				}
+				fastWalkBtn.setOnClickListener(new android.view.View.OnClickListener({
+				onClick: function(viewarg){
+					if(fastWalkState == false) {
+						fastWalkState = true;
+						f = 1;
+						fastWalkBtn.setTextColor(android.graphics.Color.GREEN);
+					} else if(fastWalkState == true) {
+						fastWalkState = false;
+						f = 0;
+						fastWalkBtn.setTextColor(android.graphics.Color.WHITE);
+					}
+				}
+				}));
 
 				movementTitle.setOnClickListener(new android.view.View.OnClickListener() {
                     		onClick: function(viewarg) {
@@ -4390,6 +4422,7 @@ VertexClientPE.showMovementMenu = function() {
 					//movementMenuLayout.addView(freecamBtn);
 					movementMenuLayout.addView(highJumpBtn);
 					movementMenuLayout.addView(enderProjectilesBtn);
+					movementMenuLayout.addView(fastWalkBtn);
 				}
                 movementMenuLayout.addView(timerBtn);
 
@@ -4992,6 +5025,7 @@ var noHurtState = false;
 var enderProjectilesState = false;
 var freezeAuraState = false;
 var coordsDisplayState = false;
+var fastWalkState = false;
 
 var hacksList;
 var StatesText;
@@ -5031,6 +5065,7 @@ var noHurtStateText = "";
 var enderProjectilesStateText = "";
 var freezeAuraStateText = "";
 var coordsDisplayStateText = "";
+var fastWalkStateText = "";
 
 var enabledHacksCounter = 0;
 
@@ -5261,8 +5296,8 @@ function showHacksList() {
                     if(fastWalkState == true) {
                         fastWalkStateText = " [FastWalk] ";
 						enabledHacksCounter++;
-                    } else if(FastWalkState == false) {
-                        FastWalkText = "";
+                    } else if(fastWalkState == false) {
+                        fastWalkStateText = "";
                     }
 					if(coordsDisplayState == true) {
                         coordsDisplayStateText = " [CoordsDisplay] ";
@@ -5274,7 +5309,7 @@ function showHacksList() {
                     VertexClientPEHacksListTextView.setText(VertexClientPEHacksListText);
 					StatesText = clientTextView("Placeholder text", true);
 					if(hacksListModeSetting == "on") {
-						StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + dronePlusStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + coordsDisplayStateText);
+						StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + dronePlusStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + coordsDisplayStateText + fastWalkStateText);
 					} else if(hacksListModeSetting == "counter") {
 						StatesText.setText(enabledHacksCounter.toString());
 					}
@@ -5527,9 +5562,15 @@ function updateHacksList() {
                     } else if(coordsDisplayState == false) {
                         coordsDisplayStateText = "";
                     }
+                    if(fastWalkState == true) {
+                        fastWalkStateText = " [FastWalk] ";
+						enabledHacksCounter++;
+                    } else if(fastWalkState == false) {
+                        fastWalkStateText = "";
+                    }
 					
 					if(hacksListModeSetting == "on") {
-						StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + dronePlusStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + coordsDisplayStateText);
+						StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + dronePlusStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + coordsDisplayStateText + fastWalkStateText);
 					} else if(hacksListModeSetting == "counter") {
 						StatesText.setText(enabledHacksCounter.toString());
 					}
@@ -5582,6 +5623,8 @@ VertexClientPE.panic = function() {
 	enderProjectilesState = false;
 	freezeAuraState = false;
 	coordsDisplayState = false;
+	fastWalkState = false;
+	f = 0;
 }
 
 function setupDone() {
@@ -5871,6 +5914,8 @@ function modTick() {
 		VertexClientPE.freezeAura();
 	}if(coordsDisplayState == true) {
 		VertexClientPE.coordsDisplay();
+	}if(fastWalkState == true) {
+		VertexClientPE.fastWalk();
 	}
 }
 	
@@ -6191,4 +6236,4 @@ function chatHook(text) {
 	}
 }
  
-//End/**
+//End
