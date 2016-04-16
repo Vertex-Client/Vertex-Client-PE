@@ -1207,6 +1207,14 @@ VertexClientPE.toggleModule = function(module) {
 				freezeAuraState = false;
 			}
 			break;
+		} case "fastwalk": {
+			if(fastWaklState == false) {
+				fastWalkState = true;
+			} else if(fastWalkState == true) {
+				fastWalkState = false;
+			}
+			break;
+			
 		} case "coordsdisplay": {
 			if(coordsDisplayState == false) {
 				coordsDisplayState = true;
@@ -2220,6 +2228,26 @@ VertexClientPE.freecam = function(onOrOff) {
 			break;
 		}
 	}
+}
+
+VertexClientPE.fastWalk = function() {
+if(f == 1) {
+            Xpos = getPlayerX();
+            Zpos = getPlayerZ();
+            f = f + 1;
+        } else if(f == 3) {
+            f = 1;
+            Xdiff = getPlayerX() - Xpos;
+            Zdiff = getPlayerZ() - Zpos;
+            setVelX(getPlayerEnt(), Xdiff);
+            setVelZ(getPlayerEnt(), Zdiff);
+            Xdiff = 0;
+            Zdiff = 0;
+        }
+        if(f != 1) {
+            f = f + 1;
+
+        }
 }
 
 var settingsPath = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/games/com.mojang/minecraftpe/";
@@ -5229,6 +5257,12 @@ function showHacksList() {
 						enabledHacksCounter++;
                     } else if(freezeAuraState == false) {
                         freezeAuraStateText = "";
+                    }
+                    if(fastWalkState == true) {
+                        fastWalkStateText = " [FastWalk] ";
+						enabledHacksCounter++;
+                    } else if(FastWalkState == false) {
+                        FastWalkText = "";
                     }
 					if(coordsDisplayState == true) {
                         coordsDisplayStateText = " [CoordsDisplay] ";
