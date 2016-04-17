@@ -1209,6 +1209,13 @@ VertexClientPE.toggleModule = function(module) {
 				freezeAuraState = false;
 			}
 			break;
+		} case "fireAura": {
+			if(fireAuraState == false) {
+				fireAuraState = true;
+			} else if(fireAuraState == true) {
+				fireAuraState = false;
+			}
+			break;
 		} case "fastwalk": {
 			if(fastWalkState == false) {
 				fastWalkState = true;
@@ -2258,6 +2265,20 @@ VertexClientPE.fastWalk = function() {
         if(f != 1) {
             f = f + 1;
         }
+}
+VertexClientPE.fireAura = function() {
+
+	for(var i = 0; i < mobs.length; i++) {
+		var x = Entity.getX(mobs[i]) - getPlayerX();
+		var y = Entity.getY(mobs[i]) - getPlayerY();
+		var z = Entity.getZ(mobs[i]) - getPlayerZ();
+		if(x*x+y*y+z*z<=4*4 && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION) {
+			if(Entity.getX(mobs[i]) > getPlayerX() && Entity.getZ(mobs[i]) > getPlayerZ()) {
+				Entity.setFireTicks(mobs, 100);
+			}
+			Entity.setImmobile(mobs[i], true);
+		}
+	}
 }
 
 var settingsPath = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/games/com.mojang/minecraftpe/";
@@ -3537,6 +3558,30 @@ VertexClientPE.showCombatMenu = function() {
 				}
 				}));
 				
+				var fireAuraBtn = clientButton("FireAura", "Sets all the near entities on fire");
+				fireAuraBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				fireAuraBtn.setAlpha(0.54);
+				if(fireAuraState == false) {
+					fireAuraBtn.setTextColor(android.graphics.Color.WHITE);
+				} else if(fireAuraState == true) {
+					fireAuraBtn.setTextColor(android.graphics.Color.GREEN);
+				}
+				fireAuraBtn.setOnClickListener(new android.view.View.OnClickListener({
+				onClick: function(viewarg){
+					if(fireAuraState == false) {
+						if(killAuraState == true) {
+							killAuraState = false;
+							killAuraBtn.setTextColor(android.graphics.Color.WHITE);
+						}
+						fireAuraState = true;
+						fireAuraBtn.setTextColor(android.graphics.Color.GREEN);
+					} else if(fireAuraState == true) {
+						fireAuraState = false;
+						fireAuraBtn.setTextColor(android.graphics.Color.WHITE);
+					}
+				}
+				}));
+				
 				var dronePlusBtn = clientButton("Drone+", "Focuses on near entities to make it easier to kill them");
 				dronePlusBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				dronePlusBtn.setAlpha(0.54);
@@ -3746,6 +3791,7 @@ VertexClientPE.showCombatMenu = function() {
 				if(!VertexClientPE.isRemote) {
 					combatMenuLayout.addView(killAuraBtn);
 					combatMenuLayout.addView(freezeAuraBtn);
+					combatMenuLayout.addView(fireAuraBtn);
 					combatMenuLayout.addView(dronePlusBtn);
 					combatMenuLayout.addView(bowAimbotBtn);
 					combatMenuLayout.addView(instaKillBtn);
@@ -5064,6 +5110,7 @@ var autoLeaveStateText = "";
 var noHurtStateText = "";
 var enderProjectilesStateText = "";
 var freezeAuraStateText = "";
+var fireAuraStateText = "";
 var coordsDisplayStateText = "";
 var fastWalkStateText = "";
 
@@ -5292,6 +5339,12 @@ function showHacksList() {
 						enabledHacksCounter++;
                     } else if(freezeAuraState == false) {
                         freezeAuraStateText = "";
+                    }
+                    				if(fireeAuraState == true) {
+                        fireAuraStateText = " [FireAura] ";
+						enabledHacksCounter++;
+                    } else if(fireAuraState == false) {
+                        fireAuraStateText = "";
                     }
                     if(fastWalkState == true) {
                         fastWalkStateText = " [FastWalk] ";
@@ -5556,6 +5609,12 @@ function updateHacksList() {
                     } else if(freezeAuraState == false) {
                         freezeAuraStateText = "";
                     }
+                    if(fireAuraState == true) {
+                        fireAuraStateText = " [FDireAura] ";
+						enabledHacksCounter++;
+                    } else if(fireAuraState == false) {
+                        fireAuraStateText = "";
+                    }
 					if(coordsDisplayState == true) {
                         coordsDisplayStateText = " [CoordsDisplay] ";
 						enabledHacksCounter++;
@@ -5622,6 +5681,7 @@ VertexClientPE.panic = function() {
 	noHurtState = false;
 	enderProjectilesState = false;
 	freezeAuraState = false;
+	fireAuraState = false;
 	coordsDisplayState = false;
 	fastWalkState = false;
 	f = 0;
@@ -5912,6 +5972,8 @@ function modTick() {
 		VertexClientPE.autoLeave();
 	}if(freezeAuraState == true) {
 		VertexClientPE.freezeAura();
+	}if(fireAuraState == true) {
+		VertexClientPE.fireeAura();
 	}if(coordsDisplayState == true) {
 		VertexClientPE.coordsDisplay();
 	}if(fastWalkState == true) {
