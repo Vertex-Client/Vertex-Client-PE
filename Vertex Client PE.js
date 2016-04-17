@@ -5070,6 +5070,7 @@ var autoLeaveState = false;
 var noHurtState = false;
 var enderProjectilesState = false;
 var freezeAuraState = false;
+var fireAuraState = false;
 var coordsDisplayState = false;
 var fastWalkState = false;
 
