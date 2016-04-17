@@ -3527,6 +3527,10 @@ VertexClientPE.showCombatMenu = function() {
 							freezeAuraState = false;
 							freezeAuraBtn.setTextColor(android.graphics.Color.WHITE);
 						}
+						if(fireAuraState == true) {
+							fireAuraState = false;
+							fireAuraBtn.setTextColor(android.graphics.Color.WHITE);
+						}
 						killAuraState = true;
 						killAuraBtn.setTextColor(android.graphics.Color.GREEN);
 					} else if(killAuraState == true) {
@@ -3551,6 +3555,10 @@ VertexClientPE.showCombatMenu = function() {
 							killAuraState = false;
 							killAuraBtn.setTextColor(android.graphics.Color.WHITE);
 						}
+						if(fireAuraState == true) {
+							fireAuraState = false;
+							fireAuraBtn.setTextColor(android.graphics.Color.WHITE);
+						}
 						freezeAuraState = true;
 						freezeAuraBtn.setTextColor(android.graphics.Color.GREEN);
 					} else if(freezeAuraState == true) {
@@ -3574,6 +3582,10 @@ VertexClientPE.showCombatMenu = function() {
 						if(killAuraState == true) {
 							killAuraState = false;
 							killAuraBtn.setTextColor(android.graphics.Color.WHITE);
+						}
+						if(freezeAuraState == true) {
+							freezeAuraState = false;
+							freezeAuraBtn.setTextColor(android.graphics.Color.WHITE);
 						}
 						fireAuraState = true;
 						fireAuraBtn.setTextColor(android.graphics.Color.GREEN);
