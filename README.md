@@ -25,7 +25,7 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [ ] Ride
 - [ ] LSD
 - [ ] AutoTorch
-- [ ] FireAura
+- [x] FireAura
 - [ ] Music Player
 
 ![Vertex Client PE](http://i.imgur.com/onBWDEI.png)
