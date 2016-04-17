@@ -1,10 +1,10 @@
 /**
- * #######################################################
+ * ###############################################################
  * @name Vertex Client PE
  * @version v1.2.2 Alpha
  * @author peacestorm (@AgameR_Modder)
- * @credits Herqux_, MyNameIsTriXz, Godsoft029, ArceusMatt
- * #######################################################
+ * @credits Herqux_, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG
+ * ###############################################################
  */
 
 // #####################
@@ -2267,18 +2267,20 @@ VertexClientPE.fastWalk = function() {
         }
 }
 VertexClientPE.fireAura = function() {
-
+  
+  var mobs = Entity.getAll();
 	for(var i = 0; i < mobs.length; i++) {
 		var x = Entity.getX(mobs[i]) - getPlayerX();
 		var y = Entity.getY(mobs[i]) - getPlayerY();
 		var z = Entity.getZ(mobs[i]) - getPlayerZ();
 		if(x*x+y*y+z*z<=4*4 && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION) {
 			if(Entity.getX(mobs[i]) > getPlayerX() && Entity.getZ(mobs[i]) > getPlayerZ()) {
-				Entity.setFireTicks(mobs, 100);
+				setRot(90, getPitch());
 			}
-			Entity.setImmobile(mobs[i], true);
+			Entity.setFireTicks(mobs[i], 100);
 		}
 	}
+  
 }
 
 var settingsPath = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/games/com.mojang/minecraftpe/";
@@ -5341,7 +5343,7 @@ function showHacksList() {
                     } else if(freezeAuraState == false) {
                         freezeAuraStateText = "";
                     }
-                    				if(fireeAuraState == true) {
+                    				if(fireAuraState == true) {
                         fireAuraStateText = " [FireAura] ";
 						enabledHacksCounter++;
                     } else if(fireAuraState == false) {
@@ -5974,7 +5976,7 @@ function modTick() {
 	}if(freezeAuraState == true) {
 		VertexClientPE.freezeAura();
 	}if(fireAuraState == true) {
-		VertexClientPE.fireeAura();
+		VertexClientPE.fireAura();
 	}if(coordsDisplayState == true) {
 		VertexClientPE.coordsDisplay();
 	}if(fastWalkState == true) {
