@@ -31,6 +31,8 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [x] FireAura
 - [ ] Foodhack (all items edible)
 - [ ] TMI-Chest
+- [ ] AutoSteal
+- [ ] Chest steal button
 - [ ] Music Player
 
 ![Vertex Client PE](http://i.imgur.com/onBWDEI.png)
