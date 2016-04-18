@@ -29,6 +29,7 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [ ] LSD
 - [ ] AutoTorch
 - [x] FireAura
+- [ ] FoodHack (all items edible)
 - [ ] Music Player
 
 ![Vertex Client PE](http://i.imgur.com/onBWDEI.png)
