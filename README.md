@@ -12,7 +12,8 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [ ] Freecam
 - [ ] AutoBuild
 - [ ] BuildRandom
-- [ ] EntityESP
+- [ ] EntityESP (requires OpenGLES)
+- [ ] Tracers (requires OpenGLES)
 - [ ] Twerk
 - [x] CoordsDisplay
 - [x] FastWalk
@@ -21,7 +22,9 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [x] AutoLeave
 - [x] NoHurt
 - [x] EnderProjectiles
-- [x] FreezeAura
+- [ ] FreezeAura
+  - [x] Base hack
+  - [ ] Particles
 - [ ] Ride
 - [ ] LSD
 - [ ] AutoTorch
