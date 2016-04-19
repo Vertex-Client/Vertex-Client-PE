@@ -13,6 +13,7 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [ ] AutoBuild
 - [ ] BuildRandom
 - [ ] EntityESP (requires OpenGLES)
+- [ ] ChestESP (OpenGLES?)
 - [ ] Tracers (requires OpenGLES)
 - [ ] Twerk
 - [x] CoordsDisplay
@@ -33,6 +34,7 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [ ] TMI-Chest
 - [ ] AutoSteal
 - [ ] Chest steal button
+- [ ] Follow (following entities)
 - [ ] Music Player
 
 ![Vertex Client PE](http://i.imgur.com/onBWDEI.png)
