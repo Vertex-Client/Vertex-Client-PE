@@ -35,6 +35,7 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [ ] AutoSteal
 - [ ] Chest steal button
 - [ ] Follow (following entities)
+- [ ] TapExplosion
 - [ ] Music Player
 
 ![Vertex Client PE](http://i.imgur.com/onBWDEI.png)
