@@ -8,7 +8,7 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 
 ### Todo
 - [ ] Kits UI
-- [ ] Account Manager
+- [ ] Account Manager [aimed for 1.3 Beta]
 - [ ] Freecam
 - [ ] AutoBuild
 - [ ] BuildRandom
@@ -26,16 +26,16 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [ ] FreezeAura
   - [x] Base hack
   - [ ] Particles
-- [ ] Ride
+- [ ] Ride [aimed for 1.3 Beta]
 - [ ] LSD
-- [ ] AutoTorch
-- [x] FireAura
+- [ ] AutoTorch [aimed for 1.3 Beta]
+- [x] FireAura [1.3 Beta]
 - [ ] Foodhack (all items edible)
 - [ ] TMI-Chest
 - [ ] AutoSteal
 - [ ] Chest steal button
-- [ ] Follow (following entities)
-- [ ] TapExplosion
+- [ ] Follow (following entities) [aimed for 1.3 Beta]
+- [ ] TapExplosion [aimed for 1.3 Beta]
 - [ ] Music Player
 
 ![Vertex Client PE](http://i.imgur.com/onBWDEI.png)
