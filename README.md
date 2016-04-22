@@ -40,10 +40,10 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [ ] Nuker range settings
 - [ ] Music Player
 - [ ] Bug fixes
-  - [ ] Fix [#7](https://github.com/Vertex-Client/Vertex-Client-PE/issues/7)
+  - [x] Fix [#7](https://github.com/Vertex-Client/Vertex-Client-PE/issues/7)
   - [x] Fix [#9](https://github.com/Vertex-Client/Vertex-Client-PE/issues/9)
   - [ ] Fix [#10](https://github.com/Vertex-Client/Vertex-Client-PE/issues/10)
-  - [ ] Fix [#11](https://github.com/Vertex-Client/Vertex-Client-PE/issues/11)
-  - [ ] Fix [#12](https://github.com/Vertex-Client/Vertex-Client-PE/issues/12)
+  - [x] Fix [#11](https://github.com/Vertex-Client/Vertex-Client-PE/issues/11)
+  - [x] Fix [#12](https://github.com/Vertex-Client/Vertex-Client-PE/issues/12)
 
 ![Vertex Client PE](http://i.imgur.com/onBWDEI.png)
