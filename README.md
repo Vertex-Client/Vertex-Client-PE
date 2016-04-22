@@ -37,6 +37,7 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [ ] Follow (following entities) [aimed for 1.3 Beta]
 - [ ] TapExplosion [aimed for 1.3 Beta]
 - [ ] Timer settings [aimed for 1.3 Beta]
+- [ ] Nuker range settings
 - [ ] Music Player
 - [ ] Bug fixes
   - [ ] Fix [#7](https://github.com/Vertex-Client/Vertex-Client-PE/issues/7)
