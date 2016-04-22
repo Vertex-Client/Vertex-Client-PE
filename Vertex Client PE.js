@@ -591,21 +591,21 @@ VertexClientPE.showMoreDialog = function() {
 	});
 }
 
-VertexClientPE.showSpamMessageDialog = function() {
+VertexClientPE.showAutoSpammerDialog = function() {
 	ctx.runOnUiThread(new java.lang.Runnable() {
 		run: function() {
 			try {
 				VertexClientPE.loadMainSettings();
 				dialogGUI = new widget.PopupWindow();
-				var spamMessageTitle = clientTextView("Change spam message", true);
+				var autoSpammerTitle = clientTextView("AutoSpammer", true);
+				autoSpammerTitle.setTextSize(20);
+				var autoSpammerMessageTitle = clientTextView("Message");
 				var spamMessageInput = new EditText(ctx);
 				spamMessageInput.setText(spamMessage);
 				spamMessageInput.setTextColor(android.graphics.Color.WHITE);
 				spamMessageInput.setHint("Spam message");
-				var okButton = clientButton("Ok");
-				var cancelButton = clientButton("Cancel");
+				var closeButton = clientButton("Close");
 				var dialogLayout = new LinearLayout(ctx);
-				var spritesheet = android.graphics.Bitmap.createScaledBitmap(trimImage(GetSpritesheet(), 0, 0, 16, 16), 16 * GuiSize, 16 * GuiSize, false);
 				dialogLayout.setBackgroundDrawable(backgroundClientGUI);
 				if(themeSetting == "red") {
 					dialogLayout.setBackgroundDrawable(backgroundRedClientGUI);
@@ -615,28 +615,27 @@ VertexClientPE.showSpamMessageDialog = function() {
 					dialogLayout.setBackgroundDrawable(backgroundPurpleClientGUI);
 				}
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
-				dialogLayout.addView(spamMessageTitle);
+				dialogLayout.addView(autoSpammerTitle);
+				dialogLayout.addView(autoSpammerMessageTitle);
 				dialogLayout.addView(spamMessageInput);
-				dialogLayout.addView(okButton);
-				dialogLayout.addView(cancelButton);
+				dialogLayout.addView(closeButton);
 				var dialog = new android.app.Dialog(ctx);
 				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
-				dialog.setTitle("Change spam message");
+				dialog.setTitle("AutoSpammer");
 				dialogGUI.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
 				dialogGUI.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
 				dialogGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.TOP, 0, 0);
-				dialog.show();
-				okButton.setOnClickListener(new android.view.View.OnClickListener() {
-					onClick: function(view) {
+				dialog.setOnDismissListener(new android.content.DialogInterface.OnDismissListener() {
+					onDismiss: function() {
 						spamMessage = spamMessageInput.getText();
 						VertexClientPE.saveMainSettings();
 						VertexClientPE.loadMainSettings();
-						dialog.dismiss();
 					}
 				});
-				cancelButton.setOnClickListener(new android.view.View.OnClickListener() {
+				dialog.show();
+				closeButton.setOnClickListener(new android.view.View.OnClickListener() {
 					onClick: function(view) {
 						dialog.dismiss();
 					}
@@ -664,7 +663,6 @@ VertexClientPE.showNukerDialog = function() {
 				var nukerEnter = clientTextView("\n");
 				var closeButton = clientButton("Close");
 				var dialogLayout = new LinearLayout(ctx);
-				var spritesheet = android.graphics.Bitmap.createScaledBitmap(trimImage(GetSpritesheet(), 0, 0, 16, 16), 16 * GuiSize, 16 * GuiSize, false);
 				dialogLayout.setBackgroundDrawable(backgroundClientGUI);
 				if(themeSetting == "red") {
 					dialogLayout.setBackgroundDrawable(backgroundRedClientGUI);
@@ -717,7 +715,7 @@ VertexClientPE.showNukerDialog = function() {
 						VertexClientPE.loadMainSettings();
 					}
 				});
-				nukerModeFlatButton.setOnClickListener(new android.view.View.OnClickListener() {
+				nukerModeSmashButton.setOnClickListener(new android.view.View.OnClickListener() {
 					onClick: function(view) {
 						nukerMode = "smash";
 						nukerModeCubeButton.setTextColor(android.graphics.Color.WHITE);
@@ -2121,11 +2119,15 @@ VertexClientPE.autoPlace = function() {
 	}
 }
 
-/*VertexClientPE.autoLeave = function() {
-	if(Entity.getHealth(getPlayerEnt()) <= 4) {
-		ModPE.leaveGame();
+var autoLeaveStage = 0;
+
+VertexClientPE.autoLeave = function() {
+	if(Entity.getHealth(getPlayerEnt()) <= 8 && autoLeaveStage == 0) {
+		autoLeaveStage = 1;
+		//ModPE.leaveGame();
+		autoLeaveStage = 0;
 	}
-}*/
+}
 
 VertexClientPE.flight = function(onOrOff) {
 	switch(onOrOff) {
@@ -3278,20 +3280,12 @@ function settingsScreen() {
 					}
 					}));
 					
-					var spamMessageSettingButton = clientButton("Change AutoSpammer message", "Allows you to change the AutoSpammer spam message");
-					spamMessageSettingButton.setOnClickListener(new android.view.View.OnClickListener({
-					onClick: function(viewarg){
-						VertexClientPE.showSpamMessageDialog();
-					}
-					}));
-					
 					settingsMenuLayout.addView(hacksListModeSettingButton);
 					settingsMenuLayout.addView(mainButtonPositionSettingButton);
 					settingsMenuLayout.addView(healthTagsSettingButton);
 					settingsMenuLayout.addView(themeSettingButton);
 					settingsMenuLayout.addView(showNewsSettingButton);
 					settingsMenuLayout.addView(menuAnimationsSettingButton);
-					settingsMenuLayout.addView(spamMessageSettingButton);
 
                     settingsMenu = new widget.PopupWindow(settingsMenuLayout1, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
                     settingsMenu.setBackgroundDrawable(backgroundClientGUI);
@@ -4545,8 +4539,21 @@ VertexClientPE.showChatMenu = function() {
 				var display = new android.util.DisplayMetrics();
 				com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
 				
+				var autoSpammerLayout = new LinearLayout(ctx);
+				autoSpammerLayout.setOrientation(LinearLayout.HORIZONTAL);
+				
+				var autoSpammerLayoutLeft = new LinearLayout(ctx);
+				autoSpammerLayoutLeft.setOrientation(1);
+				autoSpammerLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.heightPixels / 3, display.heightPixels / 10));
+				autoSpammerLayout.addView(autoSpammerLayoutLeft);
+				
+				var autoSpammerLayoutRight = new LinearLayout(ctx);
+				autoSpammerLayoutRight.setOrientation(1);
+				autoSpammerLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.heightPixels / 2 - display.heightPixels / 3, display.heightPixels / 10));
+				autoSpammerLayout.addView(autoSpammerLayoutRight);
+				
 				var autoSpammerBtn = clientButton("AutoSpammer", "Automatically spams the chat");
-				autoSpammerBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				autoSpammerBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 3, display.heightPixels / 10));
 				autoSpammerBtn.setAlpha(0.54);
 				if(autoSpammerState == false) {
 					autoSpammerBtn.setTextColor(android.graphics.Color.WHITE);
@@ -4562,6 +4569,15 @@ VertexClientPE.showChatMenu = function() {
 						autoSpammerState = false;
 						autoSpammerBtn.setTextColor(android.graphics.Color.WHITE);
 					}
+				}
+				}));
+				
+				var autoSpammerInfoBtn = clientButton("...", "AutoSpammer settings");
+				autoSpammerInfoBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2 - display.heightPixels / 3, display.heightPixels / 10));
+				autoSpammerInfoBtn.setAlpha(0.54);
+				autoSpammerInfoBtn.setOnClickListener(new android.view.View.OnClickListener({
+				onClick: function(viewarg){
+					VertexClientPE.showAutoSpammerDialog();
 				}
 				}));
 				
@@ -4618,7 +4634,9 @@ VertexClientPE.showChatMenu = function() {
                     }
                 }));
 
-                chatMenuLayout.addView(autoSpammerBtn);
+                chatMenuLayout.addView(autoSpammerLayout);
+                autoSpammerLayoutLeft.addView(autoSpammerBtn);
+                autoSpammerLayoutRight.addView(autoSpammerInfoBtn);
                 chatMenuLayout.addView(homeCommandBtn);
 
                 vertexclientpechatmenu.setContentView(chatMenuLayout1);
