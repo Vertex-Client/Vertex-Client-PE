@@ -30,6 +30,7 @@ var VertexClientPE = {
 };
 
 VertexClientPE.isRemote = false;
+VertexClientPE.playerIsInGame = false;
 
 const CURRENT_VERSION = "1.3 Beta";
 const TARGET_VERSION = "MCPE v0.14.x alpha";
@@ -3059,7 +3060,7 @@ VertexClientPE.setup();
 var coordsButton;
 
 function newLevel() {
-	VertexClientPE.isRemote = false;
+	VertexClientPE.playerIsInGame = true;
 	VertexClientPE.loadMainSettings();
 	new java.lang.Thread(new java.lang.Runnable() {
 		run: function() {
@@ -3075,7 +3076,13 @@ function newLevel() {
 			}
 		}
 	}).start();
-	showHacksList();
+	if(hacksList == null) {
+		showHacksList();
+	}if(hacksList != null) {
+		if(!hacksList.isShowing()) {
+			showHacksList();
+		}
+	}
 }
 
 function leaveGame() {
@@ -3097,6 +3104,7 @@ function leaveGame() {
 			showMenuButton();
 			VertexClientPE.saveMainSettings();
 			VertexClientPE.editCopyrightText();
+			VertexClientPE.playerIsInGame = false;
 			VertexClientPE.isRemote = false;
 		}
 	}));
@@ -3350,6 +3358,8 @@ function informationScreen() {
         }));
 }
 
+var topBarHeight = ctx.getWindowManager().getDefaultDisplay().getHeight() / 10;
+
 VertexClientPE.showTopBar = function() {
 	var display = new android.util.DisplayMetrics();
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
@@ -3415,7 +3425,7 @@ VertexClientPE.showTopBar = function() {
 					logoViewer4.setImageBitmap(android.graphics.BitmapFactory.decodeByteArray(logo4, 0, logo4.length));
 					topBarLayoutCenter.addView(logoViewer4);
 					
-					topBar = new widget.PopupWindow(topBarLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight() / 10);
+					topBar = new widget.PopupWindow(topBarLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), topBarHeight);
 					//topBar.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.parseColor("#0080FF")));
 					topBar.setBackgroundDrawable(backgroundClientGUI);
 					if(themeSetting == "red") {
@@ -3447,11 +3457,11 @@ var combattpopx = screenWidth / 3, combattpopy = 0;
 var combatmX, combatmY;
 var combatdown = false;
 
-var buildingtpopx = Math.floor(screenWidth / 3 + screenWidth / 3), buildingtpopy = screenHeight / 2.25;
+var buildingtpopx = Math.floor(screenWidth / 3 + screenWidth / 3), buildingtpopy = screenHeight / 2 - topBarHeight / 2;
 var buildingmX, buildingmY;
 var buildingdown = false;
 
-var movementtpopx = screenWidth / 3, movementtpopy = screenHeight / 2.25;
+var movementtpopx = screenWidth / 3, movementtpopy = screenHeight / 2 - topBarHeight / 2;
 var movementmX, movementmY;
 var movementdown = false;
 
@@ -3459,7 +3469,7 @@ var chattpopx = 0, chattpopy = 0;
 var chatmX, chatmY;
 var chatdown = false;
 
-var misctpopx = 0, misctpopy = screenHeight / 2.25;
+var misctpopx = 0, misctpopy = screenHeight / 2 - topBarHeight / 2;
 var miscmX, miscmY;
 var miscdown = false;
 
@@ -3813,7 +3823,7 @@ VertexClientPE.showCombatMenu = function() {
                 vertexclientpecombatmenu.setContentView(combatMenuLayout1);
 				vertexclientpecombatmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
                 vertexclientpecombatmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
-                vertexclientpecombatmenu.setHeight(screenHeight / 2.25);
+				vertexclientpecombatmenu.setHeight(screenHeight / 2 - topBarHeight / 2);
 				if(menuAnimationsSetting == "on") {
 					vertexclientpecombatmenu.setAnimationStyle(android.R.style.Animation_Translucent);
 				}
@@ -4138,7 +4148,7 @@ VertexClientPE.showBuildingMenu = function() {
                 vertexclientpebuildingmenu.setContentView(buildingMenuLayout1);
 				vertexclientpebuildingmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
                 vertexclientpebuildingmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
-                vertexclientpebuildingmenu.setHeight(screenHeight / 2.25);
+                vertexclientpebuildingmenu.setHeight(screenHeight / 2 - topBarHeight / 2);
 				if(menuAnimationsSetting == "on") {
 					vertexclientpebuildingmenu.setAnimationStyle(android.R.style.Animation_Translucent);
 				}
@@ -4483,7 +4493,7 @@ VertexClientPE.showMovementMenu = function() {
                 vertexclientpemovementmenu.setContentView(movementMenuLayout1);
 				vertexclientpemovementmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
                 vertexclientpemovementmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
-                vertexclientpemovementmenu.setHeight(screenHeight / 2.25);
+                vertexclientpemovementmenu.setHeight(screenHeight / 2 - topBarHeight / 2);
 				if(menuAnimationsSetting == "on") {
 					vertexclientpemovementmenu.setAnimationStyle(android.R.style.Animation_Translucent);
 				}
@@ -4504,7 +4514,7 @@ VertexClientPE.showChatMenu = function() {
     ctx.runOnUiThread(new java.lang.Runnable() {
         run: function() {
             try {
-		VertexClientPE.loadMainSettings();
+				VertexClientPE.loadMainSettings();
 
                 vertexclientpechatmenu = new widget.PopupWindow(ctx);
                 var chatMenuLayout1 = new LinearLayout(ctx);
@@ -4642,7 +4652,7 @@ VertexClientPE.showChatMenu = function() {
                 vertexclientpechatmenu.setContentView(chatMenuLayout1);
                 vertexclientpechatmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
                 vertexclientpechatmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
-                vertexclientpechatmenu.setHeight(screenHeight / 2.25);
+                vertexclientpechatmenu.setHeight(screenHeight / 2 - topBarHeight / 2);
 				if(menuAnimationsSetting == "on") {
 					vertexclientpechatmenu.setAnimationStyle(android.R.style.Animation_Translucent);
 				}
@@ -4937,7 +4947,7 @@ VertexClientPE.showMiscMenu = function() {
                 vertexclientpemiscmenu.setContentView(miscMenuLayout1);
                 vertexclientpemiscmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
                 vertexclientpemiscmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
-                vertexclientpemiscmenu.setHeight(screenHeight / 2.25);
+                vertexclientpemiscmenu.setHeight(screenHeight / 2 - topBarHeight / 2);
 				if(menuAnimationsSetting == "on") {
 					vertexclientpemiscmenu.setAnimationStyle(android.R.style.Animation_Translucent);
 				}
@@ -4963,17 +4973,22 @@ function showMenuButton() {
 	menuBtn.setBackgroundDrawable(iconClientGUI);
     menuBtn.setOnClickListener(new android.view.View.OnClickListener({
     onClick: function(viewarg){
-	hacksList.dismiss();
-	GUI.dismiss();
-    //mainMenu("multiplayer");
-	VertexClientPE.showCombatMenu();
-	VertexClientPE.showBuildingMenu();
-	VertexClientPE.showMovementMenu();
-	VertexClientPE.showChatMenu();
-	VertexClientPE.showMiscMenu();
-	VertexClientPE.showTopBar();
-    //exitOld();
-	//showingMenu = true;
+		if(VertexClientPE.playerIsInGame) {
+			if(hacksList != null) {
+				hacksList.dismiss();
+			}
+			GUI.dismiss();
+			//mainMenu("multiplayer");
+			VertexClientPE.showCombatMenu();
+			VertexClientPE.showBuildingMenu();
+			VertexClientPE.showMovementMenu();
+			VertexClientPE.showChatMenu();
+			VertexClientPE.showMiscMenu();
+			VertexClientPE.showTopBar();
+		} else {
+			ctx.getSystemService(android.content.Context.VIBRATOR_SERVICE).vibrate(37);
+		    widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> You need to be in game to open the menu!"), 0).show();
+		}
     }
     }));
 	menuBtn.setOnTouchListener(new android.view.View.OnTouchListener() {
@@ -5055,6 +5070,13 @@ VertexClientPE.clientTick = function() {
 						if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false)) {
 							VertexClientPE.isRemote = true;
 							showMenuButton();
+						}
+						if(!VertexClientPE.playerIsInGame) {
+							if(hacksList != null) {
+								if(hacksList.isShowing()) {
+									hacksList.dismiss();
+								}
+							}
 						}
                         eval(VertexClientPE.clientTick());
                     }
@@ -5876,6 +5898,7 @@ var zahl = 0;
 var count = 0;
 
 function modTick() {
+	VertexClientPE.playerIsInGame = true;
 	var ctxe = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
 	randomAki = Math.floor((Math.random() * 5));
 	if(healthTagsSetting == "on") {
