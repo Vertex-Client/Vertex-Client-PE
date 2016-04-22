@@ -1239,6 +1239,13 @@ VertexClientPE.toggleModule = function(module) {
 				f = 0;
 			}
 			break;
+		} case "yescheat+": {
+			if(yesCheatPlusState == false) {
+				yesCheatPlusState = true;
+			} else if(yesCheatPlusState == true) {
+				yesCheatPlusState = false;
+			}
+			break;
 		} default: {
 			VertexClientPE.clientMessage(ChatColor.RED + "Module \'" + module + "\' not found!");
 			sendMessage = false;
@@ -2188,6 +2195,13 @@ VertexClientPE.freezeAura = function() {
 			}
 			Entity.setImmobile(mobs[i], true);
 		}
+	}
+}
+
+VertexClientPE.autoSpammer = function() {
+	Server.sendChat(spamMessage);
+	if(yesCheatPlusState) {
+		Server.sendChat("");
 	}
 }
 
@@ -4730,6 +4744,26 @@ VertexClientPE.showMiscMenu = function() {
 				}
 				}));
 				
+				var yesCheatPlusBtn = clientButton("YesCheat+", "Makes some hacks work better on servers");
+				yesCheatPlusBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				yesCheatPlusBtn.setAlpha(0.54);
+				if(yesCheatPlusState == false) {
+					yesCheatPlusBtn.setTextColor(android.graphics.Color.WHITE);
+				} else if(yesCheatPlusState == true) {
+					yesCheatPlusBtn.setTextColor(android.graphics.Color.GREEN);
+				}
+				yesCheatPlusBtn.setOnClickListener(new android.view.View.OnClickListener({
+				onClick: function(viewarg){
+					if(yesCheatPlusState == false) {
+						yesCheatPlusState = true;
+						yesCheatPlusBtn.setTextColor(android.graphics.Color.GREEN);
+					} else if(yesCheatPlusState == true) {
+						yesCheatPlusState = false;
+						yesCheatPlusBtn.setTextColor(android.graphics.Color.WHITE);
+					}
+				}
+				}));
+				
 				var itemGiverBtn = clientButton("ItemGiver", "Adds items to your inventory");
 				itemGiverBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				itemGiverBtn.setAlpha(0.54);
@@ -4929,6 +4963,7 @@ VertexClientPE.showMiscMenu = function() {
                 }));
 
                 miscMenuLayout.addView(panicBtn);
+                miscMenuLayout.addView(yesCheatPlusBtn);
                 miscMenuLayout.addView(itemGiverBtn);
 				if(VertexClientPE.isRemote) {
 					miscMenuLayout.addView(opPermButton);
@@ -5089,7 +5124,8 @@ function dip2px(dips){
     var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
     return Math.ceil(dips * ctx.getResources().getDisplayMetrics().density);
 }
-	
+
+var yesCheatPlusState = false;
 var autoSpammerState = false;
 var zoomState = false;
 var timerState = false;
@@ -5131,6 +5167,7 @@ var fastWalkState = false;
 var hacksList;
 var StatesText;
 
+var yesCheatPlusStateText = "";
 var autoSpammerStateText = "";
 var zoomStateText = "";
 var timerStateText = "";
@@ -5191,6 +5228,12 @@ function showHacksList() {
 					logoViewer2.setLayoutParams(new LinearLayout.LayoutParams(ctx.getWindowManager().getDefaultDisplay().getWidth() / 4, ctx.getWindowManager().getDefaultDisplay().getWidth() / 16));
 
 					var VertexClientPEHacksListText = "Vertex Client PE " + CURRENT_VERSION;
+					if(yesCheatPlusState == true) {
+                        yesCheatPlusStateText = " [YesCheat+] ";
+						enabledHacksCounter++;
+                    } else if(yesCheatPlusState == false) {
+                        yesCheatPlusStateText = "";
+                    }
                     if(autoSpammerState == true) {
                         autoSpammerStateText = " [AutoSpammer] ";
 						enabledHacksCounter++;
@@ -5417,7 +5460,7 @@ function showHacksList() {
                     VertexClientPEHacksListTextView.setText(VertexClientPEHacksListText);
 					StatesText = clientTextView("Placeholder text", true);
 					if(hacksListModeSetting == "on") {
-						StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + dronePlusStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + fireAuraStateText + coordsDisplayStateText + fastWalkStateText);
+						StatesText.setText(yesCheatPlusStateText + autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + dronePlusStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + fireAuraStateText + coordsDisplayStateText + fastWalkStateText);
 					} else if(hacksListModeSetting == "counter") {
 						StatesText.setText(enabledHacksCounter.toString());
 					}
@@ -5460,6 +5503,12 @@ function updateHacksList() {
                 try {
 					enabledHacksCounter = 0;
 					
+					if(yesCheatPlusState == true) {
+                        yesCheatPlusStateText = " [YesCheat+] ";
+						enabledHacksCounter++;
+                    } else if(yesCheatPlusState == false) {
+                        yesCheatPlusStateText = "";
+                    }
                     if(autoSpammerState == true) {
                         autoSpammerStateText = " [AutoSpammer] ";
 						enabledHacksCounter++;
@@ -5684,7 +5733,7 @@ function updateHacksList() {
                     }
 					
 					if(hacksListModeSetting == "on") {
-						StatesText.setText(autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + dronePlusStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + fireAuraStateText + coordsDisplayStateText + fastWalkStateText);
+						StatesText.setText(yesCheatPlusStateText + autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + dronePlusStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + fireAuraStateText + coordsDisplayStateText + fastWalkStateText);
 					} else if(hacksListModeSetting == "counter") {
 						StatesText.setText(enabledHacksCounter.toString());
 					}
@@ -5697,6 +5746,7 @@ function updateHacksList() {
 }
 
 VertexClientPE.panic = function() {
+	yesCheatPlusState = false;
 	autoSpammerState = false;
 	zoomState = false;
 	ModPE.resetFov();
@@ -5910,7 +5960,7 @@ function modTick() {
 			}
 		}}));
 	}if(autoSpammerState == true) {
-		Server.sendChat(spamMessage);
+		VertexClientPE.autoSpammer();
 	}if(regenState == true) {
 		VertexClientPE.regen();
 	}if(walkOnLiquidsState == true) {
