@@ -39,6 +39,7 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [ ] Timer settings [aimed for 1.3 Beta]
 - [ ] Nuker range settings
 - [ ] Music Player
+- [ ] YesCheat+ (makes some hacks work better on servers)
 - [ ] Bug fixes
   - [x] Fix [#7](https://github.com/Vertex-Client/Vertex-Client-PE/issues/7)
   - [x] Fix [#9](https://github.com/Vertex-Client/Vertex-Client-PE/issues/9)
