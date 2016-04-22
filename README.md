@@ -42,5 +42,6 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [ ] Bug fixes
   - [ ] Fix [#7](https://github.com/Vertex-Client/Vertex-Client-PE/issues/7)
   - [x] Fix [#9](https://github.com/Vertex-Client/Vertex-Client-PE/issues/9)
+  - [ ] Fix [#10](https://github.com/Vertex-Client/Vertex-Client-PE/issues/10)
 
 ![Vertex Client PE](http://i.imgur.com/onBWDEI.png)
