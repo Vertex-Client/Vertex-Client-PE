@@ -36,6 +36,7 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [ ] Chest steal button
 - [ ] Follow (following entities) [aimed for 1.3 Beta]
 - [ ] TapExplosion [aimed for 1.3 Beta]
+- [ ] Timer settings [aimed for 1.3 Beta]
 - [ ] Music Player
 - [ ] Bug fixes
   - [ ] Fix [#7](https://github.com/Vertex-Client/Vertex-Client-PE/issues/7)
