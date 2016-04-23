@@ -2201,7 +2201,7 @@ VertexClientPE.freezeAura = function() {
 VertexClientPE.autoSpammer = function() {
 	Server.sendChat(spamMessage);
 	if(yesCheatPlusState) {
-		Server.sendChat("");
+		Server.sendChat(" ");
 	}
 }
 
