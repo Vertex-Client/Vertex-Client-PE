@@ -1392,11 +1392,17 @@ var music = [
 	["SirensCeol – Coming Home [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/SirensCeol%20-%20Coming%20Home.mp3"],
 	["Diviners feat. Contacreast – Tropic Love [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Diviners%20ft.%20Contacreast%20-%20Tropic%20Love%20%28Original%20Mix%29.mp3"],
 	["Distrion & Alex Skrindo – Entropy", "http://files-cdn.nocopyrightsounds.co.uk/Distrion%20%26%20Alex%20Skrindo%20-%20Entropy.mp3"],
-	["Disfigure – Blank [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Disfigure%20-%20Blank.mp3"]
+	["Disfigure – Blank [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Disfigure%20-%20Blank.mp3"],
+	["DEAF KEV – Invincible [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/DEAF%20KEV%20-%20Invincible.mp3"],
+	["Different Heaven & EH!DE – My Heart [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20%26%20EH%21DE%20-%20My%20Heart.mp3"],
+	["William Ekh – Adventure (feat. Alexa Lusader)", "http://files-cdn.nocopyrightsounds.co.uk/William%20Ekh%20-%20Adventure%20%28feat.%20Alexa%20Lusader%29.mp3"],
+	["Different Heaven – Nekozilla", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20-%20Nekozilla.mp3"],
+	["Tobu – Candyland [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Tobu%20-%20Candyland.mp3"],
+	["Jim Yosef – Firefly [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/jim-yosef-firefly-ncs-release.mp3"]
 ];
 
 VertexClientPE.playMusic = function() {
-	if(autoMusicSetting == "on") {
+	if(autoMusicSetting == "on" && music.length != 0) {
 		try {
 			var randomMusic = music[Math.floor(Math.random() * music.length)];
 			mp = new android.media.MediaPlayer();
@@ -1421,6 +1427,8 @@ VertexClientPE.playMusic = function() {
 		} catch(e) {
 			print(e);
 		}
+	} else {
+		musicText = "None";
 	}
 }
 
