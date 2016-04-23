@@ -2362,6 +2362,32 @@ VertexClientPE.fireAura = function() {
 
 var settingsPath = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/games/com.mojang/minecraftpe/";
 
+VertexClientPE.saveAutoSpammerMessage = function() {
+    java.io.File(settingsPath).mkdirs();
+    var newFile = new java.io.File(settingsPath, "vertexclientpe_spammessage.txt");
+    newFile.createNewFile();
+    var outWrite = new java.io.OutputStreamWriter(new java.io.FileOutputStream(newFile));
+    outWrite.append(spamMessage.toString());
+
+    outWrite.close();
+}
+
+VertexClientPE.loadAutoSpammerSettings = function() {
+    if(!java.io.File(settingsPath + "vertexclientpe_spammessage.txt").exists())
+        return;
+    var file = new java.io.File(settingsPath + "vertexclientpe_spammessage.txt");
+    var fos = new java.io.FileInputStream(file);
+    var str = new java.lang.StringBuilder();
+    var ch;
+    while((ch = fos.read()) != -1)
+        str.append(java.lang.Character(ch));
+	if(str != null && str != undefined) {
+		spamMessage = str.toString().split(",")[0]; //Here we split text by ","
+	}
+    fos.close();
+	return true;
+}
+
 VertexClientPE.saveMainSettings = function() {
     java.io.File(settingsPath).mkdirs();
     var newFile = new java.io.File(settingsPath, "vertexclientpe.txt");
@@ -2377,6 +2403,8 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + nukerMode.toString());
 
     outWrite.close();
+	
+	VertexClientPE.saveAutoSpammerMessage();
 }
 
 VertexClientPE.loadMainSettings = function() {
@@ -2389,30 +2417,31 @@ VertexClientPE.loadMainSettings = function() {
     while((ch = fos.read()) != -1)
         str.append(java.lang.Character(ch));
 	if(str.toString().split(",")[0] != null && str.toString().split(",")[0] != undefined) {
-    hacksListModeSetting = str.toString().split(",")[0]; //Here we split text by ","
+		hacksListModeSetting = str.toString().split(",")[0]; //Here we split text by ","
 	}
 	if(str.toString().split(",")[1] != null && str.toString().split(",")[1] != undefined) {
-    mainButtonPositionSetting = str.toString().split(",")[1]; //Here we split text by ","
+		mainButtonPositionSetting = str.toString().split(",")[1]; //Here we split text by ","
 	}
 	if(str.toString().split(",")[2] != null && str.toString().split(",")[2] != undefined) {
-    healthTagsSetting = str.toString().split(",")[2]; //Here we split text by ","
+		healthTagsSetting = str.toString().split(",")[2]; //Here we split text by ","
 	}
 	if(str.toString().split(",")[3] != null && str.toString().split(",")[3] != undefined) {
-    themeSetting = str.toString().split(",")[3]; //Here we split text by ","
+		themeSetting = str.toString().split(",")[3]; //Here we split text by ","
 	}
 	if(str.toString().split(",")[4] != null && str.toString().split(",")[4] != undefined) {
-    autoMusicSetting = str.toString().split(",")[4]; //Here we split text by ","
+		autoMusicSetting = str.toString().split(",")[4]; //Here we split text by ","
 	}
 	if(str.toString().split(",")[5] != null && str.toString().split(",")[5] != undefined) {
-    showNewsSetting = str.toString().split(",")[5]; //Here we split text by ","
+		showNewsSetting = str.toString().split(",")[5]; //Here we split text by ","
 	}
 	if(str.toString().split(",")[6] != null && str.toString().split(",")[6] != undefined) {
-    menuAnimationsSetting = str.toString().split(",")[6]; //Here we split text by ","
+		menuAnimationsSetting = str.toString().split(",")[6]; //Here we split text by ","
 	}
 	if(str.toString().split(",")[7] != null && str.toString().split(",")[7] != undefined) {
-    nukerMode = str.toString().split(",")[7]; //Here we split text by ","
+		nukerMode = str.toString().split(",")[7]; //Here we split text by ","
 	}
     fos.close();
+	VertexClientPE.loadAutoSpammerSettings();
 	return true;
 }
 
