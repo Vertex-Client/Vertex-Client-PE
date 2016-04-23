@@ -4,6 +4,9 @@
  * @version v1.3 Beta
  * @author peacestorm (@AgameR_Modder)
  * @credits Herqux_, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG
+ *
+ * Thanks to NoCopyrightSounds and their artists for the music!
+ *
  * ###############################################################
  */
 
@@ -53,6 +56,7 @@ var spamMessage = "Spam!!!!!";
 var showNewsSetting = "on";
 var menuAnimationsSetting = "on";
 var nukerMode = "cube";
+var autoMusicSetting = "on";
 //End of settings
 
 var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
@@ -1380,6 +1384,46 @@ VertexClientPE.commandManager = function(command) {
 	}
 }
 
+var mp;
+
+var music = [
+	["Jim Yosef – Eclipse [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Jim%20Yosef%20-%20Eclipse.mp3"],
+	["Ahrix – Nova [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Ahrix%20-%20Nova.mp3"],
+	["SirensCeol – Coming Home [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/SirensCeol%20-%20Coming%20Home.mp3"],
+	["Diviners feat. Contacreast – Tropic Love [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Diviners%20ft.%20Contacreast%20-%20Tropic%20Love%20%28Original%20Mix%29.mp3"],
+	["Distrion & Alex Skrindo – Entropy", "http://files-cdn.nocopyrightsounds.co.uk/Distrion%20%26%20Alex%20Skrindo%20-%20Entropy.mp3"],
+	["Disfigure – Blank [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Disfigure%20-%20Blank.mp3"]
+];
+
+VertexClientPE.playMusic = function() {
+	if(autoMusicSetting == "on") {
+		try {
+			var randomMusic = music[Math.floor(Math.random() * music.length)];
+			mp = new android.media.MediaPlayer();
+			mp.setDataSource(randomMusic[1]);
+			mp.setOnPreparedListener(new android.media.MediaPlayer.OnPreparedListener() {
+				onPrepared: function(mp) {
+					musicText = randomMusic[0];
+					if(hacksList != null) {
+						updateHacksList();
+					}
+					mp.start();
+				}
+			});
+			mp.setOnCompletionListener(new android.media.MediaPlayer.OnCompletionListener() {
+				onCompletion: function(arg0) {
+					mp = null;
+					music.slice(randomMusic);
+					eval(VertexClientPE.playMusic());
+				}
+			});
+			mp.prepareAsync();
+		} catch(e) {
+			print(e);
+		}
+	}
+}
+
 VertexClientPE.healthTags = function() {
     var mobs = Entity.getAll();
 
@@ -2198,6 +2242,22 @@ VertexClientPE.freezeAura = function() {
 	}
 }
 
+VertexClientPE.follow = function() {
+	var mobs = Entity.getAll();
+	for(var i = 0; i < mobs.length; i++) {
+		var x = Entity.getX(mobs[i]) - getPlayerX();
+		var y = Entity.getY(mobs[i]) - getPlayerY();
+		var z = Entity.getZ(mobs[i]) - getPlayerZ();
+		if(x*x+y*y+z*z<=4*4 && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION) {
+			if(Entity.getX(mobs[i]) > getPlayerX() && Entity.getZ(mobs[i]) > getPlayerZ()) {
+				setRot(90, getPitch());
+			}
+			setVelX(getPlayerEnt(), x);
+			setVelZ(getPlayerEnt(), z);
+		}
+	}
+}
+
 VertexClientPE.autoSpammer = function() {
 	Server.sendChat(spamMessage);
 	if(yesCheatPlusState) {
@@ -2304,14 +2364,14 @@ var settingsPath = android.os.Environment.getExternalStorageDirectory().getAbsol
 
 VertexClientPE.saveMainSettings = function() {
     java.io.File(settingsPath).mkdirs();
-    var newFile = new java.io.File(settingsPath, "vertexclientpe_settings.txt");
+    var newFile = new java.io.File(settingsPath, "vertexclientpe.txt");
     newFile.createNewFile();
     var outWrite = new java.io.OutputStreamWriter(new java.io.FileOutputStream(newFile));
     outWrite.append(hacksListModeSetting.toString());
     outWrite.append("," + mainButtonPositionSetting.toString());
     outWrite.append("," + healthTagsSetting.toString());
     outWrite.append("," + themeSetting.toString());
-    outWrite.append("," + spamMessage.toString());
+    outWrite.append("," + autoMusicSetting.toString());
     outWrite.append("," + showNewsSetting.toString());
     outWrite.append("," + menuAnimationsSetting.toString());
     outWrite.append("," + nukerMode.toString());
@@ -2320,9 +2380,9 @@ VertexClientPE.saveMainSettings = function() {
 }
 
 VertexClientPE.loadMainSettings = function() {
-    if(!java.io.File(settingsPath + "vertexclientpe_settings.txt").exists())
+    if(!java.io.File(settingsPath + "vertexclientpe.txt").exists())
         return;
-    var file = new java.io.File(settingsPath + "vertexclientpe_settings.txt");
+    var file = new java.io.File(settingsPath + "vertexclientpe.txt");
     var fos = new java.io.FileInputStream(file);
     var str = new java.lang.StringBuilder();
     var ch;
@@ -2341,7 +2401,7 @@ VertexClientPE.loadMainSettings = function() {
     themeSetting = str.toString().split(",")[3]; //Here we split text by ","
 	}
 	if(str.toString().split(",")[4] != null && str.toString().split(",")[4] != undefined) {
-    spamMessage = str.toString().split(",")[4]; //Here we split text by ","
+    autoMusicSetting = str.toString().split(",")[4]; //Here we split text by ","
 	}
 	if(str.toString().split(",")[5] != null && str.toString().split(",")[5] != undefined) {
     showNewsSetting = str.toString().split(",")[5]; //Here we split text by ","
@@ -3076,6 +3136,7 @@ var coordsButton;
 function newLevel() {
 	VertexClientPE.playerIsInGame = true;
 	VertexClientPE.loadMainSettings();
+	VertexClientPE.playMusic();
 	new java.lang.Thread(new java.lang.Runnable() {
 		run: function() {
 			VertexClientPE.checkForUpdates();
@@ -3118,6 +3179,10 @@ function leaveGame() {
 			showMenuButton();
 			VertexClientPE.saveMainSettings();
 			VertexClientPE.editCopyrightText();
+			if(mp != null) {
+				mp.stop();
+			}
+			musicText = "None";
 			VertexClientPE.playerIsInGame = false;
 			VertexClientPE.isRemote = false;
 		}
@@ -3302,12 +3367,40 @@ function settingsScreen() {
 					}
 					}));
 					
+					var autoMusicSettingButton = clientButton("Automatically play music", "Automatically play music");
+					if(autoMusicSetting == "on") {
+						autoMusicSettingButton.setText("Automatically play music | ON");
+					} else if(autoMusicSetting == "off") {
+						autoMusicSettingButton.setText("Automatically play music | OFF");
+					}
+					autoMusicSettingButton.setOnClickListener(new android.view.View.OnClickListener({
+					onClick: function(viewarg){
+						if(autoMusicSetting == "on") {
+							autoMusicSetting = "off";
+							autoMusicSettingButton.setText("Automatically play music | OFF");
+							VertexClientPE.saveMainSettings();
+							VertexClientPE.loadMainSettings();
+							if(mp != null) {
+								mp.stop();
+								mp = null;
+							}
+						} else if(autoMusicSetting == "off") {
+							autoMusicSetting = "on";
+							autoMusicSettingButton.setText("Automatically play music | ON");
+							VertexClientPE.saveMainSettings();
+							VertexClientPE.loadMainSettings();
+							VertexClientPE.playMusic();
+						}
+					}
+					}));
+					
 					settingsMenuLayout.addView(hacksListModeSettingButton);
 					settingsMenuLayout.addView(mainButtonPositionSettingButton);
 					settingsMenuLayout.addView(healthTagsSettingButton);
 					settingsMenuLayout.addView(themeSettingButton);
 					settingsMenuLayout.addView(showNewsSettingButton);
 					settingsMenuLayout.addView(menuAnimationsSettingButton);
+					settingsMenuLayout.addView(autoMusicSettingButton);
 
                     settingsMenu = new widget.PopupWindow(settingsMenuLayout1, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
                     settingsMenu.setBackgroundDrawable(backgroundClientGUI);
@@ -5208,6 +5301,8 @@ var fastWalkStateText = "";
 
 var enabledHacksCounter = 0;
 
+var musicText = "None";
+
 function showHacksList() {
         var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
         ctx.runOnUiThread(new java.lang.Runnable({
@@ -5438,7 +5533,7 @@ function showHacksList() {
                     } else if(freezeAuraState == false) {
                         freezeAuraStateText = "";
                     }
-                    				if(fireAuraState == true) {
+                    if(fireAuraState == true) {
                         fireAuraStateText = " [FireAura] ";
 						enabledHacksCounter++;
                     } else if(fireAuraState == false) {
@@ -5460,9 +5555,9 @@ function showHacksList() {
                     VertexClientPEHacksListTextView.setText(VertexClientPEHacksListText);
 					StatesText = clientTextView("Placeholder text", true);
 					if(hacksListModeSetting == "on") {
-						StatesText.setText(yesCheatPlusStateText + autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + dronePlusStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + fireAuraStateText + coordsDisplayStateText + fastWalkStateText);
+						StatesText.setText("<Currently playing: " + musicText + "> " + yesCheatPlusStateText + autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + dronePlusStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + fireAuraStateText + coordsDisplayStateText + fastWalkStateText);
 					} else if(hacksListModeSetting == "counter") {
-						StatesText.setText(enabledHacksCounter.toString());
+						StatesText.setText("<Currently playing: " + musicText + "> " + enabledHacksCounter.toString() + " mods enabled");
 					}
                     VertexClientPEHacksListTextView.setTextSize(20);
                     VertexClientPEHacksListTextView.setTypeface(null, android.graphics.Typeface.BOLD);
@@ -5486,7 +5581,7 @@ function showHacksList() {
 					}
                     hacksList.setTouchable(false);
 					if(hacksListModeSetting != "off") {
-                    hacksList.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
+						hacksList.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
 					}
                 } catch(error) {
                     print('An error occured: ' + error);
@@ -5733,9 +5828,9 @@ function updateHacksList() {
                     }
 					
 					if(hacksListModeSetting == "on") {
-						StatesText.setText(yesCheatPlusStateText + autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + dronePlusStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + fireAuraStateText + coordsDisplayStateText + fastWalkStateText);
+						StatesText.setText("<Currently playing: " + musicText + "> " + yesCheatPlusStateText + autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + walkOnLiquidsStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + dronePlusStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + fireAuraStateText + coordsDisplayStateText + fastWalkStateText);
 					} else if(hacksListModeSetting == "counter") {
-						StatesText.setText(enabledHacksCounter.toString());
+						StatesText.setText("<Currently playing: " + musicText + "> " + enabledHacksCounter.toString() + " mods enabled");
 					}
                 } catch(error) {
                     print('An error occured: ' + error);
@@ -5953,12 +6048,6 @@ function modTick() {
 	randomAki = Math.floor((Math.random() * 5));
 	if(healthTagsSetting == "on") {
 		VertexClientPE.healthTags();
-	}if(showingMenu == true) {
-		ctxe.runOnUiThread(new java.lang.Runnable({ run: function(){
-			if(Player.getX() != null && Player.getX() != undefined) {
-				coordsButton.setText("X: " + parseInt(Player.getX()) + "\nY: " + parseInt(Player.getY()) + "\nZ: " + parseInt(Player.getZ()));
-			}
-		}}));
 	}if(autoSpammerState == true) {
 		VertexClientPE.autoSpammer();
 	}if(regenState == true) {
