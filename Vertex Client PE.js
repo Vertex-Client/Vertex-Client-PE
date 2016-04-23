@@ -1429,6 +1429,9 @@ VertexClientPE.playMusic = function() {
 		}
 	} else {
 		musicText = "None";
+		if(hacksList != null) {
+			updateHacksList();
+		}
 	}
 }
 
