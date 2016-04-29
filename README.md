@@ -39,7 +39,7 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [ ] AutoSword
 - [ ] AutoTool
 - [ ] AutoArmor
-- [ ] FancyChat [aimed for 1.3 Beta]
+- [x] FancyChat [aimed for 1.3 Beta]
 - [ ] Timer settings [aimed for 1.3 Beta]
 - [ ] Nuker range settings
 - [x] Music Player
