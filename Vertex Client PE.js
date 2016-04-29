@@ -69,6 +69,21 @@ var settingsMenu;
 var informationMenu;
 var topBar;
 
+VertexClientPE.showNotification = function(eventtext) {
+	var mNM = ctx.getSystemService(android.content.Context.NOTIFICATION_SERVICE);
+	var notification = new android.app.Notification(android.R.drawable.ic_menu_edit, "Text", java.lang.System.currentTimeMillis());
+
+    // The PendingIntent to launch our activity if the user selects this
+    // notification
+    var contentIntent = android.app.PendingIntent.getActivity(ctx, 0, new android.content.Intent(ctx), 0);
+
+    // Set the info for the views that show in the notification panel.
+    notification.setLatestEventInfo(ctx, "Title", eventtext, contentIntent);
+
+    // Send the notification.
+    mNM.notify("Title", 0, notification);
+}
+
 var nameColor = "§b";
 var healthColor = "§c";
 
@@ -936,7 +951,14 @@ VertexClientPE.showKitsScreen = function() {
 VertexClientPE.toggleModule = function(module) {
 	var sendMessage = true;
 	switch(module) {
-		case "nuker": {
+		case "yescheat+": {
+			if(yesCheatPlusState == false) {
+				yesCheatPlusState = true;
+			} else if(yesCheatPlusState == true) {
+				yesCheatPlusState = false;
+			}
+			break;
+		} case "nuker": {
 			if(nukerState == false) {
 				nukerState = true;
 			} else if(nukerState == true) {
@@ -1185,14 +1207,6 @@ VertexClientPE.toggleModule = function(module) {
 				fireAuraState = false;
 			}
 			break;
-		} case "fastwalk": {
-			if(fastWalkState == false) {
-				fastWalkState = true;
-			} else if(fastWalkState == true) {
-				fastWalkState = false;
-			}
-			break;
-			
 		} case "coordsdisplay": {
 			if(coordsDisplayState == false) {
 				coordsDisplayState = true;
@@ -1209,11 +1223,18 @@ VertexClientPE.toggleModule = function(module) {
 				f = 0;
 			}
 			break;
-		} case "yescheat+": {
-			if(yesCheatPlusState == false) {
-				yesCheatPlusState = true;
-			} else if(yesCheatPlusState == true) {
-				yesCheatPlusState = false;
+		/*} case "follow": {
+			if(followState == false) {
+				followState = true;
+			} else if(followState == true) {
+				followState = false;
+			}
+			break;*/
+		} case "fancychat": {
+			if(fancyChatState == false) {
+				fancyChatState = true;
+			} else if(fancyChatState == true) {
+				fancyChatState = false;
 			}
 			break;
 		} default: {
@@ -1272,11 +1293,14 @@ VertexClientPE.getVersion = function(type) {
 
 var p, y, xx, yy, zz;
 
+var sayMsg;
+var sayStage;
+
 VertexClientPE.commandManager = function(command) {
-	command = command.split(" ");
-	switch(command[0]) {
+	cmd = command.split(" ");
+	switch(cmd[0]) {
 		case ".help": //1
-			if(command[1] == undefined || command[1] == null || command[1] == "1") {
+			if(cmd[1] == undefined || cmd[1] == null || cmd[1] == "1") {
 				VertexClientPE.clientMessage("Showing help page 1/2");
 				VertexClientPE.clientMessage(".help [<page>]");
 				VertexClientPE.clientMessage(".gm");
@@ -1287,13 +1311,13 @@ VertexClientPE.commandManager = function(command) {
 				VertexClientPE.clientMessage(".version <current|target>");
 				VertexClientPE.clientMessage(".panic");
 			} else {
-				if(command[1] == "2") {
+				if(cmd[1] == "2") {
 					VertexClientPE.clientMessage("Showing help page 2/2");
 					VertexClientPE.clientMessage(".p");
 					VertexClientPE.clientMessage(".js");
 					VertexClientPE.clientMessage(".say <message>");
 				} else {
-					VertexClientPE.clientMessage(ChatColor.RED + "Syntax error: " + ChatColor.WHITE + "Invalid page: " + command[1]);
+					VertexClientPE.clientMessage(ChatColor.RED + "Syntax error: " + ChatColor.WHITE + "Invalid page: " + cmd[1]);
 				}
 			}
 			break;
@@ -1302,22 +1326,22 @@ VertexClientPE.commandManager = function(command) {
 			VertexClientPE.clientMessage("Your gamemode has been updated!");
 			break;
 		case ".spectate": //3
-			if(command[1] == null || command[1] == undefined) {
+			if(cmd[1] == null || cmd[1] == undefined) {
 				VertexClientPE.syntaxError(".spectate <player>");
 			} else {
-				VertexClientPE.spectate(command[1]);
+				VertexClientPE.spectate(cmd[1]);
 			}
 			break;
 		case ".t": //4
 		case ".toggle": //4
-			if(command[1] == null || command[1] == undefined) {
+			if(cmd[1] == null || cmd[1] == undefined) {
 				VertexClientPE.syntaxError(".toggle <module>");
 			} else {
-				VertexClientPE.toggleModule(command[1]);
+				VertexClientPE.toggleModule(cmd[1]);
 			}
 			break;
 		case ".drop": //5
-			if(command[1] == null || command[1] == undefined || command[1] == "infinite") {
+			if(cmd[1] == null || cmd[1] == undefined || cmd[1] == "infinite") {
 				for(var i = 0; i < 513; i++) {
 					p = ((Entity.getPitch(getPlayerEnt()) + 90) * Math.PI) / 180;
 					y = ((Entity.getYaw(getPlayerEnt()) + 90) * Math.PI) / 180;
@@ -1331,7 +1355,7 @@ VertexClientPE.commandManager = function(command) {
 			}
 			break;
 		case ".version": //6
-			VertexClientPE.clientMessage(VertexClientPE.getVersion(command[1]));
+			VertexClientPE.clientMessage(VertexClientPE.getVersion(cmd[1]));
 			break;
 		case ".p": //7
 		case ".panic":
@@ -1342,10 +1366,13 @@ VertexClientPE.commandManager = function(command) {
 			VertexClientPE.showJavascriptConsoleDialog();
 			break;
 		case ".say": //9
-			Server.sendChat(command[1]);
+			if(sayStage == 0) {
+				sayMsg = text.substring(5, text.length);
+				sayStage = 1;
+			}
 			break;
 		default:
-			VertexClientPE.clientMessage(ChatColor.RED + "Error: command \"" + command + "\" not found!");
+			VertexClientPE.clientMessage(ChatColor.RED + "Error: command \"" + cmd + "\" not found!");
 			break;
 	}
 }
@@ -2204,6 +2231,21 @@ VertexClientPE.instaKill = function(a, v) {
 	}
 }
 
+var fancyChatMsg;
+var fancyChatStage = 0;
+
+VertexClientPE.fancyChat = function(str) {
+	var normalChars = ["?", "!", ",", ".", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+	var specialChars = ["？", "！", "，", "．", "ａ", "ｂ", "ｃ", "ｄ", "ｅ", "ｆ", "ｇ", "ｈ", "ｉ", "ｊ", "ｋ", "ｌ", "ｍ", "ｎ", "ｏ", "ｐ", "ｑ", "ｒ", "ｓ", "ｔ", "ｕ", "ｖ", "ｗ", "ｘ", "ｙ", "ｚ", "Ａ", "Ｂ", "Ｃ", "Ｄ", "Ｅ", "Ｆ", "Ｇ", "Ｈ", "Ｉ", "Ｊ", "Ｋ", "Ｌ", "Ｍ", "Ｎ", "Ｏ", "Ｐ", "Ｑ", "Ｒ", "Ｓ", "Ｔ", "Ｕ", "Ｖ", "Ｗ", "Ｘ", "Ｙ", "Ｚ"];
+	for(i = 0; i < normalChars.length; i++) {
+		for(o = 0; o < str.length; o++) {
+			str = str.replace(normalChars[i], specialChars[i]);
+		}
+	}
+	fancyChatMsg = str;
+	fancyChatStage = 1;
+}
+
 VertexClientPE.killAura = function() {
 	var mobs = Entity.getAll();
 	for(var i = 0; i < mobs.length; i++) {
@@ -2725,7 +2767,8 @@ new java.lang.Thread(new java.lang.Runnable() {
 			ctx.runOnUiThread(new java.lang.Runnable({
 				run: function() {
 					ctx.getSystemService(android.content.Context.VIBRATOR_SERVICE).vibrate(37);
-					widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> " + news), 0).show();
+					//widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> " + news), 0).show();
+					VertexClientPE.showNotification(news);
 				}
 			}));
 		}
@@ -4808,6 +4851,26 @@ VertexClientPE.showChatMenu = function() {
 				}
 				}));
 				
+				var fancyChatBtn = clientButton("FancyChat", "Replaces characters in sent chat messages by fancy unicode characters\nCan be used to bypass curse word filters on some servers");
+				fancyChatBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				fancyChatBtn.setAlpha(0.54);
+				if(fancyChatState == false) {
+					fancyChatBtn.setTextColor(android.graphics.Color.WHITE);
+				} else if(fancyChatState == true) {
+					fancyChatBtn.setTextColor(android.graphics.Color.GREEN);
+				}
+				fancyChatBtn.setOnClickListener(new android.view.View.OnClickListener({
+				onClick: function(viewarg){
+					if(fancyChatState == false) {
+						fancyChatState = true;
+						fancyChatBtn.setTextColor(android.graphics.Color.GREEN);
+					} else if(fancyChatState == true) {
+						fancyChatState = false;
+						fancyChatBtn.setTextColor(android.graphics.Color.WHITE);
+					}
+				}
+				}));
+				
 				var homeCommandBtn = clientButton("/home", "Runs the /home command if the server or world you're on has it");
 				homeCommandBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				homeCommandBtn.setAlpha(0.54);
@@ -4864,6 +4927,7 @@ VertexClientPE.showChatMenu = function() {
                 chatMenuLayout.addView(autoSpammerLayout);
                 autoSpammerLayoutLeft.addView(autoSpammerBtn);
                 autoSpammerLayoutRight.addView(autoSpammerInfoBtn);
+                chatMenuLayout.addView(fancyChatBtn);
                 chatMenuLayout.addView(homeCommandBtn);
 
                 vertexclientpechatmenu.setContentView(chatMenuLayout1);
@@ -5396,6 +5460,8 @@ var freezeAuraState = false;
 var fireAuraState = false;
 var coordsDisplayState = false;
 var fastWalkState = false;
+var followState = false;
+var fancyChatState = false;
 
 var hacksList;
 var StatesText;
@@ -5438,6 +5504,8 @@ var freezeAuraStateText = "";
 var fireAuraStateText = "";
 var coordsDisplayStateText = "";
 var fastWalkStateText = "";
+var followStateText = "";
+var fancyChatStateText = "";
 
 var enabledHacksCounter = 0;
 
@@ -5608,7 +5676,13 @@ function showHacksList() {
                         signEditorStateText = "";
                     }
 					if(tapNukerState == true) {
-                        tapNukerStateText = " [TapNuker] ";
+                        if(nukerMode == "cube") {
+							tapNukerStateText = " [TapNuker] ";
+						}if(nukerMode == "flat") {
+							tapNukerStateText = " [TapFlatNuker] ";
+						}if(nukerMode == "smash") {
+							tapNukerStateText = " [TapSmashNuker] ";
+						}
 						enabledHacksCounter++;
                     } else if(tapNukerState == false) {
                         tapNukerStateText = "";
@@ -5685,23 +5759,35 @@ function showHacksList() {
                     } else if(fireAuraState == false) {
                         fireAuraStateText = "";
                     }
-                    if(fastWalkState == true) {
-                        fastWalkStateText = " [FastWalk] ";
-						enabledHacksCounter++;
-                    } else if(fastWalkState == false) {
-                        fastWalkStateText = "";
-                    }
 					if(coordsDisplayState == true) {
                         coordsDisplayStateText = " [CoordsDisplay] ";
 						enabledHacksCounter++;
                     } else if(coordsDisplayState == false) {
                         coordsDisplayStateText = "";
                     }
+					if(fastWalkState == true) {
+                        fastWalkStateText = " [FastWalk] ";
+						enabledHacksCounter++;
+                    } else if(fastWalkState == false) {
+                        fastWalkStateText = "";
+                    }
+					if(followState == true) {
+                        followStateText = " [Follow] ";
+						enabledHacksCounter++;
+                    } else if(followState == false) {
+                        followStateText = "";
+                    }
+					if(fancyChatState == true) {
+                        fancyChatStateText = " [FancyChat] ";
+						enabledHacksCounter++;
+                    } else if(fancyChatState == false) {
+                        fancyChatStateText = "";
+                    }
                     var VertexClientPEHacksListTextView = new widget.TextView(ctx);
                     VertexClientPEHacksListTextView.setText(VertexClientPEHacksListText);
 					StatesText = clientTextView("Placeholder text", true);
 					if(hacksListModeSetting == "on") {
-						StatesText.setText("<Currently playing: " + musicText + "> " + yesCheatPlusStateText + autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + liquidWalkStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + dronePlusStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + fireAuraStateText + coordsDisplayStateText + fastWalkStateText);
+						StatesText.setText("<Currently playing: " + musicText + "> " + yesCheatPlusStateText + autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + liquidWalkStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + dronePlusStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + fireAuraStateText + coordsDisplayStateText + fastWalkStateText + followStateText + fancyChatStateText);
 					} else if(hacksListModeSetting == "counter") {
 						StatesText.setText("<Currently playing: " + musicText + "> " + enabledHacksCounter.toString() + " mods enabled");
 					}
@@ -5853,10 +5939,14 @@ function updateHacksList() {
                         killAuraStateText = "";
                     }
 					if(nukerState == true) {
-                        nukerStateText = " [Nuker] ";
+						if(nukerMode == "cube") {
+							nukerStateText = " [Nuker] ";
+						}if(nukerMode == "flat") {
+							nukerStateText = " [FlatNuker] ";
+						}if(nukerMode == "smash") {
+							nukerStateText = " [SmashNuker] ";
+						}
 						enabledHacksCounter++;
-                    } else if(nukerState == false) {
-                        nukerStateText = "";
                     }
 					if(dronePlusState == true) {
                         dronePlusStateText = " [Drone+] ";
@@ -5883,7 +5973,13 @@ function updateHacksList() {
                         signEditorStateText = "";
                     }
 					if(tapNukerState == true) {
-                        tapNukerStateText = " [TapNuker] ";
+                        if(nukerMode == "cube") {
+							tapNukerStateText = " [TapNuker] ";
+						}if(nukerMode == "flat") {
+							tapNukerStateText = " [TapFlatNuker] ";
+						}if(nukerMode == "smash") {
+							tapNukerStateText = " [TapSmashNuker] ";
+						}
 						enabledHacksCounter++;
                     } else if(tapNukerState == false) {
                         tapNukerStateText = "";
@@ -5972,9 +6068,21 @@ function updateHacksList() {
                     } else if(fastWalkState == false) {
                         fastWalkStateText = "";
                     }
+					if(followState == true) {
+                        followStateText = " [Follow] ";
+						enabledHacksCounter++;
+                    } else if(followState == false) {
+                        followStateText = "";
+                    }
+					if(fancyChatState == true) {
+                        fancyChatStateText = " [FancyChat] ";
+						enabledHacksCounter++;
+                    } else if(fancyChatState == false) {
+                        fancyChatStateText = "";
+                    }
 					
 					if(hacksListModeSetting == "on") {
-						StatesText.setText("<Currently playing: " + musicText + "> " + yesCheatPlusStateText + autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + liquidWalkStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + dronePlusStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + fireAuraStateText + coordsDisplayStateText + fastWalkStateText);
+						StatesText.setText("<Currently playing: " + musicText + "> " + yesCheatPlusStateText + autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + liquidWalkStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + dronePlusStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + fireAuraStateText + coordsDisplayStateText + fastWalkStateText + followStateText + fancyChatStateText);
 					} else if(hacksListModeSetting == "counter") {
 						StatesText.setText("<Currently playing: " + musicText + "> " + enabledHacksCounter.toString() + " mods enabled");
 					}
@@ -6194,6 +6302,12 @@ function modTick() {
 	randomAki = Math.floor((Math.random() * 5));
 	if(healthTagsSetting == "on") {
 		VertexClientPE.healthTags();
+	}if(sayStage == 1) {
+		Server.sendChat(sayMsg);
+		sayStage = 0;
+	}if(fancyChatState && fancyChatStage == 1) {
+		Server.sendChat(fancyChatMsg);
+		fancyChatStage = 0;
 	}if(autoSpammerState == true) {
 		VertexClientPE.autoSpammer();
 	}if(regenState == true) {
@@ -6636,6 +6750,11 @@ function chatHook(text) {
 	if(text.charAt(0) == ".") {
 		preventDefault();
 		VertexClientPE.commandManager(text);
+	} else {
+		if(fancyChatState && fancyChatStage == 0) {
+			preventDefault();
+			VertexClientPE.fancyChat(text);
+		}
 	}
 }
  
