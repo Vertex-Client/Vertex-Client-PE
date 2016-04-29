@@ -2767,8 +2767,8 @@ new java.lang.Thread(new java.lang.Runnable() {
 			ctx.runOnUiThread(new java.lang.Runnable({
 				run: function() {
 					ctx.getSystemService(android.content.Context.VIBRATOR_SERVICE).vibrate(37);
-					//widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> " + news), 0).show();
-					VertexClientPE.showNotification(news);
+					widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> " + news), 0).show();
+					//VertexClientPE.showNotification(news);
 				}
 			}));
 		}
