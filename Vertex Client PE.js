@@ -16,11 +16,33 @@
 
 var widget = android.widget;
 var graphics = android.graphics;
+var view = android.view;
 var LinearLayout = widget.LinearLayout;
 var ScrollView = widget.ScrollView;
 var Button = widget.Button;
 var EditText = widget.EditText;
+var SeekBar = widget.SeekBar;
 var Point = graphics.Point;
+var KeyEvent = view.KeyEvent;
+
+/*KeyEvent.Callback.onKeyUp = function(keyCode, event) {
+    switch(keyCode) {
+        case KeyEvent.KEYCODE_D:
+            print("test");
+            return true;
+        case KeyEvent.KEYCODE_F:
+            moveShip(MOVE_RIGHT);
+            return true;
+        case KeyEvent.KEYCODE_J:
+            fireMachineGun();
+            return true;
+        case KeyEvent.KEYCODE_K:
+            fireMissile();
+            return true;
+        default:
+            return super.onKeyUp(keyCode, event);
+    }
+}*/
 
 // ####################
 // # CLIENT FUNCTIONS #
@@ -29,6 +51,10 @@ var Point = graphics.Point;
 //Don't copy anything without my permission!
 
 var VertexClientPE = {
+	name: "Vertex Client PE",
+	getName: function() {
+		return VertexClientPE.name;
+	},
 	accounts: []
 };
 
@@ -57,6 +83,7 @@ var showNewsSetting = "on";
 var menuAnimationsSetting = "on";
 var nukerMode = "cube";
 var playMusicSetting = "on";
+var timerSpeed = 2;
 //End of settings
 
 var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
@@ -295,14 +322,7 @@ VertexClientPE.showSignEditorDialog = function() {
 				var inputBar3 = new EditText(ctx);
 				var dialogLayout = new LinearLayout(ctx);
 				var spritesheet = android.graphics.Bitmap.createScaledBitmap(trimImage(GetSpritesheet(), 0, 0, 16, 16), 16 * GuiSize, 16 * GuiSize, false);
-				dialogLayout.setBackgroundDrawable(backgroundClientGUI);
-				if(themeSetting == "red") {
-					dialogLayout.setBackgroundDrawable(backgroundRedClientGUI);
-				}if(themeSetting == "blue") {
-					dialogLayout.setBackgroundDrawable(backgroundBlueClientGUI);
-				}if(themeSetting == "purple") {
-					dialogLayout.setBackgroundDrawable(backgroundPurpleClientGUI);
-				}
+				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
 				dialogLayout.addView(signEditorTitle);
 				dialogLayout.addView(inputBar);
@@ -376,14 +396,7 @@ VertexClientPE.showItemGiverDialog = function() {
 				inputBar2.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
 				var dialogLayout = new LinearLayout(ctx);
 				var spritesheet = android.graphics.Bitmap.createScaledBitmap(trimImage(GetSpritesheet(), 0, 0, 16, 16), 16 * GuiSize, 16 * GuiSize, false);
-				dialogLayout.setBackgroundDrawable(backgroundClientGUI);
-				if(themeSetting == "red") {
-					dialogLayout.setBackgroundDrawable(backgroundRedClientGUI);
-				}if(themeSetting == "blue") {
-					dialogLayout.setBackgroundDrawable(backgroundBlueClientGUI);
-				}if(themeSetting == "purple") {
-					dialogLayout.setBackgroundDrawable(backgroundPurpleClientGUI);
-				}
+				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
 				dialogLayout.addView(itemGiverTitle);
 				dialogLayout.addView(inputBar);
@@ -441,14 +454,7 @@ VertexClientPE.showBugReportDialog = function(exception) {
 				var inputBar = new EditText(ctx);
 				var exceptionTextView = clientTextView(exception);
 				var dialogLayout = new LinearLayout(ctx);
-				dialogLayout.setBackgroundDrawable(backgroundClientGUI);
-				if(themeSetting == "red") {
-					dialogLayout.setBackgroundDrawable(backgroundRedClientGUI);
-				}if(themeSetting == "blue") {
-					dialogLayout.setBackgroundDrawable(backgroundBlueClientGUI);
-				}if(themeSetting == "purple") {
-					dialogLayout.setBackgroundDrawable(backgroundPurpleClientGUI);
-				}
+				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
 				dialogLayout.addView(bugReportTitle);
 				dialogLayout.addView(inputBar);
@@ -499,14 +505,7 @@ VertexClientPE.showMoreDialog = function() {
 				var cancelButton = clientButton("Cancel");
 				var dialogLayout = new LinearLayout(ctx);
 				var spritesheet = android.graphics.Bitmap.createScaledBitmap(trimImage(GetSpritesheet(), 0, 0, 16, 16), 16 * GuiSize, 16 * GuiSize, false);
-				dialogLayout.setBackgroundDrawable(backgroundClientGUI);
-				if(themeSetting == "red") {
-					dialogLayout.setBackgroundDrawable(backgroundRedClientGUI);
-				}if(themeSetting == "blue") {
-					dialogLayout.setBackgroundDrawable(backgroundBlueClientGUI);
-				}if(themeSetting == "purple") {
-					dialogLayout.setBackgroundDrawable(backgroundPurpleClientGUI);
-				}
+				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
 				dialogLayout.addView(moreTitle);
 				dialogLayout.addView(settingsButton);
@@ -577,6 +576,57 @@ VertexClientPE.showMoreDialog = function() {
 	});
 }
 
+VertexClientPE.showTimerDialog = function() {
+	ctx.runOnUiThread(new java.lang.Runnable() {
+		run: function() {
+			try {
+				VertexClientPE.loadMainSettings();
+				dialogGUI = new widget.PopupWindow();
+				var timerTitle = clientTextView("Timer", true);
+				timerTitle.setTextSize(20);
+				var timerSpeedTitle = clientTextView("Speed");
+				var timerSpeedSlider = new SeekBar(ctx);
+				timerSpeedSlider.setProgress(timerSpeed);
+				var closeButton = clientButton("Close");
+				var dialogLayout = new LinearLayout(ctx);
+				dialogLayout.setBackgroundDrawable(backgroundGradient());
+				dialogLayout.setOrientation(LinearLayout.VERTICAL);
+				dialogLayout.addView(timerTitle);
+				dialogLayout.addView(timerSpeedTitle);
+				dialogLayout.addView(timerSpeedSlider);
+				dialogLayout.addView(closeButton);
+				var dialog = new android.app.Dialog(ctx);
+				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
+				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				dialog.setContentView(dialogLayout);
+				dialog.setTitle("Timer");
+				dialogGUI.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
+				dialogGUI.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
+				dialogGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.TOP, 0, 0);
+				dialog.setOnDismissListener(new android.content.DialogInterface.OnDismissListener() {
+					onDismiss: function() {
+						timerSpeed = timerSpeedSlider.getProgress();
+						if(timerState) {
+							ModPE.setGameSpeed(20 * timerSpeed);
+						}
+						VertexClientPE.saveMainSettings();
+						VertexClientPE.loadMainSettings();
+					}
+				});
+				dialog.show();
+				closeButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+					}
+				});
+			} catch(e) {
+				print("Error: " + e);
+				VertexClientPE.showBugReportDialog(e);
+			}
+		}
+	});
+}
+
 VertexClientPE.showAutoSpammerDialog = function() {
 	ctx.runOnUiThread(new java.lang.Runnable() {
 		run: function() {
@@ -592,14 +642,7 @@ VertexClientPE.showAutoSpammerDialog = function() {
 				spamMessageInput.setHint("Spam message");
 				var closeButton = clientButton("Close");
 				var dialogLayout = new LinearLayout(ctx);
-				dialogLayout.setBackgroundDrawable(backgroundClientGUI);
-				if(themeSetting == "red") {
-					dialogLayout.setBackgroundDrawable(backgroundRedClientGUI);
-				}if(themeSetting == "blue") {
-					dialogLayout.setBackgroundDrawable(backgroundBlueClientGUI);
-				}if(themeSetting == "purple") {
-					dialogLayout.setBackgroundDrawable(backgroundPurpleClientGUI);
-				}
+				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
 				dialogLayout.addView(autoSpammerTitle);
 				dialogLayout.addView(autoSpammerMessageTitle);
@@ -649,14 +692,7 @@ VertexClientPE.showNukerDialog = function() {
 				var nukerEnter = clientTextView("\n");
 				var closeButton = clientButton("Close");
 				var dialogLayout = new LinearLayout(ctx);
-				dialogLayout.setBackgroundDrawable(backgroundClientGUI);
-				if(themeSetting == "red") {
-					dialogLayout.setBackgroundDrawable(backgroundRedClientGUI);
-				}if(themeSetting == "blue") {
-					dialogLayout.setBackgroundDrawable(backgroundBlueClientGUI);
-				}if(themeSetting == "purple") {
-					dialogLayout.setBackgroundDrawable(backgroundPurpleClientGUI);
-				}
+				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
 				dialogLayout.addView(nukerTitle);
 				dialogLayout.addView(nukerModeTitle);
@@ -740,14 +776,7 @@ VertexClientPE.showAddAccountDialog = function() {
 				var cancelButton = clientButton("Cancel");
 				var dialogLayout = new LinearLayout(ctx);
 				var spritesheet = android.graphics.Bitmap.createScaledBitmap(trimImage(GetSpritesheet(), 0, 0, 16, 16), 16 * GuiSize, 16 * GuiSize, false);
-				dialogLayout.setBackgroundDrawable(backgroundClientGUI);
-				if(themeSetting == "red") {
-					dialogLayout.setBackgroundDrawable(backgroundRedClientGUI);
-				}if(themeSetting == "blue") {
-					dialogLayout.setBackgroundDrawable(backgroundBlueClientGUI);
-				}if(themeSetting == "purple") {
-					dialogLayout.setBackgroundDrawable(backgroundPurpleClientGUI);
-				}
+				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
 				dialogLayout.addView(accountTitle);
 				dialogLayout.addView(accountInput);
@@ -801,14 +830,7 @@ VertexClientPE.showJavascriptConsoleDialog = function() {
 				var inputBar = new EditText(ctx);
 				var dialogLayout = new LinearLayout(ctx);
 				var spritesheet = android.graphics.Bitmap.createScaledBitmap(trimImage(GetSpritesheet(), 0, 0, 16, 16), 16 * GuiSize, 16 * GuiSize, false);
-				dialogLayout.setBackgroundDrawable(backgroundClientGUI);
-				if(themeSetting == "red") {
-					dialogLayout.setBackgroundDrawable(backgroundRedClientGUI);
-				}if(themeSetting == "blue") {
-					dialogLayout.setBackgroundDrawable(backgroundBlueClientGUI);
-				}if(themeSetting == "purple") {
-					dialogLayout.setBackgroundDrawable(backgroundPurpleClientGUI);
-				}
+				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
 				dialogLayout.addView(javascriptConsoleTitle);
 				dialogLayout.addView(inputBar);
@@ -1285,9 +1307,6 @@ VertexClientPE.getVersion = function(type) {
 		case "target":
 			return TARGET_VERSION;
 			break;
-		default:
-			VertexClientPE.clientMessage(ChatColor.DARK_RED + "Syntax error!");
-			return ".version <current|target>";
 	}
 }
 
@@ -1355,7 +1374,11 @@ VertexClientPE.commandManager = function(command) {
 			}
 			break;
 		case ".version": //6
-			VertexClientPE.clientMessage(VertexClientPE.getVersion(cmd[1]));
+			if(typeof VertexClientPE.getVersion(cmd[1]) !== "undefined") {
+				VertexClientPE.clientMessage(VertexClientPE.getVersion(cmd[1]));
+			} else {
+				VertexClientPE.syntaxError(".version <current|target>");
+			}
 			break;
 		case ".p": //7
 		case ".panic":
@@ -1367,7 +1390,7 @@ VertexClientPE.commandManager = function(command) {
 			break;
 		case ".say": //9
 			if(sayStage == 0) {
-				sayMsg = text.substring(5, text.length);
+				sayMsg = command.substring(5, command.length);
 				sayStage = 1;
 			}
 			break;
@@ -2435,6 +2458,7 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + showNewsSetting.toString());
     outWrite.append("," + menuAnimationsSetting.toString());
     outWrite.append("," + nukerMode.toString());
+    outWrite.append("," + timerSpeed.toString());
 
     outWrite.close();
 	
@@ -2473,6 +2497,9 @@ VertexClientPE.loadMainSettings = function() {
 	}
 	if(str.toString().split(",")[7] != null && str.toString().split(",")[7] != undefined) {
 		nukerMode = str.toString().split(",")[7]; //Here we split text by ","
+	}
+	if(str.toString().split(",")[8] != null && str.toString().split(",")[8] != undefined) {
+		timerSpeed = str.toString().split(",")[8]; //Here we split text by ","
 	}
     fos.close();
 	VertexClientPE.loadAutoSpammerSettings();
@@ -2534,7 +2561,7 @@ var getStretchedImage = function(bm, x, y, stretchWidth, stretchHeight, width, h
     return new android.graphics.drawable.BitmapDrawable(blank);
 };
 
-function clientButton(text, desc, color) //menu buttons
+function clientButton(text, desc, color, round) //menu buttons
 {
 	if(color == null) {
 		color = themeSetting;
@@ -2555,6 +2582,9 @@ function clientButton(text, desc, color) //menu buttons
 	}
 
 	var bg = android.graphics.drawable.GradientDrawable();
+	if(round) {
+		bg.setCornerRadius(10);
+	}
 	bg.setColor(android.graphics.Color.parseColor("#0B5B25"));
 	bg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
 	bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#0F8219"));
@@ -2568,6 +2598,33 @@ function clientButton(text, desc, color) //menu buttons
 		bg.setColor(android.graphics.Color.parseColor("#9F018C"));
 		bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#BC21AB"));
 	}
+	
+	defaultButton.setTransformationMethod(null);
+    defaultButton.setOnTouchListener(new android.view.View.OnTouchListener() {
+        onTouch: function(v, event) {
+            var action = event.getActionMasked();
+            if(action == android.view.MotionEvent.ACTION_CANCEL || action == android.view.MotionEvent.ACTION_UP) {
+				bg.setColor(android.graphics.Color.parseColor("#0B5B25"));
+                if(color == "red") {
+					bg.setColor(android.graphics.Color.parseColor("#5B0C0C"));
+				}if(color == "blue") {
+					bg.setColor(android.graphics.Color.parseColor("#0A175B"));
+				}if(color == "purple") {
+					bg.setColor(android.graphics.Color.parseColor("#9F018C"));
+				}
+            } else {
+				bg.setColor(android.graphics.Color.parseColor("#0F8219"));
+                if(color == "red") {
+					bg.setColor(android.graphics.Color.parseColor("#821010"));
+				}if(color == "blue") {
+					bg.setColor(android.graphics.Color.parseColor("#0E3882"));
+				}if(color == "purple") {
+					bg.setColor(android.graphics.Color.parseColor("#BC21AB"));
+				}
+            }
+            return false;
+        }
+    });
 
 	defaultButton.setBackgroundDrawable(bg);
     defaultButton.setPaintFlags(defaultButton.getPaintFlags() | android.graphics.Paint.SUBPIXEL_TEXT_FLAG);
@@ -2577,7 +2634,7 @@ function clientButton(text, desc, color) //menu buttons
     } else {
         defaultButton.setShadowLayer(0.0001, Math.round(defaultButton.getLineHeight() / 8), Math.round(defaultButton.getLineHeight() / 8), android.graphics.Color.parseColor("#FF333333"));
     }
-    defaultButton.setPadding(0, 0, 0, 0);
+	defaultButton.setPadding(0, 0, 0, 0);
     defaultButton.setLineSpacing(0, 1.15);
     return defaultButton;
 }
@@ -2685,7 +2742,30 @@ function purpleSubTitle(subtitle) // TextView with colored background (edited by
 	return title;
 }
 
-VertexClientPE.editCopyrightText = function() {
+function backgroundGradient(round) // TextView with colored background (edited by peacestorm)
+{
+	var bg = android.graphics.drawable.GradientDrawable();
+	if(round) {
+		bg.setCornerRadius(20);
+	}
+	bg.setColor(android.graphics.Color.parseColor("#700B5B25"));
+	bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#700F8219"));
+	if(themeSetting == "red") {
+		bg.setColor(android.graphics.Color.parseColor("#705B0C0C"));
+		bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#70821010"));
+	}if(themeSetting == "blue") {
+		bg.setColor(android.graphics.Color.parseColor("#700A175B"));
+		bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#700E3882"));
+	}if(themeSetting == "purple") {
+		bg.setColor(android.graphics.Color.parseColor("#709F018C"));
+		bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#70BC21AB"));
+	}
+	bg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+
+	return bg;
+}
+
+(VertexClientPE.editCopyrightText = function() {
 	VertexClientPE.loadMainSettings();
 	ModPE.langEdit("menu.copyright", "©Mojang AB | §2Vertex Client PE by peacestorm");
 	if(themeSetting == "red") {
@@ -2695,9 +2775,7 @@ VertexClientPE.editCopyrightText = function() {
 	} if(themeSetting == "purple") {
 		ModPE.langEdit("menu.copyright", "©Mojang AB | §5Vertex Client PE by peacestorm");
 	}
-}
-
-VertexClientPE.editCopyrightText();
+})();
 
 VertexClientPE.checkForUpdates = function() {
     try {
@@ -2882,14 +2960,7 @@ VertexClientPE.showSplashScreen = function() {
 
                     //More buttons...
                     mainMenuTextList = new widget.PopupWindow(mainMenuListLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
-                    mainMenuTextList.setBackgroundDrawable(backgroundClientGUI);
-					if(themeSetting == "red") {
-						mainMenuTextList.setBackgroundDrawable(backgroundRedClientGUI);
-					}if(themeSetting == "blue") {
-						mainMenuTextList.setBackgroundDrawable(backgroundBlueClientGUI);
-					}if(themeSetting == "purple") {
-						mainMenuTextList.setBackgroundDrawable(backgroundPurpleClientGUI);
-					}
+                    mainMenuTextList.setBackgroundDrawable(backgroundGradient());
                     mainMenuTextList.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
                 } catch(error) {
                     print('An error occured: ' + error);
@@ -3103,33 +3174,8 @@ VertexClientPE.showAccountManager = function() {
 						}
 					}
 					
-					var setupButtonRed = clientButton("Two");
-					setupButtonRed.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
-					setupButtonRed.setOnClickListener(new android.view.View.OnClickListener({
-						onClick: function(viewarg) {
-							//name
-						}
-					}));
-					//accountManagerLayoutCenter.addView(setupButtonRed);
-					
-					var setupButtonBlue = clientButton("Test");
-					setupButtonBlue.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
-					setupButtonBlue.setOnClickListener(new android.view.View.OnClickListener({
-						onClick: function(viewarg) {
-							//use
-						}
-					}));
-					//accountManagerLayoutRight.addView(setupButtonBlue);
-					
 					accountManager = new widget.PopupWindow(accountManagerLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
-					accountManager.setBackgroundDrawable(backgroundClientGUI);
-					if(themeSetting == "red") {
-						accountManager.setBackgroundDrawable(backgroundRedClientGUI);
-					}if(themeSetting == "blue") {
-						accountManager.setBackgroundDrawable(backgroundBlueClientGUI);
-					}if(themeSetting == "purple") {
-						accountManager.setBackgroundDrawable(backgroundPurpleClientGUI);
-					}
+					accountManager.setBackgroundDrawable(backgroundGradient());
 					accountManager.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
 				} catch(error) {
 					print('An error occured: ' + error);
@@ -3438,14 +3484,7 @@ function settingsScreen() {
 					settingsMenuLayout.addView(playMusicSettingButton);
 
                     settingsMenu = new widget.PopupWindow(settingsMenuLayout1, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
-                    settingsMenu.setBackgroundDrawable(backgroundClientGUI);
-					if(themeSetting == "red") {
-						settingsMenu.setBackgroundDrawable(backgroundRedClientGUI);
-					}if(themeSetting == "blue") {
-						settingsMenu.setBackgroundDrawable(backgroundBlueClientGUI);
-					}if(themeSetting == "purple") {
-						settingsMenu.setBackgroundDrawable(backgroundPurpleClientGUI);
-					}
+                    settingsMenu.setBackgroundDrawable(backgroundGradient());
                     settingsMenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
                 } catch(error) {
                     print('An error occured: ' + error);
@@ -3473,10 +3512,10 @@ function informationScreen() {
 					
 					var informationText = clientTextView("© peacestorm 2015 - 2016. Some rights reserved.\nThanks to @Herqux_ and @MyNameIsTriXz for graphic designs.", true);
 					
-					var websiteButton = clientButton("Website", "Show a URL of the official Vertex Client PE website");
+					var websiteButton = clientButton("Website", "Go to the official Vertex Client PE website");
 					websiteButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(viewarg){
-						widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> Vertex-Client.ml"), 0).show();
+						ModPE.goToURL("http://Vertex-Client.github.io/");
 					}
 					}));
 					
@@ -3484,14 +3523,7 @@ function informationScreen() {
 					informationMenuLayout.addView(websiteButton);
 
                     informationMenu = new widget.PopupWindow(informationMenuLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
-                    informationMenu.setBackgroundDrawable(backgroundClientGUI);
-					if(themeSetting == "red") {
-						informationMenu.setBackgroundDrawable(backgroundRedClientGUI);
-					}if(themeSetting == "blue") {
-						informationMenu.setBackgroundDrawable(backgroundBlueClientGUI);
-					}if(themeSetting == "purple") {
-						informationMenu.setBackgroundDrawable(backgroundPurpleClientGUI);
-					}
+                    informationMenu.setBackgroundDrawable(backgroundGradient());
                     informationMenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
                 } catch(error) {
                     print('An error occured: ' + error);
@@ -3531,9 +3563,7 @@ VertexClientPE.showTopBar = function() {
 					topBarLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 4, LinearLayout.LayoutParams.WRAP_CONTENT));
 					topBarLayout.addView(topBarLayoutRight);
 					
-					var moreButton = new Button(ctx);
-					moreButton.setText("...");
-					moreButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#00BFFF"), android.graphics.PorterDuff.Mode.MULTIPLY);
+					var moreButton = clientButton("...", null, null, true);
 					moreButton.setTextColor(android.graphics.Color.WHITE);
 					moreButton.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 10, display.heightPixels / 10));
 					moreButton.setOnClickListener(new android.view.View.OnClickListener({
@@ -3543,9 +3573,7 @@ VertexClientPE.showTopBar = function() {
 					}));
 					topBarLayoutLeft.addView(moreButton);
 					
-					var exitButton = new Button(ctx);
-					exitButton.setText("X");
-					exitButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
+					var exitButton = clientButton("X", null, null, true);
 					exitButton.setTextColor(android.graphics.Color.WHITE);
 					exitButton.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 10, display.heightPixels / 10));
 					exitButton.setOnClickListener(new android.view.View.OnClickListener({
@@ -3568,14 +3596,15 @@ VertexClientPE.showTopBar = function() {
 					topBarLayoutCenter.addView(logoViewer4);
 					
 					topBar = new widget.PopupWindow(topBarLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), topBarHeight);
-					topBar.setBackgroundDrawable(backgroundClientGUI);
+					/*topBar.setBackgroundDrawable(backgroundGradient());
 					if(themeSetting == "red") {
 						topBar.setBackgroundDrawable(backgroundRedClientGUI);
 					}if(themeSetting == "blue") {
 						topBar.setBackgroundDrawable(backgroundBlueClientGUI);
 					}if(themeSetting == "purple") {
 						topBar.setBackgroundDrawable(backgroundPurpleClientGUI);
-					}
+					}*/
+					topBar.setBackgroundDrawable(backgroundGradient());
 					topBar.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
 				} catch(error) {
 					print('An error occured: ' + error);
@@ -4620,6 +4649,19 @@ VertexClientPE.showMovementMenu = function() {
 				}
 				}));
 				
+				var timerLayout = new LinearLayout(ctx);
+				timerLayout.setOrientation(LinearLayout.HORIZONTAL);
+				
+				var timerLayoutLeft = new LinearLayout(ctx);
+				timerLayoutLeft.setOrientation(1);
+				timerLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.heightPixels / 3, display.heightPixels / 10));
+				timerLayout.addView(timerLayoutLeft);
+				
+				var timerLayoutRight = new LinearLayout(ctx);
+				timerLayoutRight.setOrientation(1);
+				timerLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.heightPixels / 2 - display.heightPixels / 3, display.heightPixels / 10));
+				timerLayout.addView(timerLayoutRight);
+				
 				var timerBtn = clientButton("Timer", "Makes the speed of the game 2 times faster");
 				timerBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				timerBtn.setAlpha(0.54);
@@ -4632,13 +4674,22 @@ VertexClientPE.showMovementMenu = function() {
 				onClick: function(viewarg){
 					if(timerState == false) {
 						timerState = true;
-						ModPE.setGameSpeed(20 * 2);
+						ModPE.setGameSpeed(20 * timerSpeed);
 						timerBtn.setTextColor(android.graphics.Color.GREEN);
 					} else if(timerState == true) {
 						timerState = false;
 						ModPE.setGameSpeed(20);
 						timerBtn.setTextColor(android.graphics.Color.WHITE);
 					}
+				}
+				}));
+				
+				var timerInfoBtn = clientButton("...", "Timer settings");
+				timerInfoBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2 - display.heightPixels / 3, display.heightPixels / 10));
+				timerInfoBtn.setAlpha(0.54);
+				timerInfoBtn.setOnClickListener(new android.view.View.OnClickListener({
+				onClick: function(viewarg){
+					VertexClientPE.showTimerDialog();
 				}
 				}));
 				
@@ -4718,7 +4769,9 @@ VertexClientPE.showMovementMenu = function() {
 					movementMenuLayout.addView(enderProjectilesBtn);
 					movementMenuLayout.addView(fastWalkBtn);
 				}
-                movementMenuLayout.addView(timerBtn);
+                movementMenuLayout.addView(timerLayout);
+                timerLayoutLeft.addView(timerBtn);
+                timerLayoutRight.addView(timerInfoBtn);
 
                 vertexclientpemovementmenu.setContentView(movementMenuLayout1);
 				vertexclientpemovementmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -5803,14 +5856,7 @@ function showHacksList() {
                     hacksListLayout.addView(logoViewer2);
                     hacksListLayout.addView(StatesText);
                     hacksList = new widget.PopupWindow(hacksListLayout, ctx.getWindowManager().getDefaultDisplay().getWidth() / 2, ctx.getWindowManager().getDefaultDisplay().getWidth() / 8);
-                    hacksList.setBackgroundDrawable(backgroundClientGUI);
-					if(themeSetting == "red") {
-						hacksList.setBackgroundDrawable(backgroundRedClientGUI);
-					}if(themeSetting == "blue") {
-						hacksList.setBackgroundDrawable(backgroundBlueClientGUI);
-					}if(themeSetting == "purple") {
-						hacksList.setBackgroundDrawable(backgroundPurpleClientGUI);
-					}
+                    hacksList.setBackgroundDrawable(backgroundGradient(true));
                     hacksList.setTouchable(false);
 					if(hacksListModeSetting != "off") {
 						hacksList.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
@@ -6139,6 +6185,7 @@ VertexClientPE.panic = function() {
 	coordsDisplayState = false;
 	fastWalkState = false;
 	f = 0;
+	fancyChatState = false;
 }
 
 function setupDone() {
@@ -6198,17 +6245,9 @@ function exit() {
     xLayout.addView(xButton);
 	
     var moreLayout = new LinearLayout(ctxe);
-    var moreButton = new Button(ctxe);
-    moreButton.setText("...");
-    moreButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#1E90FF"), android.graphics.PorterDuff.Mode.MULTIPLY);
+    var moreButton = clientButton("...", "Opens the \"More\" menu");
+	moreButton.setCornerRadius(20);
     moreButton.setTextColor(android.graphics.Color.WHITE);
-    moreButton.setOnLongClickListener(new android.view.View.OnLongClickListener() {
-	    onLongClick: function(v, t) {
-		    ctx.getSystemService(android.content.Context.VIBRATOR_SERVICE).vibrate(37);
-		    widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> Opens the \"More\" menu"), 0).show();
-		    return true;
-	    }
-    });
     moreButton.setOnClickListener(new android.view.View.OnClickListener({
     onClick: function(viewarg){
 		VertexClientPE.showMoreDialog();
