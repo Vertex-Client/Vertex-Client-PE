@@ -84,6 +84,7 @@ var menuAnimationsSetting = "on";
 var nukerMode = "cube";
 var playMusicSetting = "on";
 var timerSpeed = 2;
+var themeSetup = "off";
 //End of settings
 
 var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
@@ -2459,6 +2460,7 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + menuAnimationsSetting.toString());
     outWrite.append("," + nukerMode.toString());
     outWrite.append("," + timerSpeed.toString());
+    outWrite.append("," + themeSetup.toString());
 
     outWrite.close();
 	
@@ -2501,10 +2503,39 @@ VertexClientPE.loadMainSettings = function() {
 	if(str.toString().split(",")[8] != null && str.toString().split(",")[8] != undefined) {
 		timerSpeed = str.toString().split(",")[8]; //Here we split text by ","
 	}
+	if(str.toString().split(",")[9] != null && str.toString().split(",")[9] != undefined) {
+		themeSetup = str.toString().split(",")[9]; //Here we split text by ","
+	}
     fos.close();
 	VertexClientPE.loadAutoSpammerSettings();
 	return true;
 }
+
+VertexClientPE.setupTheme = function() {
+	VertexClientPE.loadMainSettings();
+	if(themeSetup == "off") {
+		if(themeSetting == "green") {
+			ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/BCA6vgv.png");
+			ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/dY3c1Jl.png");
+		}
+		if(themeSetting == "red") {
+			ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/BxuGkEJ.png");
+			ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/S3qiQ01.png");
+		}
+		if(themeSetting == "blue") {
+			ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/X5rCyoN.png");
+			ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/t6tGtMk.png");
+		}
+		if(themeSetting == "purple") {
+			ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/3xsluNN.png");
+			ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/R9te7Bd.png");
+		}
+		themeSetup = "on";
+		VertexClientPE.saveMainSettings();
+	}
+}
+
+VertexClientPE.setupTheme();
 
 var createUiThread = function(func) {
     getContext().runOnUiThread(new java.lang.Runnable({
@@ -3366,23 +3397,31 @@ function settingsScreen() {
 						if(themeSetting == "green") {
 							themeSetting = "red";
 							themeSettingButton.setText("Theme | Red");
+							themeSetup = "off";
 							VertexClientPE.saveMainSettings();
 							VertexClientPE.loadMainSettings();
+							VertexClientPE.setupTheme();
 						} else if(themeSetting == "red") {
 							themeSetting = "blue";
 							themeSettingButton.setText("Theme | Blue");
+							themeSetup = "off";
 							VertexClientPE.saveMainSettings();
 							VertexClientPE.loadMainSettings();
+							VertexClientPE.setupTheme();
 						} else if(themeSetting == "blue") {
 							themeSetting = "purple";
 							themeSettingButton.setText("Theme | Purple");
+							themeSetup = "off";
 							VertexClientPE.saveMainSettings();
 							VertexClientPE.loadMainSettings();
+							VertexClientPE.setupTheme();
 						} else if(themeSetting == "purple") {
 							themeSetting = "green";
 							themeSettingButton.setText("Theme | Green");
+							themeSetup = "off";
 							VertexClientPE.saveMainSettings();
 							VertexClientPE.loadMainSettings();
+							VertexClientPE.setupTheme();
 						}
 					}
 					}));
@@ -3692,15 +3731,7 @@ VertexClientPE.showCombatMenu = function() {
 				combatTitle.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2.5, display.heightPixels / 20));
 				combatTitleLayoutLeft.addView(combatTitle);
 				
-				if(themeSetting == "green") {
-					var combatArrow = greenSubTitle("*", true);
-				}if(themeSetting == "red") {
-					var combatArrow = redSubTitle("*", true);
-				}if(themeSetting == "blue") {
-					var combatArrow = blueSubTitle("*", true);
-				}if(themeSetting == "purple") {
-					var combatArrow = purpleSubTitle("*", true);
-				}
+				var combatArrow = clientButton("*");
 				combatArrow.setAlpha(0.54);
 				combatArrow.setGravity(android.view.Gravity.CENTER);
 				combatArrow.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2 - display.heightPixels / 2.5, display.heightPixels / 20));
@@ -4085,15 +4116,7 @@ VertexClientPE.showBuildingMenu = function() {
 				buildingTitle.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2.5, display.heightPixels / 20));
 				buildingTitleLayoutLeft.addView(buildingTitle);
 				
-				if(themeSetting == "green") {
-					var buildingArrow = greenSubTitle("*", true);
-				}if(themeSetting == "red") {
-					var buildingArrow = redSubTitle("*", true);
-				}if(themeSetting == "blue") {
-					var buildingArrow = blueSubTitle("*", true);
-				}if(themeSetting == "purple") {
-					var buildingArrow = purpleSubTitle("*", true);
-				}
+				var buildingArrow = clientButton("*");
 				buildingArrow.setAlpha(0.54);
 				buildingArrow.setGravity(android.view.Gravity.CENTER);
 				buildingArrow.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2 - display.heightPixels / 2.5, display.heightPixels / 20));
@@ -4440,15 +4463,7 @@ VertexClientPE.showMovementMenu = function() {
 				movementTitle.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2.5, display.heightPixels / 20));
 				movementTitleLayoutLeft.addView(movementTitle);
 				
-				if(themeSetting == "green") {
-					var movementArrow = greenSubTitle("*", true);
-				}if(themeSetting == "red") {
-					var movementArrow = redSubTitle("*", true);
-				}if(themeSetting == "blue") {
-					var movementArrow = blueSubTitle("*", true);
-				}if(themeSetting == "purple") {
-					var movementArrow = purpleSubTitle("*", true);
-				}
+				var movementArrow = clientButton("*");
 				movementArrow.setAlpha(0.54);
 				movementArrow.setGravity(android.view.Gravity.CENTER);
 				movementArrow.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2 - display.heightPixels / 2.5, display.heightPixels / 20));
@@ -4839,15 +4854,7 @@ VertexClientPE.showChatMenu = function() {
 				chatTitle.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2.5, display.heightPixels / 20));
 				chatTitleLayoutLeft.addView(chatTitle);
 				
-				if(themeSetting == "green") {
-					var chatArrow = greenSubTitle("*", true);
-				}if(themeSetting == "red") {
-					var chatArrow = redSubTitle("*", true);
-				}if(themeSetting == "blue") {
-					var chatArrow = blueSubTitle("*", true);
-				}if(themeSetting == "purple") {
-					var chatArrow = purpleSubTitle("*", true);
-				}
+				var chatArrow = clientButton("*");
 				chatArrow.setAlpha(0.54);
 				chatArrow.setGravity(android.view.Gravity.CENTER);
 				chatArrow.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2 - display.heightPixels / 2.5, display.heightPixels / 20));
@@ -5049,15 +5056,7 @@ VertexClientPE.showMiscMenu = function() {
 				miscTitle.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2.5, display.heightPixels / 20));
 				miscTitleLayoutLeft.addView(miscTitle);
 				
-				if(themeSetting == "green") {
-					var miscArrow = greenSubTitle("*", true);
-				}if(themeSetting == "red") {
-					var miscArrow = redSubTitle("*", true);
-				}if(themeSetting == "blue") {
-					var miscArrow = blueSubTitle("*", true);
-				}if(themeSetting == "purple") {
-					var miscArrow = purpleSubTitle("*", true);
-				}
+				var miscArrow = clientButton("*");
 				miscArrow.setAlpha(0.54);
 				miscArrow.setGravity(android.view.Gravity.CENTER);
 				miscArrow.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2 - display.heightPixels / 2.5, display.heightPixels / 20));
