@@ -36,7 +36,7 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [ ] Chest steal button
 - [ ] Follow (following entities) [aimed for 1.3 Beta]
 - [ ] TapExplosion [aimed for 1.3 Beta]
-- [ ] AutoSword
+- [x] AutoSword
 - [ ] AutoTool
 - [ ] AutoArmor
 - [x] FancyChat [aimed for 1.3 Beta]
