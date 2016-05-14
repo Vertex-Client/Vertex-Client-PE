@@ -6887,10 +6887,14 @@ function explodeHook(entity, x, y, z, power, onFire) {
 function chatHook(text) {
 	if(text.charAt(0) == ".") {
 		preventDefault();
+		com.mojang.minecraftpe.MainActivity.currentMainActivity.get().nativeSetTextboxText("");
+		com.mojang.minecraftpe.MainActivity.currentMainActivity.get().updateTextboxText("");
 		VertexClientPE.commandManager(text);
 	} else {
 		if(fancyChatState && fancyChatStage == 0) {
 			preventDefault();
+			com.mojang.minecraftpe.MainActivity.currentMainActivity.get().nativeSetTextboxText("");
+			com.mojang.minecraftpe.MainActivity.currentMainActivity.get().updateTextboxText("");
 			VertexClientPE.fancyChat(text);
 		}
 	}
