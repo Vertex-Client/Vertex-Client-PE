@@ -1343,7 +1343,6 @@ VertexClientPE.getVersion = function(type) {
 var p, y, xx, yy, zz;
 
 var sayMsg;
-var sayStage;
 
 VertexClientPE.commandManager = function(command) {
 	cmd = command.split(" ");
@@ -1419,9 +1418,11 @@ VertexClientPE.commandManager = function(command) {
 			VertexClientPE.showJavascriptConsoleDialog();
 			break;
 		case ".say": //9
-			if(sayStage == 0) {
-				sayMsg = command.substring(5, command.length);
-				sayStage = 1;
+			sayMsg = command.substring(5, command.length);
+			if(fancyChatState) {
+				VertexClientPE.fancyChat(sayMsg);
+			} else {
+				Server.sendChat(sayMsg);
 			}
 			break;
 		default:
@@ -2289,7 +2290,6 @@ VertexClientPE.instaKill = function(a, v) {
 }
 
 var fancyChatMsg;
-var fancyChatStage = 0;
 
 VertexClientPE.fancyChat = function(str) {
 	var normalChars = ["?", "!", ",", ".", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
@@ -2300,7 +2300,7 @@ VertexClientPE.fancyChat = function(str) {
 		}
 	}
 	fancyChatMsg = str;
-	fancyChatStage = 1;
+	Server.sendChat(fancyChatMsg);
 }
 
 VertexClientPE.killAura = function() {
@@ -2405,7 +2405,11 @@ VertexClientPE.autoSword = function(a, v) {
 }
 
 VertexClientPE.autoSpammer = function() {
-	Server.sendChat(spamMessage);
+	if(fancyChatState) {
+		VertexClientPE.fancyChat(spamMessage);
+	} else {
+		Server.sendChat(spamMessage);
+	}
 	if(yesCheatPlusState) {
 		Server.sendChat(" ");
 	}
@@ -6500,12 +6504,6 @@ function modTick() {
 	randomAki = Math.floor((Math.random() * 5));
 	if(healthTagsSetting == "on") {
 		VertexClientPE.healthTags();
-	}if(sayStage == 1) {
-		Server.sendChat(sayMsg);
-		sayStage = 0;
-	}if(fancyChatState && fancyChatStage == 1) {
-		Server.sendChat(fancyChatMsg);
-		fancyChatStage = 0;
 	}if(autoSpammerState == true) {
 		VertexClientPE.autoSpammer();
 	}if(regenState == true) {
@@ -6956,7 +6954,7 @@ function chatHook(text) {
 		com.mojang.minecraftpe.MainActivity.currentMainActivity.get().updateTextboxText("");
 		VertexClientPE.commandManager(text);
 	} else {
-		if(fancyChatState && fancyChatStage == 0) {
+		if(fancyChatState) {
 			preventDefault();
 			com.mojang.minecraftpe.MainActivity.currentMainActivity.get().nativeSetTextboxText("");
 			com.mojang.minecraftpe.MainActivity.currentMainActivity.get().updateTextboxText("");
