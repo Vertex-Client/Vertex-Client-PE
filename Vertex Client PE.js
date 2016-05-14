@@ -1260,6 +1260,13 @@ VertexClientPE.toggleModule = function(module) {
 				fancyChatState = false;
 			}
 			break;
+		} case "autosword": {
+			if(autoSwordState == false) {
+				autoSwordState = true;
+			} else if(autoSwordState == true) {
+				autoSwordState = false;
+			}
+			break;
 		} default: {
 			VertexClientPE.clientMessage(ChatColor.RED + "Module \'" + module + "\' not found!");
 			sendMessage = false;
@@ -2312,6 +2319,61 @@ VertexClientPE.follow = function() {
 			}
 			setVelX(getPlayerEnt(), x);
 			setVelZ(getPlayerEnt(), z);
+		}
+	}
+}
+
+VertexClientPE.autoSword = function(a, v) {
+	if(a == getPlayerEnt()) {
+		for(var i = 0; i <= 36; i++) {
+			var gCI = Player.getCarriedItem();
+			var gCID = Player.getCarriedItemData();
+			var gCIA = Player.getCarriedItemCount();
+			if(Player.getInventorySlot(i) == 268) {
+				Player.setInventorySlot(i, gCI, gCIA, gCID);
+				Entity.setCarriedItem(getPlayerEnt(), 268, Player.getInventorySlotCount(i), Player.getInventorySlotData(i));
+				break;
+			}
+		}
+		for(var i = 0; i <= 36; i++) {
+			var gCI = Player.getCarriedItem();
+			var gCID = Player.getCarriedItemData();
+			var gCIA = Player.getCarriedItemCount();
+			if(Player.getInventorySlot(i) == 283) {
+				Player.setInventorySlot(i, gCI, gCIA, gCID);
+				Entity.setCarriedItem(getPlayerEnt(), 283, Player.getInventorySlotCount(i), Player.getInventorySlotData(i));
+				break;
+			}
+		}
+		for(var i = 0; i <= 36; i++) {
+			var gCI = Player.getCarriedItem();
+			var gCID = Player.getCarriedItemData();
+			var gCIA = Player.getCarriedItemCount();
+			if(Player.getInventorySlot(i) == 272) {
+				Player.setInventorySlot(i, gCI, gCIA, gCID);
+				Entity.setCarriedItem(getPlayerEnt(), 272, Player.getInventorySlotCount(i), Player.getInventorySlotData(i));
+				break;
+			}
+		}
+		for(var i = 0; i <= 36; i++) {
+			var gCI = Player.getCarriedItem();
+			var gCID = Player.getCarriedItemData();
+			var gCIA = Player.getCarriedItemCount();
+			if(Player.getInventorySlot(i) == 267) {
+				Player.setInventorySlot(i, gCI, gCIA, gCID);
+				Entity.setCarriedItem(getPlayerEnt(), 267, Player.getInventorySlotCount(i), Player.getInventorySlotData(i));
+				break;
+			}
+		}
+		for(var i = 0; i <= 36; i++) {
+			var gCI = Player.getCarriedItem();
+			var gCID = Player.getCarriedItemData();
+			var gCIA = Player.getCarriedItemCount();
+			if(Player.getInventorySlot(i) == 276) {
+				Player.setInventorySlot(i, gCI, gCIA, gCID);
+				Entity.setCarriedItem(getPlayerEnt(), 276, Player.getInventorySlotCount(i), Player.getInventorySlotData(i));
+				break;
+			}
 		}
 	}
 }
@@ -3993,6 +4055,26 @@ VertexClientPE.showCombatMenu = function() {
 					}
 				}
 				}));
+				
+				var autoSwordBtn = clientButton("AutoSword", "Automatically chooses the best sword for you when attacking entities if available");
+				autoSwordBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
+				autoSwordBtn.setAlpha(0.54);
+				if(autoSwordState == false) {
+					autoSwordBtn.setTextColor(android.graphics.Color.WHITE);
+				} else if(autoSwordState == true) {
+					autoSwordBtn.setTextColor(android.graphics.Color.GREEN);
+				}
+				autoSwordBtn.setOnClickListener(new android.view.View.OnClickListener({
+				onClick: function(viewarg){
+					if(autoSwordState == false) {
+						autoSwordState = true;
+						autoSwordBtn.setTextColor(android.graphics.Color.GREEN);
+					} else if(autoSwordState == true) {
+						autoSwordState = false;
+						autoSwordBtn.setTextColor(android.graphics.Color.WHITE);
+					}
+				}
+				}));
 
 				combatArrow.setOnClickListener(new android.view.View.OnClickListener() {
                     onClick: function(viewarg) {
@@ -4047,6 +4129,7 @@ VertexClientPE.showCombatMenu = function() {
 					combatMenuLayout.addView(arrowGunBtn);
 					combatMenuLayout.addView(godModeBtn);
 					combatMenuLayout.addView(noHurtBtn);
+					combatMenuLayout.addView(autoSwordBtn);
 				}
 				//combatMenuLayout.addView(autoLeaveBtn);
 
@@ -5514,6 +5597,7 @@ var coordsDisplayState = false;
 var fastWalkState = false;
 var followState = false;
 var fancyChatState = false;
+var autoSwordState = false;
 
 var hacksList;
 var StatesText;
@@ -5558,6 +5642,7 @@ var coordsDisplayStateText = "";
 var fastWalkStateText = "";
 var followStateText = "";
 var fancyChatStateText = "";
+var autoSwordStateText = "";
 
 var enabledHacksCounter = 0;
 
@@ -5835,11 +5920,17 @@ function showHacksList() {
                     } else if(fancyChatState == false) {
                         fancyChatStateText = "";
                     }
+					if(autoSwordState == true) {
+                        autoSwordStateText = " [AutoSword] ";
+						enabledHacksCounter++;
+                    } else if(autoSwordState == false) {
+                        autoSwordStateText = "";
+                    }
                     var VertexClientPEHacksListTextView = new widget.TextView(ctx);
                     VertexClientPEHacksListTextView.setText(VertexClientPEHacksListText);
 					StatesText = clientTextView("Placeholder text", true);
 					if(hacksListModeSetting == "on") {
-						StatesText.setText("<Currently playing: " + musicText + "> " + yesCheatPlusStateText + autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + liquidWalkStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + dronePlusStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + fireAuraStateText + coordsDisplayStateText + fastWalkStateText + followStateText + fancyChatStateText);
+						StatesText.setText("<Currently playing: " + musicText + "> " + yesCheatPlusStateText + autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + liquidWalkStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + dronePlusStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + fireAuraStateText + coordsDisplayStateText + fastWalkStateText + followStateText + fancyChatStateText + autoSwordStateText);
 					} else if(hacksListModeSetting == "counter") {
 						StatesText.setText("<Currently playing: " + musicText + "> " + enabledHacksCounter.toString() + " mods enabled");
 					}
@@ -6125,9 +6216,15 @@ function updateHacksList() {
                     } else if(fancyChatState == false) {
                         fancyChatStateText = "";
                     }
+					if(autoSwordState == true) {
+                        autoSwordStateText = " [AutoSword] ";
+						enabledHacksCounter++;
+                    } else if(autoSwordState == false) {
+                        autoSwordStateText = "";
+                    }
 					
 					if(hacksListModeSetting == "on") {
-						StatesText.setText("<Currently playing: " + musicText + "> " + yesCheatPlusStateText + autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + liquidWalkStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + dronePlusStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + fireAuraStateText + coordsDisplayStateText + fastWalkStateText + followStateText + fancyChatStateText);
+						StatesText.setText("<Currently playing: " + musicText + "> " + yesCheatPlusStateText + autoSpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + liquidWalkStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + instaMineStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + dronePlusStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + fireAuraStateText + coordsDisplayStateText + fastWalkStateText + followStateText + fancyChatStateText + autoSwordStateText);
 					} else if(hacksListModeSetting == "counter") {
 						StatesText.setText("<Currently playing: " + musicText + "> " + enabledHacksCounter.toString() + " mods enabled");
 					}
@@ -6185,6 +6282,7 @@ VertexClientPE.panic = function() {
 	fastWalkState = false;
 	f = 0;
 	fancyChatState = false;
+	autoSwordState = false;
 }
 
 function setupDone() {
@@ -6703,28 +6801,28 @@ function destroyBlock(x, y, z, side) {
     }
 }
 
-	var signX, signY, signZ;
-	
-	function useItem(x, y, z, i, b, s) {
-		if(tapTeleporterState == true) {
+var signX, signY, signZ;
+
+function useItem(x, y, z, i, b, s) {
+	if(tapTeleporterState == true) {
+		preventDefault();
+		Entity.setPosition(Player.getEntity(), x, y + 3, z);
+	}if(tapRemoverState == true) {
+		preventDefault();
+		setTile(x, y, z, 0);
+	}if(signEditorState == true) {
+		if(b == 63 || b == 68) {
 			preventDefault();
-			Entity.setPosition(Player.getEntity(), x, y + 3, z);
-		}if(tapRemoverState == true) {
-			preventDefault();
-			setTile(x, y, z, 0);
-		}if(signEditorState == true) {
-			if(b == 63 || b == 68) {
-				preventDefault();
-				signX = x;
-				signY = y;
-				signZ = z;
-				VertexClientPE.showSignEditorDialog();
-			}
-		}if(tapNukerState == true) {
-			preventDefault();
-			VertexClientPE.nuker(x, y, z);
+			signX = x;
+			signY = y;
+			signZ = z;
+			VertexClientPE.showSignEditorDialog();
 		}
+	}if(tapNukerState == true) {
+		preventDefault();
+		VertexClientPE.nuker(x, y, z);
 	}
+}
 
 function attackHook(attacker, victim) {
 	if(instaKillState == true) {
@@ -6736,6 +6834,8 @@ function attackHook(attacker, victim) {
 		}
 	}if(freecamState == true) {
 		preventDefault();
+	}if(autoSwordState == true) {
+		VertexClientPE.autoSword(attacker, victim);
 	}
 }
 
