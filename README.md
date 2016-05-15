@@ -39,6 +39,7 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [x] AutoSword
 - [ ] AutoTool
 - [ ] AutoArmor
+- [ ] OnlyDay
 - [x] FancyChat [aimed for 1.3 Beta]
 - [x] Timer settings [aimed for 1.3 Beta]
 - [ ] Improve Nuker
