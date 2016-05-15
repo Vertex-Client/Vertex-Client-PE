@@ -25,6 +25,14 @@ var SeekBar = widget.SeekBar;
 var Point = graphics.Point;
 var KeyEvent = view.KeyEvent;
 
+var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+var display = new android.util.DisplayMetrics();
+com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
+var size = new Point();
+ctx.getWindowManager().getDefaultDisplay().getRealSize(size);
+var screenWidth = size.x;
+var screenHeight = size.y;
+
 /*KeyEvent.Callback.onKeyUp = function(keyCode, event) {
     switch(keyCode) {
         case KeyEvent.KEYCODE_D:
@@ -85,6 +93,7 @@ var nukerMode = "cube";
 var playMusicSetting = "on";
 var timerSpeed = 2;
 var themeSetup = "off";
+var nukerRange = 3;
 //End of settings
 
 var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
@@ -597,10 +606,11 @@ VertexClientPE.showTimerDialog = function() {
 		run: function() {
 			try {
 				VertexClientPE.loadMainSettings();
-				dialogGUI = new widget.PopupWindow();
 				var timerTitle = clientTextView("Timer", true);
 				timerTitle.setTextSize(20);
-				var timerSpeedTitle = clientTextView("Speed");
+				var timerDescTitle = clientTextView("Description:");
+				var timerDescText = clientTextView("Makes the speed of the game faster.\n");
+				var timerSpeedTitle = clientTextView("Speed: | " + timerSpeed + " * 20 ticks");
 				var timerSpeedSlider = new SeekBar(ctx);
 				timerSpeedSlider.setProgress(timerSpeed);
 				var closeButton = clientButton("Close");
@@ -608,6 +618,8 @@ VertexClientPE.showTimerDialog = function() {
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
 				dialogLayout.addView(timerTitle);
+				dialogLayout.addView(timerDescTitle);
+				dialogLayout.addView(timerDescText);
 				dialogLayout.addView(timerSpeedTitle);
 				dialogLayout.addView(timerSpeedSlider);
 				dialogLayout.addView(closeButton);
@@ -616,9 +628,12 @@ VertexClientPE.showTimerDialog = function() {
 				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
 				dialog.setTitle("Timer");
-				dialogGUI.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
-				dialogGUI.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
-				dialogGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.TOP, 0, 0);
+				timerSpeedSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+					onProgressChanged: function() {
+						timerSpeed = timerSpeedSlider.getProgress();
+						timerSpeedTitle.setText("Speed: | " + timerSpeed + " * 20 ticks");
+					}
+				});
 				dialog.setOnDismissListener(new android.content.DialogInterface.OnDismissListener() {
 					onDismiss: function() {
 						timerSpeed = timerSpeedSlider.getProgress();
@@ -630,6 +645,8 @@ VertexClientPE.showTimerDialog = function() {
 					}
 				});
 				dialog.show();
+				var window = dialog.getWindow();
+				window.setLayout(display.widthPixels, display.heightPixels);
 				closeButton.setOnClickListener(new android.view.View.OnClickListener() {
 					onClick: function(view) {
 						dialog.dismiss();
@@ -651,7 +668,9 @@ VertexClientPE.showAutoSpammerDialog = function() {
 				dialogGUI = new widget.PopupWindow();
 				var autoSpammerTitle = clientTextView("AutoSpammer", true);
 				autoSpammerTitle.setTextSize(20);
-				var autoSpammerMessageTitle = clientTextView("Message");
+				var autoSpammerDescTitle = clientTextView("Description:");
+				var autoSpammerDescText = clientTextView("Automatically spams the chat.\n");
+				var autoSpammerMessageTitle = clientTextView("Message:");
 				var spamMessageInput = new EditText(ctx);
 				spamMessageInput.setText(spamMessage);
 				spamMessageInput.setTextColor(android.graphics.Color.WHITE);
@@ -661,6 +680,8 @@ VertexClientPE.showAutoSpammerDialog = function() {
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
 				dialogLayout.addView(autoSpammerTitle);
+				dialogLayout.addView(autoSpammerDescTitle);
+				dialogLayout.addView(autoSpammerDescText);
 				dialogLayout.addView(autoSpammerMessageTitle);
 				dialogLayout.addView(spamMessageInput);
 				dialogLayout.addView(closeButton);
@@ -680,6 +701,8 @@ VertexClientPE.showAutoSpammerDialog = function() {
 					}
 				});
 				dialog.show();
+				var window = dialog.getWindow();
+				window.setLayout(display.widthPixels, display.heightPixels);
 				closeButton.setOnClickListener(new android.view.View.OnClickListener() {
 					onClick: function(view) {
 						dialog.dismiss();
@@ -698,23 +721,58 @@ VertexClientPE.showNukerDialog = function() {
 		run: function() {
 			try {
 				VertexClientPE.loadMainSettings();
-				dialogGUI = new widget.PopupWindow();
 				var nukerTitle = clientTextView("Nuker", true);
 				nukerTitle.setTextSize(20);
-				var nukerModeTitle = clientTextView("Mode");
+				var nukerDescTitle = clientTextView("Description:");
+				var nukerDescText = clientTextView("Automatically destroys blocks around you.\n");
+				var nukerRangeTitle = clientTextView("Range: | " + nukerRange);
+				var nukerRangeSlider = new SeekBar(ctx);
+				nukerRangeSlider.setProgress(nukerRange);
+				nukerRangeSlider.setMax(10);
+				var nukerModeTitle = clientTextView("\nMode:");
 				var nukerModeCubeButton = clientButton("Cube", "Normal mode which destroys blocks in the shape of a cube");
+				nukerModeCubeButton.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 6, display.heightPixels / 10));
 				var nukerModeFlatButton = clientButton("Flat", "Flat mode which flats the ground");
+				nukerModeFlatButton.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 6, display.heightPixels / 10));
 				var nukerModeSmashButton = clientButton("Smash", "Smash mode which only breaks blocks with a destroy time of 0");
+				nukerModeSmashButton.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 6, display.heightPixels / 10));
 				var nukerEnter = clientTextView("\n");
 				var closeButton = clientButton("Close");
 				var dialogLayout = new LinearLayout(ctx);
+				
+				var nukerModeLayout = new LinearLayout(ctx);
+				nukerModeLayout.setOrientation(LinearLayout.HORIZONTAL);
+				
+				var nukerModeLayoutLeft = new LinearLayout(ctx);
+				nukerModeLayoutLeft.setOrientation(1);
+				nukerModeLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, display.heightPixels / 10));
+				nukerModeLayoutLeft.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+				nukerModeLayout.addView(nukerModeLayoutLeft);
+				
+				var nukerModeLayoutCenter = new LinearLayout(ctx);
+				nukerModeLayoutCenter.setOrientation(1);
+				nukerModeLayoutCenter.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, display.heightPixels / 10));
+				nukerModeLayoutCenter.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+				nukerModeLayout.addView(nukerModeLayoutCenter);
+				
+				var nukerModeLayoutRight = new LinearLayout(ctx);
+				nukerModeLayoutRight.setOrientation(1);
+				nukerModeLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, display.heightPixels / 10));
+				nukerModeLayoutRight.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+				nukerModeLayout.addView(nukerModeLayoutRight);
+				
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
 				dialogLayout.addView(nukerTitle);
+				dialogLayout.addView(nukerDescTitle);
+				dialogLayout.addView(nukerDescText);
+				dialogLayout.addView(nukerRangeTitle);
+				dialogLayout.addView(nukerRangeSlider);
 				dialogLayout.addView(nukerModeTitle);
-				dialogLayout.addView(nukerModeCubeButton);
-				dialogLayout.addView(nukerModeFlatButton);
-				dialogLayout.addView(nukerModeSmashButton);
+				dialogLayout.addView(nukerModeLayout);
+				nukerModeLayoutLeft.addView(nukerModeCubeButton);
+				nukerModeLayoutCenter.addView(nukerModeFlatButton);
+				nukerModeLayoutRight.addView(nukerModeSmashButton);
 				dialogLayout.addView(nukerEnter);
 				dialogLayout.addView(closeButton);
 				if(nukerMode == "cube") {
@@ -729,10 +787,15 @@ VertexClientPE.showNukerDialog = function() {
 				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
 				dialog.setTitle("Nuker");
-				dialogGUI.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
-				dialogGUI.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
-				dialogGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.TOP, 0, 0);
 				dialog.show();
+				var window = dialog.getWindow();
+				window.setLayout(display.widthPixels, display.heightPixels);
+				nukerRangeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+					onProgressChanged: function() {
+						nukerRange = nukerRangeSlider.getProgress();
+						nukerRangeTitle.setText("Range: | " + nukerRange);
+					}
+				});
 				nukerModeCubeButton.setOnClickListener(new android.view.View.OnClickListener() {
 					onClick: function(view) {
 						nukerMode = "cube";
@@ -2137,25 +2200,25 @@ VertexClientPE.xRay = function(onOrOff) {
 
 VertexClientPE.nuker = function(x, y, z) {
 	if(nukerMode == "cube") {
-		for(var blockX = - 3; blockX < 4; blockX++) {
-			for(var blockY = - 3; blockY < 4; blockY++) {
-				for(var blockZ = - 3; blockZ < 4; blockZ++) {
+		for(var blockX = - nukerRange; blockX <= nukerRange; blockX++) {
+			for(var blockY = - nukerRange; blockY <= nukerRange; blockY++) {
+				for(var blockZ = - nukerRange; blockZ <= nukerRange; blockZ++) {
 					setTile(x + blockX, y + blockY, z + blockZ, 0);
 				}
 			}
 		}
 	}if(nukerMode == "flat") {
-		for(blockX = - 3; blockX < 4; blockX++) {
-			for(var blockY = - 1; blockY < 4; blockY++) {
-				for(var blockZ = - 3; blockZ < 4; blockZ++) {
+		for(var blockX = - nukerRange; blockX <= nukerRange; blockX++) {
+			for(var blockY = - 1; blockY <= nukerRange; blockY++) {
+				for(var blockZ = - nukerRange; blockZ <= nukerRange; blockZ++) {
 					setTile(x + blockX, y + blockY, z + blockZ, 0);
 				}
 			}
 		}
 	}if(nukerMode == "smash") {
-		for(blockX = - 3; blockX < 4; blockX++) {
-			for(var blockY = - 3; blockY < 4; blockY++) {
-				for(var blockZ = - 3; blockZ < 4; blockZ++) {
+		for(var blockX = - nukerRange; blockX <= nukerRange; blockX++) {
+			for(var blockY = - nukerRange; blockY <= nukerRange; blockY++) {
+				for(var blockZ = - nukerRange; blockZ <= nukerRange; blockZ++) {
 					if(Block.getDestroyTime(getTile(x + blockX, y + blockY, z + blockZ)) == 0) {
 						setTile(x + blockX, y + blockY, z + blockZ, 0);
 					}
@@ -2553,6 +2616,7 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + nukerMode.toString());
     outWrite.append("," + timerSpeed.toString());
     outWrite.append("," + themeSetup.toString());
+    outWrite.append("," + nukerRange.toString());
 
     outWrite.close();
 	
@@ -2597,6 +2661,9 @@ VertexClientPE.loadMainSettings = function() {
 	}
 	if(str.toString().split(",")[9] != null && str.toString().split(",")[9] != undefined) {
 		themeSetup = str.toString().split(",")[9]; //Here we split text by ","
+	}
+	if(str.toString().split(",")[10] != null && str.toString().split(",")[10] != undefined) {
+		nukerRange = str.toString().split(",")[10]; //Here we split text by ","
 	}
     fos.close();
 	VertexClientPE.loadAutoSpammerSettings();
@@ -3744,13 +3811,6 @@ VertexClientPE.showTopBar = function() {
 	}));
 }
 
-var display = new android.util.DisplayMetrics();
-com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
-var size = new Point();
-ctx.getWindowManager().getDefaultDisplay().getRealSize(size);
-var screenWidth = size.x;
-var screenHeight = size.y;
-
 var vertexclientpemenu = null;
 var menuBtn = null;
 
@@ -4811,7 +4871,7 @@ VertexClientPE.showMovementMenu = function() {
 				timerLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.heightPixels / 2 - display.heightPixels / 3, display.heightPixels / 10));
 				timerLayout.addView(timerLayoutRight);
 				
-				var timerBtn = clientButton("Timer", "Makes the speed of the game 2 times faster");
+				var timerBtn = clientButton("Timer", "Makes the speed of the game faster");
 				timerBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 10));
 				timerBtn.setAlpha(0.54);
 				if(timerState == false) {
