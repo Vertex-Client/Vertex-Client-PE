@@ -2560,17 +2560,47 @@ VertexClientPE.fancyChat = function(str) {
 	Server.sendChat(fancyChatMsg);
 }
 
+var killAuraStage = 0;
+var itemId;
+var itemAmount;
+var itemData;
+
 VertexClientPE.killAura = function() {
 	var mobs = Entity.getAll();
 	for(var i = 0; i < mobs.length; i++) {
 		var x = Entity.getX(mobs[i]) - getPlayerX();
 		var y = Entity.getY(mobs[i]) - getPlayerY();
 		var z = Entity.getZ(mobs[i]) - getPlayerZ();
-		if(x*x+y*y+z*z<=killAuraRange*killAuraRange && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION) {
+		if(x*x+y*y+z*z<=killAuraRange*killAuraRange && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION && Entity.getHealth(mobs[i]) != 0) {
 			//setRot(getPlayerEnt(), (Math.atan2(z, x) - 90) * Math.pi / 180, getPitch());
+			if(autoSwordState) {
+				VertexClientPE.autoSword(getPlayerEnt(), mobs[i]);
+			}
+			switch(Entity.getEntityTypeId(mobs[i])) {
+				case EntityType.COW:
+					Level.playSoundEnt(mobs[i], "mob.cowhurt");
+					break;
+				case EntityType.CHICKEN:
+					Level.playSoundEnt(mobs[i], "mob.chickenhurt");
+					break;
+				case EntityType.ZOMBIE:
+					Level.playSoundEnt(mobs[i], "mob.zombiehurt");
+					break;
+				case EntityType.SKELETON:
+					Level.playSoundEnt(mobs[i], "mob.skeletonhurt");
+					break;
+				case EntityType.PIG_ZOMBIE;:
+					Level.playSoundEnt(mobs[i], "mob.zombiepig.zpighurt");
+					break;
+				default:
+					Level.playSoundEnt(mobs[i], "random.hurt");
+					break;
+			}
 			Entity.setHealth(mobs[i], 0);
+			break;
 		}
 	}
+	killAuraStage = 0;
 }
 
 VertexClientPE.freezeAura = function() {
@@ -7118,7 +7148,8 @@ function modTick() {
 		VertexClientPE.autoMine();
 	}if(glideState == true) {
 		VertexClientPE.glide();
-	}if(killAuraState == true) {
+	}if(killAuraState && killAuraStage == 0) {
+		killAuraStage = 1;
 		VertexClientPE.killAura();
 	}if(nukerState == true) {
 		VertexClientPE.nuker(Player.getX(), Player.getY(), Player.getZ());
@@ -7484,7 +7515,7 @@ function attackHook(attacker, victim) {
 		}
 	}if(freecamState == true) {
 		preventDefault();
-	}if(autoSwordState == true) {
+	}if(autoSwordState && !killAuraState) {
 		VertexClientPE.autoSword(attacker, victim);
 	}
 }
