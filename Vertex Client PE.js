@@ -2589,7 +2589,7 @@ VertexClientPE.killAura = function() {
 				case EntityType.SKELETON:
 					Level.playSoundEnt(mobs[i], "mob.skeletonhurt");
 					break;
-				case EntityType.PIG_ZOMBIE;:
+				case EntityType.PIG_ZOMBIE:
 					Level.playSoundEnt(mobs[i], "mob.zombiepig.zpighurt");
 					break;
 				default:
