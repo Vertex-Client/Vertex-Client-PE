@@ -43,9 +43,10 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [x] FancyChat [aimed for 1.3 Beta]
 - [x] Timer settings [aimed for 1.3 Beta]
 - [ ] Improve Nuker
-  - [ ] Range settings
+  - [x] Range settings
   - [ ] Drop settings
   - [ ] Use destroyBlock instead of setTile
+- [x] KillAura range setting
 - [x] Music Player
 - [x] YesCheat+ (makes some hacks work better on servers)
 - [ ] Keybinds (when BlockLauncher adds keyboardHook)
