@@ -1565,6 +1565,20 @@ VertexClientPE.toggleModule = function(module) {
 				autoTeleporterState = false;
 			}
 			break;
+		} case "onlyday": {
+			if(onlyDayState == false) {
+				onlyDayState = true;
+			} else if(onlyDayState == true) {
+				onlyDayState = false;
+			}
+			break;
+		} case "ride": {
+			if(rideState == false) {
+				rideState = true;
+			} else if(rideState == true) {
+				rideState = false;
+			}
+			break;
 		} default: {
 			VertexClientPE.clientMessage(ChatColor.RED + "Module \'" + module + "\' not found!");
 			sendMessage = false;
@@ -2711,6 +2725,15 @@ VertexClientPE.criticals = function() {
 	//Entity.setPositionRelative(getPlayerEnt(), 0, 1.2, 0);
 	Entity.setPosition(getPlayerEnt(), getPlayerX(), getPlayerY() + 1.3, getPlayerZ());
 }
+
+VertexClientPE.ride = function(entity) {
+	rideAnimal(getPlayerEnt(), entity);
+}
+
+VertexClientPE.onlyDay = function() {
+	Level.setTime(1000);
+}
+
 
 VertexClientPE.autoSpammer = function() {
 	if(fancyChatState) {
@@ -5247,9 +5270,9 @@ VertexClientPE.showMovementMenu = function() {
 				
 				var autoTeleporter = new modButton("AutoTeleporter", "Teleports you to the block you're pointing at");
 				var autoTeleporterBtn = autoTeleporter.getLeftButton();
-				if(fastWalkState == false) {
+				if(autoTeleporterState == false) {
 					autoTeleporterBtn.setTextColor(android.graphics.Color.WHITE);
-				} else if(fastWalkState == true) {
+				} else if(autoTeleporterState == true) {
 					autoTeleporterBtn.setTextColor(android.graphics.Color.GREEN);
 				}
 				autoTeleporterBtn.setOnClickListener(new android.view.View.OnClickListener({
@@ -5260,6 +5283,25 @@ VertexClientPE.showMovementMenu = function() {
 					} else if(autoTeleporterState == true) {
 						autoTeleporterState = false;
 						autoTeleporterBtn.setTextColor(android.graphics.Color.WHITE);
+					}
+				}
+				}));
+				
+				var ride = new modButton("Ride", "Automatically makes you ride an entity on tap");
+				var rideBtn = ride.getLeftButton();
+				if(rideState == false) {
+					rideBtn.setTextColor(android.graphics.Color.WHITE);
+				} else if(rideState == true) {
+					rideBtn.setTextColor(android.graphics.Color.GREEN);
+				}
+				rideBtn.setOnClickListener(new android.view.View.OnClickListener({
+				onClick: function(viewarg){
+					if(rideState == false) {
+						rideState = true;
+						rideBtn.setTextColor(android.graphics.Color.GREEN);
+					} else if(rideState == true) {
+						rideState = false;
+						rideBtn.setTextColor(android.graphics.Color.WHITE);
 					}
 				}
 				}));
@@ -5318,6 +5360,7 @@ VertexClientPE.showMovementMenu = function() {
 					VertexClientPE.addView(movementMenuLayout, enderProjectiles);
 					VertexClientPE.addView(movementMenuLayout, fastWalk);
 					VertexClientPE.addView(movementMenuLayout, autoTeleporter);
+					VertexClientPE.addView(movementMenuLayout, ride);
 				}
                 VertexClientPE.addView(movementMenuLayout, timer);
 
@@ -5786,6 +5829,25 @@ VertexClientPE.showMiscMenu = function() {
 				}
 				}));
 				
+				var onlyDay = new modButton("OnlyDay", "Sets the time to day all the time");
+				var onlyDayBtn = onlyDay.getLeftButton();
+				if(onlyDayState == false) {
+					onlyDayBtn.setTextColor(android.graphics.Color.WHITE);
+				} else if(onlyDayState == true) {
+					onlyDayBtn.setTextColor(android.graphics.Color.GREEN);
+				}
+				onlyDayBtn.setOnClickListener(new android.view.View.OnClickListener({
+				onClick: function(viewarg){
+					if(onlyDayState == false) {
+						onlyDayState = true;
+						onlyDayBtn.setTextColor(android.graphics.Color.GREEN);
+					} else if(onlyDayState == true) {
+						onlyDayState = false;
+						onlyDayBtn.setTextColor(android.graphics.Color.WHITE);
+					}
+				}
+				}));
+				
 				var pizzaOrder = new modButton("Order a Pizza", "Order a pizza of Domino's");
 				var pizzaOrderBtn = pizzaOrder.getLeftButton();
 			    pizzaOrderBtn.setOnClickListener(new android.view.View.OnClickListener({
@@ -5851,6 +5913,7 @@ VertexClientPE.showMiscMenu = function() {
                 VertexClientPE.addView(miscMenuLayout, autoSwitch);
                 VertexClientPE.addView(miscMenuLayout, zoom);
                 VertexClientPE.addView(miscMenuLayout, coordsDisplay);
+                VertexClientPE.addView(miscMenuLayout, onlyDay);
                 VertexClientPE.addView(miscMenuLayout, pizzaOrder);
 
                 vertexclientpemiscmenu.setContentView(miscMenuLayout1);
@@ -6328,6 +6391,8 @@ var autoSwordState = false;
 var tapExplosionState = false;
 var criticalsState = false;
 var autoTeleporterState = false;
+var onlyDayState = false;
+var rideState = false;
 
 var hacksList;
 var StatesText;
@@ -6377,6 +6442,8 @@ var autoSwordStateText = "";
 var tapExplosionStateText = "";
 var criticalsStateText = "";
 var autoTeleporterStateText = "";
+var onlyDayStateText = "";
+var rideStateText = "";
 
 var enabledHacksCounter = 0;
 
@@ -6684,11 +6751,23 @@ function showHacksList() {
                     } else if(autoTeleporterState == false) {
                         autoTeleporterStateText = "";
                     }
+					if(onlyDayState == true) {
+                        onlyDayStateText = " [OnlyDay] ";
+						enabledHacksCounter++;
+                    } else if(onlyDayState == false) {
+                        onlyDayStateText = "";
+                    }
+					if(rideState == true) {
+                        rideStateText = " [Ride] ";
+						enabledHacksCounter++;
+                    } else if(rideState == false) {
+                        rideStateText = "";
+                    }
                     var VertexClientPEHacksListTextView = new widget.TextView(ctx);
                     VertexClientPEHacksListTextView.setText(VertexClientPEHacksListText);
 					StatesText = clientTextView("Placeholder text", true);
 					if(hacksListModeSetting == "on") {
-						StatesText.setText("<Currently playing: " + musicText + "> " + yesCheatPlusStateText + autoSpammerStateText + delaySpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + liquidWalkStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + fastBreakStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + dronePlusStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + fireAuraStateText + coordsDisplayStateText + fastWalkStateText + followStateText + fancyChatStateText + autoSwordStateText + tapExplosionStateText + criticalsStateText + autoTeleporterStateText);
+						StatesText.setText("<Currently playing: " + musicText + "> " + yesCheatPlusStateText + autoSpammerStateText + delaySpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + liquidWalkStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + fastBreakStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + dronePlusStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + fireAuraStateText + coordsDisplayStateText + fastWalkStateText + followStateText + fancyChatStateText + autoSwordStateText + tapExplosionStateText + criticalsStateText + autoTeleporterStateText + onlyDayStateText + rideStateText);
 					} else if(hacksListModeSetting == "counter") {
 						StatesText.setText("<Currently playing: " + musicText + "> " + enabledHacksCounter.toString() + " mods enabled");
 					}
@@ -7007,9 +7086,21 @@ function updateHacksList() {
                     } else if(autoTeleporterState == false) {
                         autoTeleporterStateText = "";
                     }
+					if(onlyDayState == true) {
+                        onlyDayStateText = " [OnlyDay] ";
+						enabledHacksCounter++;
+                    } else if(onlyDayState == false) {
+                        onlyDayStateText = "";
+                    }
+					if(rideState == true) {
+                        rideStateText = " [Ride] ";
+						enabledHacksCounter++;
+                    } else if(rideState == false) {
+                        rideStateText = "";
+                    }
 					
 					if(hacksListModeSetting == "on") {
-						StatesText.setText("<Currently playing: " + musicText + "> " + yesCheatPlusStateText + autoSpammerStateText + delaySpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + liquidWalkStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + fastBreakStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + dronePlusStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + fireAuraStateText + coordsDisplayStateText + fastWalkStateText + followStateText + fancyChatStateText + autoSwordStateText + tapExplosionStateText + criticalsStateText + autoTeleporterStateText);
+						StatesText.setText("<Currently playing: " + musicText + "> " + yesCheatPlusStateText + autoSpammerStateText + delaySpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + liquidWalkStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + fastBreakStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + dronePlusStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + fireAuraStateText + coordsDisplayStateText + fastWalkStateText + followStateText + fancyChatStateText + autoSwordStateText + tapExplosionStateText + criticalsStateText + autoTeleporterStateText + onlyDayStateText + rideStateText);
 					} else if(hacksListModeSetting == "counter") {
 						StatesText.setText("<Currently playing: " + musicText + "> " + enabledHacksCounter.toString() + " mods enabled");
 					}
@@ -7071,6 +7162,9 @@ VertexClientPE.panic = function() {
 	autoSwordState = false;
 	tapExplosionState = false;
 	criticalsState = false;
+	autoTeleporterState = false;
+	onlyDayState = false;
+	rideState = false;
 }
 
 function setupDone() {
@@ -7353,6 +7447,8 @@ function modTick() {
 		VertexClientPE.fastWalk();
 	}if(autoTeleporterState && getTile(Player.getPointedBlockX(), Player.getPointedBlockY(), Player.getPointedBlockZ()) != 0) {
 		VertexClientPE.teleporter(Player.getPointedBlockX(), Player.getPointedBlockY() + 3, Player.getPointedBlockZ());
+	}if(onlyDayState) {
+		VertexClientPE.onlyDay();
 	}
 }
 	
@@ -7627,6 +7723,11 @@ function attackHook(attacker, victim) {
 		}
 	}if(freecamState) {
 		preventDefault();
+	}if(rideState) {
+		preventDefault();
+		if(getPlayerEnt() == attacker) {
+			VertexClientPE.ride(victim);
+		}
 	}
 }
 
