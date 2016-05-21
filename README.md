@@ -40,8 +40,8 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [ ] AutoTool
 - [ ] AutoArmor
 - [ ] OnlyDay [aimed for 1.3 Beta]
-- [ ] AutoTeleporter [aimed for 1.3 Beta]
-- [ ] Criticals [aimed for 1.3 Beta]
+- [x] AutoTeleporter [aimed for 1.3 Beta]
+- [x] Criticals [aimed for 1.3 Beta]
 - [x] FancyChat [aimed for 1.3 Beta]
 - [ ] LogSpammer
 - [x] Timer settings [aimed for 1.3 Beta]
