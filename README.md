@@ -26,7 +26,7 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [ ] FreezeAura
   - [x] Base hack
   - [ ] Particles
-- [ ] Ride [aimed for 1.3 Beta]
+- [x] Ride [aimed for 1.3 Beta]
 - [ ] LSD
 - [ ] AutoTorch [aimed for 1.3 Beta]
 - [x] FireAura [1.3 Beta]
@@ -39,7 +39,7 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [x] AutoSword
 - [ ] AutoTool
 - [ ] AutoArmor
-- [ ] OnlyDay [aimed for 1.3 Beta]
+- [x] OnlyDay [aimed for 1.3 Beta]
 - [x] AutoTeleporter [aimed for 1.3 Beta]
 - [x] Criticals [aimed for 1.3 Beta]
 - [x] FancyChat [aimed for 1.3 Beta]
