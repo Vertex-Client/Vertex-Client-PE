@@ -72,7 +72,7 @@ var VertexClientPE = {
 	getName: function() {
 		return VertexClientPE.name;
 	},
-	isDev: true,
+	isDev: false,
 	isDevMode: function() {
 		return VertexClientPE.isDev;
 	},
