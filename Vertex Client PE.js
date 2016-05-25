@@ -1538,13 +1538,13 @@ VertexClientPE.toggleModule = function(module) {
 				f = 0;
 			}
 			break;
-		} case "follow": {
+		/*} case "follow": {
 			if(followState == false) {
 				followState = true;
 			} else if(followState == true) {
 				followState = false;
 			}
-			break;
+			break;*/
 		} case "fancychat": {
 			if(fancyChatState == false) {
 				fancyChatState = true;
