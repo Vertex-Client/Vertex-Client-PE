@@ -3410,6 +3410,8 @@ function backgroundGradient(round) // TextView with colored background (edited b
 	}
 })();
 
+var shouldOverride;
+
 VertexClientPE.checkForUpdates = function() {
     try {
         // download content
@@ -3431,13 +3433,20 @@ VertexClientPE.checkForUpdates = function() {
 
         // close what needs to be closed
         bufferedVersionReader.close();
+		
+		shouldOverride = true;
 
         // test
         //clientMessage(VertexClientPE.getVersion("current"); + " " + latestVersion);
     } catch(err) {
         VertexClientPE.clientMessage("Can't check for updates, please check your Internet connection.");
         ModPE.log("[Vertex Client PE] VertexClientPE.checkForUpdates() caught an error: " + err);
+		shouldOverride = false;
     }
+	if(shouldOverride) {
+		themeSetup = "off";
+		VertexClientPE.setupTheme();
+	}
 }
 
 VertexClientPE.loadNews = function() {
