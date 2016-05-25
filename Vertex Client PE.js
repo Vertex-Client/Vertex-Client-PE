@@ -72,7 +72,7 @@ var VertexClientPE = {
 	getName: function() {
 		return VertexClientPE.name;
 	},
-	isDev: true,
+	isDev: false,
 	isDevMode: function() {
 		return VertexClientPE.isDev;
 	},
@@ -1655,13 +1655,15 @@ VertexClientPE.getVersion = function(type) {
 		case "current":
 		case undefined:
 		case null:
-			return "v" + VertexClientPE.currentVersion;
-			break;
+			return "Current version: v" + VertexClientPE.currentVersion;
 		case "target":
-			return VertexClientPE.targetVersion;
-			break;
+			return "Target version: " + VertexClientPE.targetVersion;
 		case "latest":
-			return VertexClientPE.latestVersion;
+			if(VertexClientPE.latestVersion != undefined) {
+				return "Latest version: v" + VertexClientPE.latestVersion;
+			} else {
+				return "Latest version: No internet connection.";
+			}
 	}
 }
 
