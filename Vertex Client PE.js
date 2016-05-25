@@ -72,7 +72,7 @@ var VertexClientPE = {
 	getName: function() {
 		return VertexClientPE.name;
 	},
-	isDev: false,
+	isDev: true,
 	isDevMode: function() {
 		return VertexClientPE.isDev;
 	},
@@ -1681,7 +1681,7 @@ VertexClientPE.commandManager = function(command) {
 				VertexClientPE.clientMessage(".toggle <module>");
 				VertexClientPE.clientMessage(".t <module>");
 				VertexClientPE.clientMessage(".drop [infinite]");
-				VertexClientPE.clientMessage(".version <current|target>");
+				VertexClientPE.clientMessage(".version <current|target|latest>");
 				VertexClientPE.clientMessage(".panic");
 			} else {
 				if(cmd[1] == "2") {
@@ -1868,7 +1868,7 @@ VertexClientPE.playMusic = function() {
 		} catch(e) {
 			print(e);
 		}
-	} else {
+	} else if(music.length == 0) {
 		VertexClientPE.resetMusic();
 		eval(VertexClientPE.playMusic());
 	}
@@ -4141,16 +4141,17 @@ function settingsScreen() {
 					}));
 					
 					var playMusicSettingButton = clientButton("Automatically play music", "Automatically play music");
-					if(playMusicSetting == "on") {
+					/*if(playMusicSetting == "on") {
 						playMusicSettingButton.setText("Automatically play music | NORMAL");
-					} else if(playMusicSetting == "shuffle") {
+					} else */if(playMusicSetting == "shuffle") {
 						playMusicSettingButton.setText("Automatically play music | SHUFFLE");
 					} else if(playMusicSetting == "off") {
 						playMusicSettingButton.setText("Automatically play music | OFF");
 					}
 					playMusicSettingButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(viewarg){
-						if(playMusicSetting == "on") {
+						//if(playMusicSetting == "on") {
+						if(playMusicSetting == "off") {
 							playMusicSetting = "shuffle";
 							playMusicSettingButton.setText("Music | SHUFFLE");
 							VertexClientPE.saveMainSettings();
@@ -4172,7 +4173,7 @@ function settingsScreen() {
 								mp = null;
 							}
 							musicText = "None";
-						} else if(playMusicSetting == "off") {
+						}/* else if(playMusicSetting == "off") {
 							playMusicSetting = "on";
 							playMusicSettingButton.setText("Music | NORMAL");
 							VertexClientPE.saveMainSettings();
@@ -4180,7 +4181,7 @@ function settingsScreen() {
 							VertexClientPE.resetMusic();
 							//VertexClientPE.playMusic();
 							print("This mode is not ready yet!");
-						}
+						}*/
 					}
 					}));
 					
