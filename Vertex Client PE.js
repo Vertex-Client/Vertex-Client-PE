@@ -1845,7 +1845,7 @@ VertexClientPE.resetMusic = function() {
 }
 
 VertexClientPE.playMusic = function() {
-	if(playMusicSetting != "off" && music.length != 0) {
+	if(playMusicSetting != "off" && playMusicSetting != "on" && music.length != 0) {
 		try {
 			var randomMusic = music[Math.floor(Math.random() * music.length)];
 			mp = new android.media.MediaPlayer();
@@ -4152,6 +4152,7 @@ function settingsScreen() {
 					}));
 					
 					var playMusicSettingButton = clientButton("Automatically play music", "Automatically play music");
+					if(playMusicSetting == "on") playMusicSetting = "off";
 					/*if(playMusicSetting == "on") {
 						playMusicSettingButton.setText("Automatically play music | NORMAL");
 					} else */if(playMusicSetting == "shuffle") {
@@ -5888,6 +5889,9 @@ VertexClientPE.showMiscMenu = function() {
 					if(antiLBAHState == false) {
 						antiLBAHState = true;
 						antiLBAHBtn.setTextColor(android.graphics.Color.GREEN);
+						if(flightState) {
+							flightMsgShown = false;
+						}
 					} else if(antiLBAHState == true) {
 						antiLBAHState = false;
 						antiLBAHBtn.setTextColor(android.graphics.Color.WHITE);
