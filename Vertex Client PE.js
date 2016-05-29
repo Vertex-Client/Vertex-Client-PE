@@ -1,7 +1,7 @@
 /**
  * ###############################################################
  * @name Vertex Client PE
- * @version v1.3 Beta
+ * @version v1.3.1 Beta
  * @author peacestorm (@AgameR_Modder)
  * @credits Herqux_, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG
  *
@@ -82,7 +82,7 @@ var VertexClientPE = {
 VertexClientPE.isRemote = false;
 VertexClientPE.playerIsInGame = false;
 
-VertexClientPE.currentVersion = "1.3 Beta";
+VertexClientPE.currentVersion = "1.3.1 Beta";
 VertexClientPE.targetVersion = "MCPE v0.14.x alpha";
 VertexClientPE.latestVersion = "Unknown";
 var latestPocketEditionVersion;
@@ -2967,7 +2967,7 @@ VertexClientPE.loadAutoSpammerSettings = function() {
     while((ch = fos.read()) != -1)
         str.append(java.lang.Character(ch));
 	if(str != null && str != undefined) {
-		spamMessage = str.toString().split(",")[0]; //Here we split text by ","
+		spamMessage = str.toString();
 	}
     fos.close();
 	return true;
@@ -3937,8 +3937,8 @@ function newLevel() {
 	new java.lang.Thread(new java.lang.Runnable() {
 		run: function() {
 			VertexClientPE.checkForUpdates();
-			if(VertexClientPE.getVersion("latest") != VertexClientPE.getVersion("current") && VertexClientPE.latestVersion != undefined) {
-				VertexClientPE.clientMessage("There is a new version available (v" + VertexClientPE.getVersion("latest") + " for Minecraft Pocket Edition v" + latestPocketEditionVersion + ")!");
+			if(VertexClientPE.latestVersion != VertexClientPE.currentVersion && VertexClientPE.latestVersion != undefined) {
+				VertexClientPE.clientMessage("There is a new version available (v" + VertexClientPE.latestVersion + " for Minecraft Pocket Edition v" + latestPocketEditionVersion + ")!");
 			} else {
 				ctx.runOnUiThread(new java.lang.Runnable() {
 					run: function() {
