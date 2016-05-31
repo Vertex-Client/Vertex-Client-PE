@@ -76,7 +76,7 @@ var VertexClientPE = {
 	getName: function() {
 		return VertexClientPE.name;
 	},
-	isDev: true,
+	isDev: false,
 	isDevMode: function() {
 		return VertexClientPE.isDev;
 	},
@@ -134,6 +134,15 @@ var miscName = "Misc";
 //End of settings
 
 var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+
+var Launcher = {
+	isBlockLauncher: function() {
+		return (ctx.getPackageName() == "net.zhuoweizhang.mcpelauncher" || ctx.getPackageName() == "net.zhuoweizhang.mcpelauncher.pro");
+	},
+	isToolbox: function() {
+		return ctx.getPackageName() == "io.mrarm.mctoolbox";
+	}
+};
 
 var GUI;
 var menu;
@@ -3284,7 +3293,7 @@ VertexClientPE.loadMainSettings = function() {
 		if(sizeSetting == "normal") {
 			customHeight = topBarHeight / 2;
 		} else if(sizeSetting == "small") {
-			customHeight = topBarHeight * 2;
+			customHeight = topBarHeight;
 		}
 	}
     fos.close();
@@ -3451,7 +3460,7 @@ function clientButton(text, desc, color, round) //menu buttons
     return defaultButton;
 }
 
-function modButton(text, desc, type) {
+function modButton(text, desc, type, isProFeature) {
 	if(type == null) {
 		var type = "Mod";
 	}
@@ -3477,6 +3486,7 @@ function modButton(text, desc, type) {
 	defaultClientButton.setSingleLine();
 	defaultClientButton.setHorizontallyScrolling(true);
 	defaultClientButton.setSelected(true);
+	var _0x9276=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\uD83D\uDD12\x20","\x73\x65\x74\x54\x65\x78\x74"];if(isProFeature&&VertexClientPE[_0x9276[0]]()!=_0x9276[1]){defaultClientButton[_0x9276[3]](_0x9276[2]+text)}
 	modButtonLayoutLeft.addView(defaultClientButton);
 	
 	var defaultInfoButton = clientButton("...", text + " settings");
@@ -4193,7 +4203,7 @@ VertexClientPE.showAccountManager = function() {
 }
 
 VertexClientPE.downloadPro = function() {
-	ModPE.goToURL("http://filecred.com/A8BBG574");
+	ModPE.goToURL("http://filecred.com/A8C1G574");
 }
 
 VertexClientPE.setup = function() {
@@ -5039,7 +5049,7 @@ VertexClientPE.showCombatMenu = function() {
 				}
 				}));
 				
-				var follow = new modButton("HealthTags", "Displays an entity's name and health in its nametag");
+				var follow = new modButton("Follow", "Automatically follow nearby entities", null, true);
 				var followBtn = follow.getLeftButton();
 				if(followState == false) {
 					followBtn.setTextColor(android.graphics.Color.WHITE);
@@ -5048,6 +5058,7 @@ VertexClientPE.showCombatMenu = function() {
 				}
 				followBtn.setOnClickListener(new android.view.View.OnClickListener({
 				onClick: function(viewarg){
+					var _0xed94=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x67\x65\x74\x4E\x61\x6D\x65","\x73\x68\x6F\x77\x50\x72\x6F\x44\x69\x61\x6C\x6F\x67"];if(VertexClientPE[_0xed94[0]]()!=_0xed94[1]){VertexClientPE[_0xed94[3]](follow[_0xed94[2]]());return}
 					if(followState == false) {
 						followState = true;
 						followBtn.setTextColor(android.graphics.Color.GREEN);
@@ -5108,13 +5119,14 @@ VertexClientPE.showCombatMenu = function() {
 					VertexClientPE.addView(combatMenuLayout, bowAimbot);
 					VertexClientPE.addView(combatMenuLayout, instaKill);
 					VertexClientPE.addView(combatMenuLayout, regen);
-					VertexClientPE.addView(combatMenuLayout, arrowGun);
 					VertexClientPE.addView(combatMenuLayout, godMode);
 					VertexClientPE.addView(combatMenuLayout, noHurt);
-					VertexClientPE.addView(combatMenuLayout, autoSword);
 					VertexClientPE.addView(combatMenuLayout, criticals);
 					VertexClientPE.addView(combatMenuLayout, healthTags);
+					VertexClientPE.addView(combatMenuLayout, follow);
 				}
+				VertexClientPE.addView(combatMenuLayout, arrowGun);
+				VertexClientPE.addView(combatMenuLayout, autoSword);
 				VertexClientPE.addView(combatMenuLayout, autoLeave);
 
                 vertexclientpecombatmenu.setContentView(combatMenuLayout1);
@@ -8690,14 +8702,18 @@ function explodeHook(entity, x, y, z, power, onFire) {
 function chatHook(text) {
 	if(text.charAt(0) == ".") {
 		preventDefault();
-		com.mojang.minecraftpe.MainActivity.currentMainActivity.get().nativeSetTextboxText("");
-		com.mojang.minecraftpe.MainActivity.currentMainActivity.get().updateTextboxText("");
+		if(Launcher.isBlockLauncher()) {
+			com.mojang.minecraftpe.MainActivity.currentMainActivity.get().nativeSetTextboxText("");
+			com.mojang.minecraftpe.MainActivity.currentMainActivity.get().updateTextboxText("");
+		}
 		VertexClientPE.commandManager(text);
 	} else {
 		if(fancyChatState && text.charAt(0) != "/") {
 			preventDefault();
-			com.mojang.minecraftpe.MainActivity.currentMainActivity.get().nativeSetTextboxText("");
-			com.mojang.minecraftpe.MainActivity.currentMainActivity.get().updateTextboxText("");
+			if(Launcher.isBlockLauncher()) {
+				com.mojang.minecraftpe.MainActivity.currentMainActivity.get().nativeSetTextboxText("");
+				com.mojang.minecraftpe.MainActivity.currentMainActivity.get().updateTextboxText("");
+			}
 			VertexClientPE.fancyChat(text);
 		}
 	}
