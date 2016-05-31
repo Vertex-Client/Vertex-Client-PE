@@ -1725,6 +1725,7 @@ VertexClientPE.toggleModule = function(module) {
 			}
 			break;
 		} case "follow": {
+			var _0x8aae=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x46\x6F\x6C\x6C\x6F\x77","\x73\x68\x6F\x77\x50\x72\x6F\x44\x69\x61\x6C\x6F\x67"];if(VertexClientPE[_0x8aae[0]]()!=_0x8aae[1]){VertexClientPE[_0x8aae[3]](_0x8aae[2]);break}
 			if(followState == false) {
 				followState = true;
 			} else if(followState == true) {
