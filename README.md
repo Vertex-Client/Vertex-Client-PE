@@ -44,6 +44,7 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [x] Criticals [aimed for 1.3 Beta]
 - [x] FancyChat [aimed for 1.3 Beta]
 - [ ] LogSpammer
+- [ ] BunnyHop
 - [x] Timer settings [aimed for 1.3 Beta]
 - [ ] Improve Nuker
   - [x] Range settings
