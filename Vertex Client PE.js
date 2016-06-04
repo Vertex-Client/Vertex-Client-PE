@@ -99,6 +99,8 @@ var favMenuLayout;
 var menuBtn;
 var logoViewer2;
 var chestUI;
+var lsdMenu;
+var lsdLayout;
 
 var flightMsgShown = false;
 
@@ -369,9 +371,22 @@ clientMessage("" + a)
 
 //ctx.setSession(); session
 
-ModPE.setPlayerName = function(username) {
-	ctx.setLoginInformation(ctx.getAccessToken(), ModPE.getClientId(), ctx.getProfileId(), username);
-	saveSetting("mp_username", username);
+/*ModPE.setProfileName = function(profileName) {
+	//ctx.setLoginInformation(ctx.getAccessToken(), ModPE.getClientId(), ctx.getProfileId(), username);
+	var edit = android.preference.PreferenceManager.getDefaultSharedPreferences(ctx).edit();
+	edit.putString("profileName", profileName);
+	edit.commit();
+}*/
+
+ModPE.getInfo = function(infoName) { //profileName, sessionId
+	return android.preference.PreferenceManager.getDefaultSharedPreferences(ctx).getString(infoName, null);
+}
+
+ModPE.setSession = function(sessionId) {
+	//ctx.setLoginInformation(ctx.getAccessToken(), ModPE.getClientId(), ctx.getProfileId(), username);
+	var edit = android.preference.PreferenceManager.getDefaultSharedPreferences(ctx).edit();
+	edit.putString("sessionId", sessionId);
+	edit.commit();
 }
 
 ModPE.playerHasSplitControls = function() {
@@ -1788,6 +1803,13 @@ VertexClientPE.toggleModule = function(module) {
 				healthTagsState = false;
 			}
 			break;
+		/*} case "boatfly": {
+			if(boatFlyState == false) {
+				boatFlyState = true;
+			} else if(boatFlyState == true) {
+				boatFlyState = false;
+			}
+			break;*/
 		} default: {
 			VertexClientPE.clientMessage(ChatColor.RED + "Module \'" + module + "\' not found!");
 			sendMessage = false;
@@ -2953,7 +2975,7 @@ VertexClientPE.follow = function() {
 		var x = Entity.getX(mobs[i]) - getPlayerX();
 		var y = Entity.getY(mobs[i]) - getPlayerY();
 		var z = Entity.getZ(mobs[i]) - getPlayerZ();
-		if(x*x+y*y+z*z<=4*4 && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION) {
+		if(x*x+y*y+z*z<=5*5 && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION) {
 			if(Entity.getX(mobs[i]) > getPlayerX() && Entity.getZ(mobs[i]) > getPlayerZ()) {
 				setRot(getPlayerEnt(), 90, getPitch());
 			}
@@ -3086,6 +3108,24 @@ VertexClientPE.autoWalk = function() { //some parts of this function are made by
     var player = getPlayerEnt();
     setVelX(player, playerWalkSpeed * playerDir[0]);
     setVelZ(player, playerWalkSpeed * playerDir[2]);
+}
+
+VertexClientPE.boatFly = function() { //some parts of this function are made by @zhuowei
+	if(Entity.getRiding(getPlayerEnt()) != null/* && Entity.getEntityTypeId(Entity.getRiding(getPlayerEnt())) == EntityType.BOAT*/) {
+		toDirectionalVector(playerDir, (getYaw() + 90) * DEG_TO_RAD, getPitch() * DEG_TO_RAD * -1);
+		/*var ent = Entity.getRiding(getPlayerEnt());
+		setVelX(ent, playerWalkSpeed * playerDir[0]);
+		setVelY(ent, playerWalkSpeed * playerDir[1]);
+		setVelZ(ent, playerWalkSpeed * playerDir[2]);
+		var ent = Entity.getRider(getPlayerEnt());
+		setVelX(ent, playerWalkSpeed * playerDir[0]);
+		setVelY(ent, playerWalkSpeed * playerDir[1]);
+		setVelZ(ent, playerWalkSpeed * playerDir[2]);*/
+		var ent = getPlayerEnt();
+		setVelX(ent, playerWalkSpeed * playerDir[0]);
+		setVelY(ent, playerWalkSpeed * playerDir[1]);
+		setVelZ(ent, playerWalkSpeed * playerDir[2]);
+	}
 }
 
 function toDirectionalVector(vector, yaw, pitch) { //some parts of this function are made by @zhuowei
@@ -3304,26 +3344,21 @@ VertexClientPE.loadMainSettings = function() {
 }
 
 VertexClientPE.setupTheme = function() {
-	VertexClientPE.loadMainSettings();
-	if(themeSetup == "off") {
-		if(themeSetting == "green") {
-			ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/BCA6vgv.png");
-			ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/dY3c1Jl.png");
-		}
-		if(themeSetting == "red") {
-			ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/BxuGkEJ.png");
-			ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/S3qiQ01.png");
-		}
-		if(themeSetting == "blue") {
-			ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/X5rCyoN.png");
-			ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/t6tGtMk.png");
-		}
-		if(themeSetting == "purple") {
-			ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/3xsluNN.png");
-			ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/R9te7Bd.png");
-		}
-		themeSetup = "on";
-		VertexClientPE.saveMainSettings();
+	if(themeSetting == "green") {
+		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/BCA6vgv.png");
+		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/dY3c1Jl.png");
+	}
+	if(themeSetting == "red") {
+		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/BxuGkEJ.png");
+		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/S3qiQ01.png");
+	}
+	if(themeSetting == "blue") {
+		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/X5rCyoN.png");
+		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/t6tGtMk.png");
+	}
+	if(themeSetting == "purple") {
+		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/3xsluNN.png");
+		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/R9te7Bd.png");
 	}
 }
 
@@ -5790,6 +5825,26 @@ VertexClientPE.showMovementMenu = function() {
 					}
 				}
 				}));
+				
+				var boatFly = new modButton("BoatFly", "Allows you to fly in boats", null, true);
+				var boatFlyBtn = boatFly.getLeftButton();
+				if(boatFlyState == false) {
+					boatFlyBtn.setTextColor(android.graphics.Color.WHITE);
+				} else if(boatFlyState == true) {
+					boatFlyBtn.setTextColor(android.graphics.Color.GREEN);
+				}
+				boatFlyBtn.setOnClickListener(new android.view.View.OnClickListener({
+				onClick: function(viewarg){
+					var _0xa5de=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x67\x65\x74\x4E\x61\x6D\x65","\x73\x68\x6F\x77\x50\x72\x6F\x44\x69\x61\x6C\x6F\x67"];if(VertexClientPE[_0xa5de[0]]()!=_0xa5de[1]){VertexClientPE[_0xa5de[3]](boatFly[_0xa5de[2]]());return}
+					if(boatFlyState == false) {
+						boatFlyState = true;
+						boatFlyBtn.setTextColor(android.graphics.Color.GREEN);
+					} else if(boatFlyState == true) {
+						boatFlyState = false;
+						boatFlyBtn.setTextColor(android.graphics.Color.WHITE);
+					}
+				}
+				}));
 
 				movementArrow.setOnClickListener(new android.view.View.OnClickListener() {
                     onClick: function(viewarg) {
@@ -5846,6 +5901,7 @@ VertexClientPE.showMovementMenu = function() {
 					VertexClientPE.addView(movementMenuLayout, fastWalk);
 					VertexClientPE.addView(movementMenuLayout, autoTeleporter);
 					VertexClientPE.addView(movementMenuLayout, ride);
+					//VertexClientPE.addView(movementMenuLayout, boatFly);
 				}
                 VertexClientPE.addView(movementMenuLayout, timer);
 
@@ -6656,6 +6712,28 @@ VertexClientPE.showFavMenu = function() {
     });
 }*/
 
+function changeColor(view) {
+	if(view != null) {
+		view.setColorFilter(new android.graphics.LightingColorFilter(android.graphics.Color.RED, 0));
+	}
+}
+
+VertexClientPE.showLSD = function() {
+	ctx.runOnUiThread(new java.lang.Runnable() {
+        run: function() {
+            try {
+				lsdLayout = new LinearLayout(ctx);
+				lsdMenu = new widget.PopupWindow(lsdLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
+				lsdMenu.setTouchable(false);
+				lsdMenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.GREEN));
+				lsdMenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
+			} catch(e) {
+				print(e);
+			}
+		}
+	})
+}
+
 function showMenuButton() {
 	VertexClientPE.loadMainSettings();
 	var layout = new LinearLayout(ctx);
@@ -6822,6 +6900,34 @@ VertexClientPE.specialTick = function() {
         }
     }))
 }
+
+VertexClientPE.lsdTick = function() {
+	var lsdTime = Math.floor((Math.random() * 3) + 1);
+	ctx.runOnUiThread(new java.lang.Runnable({
+        run: function() {
+            /*new android.os.Handler()
+                .postDelayed(new java.lang.Runnable({
+                    run: function() {*/
+						if(VertexClientPE.playerIsInGame && lsdMenu != null) {
+							//if(lsdState) {
+								var randomLsd = Math.floor((Math.random() * 4) + 1);
+								if(randomLsd == 1) {
+									lsdMenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.RED));
+								} if(randomLsd == 2) {
+									lsdMenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.GREEN));
+								} if(randomLsd == 3) {
+									lsdMenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.BLUE));
+								} if(randomLsd == 4) {
+									lsdMenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.YELLOW));
+								}
+							//}
+						}
+                        /*eval(VertexClientPE.lsdTick());
+                    }
+                }), 1000 * 1);*/
+        }
+    }))
+}
  
 function dip2px(dips){
     var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
@@ -6877,6 +6983,7 @@ var autoTeleporterState = false;
 var onlyDayState = false;
 var rideState = false;
 var healthTagsState = false;
+var boatFlyState = false;
 
 var hacksList;
 var statesTextView;
@@ -6931,6 +7038,7 @@ var autoTeleporterStateText = "";
 var onlyDayStateText = "";
 var rideStateText = "";
 var healthTagsStateText = "";
+var boatFlyStateText = "";
 
 VertexClientPE.resetTexts = function() {
 	yesCheatPlusStateText = "";
@@ -6982,6 +7090,7 @@ VertexClientPE.resetTexts = function() {
 	onlyDayStateText = "";
 	rideStateText = "";
 	healthTagsStateText = "";
+	boatFlyStateText = "";
 }
 
 var enabledHacksCounter = 0;
@@ -7469,10 +7578,19 @@ function showHacksList() {
                     } else if(healthTagsState == false) {
                         healthTagsStateText = "";
                     }
+					if(boatFlyState == true) {
+						if(enabledHacksCounter != 0) {
+							boatFlyStateText = " - "
+						}
+                        boatFlyStateText += "BoatFly";
+						enabledHacksCounter++;
+                    } else if(boatFlyState == false) {
+                        boatFlyStateText = "";
+                    }
 					
 					statesTextView = clientTextView("Placeholder text", true);
 					if(hacksListModeSetting == "on") {
-						statesTextView.setText(yesCheatPlusStateText + antiLBAHStateText + autoSpammerStateText + delaySpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + liquidWalkStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + fastBreakStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + dronePlusStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + fireAuraStateText + coordsDisplayStateText + fastWalkStateText + followStateText + fancyChatStateText + autoSwordStateText + tapExplosionStateText + criticalsStateText + autoTeleporterStateText + onlyDayStateText + rideStateText + healthTagsStateText);
+						statesTextView.setText(yesCheatPlusStateText + antiLBAHStateText + autoSpammerStateText + delaySpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + liquidWalkStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + fastBreakStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + dronePlusStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + fireAuraStateText + coordsDisplayStateText + fastWalkStateText + followStateText + fancyChatStateText + autoSwordStateText + tapExplosionStateText + criticalsStateText + autoTeleporterStateText + onlyDayStateText + rideStateText + healthTagsStateText + boatFlyStateText);
 					} else if(hacksListModeSetting == "counter") {
 						statesTextView.setText(enabledHacksCounter.toString() + " mods enabled");
 					}
@@ -7965,9 +8083,18 @@ function updateHacksList() {
                     } else if(healthTagsState == false) {
                         healthTagsStateText = "";
                     }
+					if(boatFlyState == true) {
+						if(enabledHacksCounter != 0) {
+							boatFlyStateText = " - "
+						}
+                        boatFlyStateText += "BoatFly";
+						enabledHacksCounter++;
+                    } else if(boatFlyState == false) {
+                        boatFlyStateText = "";
+                    }
 					
 					if(hacksListModeSetting == "on") {
-						statesTextView.setText(yesCheatPlusStateText + antiLBAHStateText + autoSpammerStateText + delaySpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + liquidWalkStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + fastBreakStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + dronePlusStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + fireAuraStateText + coordsDisplayStateText + fastWalkStateText + followStateText + fancyChatStateText + autoSwordStateText + tapExplosionStateText + criticalsStateText + autoTeleporterStateText + onlyDayStateText + rideStateText + healthTagsStateText);
+						statesTextView.setText(yesCheatPlusStateText + antiLBAHStateText + autoSpammerStateText + delaySpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + liquidWalkStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + fastBreakStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + dronePlusStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + fireAuraStateText + coordsDisplayStateText + fastWalkStateText + followStateText + fancyChatStateText + autoSwordStateText + tapExplosionStateText + criticalsStateText + autoTeleporterStateText + onlyDayStateText + rideStateText + healthTagsStateText + boatFlyStateText);
 					} else if(hacksListModeSetting == "counter") {
 						statesTextView.setText(enabledHacksCounter.toString() + " mods enabled");
 					}
@@ -7980,11 +8107,33 @@ function updateHacksList() {
         }));
 }
 
+VertexClientPE.stealChestContent = function(x, y, z) {
+	var itemSlot = 0;
+	new android.os.Handler()
+		.postDelayed(new java.lang.Runnable({
+			run: function() {
+				var itemId = Level.getChestSlot(x, y, z, itemSlot);
+				var itemCount = Level.getChestSlotCount(x, y, z, itemSlot);
+				var itemData = Level.getChestSlotData(x, y, z, itemSlot);
+				if(itemId != 0) {
+					Level.setChestSlot(x, y, z, itemSlot, 0, 0, 0);
+					Player.addItemInventory(itemId, itemCount, itemData);
+				}
+				itemSlot++;
+			}
+		}), 1000);
+}
+
 VertexClientPE.showChestUI = function(x, y, z) {
 	ctx.runOnUiThread(new java.lang.Runnable({
             run: function() {
                 var chestLayout = new LinearLayout(ctx);
                 var chestStealButton = clientButton("Steal");
+				chestStealButton.setOnClickListener(new android.view.View.OnClickListener({
+					onClick: function(viewarg) {
+						VertexClientPE.stealChestContent(x, y, z);
+					}
+				}));
                 chestLayout.addView(chestStealButton);
                 chestUI = new widget.PopupWindow(chestLayout, dip2px(40), dip2px(40));
                 chestUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -8055,6 +8204,8 @@ VertexClientPE.panic = function() {
 	autoTeleporterState = false;
 	onlyDayState = false;
 	rideState = false;
+	healthTagsState = false;
+	boatFlyState = false;
 }
 
 function setupDone() {
@@ -8206,6 +8357,7 @@ var zahl = 0;
 var count = 0;
 
 function modTick() {
+	//VertexClientPE.lsdTick();
 	VertexClientPE.playerIsInGame = true;
 	var ctxe = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
 	randomAki = Math.floor((Math.random() * 5));
@@ -8359,6 +8511,9 @@ function modTick() {
 		VertexClientPE.teleporter(Player.getPointedBlockX(), Player.getPointedBlockY() + 3, Player.getPointedBlockZ());
 	}if(onlyDayState) {
 		VertexClientPE.onlyDay();
+	}if(boatFlyState) {
+		VertexClientPE.boatFly();
+		//print(Entity.getEntityTypeId(Entity.getRiding(getPlayerEnt())));
 	}
 }
 	
@@ -8595,7 +8750,7 @@ function blockEventHook(x, y, z, e, d) {
 	if(VertexClientPE.isDevMode()) {
 		if(d == 1) {
 			if(chestUI == null || !chestUI.isShowing()) {
-				VertexClientPE.showChestUI();
+				VertexClientPE.showChestUI(x, y, z);
 			}
 		} if(d == 0) {
 			if(chestUI != null) {
@@ -8651,6 +8806,10 @@ function attackHook(attacker, victim) {
 		preventDefault();
 		if(getPlayerEnt() == attacker) {
 			VertexClientPE.ride(victim);
+		}
+	}if(boatFlyState) {
+		if(Entity.getEntityTypeId(victim)) {
+			preventDefault();
 		}
 	}
 }
