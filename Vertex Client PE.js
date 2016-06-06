@@ -2969,18 +2969,25 @@ VertexClientPE.freezeAura = function() {
 	}
 }
 
+var followStage = 0;
+
 VertexClientPE.follow = function() {
 	var mobs = Entity.getAll();
 	for(var i = 0; i < mobs.length; i++) {
 		var x = Entity.getX(mobs[i]) - getPlayerX();
 		var y = Entity.getY(mobs[i]) - getPlayerY();
 		var z = Entity.getZ(mobs[i]) - getPlayerZ();
-		if(x*x+y*y+z*z<=5*5 && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION) {
+		if(x*x+y*y+z*z<=10*10 && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION) {
 			if(Entity.getX(mobs[i]) > getPlayerX() && Entity.getZ(mobs[i]) > getPlayerZ()) {
 				setRot(getPlayerEnt(), 90, getPitch());
 			}
-			setVelX(getPlayerEnt(), x);
-			setVelZ(getPlayerEnt(), z);
+			if(x*x+y*y+z*z>=2*2) {
+				setVelX(getPlayerEnt(), x);
+				setVelZ(getPlayerEnt(), z);
+				setVelY(getPlayerEnt(), y);
+			}
+			followStage = 0;
+			break;
 		}
 	}
 }
@@ -7588,7 +7595,7 @@ function showHacksList() {
                         boatFlyStateText = "";
                     }
 					
-					statesTextView = clientTextView("Placeholder text", true);
+					statesTextView = clientTextView("No mods enabled", true);
 					if(hacksListModeSetting == "on") {
 						statesTextView.setText(yesCheatPlusStateText + antiLBAHStateText + autoSpammerStateText + delaySpammerStateText + zoomStateText + timerStateText + xRayStateText + regenStateText + instaKillStateText + liquidWalkStateText + powerExplosionsStateText + tapTeleporterStateText + wallHackStateText + arrowGunStateText + autoMineStateText + fastBreakStateText + stackDropStateText + glideStateText + tapRemoverStateText + killAuraStateText + nukerStateText + dronePlusStateText + derpStateText + freecamStateText + signEditorStateText + tapNukerStateText + highJumpStateText + autoSwitchStateText + flightStateText + autoWalkStateText + bowAimbotStateText + autoPlaceStateText + godModeStateText + autoLeaveStateText + noHurtStateText + enderProjectilesStateText + freezeAuraStateText + fireAuraStateText + coordsDisplayStateText + fastWalkStateText + followStateText + fancyChatStateText + autoSwordStateText + tapExplosionStateText + criticalsStateText + autoTeleporterStateText + onlyDayStateText + rideStateText + healthTagsStateText + boatFlyStateText);
 					} else if(hacksListModeSetting == "counter") {
@@ -8505,7 +8512,8 @@ function modTick() {
 		VertexClientPE.coordsDisplay();
 	}if(fastWalkState) {
 		VertexClientPE.fastWalk();
-	}if(followState) {
+	}if(followState && followStage == 0) {
+		followStage = 1;
 		VertexClientPE.follow();
 	}if(autoTeleporterState && getTile(Player.getPointedBlockX(), Player.getPointedBlockY(), Player.getPointedBlockZ()) != 0) {
 		VertexClientPE.teleporter(Player.getPointedBlockX(), Player.getPointedBlockY() + 3, Player.getPointedBlockZ());
