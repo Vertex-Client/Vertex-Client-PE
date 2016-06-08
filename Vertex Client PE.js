@@ -106,6 +106,7 @@ var flightMsgShown = false;
 
 var fancyChatState = false;
 var delaySpammerState = false;
+var autoSwordState = false;
 
 var showingMenu = false;
 
@@ -209,20 +210,22 @@ var panic = {
 				element.onToggle();
 			}
 		});
-		topBar.dismiss();
-		vertexclientpecombatmenu.dismiss(); //Close
-		vertexclientpebuildingmenu.dismiss(); //Close
-		vertexclientpemovementmenu.dismiss(); //Close
-		vertexclientpechatmenu.dismiss(); //Close
-		vertexclientpemiscmenu.dismiss(); //Close
-		//vertexclientpefavmenu.dismiss(); //Close
-		VertexClientPE.showCombatMenu();
-		VertexClientPE.showBuildingMenu();
-		VertexClientPE.showMovementMenu();
-		VertexClientPE.showChatMenu();
-		VertexClientPE.showMiscMenu();
-		//VertexClientPE.showFavMenu();
-		VertexClientPE.showTopBar();
+		if(topBar != null && topBar.isShowing()) {
+			topBar.dismiss();
+			vertexclientpecombatmenu.dismiss(); //Close
+			vertexclientpebuildingmenu.dismiss(); //Close
+			vertexclientpemovementmenu.dismiss(); //Close
+			vertexclientpechatmenu.dismiss(); //Close
+			vertexclientpemiscmenu.dismiss(); //Close
+			//vertexclientpefavmenu.dismiss(); //Close
+			VertexClientPE.showCombatMenu();
+			VertexClientPE.showBuildingMenu();
+			VertexClientPE.showMovementMenu();
+			VertexClientPE.showChatMenu();
+			VertexClientPE.showMiscMenu();
+			//VertexClientPE.showFavMenu();
+			VertexClientPE.showTopBar();
+		}
 	}
 }
 
@@ -326,6 +329,7 @@ var autoSword = {
 	},
 	onToggle: function() {
 		this.state = !this.state;
+		autoSwordState = this.state;
 	},
 	onAttack: function(a, v) {
 		if(a == getPlayerEnt()) {
@@ -971,7 +975,7 @@ function chatHook(text) {
 			com.mojang.minecraftpe.MainActivity.currentMainActivity.get().nativeSetTextboxText("");
 			com.mojang.minecraftpe.MainActivity.currentMainActivity.get().updateTextboxText("");
 		}
-		VertexClientPE.commandManager(text);
+		VertexClientPE.commandManager(text.substring(1, text.length));
 	} else {
 		if(text.charAt(0) != "/") {
 			VertexClientPE.modules.forEach(function(element, index, array) {
@@ -2543,11 +2547,11 @@ var p, y, xx, yy, zz;
 
 var sayMsg;
 
-VertexClientPE.commandManager = function(command) {
-	cmd = command.split(" ");
-	switch(cmd[0]) {
-		case ".help": //1
-			if(cmd[1] == undefined || cmd[1] == null || cmd[1] == "1") {
+VertexClientPE.commandManager = function(cmd) {
+	commandSplit = cmd.split(" ");
+	switch(commandSplit[0]) {
+		case "help": //1
+			if(commandSplit[1] == undefined || commandSplit[1] == null || commandSplit[1] == "1") {
 				VertexClientPE.clientMessage("Showing help page 1/2");
 				VertexClientPE.clientMessage(".help [<page>]");
 				VertexClientPE.clientMessage(".gm");
@@ -2558,7 +2562,7 @@ VertexClientPE.commandManager = function(command) {
 				VertexClientPE.clientMessage(".version <current|target|latest>");
 				VertexClientPE.clientMessage(".panic");
 			} else {
-				if(cmd[1] == "2") {
+				if(commandSplit[1] == "2") {
 					VertexClientPE.clientMessage("Showing help page 2/2");
 					VertexClientPE.clientMessage(".p");
 					VertexClientPE.clientMessage(".js");
@@ -2566,31 +2570,50 @@ VertexClientPE.commandManager = function(command) {
 					VertexClientPE.clientMessage(".give (<item_name|item_id>) [<amount>] [<data>]");
 					VertexClientPE.clientMessage(".tp <x> <y> <z>");
 				} else {
-					VertexClientPE.clientMessage(ChatColor.RED + "Syntax error: " + ChatColor.WHITE + "Invalid page: " + cmd[1]);
+					VertexClientPE.clientMessage(ChatColor.RED + "Syntax error: " + ChatColor.WHITE + "Invalid page: " + commandSplit[1]);
 				}
 			}
 			break;
-		case ".gm": //2
+		case "gm": //2
 			VertexClientPE.switchGameMode();
 			VertexClientPE.clientMessage("Your gamemode has been updated!");
 			break;
-		case ".spectate": //3
-			if(cmd[1] == null || cmd[1] == undefined) {
+		case "spectate": //3
+			if(commandSplit[1] == null || commandSplit[1] == undefined) {
 				VertexClientPE.syntaxError(".spectate <player>");
 			} else {
-				VertexClientPE.spectate(cmd[1]);
+				VertexClientPE.spectate(commandSplit[1]);
 			}
 			break;
-		case ".t": //4
-		case ".toggle": //4
-			if(cmd[1] == null || cmd[1] == undefined) {
-				VertexClientPE.syntaxError(".toggle <module>");
+		case "t": //4
+		case "toggle": //4
+			if (cmd.substring(2, cmd.length) != null && cmd.substring(2, cmd.length) != undefined && commandSplit[1] != null) {
+				var shouldReturn = false;
+				VertexClientPE.modules.forEach(function (element, index, array) {
+					if (element.name.toLowerCase() == cmd.substring(2, cmd.length)
+						.toLowerCase() && !shouldReturn) {
+						if (element.isStateMod()) {
+							VertexClientPE.modules[index].onToggle();
+							if(hacksList != null && hacksList.isShowing()) {
+								updateHacksList();
+							}
+							VertexClientPE.toast("Sucessfully toggled module " + element.name);
+						} else {
+							VertexClientPE.toast(element.name + " can't be toggled!");
+						}
+						shouldReturn = true;
+					}
+				});
+				if(shouldReturn) {
+					return;
+				}
+				VertexClientPE.toast("Module " + cmd.substring(2, cmd.length) + " can't be found/toggled!");
 			} else {
-				VertexClientPE.toggleModule(cmd[1]);
+				VertexClientPE.syntaxError(".toggle <module>");
 			}
 			break;
-		case ".drop": //5
-			if(cmd[1] == null || cmd[1] == undefined || cmd[1] == "infinite") {
+		case "drop": //5
+			if(commandSplit[1] == null || commandSplit[1] == undefined || commandSplit[1] == "infinite") {
 				for(var i = 0; i < 513; i++) {
 					p = ((Entity.getPitch(getPlayerEnt()) + 90) * Math.PI) / 180;
 					y = ((Entity.getYaw(getPlayerEnt()) + 90) * Math.PI) / 180;
@@ -2603,47 +2626,49 @@ VertexClientPE.commandManager = function(command) {
 				VertexClientPE.syntaxError(".drop [infinite]");
 			}
 			break;
-		case ".version": //6
-			if(typeof VertexClientPE.getVersion(cmd[1]) !== "undefined") {
-				VertexClientPE.clientMessage(VertexClientPE.getVersion(cmd[1]));
+		case "version": //6
+			if(typeof VertexClientPE.getVersion(commandSplit[1]) !== "undefined") {
+				VertexClientPE.clientMessage(VertexClientPE.getVersion(commandSplit[1]));
 			} else {
 				VertexClientPE.syntaxError(".version <current|target|latest>");
 			}
 			break;
-		case ".p": //7
-		case ".panic":
-			VertexClientPE.panic();
-			updateHacksList();
+		case "p": //7
+		case "panic":
+			panic.onToggle();
+			if(hacksList != null && hacksList.isShowing()) {
+				updateHacksList();
+			}
 			break;
-		case ".js": //8
+		case "js": //8
 			VertexClientPE.showJavascriptConsoleDialog();
 			break;
-		case ".say": //9
-			sayMsg = command.substring(5, command.length);
+		case "say": //9
+			sayMsg = cmd.substring(5, cmd.length);
 			if(fancyChatState) {
 				VertexClientPE.fancyChat(sayMsg);
 			} else {
 				Server.sendChat(sayMsg);
 			}
 			break;
-		case ".give": //10
-			if(cmd[1] != null) {
-				if(Item.internalNameToId(cmd[1]) != null) {
-					var itemId = Item.internalNameToId(cmd[1]);
+		case "give": //10
+			if(commandSplit[1] != null) {
+				if(Item.internalNameToId(commandSplit[1]) != null) {
+					var itemId = Item.internalNameToId(commandSplit[1]);
 				} else {
-					var itemId = cmd[1];
+					var itemId = commandSplit[1];
 				}
 			} else {
 				VertexClientPE.syntaxError(".give (<item_name|item_id>) [<amount>] [<data>]");
 				break;
 			}
-			if(cmd[2] != null) {
-				var count = cmd[2];
+			if(commandSplit[2] != null) {
+				var count = commandSplit[2];
 			} else {
 				var count = 1;
 			}
-			if(cmd[3] != null) {
-				var data = cmd[3];
+			if(commandSplit[3] != null) {
+				var data = commandSplit[3];
 			} else {
 				var data = 0;
 			}
@@ -2653,21 +2678,21 @@ VertexClientPE.commandManager = function(command) {
 				VertexClientPE.syntaxError(".give (<item_name|item_id>) [<amount>] [<data>]");
 			}
 			break;
-		case ".tp": //11
-			if(cmd[1] != null) {
-				var x = cmd[1];
+		case "tp": //11
+			if(commandSplit[1] != null) {
+				var x = commandSplit[1];
 			} else {
 				VertexClientPE.syntaxError(".tp <x> <y> <z>");
 				break;
 			}
-			if(cmd[2] != null) {
-				var y = cmd[2];
+			if(commandSplit[2] != null) {
+				var y = commandSplit[2];
 			} else {
 				VertexClientPE.syntaxError(".tp <x> <y> <z>");
 				break;
 			}
-			if(cmd[3] != null) {
-				var z = cmd[3];
+			if(commandSplit[3] != null) {
+				var z = commandSplit[3];
 			} else {
 				VertexClientPE.syntaxError(".tp <x> <y> <z>");
 				break;
