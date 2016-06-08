@@ -965,7 +965,7 @@ var powerExplosionsStage = 0;
 
 var powerExplosions = {
 	name: "PowerExplosions",
-	desc: "Automatically teleports you behind entities to prevent you from getting hurt by others.",
+	desc: "Makes explosions more powerful.",
 	category: VertexClientPE.category.BUILDING,
 	type: "Mod",
 	isStateMod: function() {
@@ -1000,6 +1000,30 @@ var tapExplosion = {
 	}
 }
 
+var signX, signY, signZ;
+
+var signEditor = {
+	name: "SignEditor",
+	desc: "Allows you to edit signs.",
+	category: VertexClientPE.category.BUILDING,
+	type: "Mod",
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onUseItem: function(x, y, z, itemId, blockId, side, blockDamage) {
+		if(blockId == 63 || blockId == 68) {
+			preventDefault();
+			signX = x;
+			signY = y;
+			signZ = z;
+			VertexClientPE.showSignEditorDialog();
+		}
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(killAura);
 VertexClientPE.registerModule(freezeAura);
@@ -1018,6 +1042,7 @@ VertexClientPE.registerModule(nuker);
 VertexClientPE.registerModule(fastBreak);
 VertexClientPE.registerModule(powerExplosions);
 VertexClientPE.registerModule(tapExplosion);
+VertexClientPE.registerModule(signEditor);
 //CHAT
 VertexClientPE.registerModule(homeCommand);
 VertexClientPE.registerModule(autoSpammer);
