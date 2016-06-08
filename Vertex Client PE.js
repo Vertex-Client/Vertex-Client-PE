@@ -852,8 +852,61 @@ var delaySpammer = {
 	}
 }
 
+var tpAuraStage = 0;
+
+var tpAura = {
+	name: "TP-Aura",
+	desc: "Automatically teleports you behind entities to prevent you from getting hurt by others.",
+	category: VertexClientPE.category.COMBAT,
+	type: "Mod",
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onInterval: function() {
+		if(tpAuraStage == 0) {
+			tpAuraStage = 1;
+			var mobs = Entity.getAll();
+			for(var i = 0; i < mobs.length; i++) {
+				var x = Entity.getX(mobs[i]) - getPlayerX();
+				var y = Entity.getY(mobs[i]) - getPlayerY();
+				var z = Entity.getZ(mobs[i]) - getPlayerZ();
+				if(x*x+y*y+z*z<=4*4 && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION && Entity.getHealth(mobs[i]) != 0) {
+					var playerPos = new Array(getPlayerX(), getPlayerY() + 0.5, getPlayerZ());
+					var victimPos = new Array(Entity.getX(mobs[i]), Entity.getY(mobs[i]), Entity.getZ(mobs[i]));
+					var diffPos = new Array(victimPos[0] - playerPos[0], null, victimPos[2] - playerPos[2]);
+					playerPos[0] += diffPos[0] * 2;
+					playerPos[2] += diffPos[2] * 2;
+					
+					if (getTile(playerPos[0], playerPos[1], playerPos[2]) == 0 && getTile(playerPos[0], playerPos[1] - 1, playerPos[2]) == 0 && getTile(playerPos[0], playerPos[1] - 2, playerPos[2]) == 0) {
+						Entity.setPosition(Player.getEntity(), playerPos[0], playerPos[1], playerPos[2]);
+					}
+					break;
+				}
+			}
+			tpAuraStage = 0;
+		}
+	},
+	onAttack: function(a, v) {
+		if(a == getPlayerEnt()) {
+			var playerPos = new Array(getPlayerX(), getPlayerY() + 0.5, getPlayerZ());
+			var victimPos = new Array(Entity.getX(v), Entity.getY(v), Entity.getZ(v));
+			var diffPos = new Array(victimPos[0] - playerPos[0], null, victimPos[2] - playerPos[2]);
+			playerPos[0] += diffPos[0] * 2;
+			playerPos[2] += diffPos[2] * 2;
+			
+			if(getTile(playerPos[0], playerPos[1], playerPos[2]) == 0 && getTile(playerPos[0], playerPos[1] - 1, playerPos[2]) == 0 && getTile(playerPos[0], playerPos[1] - 2, playerPos[2]) == 0) {
+				Entity.setPosition(Player.getEntity(), playerPos[0], playerPos[1], playerPos[2]);
+			}
+		}
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(killAura);
+VertexClientPE.registerModule(tpAura);
 VertexClientPE.registerModule(autoSword);
 VertexClientPE.registerModule(noHurt);
 //MOVEMENT
@@ -879,6 +932,7 @@ VertexClientPE.registerModule(ride);
 VertexClientPE.registerModule(onlyDay);
 
 function modTick() {
+	VertexClientPE.playerIsInGame = true;
 	VertexClientPE.modules.forEach(function(element, index, array) {
 		if(element.isStateMod() && element.state && element.onTick) {
 			element.onTick();
@@ -3511,9 +3565,6 @@ VertexClientPE.fancyChat = function(str) {
 }
 
 var killAuraStage = 0;
-var itemId;
-var itemAmount;
-var itemData;
 
 VertexClientPE.killAura = function() {
 	var mobs = Entity.getAll();
@@ -3584,6 +3635,12 @@ VertexClientPE.follow = function() {
 			break;
 		}
 	}
+}
+
+var tpAuraStage = 0;
+
+VertexClientPE.tpAura = function() {
+	
 }
 
 VertexClientPE.autoSword = function(a, v) {
@@ -4571,6 +4628,7 @@ VertexClientPE.showSplashScreen = function() {
 							showMenuButton();
 							VertexClientPE.clientTick();
 							VertexClientPE.specialTick();
+							VertexClientPE.secondTick();
 							//showAccountManagerButton();
 							ModPE.goToURL("https://www.youtube.com/c/AgameRGaming");
 					}}));
@@ -4580,6 +4638,7 @@ VertexClientPE.showSplashScreen = function() {
 							showMenuButton();
 							VertexClientPE.clientTick();
 							VertexClientPE.specialTick();
+							VertexClientPE.secondTick();
 							//showAccountManagerButton();
 					}}));
 					twitterButton.setOnClickListener(new android.view.View.OnClickListener({
@@ -4588,6 +4647,7 @@ VertexClientPE.showSplashScreen = function() {
 							showMenuButton();
 							VertexClientPE.clientTick();
 							VertexClientPE.specialTick();
+							VertexClientPE.secondTick();
 							//showAccountManagerButton();
 							ModPE.goToURL("http://twitter.com/VertexHX");
 					}}))
@@ -6872,6 +6932,24 @@ VertexClientPE.specialTick = function() {
                         eval(VertexClientPE.specialTick());
                     }
                 }), 1000 * spamDelayTime);
+        }
+    }))
+}
+
+VertexClientPE.secondTick = function() {
+	ctx.runOnUiThread(new java.lang.Runnable({
+        run: function() {
+            new android.os.Handler()
+                .postDelayed(new java.lang.Runnable({
+                    run: function() {
+						VertexClientPE.modules.forEach(function(element, index, array) {
+							if(element.isStateMod() && element.state && element.onInterval) {
+								element.onInterval();
+							}
+						});
+                        eval(VertexClientPE.secondTick());
+                    }
+                }), 1000);
         }
     }))
 }
