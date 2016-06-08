@@ -318,6 +318,59 @@ var killAura = {
 	}
 }
 
+var freezeAura = {
+	name: "FreezeAura",
+	desc: "Automatically freezes all the near entities.",
+	category: VertexClientPE.category.COMBAT,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onTick: function() {
+		var mobs = Entity.getAll();
+		for(var i = 0; i < mobs.length; i++) {
+			var x = Entity.getX(mobs[i]) - getPlayerX();
+			var y = Entity.getY(mobs[i]) - getPlayerY();
+			var z = Entity.getZ(mobs[i]) - getPlayerZ();
+			if(x*x+y*y+z*z<=4*4 && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION) {
+				//setRot(getPlayerEnt(), (Math.atan2(z, x) - 90) * Math.pi / 180, getPitch());
+				/*if(Entity.loadExtraData(mobs[i], "frozen") 
+				Entity.saveExtraData(mobs[i], "");*/
+				Entity.setImmobile(mobs[i], true);
+			}
+		}
+	}
+}
+
+var fireAura = {
+	name: "FireAura",
+	desc: "Automatically freezes all the near entities.",
+	category: VertexClientPE.category.COMBAT,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onTick: function() {
+		var mobs = Entity.getAll();
+		for(var i = 0; i < mobs.length; i++) {
+			var x = Entity.getX(mobs[i]) - getPlayerX();
+			var y = Entity.getY(mobs[i]) - getPlayerY();
+			var z = Entity.getZ(mobs[i]) - getPlayerZ();
+			if(x*x+y*y+z*z<=4*4 && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION) {
+				Entity.setFireTicks(mobs[i], 100);
+			}
+		}
+	}
+}
+
 var autoSword = {
 	name: "AutoSword",
 	desc: "Automatically chooses the best sword for you when attacking entities if available.",
@@ -910,6 +963,8 @@ var tpAura = {
 
 //COMBAT
 VertexClientPE.registerModule(killAura);
+VertexClientPE.registerModule(freezeAura);
+VertexClientPE.registerModule(fireAura);
 VertexClientPE.registerModule(tpAura);
 VertexClientPE.registerModule(autoSword);
 VertexClientPE.registerModule(noHurt);
@@ -2587,43 +2642,59 @@ VertexClientPE.commandManager = function(cmd) {
 			break;
 		case "t": //4
 		case "toggle": //4
-			if (cmd.substring(2, cmd.length) != null && cmd.substring(2, cmd.length) != undefined && commandSplit[1] != null) {
-				var shouldReturn = false;
-				VertexClientPE.modules.forEach(function (element, index, array) {
-					if (element.name.toLowerCase() == cmd.substring(2, cmd.length)
-						.toLowerCase() && !shouldReturn) {
-						if (element.isStateMod()) {
-							VertexClientPE.modules[index].onToggle();
-							if(hacksList != null && hacksList.isShowing()) {
-								updateHacksList();
+			try {
+				if (cmd.substring(2, cmd.length) != null && cmd.substring(2, cmd.length) != undefined && commandSplit[1] != null) {
+					var shouldReturn = false;
+					VertexClientPE.modules.forEach(function (element, index, array) {
+						if (element.name.toLowerCase() == cmd.substring(2, cmd.length)
+							.toLowerCase() && !shouldReturn) {
+							if (element.isStateMod()) {
+								VertexClientPE.modules[index].onToggle();
+								if(hacksList != null && hacksList.isShowing()) {
+									updateHacksList();
+								}
+								VertexClientPE.toast("Sucessfully toggled module " + element.name);
+							} else {
+								VertexClientPE.toast(element.name + " can't be toggled!");
 							}
-							VertexClientPE.toast("Sucessfully toggled module " + element.name);
-						} else {
-							VertexClientPE.toast(element.name + " can't be toggled!");
+							shouldReturn = true;
 						}
-						shouldReturn = true;
+					});
+					if(shouldReturn) {
+						return;
 					}
-				});
-				if(shouldReturn) {
-					return;
+					VertexClientPE.toast("Module " + cmd.substring(2, cmd.length) + " can't be found/toggled!");
+				} else {
+					throw new SyntaxError();
 				}
-				VertexClientPE.toast("Module " + cmd.substring(2, cmd.length) + " can't be found/toggled!");
-			} else {
-				VertexClientPE.syntaxError(".toggle <module>");
+			} catch(e) {
+				if(e instanceof SyntaxError) {
+					VertexClientPE.syntaxError(".toggle <module>");
+				} else {
+					VertexClientPE.showBugReportDialog(e);
+				}
 			}
 			break;
 		case "drop": //5
-			if(commandSplit[1] == null || commandSplit[1] == undefined || commandSplit[1] == "infinite") {
-				for(var i = 0; i < 513; i++) {
-					p = ((Entity.getPitch(getPlayerEnt()) + 90) * Math.PI) / 180;
-					y = ((Entity.getYaw(getPlayerEnt()) + 90) * Math.PI) / 180;
-					xx = Math.sin(p) * Math.cos(y);
-					yy = Math.sin(p) * Math.sin(y);
-					zz = Math.cos(p);
-					Level.dropItem(Player.getX() + xx, Player.getY() + zz, Player.getZ() + yy, 1, i, 1);
+			try {
+				if(commandSplit[1] == null || commandSplit[1] == undefined || commandSplit[1] == "infinite") {
+					for(var i = 0; i <= 512; i++) {
+						p = ((Entity.getPitch(getPlayerEnt()) + 90) * Math.PI) / 180;
+						y = ((Entity.getYaw(getPlayerEnt()) + 90) * Math.PI) / 180;
+						xx = Math.sin(p) * Math.cos(y);
+						yy = Math.sin(p) * Math.sin(y);
+						zz = Math.cos(p);
+						Level.dropItem(Player.getX() + xx, Player.getY() + zz, Player.getZ() + yy, 1, i, 1);
+					}
+				} else {
+					throw new SyntaxError();
 				}
-			} else {
-				VertexClientPE.syntaxError(".drop [infinite]");
+			} catch(e) {
+				if(e instanceof SyntaxError) {
+					VertexClientPE.syntaxError(".drop [infinite]");
+				} else {
+					VertexClientPE.showBugReportDialog(e);
+				}
 			}
 			break;
 		case "version": //6
@@ -7021,81 +7092,83 @@ var enabledHacksCounter = 0;
 var musicText = "None";
 
 function showHacksList() {
-        var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
-        ctx.runOnUiThread(new java.lang.Runnable({
-            run: function() {
-                try {
-					var display = new android.util.DisplayMetrics();
-					com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
+		if(hacksList == null || !hacksList.isShowing()) {
+			var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+			ctx.runOnUiThread(new java.lang.Runnable({
+				run: function() {
+					try {
+						var display = new android.util.DisplayMetrics();
+						com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
 
-					enabledHacksCounter = 0;
-					
-                    var hacksListLayout = new LinearLayout(ctx);
-                    hacksListLayout.setOrientation(LinearLayout.HORIZONTAL);
-                    hacksListLayout.setGravity(android.view.Gravity.CENTER_VERTICAL);
-					
-					var hacksListLayoutLeft = new LinearLayout(ctx);
-					hacksListLayoutLeft.setOrientation(1);
-					hacksListLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(ctx.getWindowManager().getDefaultDisplay().getWidth() / 4, ctx.getWindowManager().getDefaultDisplay().getWidth() / 15));
-					hacksListLayout.addView(hacksListLayoutLeft);
-					
-					var hacksListLayoutRight = new LinearLayout(ctx);
-					hacksListLayoutRight.setOrientation(1);
-					hacksListLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(ctx.getWindowManager().getDefaultDisplay().getWidth() / 4, ctx.getWindowManager().getDefaultDisplay().getWidth() / 15));
-					hacksListLayout.addView(hacksListLayoutRight);
-					
-					var logo2 = android.util.Base64.decode(logoImage, 0);
-					logoViewer2 = new widget.ImageView(ctx);
-					logoViewer2.setImageBitmap(android.graphics.BitmapFactory.decodeByteArray(logo2, 0, logo2.length));
-					logoViewer2.setLayoutParams(new LinearLayout.LayoutParams(ctx.getWindowManager().getDefaultDisplay().getWidth() / 4, ctx.getWindowManager().getDefaultDisplay().getWidth() / 16));
+						enabledHacksCounter = 0;
+						
+						var hacksListLayout = new LinearLayout(ctx);
+						hacksListLayout.setOrientation(LinearLayout.HORIZONTAL);
+						hacksListLayout.setGravity(android.view.Gravity.CENTER_VERTICAL);
+						
+						var hacksListLayoutLeft = new LinearLayout(ctx);
+						hacksListLayoutLeft.setOrientation(1);
+						hacksListLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(ctx.getWindowManager().getDefaultDisplay().getWidth() / 4, ctx.getWindowManager().getDefaultDisplay().getWidth() / 15));
+						hacksListLayout.addView(hacksListLayoutLeft);
+						
+						var hacksListLayoutRight = new LinearLayout(ctx);
+						hacksListLayoutRight.setOrientation(1);
+						hacksListLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(ctx.getWindowManager().getDefaultDisplay().getWidth() / 4, ctx.getWindowManager().getDefaultDisplay().getWidth() / 15));
+						hacksListLayout.addView(hacksListLayoutRight);
+						
+						var logo2 = android.util.Base64.decode(logoImage, 0);
+						logoViewer2 = new widget.ImageView(ctx);
+						logoViewer2.setImageBitmap(android.graphics.BitmapFactory.decodeByteArray(logo2, 0, logo2.length));
+						logoViewer2.setLayoutParams(new LinearLayout.LayoutParams(ctx.getWindowManager().getDefaultDisplay().getWidth() / 4, ctx.getWindowManager().getDefaultDisplay().getWidth() / 16));
 
-					var VertexClientPEHacksListText = "Vertex Client PE " + VertexClientPE.getVersion("current");
-					var statesText = "";
-					VertexClientPE.modules.forEach(function (element, index, array) {
-						if(element.isStateMod() && element.state) {
-							if(enabledHacksCounter != 0) {
-								statesText += " - "
+						var VertexClientPEHacksListText = "Vertex Client PE " + VertexClientPE.getVersion("current");
+						var statesText = "";
+						VertexClientPE.modules.forEach(function (element, index, array) {
+							if(element.isStateMod() && element.state) {
+								if(enabledHacksCounter != 0) {
+									statesText += " - "
+								}
+								statesText += element.name;
+								enabledHacksCounter++;
 							}
-							statesText += element.name;
-							enabledHacksCounter++;
+						});
+						
+						statesTextView = clientTextView(statesText, true);
+						if(hacksListModeSetting == "on") {
+							statesTextView.setText(statesText);
+						} else if(hacksListModeSetting == "counter") {
+							statesTextView.setText(enabledHacksCounter.toString() + " mods enabled");
 						}
-					});
-					
-					statesTextView = clientTextView(statesText, true);
-					if(hacksListModeSetting == "on") {
-						statesTextView.setText(statesText);
-					} else if(hacksListModeSetting == "counter") {
-						statesTextView.setText(enabledHacksCounter.toString() + " mods enabled");
+						musicTextView = clientTextView("♫ Currently playing: " + musicText, true);
+						
+						statesTextView.setTextSize(15);
+						statesTextView.setEllipsize(android.text.TextUtils.TruncateAt.MARQUEE);
+						statesTextView.setMarqueeRepeatLimit(-1);
+						statesTextView.setSingleLine();
+						statesTextView.setHorizontallyScrolling(true);
+						statesTextView.setSelected(true);
+						musicTextView.setTextSize(15);
+						musicTextView.setEllipsize(android.text.TextUtils.TruncateAt.MARQUEE);
+						musicTextView.setMarqueeRepeatLimit(-1);
+						musicTextView.setSingleLine();
+						musicTextView.setHorizontallyScrolling(true);
+						musicTextView.setSelected(true);
+						hacksListLayoutLeft.addView(logoViewer2);
+						hacksListLayoutRight.addView(statesTextView);
+						hacksListLayoutRight.addView(musicTextView);
+						hacksList = new widget.PopupWindow(hacksListLayout, ctx.getWindowManager().getDefaultDisplay().getWidth() / 2, ctx.getWindowManager().getDefaultDisplay().getWidth() / 15);
+						hacksList.setBackgroundDrawable(backgroundGradient(true));
+						hacksList.setTouchable(false);
+						if(hacksListModeSetting != "off") {
+							hacksList.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.CENTER | android.view.Gravity.TOP, 0, 0);
+						}
+					} catch(error) {
+						print('An error occurred: ' + error);
+						VertexClientPE.showBugReportDialog(error);
 					}
-					musicTextView = clientTextView("♫ Currently playing: " + musicText, true);
-					
-                    statesTextView.setTextSize(15);
-					statesTextView.setEllipsize(android.text.TextUtils.TruncateAt.MARQUEE);
-					statesTextView.setMarqueeRepeatLimit(-1);
-					statesTextView.setSingleLine();
-					statesTextView.setHorizontallyScrolling(true);
-					statesTextView.setSelected(true);
-					musicTextView.setTextSize(15);
-					musicTextView.setEllipsize(android.text.TextUtils.TruncateAt.MARQUEE);
-					musicTextView.setMarqueeRepeatLimit(-1);
-					musicTextView.setSingleLine();
-					musicTextView.setHorizontallyScrolling(true);
-					musicTextView.setSelected(true);
-                    hacksListLayoutLeft.addView(logoViewer2);
-                    hacksListLayoutRight.addView(statesTextView);
-                    hacksListLayoutRight.addView(musicTextView);
-                    hacksList = new widget.PopupWindow(hacksListLayout, ctx.getWindowManager().getDefaultDisplay().getWidth() / 2, ctx.getWindowManager().getDefaultDisplay().getWidth() / 15);
-                    hacksList.setBackgroundDrawable(backgroundGradient(true));
-                    hacksList.setTouchable(false);
-					if(hacksListModeSetting != "off") {
-						hacksList.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.CENTER | android.view.Gravity.TOP, 0, 0);
-					}
-                } catch(error) {
-                    print('An error occurred: ' + error);
-					VertexClientPE.showBugReportDialog(error);
-                }
-            }
-        }));
+				}
+			}));
+		}
 }
 
 function updateHacksList() {
