@@ -7116,6 +7116,7 @@ function updateHacksList() {
 						}
 					});
 					
+					statesTextView.setText(statesText);
 					if(hacksListModeSetting == "on") {
 						statesTextView.setText(statesText);
 					} else if(hacksListModeSetting == "counter") {
