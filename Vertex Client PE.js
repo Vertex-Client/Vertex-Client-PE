@@ -348,7 +348,7 @@ var freezeAura = {
 
 var fireAura = {
 	name: "FireAura",
-	desc: "Automatically freezes all the near entities.",
+	desc: "Sets all the near entities on fire.",
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -961,6 +961,45 @@ var tpAura = {
 	}
 }
 
+var powerExplosionsStage = 0;
+
+var powerExplosions = {
+	name: "PowerExplosions",
+	desc: "Automatically teleports you behind entities to prevent you from getting hurt by others.",
+	category: VertexClientPE.category.BUILDING,
+	type: "Mod",
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onExplode: function(entity, x, y, z, power, onFire) {
+		if(powerExplosionsStage == 0) {
+			powerExplosionsStage = 1;
+			preventDefault();
+			Level.explode(x, y, z, 10);
+			powerExplosionsStage = 0;
+		}
+	}
+}
+
+var tapExplosion = {
+	name: "TapExplosion",
+	desc: "Makes blocks explode wherever you tap.",
+	category: VertexClientPE.category.BUILDING,
+	type: "Mod",
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onUseItem: function(x, y, z, itemId, blockId, side, blockDamage) {
+		Level.explode(x, y, z, 4);
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(killAura);
 VertexClientPE.registerModule(freezeAura);
@@ -977,6 +1016,8 @@ VertexClientPE.registerModule(wallHack);
 //BUILDING
 VertexClientPE.registerModule(nuker);
 VertexClientPE.registerModule(fastBreak);
+VertexClientPE.registerModule(powerExplosions);
+VertexClientPE.registerModule(tapExplosion);
 //CHAT
 VertexClientPE.registerModule(homeCommand);
 VertexClientPE.registerModule(autoSpammer);
@@ -1019,6 +1060,14 @@ function useItem(x, y, z, itemId, blockId, side, blockDamage) {
 	VertexClientPE.modules.forEach(function(element, index, array) {
 		if(element.isStateMod() && element.state && element.onUseItem) {
 			element.onUseItem(x, y, z, itemId, blockId, side, blockDamage);
+		}
+	});
+}
+
+function explodeHook(entity, x, y, z, power, onFire) {
+	VertexClientPE.modules.forEach(function(element, index, array) {
+		if(element.isStateMod() && element.state && element.onExplode) {
+			element.onExplode(entity, x, y, z, power, onFire);
 		}
 	});
 }
