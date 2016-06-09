@@ -76,7 +76,7 @@ var VertexClientPE = {
 	getName: function() {
 		return VertexClientPE.name;
 	},
-	isDev: true,
+	isDev: false,
 	isDevMode: function() {
 		return VertexClientPE.isDev;
 	},
@@ -144,6 +144,7 @@ var killAuraRange = 4;
 var spamDelayTime = 3;
 var sizeSetting = "normal";
 var fancyChatMode = "default";
+var tapNukerRange = 3;
 //---------------------------
 var combatName = "Combat";
 var buildingName = "Building";
@@ -176,8 +177,6 @@ var topBar;
  *  MODULES
  * #########
  */
- 
-VertexClientPE.featureCount = 0;
 
 VertexClientPE.favourites = [];
 
@@ -193,7 +192,10 @@ VertexClientPE.modules = [];
 
 VertexClientPE.registerModule = function(obj) {
 	VertexClientPE.modules.push(obj);
-	VertexClientPE.featureCount++;
+}
+
+VertexClientPE.getFeatureCount = function() {
+	return VertexClientPE.modules.length;
 }
 
 var panic = {
@@ -601,33 +603,7 @@ var nuker = {
 		var x = getPlayerX();
 		var y = getPlayerY();
 		var z = getPlayerZ();
-		if(nukerMode == "cube") {
-			for(var blockX = - nukerRange; blockX <= nukerRange; blockX++) {
-				for(var blockY = - nukerRange; blockY <= nukerRange; blockY++) {
-					for(var blockZ = - nukerRange; blockZ <= nukerRange; blockZ++) {
-						setTile(x + blockX, y + blockY, z + blockZ, 0);
-					}
-				}
-			}
-		} if(nukerMode == "flat") {
-			for(var blockX = - nukerRange; blockX <= nukerRange; blockX++) {
-				for(var blockY = - 1; blockY <= nukerRange; blockY++) {
-					for(var blockZ = - nukerRange; blockZ <= nukerRange; blockZ++) {
-						setTile(x + blockX, y + blockY, z + blockZ, 0);
-					}
-				}
-			}
-		} if(nukerMode == "smash") {
-			for(var blockX = - nukerRange; blockX <= nukerRange; blockX++) {
-				for(var blockY = - nukerRange; blockY <= nukerRange; blockY++) {
-					for(var blockZ = - nukerRange; blockZ <= nukerRange; blockZ++) {
-						if(Block.getDestroyTime(getTile(x + blockX, y + blockY, z + blockZ)) == 0) {
-							setTile(x + blockX, y + blockY, z + blockZ, 0);
-						}
-					}
-				}
-			}
-		}
+		VertexClientPE.nuker(x, y, z, nukerRange);
 	}
 }
 
@@ -1136,6 +1112,94 @@ var follow = {
 	}
 }
 
+var tapNuker = {
+	name: "TapNuker",
+	desc: "Destroys blocks wherever you tap.",
+	category: VertexClientPE.category.BUILDING,
+	type: "Mod",
+	getSettingsLayout: function() {
+		var tapNukerSettingsLayout = new LinearLayout(ctx);
+		tapNukerSettingsLayout.setOrientation(1);
+		var tapNukerRangeTitle = clientTextView("Range: | " + tapNukerRange);
+		var tapNukerRangeSlider = new SeekBar(ctx);
+		tapNukerRangeSlider.setProgress(tapNukerRange);
+		tapNukerRangeSlider.setMax(10);
+		tapNukerRangeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+			onProgressChanged: function() {
+				tapNukerRange = tapNukerRangeSlider.getProgress();
+				tapNukerRangeTitle.setText("Range: | " + tapNukerRange);
+			}
+		});
+		
+		var space = clientTextView("\n");
+		tapNukerSettingsLayout.addView(tapNukerRangeTitle);
+		tapNukerSettingsLayout.addView(tapNukerRangeSlider);
+		tapNukerSettingsLayout.addView(space);
+		return tapNukerSettingsLayout;
+	},
+	onModDialogDismiss: function() {
+		VertexClientPE.saveMainSettings();
+	},
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onUseItem: function(x, y, z, itemId, blockId, side, blockDamage) {
+		VertexClientPE.nuker(x, y, z, tapNukerRange, "cube");
+	}
+}
+
+var tapRemover = {
+	name: "TapRemover",
+	desc: "Removes blocks and entities on tap.",
+	category: VertexClientPE.category.BUILDING,
+	type: "Mod",
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onUseItem: function(x, y, z, itemId, blockId, side, blockDamage) {
+		preventDefault();
+		setTile(x, y, z, 0);
+	},
+	onAttack: function(a, v) {
+		if(getPlayerEnt() == a) {
+			preventDefault();
+			Entity.remove(v);
+		}
+	}
+}
+
+var autoPlace = {
+	name: "AutoPlace",
+	desc: "Automatically places the block you're holding wherever you look.",
+	category: VertexClientPE.category.BUILDING,
+	type: "Mod",
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onTick: function() {
+		var x = Player.getPointedBlockX();
+		var y = Player.getPointedBlockY();
+		var z = Player.getPointedBlockZ();
+		var side = Player.getPointedBlockSide();
+		var blockId = Player.getCarriedItem();
+		var blockData = Player.getCarriedItemData();
+		if(getTile(x, y, z) != 0) {
+			if(blockId <= 256) {
+				setTile(x-(side==4?1:0)+(side==5?1:0),y-(side==0?1:0)+(side==1?1:0),z-(side==2?1:0)+(side==3?1:0), blockId, blockData);
+			}
+		}
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(killAura);
 VertexClientPE.registerModule(freezeAura);
@@ -1155,11 +1219,14 @@ VertexClientPE.registerModule(ride);
 VertexClientPE.registerModule(glide);
 //BUILDING
 VertexClientPE.registerModule(nuker);
+VertexClientPE.registerModule(tapNuker);
 VertexClientPE.registerModule(fastBreak);
 VertexClientPE.registerModule(powerExplosions);
 VertexClientPE.registerModule(tapExplosion);
 VertexClientPE.registerModule(signEditor);
 VertexClientPE.registerModule(autoMine);
+VertexClientPE.registerModule(tapRemover);
+VertexClientPE.registerModule(autoPlace);
 //CHAT
 VertexClientPE.registerModule(homeCommand);
 VertexClientPE.registerModule(autoSpammer);
@@ -1240,6 +1307,30 @@ function chatHook(text) {
 		}
 	}
 }
+
+/**
+ *  ############
+ *	# COMMANDS #
+ *	############
+ */
+
+var say = {
+	syntax: "say <message>",
+	type: "Command",
+	isStateMod: function() {
+		return false;
+	},
+	onCall: function(cmd) {
+		sayMsg = cmd.substring(4, cmd.length);
+		if(fancyChatState) {
+			VertexClientPE.fancyChat(sayMsg);
+		} else {
+			Server.sendChat(sayMsg);
+		}
+	}
+}
+
+VertexClientPE.registerModule(say);
 
 /**
  *  ##############
@@ -2794,7 +2885,17 @@ var p, y, xx, yy, zz;
 var sayMsg;
 
 VertexClientPE.commandManager = function(cmd) {
+	var finished = false;
 	commandSplit = cmd.split(" ");
+	VertexClientPE.modules.forEach(function(element, index, array) {
+		if(element.syntax != null && commandSplit[0] == element.syntax.split(" ")[0] && element.type == "Command") {
+			if(element.onCall) {
+				element.onCall(cmd);
+				finished = true;
+				return;
+			}
+		}
+	});
 	switch(commandSplit[0]) {
 		case "help": //1
 			if(commandSplit[1] == undefined || commandSplit[1] == null || commandSplit[1] == "1") {
@@ -2905,14 +3006,6 @@ VertexClientPE.commandManager = function(cmd) {
 		case "js": //8
 			VertexClientPE.showJavascriptConsoleDialog();
 			break;
-		case "say": //9
-			sayMsg = cmd.substring(5, cmd.length);
-			if(fancyChatState) {
-				VertexClientPE.fancyChat(sayMsg);
-			} else {
-				Server.sendChat(sayMsg);
-			}
-			break;
 		case "give": //10
 			if(commandSplit[1] != null) {
 				if(Item.internalNameToId(commandSplit[1]) != null) {
@@ -2964,7 +3057,9 @@ VertexClientPE.commandManager = function(cmd) {
 			}
 			break;
 		default:
-			VertexClientPE.clientMessage(ChatColor.RED + "Error: command \"" + cmd + "\" not found!");
+			if(!finished) {
+				VertexClientPE.clientMessage(ChatColor.RED + "Error: command \"" + cmd + "\" not found!");
+			}
 			break;
 	}
 }
@@ -3673,27 +3768,28 @@ VertexClientPE.xRay = function(onOrOff) {
     setTile(Player.getX(), Player.getY(), Player.getZ(), originalTile, originalTileData);
 }
 
-VertexClientPE.nuker = function(x, y, z) {
-	if(nukerMode == "cube") {
-		for(var blockX = - nukerRange; blockX <= nukerRange; blockX++) {
-			for(var blockY = - nukerRange; blockY <= nukerRange; blockY++) {
-				for(var blockZ = - nukerRange; blockZ <= nukerRange; blockZ++) {
+VertexClientPE.nuker = function(x, y, z, range, mode) {
+	mode = (mode==null)?nukerMode:mode;
+	if(mode == "cube") {
+		for(var blockX = - range; blockX <= range; blockX++) {
+			for(var blockY = - range; blockY <= range; blockY++) {
+				for(var blockZ = - range; blockZ <= range; blockZ++) {
 					setTile(x + blockX, y + blockY, z + blockZ, 0);
 				}
 			}
 		}
-	}if(nukerMode == "flat") {
-		for(var blockX = - nukerRange; blockX <= nukerRange; blockX++) {
-			for(var blockY = - 1; blockY <= nukerRange; blockY++) {
-				for(var blockZ = - nukerRange; blockZ <= nukerRange; blockZ++) {
+	}if(mode == "flat") {
+		for(var blockX = - range; blockX <= range; blockX++) {
+			for(var blockY = - 1; blockY <= range; blockY++) {
+				for(var blockZ = - range; blockZ <= range; blockZ++) {
 					setTile(x + blockX, y + blockY, z + blockZ, 0);
 				}
 			}
 		}
-	}if(nukerMode == "smash") {
-		for(var blockX = - nukerRange; blockX <= nukerRange; blockX++) {
-			for(var blockY = - nukerRange; blockY <= nukerRange; blockY++) {
-				for(var blockZ = - nukerRange; blockZ <= nukerRange; blockZ++) {
+	}if(mode == "smash") {
+		for(var blockX = - range; blockX <= range; blockX++) {
+			for(var blockY = - range; blockY <= range; blockY++) {
+				for(var blockZ = - range; blockZ <= range; blockZ++) {
 					if(Block.getDestroyTime(getTile(x + blockX, y + blockY, z + blockZ)) == 0) {
 						setTile(x + blockX, y + blockY, z + blockZ, 0);
 					}
@@ -4219,6 +4315,7 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + killAuraRange.toString());
     outWrite.append("," + spamDelayTime.toString());
 	outWrite.append("," + sizeSetting.toString());
+	outWrite.append("," + tapNukerRange.toString());
 
     outWrite.close();
 	
@@ -4281,6 +4378,9 @@ VertexClientPE.loadMainSettings = function() {
 		} else if(sizeSetting == "small") {
 			customHeight = topBarHeight;
 		}
+	}
+	if(str.toString().split(",")[14] != null && str.toString().split(",")[14] != undefined) {
+		tapNukerRange = str.toString().split(",")[14]; //Here we split text by ","
 	}
     fos.close();
 	VertexClientPE.loadAutoSpammerSettings();
@@ -5064,6 +5164,7 @@ VertexClientPE.showSetupScreen = function() {
 					setupScreen.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
 				} catch(error) {
 					print('An error occurred: ' + error);
+					VertexClientPE.showBugReportDialog(error);
 			}
 		}
 	}));
@@ -5245,6 +5346,9 @@ function newLevel() {
 		if(!hacksList.isShowing()) {
 			showHacksList();
 		}
+	}
+	if(VertexClientPE.isDevMode()) {
+		VertexClientPE.showBugReportDialog("Warning: Dev mode is enabled!");
 	}
 }
 
@@ -6100,7 +6204,7 @@ VertexClientPE.showCombatMenu = function() {
 				VertexClientPE.addView(combatMenuLayout, autoSword);
 				VertexClientPE.addView(combatMenuLayout, autoLeave);*/
 				VertexClientPE.modules.forEach(function(element, index, array) {
-					if(VertexClientPE.modules[index].category == VertexClientPE.category.COMBAT) {
+					if(VertexClientPE.modules[index].category == VertexClientPE.category.COMBAT && (VertexClientPE.modules[index].type == "Mod" || VertexClientPE.modules[index].type == "Special")) {
 						combatMenuLayout.addView(new modButton(VertexClientPE.modules[index]));
 					}
 				});
@@ -6207,7 +6311,7 @@ VertexClientPE.showBuildingMenu = function() {
                 }));
 
                 VertexClientPE.modules.forEach(function(element, index, array) {
-					if(VertexClientPE.modules[index].category == VertexClientPE.category.BUILDING) {
+					if(VertexClientPE.modules[index].category == VertexClientPE.category.BUILDING && (VertexClientPE.modules[index].type == "Mod" || VertexClientPE.modules[index].type == "Special")) {
 						buildingMenuLayout.addView(new modButton(VertexClientPE.modules[index]));
 					}
 				});
@@ -6315,7 +6419,7 @@ VertexClientPE.showMovementMenu = function() {
                 }));
 
 				VertexClientPE.modules.forEach(function(element, index, array) {
-					if(VertexClientPE.modules[index].category == VertexClientPE.category.MOVEMENT) {
+					if(VertexClientPE.modules[index].category == VertexClientPE.category.MOVEMENT && (VertexClientPE.modules[index].type == "Mod" || VertexClientPE.modules[index].type == "Special")) {
 						movementMenuLayout.addView(new modButton(VertexClientPE.modules[index]));
 					}
 				});
@@ -6422,7 +6526,7 @@ VertexClientPE.showChatMenu = function() {
                 }));
 				
 				VertexClientPE.modules.forEach(function(element, index, array) {
-					if(VertexClientPE.modules[index].category == VertexClientPE.category.CHAT) {
+					if(VertexClientPE.modules[index].category == VertexClientPE.category.CHAT && (VertexClientPE.modules[index].type == "Mod" || VertexClientPE.modules[index].type == "Special")) {
 						chatMenuLayout.addView(new modButton(VertexClientPE.modules[index]));
 					}
 				});
@@ -6754,7 +6858,7 @@ VertexClientPE.showMiscMenu = function() {
                 }));
 
                 VertexClientPE.modules.forEach(function(element, index, array) {
-					if(VertexClientPE.modules[index].category == VertexClientPE.category.MISC) {
+					if(VertexClientPE.modules[index].category == VertexClientPE.category.MISC && (VertexClientPE.modules[index].type == "Mod" || VertexClientPE.modules[index].type == "Special")) {
 						miscMenuLayout.addView(new modButton(VertexClientPE.modules[index]));
 					}
 				});
