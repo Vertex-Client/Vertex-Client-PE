@@ -1024,25 +1024,141 @@ var signEditor = {
 	}
 }
 
+var instaKill = {
+	name: "InstaKill",
+	desc: "Makes you able to kill an entity in one hit.",
+	category: VertexClientPE.category.COMBAT,
+	type: "Mod",
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onAttack: function(a, v) {
+		if(getPlayerEnt() == a) {
+			Entity.setHealth(v, 1);
+		}
+	}
+}
+
+var derp = {
+	name: "Derp",
+	desc: "Rotates the player all the time.",
+	category: VertexClientPE.category.MISC,
+	type: "Mod",
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onTick: function() {
+		var player = getPlayerEnt();
+		var yaw = Math.floor(Entity.getYaw(player));
+		var pitch = Math.floor(Entity.getPitch(player));
+		Entity.setRot(player, yaw + 3, pitch);
+	}
+}
+
+var glide = {
+	name: "Glide",
+	desc: "Reduces fall damage by slowing the player down when falling.",
+	category: VertexClientPE.category.MOVEMENT,
+	type: "Mod",
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onTick: function() {
+		if(Entity.getVelY(getPlayerEnt()) <= 0 && Player.isFlying() == false) {
+			setVelY(Player.getEntity(), - 0.07);
+		}
+	}
+}
+
+var autoMine = {
+	name: "AutoMine",
+	desc: "Automatically mines the block you're looking at.",
+	category: VertexClientPE.category.BUILDING,
+	type: "Mod",
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onTick: function() {
+		if(getTile(Player.getPointedBlockX(), Player.getPointedBlockY(), Player.getPointedBlockZ()) != 0) {
+			Level.destroyBlock(Player.getPointedBlockX(), Player.getPointedBlockY(), Player.getPointedBlockZ());
+		}
+	}
+}
+
+var followStage = 0;
+
+var follow = {
+	name: "Follow",
+	desc: "Automatically follow nearby entities.",
+	category: VertexClientPE.category.COMBAT,
+	type: "Mod",
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onTick: function() {
+		if(followStage == 0) {
+			followStage = 1;
+			var mobs = Entity.getAll();
+			for(var i = 0; i < mobs.length; i++) {
+				var x = Entity.getX(mobs[i]) - getPlayerX();
+				var y = Entity.getY(mobs[i]) - getPlayerY();
+				var z = Entity.getZ(mobs[i]) - getPlayerZ();
+				if(x*x+y*y+z*z<=10*10 && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION) {
+					if(Entity.getX(mobs[i]) > getPlayerX() && Entity.getZ(mobs[i]) > getPlayerZ()) {
+						setRot(getPlayerEnt(), 90, getPitch());
+					}
+					if(x*x+y*y+z*z>=2*2) {
+						setVelX(getPlayerEnt(), x);
+						setVelZ(getPlayerEnt(), z);
+						setVelY(getPlayerEnt(), y);
+					}
+					followStage = 0;
+					break;
+				}
+			}
+		}
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(killAura);
 VertexClientPE.registerModule(freezeAura);
 VertexClientPE.registerModule(fireAura);
 VertexClientPE.registerModule(tpAura);
+VertexClientPE.registerModule(follow);
 VertexClientPE.registerModule(autoSword);
 VertexClientPE.registerModule(noHurt);
+VertexClientPE.registerModule(instaKill);
 //MOVEMENT
 VertexClientPE.registerModule(timer);
 VertexClientPE.registerModule(flight);
 VertexClientPE.registerModule(autoTeleporter);
 VertexClientPE.registerModule(tapTeleporter);
 VertexClientPE.registerModule(wallHack);
+VertexClientPE.registerModule(ride);
+VertexClientPE.registerModule(glide);
 //BUILDING
 VertexClientPE.registerModule(nuker);
 VertexClientPE.registerModule(fastBreak);
 VertexClientPE.registerModule(powerExplosions);
 VertexClientPE.registerModule(tapExplosion);
 VertexClientPE.registerModule(signEditor);
+VertexClientPE.registerModule(autoMine);
 //CHAT
 VertexClientPE.registerModule(homeCommand);
 VertexClientPE.registerModule(autoSpammer);
@@ -1053,8 +1169,8 @@ VertexClientPE.registerModule(chatRepeat);
 //MISC
 VertexClientPE.registerModule(panic);
 VertexClientPE.registerModule(switchGamemode);
-VertexClientPE.registerModule(ride);
 VertexClientPE.registerModule(onlyDay);
+VertexClientPE.registerModule(derp);
 
 function modTick() {
 	VertexClientPE.playerIsInGame = true;
