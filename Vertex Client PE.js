@@ -812,6 +812,8 @@ var chatSpeak = {
 	}
 }
 
+var chatRepeatStage = 0;
+
 var chatRepeat = {
 	name: "ChatRepeat",
 	desc: "Automatically repeats all the received chat messages. Can be very annoying.",
@@ -824,8 +826,10 @@ var chatRepeat = {
 		this.state = !this.state;
 	},
 	onChatReceive: function(msg, sender) {
-		if(sender != Player.getName(getPlayerEnt())) {
+		if(sender != Player.getName(getPlayerEnt()) && chatRepeatStage == 0) {
+			chatRepeatStage = 1;
 			Server.sendChat(msg);
+			chatRepeatStage = 0;
 		}
 	}
 }
@@ -1119,9 +1123,6 @@ var follow = {
 				var y = Entity.getY(mobs[i]) - getPlayerY();
 				var z = Entity.getZ(mobs[i]) - getPlayerZ();
 				if(x*x+y*y+z*z<=10*10 && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION) {
-					if(Entity.getX(mobs[i]) > getPlayerX() && Entity.getZ(mobs[i]) > getPlayerZ()) {
-						setRot(getPlayerEnt(), 90, getPitch());
-					}
 					if(x*x+y*y+z*z>=2*2) {
 						setVelX(getPlayerEnt(), x);
 						setVelZ(getPlayerEnt(), z);
@@ -1213,6 +1214,14 @@ function explodeHook(entity, x, y, z, power, onFire) {
 	});
 }
 
+function chatReceiveHook(text, sender) {
+	VertexClientPE.modules.forEach(function(element, index, array) {
+		if(element.isStateMod() && element.state && element.onChatReceive) {
+			element.onChatReceive(text, sender);
+		}
+	});
+}
+
 function chatHook(text) {
 	if(text.charAt(0) == ".") {
 		preventDefault();
@@ -1230,14 +1239,6 @@ function chatHook(text) {
 			});
 		}
 	}
-}
-
-function chatReceiveHook(text, sender) {
-	VertexClientPE.modules.forEach(function(element, index, array) {
-		if(element.isStateMod() && element.state && element.onChatReceive) {
-			element.onChatReceive(text, sender);
-		}
-	});
 }
 
 /**
