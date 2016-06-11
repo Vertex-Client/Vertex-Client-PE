@@ -107,6 +107,7 @@ var flightMsgShown = false;
 var fancyChatState = false;
 var delaySpammerState = false;
 var autoSwordState = false;
+var yesCheatPlusState = false;
 
 var showingMenu = false;
 
@@ -231,6 +232,36 @@ var panic = {
 	}
 }
 
+var yesCheatPlus = {
+	name: "YesCheat+",
+	desc: "Blocks mods that cannot bypass common anti cheat plugins.",
+	category: VertexClientPE.category.MISC,
+	type: "Mod",
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+		yesCheatPlusState = this.state;
+		if(topBar != null && topBar.isShowing()) {
+			topBar.dismiss();
+			vertexclientpecombatmenu.dismiss(); //Close
+			vertexclientpebuildingmenu.dismiss(); //Close
+			vertexclientpemovementmenu.dismiss(); //Close
+			vertexclientpechatmenu.dismiss(); //Close
+			vertexclientpemiscmenu.dismiss(); //Close
+			//vertexclientpefavmenu.dismiss(); //Close
+			VertexClientPE.showCombatMenu();
+			VertexClientPE.showBuildingMenu();
+			VertexClientPE.showMovementMenu();
+			VertexClientPE.showChatMenu();
+			VertexClientPE.showMiscMenu();
+			//VertexClientPE.showFavMenu();
+			VertexClientPE.showTopBar();
+		}
+	}
+}
+
 var switchGamemode = {
 	name: "Switch Gamemode",
 	desc: "Switches your gamemode.",
@@ -278,6 +309,9 @@ var killAura = {
 	},
 	isStateMod: function() {
 		return true;
+	},
+	canBypassYesCheatPlus: function() {
+		return false;
 	},
 	onToggle: function() {
 		this.state = !this.state;
@@ -329,6 +363,9 @@ var freezeAura = {
 	isStateMod: function() {
 		return true;
 	},
+	canBypassYesCheatPlus: function() {
+		return false;
+	},
 	onToggle: function() {
 		this.state = !this.state;
 	},
@@ -356,6 +393,9 @@ var fireAura = {
 	state: false,
 	isStateMod: function() {
 		return true;
+	},
+	canBypassYesCheatPlus: function() {
+		return false;
 	},
 	onToggle: function() {
 		this.state = !this.state;
@@ -1236,6 +1276,7 @@ VertexClientPE.registerModule(chatSpeak);
 VertexClientPE.registerModule(chatRepeat);
 //MISC
 VertexClientPE.registerModule(panic);
+VertexClientPE.registerModule(yesCheatPlus);
 VertexClientPE.registerModule(switchGamemode);
 VertexClientPE.registerModule(onlyDay);
 VertexClientPE.registerModule(derp);
@@ -1244,6 +1285,11 @@ function modTick() {
 	VertexClientPE.playerIsInGame = true;
 	VertexClientPE.modules.forEach(function(element, index, array) {
 		if(element.isStateMod() && element.state && element.onTick) {
+			if(yesCheatPlusState && element.canBypassYesCheatPlus) {
+				if(!element.canBypassYesCheatPlus()) {
+					return;
+				}
+			}
 			element.onTick();
 		}
 	});
@@ -1954,22 +2000,47 @@ VertexClientPE.showModDialog = function(mod, btn) {
 					toggleButton.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 3, display.heightPixels / 10));
 					if(mod.state) {
 						toggleButton.setText("Disable");
-						toggleButton.setTextColor(android.graphics.Color.GREEN);
+						if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
+							toggleButton.setTextColor(android.graphics.Color.RED);
+						} else {
+							toggleButton.setTextColor(android.graphics.Color.GREEN);
+						}
 					} else {
 						toggleButton.setText("Enable");
 						toggleButton.setTextColor(android.graphics.Color.WHITE);
 					}
 					toggleButton.setOnClickListener(new android.view.View.OnClickListener() {
 						onClick: function(view) {
-							mod.onToggle();
-							if(mod.state) {
-								toggleButton.setText("Disable");
-								toggleButton.setTextColor(android.graphics.Color.GREEN);
-								btn.setTextColor(android.graphics.Color.GREEN);
+							if(mod.name == "YesCheat+") {
+								mod.onToggle();
 							} else {
-								toggleButton.setText("Enable");
-								toggleButton.setTextColor(android.graphics.Color.WHITE);
-								btn.setTextColor(android.graphics.Color.WHITE);
+								if(!yesCheatPlusState) {
+									mod.onToggle();
+								}if(yesCheatPlusState && mod.canBypassYesCheatPlus == undefined || mod.canBypassYesCheatPlus == null) {
+									mod.onToggle();
+								}if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
+									if(mod.state) {
+										mod.onToggle();
+									}else if(!mod.state) {
+										mod.state = true;
+									}
+								}
+							}
+							if(mod.isStateMod()) {
+								if(mod.state) {
+									toggleButton.setText("Disable");
+									if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
+										toggleButton.setTextColor(android.graphics.Color.RED);
+										btn.setTextColor(android.graphics.Color.RED);
+									} else {
+										toggleButton.setTextColor(android.graphics.Color.GREEN);
+										btn.setTextColor(android.graphics.Color.GREEN);
+									}
+								}if(!mod.state) {
+									toggleButton.setText("Enable");
+									toggleButton.setTextColor(android.graphics.Color.WHITE);
+									btn.setTextColor(android.graphics.Color.WHITE);
+								}
 							}
 						}
 					});
@@ -2438,380 +2509,6 @@ VertexClientPE.showCategoryDialog = function(titleView, currentName, categoryId)
 			}
 		}
 	});
-}
-
-VertexClientPE.toggleModule = function(module) {
-	var sendMessage = true;
-	switch(module) {
-		case "yescheat+": {
-			if(yesCheatPlusState == false) {
-				yesCheatPlusState = true;
-			} else if(yesCheatPlusState == true) {
-				yesCheatPlusState = false;
-			}
-			break;
-		} case "antilbah": {
-			flightMsgShown = false;
-			if(antiLBAHState == false) {
-				antiLBAHState = true;
-			} else if(antiLBAHState == true) {
-				antiLBAHState = false;
-			}
-			break;
-		} case "nuker": {
-			if(nukerState == false) {
-				nukerState = true;
-			} else if(nukerState == true) {
-				nukerState = false;
-			}
-			break;
-		} case "derp": {
-			if(derpState == false) {
-				derpState = true;
-			} else if(derpState == true) {
-				derpState = false;
-			}
-			break;
-		} case "xray": {
-			if(xRayState == false) {
-				xRayState = true;
-				VertexClientPE.xRay(1);
-			} else if(xRayState == true) {
-				xRayState = false;
-				VertexClientPE.xRay(0);
-			}
-			break;
-		/*} case "freecam": {
-			if(freecamState == false) {
-				VertexClientPE.freecam(1);
-				freecamState = true;
-			} else if(freecamState == true) {
-				freecamState = false;
-				VertexClientPE.freecam(0);
-			}
-			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
-			break;*/
-		} case "autospammer": {
-			if(autoSpammerState == false) {
-				autoSpammerState = true;
-			} else if(autoSpammerState == true) {
-				autoSpammerState = false;
-			}
-			break;
-		} case "delayspammer": {
-			if(delaySpammerState == false) {
-				delaySpammerState = true;
-			} else if(delaySpammerState == true) {
-				delaySpammerState = false;
-			}
-			break;
-		} case "droneplus": {
-			if(dronePlusState == false) {
-				dronePlusState = true;
-			} else if(dronePlusState == true) {
-				dronePlusState = false;
-			}
-			break;
-		} case "regen": {
-			if(regenState == false) {
-				regenState = true;
-			} else if(regenState == true) {
-				regenState = false;
-			}
-			break;
-		} case "instakill": {
-			if(instaKillState == false) {
-				instaKillState = true;
-			} else if(instaKillState == true) {
-				instaKillState = false;
-			}
-			break;
-		} case "fastbreak": {
-			if(fastBreakState == false) {
-				fastBreakState = true;
-				Block.setDestroyTimeAll(0);
-			} else if(fastBreakState == true) {
-				fastBreakState = false;
-				Block.setDestroyTimeDefaultAll();
-			}
-			break;
-		} case "glide": {
-			if(glideState == false) {
-				glideState = true;
-			} else if(glideState == true) {
-				glideState = false;
-			}
-			break;
-		} case "arrowgun": {
-			if(arrowGunState == false) {
-				arrowGunState = true;
-			} else if(arrowGunState == true) {
-				arrowGunState = false;
-			}
-			break;
-		} case "automine": {
-			if(autoMineState == false) {
-				autoMineState = true;
-			} else if(autoMineState == true) {
-				autoMineState = false;
-			}
-			break;
-		} case "killaura": {
-			if(killAuraState == false) {
-				killAuraState = true;
-			} else if(killAuraState == true) {
-				killAuraState = false;
-			}
-			break;
-		} case "powerexplosions": {
-			if(powerExplosionsState == false) {
-				powerExplosionsState = true;
-			} else if(powerExplosionsState == true) {
-				powerExplosionsState = false;
-			}
-			break;
-		} case "stackdrop": {
-			if(stackDropState == false) {
-				stackDropState = true;
-			} else if(stackDropState == true) {
-				stackDropState = false;
-			}
-			break;
-		} case "tapremover": {
-			if(tapRemoverState == false) {
-				tapRemoverState = true;
-			} else if(tapRemoverState == true) {
-				tapRemoverState = false;
-			}
-			break;
-		} case "timer": {
-			if(timerState == false) {
-				timerState = true;
-			} else if(timerState == true) {
-				timerState = false;
-			}
-			break;
-		} case "walkonliquids": {
-			if(liquidWalkState == false) {
-				liquidWalkState = true;
-			} else if(liquidWalkState == true) {
-				liquidWalkState = false;
-			}
-			break;
-		} case "wallhack": {
-			if(walkHack == false) {
-				walkHack = true;
-			} else if(walkHack == true) {
-				walkHack = false;
-			}
-			break;
-		} case "zoom": {
-			if(zoomState == false) {
-				zoomState = true;
-				ModPE.setFov(10);
-			} else if(zoomState == true) {
-				zoomState = false;
-				ModPE.resetFov();
-			}
-			break;
-		} case "signeditor": {
-			if(signEditorState == false) {
-				signEditorState = true;
-			} else if(signEditorState == true) {
-				signEditorState = false;
-			}
-			break;
-		} case "tapnuker": {
-			if(tapNukerState == false) {
-				tapNukerState = true;
-			} else if(tapNukerState == true) {
-				tapNukerState = false;
-			}
-			break;
-		} case "highjump": {
-			if(highJumpState == false) {
-				highJumpState = true;
-			} else if(highJumpState == true) {
-				highJumpState = false;
-			}
-			break;
-		} case "autoswitch": {
-			if(autoSwitchState == false) {
-				autoSwitchState = true;
-			} else if(autoSwitchState == true) {
-				autoSwitchState = false;
-			}
-			break;
-		} case "flight": {
-			flightMsgShown = false;
-			if(flightState == false) {
-				flightState = true;
-				VertexClientPE.flight(1);
-			} else if(flightState == true) {
-				flightState = false;
-				VertexClientPE.flight(0);
-			}
-			break;
-		} case "autowalk": {
-			if(autoWalkState == false) {
-				autoWalkState = true;
-			} else if(autoWalkState == true) {
-				autoWalkState = false;
-			}
-			break;
-		} case "bowaimbot": {
-			if(bowAimbotState == false) {
-				bowAimbotState = true;
-			} else if(bowAimbotState == true) {
-				bowAimbotState = false;
-			}
-			break;
-		} case "autoplace": {
-			if(autoPlaceState == false) {
-				autoPlaceState = true;
-			} else if(autoPlaceState == true) {
-				autoPlaceState = false;
-			}
-			break;
-		} case "godmode": {
-			if(godModeState == false) {
-				godModeState = true;
-			} else if(godModeState == true) {
-				godModeState = false;
-			}
-			break;
-		} case "autoleave": {
-			if(autoLeaveState == false) {
-				autoLeaveState = true;
-			} else if(autoLeaveState == true) {
-				autoLeaveState = false;
-			}
-			break;
-		} case "nohurt": {
-			if(noHurtState == false) {
-				noHurtState = true;
-			} else if(noHurtState == true) {
-				noHurtState = false;
-			}
-			break;
-		} case "enderprojectiles": {
-			if(enderProjectilesState == false) {
-				enderProjectilesState = true;
-			} else if(enderProjectilesState == true) {
-				enderProjectilesState = false;
-			}
-			break;
-		} case "freezeaura": {
-			if(freezeAuraState == false) {
-				freezeAuraState = true;
-			} else if(freezeAuraState == true) {
-				freezeAuraState = false;
-			}
-			break;
-		} case "fireaura": {
-			if(fireAuraState == false) {
-				fireAuraState = true;
-			} else if(fireAuraState == true) {
-				fireAuraState = false;
-			}
-			break;
-		} case "coordsdisplay": {
-			if(coordsDisplayState == false) {
-				coordsDisplayState = true;
-			} else if(coordsDisplayState == true) {
-				coordsDisplayState = false;
-			}
-			break;
-		} case "fastwalk": {
-			if(fastWalkState == false) {
-				fastWalkState = true;
-				f = 1;
-			} else if(fastWalkState == true) {
-				fastWalkState = false;
-				f = 0;
-			}
-			break;
-		} case "follow": {
-			var _0x8aae=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x46\x6F\x6C\x6C\x6F\x77","\x73\x68\x6F\x77\x50\x72\x6F\x44\x69\x61\x6C\x6F\x67"];if(VertexClientPE[_0x8aae[0]]()!=_0x8aae[1]){VertexClientPE[_0x8aae[3]](_0x8aae[2]);break}
-			if(followState == false) {
-				followState = true;
-			} else if(followState == true) {
-				followState = false;
-			}
-			break;
-		} case "fancychat": {
-			if(fancyChatState == false) {
-				fancyChatState = true;
-			} else if(fancyChatState == true) {
-				fancyChatState = false;
-			}
-			break;
-		} case "autosword": {
-			if(autoSwordState == false) {
-				autoSwordState = true;
-			} else if(autoSwordState == true) {
-				autoSwordState = false;
-			}
-			break;
-		} case "tapexplosion": {
-			if(tapExplosionState == false) {
-				tapExplosionState = true;
-			} else if(tapExplosionState == true) {
-				tapExplosionState = false;
-			}
-			break;
-		} case "criticals": {
-			if(criticalsState == false) {
-				criticalsState = true;
-			} else if(criticalsState == true) {
-				criticalsState = false;
-			}
-			break;
-		} case "autoteleporter": {
-			if(autoTeleporterState == false) {
-				autoTeleporterState = true;
-			} else if(autoTeleporterState == true) {
-				autoTeleporterState = false;
-			}
-			break;
-		} case "onlyday": {
-			if(onlyDayState == false) {
-				onlyDayState = true;
-			} else if(onlyDayState == true) {
-				onlyDayState = false;
-			}
-			break;
-		} case "ride": {
-			if(rideState == false) {
-				rideState = true;
-			} else if(rideState == true) {
-				rideState = false;
-			}
-			break;
-		} case "healthtags": {
-			if(healthTagsState == false) {
-				healthTagsState = true;
-			} else if(healthTagsState == true) {
-				healthTagsState = false;
-			}
-			break;
-		/*} case "boatfly": {
-			if(boatFlyState == false) {
-				boatFlyState = true;
-			} else if(boatFlyState == true) {
-				boatFlyState = false;
-			}
-			break;*/
-		} default: {
-			VertexClientPE.clientMessage(ChatColor.RED + "Module \'" + module + "\' not found!");
-			sendMessage = false;
-			break;
-		}
-	}
-	if(sendMessage == true) {
-		VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully toggled module \'" + module + "\'!");
-		updateHacksList();
-	}
 }
 
 VertexClientPE.switchGameMode = function() {
@@ -4543,6 +4240,13 @@ function modButton(mod) {
 		var type = "Mod";
 	}
 	
+	if(mod.state) {
+		if(mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
+			mod.onToggle();
+			mod.state = true;
+		}
+	}
+	
 	var modButtonLayout = new LinearLayout(ctx);
 	modButtonLayout.setOrientation(LinearLayout.HORIZONTAL);
 	
@@ -4565,14 +4269,36 @@ function modButton(mod) {
 	defaultClientButton.setHorizontallyScrolling(true);
 	defaultClientButton.setSelected(true);
 	if(mod.isStateMod() && mod.state) {
-		defaultClientButton.setTextColor(android.graphics.Color.GREEN);
+		if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
+			defaultClientButton.setTextColor(android.graphics.Color.RED);
+		} else {
+			defaultClientButton.setTextColor(android.graphics.Color.GREEN);
+		}
 	}
 	defaultClientButton.setOnClickListener(new android.view.View.OnClickListener({
 		onClick: function(viewarg) {
-			mod.onToggle();
+			if(mod.name == "YesCheat+") {
+				mod.onToggle();
+			} else {
+				if(!yesCheatPlusState) {
+					mod.onToggle();
+				}if(yesCheatPlusState && mod.canBypassYesCheatPlus == undefined || mod.canBypassYesCheatPlus == null) {
+					mod.onToggle();
+				}if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
+					if(mod.state) {
+						mod.onToggle();
+					}else if(!mod.state) {
+						mod.state = true;
+					}
+				}
+			}
 			if(mod.isStateMod()) {
 				if(mod.state) {
-					defaultClientButton.setTextColor(android.graphics.Color.GREEN);
+					if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
+						defaultClientButton.setTextColor(android.graphics.Color.RED);
+					} else {
+						defaultClientButton.setTextColor(android.graphics.Color.GREEN);
+					}
 				}if(!mod.state) {
 					defaultClientButton.setTextColor(android.graphics.Color.WHITE);
 				}
@@ -4907,7 +4633,7 @@ VertexClientPE.showSplashScreen = function() {
 					}
 					var text = VertexClientPEMainMenuText + " - Welcome back " + ModPE.getPlayerName() + "!";
 					var TitleText = clientTextView(text, true);
-					TitleText.setText(android.text.Html.fromHtml(text), widget.TextView.BufferType.SPANNABLE);
+					TitleText.setText(android.text.Html.fromHtml("<blink>" + text + "</blink>"), widget.TextView.BufferType.SPANNABLE);
 					TitleText.setTextSize(18);
 					TitleText.setGravity(android.view.Gravity.CENTER);
 					TitleText.setEllipsize(android.text.TextUtils.TruncateAt.MARQUEE);
@@ -7387,83 +7113,86 @@ var enabledHacksCounter = 0;
 var musicText = "None";
 
 function showHacksList() {
-		if(hacksList == null || !hacksList.isShowing()) {
-			var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
-			ctx.runOnUiThread(new java.lang.Runnable({
-				run: function() {
-					try {
-						var display = new android.util.DisplayMetrics();
-						com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
+	if(hacksList == null || !hacksList.isShowing()) {
+		var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+		ctx.runOnUiThread(new java.lang.Runnable({
+			run: function() {
+				try {
+					var display = new android.util.DisplayMetrics();
+					com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
 
-						enabledHacksCounter = 0;
-						
-						var hacksListLayout = new LinearLayout(ctx);
-						hacksListLayout.setOrientation(LinearLayout.HORIZONTAL);
-						hacksListLayout.setGravity(android.view.Gravity.CENTER_VERTICAL);
-						
-						var hacksListLayoutLeft = new LinearLayout(ctx);
-						hacksListLayoutLeft.setOrientation(1);
-						hacksListLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(ctx.getWindowManager().getDefaultDisplay().getWidth() / 4, ctx.getWindowManager().getDefaultDisplay().getWidth() / 15));
-						hacksListLayout.addView(hacksListLayoutLeft);
-						
-						var hacksListLayoutRight = new LinearLayout(ctx);
-						hacksListLayoutRight.setOrientation(1);
-						hacksListLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(ctx.getWindowManager().getDefaultDisplay().getWidth() / 4, ctx.getWindowManager().getDefaultDisplay().getWidth() / 15));
-						hacksListLayout.addView(hacksListLayoutRight);
-						
-						var logo2 = android.util.Base64.decode(logoImage, 0);
-						logoViewer2 = new widget.ImageView(ctx);
-						logoViewer2.setImageBitmap(android.graphics.BitmapFactory.decodeByteArray(logo2, 0, logo2.length));
-						logoViewer2.setLayoutParams(new LinearLayout.LayoutParams(ctx.getWindowManager().getDefaultDisplay().getWidth() / 4, ctx.getWindowManager().getDefaultDisplay().getWidth() / 16));
+					enabledHacksCounter = 0;
+					
+					var hacksListLayout = new LinearLayout(ctx);
+					hacksListLayout.setOrientation(LinearLayout.HORIZONTAL);
+					hacksListLayout.setGravity(android.view.Gravity.CENTER_VERTICAL);
+					
+					var hacksListLayoutLeft = new LinearLayout(ctx);
+					hacksListLayoutLeft.setOrientation(1);
+					hacksListLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(ctx.getWindowManager().getDefaultDisplay().getWidth() / 4, ctx.getWindowManager().getDefaultDisplay().getWidth() / 15));
+					hacksListLayout.addView(hacksListLayoutLeft);
+					
+					var hacksListLayoutRight = new LinearLayout(ctx);
+					hacksListLayoutRight.setOrientation(1);
+					hacksListLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(ctx.getWindowManager().getDefaultDisplay().getWidth() / 4, ctx.getWindowManager().getDefaultDisplay().getWidth() / 15));
+					hacksListLayout.addView(hacksListLayoutRight);
+					
+					var logo2 = android.util.Base64.decode(logoImage, 0);
+					logoViewer2 = new widget.ImageView(ctx);
+					logoViewer2.setImageBitmap(android.graphics.BitmapFactory.decodeByteArray(logo2, 0, logo2.length));
+					logoViewer2.setLayoutParams(new LinearLayout.LayoutParams(ctx.getWindowManager().getDefaultDisplay().getWidth() / 4, ctx.getWindowManager().getDefaultDisplay().getWidth() / 16));
 
-						var VertexClientPEHacksListText = "Vertex Client PE " + VertexClientPE.getVersion("current");
-						var statesText = "";
-						VertexClientPE.modules.forEach(function (element, index, array) {
-							if(element.isStateMod() && element.state) {
-								if(enabledHacksCounter != 0) {
-									statesText += " - "
-								}
-								statesText += element.name;
-								enabledHacksCounter++;
+					var VertexClientPEHacksListText = "Vertex Client PE " + VertexClientPE.getVersion("current");
+					var statesText = "";
+					VertexClientPE.modules.forEach(function (element, index, array) {
+						if(element.isStateMod() && element.state) {
+							if(yesCheatPlusState && element.canBypassYesCheatPlus && !element.canBypassYesCheatPlus()) {
+								return;
 							}
-						});
-						
-						statesTextView = clientTextView(statesText, true);
-						if(hacksListModeSetting == "on") {
-							statesTextView.setText(statesText);
-						} else if(hacksListModeSetting == "counter") {
-							statesTextView.setText(enabledHacksCounter.toString() + " mods enabled");
+							if(enabledHacksCounter != 0) {
+								statesText += " - "
+							}
+							statesText += element.name;
+							enabledHacksCounter++;
 						}
-						musicTextView = clientTextView("♫ Currently playing: " + musicText, true);
-						
-						statesTextView.setTextSize(15);
-						statesTextView.setEllipsize(android.text.TextUtils.TruncateAt.MARQUEE);
-						statesTextView.setMarqueeRepeatLimit(-1);
-						statesTextView.setSingleLine();
-						statesTextView.setHorizontallyScrolling(true);
-						statesTextView.setSelected(true);
-						musicTextView.setTextSize(15);
-						musicTextView.setEllipsize(android.text.TextUtils.TruncateAt.MARQUEE);
-						musicTextView.setMarqueeRepeatLimit(-1);
-						musicTextView.setSingleLine();
-						musicTextView.setHorizontallyScrolling(true);
-						musicTextView.setSelected(true);
-						hacksListLayoutLeft.addView(logoViewer2);
-						hacksListLayoutRight.addView(statesTextView);
-						hacksListLayoutRight.addView(musicTextView);
-						hacksList = new widget.PopupWindow(hacksListLayout, ctx.getWindowManager().getDefaultDisplay().getWidth() / 2, ctx.getWindowManager().getDefaultDisplay().getWidth() / 15);
-						hacksList.setBackgroundDrawable(backgroundGradient(true));
-						hacksList.setTouchable(false);
-						if(hacksListModeSetting != "off") {
-							hacksList.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.CENTER | android.view.Gravity.TOP, 0, 0);
-						}
-					} catch(error) {
-						print('An error occurred: ' + error);
-						VertexClientPE.showBugReportDialog(error);
+					});
+					
+					statesTextView = clientTextView(statesText, true);
+					if(hacksListModeSetting == "on") {
+						statesTextView.setText(statesText);
+					} else if(hacksListModeSetting == "counter") {
+						statesTextView.setText(enabledHacksCounter.toString() + " mods enabled");
 					}
+					musicTextView = clientTextView("♫ Currently playing: " + musicText, true);
+					
+					statesTextView.setTextSize(15);
+					statesTextView.setEllipsize(android.text.TextUtils.TruncateAt.MARQUEE);
+					statesTextView.setMarqueeRepeatLimit(-1);
+					statesTextView.setSingleLine();
+					statesTextView.setHorizontallyScrolling(true);
+					statesTextView.setSelected(true);
+					musicTextView.setTextSize(15);
+					musicTextView.setEllipsize(android.text.TextUtils.TruncateAt.MARQUEE);
+					musicTextView.setMarqueeRepeatLimit(-1);
+					musicTextView.setSingleLine();
+					musicTextView.setHorizontallyScrolling(true);
+					musicTextView.setSelected(true);
+					hacksListLayoutLeft.addView(logoViewer2);
+					hacksListLayoutRight.addView(statesTextView);
+					hacksListLayoutRight.addView(musicTextView);
+					hacksList = new widget.PopupWindow(hacksListLayout, ctx.getWindowManager().getDefaultDisplay().getWidth() / 2, ctx.getWindowManager().getDefaultDisplay().getWidth() / 15);
+					hacksList.setBackgroundDrawable(backgroundGradient(true));
+					hacksList.setTouchable(false);
+					if(hacksListModeSetting != "off") {
+						hacksList.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.CENTER | android.view.Gravity.TOP, 0, 0);
+					}
+				} catch(error) {
+					print('An error occurred: ' + error);
+					VertexClientPE.showBugReportDialog(error);
 				}
-			}));
-		}
+			}
+		}));
+	}
 }
 
 function updateHacksList() {
@@ -7476,6 +7205,9 @@ function updateHacksList() {
 					var statesText = "";
 					VertexClientPE.modules.forEach(function (element, index, array) {
 						if(element.isStateMod() && element.state) {
+							if(yesCheatPlusState && element.canBypassYesCheatPlus && !element.canBypassYesCheatPlus()) {
+								return;
+							}
 							if(enabledHacksCounter != 0) {
 								statesText += " - "
 							}
