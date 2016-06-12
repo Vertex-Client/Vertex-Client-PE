@@ -201,12 +201,14 @@ VertexClientPE.registerModule = function(obj) {
 	VertexClientPE.modules.push(obj);
 }
 
-function registerAddon(name, desc) {
+function registerAddon(name, desc, current_version, target_version) {
 	var shouldMessage = true;
 	try {
 		VertexClientPE.addons.push({
 			name: name,
-			desc: desc
+			desc: desc,
+			current_version: current_version,
+			target_version: target_version
 		});
 	} catch(e) {
 		shouldMessage = false;
@@ -1154,6 +1156,9 @@ var follow = {
 	desc: "Automatically follow nearby entities.",
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
+	requiresPro: function() {
+		return true;
+	},
 	isStateMod: function() {
 		return true;
 	},
@@ -1310,8 +1315,6 @@ VertexClientPE.registerModule(yesCheatPlus);
 VertexClientPE.registerModule(switchGamemode);
 VertexClientPE.registerModule(onlyDay);
 VertexClientPE.registerModule(derp);
-
-VertexClientPE.loadAddons();
 
 function modTick() {
 	VertexClientPE.playerIsInGame = true;
@@ -1907,6 +1910,7 @@ VertexClientPE.showMoreDialog = function() {
 				dialogGUI = new widget.PopupWindow();
 				var moreTitle = clientTextView("More", true);
 				var settingsButton = clientButton("Settings");
+				var addonsButton = clientButton("Addons");
 				var informationButton = clientButton("Information");
 				var kitsButton = clientButton("Kits");
 				var newLineText = new widget.TextView(ctx);
@@ -1918,6 +1922,7 @@ VertexClientPE.showMoreDialog = function() {
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
 				dialogLayout.addView(moreTitle);
 				dialogLayout.addView(settingsButton);
+				dialogLayout.addView(addonsButton);
 				dialogLayout.addView(informationButton);
 				//dialogLayout.addView(kitsButton);
 				dialogLayout.addView(newLineText);
@@ -1944,6 +1949,21 @@ VertexClientPE.showMoreDialog = function() {
 						//vertexclientpefavmenu.dismiss(); //Close
 						settingsScreen();
 						exitSettings();
+					}
+				});
+				addonsButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+						topBar.dismiss();
+						showingMenu = false;
+						vertexclientpecombatmenu.dismiss(); //Close
+						vertexclientpebuildingmenu.dismiss(); //Close
+						vertexclientpemovementmenu.dismiss(); //Close
+						vertexclientpechatmenu.dismiss(); //Close
+						vertexclientpemiscmenu.dismiss(); //Close
+						//vertexclientpefavmenu.dismiss(); //Close
+						addonScreen();
+						exitAddon();
 					}
 				});
 				informationButton.setOnClickListener(new android.view.View.OnClickListener() {
@@ -2674,6 +2694,10 @@ VertexClientPE.commandManager = function(cmd) {
 						if (element.name.toLowerCase() == cmd.substring(2, cmd.length)
 							.toLowerCase() && !shouldReturn) {
 							if (element.isStateMod()) {
+								if(element.requiresPro && element.requiresPro() && !VertexClientPE.isPro()) {
+									VertexClientPE.showProDialog(element.name);
+									return;
+								}
 								VertexClientPE.modules[index].onToggle();
 								if(hacksList != null && hacksList.isShowing()) {
 									updateHacksList();
@@ -4279,6 +4303,9 @@ function modButton(mod) {
 		var type = "Mod";
 	}
 	
+	var modButtonName = mod.name;
+	if(mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) modButtonName = "🔒 " + mod.name;
+	
 	if(mod.state) {
 		if(mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
 			mod.onToggle();
@@ -4299,7 +4326,7 @@ function modButton(mod) {
 	modButtonLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.heightPixels / 2 - display.heightPixels / 2.5, display.heightPixels / 10));
 	modButtonLayout.addView(modButtonLayoutRight);
 	
-	var defaultClientButton = clientButton(mod.name, mod.desc);
+	var defaultClientButton = clientButton(modButtonName, mod.desc);
 	defaultClientButton.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2.5, display.heightPixels / 10));
 	defaultClientButton.setAlpha(0.54);
 	defaultClientButton.setEllipsize(android.text.TextUtils.TruncateAt.MARQUEE);
@@ -4316,6 +4343,10 @@ function modButton(mod) {
 	}
 	defaultClientButton.setOnClickListener(new android.view.View.OnClickListener({
 		onClick: function(viewarg) {
+			if(mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) {
+				VertexClientPE.showProDialog(mod.name);
+				return;
+			}
 			if(mod.name == "YesCheat+") {
 				mod.onToggle();
 			} else {
@@ -4357,6 +4388,30 @@ function modButton(mod) {
 	modButtonLayoutRight.addView(defaultInfoButton);
 	
 	return modButtonLayout;
+}
+
+function addonButton(addon) {
+	var addonButtonLayout = new LinearLayout(ctx);
+	addonButtonLayout.setOrientation(1);
+	addonButtonLayout.setGravity(android.view.Gravity.CENTER);
+	
+	var defaultClientButton = clientButton(addon.name + " v" + addon.current_version, addon.desc);
+	defaultClientButton.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 8));
+	defaultClientButton.setAlpha(0.54);
+	defaultClientButton.setEllipsize(android.text.TextUtils.TruncateAt.MARQUEE);
+	defaultClientButton.setMarqueeRepeatLimit(-1);
+	defaultClientButton.setSingleLine();
+	defaultClientButton.setHorizontallyScrolling(true);
+	defaultClientButton.setSelected(true);
+	defaultClientButton.setOnClickListener(new android.view.View.OnClickListener({
+		onClick: function(viewarg) {
+			VertexClientPE.toast(addon.desc);
+		}
+	}));
+	//var _0x9276=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\uD83D\uDD12\x20","\x73\x65\x74\x54\x65\x78\x74"];if(isProFeature&&VertexClientPE[_0x9276[0]]()!=_0x9276[1]){defaultClientButton[_0x9276[3]](_0x9276[2]+mod.name)}
+	addonButtonLayout.addView(defaultClientButton);
+	
+	return addonButtonLayout;
 }
 
 function clientTextButton(text, shadow) //menu buttons
@@ -5085,10 +5140,16 @@ VertexClientPE.getHighestBlockDifference = function() {
 	}
 }
 
+var hasLoadedAddons = false;
+
 function newLevel() {
 	autoLeaveStage = 0;
 	VertexClientPE.playerIsInGame = true;
 	VertexClientPE.loadMainSettings();
+	if(!hasLoadedAddons) {
+		hasLoadedAddons = true;
+		VertexClientPE.loadAddons();
+	}
 	VertexClientPE.playMusic();
 	new java.lang.Thread(new java.lang.Runnable() {
 		run: function() {
@@ -5432,6 +5493,51 @@ function informationScreen() {
                     informationMenu = new widget.PopupWindow(informationMenuLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
                     informationMenu.setBackgroundDrawable(backgroundGradient());
                     informationMenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
+                } catch(error) {
+                    print('An error occurred: ' + error);
+                }
+            }
+        }));
+}
+
+function addonScreen() {
+	var display = new android.util.DisplayMetrics();
+	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
+    var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+        ctx.runOnUiThread(new java.lang.Runnable({
+            run: function() {
+                try {
+					var addonMenuLayout = new LinearLayout(ctx);
+                    addonMenuLayout.setOrientation(1);
+                    addonMenuLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					
+					var addonMenuLayoutScroll = new ScrollView(ctx);
+					
+					var addonMenuLayout1 = new LinearLayout(ctx);
+                    addonMenuLayout1.setOrientation(1);
+                    addonMenuLayout1.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					
+					addonMenuLayoutScroll.addView(addonMenuLayout);
+					addonMenuLayout1.addView(addonMenuLayoutScroll);
+					
+					var addonTitle = clientTextView("Addons", true);
+					addonTitle.setTextSize(25);
+					addonTitle.setGravity(android.view.Gravity.CENTER);
+					addonMenuLayout.addView(addonTitle);
+					
+					if(VertexClientPE.addons.length == 0) {
+						var noAddonsText = clientTextView("You don't have any addons!");
+						addonMenuLayout.addView(noAddonsText);
+						noAddonsText.setGravity(android.view.Gravity.CENTER);
+					}
+					
+					VertexClientPE.addons.forEach(function(element, index, array) {
+						addonMenuLayout.addView(new addonButton(element));
+					});
+
+                    addonMenu = new widget.PopupWindow(addonMenuLayout1, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
+                    addonMenu.setBackgroundDrawable(backgroundGradient());
+                    addonMenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
                 } catch(error) {
                     print('An error occurred: ' + error);
                 }
@@ -7046,7 +7152,7 @@ VertexClientPE.clientTick = function() {
                 .postDelayed(new java.lang.Runnable({
                     run: function() {
 						try{
-							if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false)) {
+							if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false)) {
 								VertexClientPE.isRemote = true;
 								net.zhuoweizhang.mcpelauncher.ScriptManager.isRemote = true;
 								net.zhuoweizhang.mcpelauncher.ScriptManager.setLevelFakeCallback(true, false);
@@ -7055,7 +7161,7 @@ VertexClientPE.clientTick = function() {
 							print("Use BlockLauncher v1.12.2 or above!");
 							ModPE.log(e);
 						}
-						if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false)) {
+						if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false)) {
 							VertexClientPE.isRemote = true;
 							showMenuButton();
 						}
@@ -7445,6 +7551,35 @@ function exitInformation(){
     exitInformationUI = new widget.PopupWindow(xInformationLayout, dip2px(40), dip2px(40));
     exitInformationUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
     exitInformationUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
+    }catch(exception){
+    print(exception);
+	VertexClientPE.showBugReportDialog(exception);
+    }
+    }}));
+}
+
+function exitAddon(){
+    var ctxe = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+    ctxe.runOnUiThread(new java.lang.Runnable({ run: function(){
+    try{
+    var xAddonLayout = new LinearLayout(ctxe);
+    var xAddonButton = new Button(ctxe);
+    xAddonButton.setText('X');//Text
+    xAddonButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
+    xAddonButton.setTextColor(android.graphics.Color.WHITE);
+    xAddonButton.setOnClickListener(new android.view.View.OnClickListener({
+    onClick: function(viewarg){
+    exitAddonUI.dismiss(); //Close
+    addonMenu.dismiss(); //Close
+	showMenuButton();
+	showHacksList();
+    }
+    }));
+    xAddonLayout.addView(xAddonButton);
+	
+    exitAddonUI = new widget.PopupWindow(xAddonLayout, dip2px(40), dip2px(40));
+    exitAddonUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+    exitAddonUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
     }catch(exception){
     print(exception);
 	VertexClientPE.showBugReportDialog(exception);
