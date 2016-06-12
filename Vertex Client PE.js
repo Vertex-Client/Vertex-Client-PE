@@ -191,8 +191,37 @@ VertexClientPE.category = {
 
 VertexClientPE.modules = [];
 
+VertexClientPE.addons = [];
+
+VertexClientPE.loadAddons = function() {
+	net.zhuoweizhang.mcpelauncher.ScriptManager.callScriptMethod("addonLoadHook", []);
+}
+
 VertexClientPE.registerModule = function(obj) {
 	VertexClientPE.modules.push(obj);
+}
+
+function registerAddon(name, desc) {
+	var shouldMessage = true;
+	try {
+		VertexClientPE.addons.push({
+			name: name,
+			desc: desc
+		});
+	} catch(e) {
+		shouldMessage = false;
+		VertexClientPE.toast("An error occured while loading addons: " + e);
+	}
+	
+	if(shouldMessage) {
+		VertexClientPE.toast("Successfully loaded the " + name + " addon!");
+	}
+}
+
+function registerModuleFromAddon(obj) {
+	if(obj != null) {
+		VertexClientPE.registerModule(obj);
+	}
 }
 
 VertexClientPE.getFeatureCount = function() {
@@ -237,6 +266,7 @@ var yesCheatPlus = {
 	desc: "Blocks mods that cannot bypass common anti cheat plugins.",
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
+	state: false,
 	isStateMod: function() {
 		return true;
 	},
@@ -1281,6 +1311,8 @@ VertexClientPE.registerModule(switchGamemode);
 VertexClientPE.registerModule(onlyDay);
 VertexClientPE.registerModule(derp);
 
+VertexClientPE.loadAddons();
+
 function modTick() {
 	VertexClientPE.playerIsInGame = true;
 	VertexClientPE.modules.forEach(function(element, index, array) {
@@ -1965,16 +1997,21 @@ VertexClientPE.showModDialog = function(mod, btn) {
 				modTitle.setTextSize(20);
 				var modTypeText = clientTextView("Type: " + mod.type + "\n");
 				var modDescTitle = clientTextView("Description:");
-				var modDescText = clientTextView(mod.desc + "\n");
+				var modDescText = clientTextView(mod.desc);
+				var modEnter = clientTextView("\n");
 				var closeButton = clientButton("Close");
 				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
 				var dialogLayout = new LinearLayout(ctx);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
 				dialogLayout.addView(modTitle);
+				if(mod.source != null) {
+					dialogLayout.addView(clientTextView("Source: " + mod.source + "\n"));
+				}
 				dialogLayout.addView(modTypeText);
 				dialogLayout.addView(modDescTitle);
 				dialogLayout.addView(modDescText);
+				dialogLayout.addView(modEnter);
 				
 				if(mod.getSettingsLayout) {
 					dialogLayout.addView(mod.getSettingsLayout());
@@ -2016,12 +2053,11 @@ VertexClientPE.showModDialog = function(mod, btn) {
 							} else {
 								if(!yesCheatPlusState) {
 									mod.onToggle();
-								}if(yesCheatPlusState && mod.canBypassYesCheatPlus == undefined || mod.canBypassYesCheatPlus == null) {
+								} else if(yesCheatPlusState && mod.canBypassYesCheatPlus == undefined || mod.canBypassYesCheatPlus == null) {
 									mod.onToggle();
-								}if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
+								} else if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
 									if(mod.state) {
 										mod.onToggle();
-									}else if(!mod.state) {
 										mod.state = true;
 									}
 								}
@@ -2036,7 +2072,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
 										toggleButton.setTextColor(android.graphics.Color.GREEN);
 										btn.setTextColor(android.graphics.Color.GREEN);
 									}
-								}if(!mod.state) {
+								} else if(!mod.state) {
 									toggleButton.setText("Enable");
 									toggleButton.setTextColor(android.graphics.Color.WHITE);
 									btn.setTextColor(android.graphics.Color.WHITE);
@@ -3807,11 +3843,14 @@ VertexClientPE.autoSpammer = function() {
 
 VertexClientPE.delaySpammer = function() {
 	var delaySpamMsg = Math.random().toString(36).replace(/[^a-z]+/g, '');
+	var username = Player.getName(getPlayerEnt());
+	Entity.setNameTag(getPlayerEnt(), "");
 	if(fancyChatState) {
 		VertexClientPE.fancyChat(delaySpamMsg);
 	} else {
 		Server.sendChat(delaySpamMsg);
 	}
+	Entity.setNameTag(getPlayerEnt(), username);
 }
 
 VertexClientPE.coordsDisplay = function() {
@@ -4282,12 +4321,11 @@ function modButton(mod) {
 			} else {
 				if(!yesCheatPlusState) {
 					mod.onToggle();
-				}if(yesCheatPlusState && mod.canBypassYesCheatPlus == undefined || mod.canBypassYesCheatPlus == null) {
+				} else if(yesCheatPlusState && mod.canBypassYesCheatPlus == undefined || mod.canBypassYesCheatPlus == null) {
 					mod.onToggle();
-				}if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
-					if(mod.state) {
+				} else if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
+					if(mod.state && mod.isStateMod()) {
 						mod.onToggle();
-					}else if(!mod.state) {
 						mod.state = true;
 					}
 				}
@@ -4299,7 +4337,7 @@ function modButton(mod) {
 					} else {
 						defaultClientButton.setTextColor(android.graphics.Color.GREEN);
 					}
-				}if(!mod.state) {
+				} else if(!mod.state) {
 					defaultClientButton.setTextColor(android.graphics.Color.WHITE);
 				}
 			}
