@@ -170,6 +170,7 @@ var menu;
 var exitUI;
 var vertexclientpemiscmenu;
 var settingsMenu;
+var addonMenu;
 var informationMenu;
 var topBar;
 
