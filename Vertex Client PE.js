@@ -201,7 +201,7 @@ VertexClientPE.registerModule = function(obj) {
 	VertexClientPE.modules.push(obj);
 }
 
-function registerAddon(name, desc, current_version, target_version) {
+function registerAddon(name, desc, current_version, target_version, mods) {
 	var shouldMessage = true;
 	try {
 		VertexClientPE.addons.push({
@@ -210,6 +210,7 @@ function registerAddon(name, desc, current_version, target_version) {
 			current_version: current_version,
 			target_version: target_version
 		});
+		registerModulesFromAddon(mods);
 	} catch(e) {
 		shouldMessage = false;
 		VertexClientPE.toast("An error occured while loading addons: " + e);
@@ -220,10 +221,12 @@ function registerAddon(name, desc, current_version, target_version) {
 	}
 }
 
-function registerModuleFromAddon(obj) {
-	if(obj != null) {
-		VertexClientPE.registerModule(obj);
-	}
+function registerModulesFromAddon(modArray) {
+	modArray.forEach(function (element, index, array) {
+		if(element != null) {
+			VertexClientPE.registerModule(element);
+		}
+	});
 }
 
 VertexClientPE.getFeatureCount = function() {
@@ -1275,6 +1278,81 @@ var autoPlace = {
 	}
 }
 
+var regen = {
+	name: "Regen",
+	desc: "Instantly refills your health.",
+	category: VertexClientPE.category.COMBAT,
+	type: "Mod",
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onTick: function() {
+		if(Entity.getHealth(getPlayerEnt()) < Entity.getMaxHealth(getPlayerEnt())) {
+			Player.setHealth(Entity.getMaxHealth(getPlayerEnt()));
+		}
+	}
+}
+
+var godMode = {
+	name: "God Mode",
+	desc: "Gives you many hearts.",
+	category: VertexClientPE.category.COMBAT,
+	type: "Mod",
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+		Entity.setMaxHealth(getPlayerEnt(), this.state?10000:20);
+	},
+	onTick: function() {
+		Player.setHealth(10000);
+	}
+}
+
+var criticals = {
+	name: "Criticals",
+	desc: "Automatically jumps to make the second attack critical, make sure you attack again after hitting an entity and before hitting the ground to make it work.",
+	category: VertexClientPE.category.COMBAT,
+	type: "Mod",
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onAttack: function(a, v) {
+		Entity.setVelY(getPlayerEnt(), 0.64);
+	}
+}
+
+var arrowGun = {
+	name: "ArrowGun",
+	desc: "Automatically shoots arrows wherever you look.",
+	category: VertexClientPE.category.COMBAT,
+	type: "Mod",
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onInterval: function() {
+		var p = ((Entity.getPitch(getPlayerEnt()) + 90) * Math.PI) / 180;
+		var y = ((Entity.getYaw(getPlayerEnt()) + 90) * Math.PI) / 180;
+		var xx = Math.sin(p) * Math.cos(y);
+		var yy = Math.sin(p) * Math.sin(y);
+		var zz = Math.cos(p);
+		var arrow = Level.spawnMob(Player.getX() + xx, Player.getY() + zz, Player.getZ() + yy, 80);
+		setVelX(arrow, xx);
+		setVelY(arrow, zz);
+		setVelZ(arrow, yy);
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(killAura);
 VertexClientPE.registerModule(freezeAura);
@@ -1284,6 +1362,10 @@ VertexClientPE.registerModule(follow);
 VertexClientPE.registerModule(autoSword);
 VertexClientPE.registerModule(noHurt);
 VertexClientPE.registerModule(instaKill);
+VertexClientPE.registerModule(regen);
+VertexClientPE.registerModule(godMode);
+VertexClientPE.registerModule(criticals);
+VertexClientPE.registerModule(arrowGun);
 //MOVEMENT
 VertexClientPE.registerModule(timer);
 VertexClientPE.registerModule(flight);
