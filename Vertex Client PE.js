@@ -214,9 +214,11 @@ var shownAddonProDialog = false;
 
 function registerAddon(name, desc, current_version, target_version, mods) {
 	var shouldMessage = true;
-	if(!VertexClientPE.isPro() && !shownAddonProDialog) {
-		VertexClientPE.showProDialog("Loading addons");
-		shownAddonProDialog = true;
+	if(!VertexClientPE.isPro()) {
+		if(!shownAddonProDialog) {
+			VertexClientPE.showProDialog("Loading addons");
+			shownAddonProDialog = true;
+		}
 		return;
 	}
 	try {
