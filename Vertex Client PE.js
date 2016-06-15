@@ -162,6 +162,9 @@ var Launcher = {
 	},
 	isToolbox: function() {
 		return ctx.getPackageName() == "io.mrarm.mctoolbox";
+	},
+	isMcpeMaster: function() {
+		return ctx.getPackageName() == "com.mcbox.pesdkb.mcpelauncher";
 	}
 };
 
@@ -195,7 +198,12 @@ VertexClientPE.modules = [];
 VertexClientPE.addons = [];
 
 VertexClientPE.loadAddons = function() {
-	net.zhuoweizhang.mcpelauncher.ScriptManager.callScriptMethod("addonLoadHook", []);
+	if(Launcher.isBlockLauncher() || Launcher.isMcpeMaster()) {
+		net.zhuoweizhang.mcpelauncher.ScriptManager.callScriptMethod("addonLoadHook", []);
+	}
+	if(Launcher.isMcpeMaster()) {
+		com.mcbox.pesdk.mcpelauncher.ScriptManager.callScriptMethod("addonLoadHook", []);
+	}
 }
 
 VertexClientPE.registerModule = function(obj) {
@@ -523,6 +531,7 @@ var homeCommand = {
 	desc: "Runs the /home command if the server or world you're on has it.",
 	category: VertexClientPE.category.CHAT,
 	type: "Mod",
+	state: false,
 	isStateMod: function() {
 		return false;
 	},
@@ -536,6 +545,7 @@ var timer = {
 	desc: "Makes the speed of the game faster.",
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
+	state: false,
 	getSettingsLayout: function() {
 		var timerSettingsLayout = new LinearLayout(ctx);
 		timerSettingsLayout.setOrientation(1);
@@ -575,6 +585,7 @@ var nuker = {
 	desc: "Automatically destroys blocks around you.",
 	category: VertexClientPE.category.BUILDING,
 	type: "Mod",
+	state: false,
 	getSettingsLayout: function() {
 		var nukerSettingsLayout = new LinearLayout(ctx);
 		nukerSettingsLayout.setOrientation(1);
@@ -691,6 +702,7 @@ var fancyChat = {
 	desc: "Replaces characters in sent chat messages by fancy unicode characters. Can be used to bypass curse word filters on some servers.",
 	category: VertexClientPE.category.CHAT,
 	type: "Mod",
+	state: false,
 	settings: {
 		mode: "normal"
 	},
@@ -716,6 +728,7 @@ var noHurt = {
 	desc: "Prevents you from getting hurt.",
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
+	state: false,
 	isStateMod: function() {
 		return true;
 	},
@@ -734,6 +747,7 @@ var ride = {
 	desc: "Automatically makes you ride an entity on tap.",
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
+	state: false,
 	isStateMod: function() {
 		return true;
 	},
@@ -753,6 +767,7 @@ var onlyDay = {
 	desc: "Sets the time to day all the time.",
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
+	state: false,
 	isStateMod: function() {
 		return true;
 	},
@@ -769,6 +784,7 @@ var flight = {
 	desc: "Makes you able to fly, even when you're in survival.",
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
+	state: false,
 	isStateMod: function() {
 		return true;
 	},
@@ -787,6 +803,7 @@ var autoTeleporter = {
 	desc: "Teleports you to the block you're pointing at.",
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
+	state: false,
 	isStateMod: function() {
 		return true;
 	},
@@ -805,6 +822,7 @@ var tapTeleporter = {
 	desc: "Teleports you wherever you tap.",
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
+	state: false,
 	isStateMod: function() {
 		return true;
 	},
@@ -823,6 +841,7 @@ var wallHack = {
 	desc: "Makes you able to walk through walls.",
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
+	state: false,
 	isStateMod: function() {
 		return true;
 	},
@@ -837,6 +856,7 @@ var fastBreak = {
 	desc: "Makes block destroy times as if you were in creative mode.",
 	category: VertexClientPE.category.BUILDING,
 	type: "Mod",
+	state: false,
 	isStateMod: function() {
 		return true;
 	},
@@ -851,6 +871,7 @@ var chatSpeak = {
 	desc: "Automatically says all the received chat messages out loud.",
 	category: VertexClientPE.category.CHAT,
 	type: "Mod",
+	state: false,
 	isStateMod: function() {
 		return true;
 	},
@@ -871,6 +892,7 @@ var chatRepeat = {
 	desc: "Automatically repeats all the received chat messages. Can be very annoying.",
 	category: VertexClientPE.category.CHAT,
 	type: "Mod",
+	state: false,
 	isStateMod: function() {
 		return true;
 	},
@@ -891,6 +913,7 @@ var autoSpammer = {
 	desc: "Automatically spams the chat.",
 	category: VertexClientPE.category.CHAT,
 	type: "Mod",
+	state: false,
 	getSettingsLayout: function() {
 		var autoSpammerMessageLayout = new LinearLayout(ctx);
 		autoSpammerMessageLayout.setOrientation(1);
@@ -936,6 +959,7 @@ var delaySpammer = {
 	desc: "Automatically spams the chat with a delay and randomly generated messages.",
 	category: VertexClientPE.category.CHAT,
 	type: "Mod",
+	state: false,
 	getSettingsLayout: function() {
 		var delaySpammerDelayTimeLayout = new LinearLayout(ctx);
 		delaySpammerDelayTimeLayout.setOrientation(1);
@@ -972,6 +996,7 @@ var tpAura = {
 	desc: "Automatically teleports you behind entities to prevent you from getting hurt by others.",
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
+	state: false,
 	isStateMod: function() {
 		return true;
 	},
@@ -1024,6 +1049,7 @@ var powerExplosions = {
 	desc: "Makes explosions more powerful.",
 	category: VertexClientPE.category.BUILDING,
 	type: "Mod",
+	state: false,
 	isStateMod: function() {
 		return true;
 	},
@@ -1045,6 +1071,7 @@ var tapExplosion = {
 	desc: "Makes blocks explode wherever you tap.",
 	category: VertexClientPE.category.BUILDING,
 	type: "Mod",
+	state: false,
 	isStateMod: function() {
 		return true;
 	},
@@ -1063,6 +1090,7 @@ var signEditor = {
 	desc: "Allows you to edit signs.",
 	category: VertexClientPE.category.BUILDING,
 	type: "Mod",
+	state: false,
 	isStateMod: function() {
 		return true;
 	},
@@ -1085,6 +1113,7 @@ var instaKill = {
 	desc: "Makes you able to kill an entity in one hit.",
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
+	state: false,
 	isStateMod: function() {
 		return true;
 	},
@@ -1103,6 +1132,7 @@ var derp = {
 	desc: "Rotates the player all the time.",
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
+	state: false,
 	isStateMod: function() {
 		return true;
 	},
@@ -1122,6 +1152,7 @@ var glide = {
 	desc: "Reduces fall damage by slowing the player down when falling.",
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
+	state: false,
 	isStateMod: function() {
 		return true;
 	},
@@ -1140,6 +1171,7 @@ var autoMine = {
 	desc: "Automatically mines the block you're looking at.",
 	category: VertexClientPE.category.BUILDING,
 	type: "Mod",
+	state: false,
 	isStateMod: function() {
 		return true;
 	},
@@ -1160,6 +1192,7 @@ var follow = {
 	desc: "Automatically follow nearby entities.",
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
+	state: false,
 	requiresPro: function() {
 		return true;
 	},
@@ -1196,6 +1229,7 @@ var tapNuker = {
 	desc: "Destroys blocks wherever you tap.",
 	category: VertexClientPE.category.BUILDING,
 	type: "Mod",
+	state: false,
 	getSettingsLayout: function() {
 		var tapNukerSettingsLayout = new LinearLayout(ctx);
 		tapNukerSettingsLayout.setOrientation(1);
@@ -1235,6 +1269,7 @@ var tapRemover = {
 	desc: "Removes blocks and entities on tap.",
 	category: VertexClientPE.category.BUILDING,
 	type: "Mod",
+	state: false,
 	isStateMod: function() {
 		return true;
 	},
@@ -1258,6 +1293,7 @@ var autoPlace = {
 	desc: "Automatically places the block you're holding wherever you look.",
 	category: VertexClientPE.category.BUILDING,
 	type: "Mod",
+	state: false,
 	isStateMod: function() {
 		return true;
 	},
@@ -1284,6 +1320,7 @@ var regen = {
 	desc: "Instantly refills your health.",
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
+	state: false,
 	isStateMod: function() {
 		return true;
 	},
@@ -1302,6 +1339,7 @@ var godMode = {
 	desc: "Gives you many hearts.",
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
+	state: false,
 	isStateMod: function() {
 		return true;
 	},
@@ -1319,6 +1357,7 @@ var criticals = {
 	desc: "Automatically jumps to make the second attack critical, make sure you attack again after hitting an entity and before hitting the ground to make it work.",
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
+	state: false,
 	isStateMod: function() {
 		return true;
 	},
@@ -1326,7 +1365,12 @@ var criticals = {
 		this.state = !this.state;
 	},
 	onAttack: function(a, v) {
-		Entity.setVelY(getPlayerEnt(), 0.64);
+		if(Launcher.isBlockLauncher() || Launcher.isToolbox()) {
+			Entity.setVelY(getPlayerEnt(), 0.64);
+		}
+		if(Launcher.isMcpeMaster()) {
+			com.mcbox.pesdk.launcher.playerJump();
+		}
 	}
 }
 
@@ -1335,6 +1379,7 @@ var arrowGun = {
 	desc: "Automatically shoots arrows wherever you look.",
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
+	state: false,
 	isStateMod: function() {
 		return true;
 	},
@@ -1351,6 +1396,54 @@ var arrowGun = {
 		setVelX(arrow, xx);
 		setVelY(arrow, zz);
 		setVelZ(arrow, yy);
+	}
+}
+
+var orderAPizza = {
+	name: "Order a Pizza",
+	desc: "Order a pizza of Domino's.",
+	category: VertexClientPE.category.MISC,
+	type: "Mod",
+	isStateMod: function() {
+		return false;
+	},
+	onToggle: function() {
+		pizzaOrderDialog();
+	}
+}
+
+var zoom = {
+	name: "Zoom",
+	desc: "Changes the FOV to zoom in.",
+	category: VertexClientPE.category.MISC,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+		this.state?ModPE.setFov(10):ModPE.resetFov();
+	}
+}
+
+var coordsDisplay = {
+	name: "CoordsDisplay",
+	desc: "Displays the player's coordinates.",
+	category: VertexClientPE.category.MISC,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onTick: function() {
+		var x = parseInt(getPlayerX());
+		var y = parseInt(getPlayerY());
+		var z = parseInt(getPlayerZ());
+		ModPE.showTipMessage("\n\n\n" + "X: " + parseInt(x) + " Y: " + parseInt(y) + " Z: " + parseInt(z));
 	}
 }
 
@@ -1398,6 +1491,9 @@ VertexClientPE.registerModule(yesCheatPlus);
 VertexClientPE.registerModule(switchGamemode);
 VertexClientPE.registerModule(onlyDay);
 VertexClientPE.registerModule(derp);
+VertexClientPE.registerModule(zoom);
+VertexClientPE.registerModule(coordsDisplay);
+VertexClientPE.registerModule(orderAPizza);
 
 function modTick() {
 	VertexClientPE.playerIsInGame = true;
@@ -1477,6 +1573,60 @@ function chatHook(text) {
  *	# COMMANDS #
  *	############
  */
+ 
+VertexClientPE.getHighestPageNumber = function() {
+	var commands = [];
+	VertexClientPE.modules.forEach(function(element, index, array) {
+		if(element != null && element.syntax != null && element.type == "Command") {
+			commands.push(element);
+		}
+	});
+	var i = 0;
+	var page = 1;
+	while(i >= 8*(page-1) && i <= 8*page-1 && commands[i] != null) {
+		i++;
+	}
+	while(i >= 8*page) {
+		page++;
+	}
+	return page;
+}
+ 
+VertexClientPE.showHelpPage = function(page) {
+	var commands = [];
+	VertexClientPE.clientMessage("Showing help page " + page/* + "/" + VertexClientPE.getHighestPageNumber()*/);
+	VertexClientPE.modules.forEach(function(element, index, array) {
+		if(element != null && element.syntax != null && element.type == "Command") {
+			commands.push(element);
+		}
+	});
+	commands.forEach(function(element, index, array) {
+		if(element.syntax != null) {
+			if(index >= 8*(page-1) && index <= 8*page-1) {
+				VertexClientPE.clientMessage("." + element.syntax);
+			}
+		}
+	});
+}
+
+var help = {
+	syntax: "help <page>",
+	type: "Command",
+	isStateMod: function() {
+		return false;
+	},
+	onCall: function(cmd) {
+		//VertexClientPE.clientMessage(".help is broken at the moment!");
+		var commandSplit = cmd.split(" ");
+		if(commandSplit[1] == undefined || commandSplit[1] == null || commandSplit[1] == "1") {
+			VertexClientPE.showHelpPage("1");
+		} else {
+			if(commandSplit[1] != "1") {
+				VertexClientPE.showHelpPage(commandSplit[1]);
+			}
+		}
+	}
+}
 
 var say = {
 	syntax: "say <message>",
@@ -1494,7 +1644,11 @@ var say = {
 	}
 }
 
-VertexClientPE.registerModule(say);
+VertexClientPE.registerModule(help);
+for(var i = 0; i <= 15; i++) {
+	say.name += i;
+	VertexClientPE.registerModule(say);
+}
 
 /**
  *  ##############
@@ -2159,9 +2313,12 @@ VertexClientPE.showModDialog = function(mod, btn) {
 								} else if(yesCheatPlusState && mod.canBypassYesCheatPlus == undefined || mod.canBypassYesCheatPlus == null) {
 									mod.onToggle();
 								} else if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
-									if(mod.state) {
+									if(mod.isStateMod() && mod.state) {
 										mod.onToggle();
+									} else if(mod.isStateMod() && !mod.state) {
 										mod.state = true;
+									} else if(!mod.isStateMod()) {
+										VertexClientPE.toast("This mod is blocked by YesCheat+!");
 									}
 								}
 							}
@@ -2733,30 +2890,6 @@ VertexClientPE.commandManager = function(cmd) {
 		}
 	});
 	switch(commandSplit[0]) {
-		case "help": //1
-			if(commandSplit[1] == undefined || commandSplit[1] == null || commandSplit[1] == "1") {
-				VertexClientPE.clientMessage("Showing help page 1/2");
-				VertexClientPE.clientMessage(".help [<page>]");
-				VertexClientPE.clientMessage(".gm");
-				VertexClientPE.clientMessage(".spectate <player>");
-				VertexClientPE.clientMessage(".toggle <module>");
-				VertexClientPE.clientMessage(".t <module>");
-				VertexClientPE.clientMessage(".drop [infinite]");
-				VertexClientPE.clientMessage(".version <current|target|latest>");
-				VertexClientPE.clientMessage(".panic");
-			} else {
-				if(commandSplit[1] == "2") {
-					VertexClientPE.clientMessage("Showing help page 2/2");
-					VertexClientPE.clientMessage(".p");
-					VertexClientPE.clientMessage(".js");
-					VertexClientPE.clientMessage(".say <message>");
-					VertexClientPE.clientMessage(".give (<item_name|item_id>) [<amount>] [<data>]");
-					VertexClientPE.clientMessage(".tp <x> <y> <z>");
-				} else {
-					VertexClientPE.clientMessage(ChatColor.RED + "Syntax error: " + ChatColor.WHITE + "Invalid page: " + commandSplit[1]);
-				}
-			}
-			break;
 		case "gm": //2
 			VertexClientPE.switchGameMode();
 			VertexClientPE.clientMessage("Your gamemode has been updated!");
@@ -4438,9 +4571,12 @@ function modButton(mod) {
 				} else if(yesCheatPlusState && mod.canBypassYesCheatPlus == undefined || mod.canBypassYesCheatPlus == null) {
 					mod.onToggle();
 				} else if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
-					if(mod.state && mod.isStateMod()) {
+					if(mod.isStateMod() && mod.state) {
 						mod.onToggle();
+					} else if(mod.isStateMod() && !mod.state) {
 						mod.state = true;
+					} else if(!mod.isStateMod()) {
+						VertexClientPE.toast("This mod is blocked by YesCheat+!");
 					}
 				}
 			}
@@ -7237,8 +7373,10 @@ VertexClientPE.clientTick = function() {
 						try{
 							if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false)) {
 								VertexClientPE.isRemote = true;
-								net.zhuoweizhang.mcpelauncher.ScriptManager.isRemote = true;
-								net.zhuoweizhang.mcpelauncher.ScriptManager.setLevelFakeCallback(true, false);
+								if(Launcher.isBlockLauncher()) {
+									net.zhuoweizhang.mcpelauncher.ScriptManager.isRemote = true;
+									net.zhuoweizhang.mcpelauncher.ScriptManager.setLevelFakeCallback(true, false);
+								}
 							}
 						}catch(e) {
 							print("Use BlockLauncher v1.12.2 or above!");
