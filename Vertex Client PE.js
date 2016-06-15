@@ -210,8 +210,15 @@ VertexClientPE.registerModule = function(obj) {
 	VertexClientPE.modules.push(obj);
 }
 
+var shownAddonProDialog = false;
+
 function registerAddon(name, desc, current_version, target_version, mods) {
 	var shouldMessage = true;
+	if(!VertexClientPE.isPro() && !shownAddonProDialog) {
+		VertexClientPE.showProDialog("Loading addons");
+		shownAddonProDialog = true;
+		return;
+	}
 	try {
 		VertexClientPE.addons.push({
 			name: name,
@@ -2305,6 +2312,10 @@ VertexClientPE.showModDialog = function(mod, btn) {
 					}
 					toggleButton.setOnClickListener(new android.view.View.OnClickListener() {
 						onClick: function(view) {
+							if(mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) {
+								VertexClientPE.showProDialog(mod.name);
+								return;
+							}
 							if(mod.name == "YesCheat+") {
 								mod.onToggle();
 							} else {
