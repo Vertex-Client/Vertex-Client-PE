@@ -71,6 +71,8 @@ String.prototype.replaceAll = function(str1, str2, ignore)
     return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
 }
 
+var isSupported = true;
+
 var VertexClientPE = {
 	name: "Vertex Client PE",
 	getName: function() {
@@ -80,7 +82,10 @@ var VertexClientPE = {
 	isDevMode: function() {
 		return VertexClientPE.isDev;
 	},
-	accounts: []
+	isSupported: function() {
+		return isSupported;
+	},
+	accounts: new org.json.JSONArray()
 };
 
 var _0x199a=["\x69\x73\x50\x72\x6F","\x67\x65\x74\x50\x72\x65\x66\x65\x72\x65\x6E\x63\x65\x73","\x56\x65\x72\x74\x65\x78\x43\x6C\x69\x65\x6E\x74\x50\x45\x2E\x69\x73\x50\x72\x6F","\x67\x65\x74\x53\x74\x72\x69\x6E\x67","\x73\x65\x74\x49\x73\x50\x72\x6F","\x54\x68\x69\x73\x49\x73\x53\x70\x61\x72\x74\x61"];VertexClientPE[_0x199a[0]]=function(){var _0xf36dx1=ctx[_0x199a[1]](ctx.MODE_PRIVATE);return _0xf36dx1[_0x199a[3]](_0x199a[2],null)};VertexClientPE[_0x199a[4]]=function(){var _0xf36dx2=_0x199a[5];return _0xf36dx2}
@@ -185,12 +190,44 @@ var topBar;
 
 VertexClientPE.favourites = [];
 
+VertexClientPE.addView = function(layout, modButtonView) {
+	try {
+		for(var fav in VertexClientPE.favourites) {
+			if(VertexClientPE.favourites[fav] == modButtonView.getName()) {
+				favMenuLayout.addView(modButtonView.getLayout());
+				var isFavourite = true;
+				break;
+			}
+		}
+		if(!isFavourite) {
+			layout.addView(modButtonView.getLayout());
+		}
+	} catch(e) {
+		clientMessage("Error: " + e);
+		VertexClientPE.showBugReportDialog(e);
+	}
+}
+
 VertexClientPE.category = {
 	COMBAT: 0,
 	BUILDING: 1,
 	MOVEMENT: 2,
 	CHAT: 3,
-	MISC: 4
+	MISC: 4,
+	toName: function(category) {
+		switch(category) {
+			case VertexClientPE.category.COMBAT:
+				return combatName;
+			case VertexClientPE.category.BUILDING:
+				return buildingName;
+			case VertexClientPE.category.MOVEMENT:
+				return movementName;
+			case VertexClientPE.category.CHAT:
+				return chatName;
+			case VertexClientPE.category.MISC:
+				return miscName;
+		}
+	}
 }
 
 VertexClientPE.modules = [];
@@ -1654,10 +1691,7 @@ var say = {
 }
 
 VertexClientPE.registerModule(help);
-for(var i = 0; i <= 15; i++) {
-	say.name += i;
-	VertexClientPE.registerModule(say);
-}
+VertexClientPE.registerModule(say);
 
 /**
  *  ##############
@@ -1665,22 +1699,51 @@ for(var i = 0; i <= 15; i++) {
  *	##############
  */
 
-VertexClientPE.addView = function(layout, modButtonView) {
-	try {
-		for(var fav in VertexClientPE.favourites) {
-			if(VertexClientPE.favourites[fav] == modButtonView.getName()) {
-				favMenuLayout.addView(modButtonView.getLayout());
-				var isFavourite = true;
-				break;
-			}
+VertexClientPE.GUI = {
+	floatingMenus: []
+}
+
+VertexClientPE.GUI.PopupWindow = function() {
+	var popupWindow = new widget.PopupWindow();
+}
+
+VertexClientPE.GUI.registerFloatingMenu = function() {
+	var floatingPopupWindowShown = false;
+	var display = new android.util.DisplayMetrics();
+	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
+	
+	VertexClientPE.loadMainSettings();
+
+	var floatingPopupWindow = new VertexClientPE.GUI.PopupWindow();
+	var floatingPopupWindowLayout1 = new LinearLayout(ctx);
+	var floatingPopupWindowScrollView = new ScrollView(ctx);
+	var floatingPopupWindowLayout = new LinearLayout(ctx);
+	
+	floatingPopupWindowLayout.setOrientation(1);
+	floatingPopupWindowLayout1.setOrientation(1);
+	
+	floatingPopupWindowScrollView.addView(floatingPopupWindowLayout);
+	
+	var floatingCategoryTitle = new categoryTitle(VertexClientPE.category.toName(category), true);
+	var floatingCategoryTitleSettings = floatingCategoryTitle.getLeftButton();
+	var floatingCategoryTitleTitle = floatingCategoryTitle.getMiddleButton();
+	var floatingCategoryTitleArrow = floatingCategoryTitle.getRightButton();
+	
+	floatingCategoryTitleSettings.setOnClickListener(new android.view.View.OnClickListener({
+		onClick: function() {
+			VertexClientPE.showCategoryDialog(floatingCategoryTitle, VertexClientPE.category.toName(category), 0);
 		}
-		if(!isFavourite) {
-			layout.addView(modButtonView.getLayout());
-		}
-	} catch(e) {
-		clientMessage("Error: " + e);
-		VertexClientPE.showBugReportDialog(e);
+	}));
+	
+	VertexClientPE.addView(floatingPopupWindow, floatingCategoryTitle);
+	
+	if(floatingPopupWindowShown == true) {
+		floatingCategoryTitleArrow.setText("△");
+		floatingPopupWindowLayout1.addView(floatingPopupWindowScrollView);
+	}else if(combatMenuShown == false) {
+		floatingCategoryTitleArrow.setText("▽");
 	}
+	VertexClientPE.GUI.floatingMenus.push(this);
 }
 
 VertexClientPE.showNotification = function(eventtext) {
@@ -1793,6 +1856,18 @@ ModPE.getPlayerName = function() {
     return username;
 };
 
+ModPE.setPlayerName = function(username) {
+	saveSetting("mp_username", username);
+}
+
+ModPE.changeClientId = function(clientId) {
+	var fileOutputStream = new java.io.FileOutputStream(new java.io.File(android.os.Environment.getExternalStorageDirectory() + "/games/com.mojang/minecraftpe/clientId.txt"));
+	var outputStreamWriter = new java.io.OutputStreamWriter(fileOutputStream);
+	outputStreamWriter.write(clientId);
+	outputStreamWriter.close();
+	fileOutputStream.close();
+};
+
 ModPE.getClientId = function() {
     var file = new java.io.File("/sdcard/games/com.mojang/minecraftpe/clientid.txt");
     var br = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(file)));
@@ -1824,7 +1899,6 @@ function saveSetting(article, value) {
 	outputStreamWriter.write(tempSaved + article + ":" + value);
 	outputStreamWriter.close();
 	fileOutputStream.close();
-	net.zhuoweizhang.mcpelauncher.ScriptManager.requestGraphicsReset();
 };
 
 /*function saveVertexSetting(article, value, secValue) {
@@ -2500,6 +2574,11 @@ VertexClientPE.showDelaySpammerDialog = function() {
 	});
 }
 
+var accountNameInput;
+var accountClientIdInput;
+var accountName = "unknown";
+var accountClientId = "unknown";
+
 VertexClientPE.showAddAccountDialog = function() {
 	ctx.runOnUiThread(new java.lang.Runnable() {
 		run: function() {
@@ -2507,9 +2586,12 @@ VertexClientPE.showAddAccountDialog = function() {
 				VertexClientPE.loadMainSettings();
 				dialogGUI = new widget.PopupWindow();
 				var accountTitle = clientTextView("Add account", true);
-				var accountInput = new EditText(ctx);
-				accountInput.setTextColor(android.graphics.Color.WHITE);
-				accountInput.setHint("Enter an username");
+				accountNameInput = new EditText(ctx);
+				accountNameInput.setTextColor(android.graphics.Color.WHITE);
+				accountNameInput.setHint("Enter an username");
+				accountClientIdInput = new EditText(ctx);
+				accountClientIdInput.setTextColor(android.graphics.Color.WHITE);
+				accountClientIdInput.setHint("Enter a client id (wip, added later)");
 				var okButton = clientButton("Ok");
 				var cancelButton = clientButton("Cancel");
 				var dialogLayout = new LinearLayout(ctx);
@@ -2517,29 +2599,42 @@ VertexClientPE.showAddAccountDialog = function() {
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
 				dialogLayout.addView(accountTitle);
-				dialogLayout.addView(accountInput);
+				dialogLayout.addView(accountNameInput);
+				//dialogLayout.addView(accountClientIdInput);
 				dialogLayout.addView(okButton);
 				dialogLayout.addView(cancelButton);
 				var dialog = new android.app.Dialog(ctx);
 				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
-				dialog.setTitle("Change spam message");
+				dialog.setTitle("Add account");
 				dialogGUI.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
 				dialogGUI.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
 				dialogGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.TOP, 0, 0);
 				dialog.show();
 				okButton.setOnClickListener(new android.view.View.OnClickListener() {
 					onClick: function(view) {
-						var accountName = accountInput.getText();
-						VertexClientPE.accounts.push({
-							username: accountName.toString()
-						})
-						VertexClientPE.saveMainSettings();
-						VertexClientPE.loadMainSettings();
+						accountName = accountNameInput.getText().toString();
+						if(accountName == null || accountName.substring(0, 1) == " ") {
+							VertexClientPE.toast("Enter an username!");
+							return;
+						}
+						//accountClientId = accountClientIdInput.getText().toString();
+						if(VertexClientPE.accounts.length() != undefined && VertexClientPE.accounts.length() != undefined) {
+							for(var i = 0; i < VertexClientPE.accounts.length(); i++) {
+								if(VertexClientPE.accounts.get(i) == accountName) {
+									VertexClientPE.toast("This account already exists in your accounts list!");
+									return;
+								}
+							}
+						}
+						VertexClientPE.accounts.put(accountName);
+						VertexClientPE.saveAccounts();
 						dialog.dismiss();
 						accountManager.dismiss();
+						exitAccountManagerUI.dismiss();
 						VertexClientPE.showAccountManager();
+						exitAccountManager();
 					}
 				});
 				cancelButton.setOnClickListener(new android.view.View.OnClickListener() {
@@ -4285,6 +4380,36 @@ VertexClientPE.loadCategorySettings = function() {
 	return true;
 }
 
+VertexClientPE.saveAccounts = function() {
+	java.io.File(settingsPath).mkdirs();
+    var newFile = new java.io.File(settingsPath, "vertexclientpe_accounts.dat");
+    newFile.createNewFile();
+    var stream = new java.io.FileOutputStream(newFile);
+	try {
+		stream.write(VertexClientPE.accounts.toString().getBytes());
+	} finally {
+		stream.close();
+	}
+}
+
+VertexClientPE.loadAccounts = function() {
+	try {
+		if(!java.io.File(settingsPath + "vertexclientpe_accounts.dat").exists())
+			return;
+		var file = new java.io.File(settingsPath + "vertexclientpe_accounts.dat");
+		var readed = (new java.io.BufferedReader(new java.io.FileReader(file)));
+		var data = new java.lang.StringBuilder();
+		var string;
+		while((string = readed.readLine()) != null) {
+			data.append(string);
+			data.append("\n");
+		}
+		VertexClientPE.accounts = new org.json.JSONArray(data.toString());
+	} catch(e) {
+		//error
+	}
+}
+
 VertexClientPE.saveMainSettings = function() {
     java.io.File(settingsPath).mkdirs();
     var newFile = new java.io.File(settingsPath, "vertexclientpe.txt");
@@ -4646,6 +4771,80 @@ function addonButton(addon) {
 	return addonButtonLayout;
 }
 
+function accountButton(account, layout) {
+	var accountManagerAccountLayout = new LinearLayout(ctx);
+	accountManagerAccountLayout.setOrientation(LinearLayout.HORIZONTAL);
+	/*if(account.name == null || account.name == undefined) {
+		return accountManagerAccountLayout;
+	}
+	if(account.clientId == null || account.clientId == undefined) {
+		return accountManagerAccountLayout;
+	}*/
+	
+	var accountManagerAccountLayoutLeft = new LinearLayout(ctx);
+	accountManagerAccountLayoutLeft.setOrientation(1);
+	accountManagerAccountLayoutLeft.setGravity(android.view.Gravity.CENTER_VERTICAL);
+	accountManagerAccountLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, display.heightPixels / 10));
+	accountManagerAccountLayout.addView(accountManagerAccountLayoutLeft);
+	
+	var accountManagerAccountLayoutCenter = new LinearLayout(ctx);
+	accountManagerAccountLayoutCenter.setOrientation(1);
+	accountManagerAccountLayoutCenter.setGravity(android.view.Gravity.CENTER);
+	accountManagerAccountLayoutCenter.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, display.heightPixels / 10));
+	accountManagerAccountLayout.addView(accountManagerAccountLayoutCenter);
+	
+	var accountManagerAccountLayoutRight = new LinearLayout(ctx);
+	accountManagerAccountLayoutRight.setOrientation(LinearLayout.HORIZONTAL);
+	accountManagerAccountLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, display.heightPixels / 10));
+	accountManagerAccountLayout.addView(accountManagerAccountLayoutRight);
+	var usernameText = clientTextView(account);
+	usernameText.setTextSize(15);
+	accountManagerAccountLayoutLeft.addView(usernameText);
+	/*var clientIdText = clientTextView(account.clientId);
+	clientIdText.setTextSize(15);
+	accountManagerAccountLayoutCenter.addView(clientIdText);*/
+	var useButton = clientButton("Use");
+	useButton.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+	useButton.setOnClickListener(new android.view.View.OnClickListener({
+		onClick: function(viewarg) {
+			var playerName = account.toString();
+			//var playerClientId = account.clientId.toString();
+			var shouldRestart = false;
+			if(playerName != ModPE.getPlayerName()) {
+				ModPE.setPlayerName(playerName);
+				shouldRestart = true;
+			}
+			/*if(playerClientId != ModPE.getClientId()) {
+				ModPE.changeClientId(playerClientId);
+				shouldRestart = true;
+			}*/
+			if(shouldRestart) {
+				ModPE.restart();
+				return;
+			}
+			accountManager.dismiss();
+			exitAccountManagerUI.dismiss();
+			showMenuButton();
+			showAccountManagerButton();
+		}
+	}));
+	accountManagerAccountLayoutRight.addView(useButton);
+	var deleteButton = clientButton("x");
+	deleteButton.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 3 - display.widthPixels / 4, display.heightPixels / 10));
+	deleteButton.setOnClickListener(new android.view.View.OnClickListener({
+		onClick: function(viewarg) {
+			VertexClientPE.removeAccount(account.toString(), layout, accountManagerAccountLayout);
+			/*accountManager.dismiss();
+			exitAccountManagerUI.dismiss();
+			showMenuButton();
+			showAccountManagerButton();*/
+		}
+	}));
+	accountManagerAccountLayoutRight.addView(deleteButton);
+	
+	return accountManagerAccountLayout;
+}
+
 function clientTextButton(text, shadow) //menu buttons
 {
     var defaultTextButton = new Button(ctx);
@@ -4915,6 +5114,45 @@ VertexClientPE.loadNews = function() {
     }
 }
 
+VertexClientPE.loadSupport = function() {
+    try {
+        // download content
+        var url = new java.net.URL("https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/update/Support/" + VertexClientPE.currentVersion + "/support");
+        var connection = url.openConnection();
+
+        // get content
+        supportInputStream = connection.getInputStream();
+
+        // read result
+        var loadedSupport = "";
+        var bufferedSupportReader = new java.io.BufferedReader(new java.io.InputStreamReader(supportInputStream));
+        var rowSupport = "";
+        while((rowSupport = bufferedNewsReader.readLine()) != null) {
+            loadedSupport += rowSupport;
+        }
+		isSupported = loadedSupport.toString()==="unsupported"?false:true;
+
+        // close what needs to be closed
+        bufferedSupportReader.close();
+
+        // test
+        //clientMessage(VertexClientPE.getVersion("current"); + " " + latestVersion);
+    } catch(err) {
+		var sharedPref = ctx.getPreferences(ctx.MODE_PRIVATE);
+		if(sharedPref.getString("VertexClientPE.isSupported_" + VertexClientPE.currentVersion, null) === "false") {
+			isSupported = false;
+		} else {
+			isSupported = true;
+		}
+        ModPE.log("[Vertex Client PE] VertexClientPE.loadSupport() caught an error: " + err);
+		return;
+    }
+	var sharedPref = ctx.getPreferences(ctx.MODE_PRIVATE);
+	var editor = sharedPref.edit();
+	editor.putString("VertexClientPE.isSupported_" + VertexClientPE.currentVersion, isSupported.toString());
+	editor.commit();
+}
+
 new java.lang.Thread(new java.lang.Runnable() {
 	run: function() {
 		VertexClientPE.loadMainSettings();
@@ -5077,7 +5315,7 @@ VertexClientPE.showSplashScreen = function() {
 							VertexClientPE.clientTick();
 							VertexClientPE.specialTick();
 							VertexClientPE.secondTick();
-							//showAccountManagerButton();
+							showAccountManagerButton();
 					}}));
 					twitterButton.setOnClickListener(new android.view.View.OnClickListener({
 						onClick: function(viewarg) {
@@ -5226,21 +5464,57 @@ var accountManagerLayoutLeft;
 var accountManagerLayoutCenter;
 var accountManagerLayoutRight;
 
+ModPE.restart = function() {
+	if(Launcher.isBlockLauncher()) {
+		net.zhuoweizhang.mcpelauncher.ui.NerdyStuffActivity.forceRestart(ctx, 500, true);
+	}
+}
+
+VertexClientPE.addAccount = function(str) {
+	var username = str.split(" ")[0];
+	var clientId = str.split(" ")[1];
+	VertexClientPE.accounts.push({
+		username: username,
+		clientId: clientId
+	})
+}
+
+VertexClientPE.removeAccount = function(str, layout, view) {
+	if(VertexClientPE.accounts.length() != null) {
+		var tempAccounts = new org.json.JSONArray();
+		for(var i = 0; i < VertexClientPE.accounts.length(); i++) {
+			if(VertexClientPE.accounts.get(i) != str) {
+				tempAccounts.put(VertexClientPE.accounts.get(i));
+			}
+		}
+		VertexClientPE.accounts = tempAccounts;
+	}
+	if(layout != null && view != null) {
+		try {
+			layout.removeView(view);
+		} catch(e) {
+			//error
+		}
+	}
+	VertexClientPE.saveAccounts();
+}
+
 VertexClientPE.showAccountManager = function() {
+	VertexClientPE.loadAccounts();
 	var display = new android.util.DisplayMetrics();
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
     var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
         ctx.runOnUiThread(new java.lang.Runnable({
             run: function() {
                 try {
-					try {
-						ModPE.readData("account_manager");
-					} catch(e) {
-						//No accounts on the list
-					}
 					var accountManagerLayout = new LinearLayout(ctx);
 					accountManagerLayout.setOrientation(1);
 					accountManagerLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					
+					var accountManagerTitle = clientTextView("Account Manager", true);
+					accountManagerTitle.setTextSize(25);
+					accountManagerTitle.setGravity(android.view.Gravity.CENTER);
+					accountManagerLayout.addView(accountManagerTitle);
 					
 					var addAccountButton = clientButton("Add account");
 					addAccountButton.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
@@ -5255,63 +5529,18 @@ VertexClientPE.showAccountManager = function() {
 					var accountManagerScrollView = new ScrollView(ctx);
 					
 					var accountManagerLayout1 = new LinearLayout(ctx);
-					accountManagerLayout1.setOrientation(LinearLayout.HORIZONTAL);
+					accountManagerLayout1.setOrientation(1);
 					
 					accountManagerScrollView.addView(accountManagerLayout1);
 					accountManagerLayout.addView(accountManagerScrollView);
 					
-					accountManagerLayoutLeft = new LinearLayout(ctx);
-					accountManagerLayoutLeft.setOrientation(1);
-					accountManagerLayoutLeft.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
-					accountManagerLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, LinearLayout.LayoutParams.WRAP_CONTENT));
-					accountManagerLayout1.addView(accountManagerLayoutLeft);
-					
-					accountManagerLayoutCenter = new LinearLayout(ctx);
-					accountManagerLayoutCenter.setOrientation(1);
-					accountManagerLayoutCenter.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
-					accountManagerLayoutCenter.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, LinearLayout.LayoutParams.WRAP_CONTENT));
-					accountManagerLayout1.addView(accountManagerLayoutCenter);
-					
-					accountManagerLayoutRight = new LinearLayout(ctx);
-					accountManagerLayoutRight.setOrientation(1);
-					accountManagerLayoutRight.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
-					accountManagerLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, LinearLayout.LayoutParams.WRAP_CONTENT));
-					accountManagerLayout1.addView(accountManagerLayoutRight);
-					
-					var skinImage = new android.graphics.BitmapFactory.decodeFile(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/games/com.mojang/minecraftpe/custom.png");
-					var steveImage = new android.graphics.BitmapFactory.decodeStream(ModPE.openInputStreamFromTexturePack("images/mob/steve.png"));
-					var alexImage = new android.graphics.BitmapFactory.decodeStream(ModPE.openInputStreamFromTexturePack("images/mob/alex.png"));
-					var skinViewer = new widget.ImageView(ctx);
-					var skinViewerText = new widget.TextView(ctx);
-					skinViewerText.setText("Sorry, your skin can't be viewed");
-					if(ModPE.getCurrentUsedSkin() == "Standard_Alex") {
-						skinViewer.setImageBitmap(alexImage);
-					}if(ModPE.getCurrentUsedSkin() == "Standard_Steve") {
-						skinViewer.setImageBitmap(steveImage);
-					}if(ModPE.getCurrentUsedSkin() == "Standard_Custom") {
-						skinViewer.setImageBitmap(skinImage);
-					}if(ModPE.getCurrentUsedSkin() != "Standard_Alex" && ModPE.getCurrentUsedSkin() != "Standard_Steve" && ModPE.getCurrentUsedSkin() != "Standard_Custom") {
-						accountManagerLayout.addView(skinViewerText);
-					}
-					var layoutParams = new android.widget.LinearLayout.LayoutParams(750, 750);
-					skinViewer.setLayoutParams(layoutParams);
-					//accountManagerLayout.addView(skinViewer);
-					
-					if(VertexClientPE.accounts != null) {
-						for(var i in VertexClientPE.accounts) {
-							var usernameText = new widget.TextView(ctx);
-							usernameText.setText(VertexClientPE.accounts[i].username + "\n");
-							accountManagerLayoutLeft.addView(usernameText);
-							var useButton = clientButton("Use");
-							useButton.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
-							useButton.setOnClickListener(new android.view.View.OnClickListener({
-								onClick: function(viewarg) {
-									ModPE.setPlayerName(VertexClientPE.accounts[i].username.toString());
-									accountManager.dismiss();
-									showMenuButton();
-								}
-							}));
-							accountManagerLayoutRight.addView(useButton);
+					var accountsLength = VertexClientPE.accounts.length();
+					if(VertexClientPE.accounts != null && accountsLength != -1) {
+						for(var i = 0; i < accountsLength; i++) {
+							//if(VertexClientPE.accounts[i].username != null && VertexClientPE.accounts[i].username != undefined && VertexClientPE.accounts[i].username != " ") {
+								var usernameLayout = accountButton(VertexClientPE.accounts.get(i), accountManagerLayout1);
+								accountManagerLayout1.addView(usernameLayout);
+							//}
 						}
 					}
 					
@@ -5320,9 +5549,9 @@ VertexClientPE.showAccountManager = function() {
 					accountManager.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
 				} catch(error) {
 					print('An error occurred: ' + error);
+				}
 			}
-		}
-	}));
+		}));
 }
 
 VertexClientPE.downloadPro = function() {
@@ -5330,6 +5559,8 @@ VertexClientPE.downloadPro = function() {
 }
 
 VertexClientPE.setup = function() {
+	VertexClientPE.loadSupport();
+	print(isSupported);
 	if(VertexClientPE.loadMainSettings() == null) {
 		VertexClientPE.showSetupScreen();
 		setupDone();
@@ -5375,6 +5606,17 @@ VertexClientPE.getHighestBlockDifference = function() {
 var hasLoadedAddons = false;
 
 function newLevel() {
+	ctx.runOnUiThread(new java.lang.Runnable() {
+		run: function() {
+			if(accountManager != null) {
+				accountManager.dismiss();
+				exitAccountManagerUI.dismiss();
+			}
+			if(accountManagerGUI != null) {
+				accountManagerGUI.dismiss();
+			}
+		}
+	});
 	autoLeaveStage = 0;
 	VertexClientPE.playerIsInGame = true;
 	VertexClientPE.loadMainSettings();
@@ -5427,6 +5669,7 @@ function leaveGame() {
 				//vertexclientpefavmenu.dismiss(); //Close
 			}
 			showMenuButton();
+			showAccountManagerButton();
 			VertexClientPE.saveMainSettings();
 			VertexClientPE.editCopyrightText();
 			if(mp != null) {
@@ -7353,7 +7596,7 @@ function showAccountManagerButton() {
     layout.setOrientation(1);
 	var display = new android.util.DisplayMetrics();
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
-    var menuBtn = clientButton("A");
+    var menuBtn = clientButton("AM");
     menuBtn.setTextColor(android.graphics.Color.WHITE); //Color
 	menuBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 10, display.heightPixels / 10));
     menuBtn.setOnClickListener(new android.view.View.OnClickListener({
@@ -7364,6 +7607,7 @@ function showAccountManagerButton() {
 	GUI.dismiss();
 	accountManagerGUI.dismiss();
 	VertexClientPE.showAccountManager();
+	exitAccountManager();
     }
     }));
     layout.addView(menuBtn);
@@ -7734,6 +7978,35 @@ function exit() {
     }}));
     }
 	
+function exitAccountManager(){
+    var ctxe = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+    ctxe.runOnUiThread(new java.lang.Runnable({ run: function(){
+    try{
+    var xAccountManagerLayout = new LinearLayout(ctxe);
+    var xAccountManagerButton = new Button(ctxe);
+    xAccountManagerButton.setText('X');//Text
+    xAccountManagerButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
+    xAccountManagerButton.setTextColor(android.graphics.Color.WHITE);
+    xAccountManagerButton.setOnClickListener(new android.view.View.OnClickListener({
+    onClick: function(viewarg){
+    exitAccountManagerUI.dismiss(); //Close
+    accountManager.dismiss(); //Close
+	showMenuButton();
+	showAccountManagerButton();
+    }
+    }));
+    xAccountManagerLayout.addView(xAccountManagerButton);
+	
+    exitAccountManagerUI = new widget.PopupWindow(xAccountManagerLayout, dip2px(40), dip2px(40));
+    exitAccountManagerUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+    exitAccountManagerUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
+    }catch(exception){
+    print(exception);
+	VertexClientPE.showBugReportDialog(exception);
+    }
+    }}));
+}
+	
 function exitSettings(){
     var ctxe = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
     ctxe.runOnUiThread(new java.lang.Runnable({ run: function(){
@@ -8064,4 +8337,4 @@ function blockEventHook(x, y, z, e, d) {
 	}
 }
  
-//End
+//Endd
