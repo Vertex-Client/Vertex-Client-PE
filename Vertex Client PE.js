@@ -2588,6 +2588,7 @@ VertexClientPE.showAddAccountDialog = function() {
 				var accountTitle = clientTextView("Add account", true);
 				accountNameInput = new EditText(ctx);
 				accountNameInput.setTextColor(android.graphics.Color.WHITE);
+				accountNameInput.setSingleLine(true);
 				accountNameInput.setHint("Enter an username");
 				accountClientIdInput = new EditText(ctx);
 				accountClientIdInput.setTextColor(android.graphics.Color.WHITE);
@@ -2615,7 +2616,7 @@ VertexClientPE.showAddAccountDialog = function() {
 				okButton.setOnClickListener(new android.view.View.OnClickListener() {
 					onClick: function(view) {
 						accountName = accountNameInput.getText().toString();
-						if(accountName == null || accountName.substring(0, 1) == " ") {
+						if(accountName == null || accountName == "" || accountName.replaceAll(" ", "") + accountName.replaceAll("\n", "") == "") {
 							VertexClientPE.toast("Enter an username!");
 							return;
 						}
@@ -2629,6 +2630,7 @@ VertexClientPE.showAddAccountDialog = function() {
 							}
 						}
 						VertexClientPE.accounts.put(accountName);
+						print("\'" + accountName + "\'");
 						VertexClientPE.saveAccounts();
 						dialog.dismiss();
 						accountManager.dismiss();
@@ -8337,4 +8339,4 @@ function blockEventHook(x, y, z, e, d) {
 	}
 }
  
-//Endd
+//End
