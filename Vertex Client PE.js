@@ -875,7 +875,7 @@ var tapTeleporter = {
 	onToggle: function() {
 		this.state = !this.state;
 	},
-	onTick: function() {
+	onUseItem: function(x, y, z, itemId, blockId, side, blockDamage) {
 		if(getTile(x, y, z) != 0) {
 			VertexClientPE.teleporter(x, y + 3, z);
 		}
@@ -1493,6 +1493,53 @@ var coordsDisplay = {
 	}
 }
 
+var itemGiver = {
+	name: "ItemGiver",
+	desc: "Adds items to your inventory.",
+	category: VertexClientPE.category.MISC,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return false;
+	},
+	onToggle: function() {
+		VertexClientPE.showItemGiverDialog();
+	}
+}
+
+var healthTags = {
+	name: "HealthTags",
+	desc: "Displays an entity's name and health in its nametag.",
+	category: VertexClientPE.category.COMBAT,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onTick: function() {
+		var mobs = Entity.getAll();
+		/*for(var i = 0; i < mobs.length; i++) {
+			var entity = mobs[i];
+			if(entity != getPlayerEnt()) {
+				if(Entity.getExtraData(entity, "vertex.clientpe.hasusedhealthtags") == null || Entity.getExtraData(entity, "vertex.clientpe.hasusedhealthtags") == "false") {
+					Entity.setExtraData(entity, "vertex.clientpe.hasusedhealthtags", "true");
+					Entity.setExtraData(entity, "vertex.clientpe.lasthealth", Entity.getHealth(entity).toString());
+					Entity.setExtraData(entity, "vertex.clientpe.lastnametag", Entity.getNameTag(entity).toString());
+					Entity.setExtraData(entity, "vertex.clientpe.fulllastnametag", Entity.getNameTag(entity) + Entity.getHealth(entity) + "/" + Entity.getMaxHealth(entity));
+					Entity.setNameTag(entity, Entity.getNameTag(entity) + "\n" + ChatColor.RED + Entity.getHealth(entity) + "/" + Entity.getMaxHealth(entity));
+				} else if(Entity.getExtraData(entity, "vertex.clientpe.hasusedhealthtags") == "true") {
+					Entity.setExtraData(entity, "vertex.clientpe.lasthealth", Entity.getHealth(entity).toString());
+					Entity.setNameTag(entity, Entity.getExtraData(entity, "vertex.clientpe.lastnametag") + "\n" + ChatColor.RED + Entity.getHealth(entity) + "/" + Entity.getMaxHealth(entity));
+				}
+			}
+		}*/
+		VertexClientPE.healthTags();
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(killAura);
 VertexClientPE.registerModule(freezeAura);
@@ -1506,6 +1553,7 @@ VertexClientPE.registerModule(regen);
 VertexClientPE.registerModule(godMode);
 VertexClientPE.registerModule(criticals);
 VertexClientPE.registerModule(arrowGun);
+VertexClientPE.registerModule(healthTags);
 //MOVEMENT
 VertexClientPE.registerModule(timer);
 VertexClientPE.registerModule(flight);
@@ -1535,6 +1583,7 @@ VertexClientPE.registerModule(chatRepeat);
 VertexClientPE.registerModule(panic);
 VertexClientPE.registerModule(yesCheatPlus);
 VertexClientPE.registerModule(switchGamemode);
+VertexClientPE.registerModule(itemGiver);
 VertexClientPE.registerModule(onlyDay);
 VertexClientPE.registerModule(derp);
 VertexClientPE.registerModule(zoom);
