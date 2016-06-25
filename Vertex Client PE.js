@@ -28,6 +28,7 @@ var KeyEvent = view.KeyEvent;
 var AnimationUtils = animation.AnimationUtils;
 var TranslateAnimation = animation.TranslateAnimation;
 var AccelerateInterpolator = animation.AccelerateInterpolator;
+var ViewPager = android.support.v4.view.ViewPager;
 
 var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
 var display = new android.util.DisplayMetrics();
@@ -2433,7 +2434,6 @@ VertexClientPE.showModDialog = function(mod, btn) {
 						}
 					} else {
 						toggleButton.setText("Enable");
-						toggleButton.setTextColor(android.graphics.Color.WHITE);
 					}
 					toggleButton.setOnClickListener(new android.view.View.OnClickListener() {
 						onClick: function(view) {
@@ -2470,8 +2470,16 @@ VertexClientPE.showModDialog = function(mod, btn) {
 									}
 								} else if(!mod.state) {
 									toggleButton.setText("Enable");
-									toggleButton.setTextColor(android.graphics.Color.WHITE);
-									btn.setTextColor(android.graphics.Color.WHITE);
+									if(themeSetting == "white") {
+										toggleButton.setTextColor(android.graphics.Color.BLACK);
+									} else {
+										toggleButton.setTextColor(android.graphics.Color.WHITE);
+									}
+									if(themeSetting == "white") {
+										btn.setTextColor(android.graphics.Color.BLACK);
+									} else {
+										btn.setTextColor(android.graphics.Color.WHITE);
+									}
 								}
 							}
 						}
@@ -2665,7 +2673,7 @@ VertexClientPE.showAddAccountDialog = function() {
 				okButton.setOnClickListener(new android.view.View.OnClickListener() {
 					onClick: function(view) {
 						accountName = accountNameInput.getText().toString();
-						if(accountName == null || accountName == "" || accountName.replaceAll(" ", "") + accountName.replaceAll("\n", "") == "") {
+						if(accountName == null || accountName == "" || accountName.replaceAll(" ", "") == "") {
 							VertexClientPE.toast("Enter an username!");
 							return;
 						}
@@ -2679,7 +2687,7 @@ VertexClientPE.showAddAccountDialog = function() {
 							}
 						}
 						VertexClientPE.accounts.put(accountName);
-						print("\'" + accountName + "\'");
+						//print("\'" + accountName + "\'");
 						VertexClientPE.saveAccounts();
 						dialog.dismiss();
 						accountManager.dismiss();
@@ -3901,7 +3909,8 @@ VertexClientPE.xRay = function(onOrOff) {
 }
 
 VertexClientPE.nuker = function(x, y, z, range, mode) {
-	mode = (mode==null)?nukerMode:mode;
+	mode = (mode==null)?"cube":mode;
+	range = (range==null)?3:range;
 	if(mode == "cube") {
 		for(var blockX = - range; blockX <= range; blockX++) {
 			for(var blockY = - range; blockY <= range; blockY++) {
@@ -4554,6 +4563,8 @@ VertexClientPE.loadMainSettings = function() {
 }
 
 VertexClientPE.setupTheme = function() {
+	VertexClientPE.loadMainSettings();
+	ModPE.overrideTexture("images/gui/title.png","http://Vertex-Client.github.io/bootstrap/img/title.png");
 	if(themeSetting == "green") {
 		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/BCA6vgv.png");
 		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/dY3c1Jl.png");
@@ -4569,6 +4580,14 @@ VertexClientPE.setupTheme = function() {
 	if(themeSetting == "purple") {
 		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/3xsluNN.png");
 		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/R9te7Bd.png");
+	}
+	if(themeSetting == "white") {
+		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/GlwhFt5.png");
+		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/gsn6Qfp.png");
+	}
+	if(themeSetting == "black") {
+		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/l7nG7ZU.png");
+		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/MZeX8XN.png");
 	}
 }
 
@@ -4638,7 +4657,11 @@ function clientButton(text, desc, color, round) //menu buttons
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
     var defaultButton = new Button(ctx);
     defaultButton.setText(text);
-    defaultButton.setTextColor(android.graphics.Color.WHITE);
+	if(color == "white") {
+		defaultButton.setTextColor(android.graphics.Color.BLACK);
+	} else {
+		defaultButton.setTextColor(android.graphics.Color.WHITE);
+	}
 	defaultButton.setTypeface(VertexClientPE.font);
 	if(desc != null && desc != undefined) {
 		defaultButton.setOnLongClickListener(new android.view.View.OnLongClickListener() {
@@ -4665,6 +4688,12 @@ function clientButton(text, desc, color, round) //menu buttons
 	}if(color == "purple") {
 		bg.setColor(android.graphics.Color.parseColor("#9F018C"));
 		bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#BC21AB"));
+	}if(color == "white") {
+		bg.setColor(android.graphics.Color.parseColor("#E1E1E1"));
+		bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#FFFFFF"));
+	}if(color == "black") {
+		bg.setColor(android.graphics.Color.parseColor("#141414"));
+		bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#1E1E1E"));
 	}
 	
 	defaultButton.setTransformationMethod(null);
@@ -4679,6 +4708,10 @@ function clientButton(text, desc, color, round) //menu buttons
 					bg.setColor(android.graphics.Color.parseColor("#0A175B"));
 				}if(color == "purple") {
 					bg.setColor(android.graphics.Color.parseColor("#9F018C"));
+				}if(color == "white") {
+					bg.setColor(android.graphics.Color.parseColor("#E1E1E1"));
+				}if(color == "black") {
+					bg.setColor(android.graphics.Color.parseColor("#141414"));
 				}
             } else {
 				bg.setColor(android.graphics.Color.parseColor("#0F8219"));
@@ -4688,6 +4721,10 @@ function clientButton(text, desc, color, round) //menu buttons
 					bg.setColor(android.graphics.Color.parseColor("#0E3882"));
 				}if(color == "purple") {
 					bg.setColor(android.graphics.Color.parseColor("#BC21AB"));
+				}if(color == "white") {
+					bg.setColor(android.graphics.Color.parseColor("#FFFFFF"));
+				}if(color == "black") {
+					bg.setColor(android.graphics.Color.parseColor("#1E1E1E"));
 				}
             }
             return false;
@@ -4697,7 +4734,11 @@ function clientButton(text, desc, color, round) //menu buttons
 	defaultButton.setBackgroundDrawable(bg);
     defaultButton.setPaintFlags(defaultButton.getPaintFlags() | android.graphics.Paint.SUBPIXEL_TEXT_FLAG);
     defaultButton.setTextSize(15);
-    defaultButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.BLACK);
+	if(color == "white") {
+		defaultButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.WHITE);
+	} else {
+		defaultButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.BLACK);
+	}
 	defaultButton.setPadding(0, 0, 0, 0);
     defaultButton.setLineSpacing(0, 1.15);
     return defaultButton;
@@ -4777,7 +4818,11 @@ function modButton(mod) {
 						defaultClientButton.setTextColor(android.graphics.Color.GREEN);
 					}
 				} else if(!mod.state) {
-					defaultClientButton.setTextColor(android.graphics.Color.WHITE);
+					if(themeSetting == "white") {
+						defaultClientButton.setTextColor(android.graphics.Color.BLACK);
+					} else {
+						defaultClientButton.setTextColor(android.graphics.Color.WHITE);
+					}
 				}
 			}
 		}
@@ -4917,11 +4962,19 @@ function clientTextView(text, shadow) //menu buttons
 {
     var defaultTextView = new widget.TextView(ctx);
     defaultTextView.setText(text);
-    defaultTextView.setTextColor(android.graphics.Color.WHITE);
+	if(themeSetting == "white") {
+		defaultTextView.setTextColor(android.graphics.Color.BLACK);
+	} else {
+		defaultTextView.setTextColor(android.graphics.Color.WHITE);
+	}
     defaultTextView.setTypeface(VertexClientPE.font);
 	
 	if(shadow == true && shadow != null && shadow != undefined) {
-		defaultTextView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.BLACK);
+		if(themeSetting == "white") {
+			defaultTextView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.WHITE);
+		} else {
+			defaultTextView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.BLACK);
+		}
 	}
     defaultTextView.setPadding(0, 0, 0, 0);
     defaultTextView.setLineSpacing(0, 1.15);
@@ -4959,6 +5012,10 @@ function categoryTitle(text) {
 		defaultTitle = redSubTitle(text);
 	} if(themeSetting == "purple") {
 		defaultTitle = purpleSubTitle(text);
+	} if(themeSetting == "white") {
+		defaultTitle = whiteSubTitle(text);
+	} if(themeSetting == "black") {
+		defaultTitle = blackSubTitle(text);
 	}
 	defaultTitle.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 3, display.heightPixels / 20));
 	defaultTitle.setGravity(view.Gravity.CENTER);
@@ -5000,7 +5057,6 @@ function greenSubTitle(subtitle) // TextView with colored background (edited by 
 	bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#0F8219"));
 
 	var title = clientTextView(subtitle, true);
-	title.setTextColor(android.graphics.Color.WHITE);
 	title.setAlpha(0.54);
 	title.setBackgroundDrawable(bg);
 	//title.setPadding(padding, padding, padding, padding);
@@ -5018,7 +5074,6 @@ function redSubTitle(subtitle) // TextView with colored background (edited by pe
 	bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#821010"));
 
 	var title = clientTextView(subtitle, true);
-	title.setTextColor(android.graphics.Color.WHITE);
 	title.setAlpha(0.54);
 	title.setBackgroundDrawable(bg);
 	//title.setPadding(padding, padding, padding, padding);
@@ -5036,7 +5091,6 @@ function blueSubTitle(subtitle) // TextView with colored background (edited by p
 	bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#0E3882"));
 
 	var title = clientTextView(subtitle, true);
-	title.setTextColor(android.graphics.Color.WHITE);
 	title.setAlpha(0.54);
 	title.setBackgroundDrawable(bg);
 	//title.setPadding(padding, padding, padding, padding);
@@ -5054,7 +5108,40 @@ function purpleSubTitle(subtitle) // TextView with colored background (edited by
 	bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#BC21AB"));
 
 	var title = clientTextView(subtitle, true);
-	title.setTextColor(android.graphics.Color.WHITE);
+	title.setAlpha(0.54);
+	title.setBackgroundDrawable(bg);
+	//title.setPadding(padding, padding, padding, padding);
+
+	return title;
+}
+
+function whiteSubTitle(subtitle) // TextView with colored background (edited by peacestorm)
+{
+	var padding = dip2px(8);
+
+	var bg = android.graphics.drawable.GradientDrawable();
+	bg.setColor(android.graphics.Color.parseColor("#E1E1E1"));
+	bg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+	bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#FFFFFF"));
+
+	var title = clientTextView(subtitle, true);
+	title.setAlpha(0.54);
+	title.setBackgroundDrawable(bg);
+	//title.setPadding(padding, padding, padding, padding);
+
+	return title;
+}
+
+function blackSubTitle(subtitle) // TextView with colored background (edited by peacestorm)
+{
+	var padding = dip2px(8);
+
+	var bg = android.graphics.drawable.GradientDrawable();
+	bg.setColor(android.graphics.Color.parseColor("#141414"));
+	bg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+	bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#1E1E1E"));
+
+	var title = clientTextView(subtitle, true);
 	title.setAlpha(0.54);
 	title.setBackgroundDrawable(bg);
 	//title.setPadding(padding, padding, padding, padding);
@@ -5079,6 +5166,12 @@ function backgroundGradient(round) // TextView with colored background (edited b
 	}if(themeSetting == "purple") {
 		bg.setColor(android.graphics.Color.parseColor("#709F018C"));
 		bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#70BC21AB"));
+	}if(themeSetting == "white") {
+		bg.setColor(android.graphics.Color.parseColor("#70E1E1E1"));
+		bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#70FFFFFF"));
+	}if(themeSetting == "black") {
+		bg.setColor(android.graphics.Color.parseColor("#70141414"));
+		bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#701E1E1E"));
 	}
 	bg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
 
@@ -5094,10 +5187,15 @@ function backgroundGradient(round) // TextView with colored background (edited b
 		ModPE.langEdit("menu.copyright", "©Mojang AB | §1Vertex Client PE by peacestorm");
 	} if(themeSetting == "purple") {
 		ModPE.langEdit("menu.copyright", "©Mojang AB | §5Vertex Client PE by peacestorm");
+	} if(themeSetting == "white") {
+		ModPE.langEdit("menu.copyright", "©Mojang AB | §fVertex Client PE by peacestorm");
+		ModPE.langEdit("", "");
+	} if(themeSetting == "black") {
+		ModPE.langEdit("menu.copyright", "©Mojang AB | §0Vertex Client PE by peacestorm");
 	}
 })();
 
-var shouldOverride;
+var shouldOverride = false;
 
 VertexClientPE.checkForUpdates = function() {
     try {
@@ -5377,7 +5475,31 @@ VertexClientPE.showSplashScreen = function() {
 							VertexClientPE.secondTick();
 							//showAccountManagerButton();
 							ModPE.goToURL("http://twitter.com/VertexHX");
-					}}))
+					}}));
+					
+					/*var splashSlider = new ViewPager(ctx);
+					splashSlider.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+						onPageSelected: function(position) {
+							VertexClientPE.toast("Page" + position);
+							switch (position) {
+								case 0:
+									break;
+
+								case 1:
+									break;
+
+								case 2:
+									break;
+
+								case 3:
+									break;
+
+								default:
+									break;
+							}
+						}
+					});*/
+
                     mainMenuListLayout.addView(mainMenuListLayoutTop);
                     mainMenuListLayoutTop.addView(TitleText);
                     mainMenuListLayout.addView(logoViewer1);
@@ -5386,6 +5508,7 @@ VertexClientPE.showSplashScreen = function() {
                     mainMenuListLayoutMiddleLeft.addView(youTubeButton);
                     mainMenuListLayoutMiddleMiddle.addView(playButton);
                     mainMenuListLayoutMiddleRight.addView(twitterButton);
+					//mainMenuListLayout.addView(splashSlider);
 
                     //More buttons...
                     mainMenuTextList = new widget.PopupWindow(mainMenuListLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
@@ -5611,7 +5734,7 @@ VertexClientPE.downloadPro = function() {
 
 VertexClientPE.setup = function() {
 	VertexClientPE.loadSupport();
-	print(isSupported);
+	//print(isSupported);
 	if(VertexClientPE.loadMainSettings() == null) {
 		VertexClientPE.showSetupScreen();
 		setupDone();
@@ -5818,6 +5941,10 @@ function settingsScreen() {
 						themeSettingButton.setText("Theme | Blue");
 					} else if(themeSetting == "purple") {
 						themeSettingButton.setText("Theme | Purple");
+					} else if(themeSetting == "white") {
+						themeSettingButton.setText("Theme | White");
+					} else if(themeSetting == "black") {
+						themeSettingButton.setText("Theme | Black");
 					}
 					themeSettingButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(viewarg){
@@ -5843,6 +5970,20 @@ function settingsScreen() {
 							VertexClientPE.loadMainSettings();
 							VertexClientPE.setupTheme();
 						} else if(themeSetting == "purple") {
+							themeSetting = "white";
+							themeSettingButton.setText("Theme | White");
+							themeSetup = "off";
+							VertexClientPE.saveMainSettings();
+							VertexClientPE.loadMainSettings();
+							VertexClientPE.setupTheme();
+						} else if(themeSetting == "white") {
+							themeSetting = "black";
+							themeSettingButton.setText("Theme | Black");
+							themeSetup = "off";
+							VertexClientPE.saveMainSettings();
+							VertexClientPE.loadMainSettings();
+							VertexClientPE.setupTheme();
+						} else if(themeSetting == "black") {
 							themeSetting = "green";
 							themeSettingButton.setText("Theme | Green");
 							themeSetup = "off";
@@ -6101,7 +6242,6 @@ VertexClientPE.showTopBar = function() {
 					topBarLayout.addView(topBarLayoutRight);
 					
 					var moreButton = clientButton("...", null, null, true);
-					moreButton.setTextColor(android.graphics.Color.WHITE);
 					moreButton.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 10, display.heightPixels / 10));
 					moreButton.setOnClickListener(new android.view.View.OnClickListener({
 						onClick: function(viewarg) {
@@ -6111,7 +6251,6 @@ VertexClientPE.showTopBar = function() {
 					topBarLayoutLeft.addView(moreButton);
 					
 					var exitButton = clientButton("X", null, null, true);
-					exitButton.setTextColor(android.graphics.Color.WHITE);
 					exitButton.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 10, display.heightPixels / 10));
 					exitButton.setOnClickListener(new android.view.View.OnClickListener({
 						onClick: function(viewarg) {
@@ -6220,327 +6359,7 @@ VertexClientPE.showCombatMenu = function() {
 					combatArrow.setText("▽");
 				}
 				
-				/*var killAura = new modButton("KillAura", "Automatically kills all the near entities");
-				var killAuraBtn = killAura.getLeftButton();
-				var killAuraInfoBtn = killAura.getRightButton();
-				if(killAuraState == false) {
-					killAuraBtn.setTextColor(android.graphics.Color.WHITE);
-				} else if(killAuraState == true) {
-					killAuraBtn.setTextColor(android.graphics.Color.GREEN);
-				}
-				killAuraBtn.setOnClickListener(new android.view.View.OnClickListener({
-				onClick: function(viewarg){
-					if(killAuraState == false) {
-						if(freezeAuraState == true) {
-							freezeAuraState = false;
-							freezeAuraBtn.setTextColor(android.graphics.Color.WHITE);
-						}
-						if(fireAuraState == true) {
-							fireAuraState = false;
-							fireAuraBtn.setTextColor(android.graphics.Color.WHITE);
-						}
-						killAuraState = true;
-						killAuraBtn.setTextColor(android.graphics.Color.GREEN);
-					} else if(killAuraState == true) {
-						killAuraState = false;
-						killAuraBtn.setTextColor(android.graphics.Color.WHITE);
-					}
-				}
-				}));
-				killAuraInfoBtn.setOnClickListener(new android.view.View.OnClickListener({
-				onClick: function(viewarg){
-					VertexClientPE.showKillAuraDialog();
-				}
-				}));
-				
-				var freezeAura = new modButton("FreezeAura", "Automatically freezes all the near entities");
-				var freezeAuraBtn = freezeAura.getLeftButton();
-				if(freezeAuraState == false) {
-					freezeAuraBtn.setTextColor(android.graphics.Color.WHITE);
-				} else if(freezeAuraState == true) {
-					freezeAuraBtn.setTextColor(android.graphics.Color.GREEN);
-				}
-				freezeAuraBtn.setOnClickListener(new android.view.View.OnClickListener({
-				onClick: function(viewarg){
-					if(freezeAuraState == false) {
-						if(killAuraState == true) {
-							killAuraState = false;
-							killAuraBtn.setTextColor(android.graphics.Color.WHITE);
-						}
-						if(fireAuraState == true) {
-							fireAuraState = false;
-							fireAuraBtn.setTextColor(android.graphics.Color.WHITE);
-						}
-						freezeAuraState = true;
-						freezeAuraBtn.setTextColor(android.graphics.Color.GREEN);
-					} else if(freezeAuraState == true) {
-						freezeAuraState = false;
-						freezeAuraBtn.setTextColor(android.graphics.Color.WHITE);
-					}
-				}
-				}));
-				
-				var fireAura = new modButton("FireAura", "Sets all the near entities on fire");
-				var fireAuraBtn = fireAura.getLeftButton();
-				if(fireAuraState == false) {
-					fireAuraBtn.setTextColor(android.graphics.Color.WHITE);
-				} else if(fireAuraState == true) {
-					fireAuraBtn.setTextColor(android.graphics.Color.GREEN);
-				}
-				fireAuraBtn.setOnClickListener(new android.view.View.OnClickListener({
-				onClick: function(viewarg){
-					if(fireAuraState == false) {
-						if(killAuraState == true) {
-							killAuraState = false;
-							killAuraBtn.setTextColor(android.graphics.Color.WHITE);
-						}
-						if(freezeAuraState == true) {
-							freezeAuraState = false;
-							freezeAuraBtn.setTextColor(android.graphics.Color.WHITE);
-						}
-						fireAuraState = true;
-						fireAuraBtn.setTextColor(android.graphics.Color.GREEN);
-					} else if(fireAuraState == true) {
-						fireAuraState = false;
-						fireAuraBtn.setTextColor(android.graphics.Color.WHITE);
-					}
-				}
-				}));
-				
-				var dronePlus = new modButton("Drone+", "Focuses on near entities to make it easier to kill them");
-				var dronePlusBtn = dronePlus.getLeftButton();
-				if(dronePlusState == false) {
-					dronePlusBtn.setTextColor(android.graphics.Color.WHITE);
-				} else if(dronePlusState == true) {
-					dronePlusBtn.setTextColor(android.graphics.Color.GREEN);
-				}
-				dronePlusBtn.setOnClickListener(new android.view.View.OnClickListener({
-				onClick: function(viewarg){
-					if(dronePlusState == false) {
-						dronePlusState = true;
-						dronePlusBtn.setTextColor(android.graphics.Color.GREEN);
-					} else if(dronePlusState == true) {
-						dronePlusState = false;
-						dronePlusBtn.setTextColor(android.graphics.Color.WHITE);
-					}
-				}
-				}));
-				
-				var bowAimbot = new modButton("Bow Aimbot", "Makes shooting with a bow easier");
-				var bowAimbotBtn = bowAimbot.getLeftButton();
-				if(bowAimbotState == false) {
-					bowAimbotBtn.setTextColor(android.graphics.Color.WHITE);
-				} else if(bowAimbotState == true) {
-					bowAimbotBtn.setTextColor(android.graphics.Color.GREEN);
-				}
-				bowAimbotBtn.setOnClickListener(new android.view.View.OnClickListener({
-				onClick: function(viewarg){
-					if(bowAimbotState == false) {
-						bowAimbotState = true;
-						bowAimbotBtn.setTextColor(android.graphics.Color.GREEN);
-					} else if(bowAimbotState == true) {
-						bowAimbotState = false;
-						bowAimbotBtn.setTextColor(android.graphics.Color.WHITE);
-					}
-				}
-				}));
-				
-				var instaKill = new modButton("InstaKill", "Makes you able to kill an entity in one hit");
-				var instaKillBtn = instaKill.getLeftButton();
-				if(instaKillState == false) {
-					instaKillBtn.setTextColor(android.graphics.Color.WHITE);
-				} else if(instaKillState == true) {
-					instaKillBtn.setTextColor(android.graphics.Color.GREEN);
-				}
-				instaKillBtn.setOnClickListener(new android.view.View.OnClickListener({
-				onClick: function(viewarg){
-					if(instaKillState == false) {
-						instaKillState = true;
-						instaKillBtn.setTextColor(android.graphics.Color.GREEN);
-					} else if(instaKillState == true) {
-						instaKillState = false;
-						instaKillBtn.setTextColor(android.graphics.Color.WHITE);
-					}
-				}
-				}));
-				
-				var regen = new modButton("Regen", "Instantly refills your health");
-				var regenBtn = regen.getLeftButton();
-				if(regenState == false) {
-					regenBtn.setTextColor(android.graphics.Color.WHITE);
-				} else if(regenState == true) {
-					regenBtn.setTextColor(android.graphics.Color.GREEN);
-				}
-				regenBtn.setOnClickListener(new android.view.View.OnClickListener({
-				onClick: function(viewarg){
-					if(regenState == false) {
-						regenState = true;
-						regenBtn.setTextColor(android.graphics.Color.GREEN);
-					} else if(regenState == true) {
-						regenState = false;
-						regenBtn.setTextColor(android.graphics.Color.WHITE);
-					}
-				}
-				}));
-				
-				var arrowGun = new modButton("ArrowGun", "Automatically shoots arrows wherever you look");
-				var arrowGunBtn = arrowGun.getLeftButton();
-				if(arrowGunState == false) {
-					arrowGunBtn.setTextColor(android.graphics.Color.WHITE);
-				} else if(arrowGunState == true) {
-					arrowGunBtn.setTextColor(android.graphics.Color.GREEN);
-				}
-				arrowGunBtn.setOnClickListener(new android.view.View.OnClickListener({
-				onClick: function(viewarg){
-					if(arrowGunState == false) {
-						arrowGunState = true;
-						arrowGunBtn.setTextColor(android.graphics.Color.GREEN);
-					} else if(arrowGunState == true) {
-						arrowGunState = false;
-						arrowGunBtn.setTextColor(android.graphics.Color.WHITE);
-					}
-				}
-				}));
-				
-				var godMode = new modButton("God Mode", "Gives you many hearts");
-				var godModeBtn = godMode.getLeftButton();
-				if(godModeState == false) {
-					godModeBtn.setTextColor(android.graphics.Color.WHITE);
-				} else if(godModeState == true) {
-					godModeBtn.setTextColor(android.graphics.Color.GREEN);
-				}
-				godModeBtn.setOnClickListener(new android.view.View.OnClickListener({
-				onClick: function(viewarg){
-					if(godModeState == false) {
-						godModeState = true;
-						godModeBtn.setTextColor(android.graphics.Color.GREEN);
-					} else if(godModeState == true) {
-						godModeState = false;
-						godModeBtn.setTextColor(android.graphics.Color.WHITE);
-						Entity.setMaxHealth(getPlayerEnt(), 20);
-						Player.setHealth(20);
-					}
-				}
-				}));
-				
-				var autoLeave = new modButton("AutoLeave", "Automatically leaves the world/server when your health is (below) 8");
-				autoLeaveBtn = autoLeave.getLeftButton();
-				if(autoLeaveState == false) {
-					autoLeaveBtn.setTextColor(android.graphics.Color.WHITE);
-				} else if(autoLeaveState == true) {
-					autoLeaveBtn.setTextColor(android.graphics.Color.GREEN);
-				}
-				autoLeaveBtn.setOnClickListener(new android.view.View.OnClickListener({
-				onClick: function(viewarg){
-					if(autoLeaveState == false) {
-						autoLeaveState = true;
-						autoLeaveBtn.setTextColor(android.graphics.Color.GREEN);
-					} else if(autoLeaveState == true) {
-						autoLeaveState = false;
-						autoLeaveBtn.setTextColor(android.graphics.Color.WHITE);
-						Entity.setMaxHealth(getPlayerEnt(), 20);
-						Player.setHealth(20);
-					}
-				}
-				}));
-				
-				var noHurt = new modButton("NoHurt", "Prevents you from getting hurt");
-				noHurtBtn = noHurt.getLeftButton();
-				if(noHurtState == false) {
-					noHurtBtn.setTextColor(android.graphics.Color.WHITE);
-				} else if(noHurtState == true) {
-					noHurtBtn.setTextColor(android.graphics.Color.GREEN);
-				}
-				noHurtBtn.setOnClickListener(new android.view.View.OnClickListener({
-				onClick: function(viewarg){
-					if(noHurtState == false) {
-						noHurtState = true;
-						noHurtBtn.setTextColor(android.graphics.Color.GREEN);
-					} else if(noHurtState == true) {
-						noHurtState = false;
-						noHurtBtn.setTextColor(android.graphics.Color.WHITE);
-					}
-				}
-				}));
-				
-				var autoSword = new modButton("AutoSword", "Automatically chooses the best sword for you when attacking entities if available");
-				autoSwordBtn = autoSword.getLeftButton();
-				if(autoSwordState == false) {
-					autoSwordBtn.setTextColor(android.graphics.Color.WHITE);
-				} else if(autoSwordState == true) {
-					autoSwordBtn.setTextColor(android.graphics.Color.GREEN);
-				}
-				autoSwordBtn.setOnClickListener(new android.view.View.OnClickListener({
-				onClick: function(viewarg){
-					if(autoSwordState == false) {
-						autoSwordState = true;
-						autoSwordBtn.setTextColor(android.graphics.Color.GREEN);
-					} else if(autoSwordState == true) {
-						autoSwordState = false;
-						autoSwordBtn.setTextColor(android.graphics.Color.WHITE);
-					}
-				}
-				}));
-				
-				var criticals = new modButton("Criticals", "Automatically jumps to make the second attack critical, make sure you attack again after hitting an entity and before hitting the ground to make it work");
-				criticalsBtn = criticals.getLeftButton();
-				if(criticalsState == false) {
-					criticalsBtn.setTextColor(android.graphics.Color.WHITE);
-				} else if(criticalsState == true) {
-					criticalsBtn.setTextColor(android.graphics.Color.GREEN);
-				}
-				criticalsBtn.setOnClickListener(new android.view.View.OnClickListener({
-				onClick: function(viewarg){
-					if(criticalsState == false) {
-						criticalsState = true;
-						criticalsBtn.setTextColor(android.graphics.Color.GREEN);
-					} else if(criticalsState == true) {
-						criticalsState = false;
-						criticalsBtn.setTextColor(android.graphics.Color.WHITE);
-					}
-				}
-				}));
-				
-				var healthTags = new modButton("HealthTags", "Displays an entity's name and health in its nametag");
-				var healthTagsBtn = healthTags.getLeftButton();
-				if(healthTagsState == false) {
-					healthTagsBtn.setTextColor(android.graphics.Color.WHITE);
-				} else if(healthTagsState == true) {
-					healthTagsBtn.setTextColor(android.graphics.Color.GREEN);
-				}
-				healthTagsBtn.setOnClickListener(new android.view.View.OnClickListener({
-				onClick: function(viewarg){
-					if(healthTagsState == false) {
-						healthTagsState = true;
-						healthTagsBtn.setTextColor(android.graphics.Color.GREEN);
-					} else if(healthTagsState == true) {
-						healthTagsState = false;
-						healthTagsBtn.setTextColor(android.graphics.Color.WHITE);
-					}
-				}
-				}));
-				
-				var follow = new modButton("Follow", "Automatically follow nearby entities", null, true);
-				var followBtn = follow.getLeftButton();
-				if(followState == false) {
-					followBtn.setTextColor(android.graphics.Color.WHITE);
-				} else if(followState == true) {
-					followBtn.setTextColor(android.graphics.Color.GREEN);
-				}
-				followBtn.setOnClickListener(new android.view.View.OnClickListener({
-				onClick: function(viewarg){
-					var _0xed94=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x67\x65\x74\x4E\x61\x6D\x65","\x73\x68\x6F\x77\x50\x72\x6F\x44\x69\x61\x6C\x6F\x67"];if(VertexClientPE[_0xed94[0]]()!=_0xed94[1]){VertexClientPE[_0xed94[3]](follow[_0xed94[2]]());return}
-					if(followState == false) {
-						followState = true;
-						followBtn.setTextColor(android.graphics.Color.GREEN);
-					} else if(followState == true) {
-						followState = false;
-						followBtn.setTextColor(android.graphics.Color.WHITE);
-					}
-				}
-				}));
-
-				*/combatArrow.setOnClickListener(new android.view.View.OnClickListener() {
+				combatArrow.setOnClickListener(new android.view.View.OnClickListener() {
                     onClick: function(viewarg) {
 						if(combatMenuShown == true) {
 							combatMenuLayout1.removeView(combatMenuScrollView);
@@ -6582,23 +6401,6 @@ VertexClientPE.showCombatMenu = function() {
                     }
                 }));
 
-				/*if(!VertexClientPE.isRemote) {
-					VertexClientPE.addView(combatMenuLayout, killAura);
-					VertexClientPE.addView(combatMenuLayout, freezeAura);
-					VertexClientPE.addView(combatMenuLayout, fireAura);
-					VertexClientPE.addView(combatMenuLayout, dronePlus);
-					VertexClientPE.addView(combatMenuLayout, bowAimbot);
-					VertexClientPE.addView(combatMenuLayout, instaKill);
-					VertexClientPE.addView(combatMenuLayout, regen);
-					VertexClientPE.addView(combatMenuLayout, godMode);
-					VertexClientPE.addView(combatMenuLayout, noHurt);
-					VertexClientPE.addView(combatMenuLayout, criticals);
-					VertexClientPE.addView(combatMenuLayout, healthTags);
-					VertexClientPE.addView(combatMenuLayout, follow);
-				}
-				VertexClientPE.addView(combatMenuLayout, arrowGun);
-				VertexClientPE.addView(combatMenuLayout, autoSword);
-				VertexClientPE.addView(combatMenuLayout, autoLeave);*/
 				VertexClientPE.modules.forEach(function(element, index, array) {
 					if(VertexClientPE.modules[index].category == VertexClientPE.category.COMBAT && (VertexClientPE.modules[index].type == "Mod" || VertexClientPE.modules[index].type == "Special")) {
 						combatMenuLayout.addView(new modButton(VertexClientPE.modules[index]));
@@ -6985,231 +6787,6 @@ VertexClientPE.showMiscMenu = function() {
 				}else if(miscMenuShown == false) {
 					miscArrow.setText("▽");
 				}
-				
-				/*var panic = new modButton("Panic", "Disables all the hacks at once", "Special");
-				var panicBtn = panic.getLeftButton();
-				panicBtn.setOnClickListener(new android.view.View.OnClickListener({
-				onClick: function(viewarg){
-				 VertexClientPE.panic();
-				 topBar.dismiss();
-			     showingMenu = false;
-                 vertexclientpecombatmenu.dismiss(); //Close
-                 vertexclientpebuildingmenu.dismiss(); //Close
-                 vertexclientpemovementmenu.dismiss(); //Close
-                 vertexclientpechatmenu.dismiss(); //Close
-                 vertexclientpemiscmenu.dismiss(); //Close
-                 //vertexclientpefavmenu.dismiss(); //Close
-	             VertexClientPE.showCombatMenu();
-	             VertexClientPE.showBuildingMenu();
-	             VertexClientPE.showMovementMenu();
-				 VertexClientPE.showChatMenu();
-	             VertexClientPE.showMiscMenu();
-	             //VertexClientPE.showFavMenu();
-				 VertexClientPE.showTopBar();
-				}
-				}));
-				
-				var yesCheatPlus = new modButton("YesCheat+", "Makes some hacks work better on servers by adding bypasses");
-				var yesCheatPlusBtn = yesCheatPlus.getLeftButton();
-				if(yesCheatPlusState == false) {
-					yesCheatPlusBtn.setTextColor(android.graphics.Color.WHITE);
-				} else if(yesCheatPlusState == true) {
-					yesCheatPlusBtn.setTextColor(android.graphics.Color.GREEN);
-				}
-				yesCheatPlusBtn.setOnClickListener(new android.view.View.OnClickListener({
-				onClick: function(viewarg){
-					if(yesCheatPlusState == false) {
-						yesCheatPlusState = true;
-						yesCheatPlusBtn.setTextColor(android.graphics.Color.GREEN);
-					} else if(yesCheatPlusState == true) {
-						yesCheatPlusState = false;
-						yesCheatPlusBtn.setTextColor(android.graphics.Color.WHITE);
-					}
-				}
-				}));
-				
-				var antiLBAH = new modButton("AntiLBAH", "Makes some hacks work better on LBSG by adding bypasses");
-				var antiLBAHBtn = antiLBAH.getLeftButton();
-				if(antiLBAHState == false) {
-					antiLBAHBtn.setTextColor(android.graphics.Color.WHITE);
-				} else if(antiLBAHState == true) {
-					antiLBAHBtn.setTextColor(android.graphics.Color.GREEN);
-				}
-				antiLBAHBtn.setOnClickListener(new android.view.View.OnClickListener({
-				onClick: function(viewarg){
-					flightMsgShown = false;
-					if(antiLBAHState == false) {
-						antiLBAHState = true;
-						antiLBAHBtn.setTextColor(android.graphics.Color.GREEN);
-					} else if(antiLBAHState == true) {
-						antiLBAHState = false;
-						antiLBAHBtn.setTextColor(android.graphics.Color.WHITE);
-					}
-				}
-				}));
-				
-				var itemGiver = new modButton("ItemGiver", "Adds items to your inventory", "Special");
-				var itemGiverBtn = itemGiver.getLeftButton();
-				itemGiverBtn.setOnClickListener(new android.view.View.OnClickListener({
-					onClick: function(viewarg){
-						VertexClientPE.showItemGiverDialog();
-					}
-				}));
-				
-				var opPerm = new modButton("OP Perm", "Gives you OP permissions. Requires you to be OP. When your OP gets removed you will still have the permission to OP yourself", "Special");
-				var opPermBtn = opPerm.getLeftButton();
-			    opPermBtn.setTextColor(android.graphics.Color.WHITE);
-			    opPermBtn.setOnClickListener(new android.view.View.OnClickListener({
-				    onClick: function(viewarg){
-						Server.sendChat("/setuperm " + ModPE.getPlayerName() + " command.pocketmine.op");
-				    }
-			    }));
-				
-				var leetServerCrasher = new modButton("Leet Server Crasher", "Crashes Leet servers. Doesn't work on some servers", "Special");
-				var leetServerCrasherBtn = leetServerCrasher.getLeftButton();
-			    leetServerCrasherBtn.setOnClickListener(new android.view.View.OnClickListener({
-				    onClick: function(viewarg){
-						Server.sendChat("//sphere 10 20");
-						Server.sendChat("//set stone");
-						ctx.getSystemService(android.content.Context.VIBRATOR_SERVICE).vibrate(37);
-                        widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> The server should crash now!"), 0).show();
-				    }
-			    }));
-				
-				var switchGamemode = new modButton("Switch Gamemode", "Switches your gamemode", "Special");
-				var switchGamemodeBtn = switchGamemode.getLeftButton();
-			    switchGamemodeBtn.setTextColor(android.graphics.Color.WHITE);
-			    switchGamemodeBtn.setOnClickListener(new android.view.View.OnClickListener({
-				    onClick: function(viewarg){
-						VertexClientPE.switchGameMode();
-				    }
-			    }));
-				
-				var xRay = new modButton("X-Ray", "See ores through blocks (make sure Fancy Graphics is off)");
-				var xRayBtn = xRay.getLeftButton();
-				if(xRayState == false) {
-					xRayBtn.setTextColor(android.graphics.Color.WHITE);
-				} else if(xRayState == true) {
-					xRayBtn.setTextColor(android.graphics.Color.GREEN);
-				}
-				xRayBtn.setOnClickListener(new android.view.View.OnClickListener({
-				onClick: function(viewarg){
-					if(xRayState == false) {
-						xRayState = true;
-						VertexClientPE.xRay(1);
-						xRayBtn.setTextColor(android.graphics.Color.GREEN);
-					} else if(xRayState == true) {
-						xRayState = false;
-						VertexClientPE.xRay(0);
-						xRayBtn.setTextColor(android.graphics.Color.WHITE);
-					}
-				}
-				}));
-				
-				var derp = new modButton("Derp", "Rotates the player all the time");
-				var derpBtn = derp.getLeftButton();
-				if(derpState == false) {
-					derpBtn.setTextColor(android.graphics.Color.WHITE);
-				} else if(derpState == true) {
-					derpBtn.setTextColor(android.graphics.Color.GREEN);
-				}
-				derpBtn.setOnClickListener(new android.view.View.OnClickListener({
-				onClick: function(viewarg){
-					if(derpState == false) {
-						derpState = true;
-						derpBtn.setTextColor(android.graphics.Color.GREEN);
-					} else if(derpState == true) {
-						derpState = false;
-						derpBtn.setTextColor(android.graphics.Color.WHITE);
-					}
-				}
-				}));
-				
-				var autoSwitch = new modButton("AutoSwitch", "Switches the item in your hand all the time");
-				var autoSwitchBtn = autoSwitch.getLeftButton();
-				if(autoSwitchState == false) {
-					autoSwitchBtn.setTextColor(android.graphics.Color.WHITE);
-				} else if(autoSwitchState == true) {
-					autoSwitchBtn.setTextColor(android.graphics.Color.GREEN);
-				}
-				autoSwitchBtn.setOnClickListener(new android.view.View.OnClickListener({
-				onClick: function(viewarg){
-					if(autoSwitchState == false) {
-						autoSwitchState = true;
-						autoSwitchBtn.setTextColor(android.graphics.Color.GREEN);
-					} else if(autoSwitchState == true) {
-						autoSwitchState = false;
-						autoSwitchBtn.setTextColor(android.graphics.Color.WHITE);
-					}
-				}
-				}));
-				
-				var zoom = new modButton("Zoom", "Changes the FOV to zoom in");
-				var zoomBtn = zoom.getLeftButton();
-				if(zoomState == false) {
-					zoomBtn.setTextColor(android.graphics.Color.WHITE);
-				} else if(zoomState == true) {
-					zoomBtn.setTextColor(android.graphics.Color.GREEN);
-				}
-				zoomBtn.setOnClickListener(new android.view.View.OnClickListener({
-				onClick: function(viewarg){
-					if(zoomState == false) {
-						zoomState = true;
-						ModPE.setFov(10);
-						zoomBtn.setTextColor(android.graphics.Color.GREEN);
-					} else if(zoomState == true) {
-						zoomState = false;
-						ModPE.resetFov();
-						zoomBtn.setTextColor(android.graphics.Color.WHITE);
-					}
-				}
-				}));
-				
-				var coordsDisplay = new modButton("CoordsDisplay", "Displays the player's coordinates");
-				var coordsDisplayBtn = zoom.getLeftButton();
-				if(coordsDisplayState == false) {
-					coordsDisplayBtn.setTextColor(android.graphics.Color.WHITE);
-				} else if(coordsDisplayState == true) {
-					coordsDisplayBtn.setTextColor(android.graphics.Color.GREEN);
-				}
-				coordsDisplayBtn.setOnClickListener(new android.view.View.OnClickListener({
-				onClick: function(viewarg){
-					if(coordsDisplayState == false) {
-						coordsDisplayState = true;
-						coordsDisplayBtn.setTextColor(android.graphics.Color.GREEN);
-					} else if(coordsDisplayState == true) {
-						coordsDisplayState = false;
-						coordsDisplayBtn.setTextColor(android.graphics.Color.WHITE);
-					}
-				}
-				}));
-				
-				var onlyDay = new modButton("OnlyDay", "Sets the time to day all the time");
-				var onlyDayBtn = onlyDay.getLeftButton();
-				if(onlyDayState == false) {
-					onlyDayBtn.setTextColor(android.graphics.Color.WHITE);
-				} else if(onlyDayState == true) {
-					onlyDayBtn.setTextColor(android.graphics.Color.GREEN);
-				}
-				onlyDayBtn.setOnClickListener(new android.view.View.OnClickListener({
-				onClick: function(viewarg){
-					if(onlyDayState == false) {
-						onlyDayState = true;
-						onlyDayBtn.setTextColor(android.graphics.Color.GREEN);
-					} else if(onlyDayState == true) {
-						onlyDayState = false;
-						onlyDayBtn.setTextColor(android.graphics.Color.WHITE);
-					}
-				}
-				}));
-				
-				var pizzaOrder = new modButton("Order a Pizza", "Order a pizza of Domino's");
-				var pizzaOrderBtn = pizzaOrder.getLeftButton();
-			    pizzaOrderBtn.setOnClickListener(new android.view.View.OnClickListener({
-				    onClick: function(viewarg){
-						pizzaOrderDialog();
-				    }
-			    }));*/
 
 				miscArrow.setOnClickListener(new android.view.View.OnClickListener() {
                     onClick: function(viewarg) {
@@ -7570,26 +7147,6 @@ function showMenuButton() {
 	menuBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 10, display.heightPixels / 10));
 	menuBtn.setBackgroundDrawable(iconClientGUI);
 	menuBtn.setAlpha(0.54);
-	/*menuBtn.setOnKeyListener(new android.view.View.OnKeyListener() {
-		onKey: function(view, keyCode, keyEvent) {
-			if (KeyEvent.KEYCODE_DEL == keyCode) {
-				if(keyEvent.getAction() == KeyEvent.ACTION_UP ) {
-					menuBtn.performClick();
-				}
-				return true;
-			}
-			menuBtn.performClick();
-			return true;
-		}
-	});*/
-	/*menuBtn.addTextChangedListener(new android.text.TextWatcher() {
-		afterTextChanged: function(s) {
-			if(s.substring(s.length() - 1, s.length()) == "M") {
-				menuBtn.performClick();
-				menuBtn.setText("");
-			}
-		}
-	});*/
     menuBtn.setOnClickListener(new android.view.View.OnClickListener({
     onClick: function(viewarg){
 		if(VertexClientPE.playerIsInGame) {
@@ -7597,13 +7154,11 @@ function showMenuButton() {
 				hacksList.dismiss();
 			}
 			GUI.dismiss();
-			//mainMenu("multiplayer");
 			VertexClientPE.showCombatMenu();
 			VertexClientPE.showBuildingMenu();
 			VertexClientPE.showMovementMenu();
 			VertexClientPE.showChatMenu();
 			VertexClientPE.showMiscMenu();
-			//VertexClientPE.showFavMenu();
 			VertexClientPE.showTopBar();
 		} else {
 			ctx.getSystemService(android.content.Context.VIBRATOR_SERVICE).vibrate(37);
@@ -7619,13 +7174,11 @@ function showMenuButton() {
                 bNP.setFilterBitmap(false);
                 bNP.setAntiAlias(false);
                 menuBtn.setBackgroundDrawable(bNP);
-                //menuBtn.setPadding(0, 0, 0, 0);
             } else {
                 var bNP = iconClickedClientGUI;
                 bNP.setFilterBitmap(false);
                 bNP.setAntiAlias(false);
                 menuBtn.setBackgroundDrawable(bNP);
-                //menuBtn.setPadding(0, Math.round(menuBtn.getLineHeight() / 8), 0, 0);
             }
             return false;
         }
@@ -7633,6 +7186,9 @@ function showMenuButton() {
     layout.addView(menuBtn);
      
     GUI = new widget.PopupWindow(layout, dip2px(40), dip2px(40));
+	if(menuAnimationsSetting == "on") {
+		GUI.setAnimationStyle(android.R.style.Animation_Translucent);
+	}
     GUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
 	if(mainButtonPositionSetting == "top-right") {
 		GUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 90, 0);
@@ -7648,7 +7204,6 @@ function showAccountManagerButton() {
 	var display = new android.util.DisplayMetrics();
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
     var menuBtn = clientButton("AM");
-    menuBtn.setTextColor(android.graphics.Color.WHITE); //Color
 	menuBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 10, display.heightPixels / 10));
     menuBtn.setOnClickListener(new android.view.View.OnClickListener({
     onClick: function(viewarg){
@@ -7664,6 +7219,9 @@ function showAccountManagerButton() {
     layout.addView(menuBtn);
      
     accountManagerGUI = new widget.PopupWindow(layout, dip2px(40), dip2px(40));
+	if(menuAnimationsSetting == "on") {
+		accountManagerGUI.setAnimationStyle(android.R.style.Animation_Translucent);
+	}
     accountManagerGUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
 	if(mainButtonPositionSetting == "top-right") {
 		accountManagerGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.BOTTOM, 90, 0);
