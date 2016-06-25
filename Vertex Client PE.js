@@ -1541,6 +1541,77 @@ var healthTags = {
 	}
 }
 
+var autoSwitch = {
+	name: "AutoSwitch",
+	desc: "Switches the item in your hand all the time.",
+	category: VertexClientPE.category.MISC,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onTick: function() {
+		if(Player.getSelectedSlotId() != 7) {
+			Player.setSelectedSlotId(Player.getSelectedSlotId() + 1);
+		} else {
+			Player.setSelectedSlotId(0);
+		}
+	}
+}
+
+function toDirectionalVector(vector, yaw, pitch) { //some parts of this function are made by @zhuowei
+    vector[0] = Math.cos(yaw) * Math.cos(pitch);
+    vector[1] = Math.sin(pitch);
+    vector[2] = Math.sin(yaw) * Math.cos(pitch);
+}
+
+var playerDir = [0, 0, 0];
+var DEG_TO_RAD = Math.PI / 180;
+var playerWalkSpeed = 0.2;
+
+var autoWalk = {
+	name: "AutoWalk",
+	desc: "Makes your player walk automatically.",
+	category: VertexClientPE.category.MOVEMENT,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onTick: function() {
+		toDirectionalVector(playerDir, (getYaw() + 90) * DEG_TO_RAD, getPitch() * DEG_TO_RAD * -1);
+		var player = getPlayerEnt();
+		setVelX(player, playerWalkSpeed * playerDir[0]);
+		setVelZ(player, playerWalkSpeed * playerDir[2]);
+	}
+}
+
+var enderProjectiles = {
+	name: "EnderProjectiles",
+	desc: "Turns every projectile into an Ender Pearl.",
+	category: VertexClientPE.category.MOVEMENT,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onProjectileHitBlock: function(projectile, blockX, blockY, blockZ, side) {
+		Entity.setPosition(getPlayerEnt(), blockX, blockY, blockZ);
+		while(getTile(getPlayerX(), getPlayerY()-2, getPlayerZ()) != 0) {
+			Entity.setPosition(getPlayerEnt(), getPlayerX(), getPlayerY()+1, getPlayerZ());
+		}
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(killAura);
 VertexClientPE.registerModule(freezeAura);
@@ -1558,11 +1629,13 @@ VertexClientPE.registerModule(healthTags);
 //MOVEMENT
 VertexClientPE.registerModule(timer);
 VertexClientPE.registerModule(flight);
+VertexClientPE.registerModule(autoWalk);
 VertexClientPE.registerModule(autoTeleporter);
 VertexClientPE.registerModule(tapTeleporter);
 VertexClientPE.registerModule(wallHack);
 VertexClientPE.registerModule(ride);
 VertexClientPE.registerModule(glide);
+VertexClientPE.registerModule(enderProjectiles);
 //BUILDING
 VertexClientPE.registerModule(nuker);
 VertexClientPE.registerModule(tapNuker);
@@ -1585,6 +1658,7 @@ VertexClientPE.registerModule(panic);
 VertexClientPE.registerModule(yesCheatPlus);
 VertexClientPE.registerModule(switchGamemode);
 VertexClientPE.registerModule(itemGiver);
+VertexClientPE.registerModule(autoSwitch);
 VertexClientPE.registerModule(onlyDay);
 VertexClientPE.registerModule(derp);
 VertexClientPE.registerModule(zoom);
@@ -1633,6 +1707,14 @@ function explodeHook(entity, x, y, z, power, onFire) {
 	VertexClientPE.modules.forEach(function(element, index, array) {
 		if(element.isStateMod() && element.state && element.onExplode) {
 			element.onExplode(entity, x, y, z, power, onFire);
+		}
+	});
+}
+
+function projectileHitBlockHook(projectile, blockX, blockY, blockZ, side) {
+	VertexClientPE.modules.forEach(function(element, index, array) {
+		if(element.isStateMod() && element.state && element.onProjectileHitBlock) {
+			element.onProjectileHitBlock(projectile, blockX, blockY, blockZ, side);
 		}
 	});
 }
@@ -4284,10 +4366,6 @@ VertexClientPE.bowAimbot = function(e) {
 	}
 }
 
-var playerDir = [0, 0, 0];
-var DEG_TO_RAD = Math.PI / 180;
-var playerWalkSpeed = 0.2;
-
 VertexClientPE.autoWalk = function() { //some parts of this function are made by @zhuowei
 	toDirectionalVector(playerDir, (getYaw() + 90) * DEG_TO_RAD, getPitch() * DEG_TO_RAD * -1);
     var player = getPlayerEnt();
@@ -4311,12 +4389,6 @@ VertexClientPE.boatFly = function() { //some parts of this function are made by 
 		setVelY(ent, playerWalkSpeed * playerDir[1]);
 		setVelZ(ent, playerWalkSpeed * playerDir[2]);
 	}
-}
-
-function toDirectionalVector(vector, yaw, pitch) { //some parts of this function are made by @zhuowei
-    vector[0] = Math.cos(yaw) * Math.cos(pitch);
-    vector[1] = Math.sin(pitch);
-    vector[2] = Math.sin(yaw) * Math.cos(pitch);
 }
 
 var freecamEntity;
