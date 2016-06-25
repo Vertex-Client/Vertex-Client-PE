@@ -110,6 +110,7 @@ var lsdLayout;
 
 var flightMsgShown = false;
 
+var stackDropState = false;
 var fancyChatState = false;
 var delaySpammerState = false;
 var autoSwordState = false;
@@ -1612,6 +1613,21 @@ var enderProjectiles = {
 	}
 }
 
+var stackDrop = {
+	name: "StackDrop",
+	desc: "Makes every block drop itself 64 times.",
+	category: VertexClientPE.category.BUILDING,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+		stackDropState = this.state;
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(killAura);
 VertexClientPE.registerModule(freezeAura);
@@ -1640,6 +1656,7 @@ VertexClientPE.registerModule(enderProjectiles);
 VertexClientPE.registerModule(nuker);
 VertexClientPE.registerModule(tapNuker);
 VertexClientPE.registerModule(fastBreak);
+VertexClientPE.registerModule(stackDrop);
 VertexClientPE.registerModule(powerExplosions);
 VertexClientPE.registerModule(tapExplosion);
 VertexClientPE.registerModule(signEditor);
@@ -7775,7 +7792,7 @@ function exitAddon(){
     }}));
 }
 	
-/*function destroyBlock(x, y, z, side) {
+function destroyBlock(x, y, z, side) {
     var data = Level.getData(x, y, z);
     var tile = Level.getTile(x, y, z);
     var gamemode = Level.getGameMode();
@@ -8002,7 +8019,7 @@ function exitAddon(){
             }
         }
     }
-}*/
+}
 
 function blockEventHook(x, y, z, e, d) {
 	if(VertexClientPE.isDevMode()) {
