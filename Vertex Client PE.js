@@ -1628,59 +1628,162 @@ var stackDrop = {
 	}
 }
 
+var liquidWalk = {
+	name: "LiquidWalk",
+	desc: "Makes you able to walk on liquids.",
+	category: VertexClientPE.category.MOVEMENT,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onTick: function() {
+		if(Level.getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) == 8 || Level.getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) == 9 || Level.getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) == 10 || Level.getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) == 10) {
+			setVelY(Player.getEntity(), 0);
+		}
+	}
+}
+
+var highJump = {
+	name: "HighJump",
+	desc: "Allows you to jump 2 blocks high.",
+	category: VertexClientPE.category.MOVEMENT,
+	type: "Mod",
+	state: false,
+	count: 0,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onTick: function() {
+		if(!Player.isFlying()) {
+			if(Entity.getVelY(Player.getEntity()) > 0.06) {
+				Entity.setVelY(Player.getEntity(), 0.54);
+				this.count++;
+			}
+			if(this.count == 1) {
+				Entity.setVelY(Player.getEntity(), 0.48);
+			}
+			if(this.count == 2) {
+				Entity.setVelY(Player.getEntity(), 0.42);
+			}
+			if(this.count == 3) {
+				Entity.setVelY(Player.getEntity(), 0.36);
+			}
+			if(this.count == 4) {
+				Entity.setVelY(Player.getEntity(), 0.31);
+			}
+			if(this.count == 5) {
+				Entity.setVelY(Player.getEntity(), 0.26);
+			}
+			if(this.count == 6) {
+				Entity.setVelY(Player.getEntity(), 0.22);
+			}
+			if(this.count == 7) {
+				Entity.setVelY(Player.getEntity(), -0.078);
+				this.count = 0;
+			}
+		}
+	}
+}
+
+var f = 0;
+
+var fastWalk = {
+	name: "FastWalk",
+	desc: "Makes you walk faster.",
+	category: VertexClientPE.category.MOVEMENT,
+	type: "Mod",
+	state: false,
+	count: 0,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+		f = this.state?1:0;
+	},
+	onTick: function() {
+		if(f == 1) {
+            Xpos = getPlayerX();
+            Zpos = getPlayerZ();
+            f = f + 1;
+        } else if(f == 3) {
+            f = 1;
+            Xdiff = getPlayerX() - Xpos;
+            Zdiff = getPlayerZ() - Zpos;
+            setVelX(getPlayerEnt(), Xdiff);
+            setVelZ(getPlayerEnt(), Zdiff);
+            Xdiff = 0;
+            Zdiff = 0;
+        }
+        if(f != 1) {
+            f = f + 1;
+        }
+	}
+}
+
 //COMBAT
-VertexClientPE.registerModule(killAura);
-VertexClientPE.registerModule(freezeAura);
-VertexClientPE.registerModule(fireAura);
-VertexClientPE.registerModule(tpAura);
-VertexClientPE.registerModule(follow);
-VertexClientPE.registerModule(autoSword);
-VertexClientPE.registerModule(noHurt);
-VertexClientPE.registerModule(instaKill);
-VertexClientPE.registerModule(regen);
-VertexClientPE.registerModule(godMode);
-VertexClientPE.registerModule(criticals);
 VertexClientPE.registerModule(arrowGun);
+VertexClientPE.registerModule(autoSword);
+VertexClientPE.registerModule(criticals);
+VertexClientPE.registerModule(fireAura);
+VertexClientPE.registerModule(follow);
+VertexClientPE.registerModule(freezeAura);
+VertexClientPE.registerModule(godMode);
 VertexClientPE.registerModule(healthTags);
+VertexClientPE.registerModule(instaKill);
+VertexClientPE.registerModule(killAura);
+VertexClientPE.registerModule(noHurt);
+VertexClientPE.registerModule(regen);
+VertexClientPE.registerModule(tpAura);
 //MOVEMENT
-VertexClientPE.registerModule(timer);
-VertexClientPE.registerModule(flight);
-VertexClientPE.registerModule(autoWalk);
 VertexClientPE.registerModule(autoTeleporter);
-VertexClientPE.registerModule(tapTeleporter);
-VertexClientPE.registerModule(wallHack);
-VertexClientPE.registerModule(ride);
-VertexClientPE.registerModule(glide);
+VertexClientPE.registerModule(autoWalk);
 VertexClientPE.registerModule(enderProjectiles);
+VertexClientPE.registerModule(fastWalk);
+VertexClientPE.registerModule(flight);
+VertexClientPE.registerModule(glide);
+VertexClientPE.registerModule(highJump);
+VertexClientPE.registerModule(liquidWalk);
+VertexClientPE.registerModule(ride);
+VertexClientPE.registerModule(tapTeleporter);
+VertexClientPE.registerModule(timer);
+VertexClientPE.registerModule(wallHack);
 //BUILDING
-VertexClientPE.registerModule(nuker);
-VertexClientPE.registerModule(tapNuker);
-VertexClientPE.registerModule(fastBreak);
-VertexClientPE.registerModule(stackDrop);
-VertexClientPE.registerModule(powerExplosions);
-VertexClientPE.registerModule(tapExplosion);
-VertexClientPE.registerModule(signEditor);
 VertexClientPE.registerModule(autoMine);
-VertexClientPE.registerModule(tapRemover);
 VertexClientPE.registerModule(autoPlace);
+VertexClientPE.registerModule(fastBreak);
+VertexClientPE.registerModule(nuker);
+VertexClientPE.registerModule(powerExplosions);
+VertexClientPE.registerModule(signEditor);
+VertexClientPE.registerModule(stackDrop);
+VertexClientPE.registerModule(tapExplosion);
+VertexClientPE.registerModule(tapNuker);
+VertexClientPE.registerModule(tapRemover);
 //CHAT
-VertexClientPE.registerModule(homeCommand);
 VertexClientPE.registerModule(autoSpammer);
+VertexClientPE.registerModule(chatRepeat);
+VertexClientPE.registerModule(chatSpeak);
 VertexClientPE.registerModule(delaySpammer);
 VertexClientPE.registerModule(fancyChat);
-VertexClientPE.registerModule(chatSpeak);
-VertexClientPE.registerModule(chatRepeat);
+VertexClientPE.registerModule(homeCommand);
 //MISC
 VertexClientPE.registerModule(panic);
-VertexClientPE.registerModule(yesCheatPlus);
 VertexClientPE.registerModule(switchGamemode);
-VertexClientPE.registerModule(itemGiver);
 VertexClientPE.registerModule(autoSwitch);
-VertexClientPE.registerModule(onlyDay);
-VertexClientPE.registerModule(derp);
-VertexClientPE.registerModule(zoom);
 VertexClientPE.registerModule(coordsDisplay);
+VertexClientPE.registerModule(derp);
+VertexClientPE.registerModule(itemGiver);
+VertexClientPE.registerModule(onlyDay);
 VertexClientPE.registerModule(orderAPizza);
+VertexClientPE.registerModule(yesCheatPlus);
+VertexClientPE.registerModule(zoom);
 
 function modTick() {
 	VertexClientPE.playerIsInGame = true;
