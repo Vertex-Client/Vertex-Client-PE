@@ -1,7 +1,7 @@
 /**
  * ###############################################################
  * @name Vertex Client PE
- * @version v1.0
+ * @version v1.0-pre1
  * @author peacestorm (@AgameR_Modder)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG
  *
@@ -94,7 +94,7 @@ var _0x199a=["\x69\x73\x50\x72\x6F","\x67\x65\x74\x50\x72\x65\x66\x65\x72\x65\x6
 VertexClientPE.isRemote = false;
 VertexClientPE.playerIsInGame = false;
 
-VertexClientPE.currentVersion = "1.0";
+VertexClientPE.currentVersion = "1.0-pre1";
 VertexClientPE.targetVersion = "MCPE v0.14.x alpha";
 VertexClientPE.latestVersion = "Unknown";
 var latestPocketEditionVersion;
