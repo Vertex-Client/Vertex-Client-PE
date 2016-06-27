@@ -1721,9 +1721,38 @@ var fastWalk = {
 	}
 }
 
+var bowAimbot = {
+	name: "BowAimbot",
+	desc: "Makes shot arrows get to the closest entity.",
+	category: VertexClientPE.category.COMBAT,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onEntityAdded: function(e) {
+		var mobs = Entity.getAll();
+		for(var i = 0; i < mobs.length; i++) {
+			var ent = mobs[i];
+			var x = Entity.getX(ent) - Entity.getX(getPlayerEnt());
+			var z = Entity.getZ(ent) - Entity.getZ(getPlayerEnt());
+			if(Entity.getEntityTypeId(ent) != EntityType.ITEM && Entity.getEntityTypeId(ent) != EntityType.ARROW && ent != getPlayerEnt()) {
+				setVelX(e, x / 4.5);
+				setVelY(e, 0);
+				setVelZ(e, z / 4.5);
+				break;
+			}
+		}
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(arrowGun);
 VertexClientPE.registerModule(autoSword);
+VertexClientPE.registerModule(bowAimbot);
 VertexClientPE.registerModule(criticals);
 VertexClientPE.registerModule(fireAura);
 VertexClientPE.registerModule(follow);
@@ -1804,6 +1833,14 @@ function entityHurtHook(a, v) {
 	VertexClientPE.modules.forEach(function(element, index, array) {
 		if(element.isStateMod() && element.state && element.onHurt) {
 			element.onHurt(a, v);
+		}
+	});
+}
+
+function entityAddedHook(entity) {
+	VertexClientPE.modules.forEach(function(element, index, array) {
+		if(element.isStateMod() && element.state && element.onEntityAdded) {
+			element.onEntityAdded(entity);
 		}
 	});
 }
@@ -4912,7 +4949,7 @@ function modButton(mod) {
 	if(mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) modButtonName = "🔒 " + mod.name;
 	
 	if(mod.state) {
-		if(mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
+		if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
 			mod.onToggle();
 			mod.state = true;
 		}
