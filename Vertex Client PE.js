@@ -3,7 +3,7 @@
  * @name Vertex Client PE
  * @version v1.0
  * @author peacestorm (@AgameR_Modder)
- * @credits Herqux_, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG
+ * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG
  *
  * Thanks to NoCopyrightSounds and their artists for the music!
  *
@@ -6427,7 +6427,7 @@ function informationScreen() {
 					informationTitle.setGravity(android.view.Gravity.CENTER);
 					informationMenuLayout.addView(informationTitle);
 					
-					var informationText = clientTextView("© peacestorm 2015 - 2016. Some rights reserved.\nThanks to @Herqux_ and @MyNameIsTriXz for graphic designs.", true);
+					var informationText = clientTextView("© peacestorm, MyNameIsTriXz, _TXMO and LPMG | 2015 - 2016. Some rights reserved.\nThanks to @Herqux_ and @MyNameIsTriXz for graphic designs.", true);
 					
 					var websiteButton = clientButton("Website", "Go to the official Vertex Client PE website");
 					websiteButton.setOnClickListener(new android.view.View.OnClickListener({
