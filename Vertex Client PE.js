@@ -155,7 +155,7 @@ var spamDelayTime = 3;
 var sizeSetting = "normal";
 var fancyChatMode = "default";
 var tapNukerRange = 3;
-var menuType = "halfscreen";
+var menuType = "normal";
 //---------------------------
 var combatName = "Combat";
 var buildingName = "Building";
