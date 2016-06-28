@@ -2037,22 +2037,23 @@ var toggle = {
 			if (cmd.substring(2, cmd.length) != null && cmd.substring(2, cmd.length) != undefined && commandSplit[1] != null) {
 				var shouldReturn = false;
 				VertexClientPE.modules.forEach(function (element, index, array) {
-					if (element.name.toLowerCase() == cmd.substring(2, cmd.length)
-						.toLowerCase() && !shouldReturn) {
-						if (element.isStateMod()) {
-							if(element.requiresPro && element.requiresPro() && !VertexClientPE.isPro()) {
-								VertexClientPE.showProDialog(element.name);
-								return;
+					if(element.type != "Command") {
+						if (element.name.toLowerCase() == cmd.substring(2, cmd.length).toLowerCase() && !shouldReturn) {
+							if (element.isStateMod()) {
+								if(element.requiresPro && element.requiresPro() && !VertexClientPE.isPro()) {
+									VertexClientPE.showProDialog(element.name);
+									return;
+								}
+								element.onToggle();
+								if(hacksList != null && hacksList.isShowing()) {
+									updateHacksList();
+								}
+								VertexClientPE.toast("Sucessfully toggled module " + element.name);
+							} else {
+								VertexClientPE.toast(element.name + " can't be toggled!");
 							}
-							element.onToggle();
-							if(hacksList != null && hacksList.isShowing()) {
-								updateHacksList();
-							}
-							VertexClientPE.toast("Sucessfully toggled module " + element.name);
-						} else {
-							VertexClientPE.toast(element.name + " can't be toggled!");
+							shouldReturn = true;
 						}
-						shouldReturn = true;
 					}
 				});
 				if(shouldReturn) {
@@ -2079,7 +2080,7 @@ var t = {
 		return false;
 	},
 	onCall: function(cmd) {
-		toggle.onCall();
+		toggle.onCall(cmd);
 	}
 }
 
