@@ -2106,18 +2106,35 @@ var drop = {
 		return false;
 	},
 	onCall: function(cmd) {
-		sayMsg = cmd.substring(4, cmd.length);
-		if(fancyChatState) {
-			VertexClientPE.fancyChat(sayMsg);
-		} else {
-			Server.sendChat(sayMsg);
+		var commandSplit = cmd.split(" ");
+		try {
+			if(commandSplit[1] == null || commandSplit[1] == undefined || commandSplit[1] == "infinite") {
+				for(var i = 0; i <= 512; i++) {
+					p = ((Entity.getPitch(getPlayerEnt()) + 90) * Math.PI) / 180;
+					y = ((Entity.getYaw(getPlayerEnt()) + 90) * Math.PI) / 180;
+					xx = Math.sin(p) * Math.cos(y);
+					yy = Math.sin(p) * Math.sin(y);
+					zz = Math.cos(p);
+					Level.dropItem(Player.getX() + xx, Player.getY() + zz, Player.getZ() + yy, 1, i, 1);
+				}
+			} else {
+				throw new SyntaxError();
+			}
+		} catch(e) {
+			if(e instanceof SyntaxError) {
+				VertexClientPE.syntaxError(".drop [infinite]");
+			} else {
+				VertexClientPE.showBugReportDialog(e);
+			}
 		}
 	}
 }
 
 VertexClientPE.registerModule(help);
-VertexClientPE.registerModule(say);
 VertexClientPE.registerModule(drop);
+VertexClientPE.registerModule(say);
+VertexClientPE.registerModule(toggle);
+VertexClientPE.registerModule(t);
 
 /**
  *  ##############
@@ -3416,67 +3433,6 @@ VertexClientPE.commandManager = function(cmd) {
 				VertexClientPE.syntaxError(".spectate <player>");
 			} else {
 				VertexClientPE.spectate(commandSplit[1]);
-			}
-			break;
-		case "t": //4
-		case "toggle": //4
-			try {
-				if (cmd.substring(2, cmd.length) != null && cmd.substring(2, cmd.length) != undefined && commandSplit[1] != null) {
-					var shouldReturn = false;
-					VertexClientPE.modules.forEach(function (element, index, array) {
-						if (element.name.toLowerCase() == cmd.substring(2, cmd.length)
-							.toLowerCase() && !shouldReturn) {
-							if (element.isStateMod()) {
-								if(element.requiresPro && element.requiresPro() && !VertexClientPE.isPro()) {
-									VertexClientPE.showProDialog(element.name);
-									return;
-								}
-								VertexClientPE.modules[index].onToggle();
-								if(hacksList != null && hacksList.isShowing()) {
-									updateHacksList();
-								}
-								VertexClientPE.toast("Sucessfully toggled module " + element.name);
-							} else {
-								VertexClientPE.toast(element.name + " can't be toggled!");
-							}
-							shouldReturn = true;
-						}
-					});
-					if(shouldReturn) {
-						return;
-					}
-					VertexClientPE.toast("Module " + cmd.substring(2, cmd.length) + " can't be found/toggled!");
-				} else {
-					throw new SyntaxError();
-				}
-			} catch(e) {
-				if(e instanceof SyntaxError) {
-					VertexClientPE.syntaxError(".toggle <module>");
-				} else {
-					VertexClientPE.showBugReportDialog(e);
-				}
-			}
-			break;
-		case "drop": //5
-			try {
-				if(commandSplit[1] == null || commandSplit[1] == undefined || commandSplit[1] == "infinite") {
-					for(var i = 0; i <= 512; i++) {
-						p = ((Entity.getPitch(getPlayerEnt()) + 90) * Math.PI) / 180;
-						y = ((Entity.getYaw(getPlayerEnt()) + 90) * Math.PI) / 180;
-						xx = Math.sin(p) * Math.cos(y);
-						yy = Math.sin(p) * Math.sin(y);
-						zz = Math.cos(p);
-						Level.dropItem(Player.getX() + xx, Player.getY() + zz, Player.getZ() + yy, 1, i, 1);
-					}
-				} else {
-					throw new SyntaxError();
-				}
-			} catch(e) {
-				if(e instanceof SyntaxError) {
-					VertexClientPE.syntaxError(".drop [infinite]");
-				} else {
-					VertexClientPE.showBugReportDialog(e);
-				}
 			}
 			break;
 		case "version": //6
