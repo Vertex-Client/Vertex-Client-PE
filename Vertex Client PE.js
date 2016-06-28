@@ -7658,12 +7658,10 @@ VertexClientPE.clientTick = function() {
                     run: function() {
 						try{
 							if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false)  && (menu == null || menu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false)) {
-								if(!VertexClientPE.playerIsInGame) {
-									VertexClientPE.isRemote = true;
-									if(Launcher.isBlockLauncher()) {
-										net.zhuoweizhang.mcpelauncher.ScriptManager.isRemote = true;
-										net.zhuoweizhang.mcpelauncher.ScriptManager.setLevelFakeCallback(true, false);
-									}
+								VertexClientPE.isRemote = true;
+								if(Launcher.isBlockLauncher()) {
+									net.zhuoweizhang.mcpelauncher.ScriptManager.isRemote = true;
+									net.zhuoweizhang.mcpelauncher.ScriptManager.setLevelFakeCallback(true, false);
 								}
 							}
 						}catch(e) {
@@ -7671,10 +7669,8 @@ VertexClientPE.clientTick = function() {
 							ModPE.log(e);
 						}
 						if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (menu == null || menu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false)) {
-							if(!VertexClientPE.playerIsInGame) {
-								VertexClientPE.isRemote = true;
-								showMenuButton();
-							}
+							VertexClientPE.isRemote = true;
+							showMenuButton();
 						}
 						if(!VertexClientPE.playerIsInGame) {
 							if(hacksList != null) {
@@ -7683,7 +7679,7 @@ VertexClientPE.clientTick = function() {
 								}
 							}
 						}
-                        eval(VertexClientPE.clientTick());
+                        VertexClientPE.clientTick();
                     }
                 }), 1000 / 70);
         }
