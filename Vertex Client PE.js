@@ -1,7 +1,7 @@
 /**
  * ###############################################################
  * @name Vertex Client PE
- * @version v1.0-pre1
+ * @version v1.0-pre2
  * @author peacestorm (@AgameR_Modder)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG
  *
@@ -94,7 +94,7 @@ var _0x199a=["\x69\x73\x50\x72\x6F","\x67\x65\x74\x50\x72\x65\x66\x65\x72\x65\x6
 VertexClientPE.isRemote = false;
 VertexClientPE.playerIsInGame = false;
 
-VertexClientPE.currentVersion = "1.0-pre1";
+VertexClientPE.currentVersion = "1.0-pre2";
 VertexClientPE.targetVersion = "MCPE v0.14.x alpha";
 VertexClientPE.latestVersion = "Unknown";
 var latestPocketEditionVersion;
@@ -156,6 +156,7 @@ var sizeSetting = "normal";
 var fancyChatMode = "default";
 var tapNukerRange = 3;
 var menuType = "normal";
+var chestTracersRange = 10;
 //---------------------------
 var combatName = "Combat";
 var buildingName = "Building";
@@ -1749,6 +1750,65 @@ var bowAimbot = {
 	}
 }
 
+var chestTracers = {
+	name: "ChestTracers",
+	desc: "Allows you to find chests more easily by moving particles from the chest to you.",
+	category: VertexClientPE.category.MISC,
+	type: "Mod",
+	state: false,
+	getSettingsLayout: function() {
+		var chestTracersSettingsLayout = new LinearLayout(ctx);
+		chestTracersSettingsLayout.setOrientation(1);
+		var chestTracersRangeTitle = clientTextView("Range: | " + chestTracersRange);
+		var chestTracersRangeSlider = new SeekBar(ctx);
+		chestTracersRangeSlider.setProgress(chestTracersRange);
+		chestTracersRangeSlider.setMax(25);
+		chestTracersRangeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+			onProgressChanged: function() {
+				chestTracersRange = chestTracersRangeSlider.getProgress();
+				chestTracersRangeTitle.setText("Range: | " + chestTracersRange);
+			}
+		});
+		
+		var space = clientTextView("\n");
+		chestTracersSettingsLayout.addView(chestTracersRangeTitle);
+		chestTracersSettingsLayout.addView(chestTracersRangeSlider);
+		chestTracersSettingsLayout.addView(space);
+		return chestTracersSettingsLayout;
+	},
+	onModDialogDismiss: function() {
+		VertexClientPE.saveMainSettings();
+	},
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onInterval: function() {
+		var x = getPlayerX();
+		var y = getPlayerY();
+		var z = getPlayerZ();
+		var newX;
+		var newY;
+		var newZ;
+		for(var blockX = - chestTracersRange; blockX <= chestTracersRange; blockX++) {
+			for(var blockY = - chestTracersRange; blockY <= chestTracersRange; blockY++) {
+				for(var blockZ = - chestTracersRange; blockZ <= chestTracersRange; blockZ++) {
+					newX = x + blockX;
+					newY = y + blockY;
+					newZ = z + blockZ;
+					if(getTile(newX, newY, newZ) == 54) {
+						for(var count = 0; count <= 10; count++) {
+							Level.addParticle(ParticleType.flame, newX, newY, newZ, (getPlayerX() - newX) / count, (getPlayerY() - newY) / count, (getPlayerZ() - newZ) / count, 200);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(arrowGun);
 VertexClientPE.registerModule(autoSword);
@@ -1799,6 +1859,7 @@ VertexClientPE.registerModule(homeCommand);
 VertexClientPE.registerModule(panic);
 VertexClientPE.registerModule(switchGamemode);
 VertexClientPE.registerModule(autoSwitch);
+VertexClientPE.registerModule(chestTracers);
 VertexClientPE.registerModule(coordsDisplay);
 VertexClientPE.registerModule(derp);
 VertexClientPE.registerModule(itemGiver);
@@ -4686,6 +4747,8 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + spamDelayTime.toString());
 	outWrite.append("," + sizeSetting.toString());
 	outWrite.append("," + tapNukerRange.toString());
+	outWrite.append("," + menuType.toString());
+	outWrite.append("," + chestTracersRange.toString());
 
     outWrite.close();
 	
@@ -4751,6 +4814,12 @@ VertexClientPE.loadMainSettings = function() {
 	}
 	if(str.toString().split(",")[14] != null && str.toString().split(",")[14] != undefined) {
 		tapNukerRange = str.toString().split(",")[14]; //Here we split text by ","
+	}
+	if(str.toString().split(",")[15] != null && str.toString().split(",")[15] != undefined) {
+		menuType = str.toString().split(",")[15]; //Here we split text by ","
+	}
+	if(str.toString().split(",")[16] != null && str.toString().split(",")[16] != undefined) {
+		chestTracersRange = str.toString().split(",")[16]; //Here we split text by ","
 	}
     fos.close();
 	VertexClientPE.loadAutoSpammerSettings();
@@ -7605,7 +7674,7 @@ VertexClientPE.clientTick = function() {
                 .postDelayed(new java.lang.Runnable({
                     run: function() {
 						try{
-							if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false) && (menu == null || menu == false)) {
+							if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false) && (menu == null || menu.isShowing() == false)) {
 								VertexClientPE.isRemote = true;
 								if(Launcher.isBlockLauncher()) {
 									net.zhuoweizhang.mcpelauncher.ScriptManager.isRemote = true;
@@ -7616,7 +7685,7 @@ VertexClientPE.clientTick = function() {
 							print("Use BlockLauncher v1.12.2 or above!");
 							ModPE.log(e);
 						}
-						if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false) && (menu == null || menu == false)) {
+						if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false) && (menu == null || menu.isShowing() == false)) {
 							VertexClientPE.isRemote = true;
 							showMenuButton();
 						}
