@@ -268,7 +268,7 @@ VertexClientPE.registerModule = function(obj) {
 }
 
 VertexClientPE.drawTracer = function(x, y, z) {
-	for(var count = 0; count <= 10; count++) {
+	for(var count = 0; count <= 25; count++) {
 		Level.addParticle(ParticleType.flame, x, y, z, (getPlayerX() - x) / count, (getPlayerY() - y) / count, (getPlayerZ() - z) / count, 200);
 	}
 }
@@ -1762,6 +1762,9 @@ var chestTracers = {
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	state: false,
+	requiresPro: function() {
+		return true;
+	},
 	getSettingsLayout: function() {
 		var chestTracersSettingsLayout = new LinearLayout(ctx);
 		chestTracersSettingsLayout.setOrientation(1);
@@ -1869,6 +1872,7 @@ VertexClientPE.registerModule(derp);
 VertexClientPE.registerModule(itemGiver);
 VertexClientPE.registerModule(onlyDay);
 VertexClientPE.registerModule(orderAPizza);
+//VertexClientPE.registerModule(tracers);
 VertexClientPE.registerModule(yesCheatPlus);
 VertexClientPE.registerModule(zoom);
 
@@ -2701,7 +2705,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
 						} else {
 							toggleButton.setTextColor(android.graphics.Color.GREEN);
 						}
-						defaultButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.BLACK);
+						toggleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.BLACK);
 					} else {
 						toggleButton.setText("Enable");
 					}
@@ -6627,41 +6631,28 @@ VertexClientPE.showTopBar = function() {
 }
 
 VertexClientPE.showMenu = function() {
-	switch(menuType) {
-		case "halfscreen": {
-			mainMenu();
-			break;
-		} case "normal": {
-			VertexClientPE.showCombatMenu();
-			VertexClientPE.showBuildingMenu();
-			VertexClientPE.showMovementMenu();
-			VertexClientPE.showChatMenu();
-			VertexClientPE.showMiscMenu();
-			break;
-		} default: {
-			mainMenu();
-			break;
-		}
+	if(menuType == "normal") {
+		VertexClientPE.showCombatMenu();
+		VertexClientPE.showBuildingMenu();
+		VertexClientPE.showMovementMenu();
+		VertexClientPE.showChatMenu();
+		VertexClientPE.showMiscMenu();
+	} else if(menuType == "halfscreen") {
+		mainMenu();
 	}
+	VertexClientPE.showTopBar();
 }
 
 VertexClientPE.closeMenu = function() {
 	topBar.dismiss();
-	switch(menuType) {
-		case "halfscreen": {
-			menu.dismiss();
-			break;
-		} case "normal": {
-			vertexclientpecombatmenu.dismiss();
-			vertexclientpebuildingmenu.dismiss();
-			vertexclientpemovementmenu.dismiss();
-			vertexclientpechatmenu.dismiss();
-			vertexclientpemiscmenu.dismiss();
-			break;
-		} default: {
-			menu.dismiss();
-			break;
-		}
+	if(menuType == "normal") {
+		vertexclientpecombatmenu.dismiss();
+		vertexclientpebuildingmenu.dismiss();
+		vertexclientpemovementmenu.dismiss();
+		vertexclientpechatmenu.dismiss();
+		vertexclientpemiscmenu.dismiss();
+	} else if(menuType == "halfscreen") {
+		menu.dismiss();
 	}
 }
 
@@ -7588,7 +7579,6 @@ function showMenuButton() {
 				hacksList.dismiss();
 			}
 			VertexClientPE.showMenu();
-			VertexClientPE.showTopBar();
 			GUI.dismiss();
 		} else {
 			ctx.getSystemService(android.content.Context.VIBRATOR_SERVICE).vibrate(37);
