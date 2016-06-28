@@ -267,6 +267,12 @@ VertexClientPE.registerModule = function(obj) {
 	VertexClientPE.modules.push(obj);
 }
 
+VertexClientPE.drawTracer = function(x, y, z) {
+	for(var count = 0; count <= 10; count++) {
+		Level.addParticle(ParticleType.flame, x, y, z, (getPlayerX() - x) / count, (getPlayerY() - y) / count, (getPlayerZ() - z) / count, 200);
+	}
+}
+
 var shownAddonProDialog = false;
 
 function registerAddon(name, desc, current_version, target_version, mods) {
@@ -1799,9 +1805,7 @@ var chestTracers = {
 					newY = y + blockY;
 					newZ = z + blockZ;
 					if(getTile(newX, newY, newZ) == 54) {
-						for(var count = 0; count <= 10; count++) {
-							Level.addParticle(ParticleType.flame, newX, newY, newZ, (getPlayerX() - newX) / count, (getPlayerY() - newY) / count, (getPlayerZ() - newZ) / count, 200);
-						}
+						VertexClientPE.drawTracer(newX, newY, newZ);
 					}
 				}
 			}
@@ -5547,8 +5551,14 @@ VertexClientPE.checkForUpdates = function() {
         while((rowVersion = bufferedVersionReader.readLine()) != null) {
             loadedVersion += rowVersion;
         }
-        VertexClientPE.latestVersion = loadedVersion.split(" ")[0] + " " + loadedVersion.split(" ")[1];
-        latestPocketEditionVersion = loadedVersion.split(" ")[2];
+		
+		VertexClientPE.latestVersion = loadedVersion.split(" ")[0];
+        latestPocketEditionVersion = loadedVersion.split(" ")[1];
+		if(loadedVersion.split(" ")[1] == "Beta" || loadedVersion.split(" ")[1] == "Alpha") {
+			latestPocketEditionVersion = loadedVersion.split(" ")[2];
+		} else {
+			latestPocketEditionVersion = loadedVersion.split(" ")[1];
+		}
 
         // close what needs to be closed
         bufferedVersionReader.close();
@@ -6223,17 +6233,14 @@ function settingsScreen() {
 								hacksListModeSetting = "on";
 								hacksListModeSettingButton.setText("Hacks List Mode | Normal");
 								VertexClientPE.saveMainSettings();
-								VertexClientPE.loadMainSettings();
 							} else if(hacksListModeSetting == "on"){
 								hacksListModeSetting = "counter";
 								hacksListModeSettingButton.setText("Hacks List Mode | Counter");
 								VertexClientPE.saveMainSettings();
-								VertexClientPE.loadMainSettings();
 							} else if(hacksListModeSetting == "counter"){
 								hacksListModeSetting = "off";
 								hacksListModeSettingButton.setText("Hacks List Mode | Hidden");
 								VertexClientPE.saveMainSettings();
-								VertexClientPE.loadMainSettings();
 							}
 						}
 					}));
@@ -6250,12 +6257,10 @@ function settingsScreen() {
 							mainButtonPositionSetting = "bottom-right";
 							mainButtonPositionSettingButton.setText("Main button position | Bottom-right");
 							VertexClientPE.saveMainSettings();
-							VertexClientPE.loadMainSettings();
 						} else if(mainButtonPositionSetting == "bottom-right") {
 							mainButtonPositionSetting = "top-right";
 							mainButtonPositionSettingButton.setText("Main button position | Top-right");
 							VertexClientPE.saveMainSettings();
-							VertexClientPE.loadMainSettings();
 						}
 					}
 					}));
@@ -6281,42 +6286,36 @@ function settingsScreen() {
 							themeSettingButton.setText("Theme | Red");
 							themeSetup = "off";
 							VertexClientPE.saveMainSettings();
-							VertexClientPE.loadMainSettings();
 							VertexClientPE.setupTheme();
 						} else if(themeSetting == "red") {
 							themeSetting = "blue";
 							themeSettingButton.setText("Theme | Blue");
 							themeSetup = "off";
 							VertexClientPE.saveMainSettings();
-							VertexClientPE.loadMainSettings();
 							VertexClientPE.setupTheme();
 						} else if(themeSetting == "blue") {
 							themeSetting = "purple";
 							themeSettingButton.setText("Theme | Purple");
 							themeSetup = "off";
 							VertexClientPE.saveMainSettings();
-							VertexClientPE.loadMainSettings();
 							VertexClientPE.setupTheme();
 						} else if(themeSetting == "purple") {
 							themeSetting = "white";
 							themeSettingButton.setText("Theme | White");
 							themeSetup = "off";
 							VertexClientPE.saveMainSettings();
-							VertexClientPE.loadMainSettings();
 							VertexClientPE.setupTheme();
 						} else if(themeSetting == "white") {
 							themeSetting = "black";
 							themeSettingButton.setText("Theme | Black");
 							themeSetup = "off";
 							VertexClientPE.saveMainSettings();
-							VertexClientPE.loadMainSettings();
 							VertexClientPE.setupTheme();
 						} else if(themeSetting == "black") {
 							themeSetting = "green";
 							themeSettingButton.setText("Theme | Green");
 							themeSetup = "off";
 							VertexClientPE.saveMainSettings();
-							VertexClientPE.loadMainSettings();
 							VertexClientPE.setupTheme();
 						}
 					}
@@ -6334,12 +6333,10 @@ function settingsScreen() {
 							menuType = "halfscreen";
 							menuTypeSettingButton.setText("Menu style | Retro");
 							VertexClientPE.saveMainSettings();
-							VertexClientPE.loadMainSettings();
 						} else if(menuType == "halfscreen") {
 							menuType = "normal";
 							menuTypeSettingButton.setText("Menu style | Normal");
 							VertexClientPE.saveMainSettings();
-							VertexClientPE.loadMainSettings();
 						}
 					}
 					}));
@@ -6356,12 +6353,10 @@ function settingsScreen() {
 							showNewsSetting = "off";
 							showNewsSettingButton.setText("Show news | OFF");
 							VertexClientPE.saveMainSettings();
-							VertexClientPE.loadMainSettings();
 						} else if(showNewsSetting == "off") {
 							showNewsSetting = "on";
 							showNewsSettingButton.setText("Show news | ON");
 							VertexClientPE.saveMainSettings();
-							VertexClientPE.loadMainSettings();
 						}
 					}
 					}));
@@ -6378,12 +6373,10 @@ function settingsScreen() {
 							menuAnimationsSetting = "off";
 							menuAnimationsSettingButton.setText("Menu animations | OFF");
 							VertexClientPE.saveMainSettings();
-							VertexClientPE.loadMainSettings();
 						} else if(menuAnimationsSetting == "off") {
 							menuAnimationsSetting = "on";
 							menuAnimationsSettingButton.setText("Menu animations | ON");
 							VertexClientPE.saveMainSettings();
-							VertexClientPE.loadMainSettings();
 						}
 					}
 					}));
@@ -6404,7 +6397,6 @@ function settingsScreen() {
 							playMusicSetting = "shuffle";
 							playMusicSettingButton.setText("Music | SHUFFLE");
 							VertexClientPE.saveMainSettings();
-							VertexClientPE.loadMainSettings();
 							if(mp != null) {
 								mp.stop();
 								mp = null;
@@ -6415,7 +6407,6 @@ function settingsScreen() {
 							playMusicSetting = "off";
 							playMusicSettingButton.setText("Music | OFF");
 							VertexClientPE.saveMainSettings();
-							VertexClientPE.loadMainSettings();
 							VertexClientPE.resetMusic();
 							if(mp != null) {
 								mp.stop();
@@ -6447,13 +6438,11 @@ function settingsScreen() {
 							customHeight = topBarHeight;
 							sizeSettingButton.setText("Size setting | SMALL");
 							VertexClientPE.saveMainSettings();
-							VertexClientPE.loadMainSettings();
 						} else if(sizeSetting == "small") {
 							sizeSetting = "normal";
 							customHeight = customHeight;
 							sizeSettingButton.setText("Size setting | NORMAL");
 							VertexClientPE.saveMainSettings();
-							VertexClientPE.loadMainSettings();
 						}
 						VertexClientPE.toast("Now restart your launcher to make it work (this only works for the normal menu style)!");
 					}
@@ -6570,7 +6559,7 @@ VertexClientPE.showTopBar = function() {
         ctx.runOnUiThread(new java.lang.Runnable({
             run: function() {
                 try {
-					var topBarWidth = menuType=="halfscreen"?ctx.getWindowManager().getDefaultDisplay().getWidth()/1.8:ctx.getWindowManager().getDefaultDisplay().getWidth();
+					var topBarWidth = menuType=="normal"?ctx.getWindowManager().getDefaultDisplay().getWidth():ctx.getWindowManager().getDefaultDisplay().getWidth()/1.8;
 					
 					var topBarLayout = new LinearLayout(ctx);
 					topBarLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -6639,35 +6628,38 @@ VertexClientPE.showTopBar = function() {
 
 VertexClientPE.showMenu = function() {
 	switch(menuType) {
-		case "normal": {
+		case "halfscreen": {
+			mainMenu();
+			break;
+		} case "normal": {
 			VertexClientPE.showCombatMenu();
 			VertexClientPE.showBuildingMenu();
 			VertexClientPE.showMovementMenu();
 			VertexClientPE.showChatMenu();
 			VertexClientPE.showMiscMenu();
-			VertexClientPE.showTopBar();
 			break;
-		} case "halfscreen": {
+		} default: {
 			mainMenu();
-			VertexClientPE.showTopBar();
 			break;
 		}
 	}
 }
 
 VertexClientPE.closeMenu = function() {
+	topBar.dismiss();
 	switch(menuType) {
-		case "normal": {
+		case "halfscreen": {
+			menu.dismiss();
+			break;
+		} case "normal": {
 			vertexclientpecombatmenu.dismiss();
 			vertexclientpebuildingmenu.dismiss();
 			vertexclientpemovementmenu.dismiss();
 			vertexclientpechatmenu.dismiss();
 			vertexclientpemiscmenu.dismiss();
-			topBar.dismiss();
 			break;
-		} case "halfscreen": {
+		} default: {
 			menu.dismiss();
-			topBar.dismiss();
 			break;
 		}
 	}
@@ -7595,8 +7587,9 @@ function showMenuButton() {
 			if(hacksList != null) {
 				hacksList.dismiss();
 			}
-			GUI.dismiss();
 			VertexClientPE.showMenu();
+			VertexClientPE.showTopBar();
+			GUI.dismiss();
 		} else {
 			ctx.getSystemService(android.content.Context.VIBRATOR_SERVICE).vibrate(37);
 		    widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> You need to be in game to open the menu!"), 0).show();
@@ -7674,20 +7667,24 @@ VertexClientPE.clientTick = function() {
                 .postDelayed(new java.lang.Runnable({
                     run: function() {
 						try{
-							if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false) && (menu == null || menu.isShowing() == false)) {
-								VertexClientPE.isRemote = true;
-								if(Launcher.isBlockLauncher()) {
-									net.zhuoweizhang.mcpelauncher.ScriptManager.isRemote = true;
-									net.zhuoweizhang.mcpelauncher.ScriptManager.setLevelFakeCallback(true, false);
+							if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false)  && (menu == null || menu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false)) {
+								if(!VertexClientPE.playerIsInGame) {
+									VertexClientPE.isRemote = true;
+									if(Launcher.isBlockLauncher()) {
+										net.zhuoweizhang.mcpelauncher.ScriptManager.isRemote = true;
+										net.zhuoweizhang.mcpelauncher.ScriptManager.setLevelFakeCallback(true, false);
+									}
 								}
 							}
 						}catch(e) {
 							print("Use BlockLauncher v1.12.2 or above!");
 							ModPE.log(e);
 						}
-						if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false) && (menu == null || menu.isShowing() == false)) {
-							VertexClientPE.isRemote = true;
-							showMenuButton();
+						if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (menu == null || menu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false)) {
+							if(!VertexClientPE.playerIsInGame) {
+								VertexClientPE.isRemote = true;
+								showMenuButton();
+							}
 						}
 						if(!VertexClientPE.playerIsInGame) {
 							if(hacksList != null) {
