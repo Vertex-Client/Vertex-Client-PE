@@ -2025,6 +2025,64 @@ var help = {
 	}
 }
 
+var toggle = {
+	syntax: "toggle <module>",
+	type: "Command",
+	isStateMod: function() {
+		return false;
+	},
+	onCall: function(cmd) {
+		try {
+			var commandSplit = cmd.split(" ");
+			if (cmd.substring(2, cmd.length) != null && cmd.substring(2, cmd.length) != undefined && commandSplit[1] != null) {
+				var shouldReturn = false;
+				VertexClientPE.modules.forEach(function (element, index, array) {
+					if (element.name.toLowerCase() == cmd.substring(2, cmd.length)
+						.toLowerCase() && !shouldReturn) {
+						if (element.isStateMod()) {
+							if(element.requiresPro && element.requiresPro() && !VertexClientPE.isPro()) {
+								VertexClientPE.showProDialog(element.name);
+								return;
+							}
+							element.onToggle();
+							if(hacksList != null && hacksList.isShowing()) {
+								updateHacksList();
+							}
+							VertexClientPE.toast("Sucessfully toggled module " + element.name);
+						} else {
+							VertexClientPE.toast(element.name + " can't be toggled!");
+						}
+						shouldReturn = true;
+					}
+				});
+				if(shouldReturn) {
+					return;
+				}
+				VertexClientPE.toast("Module " + cmd.substring(2, cmd.length) + " can't be found/toggled!");
+			} else {
+				throw new SyntaxError();
+			}
+		} catch(e) {
+			if(e instanceof SyntaxError) {
+				VertexClientPE.syntaxError(".toggle <module>");
+			} else {
+				VertexClientPE.showBugReportDialog(e);
+			}
+		}
+	}
+}
+
+var t = {
+	syntax: "t <module>",
+	type: "Command",
+	isStateMod: function() {
+		return false;
+	},
+	onCall: function(cmd) {
+		toggle.onCall();
+	}
+}
+
 var say = {
 	syntax: "say <message>",
 	type: "Command",
@@ -2041,8 +2099,25 @@ var say = {
 	}
 }
 
+var drop = {
+	syntax: "drop [infinite]",
+	type: "Command",
+	isStateMod: function() {
+		return false;
+	},
+	onCall: function(cmd) {
+		sayMsg = cmd.substring(4, cmd.length);
+		if(fancyChatState) {
+			VertexClientPE.fancyChat(sayMsg);
+		} else {
+			Server.sendChat(sayMsg);
+		}
+	}
+}
+
 VertexClientPE.registerModule(help);
 VertexClientPE.registerModule(say);
+VertexClientPE.registerModule(drop);
 
 /**
  *  ##############
