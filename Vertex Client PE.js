@@ -1,7 +1,7 @@
 /**
  * ###############################################################
  * @name Vertex Client PE
- * @version v1.0-pre2
+ * @version v1.0-pre3
  * @author peacestorm (@AgameR_Modder)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG
  *
@@ -94,7 +94,7 @@ var _0x199a=["\x69\x73\x50\x72\x6F","\x67\x65\x74\x50\x72\x65\x66\x65\x72\x65\x6
 VertexClientPE.isRemote = false;
 VertexClientPE.playerIsInGame = false;
 
-VertexClientPE.currentVersion = "1.0-pre2";
+VertexClientPE.currentVersion = "1.0-pre3";
 VertexClientPE.targetVersion = "MCPE v0.14.x alpha";
 VertexClientPE.latestVersion = "Unknown";
 var latestPocketEditionVersion;
@@ -269,7 +269,7 @@ VertexClientPE.registerModule = function(obj) {
 
 VertexClientPE.drawTracer = function(x, y, z) {
 	for(var count = 0; count <= 25; count++) {
-		Level.addParticle(ParticleType.flame, x, y, z, (getPlayerX() - x) / count, (getPlayerY() - y) / count, (getPlayerZ() - z) / count, 200);
+		Level.addParticle(ParticleType.smoke, x, y, z, (getPlayerX() - x) / count, (getPlayerY() - y) / count, (getPlayerZ() - z) / count, 200);
 	}
 }
 
@@ -2131,11 +2131,52 @@ var drop = {
 	}
 }
 
+var give = {
+	syntax: "give (<item_name|item_id>) [<amount>] [<data>]",
+	type: "Command",
+	isStateMod: function() {
+		return false;
+	},
+	onCall: function(cmd) {
+		var commandSplit = cmd.split(" ");
+		try {
+			if(commandSplit[1] != null) {
+				if(Item.internalNameToId(commandSplit[1]) != null) {
+					var itemId = Item.internalNameToId(commandSplit[1]);
+				} else {
+					var itemId = commandSplit[1];
+				}
+			} else {
+				VertexClientPE.syntaxError("." + this.syntax);
+				return;
+			}
+			if(commandSplit[2] != null) {
+				var count = commandSplit[2];
+			} else {
+				var count = 1;
+			}
+			if(commandSplit[3] != null) {
+				var data = commandSplit[3];
+			} else {
+				var data = 0;
+			}
+			if(Item.isValidItem(itemId)) {
+				Player.addItemInventory(itemId, count, data);
+			} else {
+				VertexClientPE.syntaxError("." + this.syntax);
+			}
+		} catch(e) {
+			//syntax?
+		}
+	}
+}
+
 VertexClientPE.registerModule(help);
 VertexClientPE.registerModule(drop);
 VertexClientPE.registerModule(say);
 VertexClientPE.registerModule(toggle);
 VertexClientPE.registerModule(t);
+VertexClientPE.registerModule(give);
 
 /**
  *  ##############
@@ -3452,33 +3493,6 @@ VertexClientPE.commandManager = function(cmd) {
 			break;
 		case "js": //8
 			VertexClientPE.showJavascriptConsoleDialog();
-			break;
-		case "give": //10
-			if(commandSplit[1] != null) {
-				if(Item.internalNameToId(commandSplit[1]) != null) {
-					var itemId = Item.internalNameToId(commandSplit[1]);
-				} else {
-					var itemId = commandSplit[1];
-				}
-			} else {
-				VertexClientPE.syntaxError(".give (<item_name|item_id>) [<amount>] [<data>]");
-				break;
-			}
-			if(commandSplit[2] != null) {
-				var count = commandSplit[2];
-			} else {
-				var count = 1;
-			}
-			if(commandSplit[3] != null) {
-				var data = commandSplit[3];
-			} else {
-				var data = 0;
-			}
-			if(Item.isValidItem(itemId)) {
-				Player.addItemInventory(itemId, count, data);
-			} else {
-				VertexClientPE.syntaxError(".give (<item_name|item_id>) [<amount>] [<data>]");
-			}
 			break;
 		case "tp": //11
 			if(commandSplit[1] != null) {
@@ -6599,24 +6613,23 @@ VertexClientPE.showTopBar = function() {
 					
 					var topBarLayout = new LinearLayout(ctx);
 					topBarLayout.setOrientation(LinearLayout.HORIZONTAL);
-					topBarLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
 					
 					var topBarLayoutLeft = new LinearLayout(ctx);
 					topBarLayoutLeft.setOrientation(1);
 					topBarLayoutLeft.setGravity(android.view.Gravity.LEFT);
-					topBarLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(topBarWidth / 4, LinearLayout.LayoutParams.WRAP_CONTENT));
+					topBarLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(topBarWidth / 3, LinearLayout.LayoutParams.WRAP_CONTENT));
 					topBarLayout.addView(topBarLayoutLeft);
 					
 					var topBarLayoutCenter = new LinearLayout(ctx);
-					topBarLayoutCenter.setOrientation(1);
-					topBarLayoutCenter.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
-					topBarLayoutCenter.setLayoutParams(new android.view.ViewGroup.LayoutParams(topBarWidth / 2, LinearLayout.LayoutParams.WRAP_CONTENT));
+					topBarLayoutCenter.setOrientation(LinearLayout.HORIZONTAL);
+					topBarLayoutCenter.setGravity(android.view.Gravity.CENTER);
+					topBarLayoutCenter.setLayoutParams(new android.view.ViewGroup.LayoutParams(topBarWidth / 3, LinearLayout.LayoutParams.WRAP_CONTENT));
 					topBarLayout.addView(topBarLayoutCenter);
 					
 					var topBarLayoutRight = new LinearLayout(ctx);
 					topBarLayoutRight.setOrientation(1);
 					topBarLayoutRight.setGravity(android.view.Gravity.RIGHT);
-					topBarLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(topBarWidth / 4, LinearLayout.LayoutParams.WRAP_CONTENT));
+					topBarLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(topBarWidth / 3, LinearLayout.LayoutParams.WRAP_CONTENT));
 					topBarLayout.addView(topBarLayoutRight);
 					
 					var moreButton = clientButton("...", null, null, true);
@@ -6642,7 +6655,24 @@ VertexClientPE.showTopBar = function() {
 					var logo4 = android.util.Base64.decode(logoImage, 0);
 					var logoViewer4 = new widget.ImageView(ctx);
 					logoViewer4.setImageBitmap(android.graphics.BitmapFactory.decodeByteArray(logo4, 0, logo4.length));
-					topBarLayoutCenter.addView(logoViewer4);
+					if(VertexClientPE.isPro()) {
+						var topBarLayoutCenterLeft = new LinearLayout(ctx);
+						topBarLayoutCenterLeft.setOrientation(1);
+						//topBarLayoutCenterLeft.setGravity(android.view.Gravity.LEFT);
+						topBarLayoutCenterLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams((topBarWidth / 3 / 3) * 2, LinearLayout.LayoutParams.WRAP_CONTENT));
+						topBarLayoutCenter.addView(topBarLayoutCenterLeft);
+						var topBarLayoutCenterRight = new LinearLayout(ctx);
+						topBarLayoutCenterRight.setOrientation(1);
+						//topBarLayoutCenterRight.setGravity(android.view.Gravity.RIGHT);
+						topBarLayoutCenterRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(topBarWidth / 3 / 3, LinearLayout.LayoutParams.WRAP_CONTENT));
+						topBarLayoutCenter.addView(topBarLayoutCenterRight);
+						var proTextView = clientTextView("Pro", true);
+						proTextView.setTextColor(android.graphics.Color.parseColor("#FF4500"));
+						topBarLayoutCenterLeft.addView(logoViewer4);
+						topBarLayoutCenterRight.addView(proTextView);
+					} else {
+						topBarLayoutCenter.addView(logoViewer4);
+					}
 					
 					topBar = new widget.PopupWindow(topBarLayout, topBarWidth, topBarHeight);
 					/*topBar.setBackgroundDrawable(backgroundGradient());
@@ -7694,6 +7724,12 @@ VertexClientPE.clientTick = function() {
 								if(Launcher.isBlockLauncher()) {
 									net.zhuoweizhang.mcpelauncher.ScriptManager.isRemote = true;
 									net.zhuoweizhang.mcpelauncher.ScriptManager.setLevelFakeCallback(true, false);
+								}
+							}
+							if(Launcher.isToolbox()) {
+								if(Level.isRemote()) {
+									VertexClientPE.playerIsInGame = true;
+									VertexClientPE.isRemote = true;
 								}
 							}
 						}catch(e) {
