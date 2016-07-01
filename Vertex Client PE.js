@@ -519,58 +519,7 @@ var autoSword = {
 		autoSwordState = this.state;
 	},
 	onAttack: function(a, v) {
-		if(a == getPlayerEnt()) {
-			for(var i = 0; i <= 36; i++) {
-				var gCI = Player.getCarriedItem();
-				var gCID = Player.getCarriedItemData();
-				var gCIA = Player.getCarriedItemCount();
-				if(Player.getInventorySlot(i) == 268) {
-					Player.setInventorySlot(i, gCI, gCIA, gCID);
-					Entity.setCarriedItem(getPlayerEnt(), 268, Player.getInventorySlotCount(i), Player.getInventorySlotData(i));
-					break;
-				}
-			}
-			for(var i = 0; i <= 36; i++) {
-				var gCI = Player.getCarriedItem();
-				var gCID = Player.getCarriedItemData();
-				var gCIA = Player.getCarriedItemCount();
-				if(Player.getInventorySlot(i) == 283) {
-					Player.setInventorySlot(i, gCI, gCIA, gCID);
-					Entity.setCarriedItem(getPlayerEnt(), 283, Player.getInventorySlotCount(i), Player.getInventorySlotData(i));
-					break;
-				}
-			}
-			for(var i = 0; i <= 36; i++) {
-				var gCI = Player.getCarriedItem();
-				var gCID = Player.getCarriedItemData();
-				var gCIA = Player.getCarriedItemCount();
-				if(Player.getInventorySlot(i) == 272) {
-					Player.setInventorySlot(i, gCI, gCIA, gCID);
-					Entity.setCarriedItem(getPlayerEnt(), 272, Player.getInventorySlotCount(i), Player.getInventorySlotData(i));
-					break;
-				}
-			}
-			for(var i = 0; i <= 36; i++) {
-				var gCI = Player.getCarriedItem();
-				var gCID = Player.getCarriedItemData();
-				var gCIA = Player.getCarriedItemCount();
-				if(Player.getInventorySlot(i) == 267) {
-					Player.setInventorySlot(i, gCI, gCIA, gCID);
-					Entity.setCarriedItem(getPlayerEnt(), 267, Player.getInventorySlotCount(i), Player.getInventorySlotData(i));
-					break;
-				}
-			}
-			for(var i = 0; i <= 36; i++) {
-				var gCI = Player.getCarriedItem();
-				var gCID = Player.getCarriedItemData();
-				var gCIA = Player.getCarriedItemCount();
-				if(Player.getInventorySlot(i) == 276) {
-					Player.setInventorySlot(i, gCI, gCIA, gCID);
-					Entity.setCarriedItem(getPlayerEnt(), 276, Player.getInventorySlotCount(i), Player.getInventorySlotData(i));
-					break;
-				}
-			}
-		}
+		VertexClientPE.autoSword();
 	}
 }
 
@@ -1816,6 +1765,29 @@ var chestTracers = {
 	}
 }
 
+var remoteView = {
+	name: "RemoteView",
+	desc: "Allows you to see the world as someone else (an entity).",
+	category: VertexClientPE.category.MISC,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+		if(!this.state) {
+			ModPE.setCamera(getPlayerEnt());
+		}
+	},
+	onAttack: function(a, v) {
+		if(a == getPlayerEnt()) {
+			preventDefault();
+			ModPE.setCamera(v);
+		}
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(arrowGun);
 VertexClientPE.registerModule(autoSword);
@@ -1872,6 +1844,7 @@ VertexClientPE.registerModule(derp);
 VertexClientPE.registerModule(itemGiver);
 VertexClientPE.registerModule(onlyDay);
 VertexClientPE.registerModule(orderAPizza);
+//VertexClientPE.registerModule(remoteView);
 //VertexClientPE.registerModule(tracers);
 VertexClientPE.registerModule(yesCheatPlus);
 VertexClientPE.registerModule(zoom);
@@ -2015,7 +1988,6 @@ var help = {
 		return false;
 	},
 	onCall: function(cmd) {
-		//VertexClientPE.clientMessage(".help is broken at the moment!");
 		var commandSplit = cmd.split(" ");
 		if(commandSplit[1] == undefined || commandSplit[1] == null || commandSplit[1] == "1") {
 			VertexClientPE.showHelpPage("1");
@@ -3541,12 +3513,18 @@ VertexClientPE.switchGameMode = function() {
 }
 
 VertexClientPE.spectate = function(playerName) {
-	var players = Server.getAllPlayers();
-	for (var i = 0; i < players.length; i++) {
-		if(Player.getName(players[i]) == playerName) {
-			ModPE.setCamera(players[i]);
+	var entities = Entity.getAll();
+	for(var i in entities) {
+		/*if(Entity.getNameTag(entities[i]) != null) {
+			clientMessage(Entity.getNameTag(entities[i]));
+		}*/
+		if(Player.getName(entities[i])  == playerName || Entity.getNameTag(entities[i]) == playerName) {
+			ModPE.setCamera(entities[i]);
+			VertexClientPE.clientMessage("You're now spectating " + playerName + "!");
+			return;
 		}
 	}
+	VertexClientPE.clientMessage("Can't find player " + playerName + "!");
 }
 
 VertexClientPE.clientMessage = function(message) {
@@ -3804,536 +3782,6 @@ VertexClientPE.healthTags = function() {
     }
 }
 
-VertexClientPE.xRay = function(onOrOff) {
-    switch(onOrOff) {
-	    case 0: {
-	        OpaqLayer = 0;
-	
-	        Block.setLightLevel(54, 0);
-	        Block.setLightLevel(86, 15);
-	        Block.setLightLevel(89, 15);
-	
-	        Block.setRenderLayer(1, OpaqLayer);
-	        Block.setRenderLayer(2, OpaqLayer);
-	        Block.setRenderLayer(3, OpaqLayer);
-	        Block.setRenderLayer(4, OpaqLayer);
-	        Block.setRenderLayer(5, OpaqLayer);
-	        Block.setRenderLayer(6, OpaqLayer);
-	        Block.setRenderLayer(7, OpaqLayer);
-	        Block.setRenderLayer(8, OpaqLayer);
-	        Block.setRenderLayer(9, OpaqLayer);
-	        Block.setRenderLayer(10, OpaqLayer);
-	        Block.setRenderLayer(11, OpaqLayer);
-	        Block.setRenderLayer(12, OpaqLayer);
-	        Block.setRenderLayer(13, OpaqLayer);
-	        Block.setRenderLayer(14, OpaqLayer);
-	        Block.setRenderLayer(15, OpaqLayer);
-	        Block.setRenderLayer(17, OpaqLayer);
-	        Block.setRenderLayer(18, OpaqLayer);
-	        Block.setRenderLayer(19, OpaqLayer);
-	        Block.setRenderLayer(20, 1);
-	        Block.setRenderLayer(21, OpaqLayer);
-	        Block.setRenderLayer(22, OpaqLayer);
-	        Block.setRenderLayer(23, OpaqLayer);
-	        Block.setRenderLayer(24, OpaqLayer);
-	        Block.setRenderLayer(25, OpaqLayer);
-	        Block.setRenderLayer(26, OpaqLayer);
-	        Block.setRenderLayer(27, OpaqLayer);
-	        Block.setRenderLayer(28, OpaqLayer);
-	        Block.setRenderLayer(29, OpaqLayer);
-	        Block.setRenderLayer(30, OpaqLayer);
-	        Block.setRenderLayer(31, 1);
-	        Block.setRenderLayer(32, OpaqLayer);
-	        Block.setRenderLayer(33, OpaqLayer);
-	        Block.setRenderLayer(34, OpaqLayer);
-	        Block.setRenderLayer(35, OpaqLayer);
-	        Block.setRenderLayer(36, OpaqLayer);
-	        Block.setRenderLayer(37, OpaqLayer);
-	        Block.setRenderLayer(38, OpaqLayer);
-	        Block.setRenderLayer(39, OpaqLayer);
-	        Block.setRenderLayer(40, OpaqLayer);
-	        Block.setRenderLayer(41, OpaqLayer);
-	        Block.setRenderLayer(42, OpaqLayer);
-	        Block.setRenderLayer(43, OpaqLayer);
-	        Block.setRenderLayer(44, OpaqLayer);
-	        Block.setRenderLayer(45, OpaqLayer);
-	        Block.setRenderLayer(46, OpaqLayer);
-	        Block.setRenderLayer(47, OpaqLayer);
-	        Block.setRenderLayer(48, OpaqLayer);
-	        Block.setRenderLayer(49, OpaqLayer);
-	        Block.setRenderLayer(50, OpaqLayer);
-	        Block.setRenderLayer(51, OpaqLayer);
-	        Block.setRenderLayer(52, OpaqLayer);
-	        Block.setRenderLayer(53, OpaqLayer);
-	        Block.setRenderLayer(54, OpaqLayer);
-	        Block.setRenderLayer(55, OpaqLayer);
-	        Block.setRenderLayer(56, OpaqLayer);
-	        Block.setRenderLayer(57, OpaqLayer);
-	        Block.setRenderLayer(58, OpaqLayer);
-	        Block.setRenderLayer(59, OpaqLayer);
-	        Block.setRenderLayer(60, OpaqLayer);
-	        Block.setRenderLayer(61, OpaqLayer);
-	        Block.setRenderLayer(62, OpaqLayer);
-	        Block.setRenderLayer(63, OpaqLayer);
-	        Block.setRenderLayer(64, OpaqLayer);
-	        Block.setRenderLayer(65, OpaqLayer);
-	        Block.setRenderLayer(66, OpaqLayer);
-	        Block.setRenderLayer(67, OpaqLayer);
-	        Block.setRenderLayer(68, OpaqLayer);
-	        Block.setRenderLayer(69, OpaqLayer);
-	        Block.setRenderLayer(70, OpaqLayer);
-	        Block.setRenderLayer(71, OpaqLayer);
-	        Block.setRenderLayer(72, OpaqLayer);
-	        Block.setRenderLayer(73, OpaqLayer);
-	        Block.setRenderLayer(74, OpaqLayer);
-	        Block.setRenderLayer(75, OpaqLayer);
-	        Block.setRenderLayer(76, OpaqLayer);
-	        Block.setRenderLayer(77, OpaqLayer);
-	        Block.setRenderLayer(78, OpaqLayer);
-	        Block.setRenderLayer(79, OpaqLayer);
-	        Block.setRenderLayer(80, OpaqLayer);
-	        Block.setRenderLayer(81, OpaqLayer);
-	        Block.setRenderLayer(82, OpaqLayer);
-	        Block.setRenderLayer(83, OpaqLayer);
-	        Block.setRenderLayer(84, OpaqLayer);
-	        Block.setRenderLayer(85, OpaqLayer);
-	        Block.setRenderLayer(86, OpaqLayer);
-	        Block.setRenderLayer(87, OpaqLayer);
-	        Block.setRenderLayer(88, OpaqLayer);
-	        Block.setRenderLayer(89, OpaqLayer);
-	        Block.setRenderLayer(90, OpaqLayer);
-	        Block.setRenderLayer(91, OpaqLayer);
-	        Block.setRenderLayer(92, OpaqLayer);
-	        Block.setRenderLayer(93, OpaqLayer);
-	        Block.setRenderLayer(94, OpaqLayer);
-	        Block.setRenderLayer(95, OpaqLayer);
-	        Block.setRenderLayer(96, OpaqLayer);
-	        Block.setRenderLayer(97, OpaqLayer);
-	        Block.setRenderLayer(98, OpaqLayer);
-	        Block.setRenderLayer(99, OpaqLayer);
-	        Block.setRenderLayer(100, OpaqLayer);
-	        Block.setRenderLayer(101, OpaqLayer);
-	        Block.setRenderLayer(102, 1);
-	        Block.setRenderLayer(103, OpaqLayer);
-	        Block.setRenderLayer(104, OpaqLayer);
-	        Block.setRenderLayer(105, OpaqLayer);
-	        Block.setRenderLayer(106, 1);
-	        Block.setRenderLayer(107, OpaqLayer);
-	        Block.setRenderLayer(108, OpaqLayer);
-	        Block.setRenderLayer(109, OpaqLayer);
-	        Block.setRenderLayer(110, OpaqLayer);
-	        Block.setRenderLayer(111, OpaqLayer);
-	        Block.setRenderLayer(112, OpaqLayer);
-	        Block.setRenderLayer(113, OpaqLayer);
-	        Block.setRenderLayer(114, OpaqLayer);
-	        Block.setRenderLayer(115, OpaqLayer);
-	        Block.setRenderLayer(117, OpaqLayer);
-	        Block.setRenderLayer(118, OpaqLayer);
-	        Block.setRenderLayer(119, OpaqLayer);
-	        Block.setRenderLayer(120, OpaqLayer);
-	        Block.setRenderLayer(121, OpaqLayer);
-	        Block.setRenderLayer(122, OpaqLayer);
-	        Block.setRenderLayer(123, OpaqLayer);
-	        Block.setRenderLayer(124, OpaqLayer);
-	        Block.setRenderLayer(125, OpaqLayer);
-	        Block.setRenderLayer(126, OpaqLayer);
-	        Block.setRenderLayer(127, OpaqLayer);
-	        Block.setRenderLayer(128, OpaqLayer);
-	        Block.setRenderLayer(129, OpaqLayer);
-	        Block.setRenderLayer(130, OpaqLayer);
-	        Block.setRenderLayer(131, OpaqLayer);
-	        Block.setRenderLayer(132, OpaqLayer);
-	        Block.setRenderLayer(133, OpaqLayer);
-	        Block.setRenderLayer(134, OpaqLayer);
-	        Block.setRenderLayer(135, OpaqLayer);
-	        Block.setRenderLayer(136, OpaqLayer);
-	        Block.setRenderLayer(137, OpaqLayer);
-	        Block.setRenderLayer(138, OpaqLayer);
-	        Block.setRenderLayer(139, OpaqLayer);
-	        Block.setRenderLayer(140, OpaqLayer);
-	        Block.setRenderLayer(141, OpaqLayer);
-	        Block.setRenderLayer(142, OpaqLayer);
-	        Block.setRenderLayer(143, OpaqLayer);
-	        Block.setRenderLayer(144, OpaqLayer);
-	        Block.setRenderLayer(145, OpaqLayer);
-	        Block.setRenderLayer(146, OpaqLayer);
-	        Block.setRenderLayer(147, OpaqLayer);
-	        Block.setRenderLayer(148, OpaqLayer);
-	        Block.setRenderLayer(149, OpaqLayer);
-	        Block.setRenderLayer(150, OpaqLayer);
-	        Block.setRenderLayer(151, OpaqLayer);
-	        Block.setRenderLayer(152, OpaqLayer);
-	        Block.setRenderLayer(153, OpaqLayer);
-	        Block.setRenderLayer(154, OpaqLayer);
-	        Block.setRenderLayer(155, OpaqLayer);
-	        Block.setRenderLayer(156, OpaqLayer);
-	        Block.setRenderLayer(157, OpaqLayer);
-	        Block.setRenderLayer(158, OpaqLayer);
-	        Block.setRenderLayer(159, OpaqLayer);
-	        Block.setRenderLayer(160, OpaqLayer);
-	        Block.setRenderLayer(161, OpaqLayer);
-	        Block.setRenderLayer(162, OpaqLayer);
-	        Block.setRenderLayer(163, OpaqLayer);
-	        Block.setRenderLayer(164, OpaqLayer);
-	        Block.setRenderLayer(165, OpaqLayer);
-	        Block.setRenderLayer(166, OpaqLayer);
-	        Block.setRenderLayer(167, OpaqLayer);
-	        Block.setRenderLayer(168, OpaqLayer);
-	        Block.setRenderLayer(169, OpaqLayer);
-	        Block.setRenderLayer(170, OpaqLayer);
-	        Block.setRenderLayer(171, OpaqLayer);
-	        Block.setRenderLayer(172, OpaqLayer);
-	        Block.setRenderLayer(173, OpaqLayer);
-	        Block.setRenderLayer(174, OpaqLayer);
-	        Block.setRenderLayer(175, 1);
-	        Block.setRenderLayer(176, OpaqLayer);
-	        Block.setRenderLayer(177, OpaqLayer);
-	        Block.setRenderLayer(178, OpaqLayer);
-	        Block.setRenderLayer(179, OpaqLayer);
-	        Block.setRenderLayer(180, OpaqLayer);
-	        Block.setRenderLayer(181, OpaqLayer);
-	        Block.setRenderLayer(182, OpaqLayer);
-	        Block.setRenderLayer(183, OpaqLayer);
-	        Block.setRenderLayer(184, OpaqLayer);
-	        Block.setRenderLayer(185, OpaqLayer);
-	        Block.setRenderLayer(186, OpaqLayer);
-	        Block.setRenderLayer(187, OpaqLayer);
-	        Block.setRenderLayer(188, OpaqLayer);
-	        Block.setRenderLayer(189, OpaqLayer);
-	        Block.setRenderLayer(190, OpaqLayer);
-	        Block.setRenderLayer(191, OpaqLayer);
-	        Block.setRenderLayer(192, OpaqLayer);
-	        Block.setRenderLayer(193, OpaqLayer);
-	        Block.setRenderLayer(194, OpaqLayer);
-	        Block.setRenderLayer(195, OpaqLayer);
-	        Block.setRenderLayer(196, OpaqLayer);
-	        Block.setRenderLayer(197, OpaqLayer);
-	        Block.setRenderLayer(198, OpaqLayer);
-	        Block.setRenderLayer(199, OpaqLayer);
-	        Block.setRenderLayer(200, OpaqLayer);
-	        Block.setRenderLayer(201, OpaqLayer);
-	        Block.setRenderLayer(202, OpaqLayer);
-	        Block.setRenderLayer(203, OpaqLayer);
-	        Block.setRenderLayer(204, OpaqLayer);
-	        Block.setRenderLayer(205, OpaqLayer);
-	        Block.setRenderLayer(206, OpaqLayer);
-	        Block.setRenderLayer(207, OpaqLayer);
-	        Block.setRenderLayer(208, OpaqLayer);
-	        Block.setRenderLayer(209, OpaqLayer);
-	        Block.setRenderLayer(210, OpaqLayer);
-	        Block.setRenderLayer(211, OpaqLayer);
-	        Block.setRenderLayer(212, OpaqLayer);
-	        Block.setRenderLayer(213, OpaqLayer);
-	        Block.setRenderLayer(214, OpaqLayer);
-	        Block.setRenderLayer(215, OpaqLayer);
-	        Block.setRenderLayer(217, OpaqLayer);
-	        Block.setRenderLayer(218, OpaqLayer);
-	        Block.setRenderLayer(219, OpaqLayer);
-	        Block.setRenderLayer(220, OpaqLayer);
-	        Block.setRenderLayer(221, OpaqLayer);
-	        Block.setRenderLayer(222, OpaqLayer);
-	        Block.setRenderLayer(223, OpaqLayer);
-	        Block.setRenderLayer(224, OpaqLayer);
-	        Block.setRenderLayer(225, OpaqLayer);
-	        Block.setRenderLayer(226, OpaqLayer);
-	        Block.setRenderLayer(227, OpaqLayer);
-	        Block.setRenderLayer(228, OpaqLayer);
-	        Block.setRenderLayer(229, OpaqLayer);
-	        Block.setRenderLayer(230, OpaqLayer);
-	        Block.setRenderLayer(231, OpaqLayer);
-	        Block.setRenderLayer(232, OpaqLayer);
-	        Block.setRenderLayer(233, OpaqLayer);
-	        Block.setRenderLayer(234, OpaqLayer);
-	        Block.setRenderLayer(235, OpaqLayer);
-	        Block.setRenderLayer(236, OpaqLayer);
-	        Block.setRenderLayer(237, OpaqLayer);
-	        Block.setRenderLayer(238, OpaqLayer);
-	        Block.setRenderLayer(239, OpaqLayer);
-	        Block.setRenderLayer(240, OpaqLayer);
-	        Block.setRenderLayer(241, OpaqLayer);
-	        Block.setRenderLayer(242, OpaqLayer);
-	        Block.setRenderLayer(243, OpaqLayer);
-	        Block.setRenderLayer(244, OpaqLayer);
-	        Block.setRenderLayer(245, OpaqLayer);
-	        Block.setRenderLayer(248, OpaqLayer);
-	        Block.setRenderLayer(249, OpaqLayer);
-	        Block.setRenderLayer(250, OpaqLayer);
-	        Block.setRenderLayer(251, OpaqLayer);
-	        Block.setRenderLayer(252, OpaqLayer);
-	        Block.setRenderLayer(253, OpaqLayer);
-	        Block.setRenderLayer(254, OpaqLayer);
-	        Block.setRenderLayer(255, OpaqLayer);
-	        break;
-		} case 1: {
-	        var RenderLayer = 1;
-	        ///////// CHESTS ARE NOW GLOWING OR HAVE THE SAME BRIGHTNESS AS TORCHES, ITS GOOD TO TROLL YOUR FRIENDS, GLOWSTONE AND ANSMALL BLOCK HAS NOW NO BRIGHTNESS, THE PLAYER CAN SEE NOW BETTER THROUGH BLOCKS
-	        Block.setLightLevel(54, 15);
-	        Block.setLightLevel(86, 0);
-	        Block.setLightLevel(89, 0);
-	
-	        Block.setRenderLayer(1, RenderLayer);
-	        Block.setRenderLayer(2, RenderLayer);
-	        Block.setRenderLayer(3, RenderLayer);
-	        Block.setRenderLayer(4, RenderLayer);
-	        Block.setRenderLayer(5, RenderLayer);
-	        Block.setRenderLayer(6, RenderLayer);
-	        Block.setRenderLayer(7, RenderLayer);
-	        Block.setRenderLayer(8, RenderLayer);
-	        Block.setRenderLayer(9, RenderLayer);
-	        Block.setRenderLayer(10, RenderLayer);
-	        Block.setRenderLayer(11, RenderLayer);
-	        Block.setRenderLayer(12, RenderLayer);
-	        Block.setRenderLayer(13, RenderLayer);
-	        Block.setRenderLayer(14, RenderLayer);
-	        Block.setRenderLayer(15, RenderLayer);
-	        Block.setRenderLayer(16, RenderLayer);
-	        Block.setRenderLayer(17, RenderLayer);
-	        Block.setRenderLayer(18, RenderLayer);
-	        Block.setRenderLayer(19, RenderLayer);
-	        Block.setRenderLayer(20, RenderLayer);
-	        Block.setRenderLayer(21, RenderLayer);
-	        Block.setRenderLayer(22, RenderLayer);
-	        Block.setRenderLayer(23, RenderLayer);
-	        Block.setRenderLayer(24, RenderLayer);
-	        Block.setRenderLayer(25, RenderLayer);
-	        Block.setRenderLayer(26, RenderLayer);
-	        Block.setRenderLayer(27, RenderLayer);
-	        Block.setRenderLayer(28, RenderLayer);
-	        Block.setRenderLayer(29, RenderLayer);
-	        Block.setRenderLayer(30, RenderLayer);
-	        Block.setRenderLayer(31, RenderLayer);
-	        Block.setRenderLayer(32, RenderLayer);
-	        Block.setRenderLayer(33, RenderLayer);
-	        Block.setRenderLayer(34, RenderLayer);
-	        Block.setRenderLayer(35, RenderLayer);
-	        Block.setRenderLayer(36, RenderLayer);
-	        Block.setRenderLayer(37, RenderLayer);
-	        Block.setRenderLayer(38, RenderLayer);
-	        Block.setRenderLayer(39, RenderLayer);
-	        Block.setRenderLayer(40, RenderLayer);
-	        Block.setRenderLayer(41, RenderLayer);
-	        Block.setRenderLayer(42, RenderLayer);
-	        Block.setRenderLayer(43, RenderLayer);
-	        Block.setRenderLayer(44, RenderLayer);
-	        Block.setRenderLayer(45, RenderLayer);
-	        Block.setRenderLayer(46, RenderLayer);
-	        Block.setRenderLayer(47, RenderLayer);
-	        Block.setRenderLayer(48, RenderLayer);
-	        Block.setRenderLayer(49, RenderLayer);
-	        Block.setRenderLayer(50, RenderLayer);
-	        Block.setRenderLayer(51, RenderLayer);
-	        Block.setRenderLayer(52, RenderLayer);
-	        Block.setRenderLayer(53, RenderLayer);
-	        Block.setRenderLayer(54, RenderLayer);
-	        Block.setRenderLayer(55, RenderLayer);
-	        Block.setRenderLayer(56, RenderLayer);
-	        Block.setRenderLayer(57, RenderLayer);
-	        Block.setRenderLayer(58, RenderLayer);
-	        Block.setRenderLayer(59, RenderLayer);
-	        Block.setRenderLayer(60, RenderLayer);
-	        Block.setRenderLayer(61, RenderLayer);
-	        Block.setRenderLayer(62, RenderLayer);
-	        Block.setRenderLayer(63, RenderLayer);
-	        Block.setRenderLayer(64, RenderLayer);
-	        Block.setRenderLayer(65, RenderLayer);
-	        Block.setRenderLayer(66, RenderLayer);
-	        Block.setRenderLayer(67, RenderLayer);
-	        Block.setRenderLayer(68, RenderLayer);
-	        Block.setRenderLayer(69, RenderLayer);
-	        Block.setRenderLayer(70, RenderLayer);
-	        Block.setRenderLayer(71, RenderLayer);
-	        Block.setRenderLayer(72, RenderLayer);
-	        Block.setRenderLayer(73, RenderLayer);
-	        Block.setRenderLayer(74, RenderLayer);
-	        Block.setRenderLayer(75, RenderLayer);
-	        Block.setRenderLayer(76, RenderLayer);
-	        Block.setRenderLayer(77, RenderLayer);
-	        Block.setRenderLayer(78, RenderLayer);
-	        Block.setRenderLayer(79, RenderLayer);
-	        Block.setRenderLayer(80, RenderLayer);
-	        Block.setRenderLayer(81, RenderLayer);
-	        Block.setRenderLayer(82, RenderLayer);
-	        Block.setRenderLayer(83, RenderLayer);
-	        Block.setRenderLayer(84, RenderLayer);
-	        Block.setRenderLayer(85, RenderLayer);
-	        Block.setRenderLayer(86, RenderLayer);
-	        Block.setRenderLayer(87, RenderLayer);
-	        Block.setRenderLayer(88, RenderLayer);
-	        Block.setRenderLayer(89, RenderLayer);
-	        Block.setRenderLayer(90, RenderLayer);
-	        Block.setRenderLayer(91, RenderLayer);
-	        Block.setRenderLayer(92, RenderLayer);
-	        Block.setRenderLayer(93, RenderLayer);
-	        Block.setRenderLayer(94, RenderLayer);
-	        Block.setRenderLayer(95, RenderLayer);
-	        Block.setRenderLayer(96, RenderLayer);
-	        Block.setRenderLayer(97, RenderLayer);
-	        Block.setRenderLayer(98, RenderLayer);
-	        Block.setRenderLayer(99, RenderLayer);
-	        Block.setRenderLayer(100, RenderLayer);
-	        Block.setRenderLayer(101, RenderLayer);
-	        Block.setRenderLayer(102, RenderLayer);
-	        Block.setRenderLayer(103, RenderLayer);
-	        Block.setRenderLayer(104, RenderLayer);
-	        Block.setRenderLayer(105, RenderLayer);
-	        Block.setRenderLayer(106, RenderLayer);
-	        Block.setRenderLayer(107, RenderLayer);
-	        Block.setRenderLayer(108, RenderLayer);
-	        Block.setRenderLayer(109, RenderLayer);
-	        Block.setRenderLayer(110, RenderLayer);
-	        Block.setRenderLayer(111, RenderLayer);
-	        Block.setRenderLayer(112, RenderLayer);
-	        Block.setRenderLayer(113, RenderLayer);
-	        Block.setRenderLayer(114, RenderLayer);
-	        Block.setRenderLayer(115, RenderLayer);
-	        Block.setRenderLayer(117, RenderLayer);
-	        Block.setRenderLayer(118, RenderLayer);
-	        Block.setRenderLayer(119, RenderLayer);
-	        Block.setRenderLayer(120, RenderLayer);
-	        Block.setRenderLayer(121, RenderLayer);
-	        Block.setRenderLayer(122, RenderLayer);
-	        Block.setRenderLayer(123, RenderLayer);
-	        Block.setRenderLayer(124, RenderLayer);
-	        Block.setRenderLayer(125, RenderLayer);
-	        Block.setRenderLayer(126, RenderLayer);
-	        Block.setRenderLayer(127, RenderLayer);
-	        Block.setRenderLayer(128, RenderLayer);
-	        Block.setRenderLayer(129, RenderLayer);
-	        Block.setRenderLayer(130, RenderLayer);
-	        Block.setRenderLayer(131, RenderLayer);
-	        Block.setRenderLayer(132, RenderLayer);
-	        Block.setRenderLayer(133, RenderLayer);
-	        Block.setRenderLayer(134, RenderLayer);
-	        Block.setRenderLayer(135, RenderLayer);
-	        Block.setRenderLayer(136, RenderLayer);
-	        Block.setRenderLayer(137, RenderLayer);
-	        Block.setRenderLayer(138, RenderLayer);
-	        Block.setRenderLayer(139, RenderLayer);
-	        Block.setRenderLayer(140, RenderLayer);
-	        Block.setRenderLayer(141, RenderLayer);
-	        Block.setRenderLayer(142, RenderLayer);
-	        Block.setRenderLayer(143, RenderLayer);
-	        Block.setRenderLayer(144, RenderLayer);
-	        Block.setRenderLayer(145, RenderLayer);
-	        Block.setRenderLayer(146, RenderLayer);
-	        Block.setRenderLayer(147, RenderLayer);
-	        Block.setRenderLayer(148, RenderLayer);
-	        Block.setRenderLayer(149, RenderLayer);
-	        Block.setRenderLayer(150, RenderLayer);
-	        Block.setRenderLayer(151, RenderLayer);
-	        Block.setRenderLayer(152, RenderLayer);
-	        Block.setRenderLayer(153, RenderLayer);
-	        Block.setRenderLayer(154, RenderLayer);
-	        Block.setRenderLayer(155, RenderLayer);
-	        Block.setRenderLayer(156, RenderLayer);
-	        Block.setRenderLayer(157, RenderLayer);
-	        Block.setRenderLayer(158, RenderLayer);
-	        Block.setRenderLayer(159, RenderLayer);
-	        Block.setRenderLayer(160, RenderLayer);
-	        Block.setRenderLayer(161, RenderLayer);
-	        Block.setRenderLayer(162, RenderLayer);
-	        Block.setRenderLayer(163, RenderLayer);
-	        Block.setRenderLayer(164, RenderLayer);
-	        Block.setRenderLayer(165, RenderLayer);
-	        Block.setRenderLayer(166, RenderLayer);
-	        Block.setRenderLayer(167, RenderLayer);
-	        Block.setRenderLayer(168, RenderLayer);
-	        Block.setRenderLayer(169, RenderLayer);
-	        Block.setRenderLayer(170, RenderLayer);
-	        Block.setRenderLayer(171, RenderLayer);
-	        Block.setRenderLayer(172, RenderLayer);
-	        Block.setRenderLayer(173, RenderLayer);
-	        Block.setRenderLayer(174, RenderLayer);
-	        Block.setRenderLayer(175, RenderLayer);
-	        Block.setRenderLayer(176, RenderLayer);
-	        Block.setRenderLayer(177, RenderLayer);
-	        Block.setRenderLayer(178, RenderLayer);
-	        Block.setRenderLayer(179, RenderLayer);
-	        Block.setRenderLayer(180, RenderLayer);
-	        Block.setRenderLayer(181, RenderLayer);
-	        Block.setRenderLayer(182, RenderLayer);
-	        Block.setRenderLayer(183, RenderLayer);
-	        Block.setRenderLayer(184, RenderLayer);
-	        Block.setRenderLayer(185, RenderLayer);
-	        Block.setRenderLayer(186, RenderLayer);
-	        Block.setRenderLayer(187, RenderLayer);
-	        Block.setRenderLayer(188, RenderLayer);
-	        Block.setRenderLayer(189, RenderLayer);
-	        Block.setRenderLayer(190, RenderLayer);
-	        Block.setRenderLayer(191, RenderLayer);
-	        Block.setRenderLayer(192, RenderLayer);
-	        Block.setRenderLayer(193, RenderLayer);
-	        Block.setRenderLayer(194, RenderLayer);
-	        Block.setRenderLayer(195, RenderLayer);
-	        Block.setRenderLayer(196, RenderLayer);
-	        Block.setRenderLayer(197, RenderLayer);
-	        Block.setRenderLayer(198, RenderLayer);
-	        Block.setRenderLayer(199, RenderLayer);
-	        Block.setRenderLayer(200, RenderLayer);
-	        Block.setRenderLayer(201, RenderLayer);
-	        Block.setRenderLayer(202, RenderLayer);
-	        Block.setRenderLayer(203, RenderLayer);
-	        Block.setRenderLayer(204, RenderLayer);
-	        Block.setRenderLayer(205, RenderLayer);
-	        Block.setRenderLayer(206, RenderLayer);
-	        Block.setRenderLayer(207, RenderLayer);
-	        Block.setRenderLayer(208, RenderLayer);
-	        Block.setRenderLayer(209, RenderLayer);
-	        Block.setRenderLayer(210, RenderLayer);
-	        Block.setRenderLayer(211, RenderLayer);
-	        Block.setRenderLayer(212, RenderLayer);
-	        Block.setRenderLayer(213, RenderLayer);
-	        Block.setRenderLayer(214, RenderLayer);
-	        Block.setRenderLayer(215, RenderLayer);
-	        Block.setRenderLayer(217, RenderLayer);
-	        Block.setRenderLayer(218, RenderLayer);
-	        Block.setRenderLayer(219, RenderLayer);
-	        Block.setRenderLayer(220, RenderLayer);
-	        Block.setRenderLayer(221, RenderLayer);
-	        Block.setRenderLayer(222, RenderLayer);
-	        Block.setRenderLayer(223, RenderLayer);
-	        Block.setRenderLayer(224, RenderLayer);
-	        Block.setRenderLayer(225, RenderLayer);
-	        Block.setRenderLayer(226, RenderLayer);
-	        Block.setRenderLayer(227, RenderLayer);
-	        Block.setRenderLayer(228, RenderLayer);
-	        Block.setRenderLayer(229, RenderLayer);
-	        Block.setRenderLayer(230, RenderLayer);
-	        Block.setRenderLayer(231, RenderLayer);
-	        Block.setRenderLayer(232, RenderLayer);
-	        Block.setRenderLayer(233, RenderLayer);
-	        Block.setRenderLayer(234, RenderLayer);
-	        Block.setRenderLayer(235, RenderLayer);
-	        Block.setRenderLayer(236, RenderLayer);
-	        Block.setRenderLayer(237, RenderLayer);
-	        Block.setRenderLayer(238, RenderLayer);
-	        Block.setRenderLayer(239, RenderLayer);
-	        Block.setRenderLayer(240, RenderLayer);
-	        Block.setRenderLayer(241, RenderLayer);
-	        Block.setRenderLayer(242, RenderLayer);
-	        Block.setRenderLayer(243, RenderLayer);
-	        Block.setRenderLayer(244, RenderLayer);
-	        Block.setRenderLayer(245, RenderLayer);
-	        Block.setRenderLayer(246, RenderLayer);
-	        Block.setRenderLayer(247, RenderLayer);
-	        Block.setRenderLayer(248, RenderLayer);
-	        Block.setRenderLayer(249, RenderLayer);
-	        Block.setRenderLayer(250, RenderLayer);
-	        Block.setRenderLayer(251, RenderLayer);
-	        Block.setRenderLayer(252, RenderLayer);
-	        Block.setRenderLayer(253, RenderLayer);
-	        Block.setRenderLayer(254, RenderLayer);
-	        Block.setRenderLayer(255, RenderLayer);
-			break;
-        }
-    }
-    var originalTile = getTile(Player.getX(), Player.getY(), Player.getZ());
-	var originalTileData = Level.getData(Player.getX(), Player.getY(), Player.getZ());
-    setTile(Player.getX(), Player.getY(), Player.getZ(), 1, 0);
-    setTile(Player.getX(), Player.getY(), Player.getZ(), 2, 0);
-    setTile(Player.getX(), Player.getY(), Player.getZ(), originalTile, originalTileData);
-}
-
 VertexClientPE.nuker = function(x, y, z, range, mode) {
 	mode = (mode==null)?"cube":mode;
 	range = (range==null)?3:range;
@@ -4366,129 +3814,6 @@ VertexClientPE.nuker = function(x, y, z, range, mode) {
 	}
 }
 
-VertexClientPE.tapExplosion = function(x, y, z) {
-	Level.explode(x, y, z, 4);
-}
-
-VertexClientPE.dronePlus = function() {
-	var mobs = Entity.getAll();
-	
-	for(var i = 0; i < mobs.length; i++) {
-
-		var x = Entity.getX(mobs[i]) - getPlayerX();
-
-		var y = Entity.getY(mobs[i]) - getPlayerY();
-
-		var z = Entity.getZ(mobs[i]) - getPlayerZ();
-
-		mobYaw = getYaw(mobs[i])
-
-		if(Entity.getEntityTypeId(mobs[i]) == 63) {
-			zahl = 0;
-		}
-
-		if(Entity.getEntityTypeId(mobs[i]) != 63) {
-			zahl = 2;
-		}
-
-		if(x * x + y * y + z * z <= 4.5 * 4.5 && mobs[i] != getPlayerEnt())
-
-		{
-
-			if(randomAki == 1) {
-				Entity.setPosition(Player.getEntity(), Entity.getX(mobs[i]) - 2.75, Entity.getY(mobs[i]) + zahl, Entity.getZ(mobs[i]));
-
-				Entity.setRot(Player.getEntity(), 270, getPitch(Player.getEntity()));
-			}
-
-
-			if(randomAki == 2) {
-				Entity.setPosition(Player.getEntity(), Entity.getX(mobs[i]) + 2.75, Entity.getY(mobs[i]) + zahl, Entity.getZ(mobs[i]));
-
-				Entity.setRot(Player.getEntity(), 90, getPitch(Player.getEntity()));
-
-			}
-
-
-			if(randomAki == 3) {
-				Entity.setPosition(Player.getEntity(), Entity.getX(mobs[i]), Entity.getY(mobs[i]) + zahl, Entity.getZ(mobs[i]) + 2.75);
-
-				Entity.setRot(Player.getEntity(), 180, getPitch(Player.getEntity()));
-			}
-
-			if(randomAki == 4) {
-
-				Entity.setPosition(Player.getEntity(), Entity.getX(mobs[i]), Entity.getY(mobs[i]) + zahl, Entity.getZ(mobs[i]) - 2.75);
-
-				Entity.setRot(Player.getEntity(), 0, getPitch(Player.getEntity()));
-			}
-		}
-	}
-}
-
-VertexClientPE.regen = function() {
-	if(Entity.getHealth(getPlayerEnt()) < 20) {
-		Player.setHealth(20);
-	}
-}
-
-VertexClientPE.godMode = function() {
-	Entity.setMaxHealth(getPlayerEnt(), 10000);
-	Player.setHealth(10000);
-}
-
-VertexClientPE.autoPlace = function() {
-	var x = Player.getPointedBlockX();
-	var y = Player.getPointedBlockY();
-	var z = Player.getPointedBlockZ();
-	var side = Player.getPointedBlockSide();
-	var blockId = Player.getCarriedItem();
-	var blockData = Player.getCarriedItemData();
-	if(blockId < 257) {
-		setTile(x-(side==4?1:0)+(side==5?1:0)+0.5,y-(side==0?1:0)+(side==1?1:0)+0.5,z-(side==2?1:0)+(side==3?1:0)+0.5, blockId, blockData);
-	}
-}
-
-var autoLeaveStage = 0;
-
-VertexClientPE.autoLeave = function() {
-	if(Entity.getHealth(getPlayerEnt()) <= 8 && autoLeaveStage == 0) {
-		autoLeaveStage = 1;
-		ModPE.leaveGame();
-	}
-}
-
-VertexClientPE.flight = function(onOrOff) {
-	switch(onOrOff) {
-		case 0:
-			Player.setFlying(0);
-			if(Level.getGameMode() == 0) {
-				Player.setCanFly(0);
-			}
-			break;
-		case 1:
-			Player.setCanFly(1);
-			Player.setFlying(1);
-			break;
-	}
-}
-
-VertexClientPE.glide = function() {
-	if(Entity.getVelY(getPlayerEnt()) <= 0 && Player.isFlying() == false) {
-		setVelY(Player.getEntity(), - 0.07);
-	}
-}
-
-VertexClientPE.autoMine = function() {
-	Level.destroyBlock(Player.getPointedBlockX(), Player.getPointedBlockY(), Player.getPointedBlockZ());
-}
-
-VertexClientPE.instaKill = function(a, v) {
-	if(getPlayerEnt() == a) {
-		Entity.setHealth(v, 1);
-	}
-}
-
 var fancyChatMsg;
 var fancyChatEndChar;
 
@@ -4512,85 +3837,6 @@ VertexClientPE.fancyChat = function(str) {
 		}
 	}
 	Server.sendChat(newMsg);
-}
-
-var killAuraStage = 0;
-
-VertexClientPE.killAura = function() {
-	var mobs = Entity.getAll();
-	for(var i = 0; i < mobs.length; i++) {
-		var x = Entity.getX(mobs[i]) - getPlayerX();
-		var y = Entity.getY(mobs[i]) - getPlayerY();
-		var z = Entity.getZ(mobs[i]) - getPlayerZ();
-		if(x*x+y*y+z*z<=killAuraRange*killAuraRange && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION && Entity.getHealth(mobs[i]) != 0) {
-			//setRot(getPlayerEnt(), (Math.atan2(z, x) - 90) * Math.pi / 180, getPitch());
-			switch(Entity.getEntityTypeId(mobs[i])) {
-				case EntityType.COW:
-					Level.playSoundEnt(mobs[i], "mob.cowhurt");
-					break;
-				case EntityType.CHICKEN:
-					Level.playSoundEnt(mobs[i], "mob.chickenhurt");
-					break;
-				case EntityType.ZOMBIE:
-					Level.playSoundEnt(mobs[i], "mob.zombiehurt");
-					break;
-				case EntityType.SKELETON:
-					Level.playSoundEnt(mobs[i], "mob.skeletonhurt");
-					break;
-				case EntityType.PIG_ZOMBIE:
-					Level.playSoundEnt(mobs[i], "mob.zombiepig.zpighurt");
-					break;
-				default:
-					Level.playSoundEnt(mobs[i], "random.hurt");
-					break;
-			}
-			Entity.setHealth(mobs[i], 0);
-			break;
-		}
-	}
-	killAuraStage = 0;
-}
-
-VertexClientPE.freezeAura = function() {
-	var mobs = Entity.getAll();
-	for(var i = 0; i < mobs.length; i++) {
-		var x = Entity.getX(mobs[i]) - getPlayerX();
-		var y = Entity.getY(mobs[i]) - getPlayerY();
-		var z = Entity.getZ(mobs[i]) - getPlayerZ();
-		if(x*x+y*y+z*z<=4*4 && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION) {
-			//setRot(getPlayerEnt(), (Math.atan2(z, x) - 90) * Math.pi / 180, getPitch());
-			Entity.setImmobile(mobs[i], true);
-		}
-	}
-}
-
-var followStage = 0;
-
-VertexClientPE.follow = function() {
-	var mobs = Entity.getAll();
-	for(var i = 0; i < mobs.length; i++) {
-		var x = Entity.getX(mobs[i]) - getPlayerX();
-		var y = Entity.getY(mobs[i]) - getPlayerY();
-		var z = Entity.getZ(mobs[i]) - getPlayerZ();
-		if(x*x+y*y+z*z<=10*10 && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION) {
-			if(Entity.getX(mobs[i]) > getPlayerX() && Entity.getZ(mobs[i]) > getPlayerZ()) {
-				setRot(getPlayerEnt(), 90, getPitch());
-			}
-			if(x*x+y*y+z*z>=2*2) {
-				setVelX(getPlayerEnt(), x);
-				setVelZ(getPlayerEnt(), z);
-				setVelY(getPlayerEnt(), y);
-			}
-			followStage = 0;
-			break;
-		}
-	}
-}
-
-var tpAuraStage = 0;
-
-VertexClientPE.tpAura = function() {
-	
 }
 
 VertexClientPE.autoSword = function(a, v) {
@@ -4648,31 +3894,8 @@ VertexClientPE.autoSword = function(a, v) {
 	}
 }
 
-VertexClientPE.criticals = function() {
-	/*Entity.setVelY(Player.getEntity(), -0.54);
-	Entity.setVelY(Player.getEntity(), 0.54);*/
-	//Entity.setPositionRelative(getPlayerEnt(), 0, 1.2, 0);
-	Entity.setPosition(getPlayerEnt(), getPlayerX(), getPlayerY() + 1.3, getPlayerZ());
-}
-
 VertexClientPE.ride = function(entity) {
 	rideAnimal(getPlayerEnt(), entity);
-}
-
-VertexClientPE.onlyDay = function() {
-	Level.setTime(1000);
-}
-
-
-VertexClientPE.autoSpammer = function() {
-	if(fancyChatState) {
-		VertexClientPE.fancyChat(spamMessage);
-	} else {
-		Server.sendChat(spamMessage);
-	}
-	if(yesCheatPlusState) {
-		Server.sendChat(" ");
-	}
 }
 
 VertexClientPE.delaySpammer = function() {
@@ -4685,36 +3908,6 @@ VertexClientPE.delaySpammer = function() {
 		Server.sendChat(delaySpamMsg);
 	}
 	Entity.setNameTag(getPlayerEnt(), username);
-}
-
-VertexClientPE.coordsDisplay = function() {
-	var x = parseInt(getPlayerX());
-	var y = parseInt(getPlayerY());
-	var z = parseInt(getPlayerZ());
-	ModPE.showTipMessage("\n\n\n" + "X: " + parseInt(x) + " Y: " + parseInt(y) + " Z: " + parseInt(z));
-}
-
-var ent;
-
-VertexClientPE.bowAimbot = function(e) {
-	var mobs = Entity.getAll();
-	for(var i=0; i<mobs.length; i++) {
-		ent = mobs[i];
-		x = Entity.getX(ent) - Entity.getX(getPlayerEnt());
-		z = Entity.getZ(ent) - Entity.getZ(getPlayerEnt());
-		if(Entity.getEntityTypeId(ent) != EntityType.ITEM && Entity.getEntityTypeId(ent) != EntityType.ARROW && ent != getPlayerEnt()) {
-			setVelX(e, x / 4.5);
-			setVelY(e, 0);
-			setVelZ(e, z / 4.5);
-		}
-	}
-}
-
-VertexClientPE.autoWalk = function() { //some parts of this function are made by @zhuowei
-	toDirectionalVector(playerDir, (getYaw() + 90) * DEG_TO_RAD, getPitch() * DEG_TO_RAD * -1);
-    var player = getPlayerEnt();
-    setVelX(player, playerWalkSpeed * playerDir[0]);
-    setVelZ(player, playerWalkSpeed * playerDir[2]);
 }
 
 VertexClientPE.boatFly = function() { //some parts of this function are made by @zhuowei
@@ -4755,47 +3948,11 @@ VertexClientPE.freecam = function(onOrOff) {
 	}
 }
 
-VertexClientPE.fastWalk = function() {
-		if(f == 1) {
-            Xpos = getPlayerX();
-            Zpos = getPlayerZ();
-            f = f + 1;
-        } else if(f == 3) {
-            f = 1;
-            Xdiff = getPlayerX() - Xpos;
-            Zdiff = getPlayerZ() - Zpos;
-            setVelX(getPlayerEnt(), Xdiff);
-            setVelZ(getPlayerEnt(), Zdiff);
-            Xdiff = 0;
-            Zdiff = 0;
-        }
-        if(f != 1) {
-            f = f + 1;
-        }
-}
-
 VertexClientPE.teleporter = function(x, y, z) {
 	setPosition(getPlayerEnt(), x, y, z);
 	while(getTile(getPlayerX(), getPlayerY()-2, getPlayerZ()) != 0) {
 		Entity.setPosition(getPlayerEnt(), getPlayerX(), getPlayerY()+1, getPlayerZ());
 	}
-}
-
-VertexClientPE.fireAura = function() {
-  
-  var mobs = Entity.getAll();
-	for(var i = 0; i < mobs.length; i++) {
-		var x = Entity.getX(mobs[i]) - getPlayerX();
-		var y = Entity.getY(mobs[i]) - getPlayerY();
-		var z = Entity.getZ(mobs[i]) - getPlayerZ();
-		if(x*x+y*y+z*z<=4*4 && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION) {
-			if(Entity.getX(mobs[i]) > getPlayerX() && Entity.getZ(mobs[i]) > getPlayerZ()) {
-				setRot(90, getPitch());
-			}
-			Entity.setFireTicks(mobs[i], 100);
-		}
-	}
-  
 }
 
 var settingsPath = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/games/com.mojang/minecraftpe/";
@@ -7572,140 +6729,6 @@ VertexClientPE.showFavMenu = function() {
     });
 }
 
-/*VertexClientPE.showNavigator = function() {
-	var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
-    ctx.runOnUiThread(new java.lang.Runnable() {
-        run: function() {
-            try {
-				var display = new android.util.DisplayMetrics();
-				com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
-				
-				VertexClientPE.loadMainSettings();
-
-                navigator = new widget.PopupWindow(ctx);
-				var navigatorGridLayout = new widget.GridLayout(ctx);
-                var navigatorMenuLayout1 = new LinearLayout(ctx);
-                var navigatorMenuScrollView = new ScrollView(ctx);
-                navigatorMenuLayout = new LinearLayout(ctx);
-				
-                navigatorMenuLayout.setOrientation(1);
-                navigatorMenuLayout1.setOrientation(1);
-				
-				navigatorMenuLayout.addView(navigatorGridLayout)
-				navigatorMenuScrollView.addView(navigatorMenuLayout);
-				
-				var navigatorTitleLayout = new LinearLayout(ctx);
-				navigatorTitleLayout.setOrientation(LinearLayout.HORIZONTAL);
-				
-				var navigatorTitleLayoutLeft = new LinearLayout(ctx);
-				navigatorTitleLayoutLeft.setOrientation(1);
-				navigatorTitleLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.heightPixels / 2.5, display.heightPixels / 20));
-				navigatorTitleLayout.addView(navigatorTitleLayoutLeft);
-				
-				var navigatorTitleLayoutRight = new LinearLayout(ctx);
-				navigatorTitleLayoutRight.setOrientation(1);
-				navigatorTitleLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.heightPixels / 2 - display.heightPixels / 2.5, display.heightPixels / 20));
-				navigatorTitleLayout.addView(navigatorTitleLayoutRight);
-				
-				if(themeSetting == "green") {
-					var navigatorTitle = greenSubTitle("Favourite", true);
-				}if(themeSetting == "red") {
-					var navigatorTitle = redSubTitle("Favourite", true);
-				}if(themeSetting == "blue") {
-					var navigatorTitle = blueSubTitle("Favourite", true);
-				}if(themeSetting == "purple") {
-					var navigatorTitle = purpleSubTitle("Favourite", true);
-				}
-				navigatorTitle.setAlpha(0.54);
-				navigatorTitle.setGravity(android.view.Gravity.CENTER);
-				navigatorTitle.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2.5, display.heightPixels / 20));
-				navigatorTitleLayoutLeft.addView(navigatorTitle);
-				
-				var navigatorArrow = clientButton("*");
-				navigatorArrow.setAlpha(0.54);
-				navigatorArrow.setGravity(android.view.Gravity.CENTER);
-				navigatorArrow.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2 - display.heightPixels / 2.5, display.heightPixels / 20));
-				navigatorTitleLayoutRight.addView(navigatorArrow);
-				
-				navigatorMenuLayout1.addView(navigatorTitleLayout);
-				
-				if(navigatorMenuShown == true) {
-					navigatorArrow.setText("△");
-					navigatorMenuLayout1.addView(navigatorMenuScrollView);
-				}else if(navigatorMenuShown == false) {
-					navigatorArrow.setText("▽");
-				}
-				
-				var navigatorSearchBar = new widget.EditText(ctx);
-				navigatorSearchBar.addTextChangedListener(new android.text.TextWatcher() {
-					onTextChanged: function() {
-						modules.forEach(function(name){
-							if(name+"".toLowerCase().indexOf(navigatorSearchBar.getText()+"".toLowerCase())>-1)Display();
-						});
-					}
-				}
-
-				navigatorArrow.setOnClickListener(new android.view.View.OnClickListener() {
-                    onClick: function(viewarg) {
-						if(navigatorMenuShown == true) {
-							navigatorMenuLayout1.removeView(navigatorMenuScrollView);
-							navigatorArrow.setText("▽");
-							navigatorMenuShown = false;
-						}else if(navigatorMenuShown == false) {
-							navigatorMenuLayout1.addView(navigatorMenuScrollView);
-							navigatorArrow.setText("△");
-							navigatorMenuShown = true;
-						}
-                    }
-                });
-                navigatorTitle.setOnLongClickListener(new android.view.View.OnLongClickListener() {
-                    onLongClick: function(v, t) {
-                        navigatordown = true;
-                        ctx.getSystemService(android.content.Context.VIBRATOR_SERVICE).vibrate(37);
-                        widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> Now you can move the menu!"), 0).show();
-                        return true;
-                    }
-                });
-                navigatorTitle.setOnTouchListener(new android.view.View.OnTouchListener({
-                    onTouch: function(v, e) {
-                        if(!navigatordown) {
-                            navigatormX = e.getX()
-                            navigatormY = e.getY()
-                        }
-                        if(navigatordown) {
-                            var a = e.getAction()
-                            if(a == 2) {
-                                var X = parseInt(e.getX() - navigatormX) * -1 / 10;
-                                var Y = parseInt(e.getY() - navigatormY) * -1 / 10;
-                                navigatortpopx = navigatortpopx + X;
-                                navigatortpopy = navigatortpopy + Y;
-                                vertexclientpenavigatormenu.update(parseInt(navigatortpopx), parseInt(navigatortpopy), -1, -1);
-                            }
-                            if(a == 1) navigatordown = false;
-                        }
-                        return false;
-                    }
-                }));
-
-                navigatorMenuLayout.addView(navigatorText);
-
-                vertexclientpenavigatormenu.setContentView(navigatorMenuLayout1);
-                vertexclientpenavigatormenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
-                vertexclientpenavigatormenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
-                vertexclientpenavigatormenu.setHeight(screenHeight);
-				if(menuAnimationsSetting == "on") {
-					vertexclientpenavigatormenu.setAnimationStyle(android.R.style.Animation_Translucent);
-				}
-                vertexclientpenavigatormenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, navigatortpopx, navigatortpopy);
-
-            } catch(error) {
-                print("Error: " + error);
-				VertexClientPE.showBugReportDialog(error);
-            }
-        }
-    });
-}*/
-
 function changeColor(view) {
 	if(view != null) {
 		view.setColorFilter(new android.graphics.LightingColorFilter(android.graphics.Color.RED, 0));
@@ -8055,21 +7078,29 @@ function updateHacksList() {
         }));
 }
 
+var itemSlot = 0;
+var hasPushed = 0;
+var isChestOpen = false;
+
 VertexClientPE.stealChestContent = function(x, y, z) {
-	var itemSlot = 0;
 	new android.os.Handler()
 		.postDelayed(new java.lang.Runnable({
 			run: function() {
 				var itemId = Level.getChestSlot(x, y, z, itemSlot);
 				var itemCount = Level.getChestSlotCount(x, y, z, itemSlot);
 				var itemData = Level.getChestSlotData(x, y, z, itemSlot);
-				if(itemId != 0) {
+				if(itemId != 0 && isChestOpen) {
 					Level.setChestSlot(x, y, z, itemSlot, 0, 0, 0);
 					Player.addItemInventory(itemId, itemCount, itemData);
 				}
 				itemSlot++;
+				if(itemSlot <= 27) {
+					VertexClientPE.stealChestContent(x, y, z);
+				} else {
+					itemSlot = 0;
+				}
 			}
-		}), 1000);
+		}), 500);
 }
 
 VertexClientPE.showChestUI = function(x, y, z) {
@@ -8079,7 +7110,7 @@ VertexClientPE.showChestUI = function(x, y, z) {
                 var chestStealButton = clientButton("Steal");
 				chestStealButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(viewarg) {
-						VertexClientPE.stealChestContent(x, y, z);
+						hasPushed = true;
 					}
 				}));
                 chestLayout.addView(chestStealButton);
@@ -8528,12 +7559,17 @@ function destroyBlock(x, y, z, side) {
 function blockEventHook(x, y, z, e, d) {
 	if(VertexClientPE.isDevMode()) {
 		if(d == 1) {
+			isChestOpen = true;
 			if(chestUI == null || !chestUI.isShowing()) {
 				VertexClientPE.showChestUI(x, y, z);
 			}
 		} if(d == 0) {
+			isChestOpen = false;
 			if(chestUI != null) {
 				VertexClientPE.hideChestUI();
+			}
+			if(hasPushed) {
+				VertexClientPE.stealChestContent(x, y, z);
 			}
 		}
 	}
