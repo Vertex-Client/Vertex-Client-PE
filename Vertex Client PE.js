@@ -519,7 +519,7 @@ var autoSword = {
 		autoSwordState = this.state;
 	},
 	onAttack: function(a, v) {
-		VertexClientPE.autoSword();
+		VertexClientPE.autoSword(a, v);
 	}
 }
 
