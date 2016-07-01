@@ -1946,8 +1946,10 @@ function chatReceiveHook(text, sender) {
 	});
 }
 
+var cmdPrefix = ".";
+
 function chatHook(text) {
-	if(text.charAt(0) == ".") {
+	if(text.charAt(0) == cmdPrefix) {
 		preventDefault();
 		if(Launcher.isBlockLauncher()) {
 			com.mojang.minecraftpe.MainActivity.currentMainActivity.get().nativeSetTextboxText("");
@@ -1980,18 +1982,18 @@ VertexClientPE.getHighestPageNumber = function() {
 	});
 	var i = 0;
 	var page = 1;
-	while(i >= 8*(page-1) && i <= 8*page-1 && commands[i] != null) {
+	while(commands[i] != null) {
 		i++;
-	}
-	while(i >= 8*page) {
-		page++;
+		while(i > 8*page) {
+			page++;
+		}
 	}
 	return page;
 }
  
 VertexClientPE.showHelpPage = function(page) {
 	var commands = [];
-	VertexClientPE.clientMessage("Showing help page " + page/* + "/" + VertexClientPE.getHighestPageNumber()*/);
+	VertexClientPE.clientMessage("Showing help page " + page + "/" + VertexClientPE.getHighestPageNumber());
 	VertexClientPE.modules.forEach(function(element, index, array) {
 		if(element != null && element.syntax != null && element.type == "Command") {
 			commands.push(element);
@@ -2018,8 +2020,12 @@ var help = {
 		if(commandSplit[1] == undefined || commandSplit[1] == null || commandSplit[1] == "1") {
 			VertexClientPE.showHelpPage("1");
 		} else {
-			if(commandSplit[1] != "1") {
+			if(commandSplit[1] != "1" && commandSplit[1] > 1 && commandSplit[1] <= VertexClientPE.getHighestPageNumber()) {
 				VertexClientPE.showHelpPage(commandSplit[1]);
+			} else if(commandSplit[1] <= 0) {
+				VertexClientPE.clientMessage(ChatColor.RED + "Error: page number is too low!");
+			} else {
+				VertexClientPE.clientMessage(ChatColor.RED + "Error: page number is too high!");
 			}
 		}
 	}
@@ -2171,12 +2177,155 @@ var give = {
 	}
 }
 
+var tp = {
+	syntax: "tp <x> <y> <z>",
+	type: "Command",
+	isStateMod: function() {
+		return false;
+	},
+	onCall: function(cmd) {
+		var commandSplit = cmd.split(" ");
+		try {
+			if(commandSplit[1] != null) {
+				var x = commandSplit[1];
+			} else {
+				VertexClientPE.syntaxError("." + this.syntax);
+				return;
+			}
+			if(commandSplit[2] != null) {
+				var y = commandSplit[2];
+			} else {
+				VertexClientPE.syntaxError("." + this.syntax);
+				return;
+			}
+			if(commandSplit[3] != null) {
+				var z = commandSplit[3];
+			} else {
+				VertexClientPE.syntaxError("." + this.syntax);
+				return;
+			}
+			if(getTile(x, y, z) != null) {
+				VertexClientPE.syntaxError("." + this.syntax);
+			}
+		} catch(e) {
+			//syntax?
+		}
+	}
+}
+
+var version = {
+	syntax: "version <current|target|latest>",
+	type: "Command",
+	isStateMod: function() {
+		return false;
+	},
+	onCall: function(cmd) {
+		var commandSplit = cmd.split(" ");
+		try {
+			if(typeof VertexClientPE.getVersion(commandSplit[1]) !== "undefined") {
+				VertexClientPE.clientMessage(VertexClientPE.getVersion(commandSplit[1]));
+			} else {
+				VertexClientPE.syntaxError("." + this.syntax);
+			}
+		} catch(e) {
+			//syntax?
+		}
+	}
+}
+
+var panic_cmd = {
+	syntax: "panic",
+	type: "Command",
+	isStateMod: function() {
+		return false;
+	},
+	onCall: function(cmd) {
+		panic.onToggle();
+		if(hacksList != null && hacksList.isShowing()) {
+			updateHacksList();
+		}
+	}
+}
+
+var p = {
+	syntax: "p",
+	type: "Command",
+	isStateMod: function() {
+		return false;
+	},
+	onCall: function(cmd) {
+		panic_cmd.onCall(cmd);
+	}
+}
+
+var gamemode = {
+	syntax: "gamemode",
+	type: "Command",
+	isStateMod: function() {
+		return false;
+	},
+	onCall: function(cmd) {
+		VertexClientPE.switchGameMode();
+		VertexClientPE.clientMessage("Your gamemode has been updated!");
+	}
+}
+
+var gm = {
+	syntax: "gm",
+	type: "Command",
+	isStateMod: function() {
+		return false;
+	},
+	onCall: function(cmd) {
+		gamemode.onCall(cmd);
+	}
+}
+
+var js = {
+	syntax: "js",
+	type: "Command",
+	isStateMod: function() {
+		return false;
+	},
+	onCall: function(cmd) {
+		VertexClientPE.showJavascriptConsoleDialog();
+	}
+}
+
+var rename = {
+	syntax: "rename <name>",
+	type: "Command",
+	isStateMod: function() {
+		return false;
+	},
+	onCall: function(cmd) {
+		var renameName = cmd.substring(7, cmd.length);
+		var renameSlot = Player.getSelectedSlotId();
+		var renameItem = Player.getInventorySlot(renameSlot);
+		if(renameName  != null && renameName.replaceAll(" ", "") != "" && renameItem != 0) {
+			Player.setItemCustomName(renameSlot, renameName);
+		} else if(renameName.replaceAll(" ", "") == "") {
+			VertexClientPE.clientMessage(ChatColor.RED + "Error: please enter a valid name!");
+		} else if(renameItem == 0) {
+			VertexClientPE.clientMessage(ChatColor.RED + "Error: the selected inventory slot is empty!");
+		}
+	}
+}
+
 VertexClientPE.registerModule(help);
 VertexClientPE.registerModule(drop);
-VertexClientPE.registerModule(say);
-VertexClientPE.registerModule(toggle);
-VertexClientPE.registerModule(t);
+VertexClientPE.registerModule(gamemode);
 VertexClientPE.registerModule(give);
+VertexClientPE.registerModule(gm);
+VertexClientPE.registerModule(js);
+VertexClientPE.registerModule(p);
+VertexClientPE.registerModule(panic_cmd);
+VertexClientPE.registerModule(rename);
+VertexClientPE.registerModule(say);
+VertexClientPE.registerModule(t);
+VertexClientPE.registerModule(toggle);
+VertexClientPE.registerModule(tp);
+VertexClientPE.registerModule(version);
 
 /**
  *  ##############
@@ -3466,55 +3615,11 @@ VertexClientPE.commandManager = function(cmd) {
 		}
 	});
 	switch(commandSplit[0]) {
-		case "gm": //2
-			VertexClientPE.switchGameMode();
-			VertexClientPE.clientMessage("Your gamemode has been updated!");
-			break;
 		case "spectate": //3
 			if(commandSplit[1] == null || commandSplit[1] == undefined) {
 				VertexClientPE.syntaxError(".spectate <player>");
 			} else {
 				VertexClientPE.spectate(commandSplit[1]);
-			}
-			break;
-		case "version": //6
-			if(typeof VertexClientPE.getVersion(commandSplit[1]) !== "undefined") {
-				VertexClientPE.clientMessage(VertexClientPE.getVersion(commandSplit[1]));
-			} else {
-				VertexClientPE.syntaxError(".version <current|target|latest>");
-			}
-			break;
-		case "p": //7
-		case "panic":
-			panic.onToggle();
-			if(hacksList != null && hacksList.isShowing()) {
-				updateHacksList();
-			}
-			break;
-		case "js": //8
-			VertexClientPE.showJavascriptConsoleDialog();
-			break;
-		case "tp": //11
-			if(commandSplit[1] != null) {
-				var x = commandSplit[1];
-			} else {
-				VertexClientPE.syntaxError(".tp <x> <y> <z>");
-				break;
-			}
-			if(commandSplit[2] != null) {
-				var y = commandSplit[2];
-			} else {
-				VertexClientPE.syntaxError(".tp <x> <y> <z>");
-				break;
-			}
-			if(commandSplit[3] != null) {
-				var z = commandSplit[3];
-			} else {
-				VertexClientPE.syntaxError(".tp <x> <y> <z>");
-				break;
-			}
-			if(getTile(x, y, z) != null) {
-				VertexClientPE.teleporter(x, y, z);
 			}
 			break;
 		default:
