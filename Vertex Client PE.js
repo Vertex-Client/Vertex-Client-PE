@@ -96,7 +96,7 @@ VertexClientPE.playerIsInGame = false;
 
 VertexClientPE.currentVersion = "1.0-pre3";
 VertexClientPE.targetVersion = "MCPE v0.14.x alpha";
-VertexClientPE.latestVersion = "Unknown";
+VertexClientPE.latestVersion;
 var latestPocketEditionVersion;
 var news;
 
@@ -4845,8 +4845,6 @@ function backgroundGradient(round) // TextView with colored background (edited b
 	}
 })();
 
-var shouldOverride = false;
-
 VertexClientPE.checkForUpdates = function() {
     try {
         // download content
@@ -4874,20 +4872,27 @@ VertexClientPE.checkForUpdates = function() {
 
         // close what needs to be closed
         bufferedVersionReader.close();
-		
-		shouldOverride = true;
 
         // test
         //clientMessage(VertexClientPE.getVersion("current"); + " " + latestVersion);
     } catch(err) {
         VertexClientPE.clientMessage("Can't check for updates, please check your Internet connection.");
         ModPE.log("[Vertex Client PE] VertexClientPE.checkForUpdates() caught an error: " + err);
-		shouldOverride = false;
+		var sharedPref = ctx.getPreferences(ctx.MODE_PRIVATE);
+		if(sharedPref.getString("VertexClientPE.latestVersion", null) != null && sharedPref.getString("VertexClientPE.latestVersion", null) != undefined) {
+			VertexClientPE.latestVersion = sharedPref.getString("VertexClientPE.latestVersion", null);
+		} else {
+			VertexClientPE.latestVersion = VertexClientPE.currentVersion;
+		}
+		return;
     }
-	if(shouldOverride) {
-		themeSetup = "off";
-		VertexClientPE.setupTheme();
-	}
+	
+	var sharedPref = ctx.getPreferences(ctx.MODE_PRIVATE);
+	var editor = sharedPref.edit();
+	editor.putString("VertexClientPE.latestVersion", VertexClientPE.latestVersion);
+	editor.commit();
+	themeSetup = "off";
+	VertexClientPE.setupTheme();
 }
 
 VertexClientPE.loadNews = function() {
@@ -4956,7 +4961,7 @@ VertexClientPE.loadSupport = function() {
 	var editor = sharedPref.edit();
 	editor.putString("VertexClientPE.isSupported_" + VertexClientPE.currentVersion, isSupported.toString());
 	editor.commit();
-	print(isSupported);
+	//print(isSupported);
 }
 
 new java.lang.Thread(new java.lang.Runnable() {
@@ -5435,6 +5440,64 @@ VertexClientPE.getHighestBlockDifference = function() {
 
 var hasLoadedAddons = false;
 
+VertexClientPE.update = function() {
+	var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+	ctx.runOnUiThread(new java.lang.Runnable({ run: function() {
+		var ru  = new java.lang.Runnable({ run: function() {
+			try {
+				var updateVersion = VertexClientPE.latestVersion;
+				if(VertexClientPE.latestVersion.indexOf("Alpha") != -1 || VertexClientPE.latestVersion.indexOf("Beta") != -1) {
+					updateVersion = VertexClientPE.latestVersion.split(" ")[0] + "-" + VertexClientPE.latestVersion.split(" ")[1];
+				}
+				var scriptUrl = new java.net.URL("https://github.com/Vertex-Client/Vertex-Client-PE/releases/download/v" + updateVersion + "/Vertex_Client_PE.modpkg");
+				var connection = scriptUrl.openConnection();
+				connection.setRequestMethod("GET");
+				connection.setDoOutput(true);
+				connection.connect();
+				connection.getContentLength();
+				var input = connection.getInputStream();
+				var contents = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, 1024);
+				var bytesRead = 0;
+				while((bytesRead = input.read(contents)) != -1) { 
+					newScript += new java.lang.String(contents, 0, bytesRead);			   
+				}
+				var patchesFolder = ctx.getDir("modscripts", 0);
+				var scriptFile = new java.io.File(patchesFolder, "Vertex_Client_PE.modpkg");
+				var printWriter = new java.io.PrintWriter(scriptFile);
+				printWriter.write(newScript);
+				printWriter.flush();
+				printWriter.close();
+				try {
+					if(GUI != null) {
+						if(GUI.isShowing()) {
+							GUI.dismiss();
+						}
+					}
+					if(hacksList != null) {
+						if(hacksList.isShowing()) {
+							hacksList.dismiss();
+						}
+					}
+					function modTick() {};
+					function useItem() {};
+					function attackHook() {};
+					function explodeHook() {};
+					function chatHook() {};
+					net.zhuoweizhang.mcpelauncher.ScriptManager.setEnabled(scriptFile, false);
+					net.zhuoweizhang.mcpelauncher.ScriptManager.setEnabled(scriptFile, true);
+				} catch(e) {
+					//clientMessage("Error: Line 5489: " + e);
+				}
+			} catch(e) {
+				clientMessage("Error: Line 5492: " + e);
+			}
+		}});
+		var th = new java.lang.Thread(ru);
+		th.start();
+		}
+	}));
+}
+
 function newLevel() {
 	ctx.runOnUiThread(new java.lang.Runnable() {
 		run: function() {
@@ -5460,6 +5523,9 @@ function newLevel() {
 			VertexClientPE.checkForUpdates();
 			if(VertexClientPE.latestVersion != VertexClientPE.currentVersion && VertexClientPE.latestVersion != undefined) {
 				VertexClientPE.clientMessage("There is a new version available (v" + VertexClientPE.latestVersion + " for Minecraft Pocket Edition v" + latestPocketEditionVersion + ")!");
+				if(!isSupported) {
+					//VertexClientPE.update();
+				}
 			} else {
 				ctx.runOnUiThread(new java.lang.Runnable() {
 					run: function() {
@@ -6864,7 +6930,10 @@ VertexClientPE.clientTick = function() {
 							}
 							if(Launcher.isToolbox()) {
 								if(Level.isRemote()) {
-									VertexClientPE.playerIsInGame = true;
+									if(!VertexClientPE.playerIsInGame) {
+										newLevel();
+										VertexClientPE.playerIsInGame = true;
+									}
 									VertexClientPE.isRemote = true;
 								}
 							}
