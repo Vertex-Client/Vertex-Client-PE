@@ -4864,11 +4864,11 @@ VertexClientPE.checkForUpdates = function() {
             loadedVersion += rowVersion;
         }
 		
-		VertexClientPE.latestVersion = loadedVersion.split(" ")[0];
-        latestPocketEditionVersion = loadedVersion.split(" ")[1];
 		if(loadedVersion.split(" ")[1] == "Beta" || loadedVersion.split(" ")[1] == "Alpha") {
+			VertexClientPE.latestVersion = loadedVersion.split(" ")[0] + " " + loadedVersion.split(" ")[1];
 			latestPocketEditionVersion = loadedVersion.split(" ")[2];
 		} else {
+			VertexClientPE.latestVersion = loadedVersion.split(" ")[0];
 			latestPocketEditionVersion = loadedVersion.split(" ")[1];
 		}
 
@@ -4932,10 +4932,10 @@ VertexClientPE.loadSupport = function() {
         var loadedSupport = "";
         var bufferedSupportReader = new java.io.BufferedReader(new java.io.InputStreamReader(supportInputStream));
         var rowSupport = "";
-        while((rowSupport = bufferedNewsReader.readLine()) != null) {
+        while((rowSupport = bufferedSupportReader.readLine()) != null) {
             loadedSupport += rowSupport;
         }
-		isSupported = loadedSupport.toString()==="unsupported"?false:true;
+		isSupported = loadedSupport.toString().split(" ")[0] =="unsupported"?false:true;
 
         // close what needs to be closed
         bufferedSupportReader.close();
@@ -4944,7 +4944,7 @@ VertexClientPE.loadSupport = function() {
         //clientMessage(VertexClientPE.getVersion("current"); + " " + latestVersion);
     } catch(err) {
 		var sharedPref = ctx.getPreferences(ctx.MODE_PRIVATE);
-		if(sharedPref.getString("VertexClientPE.isSupported_" + VertexClientPE.currentVersion, null) === "false") {
+		if(sharedPref.getString("VertexClientPE.isSupported_" + VertexClientPE.currentVersion, null) == "false") {
 			isSupported = false;
 		} else {
 			isSupported = true;
@@ -4956,6 +4956,7 @@ VertexClientPE.loadSupport = function() {
 	var editor = sharedPref.edit();
 	editor.putString("VertexClientPE.isSupported_" + VertexClientPE.currentVersion, isSupported.toString());
 	editor.commit();
+	print(isSupported);
 }
 
 new java.lang.Thread(new java.lang.Runnable() {
@@ -5390,7 +5391,6 @@ VertexClientPE.downloadPro = function() {
 
 VertexClientPE.setup = function() {
 	VertexClientPE.loadSupport();
-	//print(isSupported);
 	if(VertexClientPE.loadMainSettings() == null) {
 		VertexClientPE.showSetupScreen();
 		setupDone();
@@ -5955,6 +5955,10 @@ VertexClientPE.showTopBar = function() {
 }
 
 VertexClientPE.showMenu = function() {
+	if(!isSupported) {
+		VertexClientPE.toast("Sorry, this version is not supported anymore! Please upgrade to the latest version.");
+		return;
+	}
 	if(menuType == "normal") {
 		VertexClientPE.showCombatMenu();
 		VertexClientPE.showBuildingMenu();
@@ -6765,6 +6769,10 @@ function showMenuButton() {
     menuBtn.setOnClickListener(new android.view.View.OnClickListener({
     onClick: function(viewarg){
 		if(VertexClientPE.playerIsInGame) {
+			if(!isSupported) {
+				VertexClientPE.toast("Sorry, this version is not supported anymore! Please upgrade to the latest version.");
+				return;
+			}
 			if(hacksList != null) {
 				hacksList.dismiss();
 			}
