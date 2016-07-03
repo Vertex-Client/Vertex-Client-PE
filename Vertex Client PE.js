@@ -1,7 +1,7 @@
 /**
  * ###############################################################
  * @name Vertex Client PE
- * @version v1.0-pre3
+ * @version v1.0
  * @author peacestorm (@AgameR_Modder)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG
  *
@@ -94,7 +94,7 @@ var _0x199a=["\x69\x73\x50\x72\x6F","\x67\x65\x74\x50\x72\x65\x66\x65\x72\x65\x6
 VertexClientPE.isRemote = false;
 VertexClientPE.playerIsInGame = false;
 
-VertexClientPE.currentVersion = "1.0-pre3";
+VertexClientPE.currentVersion = "1.0";
 VertexClientPE.targetVersion = "MCPE v0.14.x alpha";
 VertexClientPE.latestVersion;
 var latestPocketEditionVersion;
@@ -4348,7 +4348,7 @@ function modButton(mod) {
 	if(menuType == "halfscreen") {
 		modButtonLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 2.5, display.heightPixels / 10));
 	} else {
-		modButtonLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.heightPixels / 2.5, display.heightPixels / 10));
+		modButtonLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.heightPixels / 2.5, display.heightPixels / 12));
 	}
 	modButtonLayout.addView(modButtonLayoutLeft);
 	
@@ -4357,7 +4357,7 @@ function modButton(mod) {
 	if(menuType == "halfscreen") {
 		modButtonLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 2.2 - display.widthPixels / 2.5, display.heightPixels / 10));
 	} else {
-		modButtonLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.heightPixels / 2 - display.heightPixels / 2.5, display.heightPixels / 10));
+		modButtonLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.heightPixels / 2 - display.heightPixels / 2.5, display.heightPixels / 12));
 	}
 	modButtonLayout.addView(modButtonLayoutRight);
 	
@@ -4365,7 +4365,7 @@ function modButton(mod) {
 	if(menuType == "halfscreen") {
 		defaultClientButton.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 2.5, display.heightPixels / 10));
 	} else {
-		defaultClientButton.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.heightPixels / 2.5, display.heightPixels / 10));
+		defaultClientButton.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.heightPixels / 2.5, display.heightPixels / 12));
 	}
 	defaultClientButton.setAlpha(0.54);
 	defaultClientButton.setEllipsize(android.text.TextUtils.TruncateAt.MARQUEE);
@@ -4431,7 +4431,7 @@ function modButton(mod) {
 	if(menuType == "halfscreen") {
 		defaultInfoButton.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 2.2 - display.widthPixels / 2.5, display.heightPixels / 10));
 	} else {
-		defaultInfoButton.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.heightPixels / 2 - display.heightPixels / 2.5, display.heightPixels / 10));
+		defaultInfoButton.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.heightPixels / 2 - display.heightPixels / 2.5, display.heightPixels / 12));
 	}
 	defaultInfoButton.setAlpha(0.54);
 	defaultInfoButton.setOnClickListener(new android.view.View.OnClickListener({
@@ -6231,7 +6231,7 @@ VertexClientPE.showCombatMenu = function() {
                 vertexclientpecombatmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
 				vertexclientpecombatmenu.setHeight(screenHeight / 2 - customHeight);
 				if(menuAnimationsSetting == "on") {
-					vertexclientpecombatmenu.setAnimationStyle(android.R.style.Animation_Translucent);
+					vertexclientpecombatmenu.setAnimationStyle(android.R.style.Animation_Dialog);
 				}
                 vertexclientpecombatmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, combattpopx, combattpopy);
 
@@ -6339,7 +6339,7 @@ VertexClientPE.showBuildingMenu = function() {
                 vertexclientpebuildingmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
                 vertexclientpebuildingmenu.setHeight(screenHeight / 2 - customHeight);
 				if(menuAnimationsSetting == "on") {
-					vertexclientpebuildingmenu.setAnimationStyle(android.R.style.Animation_Translucent);
+					vertexclientpebuildingmenu.setAnimationStyle(android.R.style.Animation_Dialog);
 				}
                 vertexclientpebuildingmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, buildingtpopx, buildingtpopy);
 
@@ -6446,7 +6446,7 @@ VertexClientPE.showMovementMenu = function() {
                 vertexclientpemovementmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
                 vertexclientpemovementmenu.setHeight(screenHeight / 2 - customHeight);
 				if(menuAnimationsSetting == "on") {
-					vertexclientpemovementmenu.setAnimationStyle(android.R.style.Animation_Translucent);
+					vertexclientpemovementmenu.setAnimationStyle(android.R.style.Animation_Dialog);
 				}
                 vertexclientpemovementmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, movementtpopx, movementtpopy);
 
@@ -6553,7 +6553,7 @@ VertexClientPE.showChatMenu = function() {
                 vertexclientpechatmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
                 vertexclientpechatmenu.setHeight(screenHeight / 2 - customHeight);
 				if(menuAnimationsSetting == "on") {
-					vertexclientpechatmenu.setAnimationStyle(android.R.style.Animation_Translucent);
+					vertexclientpechatmenu.setAnimationStyle(android.R.style.Animation_Dialog);
 				}
                 vertexclientpechatmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, chattpopx, chattpopy);
 
@@ -6660,7 +6660,7 @@ VertexClientPE.showMiscMenu = function() {
                 vertexclientpemiscmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
                 vertexclientpemiscmenu.setHeight(screenHeight / 2 - customHeight);
 				if(menuAnimationsSetting == "on") {
-					vertexclientpemiscmenu.setAnimationStyle(android.R.style.Animation_Translucent);
+					vertexclientpemiscmenu.setAnimationStyle(android.R.style.Animation_Dialog);
 				}
                 vertexclientpemiscmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, misctpopx, misctpopy);
 
@@ -6787,7 +6787,7 @@ VertexClientPE.showFavMenu = function() {
                 vertexclientpefavmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
                 vertexclientpefavmenu.setHeight(screenHeight / 2 - customHeight);
 				if(menuAnimationsSetting == "on") {
-					vertexclientpefavmenu.setAnimationStyle(android.R.style.Animation_Translucent);
+					vertexclientpefavmenu.setAnimationStyle(android.R.style.Animation_Dialog);
 				}
                 vertexclientpefavmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, favtpopx, favtpopy);
 
