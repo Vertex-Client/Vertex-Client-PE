@@ -2507,66 +2507,6 @@ function saveSetting(article, value) {
 	fileOutputStream.close();
 };
 
-/*function saveVertexSetting(article, value, secValue) {
-	var fileInputStream = new java.io.FileInputStream(new java.io.File(android.os.Environment.getExternalStorageDirectory() + "/games/com.mojang/vertex_categories.txt"));
-	var inputStreamReader = new java.io.InputStreamReader(fileInputStream);
-	var bufferedReader = new java.io.BufferedReader(inputStreamReader);
-	var tempRead, tempReadString;
-	var tempSaved = "";
-	while ((tempRead = bufferedReader.readLine()) != null) {
-	tempReadString = tempRead.toString();
-	if (tempReadString.split(":")[0] == article) continue;
-	tempSaved += tempReadString + "\n"
-	}
-	fileInputStream.close();
-	inputStreamReader.close();
-	bufferedReader.close();
-	var fileOutputStream = new java.io.FileOutputStream(new java.io.File(android.os.Environment.getExternalStorageDirectory() + "/games/com.mojang/vertex_categories.txt"));
-	var outputStreamWriter = new java.io.OutputStreamWriter(fileOutputStream);
-	outputStreamWriter.write(tempSaved + article + ":" + value);
-	outputStreamWriter.close();
-	fileOutputStream.close();
-};*/
-
-/*function loadVertexSetting(article) {
-var fileInputStream = new java.io.FileInputStream(new java.io.File(android.os.Environment.getExternalStorageDirectory() + "/games/com.mojang/vertex_categories.txt"));
-var inputStreamReader = new java.io.InputStreamReader(fileInputStream);
-var bufferedReader = new java.io.BufferedReader(inputStreamReader);
-var tempRead, tempReadString;
-while ((tempRead = bufferedReader.readLine()) != null) {
-tempReadString = tempRead.toString();
-if (tempReadString.split(":")[0] == article) {
-fileInputStream.close();
-inputStreamReader.close();
-bufferedReader.close();
-return tempReadString.split(":")[1]
-}
-}
-fileInputStream.close();
-inputStreamReader.close();
-bufferedReader.close();
-return null
-};
-if (!_MOD_DIR.exists()) {
-_MOD_DIR.mkdirs()
-}
-if (!_MOD_DATA.exists()) {
-_MOD_DATA.createNewFile()
-}
-
-function alert(a) {
-clientMessage("" + a)
-}*/
-
-//ctx.setSession(); session
-
-/*ModPE.setProfileName = function(profileName) {
-	//ctx.setLoginInformation(ctx.getAccessToken(), ModPE.getClientId(), ctx.getProfileId(), username);
-	var edit = android.preference.PreferenceManager.getDefaultSharedPreferences(ctx).edit();
-	edit.putString("profileName", profileName);
-	edit.commit();
-}*/
-
 ModPE.getInfo = function(infoName) { //profileName, sessionId
 	return android.preference.PreferenceManager.getDefaultSharedPreferences(ctx).getString(infoName, null);
 }
@@ -6062,8 +6002,7 @@ VertexClientPE.showCombatMenu = function() {
                 combatTitle.setOnLongClickListener(new android.view.View.OnLongClickListener() {
                     onLongClick: function(v, t) {
                         combatdown = true;
-                        ctx.getSystemService(android.content.Context.VIBRATOR_SERVICE).vibrate(37);
-                        widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> Now you can move the menu!"), 0).show();
+                        VertexClientPE.toast("Now you can move the menu!");
                         return true;
                     }
                 });
@@ -6169,8 +6108,7 @@ VertexClientPE.showBuildingMenu = function() {
                 buildingTitle.setOnLongClickListener(new android.view.View.OnLongClickListener() {
                     onLongClick: function(v, t) {
                         buildingdown = true;
-                        ctx.getSystemService(android.content.Context.VIBRATOR_SERVICE).vibrate(37);
-                        widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> Now you can move the menu!"), 0).show();
+                        VertexClientPE.toast("Now you can move the menu!");
                         return true;
                     }
                 });
@@ -6277,8 +6215,7 @@ VertexClientPE.showMovementMenu = function() {
                 movementTitle.setOnLongClickListener(new android.view.View.OnLongClickListener() {
                     onLongClick: function(v, t) {
                         movementdown = true;
-                        ctx.getSystemService(android.content.Context.VIBRATOR_SERVICE).vibrate(37);
-                        widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> Now you can move the menu!"), 0).show();
+                        VertexClientPE.toast("Now you can move the menu!");
                         return true;
                     }
                 });
@@ -6384,8 +6321,7 @@ VertexClientPE.showChatMenu = function() {
                 chatTitle.setOnLongClickListener(new android.view.View.OnLongClickListener() {
                     onLongClick: function(v, t) {
                         chatdown = true;
-                        ctx.getSystemService(android.content.Context.VIBRATOR_SERVICE).vibrate(37);
-                        widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> Now you can move the menu!"), 0).show();
+                        VertexClientPE.toast("Now you can move the menu!");
                         return true;
                     }
                 });
@@ -6491,8 +6427,7 @@ VertexClientPE.showMiscMenu = function() {
                 miscTitle.setOnLongClickListener(new android.view.View.OnLongClickListener() {
                     onLongClick: function(v, t) {
                         miscdown = true;
-                        ctx.getSystemService(android.content.Context.VIBRATOR_SERVICE).vibrate(37);
-                        widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> Now you can move the menu!"), 0).show();
+                        VertexClientPE.toast("Now you can move the menu!");
                         return true;
                     }
                 });
@@ -6622,8 +6557,7 @@ VertexClientPE.showFavMenu = function() {
                 favTitle.setOnLongClickListener(new android.view.View.OnLongClickListener() {
                     onLongClick: function(v, t) {
                         favdown = true;
-                        ctx.getSystemService(android.content.Context.VIBRATOR_SERVICE).vibrate(37);
-                        widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> Now you can move the menu!"), 0).show();
+                        VertexClientPE.toast("Now you can move the menu!");
                         return true;
                     }
                 });
@@ -6713,8 +6647,7 @@ function showMenuButton() {
 			VertexClientPE.showMenu();
 			GUI.dismiss();
 		} else {
-			ctx.getSystemService(android.content.Context.VIBRATOR_SERVICE).vibrate(37);
-		    widget.Toast.makeText(ctx, new android.text.Html.fromHtml("<b>Vertex Client PE</b> You need to be in game to open the menu!"), 0).show();
+			VertexClientPE.toast("<b>Vertex Client PE</b> You need to be in game to open the menu!");
 		}
     }
     }));
