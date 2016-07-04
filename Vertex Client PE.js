@@ -2650,7 +2650,6 @@ VertexClientPE.showSignEditorDialog = function() {
 	ctx.runOnUiThread(new java.lang.Runnable() {
 		run: function() {
 			try {
-				dialogGUI = new widget.PopupWindow();
 				var signEditorTitle = clientTextView("SignEditor", true);
 				var btn = clientButton("Ok");
 				var btn1 = clientButton("Cancel");
@@ -2659,7 +2658,6 @@ VertexClientPE.showSignEditorDialog = function() {
 				var inputBar2 = new EditText(ctx);
 				var inputBar3 = new EditText(ctx);
 				var dialogLayout = new LinearLayout(ctx);
-				var spritesheet = android.graphics.Bitmap.createScaledBitmap(trimImage(GetSpritesheet(), 0, 0, 16, 16), 16 * GuiSize, 16 * GuiSize, false);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
 				dialogLayout.addView(signEditorTitle);
@@ -2686,9 +2684,6 @@ VertexClientPE.showSignEditorDialog = function() {
 				inputBar3.setHint("Line 4");
 				inputBar3.setText(Level.getSignText(signX, signY, signZ, 3));
 				inputBar3.setTextColor(android.graphics.Color.WHITE);
-				dialogGUI.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
-				dialogGUI.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
-				dialogGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.TOP, 0, 0);
 				dialog.show();
 				btn.setOnClickListener(new android.view.View.OnClickListener() {
 					onClick: function(view) {
@@ -2722,7 +2717,6 @@ VertexClientPE.showItemGiverDialog = function() {
 	ctx.runOnUiThread(new java.lang.Runnable() {
 		run: function() {
 			try {
-				dialogGUI = new widget.PopupWindow();
 				var itemGiverTitle = clientTextView("ItemGiver", true);
 				var btn = clientButton("Add");
 				var btn1 = clientButton("Cancel");
@@ -2733,7 +2727,6 @@ VertexClientPE.showItemGiverDialog = function() {
 				inputBar1.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
 				inputBar2.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
 				var dialogLayout = new LinearLayout(ctx);
-				var spritesheet = android.graphics.Bitmap.createScaledBitmap(trimImage(GetSpritesheet(), 0, 0, 16, 16), 16 * GuiSize, 16 * GuiSize, false);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
 				dialogLayout.addView(itemGiverTitle);
@@ -2753,9 +2746,6 @@ VertexClientPE.showItemGiverDialog = function() {
 				inputBar1.setTextColor(android.graphics.Color.WHITE);
 				inputBar2.setHint("Data");
 				inputBar2.setTextColor(android.graphics.Color.WHITE);
-				dialogGUI.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
-				dialogGUI.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
-				dialogGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.TOP, 0, 0);
 				dialog.show();
 				btn.setOnClickListener(new android.view.View.OnClickListener() {
 					onClick: function(view) {
@@ -2785,7 +2775,6 @@ VertexClientPE.showBugReportDialog = function(exception) {
 	ctx.runOnUiThread(new java.lang.Runnable() {
 		run: function() {
 			try {
-				dialogGUI = new widget.PopupWindow();
 				var bugReportTitle = clientTextView("An error occurred", true);
 				var btn = clientButton("Report on GitHub");
 				var btn1 = clientButton("Close");
@@ -2806,9 +2795,6 @@ VertexClientPE.showBugReportDialog = function(exception) {
 				dialog.setTitle("An error occurred");
 				inputBar.setHint("Title of the issue");
 				inputBar.setTextColor(android.graphics.Color.WHITE);
-				dialogGUI.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
-				dialogGUI.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
-				dialogGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.TOP, 0, 0);
 				dialog.show();
 				btn.setOnClickListener(new android.view.View.OnClickListener() {
 					onClick: function(view) {
@@ -2833,7 +2819,6 @@ VertexClientPE.showMoreDialog = function() {
 	ctx.runOnUiThread(new java.lang.Runnable() {
 		run: function() {
 			try {
-				dialogGUI = new widget.PopupWindow();
 				var moreTitle = clientTextView("More", true);
 				var settingsButton = clientButton("Settings");
 				var addonsButton = clientButton("Addons");
@@ -2843,7 +2828,6 @@ VertexClientPE.showMoreDialog = function() {
 				newLineText.setText("\n");
 				var cancelButton = clientButton("Cancel");
 				var dialogLayout = new LinearLayout(ctx);
-				var spritesheet = android.graphics.Bitmap.createScaledBitmap(trimImage(GetSpritesheet(), 0, 0, 16, 16), 16 * GuiSize, 16 * GuiSize, false);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
 				dialogLayout.addView(moreTitle);
@@ -2858,9 +2842,6 @@ VertexClientPE.showMoreDialog = function() {
 				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
 				dialog.setTitle("More");
-				dialogGUI.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
-				dialogGUI.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
-				dialogGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.TOP, 0, 0);
 				dialog.show();
 				settingsButton.setOnClickListener(new android.view.View.OnClickListener() {
 					onClick: function(view) {
@@ -3048,119 +3029,6 @@ VertexClientPE.showModDialog = function(mod, btn) {
 	});
 }
 
-VertexClientPE.showAutoSpammerDialog = function() {
-	ctx.runOnUiThread(new java.lang.Runnable() {
-		run: function() {
-			try {
-				VertexClientPE.loadMainSettings();
-				var autoSpammerTitle = clientTextView("AutoSpammer", true);
-				autoSpammerTitle.setTextSize(20);
-				var autoSpammerTypeText = clientTextView("Type: Mod\n");
-				var autoSpammerDescTitle = clientTextView("Description:");
-				var autoSpammerDescText = clientTextView("Automatically spams the chat.\n");
-				var autoSpammerMessageTitle = clientTextView("Message:");
-				var spamMessageInput = new EditText(ctx);
-				spamMessageInput.setText(spamMessage);
-				spamMessageInput.setTextColor(android.graphics.Color.WHITE);
-				spamMessageInput.setHint("Spam message");
-				var closeButton = clientButton("Close");
-				var dialogLayout = new LinearLayout(ctx);
-				dialogLayout.setBackgroundDrawable(backgroundGradient());
-				dialogLayout.setOrientation(LinearLayout.VERTICAL);
-				dialogLayout.addView(autoSpammerTitle);
-				dialogLayout.addView(autoSpammerTypeText);
-				dialogLayout.addView(autoSpammerDescTitle);
-				dialogLayout.addView(autoSpammerDescText);
-				dialogLayout.addView(autoSpammerMessageTitle);
-				dialogLayout.addView(spamMessageInput);
-				dialogLayout.addView(closeButton);
-				var dialog = new android.app.Dialog(ctx);
-				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
-				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
-				dialog.setContentView(dialogLayout);
-				dialog.setTitle("AutoSpammer");
-				dialog.setOnDismissListener(new android.content.DialogInterface.OnDismissListener() {
-					onDismiss: function() {
-						spamMessage = spamMessageInput.getText();
-						VertexClientPE.saveMainSettings();
-						VertexClientPE.loadMainSettings();
-					}
-				});
-				dialog.show();
-				var window = dialog.getWindow();
-				window.setLayout(display.widthPixels, display.heightPixels);
-				closeButton.setOnClickListener(new android.view.View.OnClickListener() {
-					onClick: function(view) {
-						dialog.dismiss();
-					}
-				});
-			} catch(e) {
-				print("Error: " + e);
-				VertexClientPE.showBugReportDialog(e);
-			}
-		}
-	});
-}
-
-VertexClientPE.showDelaySpammerDialog = function() {
-	ctx.runOnUiThread(new java.lang.Runnable() {
-		run: function() {
-			try {
-				VertexClientPE.loadMainSettings();
-				var delaySpammerTitle = clientTextView("DelaySpammer", true);
-				delaySpammerTitle.setTextSize(20);
-				var delaySpammerTypeText = clientTextView("Type: Mod\n");
-				var delaySpammerDescTitle = clientTextView("Description:");
-				var delaySpammerDescText = clientTextView("Automatically spams the chat with a delay and randomly generated messages.\n");
-				var delaySpammerDelayTimeTitle = clientTextView("Delay time: | " + spamDelayTime + " seconds");
-				var delaySpammerDelayTimeSlider = new widget.SeekBar(ctx);
-				delaySpammerDelayTimeSlider.setProgress(spamDelayTime);
-				delaySpammerDelayTimeSlider.setMax(60);
-				var closeButton = clientButton("Close");
-				var dialogLayout = new LinearLayout(ctx);
-				dialogLayout.setBackgroundDrawable(backgroundGradient());
-				dialogLayout.setOrientation(LinearLayout.VERTICAL);
-				dialogLayout.addView(delaySpammerTitle);
-				dialogLayout.addView(delaySpammerTypeText);
-				dialogLayout.addView(delaySpammerDescTitle);
-				dialogLayout.addView(delaySpammerDescText);
-				dialogLayout.addView(delaySpammerDelayTimeTitle);
-				dialogLayout.addView(delaySpammerDelayTimeSlider);
-				dialogLayout.addView(closeButton);
-				var dialog = new android.app.Dialog(ctx);
-				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
-				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
-				dialog.setContentView(dialogLayout);
-				dialog.setTitle("DelaySpammer");
-				delaySpammerDelayTimeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-					onProgressChanged: function() {
-						spamDelayTime = delaySpammerDelayTimeSlider.getProgress();
-						delaySpammerDelayTimeTitle.setText("Delay time: | " + spamDelayTime + " seconds");
-					}
-				});
-				dialog.setOnDismissListener(new android.content.DialogInterface.OnDismissListener() {
-					onDismiss: function() {
-						spamDelayTime = delaySpammerDelayTimeSlider.getProgress();
-						VertexClientPE.saveMainSettings();
-						VertexClientPE.loadMainSettings();
-					}
-				});
-				dialog.show();
-				var window = dialog.getWindow();
-				window.setLayout(display.widthPixels, display.heightPixels);
-				closeButton.setOnClickListener(new android.view.View.OnClickListener() {
-					onClick: function(view) {
-						dialog.dismiss();
-					}
-				});
-			} catch(e) {
-				print("Error: " + e);
-				VertexClientPE.showBugReportDialog(e);
-			}
-		}
-	});
-}
-
 var accountNameInput;
 var accountClientIdInput;
 var accountName = "unknown";
@@ -3171,7 +3039,6 @@ VertexClientPE.showAddAccountDialog = function() {
 		run: function() {
 			try {
 				VertexClientPE.loadMainSettings();
-				dialogGUI = new widget.PopupWindow();
 				var accountTitle = clientTextView("Add account", true);
 				accountNameInput = new EditText(ctx);
 				accountNameInput.setTextColor(android.graphics.Color.WHITE);
@@ -3183,7 +3050,6 @@ VertexClientPE.showAddAccountDialog = function() {
 				var okButton = clientButton("Ok");
 				var cancelButton = clientButton("Cancel");
 				var dialogLayout = new LinearLayout(ctx);
-				var spritesheet = android.graphics.Bitmap.createScaledBitmap(trimImage(GetSpritesheet(), 0, 0, 16, 16), 16 * GuiSize, 16 * GuiSize, false);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
 				dialogLayout.addView(accountTitle);
@@ -3196,9 +3062,6 @@ VertexClientPE.showAddAccountDialog = function() {
 				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
 				dialog.setTitle("Add account");
-				dialogGUI.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
-				dialogGUI.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
-				dialogGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.TOP, 0, 0);
 				dialog.show();
 				okButton.setOnClickListener(new android.view.View.OnClickListener() {
 					onClick: function(view) {
@@ -3287,13 +3150,11 @@ VertexClientPE.showJavascriptConsoleDialog = function() {
 	ctx.runOnUiThread(new java.lang.Runnable() {
 		run: function() {
 			try {
-				dialogGUI = new widget.PopupWindow();
 				var javascriptConsoleTitle = clientTextView("Javascript Console", true);
 				var btn = clientButton("Send");
 				var btn1 = clientButton("Cancel");
 				var inputBar = new EditText(ctx);
 				var dialogLayout = new LinearLayout(ctx);
-				var spritesheet = android.graphics.Bitmap.createScaledBitmap(trimImage(GetSpritesheet(), 0, 0, 16, 16), 16 * GuiSize, 16 * GuiSize, false);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
 				dialogLayout.addView(javascriptConsoleTitle);
@@ -3307,9 +3168,6 @@ VertexClientPE.showJavascriptConsoleDialog = function() {
 				dialog.setTitle("Javascript Console");
 				inputBar.setHint("Javascript input");
 				inputBar.setTextColor(android.graphics.Color.WHITE);
-				dialogGUI.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
-				dialogGUI.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
-				dialogGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.TOP, 0, 0);
 				dialog.show();
 				btn.setOnClickListener(new android.view.View.OnClickListener() {
 					onClick: function(view) {
@@ -3438,8 +3296,10 @@ VertexClientPE.showCategoryDialog = function(titleView, currentName, categoryId)
 	ctx.runOnUiThread(new java.lang.Runnable() {
 		run: function() {
 			try {
+				if(titleView.getMiddleButton) {
+					titleView = titleView.getMiddleButton();
+				}
 				var _0x25ea=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x52\x65\x6E\x61\x6D\x69\x6E\x67\x20\x63\x61\x74\x65\x67\x6F\x72\x69\x65\x73","\x73\x68\x6F\x77\x50\x72\x6F\x44\x69\x61\x6C\x6F\x67"];if(VertexClientPE[_0x25ea[0]]()!=_0x25ea[1]){VertexClientPE[_0x25ea[3]](_0x25ea[2]);return}
-				dialogGUI = new widget.PopupWindow();
 				var categoryDialogTitle = clientTextView("Rename category \'" + currentName + "\'", true);
 				var btn = clientButton("Close");
 				var inputBar = new EditText(ctx);
@@ -3457,7 +3317,6 @@ VertexClientPE.showCategoryDialog = function(titleView, currentName, categoryId)
 				inputBar.setHint("Category name");
 				inputBar.setText(currentName);
 				inputBar.setTextColor(android.graphics.Color.WHITE);
-				dialogGUI.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
 				dialog.show();
 				inputBar.addTextChangedListener(new android.text.TextWatcher() {
 					onTextChanged: function() {
@@ -3493,7 +3352,7 @@ VertexClientPE.showCategoryDialog = function(titleView, currentName, categoryId)
 						}
 						VertexClientPE.saveMainSettings();
 						VertexClientPE.loadMainSettings();
-						titleView.getMiddleButton().setText(currentName);
+						titleView.setText(currentName);
 					}
 				});
 			} catch(e) {
@@ -4468,10 +4327,13 @@ function addonButton(addon) {
 	return addonButtonLayout;
 }
 
-function categoryTab(categoryName, categoryRealName) {
+function categoryTab(category) {
 	var categoryTabLayout = new LinearLayout(ctx);
 	categoryTabLayout.setOrientation(1);
 	categoryTabLayout.setGravity(android.view.Gravity.CENTER);
+
+	var categoryName = VertexClientPE.category.toName(category);
+	var categoryRealName = VertexClientPE.category.toRealName(category);
 	
 	var defaultClientButton = clientButton(categoryName);
 	defaultClientButton.setAlpha(0.54);
@@ -4500,7 +4362,7 @@ function categoryTab(categoryName, categoryRealName) {
 				var categories = [VertexClientPE.category.COMBAT, VertexClientPE.category.BUILDING, VertexClientPE.category.MOVEMENT, VertexClientPE.category.CHAT, VertexClientPE.category.MISC];
 	
 				categories.forEach(function(element, index, array) {
-					menuMiddleLayout.addView(new categoryTab(VertexClientPE.category.toName(element), VertexClientPE.category.toRealName(element)));
+					menuMiddleLayout.addView(new categoryTab(element));
 				});
 				
 				VertexClientPE.modules.forEach(function(element, index, array) {
@@ -4509,6 +4371,12 @@ function categoryTab(categoryName, categoryRealName) {
 					}
 				});
 			}
+		}
+	}));
+	defaultClientButton.setOnLongClickListener(new android.view.View.OnLongClickListener({
+		onLongClick: function(v, t) {
+			VertexClientPE.showCategoryDialog(defaultClientButton, VertexClientPE.category.toName(category), category);
+			return true;
 		}
 	}));
 	//var _0x9276=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\uD83D\uDD12\x20","\x73\x65\x74\x54\x65\x78\x74"];if(isProFeature&&VertexClientPE[_0x9276[0]]()!=_0x9276[1]){defaultClientButton[_0x9276[3]](_0x9276[2]+mod.name)}
@@ -6084,7 +5952,7 @@ function mainMenu() {
 	var categories = [VertexClientPE.category.COMBAT, VertexClientPE.category.BUILDING, VertexClientPE.category.MOVEMENT, VertexClientPE.category.CHAT, VertexClientPE.category.MISC];
 	
 	categories.forEach(function(element, index, array) {
-		menuMiddleLayout.addView(new categoryTab(VertexClientPE.category.toName(element), VertexClientPE.category.toRealName(element)));
+		menuMiddleLayout.addView(new categoryTab(element));
 	});
 	
 	VertexClientPE.modules.forEach(function(element, index, array) {
