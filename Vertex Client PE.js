@@ -3084,6 +3084,48 @@ VertexClientPE.showProDialog = function(featureName) {
 	});
 }
 
+VertexClientPE.showUpgradeDialog = function(featureName) {
+	ctx.runOnUiThread(new java.lang.Runnable() {
+		run: function() {
+			try {
+				var dialogTitle = clientTextView("Pro");
+				dialogTitle.setTextSize(25);
+				var dialogDesc = clientTextView("Hey, why not get Vertex Client PE Pro and enjoy all the features for free?");
+				var btn = clientButton("Get Pro for free!");
+				var btn1 = clientButton("Close");
+				var inputBar = new EditText(ctx);
+				var dialogLayout = new LinearLayout(ctx);
+				dialogLayout.setBackgroundDrawable(backgroundGradient());
+				dialogLayout.setOrientation(LinearLayout.VERTICAL);
+				dialogLayout.addView(dialogTitle);
+				dialogLayout.addView(dialogDesc);
+				dialogLayout.addView(btn);
+				dialogLayout.addView(btn1);
+				var dialog = new android.app.Dialog(ctx);
+				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
+				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				dialog.setContentView(dialogLayout);
+				dialog.setTitle("Hey, why not get Vertex Client PE Pro and enjoy all the features for free?");
+				dialog.show();
+				btn.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+						VertexClientPE.downloadPro();
+					}
+				});
+				btn1.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+					}
+				});
+			} catch(e) {
+				print("Error: " + e);
+				VertexClientPE.showBugReportDialog(e);
+			}
+		}
+	});
+}
+
 var consoleInput;
 
 VertexClientPE.showJavascriptConsoleDialog = function() {
@@ -4653,6 +4695,10 @@ function backgroundGradient(round) // TextView with colored background (edited b
 	}
 })();
 
+function getRandomInt(min, max) {
+	return Math.floor((Math.random() * max) + min);
+}
+
 VertexClientPE.checkForUpdates = function() {
     try {
         // download content
@@ -5352,6 +5398,11 @@ function newLevel() {
 	}
 	if(VertexClientPE.isDevMode()) {
 		VertexClientPE.showBugReportDialog("Warning: Dev mode is enabled!");
+	}
+	if(!VertexClientPE.isPro()) {
+		if(getRandomInt(0, 20) == 10) {
+			VertexClientPE.showUpgradeDialog();
+		}
 	}
 }
 
