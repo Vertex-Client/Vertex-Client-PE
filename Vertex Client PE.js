@@ -2344,10 +2344,10 @@ VertexClientPE.GUI.registerFloatingMenu = function() {
 	VertexClientPE.addView(floatingPopupWindow, floatingCategoryTitle);
 	
 	if(floatingPopupWindowShown == true) {
-		floatingCategoryTitleArrow.setText("△");
+		floatingCategoryTitleArrow.setText("?");
 		floatingPopupWindowLayout1.addView(floatingPopupWindowScrollView);
 	}else if(combatMenuShown == false) {
-		floatingCategoryTitleArrow.setText("▽");
+		floatingCategoryTitleArrow.setText("?");
 	}
 	VertexClientPE.GUI.floatingMenus.push(this);
 }
@@ -2367,8 +2367,8 @@ VertexClientPE.showNotification = function(eventtext) {
     mNM.notify("Title", 0, notification);
 }
 
-var nameColor = "§b";
-var healthColor = "§c";
+var nameColor = "\u00A7b";
+var healthColor = "\u00A7c";
 
 var defaultDestroyTimeAll = [
     null, 1.5, 0.6, 0.5, 2, 2, 0, -1, null, null, null, null, 0.5, 0.6, 3, 3, 3, 2, 0.2, 0.6, 0.3, 3, 3, null, 0.8, null, 0.2, 0.7, null, null, 4, 0, 0, null, null, 0.8, null, 0, 0, 0, 0, 3, 5, 2, 2, 2, 0, 1.5, 2, 50, 0, 0, null, 2, 2.5, null, 3, 5, 2.5, 0, 0.6, 3.5, 3.5, 1, 3, 0.4, 0.7, 2, 1, null, null, 5, null, 3, 3, null, null, null, 0.1, 0.5, 0.2, 0.4, 0.6, 0, null, 2, 1, 0.4, 0.3, null, 1, 0.5, null, null, -1, 3, null, 1.5, null, null, 5, 0.3, 1, 0, 0, null, 2, 2, 1.5, null, null, 2, null, 2, null, null, null, null, null, null, null, null, null, null, null, null, null, 0.8, null, null, null, null, null, 2, 2, 2, null, null, 2, null, 0, 0, null, null, null, null, null, null, null, null, null, null, null, null, 0.8, 0.8, 2, 2, null, null, null, null, null, null, null, null, null, null, null, 0.5, 0.1, 5, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 0, 3.5, 50, 5, 0.6, 0.6, 5, null, null, null, null, 0
@@ -4172,7 +4172,7 @@ function modButton(mod) {
 	}
 	
 	var modButtonName = mod.name;
-	if(mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) modButtonName = "🔒 " + mod.name;
+	if(mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) modButtonName = "?? " + mod.name;
 	
 	if(mod.state) {
 		if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
@@ -4521,7 +4521,7 @@ function categoryTitle(text) {
 	defaultTitle.setGravity(view.Gravity.CENTER);
 	categoryTitleLayoutMiddle.addView(defaultTitle);
 	
-	var defaultArrowButton = clientButton("▽");
+	var defaultArrowButton = clientButton("?");
 	defaultArrowButton.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 3 - display.heightPixels / 4, display.heightPixels / 20));
 	defaultArrowButton.setAlpha(0.54);
 	categoryTitleLayoutRight.addView(defaultArrowButton);
@@ -4680,18 +4680,17 @@ function backgroundGradient(round) // TextView with colored background (edited b
 
 (VertexClientPE.editCopyrightText = function() {
 	VertexClientPE.loadMainSettings();
-	ModPE.langEdit("menu.copyright", "©Mojang AB | §2Vertex Client PE by peacestorm");
+	ModPE.langEdit("menu.copyright", "\u00A9Mojang AB | \u00A72Vertex Client PE by peacestorm");
 	if(themeSetting == "red") {
-		ModPE.langEdit("menu.copyright", "©Mojang AB | §4Vertex Client PE by peacestorm");
+		ModPE.langEdit("menu.copyright", "\u00A9Mojang AB | \u00A74Vertex Client PE by peacestorm");
 	} if(themeSetting == "blue") {
-		ModPE.langEdit("menu.copyright", "©Mojang AB | §1Vertex Client PE by peacestorm");
+		ModPE.langEdit("menu.copyright", "\u00A9Mojang AB | \u00A71Vertex Client PE by peacestorm");
 	} if(themeSetting == "purple") {
-		ModPE.langEdit("menu.copyright", "©Mojang AB | §5Vertex Client PE by peacestorm");
+		ModPE.langEdit("menu.copyright", "\u00A9Mojang AB | \u00A75Vertex Client PE by peacestorm");
 	} if(themeSetting == "white") {
-		ModPE.langEdit("menu.copyright", "©Mojang AB | §fVertex Client PE by peacestorm");
-		ModPE.langEdit("", "");
+		ModPE.langEdit("menu.copyright", "\u00A9Mojang AB | \u00A7fVertex Client PE by peacestorm");
 	} if(themeSetting == "black") {
-		ModPE.langEdit("menu.copyright", "©Mojang AB | §0Vertex Client PE by peacestorm");
+		ModPE.langEdit("menu.copyright", "\u00A9Mojang AB | \u00A70Vertex Client PE by peacestorm");
 	}
 })();
 
@@ -5078,6 +5077,7 @@ VertexClientPE.showSetupScreen = function() {
 					var logo3 = android.util.Base64.decode(logoImage, 0);
 					var logoViewer3 = new widget.ImageView(ctx);
 					logoViewer3.setImageBitmap(android.graphics.BitmapFactory.decodeByteArray(logo3, 0, logo3.length));
+					logoViewer3.setLayoutParams(new LinearLayout.LayoutParams(ctx.getWindowManager().getDefaultDisplay().getWidth() / 4, ctx.getWindowManager().getDefaultDisplay().getWidth() / 16));
 					setupScreenLayout.addView(logoViewer3);
 					setupScreenLayout.addView(setupScreenLayoutBottom);
 					
@@ -5134,7 +5134,7 @@ VertexClientPE.showSetupScreen = function() {
 					}));
 					setupScreenLayoutBottomRight.addView(setupButtonPurple);
 					
-					var setupText = clientTextView("You can always change the color on the Settings Screen.");
+					var setupText = clientTextView("You can always change the color on the settings screen.\nEven more colors are available there.");
 					setupText.setGravity(android.view.Gravity.CENTER);
 					setupScreenLayout.addView(setupText);
 					
@@ -5722,7 +5722,7 @@ function informationScreen() {
 					informationTitle.setGravity(android.view.Gravity.CENTER);
 					informationMenuLayout.addView(informationTitle);
 					
-					var informationText = clientTextView("© peacestorm, MyNameIsTriXz, _TXMO and LPMG | 2015 - 2016. Some rights reserved.\nThanks to @Herqux_ and @MyNameIsTriXz for graphic designs.", true);
+					var informationText = clientTextView("\u00A9 peacestorm, MyNameIsTriXz, _TXMO and LPMG | 2015 - 2016. Some rights reserved.\nThanks to @Herqux_ and @MyNameIsTriXz for graphic designs.", true);
 					
 					var websiteButton = clientButton("Website", "Go to the official Vertex Client PE website");
 					websiteButton.setOnClickListener(new android.view.View.OnClickListener({
@@ -5968,8 +5968,8 @@ function mainMenu() {
     }}));
 }
 
-var vertexclientpemenu = null;
-var menuBtn = null;
+var vertexclientpemenu;
+var menuBtn;
 
 var combattpopx = screenWidth / 3, combattpopy = 0;
 var combatmX, combatmY;
@@ -6027,21 +6027,21 @@ VertexClientPE.showCombatMenu = function() {
 				VertexClientPE.addView(combatMenuLayout1, combat);
 				
 				if(combatMenuShown == true) {
-					combatArrow.setText("△");
+					combatArrow.setText("?");
 					combatMenuLayout1.addView(combatMenuScrollView);
 				}else if(combatMenuShown == false) {
-					combatArrow.setText("▽");
+					combatArrow.setText("?");
 				}
 				
 				combatArrow.setOnClickListener(new android.view.View.OnClickListener() {
                     onClick: function(viewarg) {
 						if(combatMenuShown == true) {
 							combatMenuLayout1.removeView(combatMenuScrollView);
-							combatArrow.setText("▽");
+							combatArrow.setText("?");
 							combatMenuShown = false;
 						}else if(combatMenuShown == false) {
 							combatMenuLayout1.addView(combatMenuScrollView);
-							combatArrow.setText("△");
+							combatArrow.setText("?");
 							combatMenuShown = true;
 						}
                     }
@@ -6133,21 +6133,21 @@ VertexClientPE.showBuildingMenu = function() {
 				VertexClientPE.addView(buildingMenuLayout1, building);
 				
 				if(buildingMenuShown == true) {
-					buildingArrow.setText("△");
+					buildingArrow.setText("?");
 					buildingMenuLayout1.addView(buildingMenuScrollView);
 				}else if(buildingMenuShown == false) {
-					buildingArrow.setText("▽");
+					buildingArrow.setText("?");
 				}
 				
 				buildingArrow.setOnClickListener(new android.view.View.OnClickListener() {
                     onClick: function(viewarg) {
 						if(buildingMenuShown == true) {
 							buildingMenuLayout1.removeView(buildingMenuScrollView);
-							buildingArrow.setText("▽");
+							buildingArrow.setText("?");
 							buildingMenuShown = false;
 						}else if(buildingMenuShown == false) {
 							buildingMenuLayout1.addView(buildingMenuScrollView);
-							buildingArrow.setText("△");
+							buildingArrow.setText("?");
 							buildingMenuShown = true;
 						}
                     }
@@ -6240,21 +6240,21 @@ VertexClientPE.showMovementMenu = function() {
 				VertexClientPE.addView(movementMenuLayout1, movement);
 				
 				if(movementMenuShown == true) {
-					movementArrow.setText("△");
+					movementArrow.setText("?");
 					movementMenuLayout1.addView(movementMenuScrollView);
 				}else if(movementMenuShown == false) {
-					movementArrow.setText("▽");
+					movementArrow.setText("?");
 				}
 				
 				movementArrow.setOnClickListener(new android.view.View.OnClickListener() {
                     onClick: function(viewarg) {
 						if(movementMenuShown == true) {
 							movementMenuLayout1.removeView(movementMenuScrollView);
-							movementArrow.setText("▽");
+							movementArrow.setText("?");
 							movementMenuShown = false;
 						}else if(movementMenuShown == false) {
 							movementMenuLayout1.addView(movementMenuScrollView);
-							movementArrow.setText("△");
+							movementArrow.setText("?");
 							movementMenuShown = true;
 						}
                     }
@@ -6346,21 +6346,21 @@ VertexClientPE.showChatMenu = function() {
 				VertexClientPE.addView(chatMenuLayout1, chat);
 				
 				if(chatMenuShown == true) {
-					chatArrow.setText("△");
+					chatArrow.setText("?");
 					chatMenuLayout1.addView(chatMenuScrollView);
 				}else if(chatMenuShown == false) {
-					chatArrow.setText("▽");
+					chatArrow.setText("?");
 				}
 
 				chatArrow.setOnClickListener(new android.view.View.OnClickListener() {
                     onClick: function(viewarg) {
 						if(chatMenuShown == true) {
 							chatMenuLayout1.removeView(chatMenuScrollView);
-							chatArrow.setText("▽");
+							chatArrow.setText("?");
 							chatMenuShown = false;
 						}else if(chatMenuShown == false) {
 							chatMenuLayout1.addView(chatMenuScrollView);
-							chatArrow.setText("△");
+							chatArrow.setText("?");
 							chatMenuShown = true;
 						}
                     }
@@ -6452,21 +6452,21 @@ VertexClientPE.showMiscMenu = function() {
 				VertexClientPE.addView(miscMenuLayout1, misc);
 				
 				if(miscMenuShown == true) {
-					miscArrow.setText("△");
+					miscArrow.setText("?");
 					miscMenuLayout1.addView(miscMenuScrollView);
 				}else if(miscMenuShown == false) {
-					miscArrow.setText("▽");
+					miscArrow.setText("?");
 				}
 
 				miscArrow.setOnClickListener(new android.view.View.OnClickListener() {
                     onClick: function(viewarg) {
 						if(miscMenuShown == true) {
 							miscMenuLayout1.removeView(miscMenuScrollView);
-							miscArrow.setText("▽");
+							miscArrow.setText("?");
 							miscMenuShown = false;
 						}else if(miscMenuShown == false) {
 							miscMenuLayout1.addView(miscMenuScrollView);
-							miscArrow.setText("△");
+							miscArrow.setText("?");
 							miscMenuShown = true;
 						}
                     }
@@ -6809,7 +6809,7 @@ function showHacksList() {
 					} else if(hacksListModeSetting == "counter") {
 						statesTextView.setText(enabledHacksCounter.toString() + " mods enabled");
 					}
-					musicTextView = clientTextView("♫ Currently playing: " + musicText, true);
+					musicTextView = clientTextView("? Currently playing: " + musicText, true);
 					
 					statesTextView.setTextSize(15);
 					statesTextView.setEllipsize(android.text.TextUtils.TruncateAt.MARQUEE);
@@ -6868,7 +6868,7 @@ function updateHacksList() {
 					} else if(hacksListModeSetting == "counter") {
 						statesTextView.setText(enabledHacksCounter.toString() + " mods enabled");
 					}
-					musicTextView.setText("♫ Currently playing: " + musicText);
+					musicTextView.setText("? Currently playing: " + musicText);
                 } catch(error) {
                     print('An error occurred: ' + error);
 					VertexClientPE.showBugReportDialog(error);
@@ -6934,7 +6934,7 @@ function setupDone() {
 		try{
 			var doneLayout = new LinearLayout(ctx);
 			var doneButton = new Button(ctx);
-			doneButton.setText("✓");//Text
+			doneButton.setText("\u2713");//Text
 			doneButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#008000"), android.graphics.PorterDuff.Mode.MULTIPLY);
 			doneButton.setTextColor(android.graphics.Color.WHITE);
 			doneButton.setOnClickListener(new android.view.View.OnClickListener({
@@ -6942,17 +6942,18 @@ function setupDone() {
 					themeSetting = setupColor;
 					VertexClientPE.saveMainSettings();
 					VertexClientPE.editCopyrightText();
+					VertexClientPE.setupTheme();
 					doneUI.dismiss(); //Close
 					setupScreen.dismiss();
 					showMenuButton();
-					//showAccountManagerButton();
+					showAccountManagerButton();
 				}
 			}));
 			doneLayout.addView(doneButton);
 			
 			doneUI = new widget.PopupWindow(doneLayout, dip2px(40), dip2px(40));
 			doneUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
-			doneUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
+			doneUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 90, 0);
 		} catch(exception) {
 			print(exception);
 			VertexClientPE.showBugReportDialog(exception);
