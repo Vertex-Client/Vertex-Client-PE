@@ -2344,10 +2344,10 @@ VertexClientPE.GUI.registerFloatingMenu = function() {
 	VertexClientPE.addView(floatingPopupWindow, floatingCategoryTitle);
 	
 	if(floatingPopupWindowShown == true) {
-		floatingCategoryTitleArrow.setText("?");
+		floatingCategoryTitleArrow.setText("\u25B3");
 		floatingPopupWindowLayout1.addView(floatingPopupWindowScrollView);
 	}else if(combatMenuShown == false) {
-		floatingCategoryTitleArrow.setText("?");
+		floatingCategoryTitleArrow.setText("\u25BD");
 	}
 	VertexClientPE.GUI.floatingMenus.push(this);
 }
@@ -3452,34 +3452,34 @@ VertexClientPE.commandManager = function(cmd) {
 var mp;
 
 var music = [
-	["Jim Yosef – Eclipse [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Jim%20Yosef%20-%20Eclipse.mp3"],
-	["Ahrix – Nova [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Ahrix%20-%20Nova.mp3"],
-	["SirensCeol – Coming Home [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/SirensCeol%20-%20Coming%20Home.mp3"],
-	["Diviners feat. Contacreast – Tropic Love [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Diviners%20ft.%20Contacreast%20-%20Tropic%20Love%20%28Original%20Mix%29.mp3"],
-	["Distrion & Alex Skrindo – Entropy", "http://files-cdn.nocopyrightsounds.co.uk/Distrion%20%26%20Alex%20Skrindo%20-%20Entropy.mp3"],
-	["Disfigure – Blank [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Disfigure%20-%20Blank.mp3"],
-	["DEAF KEV – Invincible [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/DEAF%20KEV%20-%20Invincible.mp3"],
-	["Different Heaven & EH!DE – My Heart [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20%26%20EH%21DE%20-%20My%20Heart.mp3"],
-	["William Ekh – Adventure (feat. Alexa Lusader)", "http://files-cdn.nocopyrightsounds.co.uk/William%20Ekh%20-%20Adventure%20%28feat.%20Alexa%20Lusader%29.mp3"],
-	["Different Heaven – Nekozilla", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20-%20Nekozilla.mp3"],
-	["Tobu – Candyland [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Tobu%20-%20Candyland.mp3"],
-	["Jim Yosef – Firefly [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/jim-yosef-firefly-ncs-release.mp3"]
+	["Jim Yosef ֠Eclipse [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Jim%20Yosef%20-%20Eclipse.mp3"],
+	["Ahrix ֠Nova [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Ahrix%20-%20Nova.mp3"],
+	["SirensCeol ֠Coming Home [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/SirensCeol%20-%20Coming%20Home.mp3"],
+	["Diviners feat. Contacreast ֠Tropic Love [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Diviners%20ft.%20Contacreast%20-%20Tropic%20Love%20%28Original%20Mix%29.mp3"],
+	["Distrion & Alex Skrindo ֠Entropy", "http://files-cdn.nocopyrightsounds.co.uk/Distrion%20%26%20Alex%20Skrindo%20-%20Entropy.mp3"],
+	["Disfigure ֠Blank [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Disfigure%20-%20Blank.mp3"],
+	["DEAF KEV ֠Invincible [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/DEAF%20KEV%20-%20Invincible.mp3"],
+	["Different Heaven & EH!DE ֠My Heart [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20%26%20EH%21DE%20-%20My%20Heart.mp3"],
+	["William Ekh ֠Adventure (feat. Alexa Lusader)", "http://files-cdn.nocopyrightsounds.co.uk/William%20Ekh%20-%20Adventure%20%28feat.%20Alexa%20Lusader%29.mp3"],
+	["Different Heaven ֠Nekozilla", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20-%20Nekozilla.mp3"],
+	["Tobu ֠Candyland [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Tobu%20-%20Candyland.mp3"],
+	["Jim Yosef ֠Firefly [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/jim-yosef-firefly-ncs-release.mp3"]
 ];
 
 VertexClientPE.resetMusic = function() {
 	music = [
-		["Jim Yosef – Eclipse [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Jim%20Yosef%20-%20Eclipse.mp3"],
-		["Ahrix – Nova [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Ahrix%20-%20Nova.mp3"],
-		["SirensCeol – Coming Home [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/SirensCeol%20-%20Coming%20Home.mp3"],
-		["Diviners feat. Contacreast – Tropic Love [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Diviners%20ft.%20Contacreast%20-%20Tropic%20Love%20%28Original%20Mix%29.mp3"],
-		["Distrion & Alex Skrindo – Entropy", "http://files-cdn.nocopyrightsounds.co.uk/Distrion%20%26%20Alex%20Skrindo%20-%20Entropy.mp3"],
-		["Disfigure – Blank [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Disfigure%20-%20Blank.mp3"],
-		["DEAF KEV – Invincible [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/DEAF%20KEV%20-%20Invincible.mp3"],
-		["Different Heaven & EH!DE – My Heart [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20%26%20EH%21DE%20-%20My%20Heart.mp3"],
-		["William Ekh – Adventure (feat. Alexa Lusader)", "http://files-cdn.nocopyrightsounds.co.uk/William%20Ekh%20-%20Adventure%20%28feat.%20Alexa%20Lusader%29.mp3"],
-		["Different Heaven – Nekozilla", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20-%20Nekozilla.mp3"],
-		["Tobu – Candyland [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Tobu%20-%20Candyland.mp3"],
-		["Jim Yosef – Firefly [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/jim-yosef-firefly-ncs-release.mp3"]
+		["Jim Yosef ֠Eclipse [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Jim%20Yosef%20-%20Eclipse.mp3"],
+		["Ahrix ֠Nova [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Ahrix%20-%20Nova.mp3"],
+		["SirensCeol ֠Coming Home [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/SirensCeol%20-%20Coming%20Home.mp3"],
+		["Diviners feat. Contacreast ֠Tropic Love [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Diviners%20ft.%20Contacreast%20-%20Tropic%20Love%20%28Original%20Mix%29.mp3"],
+		["Distrion & Alex Skrindo ֠Entropy", "http://files-cdn.nocopyrightsounds.co.uk/Distrion%20%26%20Alex%20Skrindo%20-%20Entropy.mp3"],
+		["Disfigure ֠Blank [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Disfigure%20-%20Blank.mp3"],
+		["DEAF KEV ֠Invincible [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/DEAF%20KEV%20-%20Invincible.mp3"],
+		["Different Heaven & EH!DE ֠My Heart [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20%26%20EH%21DE%20-%20My%20Heart.mp3"],
+		["William Ekh ֠Adventure (feat. Alexa Lusader)", "http://files-cdn.nocopyrightsounds.co.uk/William%20Ekh%20-%20Adventure%20%28feat.%20Alexa%20Lusader%29.mp3"],
+		["Different Heaven ֠Nekozilla", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20-%20Nekozilla.mp3"],
+		["Tobu ֠Candyland [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Tobu%20-%20Candyland.mp3"],
+		["Jim Yosef ֠Firefly [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/jim-yosef-firefly-ncs-release.mp3"]
 	];
 }
 
@@ -4172,7 +4172,7 @@ function modButton(mod) {
 	}
 	
 	var modButtonName = mod.name;
-	if(mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) modButtonName = "?? " + mod.name;
+	if(mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) modButtonName = "\u1F512 " + mod.name;
 	
 	if(mod.state) {
 		if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
@@ -4521,7 +4521,7 @@ function categoryTitle(text) {
 	defaultTitle.setGravity(view.Gravity.CENTER);
 	categoryTitleLayoutMiddle.addView(defaultTitle);
 	
-	var defaultArrowButton = clientButton("?");
+	var defaultArrowButton = clientButton("\u25BD", null, null);
 	defaultArrowButton.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 3 - display.heightPixels / 4, display.heightPixels / 20));
 	defaultArrowButton.setAlpha(0.54);
 	categoryTitleLayoutRight.addView(defaultArrowButton);
@@ -6027,21 +6027,21 @@ VertexClientPE.showCombatMenu = function() {
 				VertexClientPE.addView(combatMenuLayout1, combat);
 				
 				if(combatMenuShown == true) {
-					combatArrow.setText("?");
+					combatArrow.setText("\u25B3");
 					combatMenuLayout1.addView(combatMenuScrollView);
 				}else if(combatMenuShown == false) {
-					combatArrow.setText("?");
+					combatArrow.setText("\u25BD");
 				}
 				
 				combatArrow.setOnClickListener(new android.view.View.OnClickListener() {
                     onClick: function(viewarg) {
 						if(combatMenuShown == true) {
 							combatMenuLayout1.removeView(combatMenuScrollView);
-							combatArrow.setText("?");
+							combatArrow.setText("\u25BD");
 							combatMenuShown = false;
 						}else if(combatMenuShown == false) {
 							combatMenuLayout1.addView(combatMenuScrollView);
-							combatArrow.setText("?");
+							combatArrow.setText("\u25B3");
 							combatMenuShown = true;
 						}
                     }
@@ -6075,13 +6075,13 @@ VertexClientPE.showCombatMenu = function() {
                 }));
 
 				VertexClientPE.modules.forEach(function(element, index, array) {
-					if(element.category == VertexClientPE.category.COMBAT && (element.type == "Mod" || element.type == "Special")) {
+					if(VertexClientPE.modules[index].category == VertexClientPE.category.COMBAT && (VertexClientPE.modules[index].type == "Mod" || VertexClientPE.modules[index].type == "Special")) {
 						combatMenuLayout.addView(new modButton(element));
 					}
 				});
 
                 vertexclientpecombatmenu.setContentView(combatMenuLayout1);
-				vertexclientpecombatmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				vertexclientpecombatmenu.setBackgroundDrawable(backgroundSpecial(true));
                 vertexclientpecombatmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
 				vertexclientpecombatmenu.setHeight(screenHeight / 2 - customHeight);
 				if(menuAnimationsSetting == "on") {
@@ -6133,21 +6133,21 @@ VertexClientPE.showBuildingMenu = function() {
 				VertexClientPE.addView(buildingMenuLayout1, building);
 				
 				if(buildingMenuShown == true) {
-					buildingArrow.setText("?");
+					buildingArrow.setText("\u25B3");
 					buildingMenuLayout1.addView(buildingMenuScrollView);
 				}else if(buildingMenuShown == false) {
-					buildingArrow.setText("?");
+					buildingArrow.setText("\u25BD");
 				}
 				
 				buildingArrow.setOnClickListener(new android.view.View.OnClickListener() {
                     onClick: function(viewarg) {
 						if(buildingMenuShown == true) {
 							buildingMenuLayout1.removeView(buildingMenuScrollView);
-							buildingArrow.setText("?");
+							buildingArrow.setText("\u25BD");
 							buildingMenuShown = false;
 						}else if(buildingMenuShown == false) {
 							buildingMenuLayout1.addView(buildingMenuScrollView);
-							buildingArrow.setText("?");
+							buildingArrow.setText("\u25B3");
 							buildingMenuShown = true;
 						}
                     }
@@ -6181,14 +6181,14 @@ VertexClientPE.showBuildingMenu = function() {
                 }));
 
                 VertexClientPE.modules.forEach(function(element, index, array) {
-					if(element.category == VertexClientPE.category.BUILDING && (element.type == "Mod" || element.type == "Special")) {
+					if(VertexClientPE.modules[index].category == VertexClientPE.category.BUILDING && (VertexClientPE.modules[index].type == "Mod" || VertexClientPE.modules[index].type == "Special")) {
 						buildingMenuLayout.addView(new modButton(element));
 					}
 				});
 
 
                 vertexclientpebuildingmenu.setContentView(buildingMenuLayout1);
-				vertexclientpebuildingmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				vertexclientpebuildingmenu.setBackgroundDrawable(backgroundSpecial(true));
                 vertexclientpebuildingmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
                 vertexclientpebuildingmenu.setHeight(screenHeight / 2 - customHeight);
 				if(menuAnimationsSetting == "on") {
@@ -6240,21 +6240,21 @@ VertexClientPE.showMovementMenu = function() {
 				VertexClientPE.addView(movementMenuLayout1, movement);
 				
 				if(movementMenuShown == true) {
-					movementArrow.setText("?");
+					movementArrow.setText("\u25B3");
 					movementMenuLayout1.addView(movementMenuScrollView);
 				}else if(movementMenuShown == false) {
-					movementArrow.setText("?");
+					movementArrow.setText("\u25BD");
 				}
 				
 				movementArrow.setOnClickListener(new android.view.View.OnClickListener() {
                     onClick: function(viewarg) {
 						if(movementMenuShown == true) {
 							movementMenuLayout1.removeView(movementMenuScrollView);
-							movementArrow.setText("?");
+							movementArrow.setText("\u25BD");
 							movementMenuShown = false;
 						}else if(movementMenuShown == false) {
 							movementMenuLayout1.addView(movementMenuScrollView);
-							movementArrow.setText("?");
+							movementArrow.setText("\u25B3");
 							movementMenuShown = true;
 						}
                     }
@@ -6288,13 +6288,13 @@ VertexClientPE.showMovementMenu = function() {
                 }));
 
 				VertexClientPE.modules.forEach(function(element, index, array) {
-					if(element.category == VertexClientPE.category.MOVEMENT && (element.type == "Mod" || element.type == "Special")) {
+					if(VertexClientPE.modules[index].category == VertexClientPE.category.MOVEMENT && (VertexClientPE.modules[index].type == "Mod" || VertexClientPE.modules[index].type == "Special")) {
 						movementMenuLayout.addView(new modButton(element));
 					}
 				});
 
                 vertexclientpemovementmenu.setContentView(movementMenuLayout1);
-				vertexclientpemovementmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				vertexclientpemovementmenu.setBackgroundDrawable(backgroundSpecial(true));
                 vertexclientpemovementmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
                 vertexclientpemovementmenu.setHeight(screenHeight / 2 - customHeight);
 				if(menuAnimationsSetting == "on") {
@@ -6346,21 +6346,21 @@ VertexClientPE.showChatMenu = function() {
 				VertexClientPE.addView(chatMenuLayout1, chat);
 				
 				if(chatMenuShown == true) {
-					chatArrow.setText("?");
+					chatArrow.setText("\u25B3");
 					chatMenuLayout1.addView(chatMenuScrollView);
 				}else if(chatMenuShown == false) {
-					chatArrow.setText("?");
+					chatArrow.setText("\u25BD");
 				}
 
 				chatArrow.setOnClickListener(new android.view.View.OnClickListener() {
                     onClick: function(viewarg) {
 						if(chatMenuShown == true) {
 							chatMenuLayout1.removeView(chatMenuScrollView);
-							chatArrow.setText("?");
+							chatArrow.setText("\u25BD");
 							chatMenuShown = false;
 						}else if(chatMenuShown == false) {
 							chatMenuLayout1.addView(chatMenuScrollView);
-							chatArrow.setText("?");
+							chatArrow.setText("\u25B3");
 							chatMenuShown = true;
 						}
                     }
@@ -6394,13 +6394,13 @@ VertexClientPE.showChatMenu = function() {
                 }));
 				
 				VertexClientPE.modules.forEach(function(element, index, array) {
-					if(element.category == VertexClientPE.category.CHAT && (element.type == "Mod" || element.type == "Special")) {
+					if(VertexClientPE.modules[index].category == VertexClientPE.category.CHAT && (VertexClientPE.modules[index].type == "Mod" || VertexClientPE.modules[index].type == "Special")) {
 						chatMenuLayout.addView(new modButton(element));
 					}
 				});
 
                 vertexclientpechatmenu.setContentView(chatMenuLayout1);
-                vertexclientpechatmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+                vertexclientpechatmenu.setBackgroundDrawable(backgroundSpecial(true));
                 vertexclientpechatmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
                 vertexclientpechatmenu.setHeight(screenHeight / 2 - customHeight);
 				if(menuAnimationsSetting == "on") {
@@ -6452,21 +6452,21 @@ VertexClientPE.showMiscMenu = function() {
 				VertexClientPE.addView(miscMenuLayout1, misc);
 				
 				if(miscMenuShown == true) {
-					miscArrow.setText("?");
+					miscArrow.setText("\u25B3");
 					miscMenuLayout1.addView(miscMenuScrollView);
 				}else if(miscMenuShown == false) {
-					miscArrow.setText("?");
+					miscArrow.setText("\u25BD");
 				}
 
 				miscArrow.setOnClickListener(new android.view.View.OnClickListener() {
                     onClick: function(viewarg) {
 						if(miscMenuShown == true) {
 							miscMenuLayout1.removeView(miscMenuScrollView);
-							miscArrow.setText("?");
+							miscArrow.setText("\u25BD");
 							miscMenuShown = false;
 						}else if(miscMenuShown == false) {
 							miscMenuLayout1.addView(miscMenuScrollView);
-							miscArrow.setText("?");
+							miscArrow.setText("\u25B3");
 							miscMenuShown = true;
 						}
                     }
@@ -6500,19 +6500,145 @@ VertexClientPE.showMiscMenu = function() {
                 }));
 
                 VertexClientPE.modules.forEach(function(element, index, array) {
-					if(element.category == VertexClientPE.category.MISC && (element.type == "Mod" || element.type == "Special")) {
+					if(VertexClientPE.modules[index].category == VertexClientPE.category.MISC && (VertexClientPE.modules[index].type == "Mod" || VertexClientPE.modules[index].type == "Special")) {
 						miscMenuLayout.addView(new modButton(element));
 					}
 				});
 
                 vertexclientpemiscmenu.setContentView(miscMenuLayout1);
-                vertexclientpemiscmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+                vertexclientpemiscmenu.setBackgroundDrawable(backgroundSpecial(true));
                 vertexclientpemiscmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
                 vertexclientpemiscmenu.setHeight(screenHeight / 2 - customHeight);
 				if(menuAnimationsSetting == "on") {
 					vertexclientpemiscmenu.setAnimationStyle(android.R.style.Animation_Dialog);
 				}
                 vertexclientpemiscmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, misctpopx, misctpopy);
+
+            } catch(error) {
+                print("Error: " + error);
+				VertexClientPE.showBugReportDialog(error);
+            }
+        }
+    });
+}
+
+var favMenuShown = false;
+
+VertexClientPE.showFavMenu = function() {
+	var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+    ctx.runOnUiThread(new java.lang.Runnable() {
+        run: function() {
+            try {
+				var display = new android.util.DisplayMetrics();
+				com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
+				
+				VertexClientPE.loadMainSettings();
+
+                vertexclientpefavmenu = new widget.PopupWindow(ctx);
+                var favMenuLayout1 = new LinearLayout(ctx);
+                var favMenuScrollView = new ScrollView(ctx);
+                favMenuLayout = new LinearLayout(ctx);
+				
+                favMenuLayout.setOrientation(1);
+                favMenuLayout1.setOrientation(1);
+				
+				favMenuScrollView.addView(favMenuLayout);
+				
+				var favTitleLayout = new LinearLayout(ctx);
+				favTitleLayout.setOrientation(LinearLayout.HORIZONTAL);
+				
+				var favTitleLayoutLeft = new LinearLayout(ctx);
+				favTitleLayoutLeft.setOrientation(1);
+				favTitleLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.heightPixels / 2.5, display.heightPixels / 20));
+				favTitleLayout.addView(favTitleLayoutLeft);
+				
+				var favTitleLayoutRight = new LinearLayout(ctx);
+				favTitleLayoutRight.setOrientation(1);
+				favTitleLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.heightPixels / 2 - display.heightPixels / 2.5, display.heightPixels / 20));
+				favTitleLayout.addView(favTitleLayoutRight);
+				
+				if(themeSetting == "green") {
+					var favTitle = greenSubTitle("Favourite", true);
+				}if(themeSetting == "red") {
+					var favTitle = redSubTitle("Favourite", true);
+				}if(themeSetting == "blue") {
+					var favTitle = blueSubTitle("Favourite", true);
+				}if(themeSetting == "purple") {
+					var favTitle = purpleSubTitle("Favourite", true);
+				}
+				favTitle.setAlpha(0.54);
+				favTitle.setGravity(android.view.Gravity.CENTER);
+				favTitle.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2.5, display.heightPixels / 20));
+				favTitleLayoutLeft.addView(favTitle);
+				
+				var favArrow = clientButton("*");
+				favArrow.setAlpha(0.54);
+				favArrow.setGravity(android.view.Gravity.CENTER);
+				favArrow.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2 - display.heightPixels / 2.5, display.heightPixels / 20));
+				favTitleLayoutRight.addView(favArrow);
+				
+				favMenuLayout1.addView(favTitleLayout);
+				
+				if(favMenuShown == true) {
+					favArrow.setText("\u25B3");
+					favMenuLayout1.addView(favMenuScrollView);
+				}else if(favMenuShown == false) {
+					favArrow.setText("\u25BD");
+				}
+				
+				var favText = clientTextView("Not available yet!", true);
+
+				favArrow.setOnClickListener(new android.view.View.OnClickListener() {
+                    onClick: function(viewarg) {
+						if(favMenuShown == true) {
+							favMenuLayout1.removeView(favMenuScrollView);
+							favArrow.setText("\u25BD");
+							favMenuShown = false;
+						}else if(favMenuShown == false) {
+							favMenuLayout1.addView(favMenuScrollView);
+							favArrow.setText("\u25B3");
+							favMenuShown = true;
+						}
+                    }
+                });
+                favTitle.setOnLongClickListener(new android.view.View.OnLongClickListener() {
+                    onLongClick: function(v, t) {
+                        favdown = true;
+                        VertexClientPE.toast("Now you can move the menu!");
+                        return true;
+                    }
+                });
+                favTitle.setOnTouchListener(new android.view.View.OnTouchListener({
+                    onTouch: function(v, e) {
+                        if(!favdown) {
+                            favmX = e.getX()
+                            favmY = e.getY()
+                        }
+                        if(favdown) {
+                            var a = e.getAction()
+                            if(a == 2) {
+                                var X = parseInt(e.getX() - favmX) * -1 / 10;
+                                var Y = parseInt(e.getY() - favmY) * -1 / 10;
+                                favtpopx = favtpopx + X;
+                                favtpopy = favtpopy + Y;
+                                vertexclientpefavmenu.update(parseInt(favtpopx), parseInt(favtpopy), -1, -1);
+                            }
+                            if(a == 1) favdown = false;
+                        }
+                        return false;
+                    }
+                }));
+
+                favMenuLayout.addView(favText);
+
+                vertexclientpefavmenu.setContentView(favMenuLayout1);
+                vertexclientpefavmenu.setBackgroundDrawable(backgroundSpecial(true));
+                vertexclientpefavmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
+                vertexclientpefavmenu.setHeight(screenHeight / 2 - customHeight);
+				if(menuAnimationsSetting == "on") {
+					vertexclientpefavmenu.setAnimationStyle(android.R.style.Animation_Dialog);
+				}
+                vertexclientpefavmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, favtpopx, favtpopy);
 
             } catch(error) {
                 print("Error: " + error);
@@ -6809,7 +6935,7 @@ function showHacksList() {
 					} else if(hacksListModeSetting == "counter") {
 						statesTextView.setText(enabledHacksCounter.toString() + " mods enabled");
 					}
-					musicTextView = clientTextView("? Currently playing: " + musicText, true);
+					musicTextView = clientTextView("\u266B Currently playing: " + musicText, true);
 					
 					statesTextView.setTextSize(15);
 					statesTextView.setEllipsize(android.text.TextUtils.TruncateAt.MARQUEE);
@@ -6868,7 +6994,7 @@ function updateHacksList() {
 					} else if(hacksListModeSetting == "counter") {
 						statesTextView.setText(enabledHacksCounter.toString() + " mods enabled");
 					}
-					musicTextView.setText("? Currently playing: " + musicText);
+					musicTextView.setText("\u266B Currently playing: " + musicText);
                 } catch(error) {
                     print('An error occurred: ' + error);
 					VertexClientPE.showBugReportDialog(error);
