@@ -6075,13 +6075,13 @@ VertexClientPE.showCombatMenu = function() {
                 }));
 
 				VertexClientPE.modules.forEach(function(element, index, array) {
-					if(VertexClientPE.modules[index].category == VertexClientPE.category.COMBAT && (VertexClientPE.modules[index].type == "Mod" || VertexClientPE.modules[index].type == "Special")) {
+					if(element.category == VertexClientPE.category.COMBAT && (element.type == "Mod" || element.type == "Special")) {
 						combatMenuLayout.addView(new modButton(element));
 					}
 				});
 
                 vertexclientpecombatmenu.setContentView(combatMenuLayout1);
-				vertexclientpecombatmenu.setBackgroundDrawable(backgroundSpecial(true));
+				vertexclientpecombatmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
                 vertexclientpecombatmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
 				vertexclientpecombatmenu.setHeight(screenHeight / 2 - customHeight);
 				if(menuAnimationsSetting == "on") {
@@ -6181,14 +6181,14 @@ VertexClientPE.showBuildingMenu = function() {
                 }));
 
                 VertexClientPE.modules.forEach(function(element, index, array) {
-					if(VertexClientPE.modules[index].category == VertexClientPE.category.BUILDING && (VertexClientPE.modules[index].type == "Mod" || VertexClientPE.modules[index].type == "Special")) {
+					if(element.category == VertexClientPE.category.BUILDING && (element.type == "Mod" || element.type == "Special")) {
 						buildingMenuLayout.addView(new modButton(element));
 					}
 				});
 
 
                 vertexclientpebuildingmenu.setContentView(buildingMenuLayout1);
-				vertexclientpebuildingmenu.setBackgroundDrawable(backgroundSpecial(true));
+				vertexclientpebuildingmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
                 vertexclientpebuildingmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
                 vertexclientpebuildingmenu.setHeight(screenHeight / 2 - customHeight);
 				if(menuAnimationsSetting == "on") {
@@ -6288,13 +6288,13 @@ VertexClientPE.showMovementMenu = function() {
                 }));
 
 				VertexClientPE.modules.forEach(function(element, index, array) {
-					if(VertexClientPE.modules[index].category == VertexClientPE.category.MOVEMENT && (VertexClientPE.modules[index].type == "Mod" || VertexClientPE.modules[index].type == "Special")) {
+					if(element.category == VertexClientPE.category.MOVEMENT && (element.type == "Mod" || element.type == "Special")) {
 						movementMenuLayout.addView(new modButton(element));
 					}
 				});
 
                 vertexclientpemovementmenu.setContentView(movementMenuLayout1);
-				vertexclientpemovementmenu.setBackgroundDrawable(backgroundSpecial(true));
+				vertexclientpemovementmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
                 vertexclientpemovementmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
                 vertexclientpemovementmenu.setHeight(screenHeight / 2 - customHeight);
 				if(menuAnimationsSetting == "on") {
@@ -6394,13 +6394,13 @@ VertexClientPE.showChatMenu = function() {
                 }));
 				
 				VertexClientPE.modules.forEach(function(element, index, array) {
-					if(VertexClientPE.modules[index].category == VertexClientPE.category.CHAT && (VertexClientPE.modules[index].type == "Mod" || VertexClientPE.modules[index].type == "Special")) {
+					if(element.category == VertexClientPE.category.CHAT && (element.type == "Mod" || element.type == "Special")) {
 						chatMenuLayout.addView(new modButton(element));
 					}
 				});
 
                 vertexclientpechatmenu.setContentView(chatMenuLayout1);
-                vertexclientpechatmenu.setBackgroundDrawable(backgroundSpecial(true));
+                vertexclientpechatmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
                 vertexclientpechatmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
                 vertexclientpechatmenu.setHeight(screenHeight / 2 - customHeight);
 				if(menuAnimationsSetting == "on") {
@@ -6500,145 +6500,19 @@ VertexClientPE.showMiscMenu = function() {
                 }));
 
                 VertexClientPE.modules.forEach(function(element, index, array) {
-					if(VertexClientPE.modules[index].category == VertexClientPE.category.MISC && (VertexClientPE.modules[index].type == "Mod" || VertexClientPE.modules[index].type == "Special")) {
+					if(element.category == VertexClientPE.category.MISC && (element.type == "Mod" || element.type == "Special")) {
 						miscMenuLayout.addView(new modButton(element));
 					}
 				});
 
                 vertexclientpemiscmenu.setContentView(miscMenuLayout1);
-                vertexclientpemiscmenu.setBackgroundDrawable(backgroundSpecial(true));
+                vertexclientpemiscmenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
                 vertexclientpemiscmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
                 vertexclientpemiscmenu.setHeight(screenHeight / 2 - customHeight);
 				if(menuAnimationsSetting == "on") {
 					vertexclientpemiscmenu.setAnimationStyle(android.R.style.Animation_Dialog);
 				}
                 vertexclientpemiscmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, misctpopx, misctpopy);
-
-            } catch(error) {
-                print("Error: " + error);
-				VertexClientPE.showBugReportDialog(error);
-            }
-        }
-    });
-}
-
-var favMenuShown = false;
-
-VertexClientPE.showFavMenu = function() {
-	var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
-    ctx.runOnUiThread(new java.lang.Runnable() {
-        run: function() {
-            try {
-				var display = new android.util.DisplayMetrics();
-				com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
-				
-				VertexClientPE.loadMainSettings();
-
-                vertexclientpefavmenu = new widget.PopupWindow(ctx);
-                var favMenuLayout1 = new LinearLayout(ctx);
-                var favMenuScrollView = new ScrollView(ctx);
-                favMenuLayout = new LinearLayout(ctx);
-				
-                favMenuLayout.setOrientation(1);
-                favMenuLayout1.setOrientation(1);
-				
-				favMenuScrollView.addView(favMenuLayout);
-				
-				var favTitleLayout = new LinearLayout(ctx);
-				favTitleLayout.setOrientation(LinearLayout.HORIZONTAL);
-				
-				var favTitleLayoutLeft = new LinearLayout(ctx);
-				favTitleLayoutLeft.setOrientation(1);
-				favTitleLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.heightPixels / 2.5, display.heightPixels / 20));
-				favTitleLayout.addView(favTitleLayoutLeft);
-				
-				var favTitleLayoutRight = new LinearLayout(ctx);
-				favTitleLayoutRight.setOrientation(1);
-				favTitleLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.heightPixels / 2 - display.heightPixels / 2.5, display.heightPixels / 20));
-				favTitleLayout.addView(favTitleLayoutRight);
-				
-				if(themeSetting == "green") {
-					var favTitle = greenSubTitle("Favourite", true);
-				}if(themeSetting == "red") {
-					var favTitle = redSubTitle("Favourite", true);
-				}if(themeSetting == "blue") {
-					var favTitle = blueSubTitle("Favourite", true);
-				}if(themeSetting == "purple") {
-					var favTitle = purpleSubTitle("Favourite", true);
-				}
-				favTitle.setAlpha(0.54);
-				favTitle.setGravity(android.view.Gravity.CENTER);
-				favTitle.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2.5, display.heightPixels / 20));
-				favTitleLayoutLeft.addView(favTitle);
-				
-				var favArrow = clientButton("*");
-				favArrow.setAlpha(0.54);
-				favArrow.setGravity(android.view.Gravity.CENTER);
-				favArrow.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2 - display.heightPixels / 2.5, display.heightPixels / 20));
-				favTitleLayoutRight.addView(favArrow);
-				
-				favMenuLayout1.addView(favTitleLayout);
-				
-				if(favMenuShown == true) {
-					favArrow.setText("\u25B3");
-					favMenuLayout1.addView(favMenuScrollView);
-				}else if(favMenuShown == false) {
-					favArrow.setText("\u25BD");
-				}
-				
-				var favText = clientTextView("Not available yet!", true);
-
-				favArrow.setOnClickListener(new android.view.View.OnClickListener() {
-                    onClick: function(viewarg) {
-						if(favMenuShown == true) {
-							favMenuLayout1.removeView(favMenuScrollView);
-							favArrow.setText("\u25BD");
-							favMenuShown = false;
-						}else if(favMenuShown == false) {
-							favMenuLayout1.addView(favMenuScrollView);
-							favArrow.setText("\u25B3");
-							favMenuShown = true;
-						}
-                    }
-                });
-                favTitle.setOnLongClickListener(new android.view.View.OnLongClickListener() {
-                    onLongClick: function(v, t) {
-                        favdown = true;
-                        VertexClientPE.toast("Now you can move the menu!");
-                        return true;
-                    }
-                });
-                favTitle.setOnTouchListener(new android.view.View.OnTouchListener({
-                    onTouch: function(v, e) {
-                        if(!favdown) {
-                            favmX = e.getX()
-                            favmY = e.getY()
-                        }
-                        if(favdown) {
-                            var a = e.getAction()
-                            if(a == 2) {
-                                var X = parseInt(e.getX() - favmX) * -1 / 10;
-                                var Y = parseInt(e.getY() - favmY) * -1 / 10;
-                                favtpopx = favtpopx + X;
-                                favtpopy = favtpopy + Y;
-                                vertexclientpefavmenu.update(parseInt(favtpopx), parseInt(favtpopy), -1, -1);
-                            }
-                            if(a == 1) favdown = false;
-                        }
-                        return false;
-                    }
-                }));
-
-                favMenuLayout.addView(favText);
-
-                vertexclientpefavmenu.setContentView(favMenuLayout1);
-                vertexclientpefavmenu.setBackgroundDrawable(backgroundSpecial(true));
-                vertexclientpefavmenu.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
-                vertexclientpefavmenu.setHeight(screenHeight / 2 - customHeight);
-				if(menuAnimationsSetting == "on") {
-					vertexclientpefavmenu.setAnimationStyle(android.R.style.Animation_Dialog);
-				}
-                vertexclientpefavmenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.BOTTOM | android.view.Gravity.RIGHT, favtpopx, favtpopy);
 
             } catch(error) {
                 print("Error: " + error);
