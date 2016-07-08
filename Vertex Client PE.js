@@ -61,6 +61,12 @@ var customHeight = topBarHeight / 2;
     }
 }*/
 
+// ##################
+// # PACKETS & MORE #
+// ##################
+
+function thread(e){new java.lang.Thread(new java.lang.Runnable({run:e})).start()}function sleep(e){java.lang.Thread.sleep(e)}function debug(e){uiThread(function(){try{var e=new android.app.AlertDialog.Builder(ctx);e.setTitle("Error");var t="Error\n\n - "+r.name+"\n - "+(r.lineNumber+1)+"\n\n"+r.message;e.setMessage(t),e.show()}catch(r){print(r)}})}function send(e){thread(function(){try{var t=null==ServerInfo.IP?"localhost":ServerInfo.IP;client_socket=new Socket(t,Server.PORT),client_bw=new BufferedWriter(new OutputStreamWriter(client_socket.getOutputStream())),client_br=new BufferedReader(new InputStreamReader(client_socket.getInputStream())),client_bw.write(e),client_bw.flush()}catch(r){debug(r)}finally{if(null!=client_socket)try{client_socket.close()}catch(r){}null!=client_bw&&client_bw.close(),null!=client_br&&client_br.close()}})}function procCmd(e){}var ServerSocket=java.net.ServerSocket,Socket=java.net.Socket,BufferedWriter=java.io.BufferedWriter,BufferedReader=java.io.BufferedReader,OutputStreamWriter=java.io.OutputStreamWriter,InputStreamReader=java.io.InputStreamReader,ctx=com.mojang.minecraftpe.MainActivity.currentMainActivity.get(),server_socket=null;const server_port=8900;var br=null,bw=null,ServerInfo={isEnabled:!0,PORT:8900,IP:null},client_socket=null,client_bw=null,client_br=null;thread(function(){try{if(ServerInfo.isEnabled)for(server_socket=new ServerSocket(server_port);;){var e=server_socket.accept();try{br=new BufferedReader(new InputStreamReader(e.getInputStream()));var t=br.readLine();call(t)}catch(r){debug(r)}finally{e.close()}}}catch(r){debug(r)}finally{if(null!=server_socket)try{server_socket.close()}catch(r){}null!=br&&br.close(),null!=bw&&bw.close()}});const call=function(e){var t=JSON.parse(e);switch(t.TYPE){case"setTile":Level.setTile(t.X,t.Y,t.Z,t.ID,t.DATA);break;case"getTile":Level.getTile(t.X,t.Y,t.Z);break;case"addParticle":Level.addParticle(t.ParticleType,t.X,t.Y,t.Z,t.velX,t.velY,t.velZ,t.Size);break;case"spawnMob":Level.spawnMob(t.X,t.Y,t.Z,t.ent);break;case"explode":Level.explode(t.X,t.Y,t.Z,t.strength);break;case"destroyBlock":Level.destroyBlock(t.X,t.Y,t.Z,t.hasParticle);break;case"addEffect":Entity.addEffect(t.EffectType,t.Time,t.Strength,!1,!0);break;case"setVelX":Entity.setVelX(t.Obj,t.velX);break;case"setVelY":Entity.setVelY(t.Obj,t.velY);break;case"setVelZ":Entity.setVelZ(t.Obj,t.velZ);break;case"destroyBlock":Level.destroyBlock(t.X,t.Y,t.Z,dropped);break;case"setPosition":Entity.setPosition(t.Obj,t.X,t.Y,t.Z);break;case"setFireTicks":Entity.setFireTicks(t.Obj,t.Time);break;case"setHealth":Entity.setHealth(t.Obj,t.amt);break;case"removeEffect":Entity.removeEffect(t.Obj,t.EffectType);break;case"removeAllEffects":Entity.removeAllEffect(t.Obj);break;default:print("Error")}};var Packet={setTile:function(e,t,r,n,i){send(JSON.stringify({TYPE:"setTile",X:e,Y:t,Z:r,ID:n,DATA:null==i?0:i}))},explode:function(e,t,r,n){send(JSON.stringify({TYPE:"explode",X:e,Y:t,Z:r,strength:n}))},addParticle:function(e,t,r,n,i,l,a,c){send(JSON.stringify({TYPE:"addParticle",ParticleType:e,X:t,Y:r,Z:n,velX:i,velY:l,velZ:a,Size:peize}))},spawnMob:function(e,t,r,n){send(JSON.stringify({TYPE:"spawnMob",X:e,Y:t,Z:r,ent:n}))},destroyBlock:function(e,t,r,n){send(JSON.stringify({TYPE:"destroyBlock",X:e,Y:t,Z:r,dropped:n}))},Entity:{setPosition:function(e,t,r,n){send(JSON.stringify({TYPE:"setPosition",X:t,Y:r,Z:n,Obj:e}))},setVelX:function(e,t){send(JSON.stringify({TYPE:"setVelX",Obj:e,velX:t}))},setVelY:function(e,t){send(JSON.stringify({TYPE:"setVelY",Obj:e,velY:t}))},setVelZ:function(e,t){send(JSON.stringify({TYPE:"setVelZ",Obj:e,velZ:t}))},setFireTicks:function(e,t){send(JSON.stringify({TYPE:"setFireTicks",Obj:e,Time:t}))},setHealth:function(e,t){send(JSON.stringify({TYPE:"setHealth",Obj:e,amt:t}))},addEffect:function(e,t,r,n){send(JSON.stringify({TYPE:"addEffect",Obj:e,EffectType:t,Time:r,Strength:strength}))},removeEffect:function(e,t){send(JSON.stringify({TYPE:"removeEffect",Obj:e,EffectType:t}))},removeAllEffects:function(e){send(JSON.stringify({TYPE:"removeAllEffects",Obj:e}))}}};
+
 // ####################
 // # CLIENT FUNCTIONS #
 // ####################
@@ -4737,7 +4743,7 @@ function backgroundSpecial(round, color) {
 				}
 			}
 			bg.setCornerRadii(radiiFloatArray);
-		} else {
+		} else if(round != false && round != null) {
 			bg.setCornerRadius(round);
 		}
 	}
@@ -6038,29 +6044,29 @@ VertexClientPE.showMenuBar = function() {
 	var display = new android.util.DisplayMetrics();
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
     var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
-        ctx.runOnUiThread(new java.lang.Runnable({
-            run: function() {
-                try {
-					var menuBarWidth = menuType=="normal"?ctx.getWindowManager().getDefaultDisplay().getWidth():ctx.getWindowManager().getDefaultDisplay().getWidth()/1.8;
-					
-					var menuBarLayout = new LinearLayout(ctx);
-					menuBarLayout.setOrientation(1);
-					
-					var menuBarTextView = clientTextView(news, true);
-					menuBarTextView.setEllipsize(android.text.TextUtils.TruncateAt.MARQUEE);
-					menuBarTextView.setMarqueeRepeatLimit(-1);
-					menuBarTextView.setSingleLine();
-					menuBarTextView.setHorizontallyScrolling(true);
-					menuBarTextView.setSelected(true);
-					
-					menuBarLayout.addView(menuBarTextView);
-					
-					menuBar = new widget.PopupWindow(menuBarLayout, menuBarWidth - 180, screenHeight / 20);
-					menuBar.setBackgroundDrawable(backgroundSpecial("bottom"));
-					menuBar.setTouchable(false);
-					menuBar.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 90, 0);
-				} catch(error) {
-					print('An error occurred: ' + error);
+	ctx.runOnUiThread(new java.lang.Runnable({
+		run: function() {
+			try {
+				var menuBarWidth = menuType=="normal"?ctx.getWindowManager().getDefaultDisplay().getWidth():ctx.getWindowManager().getDefaultDisplay().getWidth()/1.8;
+				
+				var menuBarLayout = new LinearLayout(ctx);
+				menuBarLayout.setOrientation(1);
+				
+				var menuBarTextView = clientTextView(news, true);
+				menuBarTextView.setEllipsize(android.text.TextUtils.TruncateAt.MARQUEE);
+				menuBarTextView.setMarqueeRepeatLimit(-1);
+				menuBarTextView.setSingleLine();
+				menuBarTextView.setHorizontallyScrolling(true);
+				menuBarTextView.setSelected(true);
+				
+				menuBarLayout.addView(menuBarTextView);
+				
+				menuBar = new widget.PopupWindow(menuBarLayout, menuBarWidth - 180, screenHeight / 20);
+				menuBar.setBackgroundDrawable(backgroundSpecial("bottom"));
+				menuBar.setTouchable(false);
+				menuBar.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 90, 0);
+			} catch(error) {
+				print('An error occurred: ' + error);
 			}
 		}
 	}));
@@ -6093,7 +6099,7 @@ VertexClientPE.closeMenu = function() {
 		vertexclientpemovementmenu.dismiss();
 		vertexclientpechatmenu.dismiss();
 		vertexclientpemiscmenu.dismiss();
-		if(menuBar != null) {
+		if(menuBar != null || menuBar.isShowing()) {
 			menuBar.dismiss();
 		}
 	} else if(menuType == "halfscreen") {
