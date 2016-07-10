@@ -1797,6 +1797,39 @@ var remoteView = {
 	}
 }
 
+var antiAFK = {
+	name: "AntiAFK",
+	desc: "Makes the player shock, rotate and walk around to prevent you from getting disconnected.",
+	category: VertexClientPE.category.MISC,
+	type: "Mod",
+	state: false,
+	timer: 0,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onTick: function() {
+		if(this.timer < 3) {
+			this.timer += 0.05;
+		} else if(this.timer >= 3 && this.timer < 6) {
+			toDirectionalVector(playerDir, (getYaw() + 90) * DEG_TO_RAD, getPitch() * DEG_TO_RAD * -1);
+			var player = getPlayerEnt();
+			var yaw = Math.floor(Entity.getYaw(player));
+			var pitch = Math.floor(Entity.getPitch(player));
+			Entity.setRot(player, yaw + 90, pitch);
+			setVelX(player, playerWalkSpeed * playerDir[0]);
+			setVelZ(player, playerWalkSpeed * playerDir[2]);
+		} else if(this.timer == 6) {
+			var player = getPlayerEnt();
+			setVelX(player, 0);
+			setVelZ(player, 0);
+			this.timer = 0;
+		}
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(arrowGun);
 VertexClientPE.registerModule(autoSword);
@@ -1846,6 +1879,7 @@ VertexClientPE.registerModule(homeCommand);
 //MISC
 VertexClientPE.registerModule(panic);
 VertexClientPE.registerModule(switchGamemode);
+VertexClientPE.registerModule(antiAFK);
 VertexClientPE.registerModule(autoSwitch);
 VertexClientPE.registerModule(chestTracers);
 VertexClientPE.registerModule(coordsDisplay);
