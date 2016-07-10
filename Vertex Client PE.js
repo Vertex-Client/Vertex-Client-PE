@@ -2660,64 +2660,6 @@ VertexClientPE.showSignEditorDialog = function() {
 	});
 }
 
-var itemId, amount, data;
-
-VertexClientPE.showItemGiverDialog = function() {
-	ctx.runOnUiThread(new java.lang.Runnable() {
-		run: function() {
-			try {
-				var itemGiverTitle = clientTextView("ItemGiver", true);
-				var btn = clientButton("Add");
-				var btn1 = clientButton("Cancel");
-				var inputBar = new EditText(ctx);
-				var inputBar1 = new EditText(ctx);
-				var inputBar2 = new EditText(ctx);
-				inputBar.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
-				inputBar1.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
-				inputBar2.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
-				var dialogLayout = new LinearLayout(ctx);
-				dialogLayout.setBackgroundDrawable(backgroundGradient());
-				dialogLayout.setOrientation(LinearLayout.VERTICAL);
-				dialogLayout.addView(itemGiverTitle);
-				dialogLayout.addView(inputBar);
-				dialogLayout.addView(inputBar1);
-				dialogLayout.addView(inputBar2);
-				dialogLayout.addView(btn);
-				dialogLayout.addView(btn1);
-				var dialog = new android.app.Dialog(ctx);
-				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
-				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
-				dialog.setContentView(dialogLayout);
-				dialog.setTitle("ItemGiver");
-				inputBar.setHint("ID");
-				inputBar.setTextColor(android.graphics.Color.WHITE);
-				inputBar1.setHint("Amount");
-				inputBar1.setTextColor(android.graphics.Color.WHITE);
-				inputBar2.setHint("Data");
-				inputBar2.setTextColor(android.graphics.Color.WHITE);
-				dialog.show();
-				btn.setOnClickListener(new android.view.View.OnClickListener() {
-					onClick: function(view) {
-						itemId = inputBar.getText();
-						amount = inputBar1.getText();
-						data = inputBar2.getText();
-						Player.addItemInventory(itemId, amount, data);
-						dialog.dismiss();
-					}
-				});
-				btn1.setOnClickListener(new android.view.View.OnClickListener() {
-					onClick: function(view) {
-						dialog.dismiss();
-					}
-				});
-			} catch(e) {
-				print("Error: " + e);
-				VertexClientPE.showBugReportDialog(err);
-			}
-		}
-	});
-}
-
 var reportName;
 
 VertexClientPE.showBugReportDialog = function(exception) {
@@ -2962,6 +2904,155 @@ VertexClientPE.showModDialog = function(mod, btn) {
 						}
 					}
 				});
+				dialog.show();
+				var window = dialog.getWindow();
+				window.setLayout(display.widthPixels, display.heightPixels);
+				closeButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+					}
+				});
+			} catch(e) {
+				print("Error: " + e);
+				VertexClientPE.showBugReportDialog(e);
+			}
+		}
+	});
+}
+
+var itemGiverItems = [];
+
+for(var i = 257; i <= 4096; i++) {
+	if(Item.isValidItem(i)) {
+		itemGiverItems.push({
+			itemId: i
+		});
+	}
+}
+
+var itemName, itemId, amount, data;
+
+VertexClientPE.showItemGiverDialog = function() {
+	ctx.runOnUiThread(new java.lang.Runnable() {
+		run: function() {
+			try {
+				VertexClientPE.loadMainSettings();
+				var itemGiverTitle = clientTextView("ItemGiver", true);
+				var closeButton = clientButton("Close");
+				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
+				var dialogLayoutBase = new LinearLayout(ctx);
+				dialogLayoutBase.setOrientation(1);
+				var dialogLayoutBody = new LinearLayout(ctx);
+				dialogLayoutBody.setOrientation(LinearLayout.HORIZONTAL);
+				var dialogLayoutBodyLeftWrap = new LinearLayout(ctx);
+				dialogLayoutBodyLeftWrap.setOrientation(1);
+				var dialogLayoutBodyLeftScroll = new ScrollView(ctx);
+				dialogLayoutBodyLeftWrap.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels - display.widthPixels / 3, LinearLayout.LayoutParams.WRAP_CONTENT));
+				var dialogLayoutBodyRightWrap = new LinearLayout(ctx);
+				dialogLayoutBodyRightWrap.setOrientation(1);
+				var dialogLayoutBodyRightScroll = new ScrollView(ctx);
+				dialogLayoutBodyRightWrap.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, LinearLayout.LayoutParams.WRAP_CONTENT));
+				var dialogTableLayout = new widget.TableLayout(ctx);
+				var dialogTableRow;
+				var tempButton;
+				var itemNameText = clientTextView("Name: Unknown");
+				var itemIdInput = new EditText(ctx);
+				itemIdInput.setTextColor(android.graphics.Color.WHITE);
+				itemIdInput.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+				itemIdInput.setHint("Id");
+				var itemAmountInput = new EditText(ctx);
+				itemAmountInput.setTextColor(android.graphics.Color.WHITE);
+				itemAmountInput.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+				itemAmountInput.setHint("Amount");
+				var itemDataInput = new EditText(ctx);
+				itemDataInput.setTextColor(android.graphics.Color.WHITE);
+				itemDataInput.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+				itemDataInput.setHint("Data");
+				
+				itemIdInput.addTextChangedListener(new android.text.TextWatcher() {
+					onTextChanged: function() {
+						if(Item.isValidItem(itemIdInput.getText())) {
+							if(Item.getName(itemIdInput.getText()) == null) {
+								itemName = "Unknown";
+							} else {
+								itemName = Item.getName(itemIdInput.getText());
+							}
+							itemNameText.setText("Name: " + itemName);
+						} else {
+							itemNameText.setText("Name: Unknown");
+						}
+					}
+				});
+				
+				var itemGiveButton = clientButton("Give");
+				itemGiveButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(viewArg) {
+						itemId = itemIdInput.getText();
+						amount = itemAmountInput.getText();
+						data = itemDataInput.getText();
+						if(Item.isValidItem(itemId)) {
+							Player.addItemInventory(itemId, amount, data);
+							VertexClientPE.toast("Successfully added item " + itemId);
+						} else {
+							VertexClientPE.toast("Item doesn't exist!");
+						}
+					}
+				});
+				itemGiverItems.forEach(function(element, index, array) {
+					if(index % 2 == 1) {
+						if(!dialogTableRow) {
+							dialogTableRow = new widget.TableRow(ctx);
+						}
+						tempButton = clientButton(Item.getName(element.itemId.toString()));
+						tempButton.setOnClickListener(new android.view.View.OnClickListener() {
+							onClick: function(viewArg) {
+								itemIdInput.setText(element.itemId.toString());
+							}
+						});
+						dialogTableRow.addView(tempButton);
+						dialogTableLayout.addView(dialogTableRow);
+						dialogTableRow = null;
+						tempButton = null;
+					} else {
+						dialogTableRow = new widget.TableRow(ctx);
+						tempButton = clientButton(Item.getName(element.itemId.toString()));
+						tempButton.setOnClickListener(new android.view.View.OnClickListener() {
+							onClick: function(viewArg) {
+								itemIdInput.setText(element.itemId.toString());
+							}
+						});
+						dialogTableRow.addView(tempButton);
+						tempButton = null;
+					}
+				});
+				if(dialogTableRow != null) {
+					dialogTableLayout.addView(dialogTableRow);
+				}
+				var dialogRightLayout = new LinearLayout(ctx);
+				dialogRightLayout.setOrientation(1);
+				
+				dialogRightLayout.addView(itemNameText);
+				dialogRightLayout.addView(itemIdInput);
+				dialogRightLayout.addView(itemAmountInput);
+				dialogRightLayout.addView(itemDataInput);
+				dialogRightLayout.addView(itemGiveButton);
+				dialogRightLayout.addView(clientTextView("\n"));
+				dialogRightLayout.addView(closeButton);
+				dialogLayoutBase.setBackgroundDrawable(backgroundGradient());
+				dialogLayoutBase.addView(itemGiverTitle);
+				dialogLayoutBase.addView(dialogLayoutBody);
+				dialogLayoutBody.addView(dialogLayoutBodyLeftWrap);
+				dialogLayoutBody.addView(dialogLayoutBodyRightWrap);
+				dialogLayoutBodyLeftWrap.addView(dialogLayoutBodyLeftScroll);
+				dialogLayoutBodyRightWrap.addView(dialogLayoutBodyRightScroll);
+				dialogLayoutBodyLeftScroll.addView(dialogTableLayout);
+				dialogLayoutBodyRightScroll.addView(dialogRightLayout);
+				//dialogLayout.addView(dialogTableLayout);
+				var dialog = new android.app.Dialog(ctx);
+				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
+				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				dialog.setContentView(dialogLayoutBase);
+				dialog.setTitle("ItemGiver");
 				dialog.show();
 				var window = dialog.getWindow();
 				window.setLayout(display.widthPixels, display.heightPixels);
