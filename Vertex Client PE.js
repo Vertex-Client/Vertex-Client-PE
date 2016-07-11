@@ -1918,6 +1918,11 @@ function modTick() {
 function attackHook(a, v) {
 	VertexClientPE.modules.forEach(function(element, index, array) {
 		if(element.isStateMod() && element.state && element.onAttack) {
+			if(yesCheatPlusState && element.canBypassYesCheatPlus) {
+				if(!element.canBypassYesCheatPlus()) {
+					return;
+				}
+			}
 			element.onAttack(a, v);
 		}
 	});
@@ -1926,6 +1931,11 @@ function attackHook(a, v) {
 function entityHurtHook(a, v) {
 	VertexClientPE.modules.forEach(function(element, index, array) {
 		if(element.isStateMod() && element.state && element.onHurt) {
+			if(yesCheatPlusState && element.canBypassYesCheatPlus) {
+				if(!element.canBypassYesCheatPlus()) {
+					return;
+				}
+			}
 			element.onHurt(a, v);
 		}
 	});
@@ -1934,6 +1944,11 @@ function entityHurtHook(a, v) {
 function entityAddedHook(entity) {
 	VertexClientPE.modules.forEach(function(element, index, array) {
 		if(element.isStateMod() && element.state && element.onEntityAdded) {
+			if(yesCheatPlusState && element.canBypassYesCheatPlus) {
+				if(!element.canBypassYesCheatPlus()) {
+					return;
+				}
+			}
 			element.onEntityAdded(entity);
 		}
 	});
@@ -1942,6 +1957,11 @@ function entityAddedHook(entity) {
 function useItem(x, y, z, itemId, blockId, side, blockDamage) {
 	VertexClientPE.modules.forEach(function(element, index, array) {
 		if(element.isStateMod() && element.state && element.onUseItem) {
+			if(yesCheatPlusState && element.canBypassYesCheatPlus) {
+				if(!element.canBypassYesCheatPlus()) {
+					return;
+				}
+			}
 			element.onUseItem(x, y, z, itemId, blockId, side, blockDamage);
 		}
 	});
@@ -1950,6 +1970,11 @@ function useItem(x, y, z, itemId, blockId, side, blockDamage) {
 function explodeHook(entity, x, y, z, power, onFire) {
 	VertexClientPE.modules.forEach(function(element, index, array) {
 		if(element.isStateMod() && element.state && element.onExplode) {
+			if(yesCheatPlusState && element.canBypassYesCheatPlus) {
+				if(!element.canBypassYesCheatPlus()) {
+					return;
+				}
+			}
 			element.onExplode(entity, x, y, z, power, onFire);
 		}
 	});
@@ -1958,6 +1983,11 @@ function explodeHook(entity, x, y, z, power, onFire) {
 function projectileHitBlockHook(projectile, blockX, blockY, blockZ, side) {
 	VertexClientPE.modules.forEach(function(element, index, array) {
 		if(element.isStateMod() && element.state && element.onProjectileHitBlock) {
+			if(yesCheatPlusState && element.canBypassYesCheatPlus) {
+				if(!element.canBypassYesCheatPlus()) {
+					return;
+				}
+			}
 			element.onProjectileHitBlock(projectile, blockX, blockY, blockZ, side);
 		}
 	});
@@ -1966,6 +1996,11 @@ function projectileHitBlockHook(projectile, blockX, blockY, blockZ, side) {
 function chatReceiveHook(text, sender) {
 	VertexClientPE.modules.forEach(function(element, index, array) {
 		if(element.isStateMod() && element.state && element.onChatReceive) {
+			if(yesCheatPlusState && element.canBypassYesCheatPlus) {
+				if(!element.canBypassYesCheatPlus()) {
+					return;
+				}
+			}
 			element.onChatReceive(text, sender);
 		}
 	});
@@ -1976,6 +2011,11 @@ function textPacketReceiveHook(type, sender, message) {
 	if(type != 0) {
 		VertexClientPE.modules.forEach(function(element, index, array) {
 			if(element.isStateMod() && element.state && element.onChatReceive) {
+				if(yesCheatPlusState && element.canBypassYesCheatPlus) {
+				if(!element.canBypassYesCheatPlus()) {
+					return;
+				}
+			}
 				element.onChatReceive(message, sender);
 			}
 		});
@@ -1996,6 +2036,11 @@ function chatHook(text) {
 		if(text.charAt(0) != "/") {
 			VertexClientPE.modules.forEach(function(element, index, array) {
 				if(element.isStateMod() && element.state && element.onChat) {
+					if(yesCheatPlusState && element.canBypassYesCheatPlus) {
+						if(!element.canBypassYesCheatPlus()) {
+							return;
+						}
+					}
 					element.onChat(text);
 				}
 			});
@@ -4347,7 +4392,7 @@ function modButton(mod) {
 	}
 	
 	var modButtonName = mod.name;
-	if(mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) modButtonName = "\u1F512 " + mod.name;
+	if(mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) modButtonName = "\uD83D\uDD12 " + mod.name;
 	
 	if(mod.state) {
 		if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
