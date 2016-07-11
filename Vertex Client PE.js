@@ -42,6 +42,33 @@ var topBarHeight = screenHeight / 10;
 
 var customHeight = topBarHeight / 2;
 
+var ScreenType = {
+	start_screen: "start_screen",
+	hud: "hud_screen",
+	ingame: "in_game_play_screen",
+	survival_inv: "survival_inventory_screen",
+	creative_inv: "creative_inventory_screen",
+	pause_screen: "pause_screen",
+	options_screen: "options_screen"
+};
+
+function screenChangeHook(screenName) {
+	if(screenName == ScreenType.hud || screenName == ScreenType.ingame) {
+		if((hacksList == null || !hacksList.isShowing()) && !VertexClientPE.menuIsShowing) {
+			showHacksList();
+		}
+	} else {
+		if(hacksList != null) {
+			var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+			ctx.runOnUiThread(new java.lang.Runnable({
+				run: function() {
+					hacksList.dismiss();
+				}
+			}));
+		}
+	}
+}
+
 /*KeyEvent.Callback.onKeyUp = function(keyCode, event) {
     switch(keyCode) {
         case KeyEvent.KEYCODE_D:
@@ -7230,7 +7257,7 @@ VertexClientPE.specialTick = function() {
 								VertexClientPE.delaySpammer();
 							}
 						}
-                        eval(VertexClientPE.specialTick());
+                        VertexClientPE.specialTick();
                     }
                 }), 1000 * spamDelayTime);
         }
@@ -7240,19 +7267,18 @@ VertexClientPE.specialTick = function() {
 VertexClientPE.secondTick = function() {
 	ctx.runOnUiThread(new java.lang.Runnable({
         run: function() {
-            new android.os.Handler()
-                .postDelayed(new java.lang.Runnable({
-                    run: function() {
-						VertexClientPE.modules.forEach(function(element, index, array) {
-							if(element.isStateMod() && element.state && element.onInterval) {
-								element.onInterval();
-							}
-						});
-                        eval(VertexClientPE.secondTick());
-                    }
-                }), 1000);
+            new android.os.Handler().postDelayed(new java.lang.Runnable({
+				run: function() {
+					VertexClientPE.modules.forEach(function(element, index, array) {
+						if(element.isStateMod() && element.state && element.onInterval) {
+							element.onInterval();
+						}
+					});
+					VertexClientPE.secondTick();
+				}
+			}), 1000);
         }
-    }))
+    }));
 }
 
 VertexClientPE.lsdTick = function() {
