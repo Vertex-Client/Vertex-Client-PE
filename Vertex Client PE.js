@@ -56,6 +56,7 @@ function screenChangeHook(screenName) {
 	if(screenName == ScreenType.hud || screenName == ScreenType.ingame) {
 		if((hacksList == null || !hacksList.isShowing()) && !VertexClientPE.menuIsShowing) {
 			showHacksList();
+			showTabGUI();
 		}
 	} else {
 		if(hacksList != null) {
@@ -63,6 +64,14 @@ function screenChangeHook(screenName) {
 			ctx.runOnUiThread(new java.lang.Runnable({
 				run: function() {
 					hacksList.dismiss();
+				}
+			}));
+		}
+		if(tabGUI != null) {
+			var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+			ctx.runOnUiThread(new java.lang.Runnable({
+				run: function() {
+					tabGUI.dismiss();
 				}
 			}));
 		}
@@ -124,7 +133,7 @@ VertexClientPE.isRemote = false;
 VertexClientPE.playerIsInGame = false;
 
 VertexClientPE.currentVersion = "1.1";
-VertexClientPE.targetVersion = "MCPE v0.14.x alpha";
+VertexClientPE.targetVersion = "MCPE v0.15.x alpha";
 VertexClientPE.latestVersion;
 var latestPocketEditionVersion;
 var news;
@@ -186,6 +195,7 @@ var fancyChatMode = "default";
 var tapNukerRange = 3;
 var menuType = "normal";
 var chestTracersRange = 10;
+var tabGUIModeSetting = "on";
 //---------------------------
 var combatName = "Combat";
 var buildingName = "Building";
@@ -1851,8 +1861,40 @@ var antiAFK = {
 	}
 }
 
+var autoLeave = {
+	name: "AutoLeave",
+	desc: "Makes the player shock, rotate and walk around to prevent you from getting disconnected.",
+	category: VertexClientPE.category.COMBAT,
+	type: "Mod",
+	state: false,
+	timer: 0,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onInterval: function() {
+		/*if(Entity.getHealth(getPlayerEnt()) <= 8 && autoLeaveStage == 0) {
+			autoLeaveStage = 1;
+			if(Launcher.isBlockLauncher()) {
+				net.zhuoweizhang.mcpelauncher.ScriptManager.nativeScreenChooserSetScreen(1);
+			}
+			autoLeaveStage = 2;
+		} else if(autoLeaveStage == 2) {
+			if(Launcher.isBlockLauncher()) {
+				net.zhuoweizhang.mcpelauncher.ScriptManager.nativeLeaveGame(false);
+			}
+		}*/
+		if(Entity.getHealth(getPlayerEnt()) <= 8) {
+			ModPE.restart();
+		}
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(arrowGun);
+VertexClientPE.registerModule(autoLeave);
 VertexClientPE.registerModule(autoSword);
 VertexClientPE.registerModule(bowAimbot);
 VertexClientPE.registerModule(criticals);
@@ -4132,6 +4174,7 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + tapNukerRange.toString());
 	outWrite.append("," + menuType.toString());
 	outWrite.append("," + chestTracersRange.toString());
+	outWrite.append("," + tabGUIModeSetting.toString());
 
     outWrite.close();
 	
@@ -4203,6 +4246,9 @@ VertexClientPE.loadMainSettings = function() {
 	}
 	if(str.toString().split(",")[16] != null && str.toString().split(",")[16] != undefined) {
 		chestTracersRange = str.toString().split(",")[16]; //Here we split text by ","
+	}
+	if(str.toString().split(",")[17] != null && str.toString().split(",")[17] != undefined) {
+		tabGUIModeSetting = str.toString().split(",")[17]; //Here we split text by ","
 	}
     fos.close();
 	VertexClientPE.loadAutoSpammerSettings();
@@ -4413,7 +4459,7 @@ function clientButton(text, desc, color, round) //menu buttons
     return defaultButton;
 }
 
-function modButton(mod) {
+function modButton(mod, buttonOnly) {
 	if(mod.type == null) {
 		mod.type = "Mod";
 	}
@@ -4452,11 +4498,16 @@ function modButton(mod) {
 	}
 	modButtonLayout.addView(modButtonLayoutRight);
 	
-	var defaultClientButton = clientButton(modButtonName, mod.desc, null, "left");
-	if(menuType == "halfscreen") {
-		defaultClientButton.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 2.5, display.heightPixels / 10));
-	} else {
-		defaultClientButton.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.heightPixels / 2.5 - 10, display.heightPixels / 12));
+	var corner = buttonOnly==true?null:"left";
+	var defaultClientButton = clientButton(modButtonName, mod.desc, null, corner);
+	if(buttonOnly == null || !buttonOnly) {
+		if(menuType == "halfscreen") {
+			defaultClientButton.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 2.5, display.heightPixels / 10));
+		} else {
+			defaultClientButton.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.heightPixels / 2.5 - 10, display.heightPixels / 12));
+		}
+	} else if(buttonOnly) {
+		defaultClientButton.setLayoutParams(new android.view.ViewGroup.LayoutParams(ctx.getWindowManager().getDefaultDisplay().getWidth() / 6, (ctx.getWindowManager().getDefaultDisplay().getHeight() / 3) / 5));
 	}
 	defaultClientButton.setAlpha(0.54);
 	defaultClientButton.setEllipsize(android.text.TextUtils.TruncateAt.MARQUEE);
@@ -4516,7 +4567,9 @@ function modButton(mod) {
 		}
 	}));
 	//var _0x9276=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\uD83D\uDD12\x20","\x73\x65\x74\x54\x65\x78\x74"];if(isProFeature&&VertexClientPE[_0x9276[0]]()!=_0x9276[1]){defaultClientButton[_0x9276[3]](_0x9276[2]+mod.name)}
-	modButtonLayoutLeft.addView(defaultClientButton);
+	if(buttonOnly == null || !buttonOnly) {
+		modButtonLayoutLeft.addView(defaultClientButton);
+	}
 	
 	var defaultInfoButton = clientButton("...", mod.name + " settings", null, "right");
 	if(menuType == "halfscreen") {
@@ -4532,7 +4585,11 @@ function modButton(mod) {
 	}));
 	modButtonLayoutRight.addView(defaultInfoButton);
 	
-	return modButtonLayout;
+	if(buttonOnly == null || !buttonOnly) {
+		return modButtonLayout;
+	} else if(buttonOnly) {
+		return defaultClientButton;
+	}
 }
 
 function addonButton(addon) {
@@ -4615,6 +4672,84 @@ function categoryTab(category) {
 	categoryTabLayout.addView(defaultClientButton);
 	
 	return categoryTabLayout;
+}
+
+var currentTabGUICategory;
+
+function tabGUICategoryButton(category, layout, layoutToBeOpened, layoutMain) {
+	var tabGUICategoryButtonLayout = new LinearLayout(ctx);
+	tabGUICategoryButtonLayout.setOrientation(1);
+	
+	var categoryButton = clientButton(VertexClientPE.category.toRealName(category));
+	categoryButton.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (ctx.getWindowManager().getDefaultDisplay().getHeight() / 3) / 5));
+	categoryButton.setOnClickListener(new android.view.View.OnClickListener({
+		onClick: function(viewarg) {
+			if(categoryButton.getCurrentTextColor() != android.graphics.Color.GREEN) {
+				categoryButton.setTextColor(android.graphics.Color.GREEN);
+				categoryButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.BLACK);
+				currentTabGUICategory = category;
+			} else {
+				if(themeSetting == "white") {
+					categoryButton.setTextColor(android.graphics.Color.BLACK);
+				} else {
+					categoryButton.setTextColor(android.graphics.Color.WHITE);
+				}
+				if(themeSetting == "white") {
+					categoryButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.WHITE);
+				} else {
+					categoryButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.BLACK);
+				}
+				currentTabGUICategory = null;
+			}
+			for(var i = 0; i < layout.getChildCount(); i++) {
+				if(layout.getChildAt(i).getChildAt(0) != categoryButton) {
+					layout.getChildAt(i).getChildAt(0).setTextColor(android.graphics.Color.WHITE);
+				}
+			}
+			if(currentTabGUICategory != null) {
+				if(layoutMain.getChildCount() == 1) {
+					layoutMain.addView(layoutToBeOpened);
+					var layoutToBeOpenedScrollView = new ScrollView(ctx);
+					var layoutToBeOpened1 = new LinearLayout(ctx);
+					layoutToBeOpened1.setOrientation(1);
+					layoutToBeOpened.addView(layoutToBeOpenedScrollView);
+					layoutToBeOpenedScrollView.addView(layoutToBeOpened1);
+					VertexClientPE.modules.forEach(function(element, index, array) {
+						if(element.category == category && (element.type == "Mod" || element.type == "Special")) {
+							layoutToBeOpened1.addView(new modButton(element, true));
+						}
+					});
+					//print("Added right layout");
+				} else if(layoutMain.getChildCount() == 2) {
+					//layoutToBeOpened.addView for all modButtons
+					layoutToBeOpened.removeAllViews();
+					var layoutToBeOpenedScrollView = new ScrollView(ctx);
+					var layoutToBeOpened1 = new LinearLayout(ctx);
+					layoutToBeOpened1.setOrientation(1);
+					layoutToBeOpened.addView(layoutToBeOpenedScrollView);
+					layoutToBeOpenedScrollView.addView(layoutToBeOpened1);
+					VertexClientPE.modules.forEach(function(element, index, array) {
+						if(element.category == category && (element.type == "Mod" || element.type == "Special")) {
+							layoutToBeOpened1.addView(new modButton(element, true));
+						}
+					});
+					//print("Updated right layout");
+				}
+			} else {
+				if(layoutMain.getChildCount() == 2) {
+					layoutMain.removeViewAt(1);
+					layoutToBeOpened.removeAllViews();
+					//print("Removed right layout");
+				}
+			}
+		}
+	}));
+	tabGUICategoryButtonLayout.addView(categoryButton);
+	if(currentTabGUICategory == category) {
+		categoryButton.performClick();
+	}
+	
+	return tabGUICategoryButtonLayout;
 }
 
 function accountButton(account, layout) {
@@ -5678,6 +5813,11 @@ VertexClientPE.update = function() {
 							hacksList.dismiss();
 						}
 					}
+					if(tabGUI != null) {
+						if(tabGUI.isShowing()) {
+							tabGUI.dismiss();
+						}
+					}
 					function modTick() {};
 					function useItem() {};
 					function attackHook() {};
@@ -5737,9 +5877,11 @@ function newLevel() {
 	}).start();
 	if(hacksList == null) {
 		showHacksList();
+		showTabGUI();
 	}if(hacksList != null) {
 		if(!hacksList.isShowing()) {
 			showHacksList();
+			showTabGUI();
 		}
 	}
 	if(VertexClientPE.isDevMode()) {
@@ -5758,7 +5900,12 @@ function leaveGame() {
         run: function() {
 			if(hacksList != null) {
 				hacksList.dismiss();
+			}
+			if(GUI != null) {
 				GUI.dismiss();
+			}
+			if(tabGUI != null) {
+				tabGUI.dismiss();
 			}
 			if(topBar != null) {
 				VertexClientPE.closeMenu();
@@ -5792,6 +5939,11 @@ function settingsScreen() {
                 	if(hacksList != null) {
                 		if(hacksList.isShowing()) {
                 			hacksList.dismiss();
+                		}
+                	}
+					if(tabGUI != null) {
+                		if(tabGUI.isShowing()) {
+                			tabGUI.dismiss();
                 		}
                 	}
                     var settingsMenuLayout = new LinearLayout(ctx);
@@ -5833,6 +5985,26 @@ function settingsScreen() {
 							} else if(hacksListModeSetting == "counter"){
 								hacksListModeSetting = "off";
 								hacksListModeSettingButton.setText("Hacks List Mode | Hidden");
+								VertexClientPE.saveMainSettings();
+							}
+						}
+					}));
+					
+					var tabGUIModeSettingButton = clientButton("Hacks List Mode");
+					if(tabGUIModeSetting == "on") {
+						tabGUIModeSettingButton.setText("TabGUI Mode | Shown");
+					} else if(tabGUIModeSetting == "off") {
+						tabGUIModeSettingButton.setText("TabGUI Mode | Hidden");
+					}
+					tabGUIModeSettingButton.setOnClickListener(new android.view.View.OnClickListener({
+						onClick: function(viewarg){
+							if(tabGUIModeSetting == "on") {
+								tabGUIModeSetting = "off";
+								tabGUIModeSettingButton.setText("TabGUI Mode | Hidden");
+								VertexClientPE.saveMainSettings();
+							} else if(tabGUIModeSetting == "off"){
+								tabGUIModeSetting = "on";
+								tabGUIModeSettingButton.setText("TabGUI Mode | Shown");
 								VertexClientPE.saveMainSettings();
 							}
 						}
@@ -6042,11 +6214,11 @@ function settingsScreen() {
 					}));
 					
 					settingsMenuLayout.addView(hacksListModeSettingButton);
+					settingsMenuLayout.addView(tabGUIModeSettingButton);
 					settingsMenuLayout.addView(mainButtonPositionSettingButton);
 					settingsMenuLayout.addView(themeSettingButton);
 					settingsMenuLayout.addView(menuTypeSettingButton);
 					settingsMenuLayout.addView(showNewsSettingButton);
-					
 					settingsMenuLayout.addView(menuAnimationsSettingButton);
 					settingsMenuLayout.addView(playMusicSettingButton);
 					settingsMenuLayout.addView(sizeSettingButton);
@@ -6077,6 +6249,11 @@ function informationScreen() {
                 	if(hacksList != null) {
                 		if(hacksList.isShowing()) {
                 			hacksList.dismiss();
+                		}
+                	}
+					if(tabGUI != null) {
+                		if(tabGUI.isShowing()) {
+                			tabGUI.dismiss();
                 		}
                 	}
 
@@ -6126,6 +6303,11 @@ function addonScreen() {
                 	if(hacksList != null) {
                 		if(hacksList.isShowing()) {
                 			hacksList.dismiss();
+                		}
+                	}
+					if(tabGUI != null) {
+                		if(tabGUI.isShowing()) {
+                			tabGUI.dismiss();
                 		}
                 	}
 
@@ -6213,6 +6395,7 @@ VertexClientPE.showTopBar = function() {
 							VertexClientPE.closeMenu();
 							showMenuButton();
 							showHacksList();
+							showTabGUI();
 						}
 					}));
 					topBarLayoutRight.addView(exitButton);
@@ -7118,6 +7301,9 @@ function showMenuButton() {
 			if(hacksList != null) {
 				hacksList.dismiss();
 			}
+			if(tabGUI != null) {
+				tabGUI.dismiss();
+			}
 			VertexClientPE.showMenu();
 		} else {
 			if(!VertexClientPE.playerIsInGame) {
@@ -7126,6 +7312,7 @@ function showMenuButton() {
 				VertexClientPE.closeMenu();
 				if(!hacksList.isShowing()) {
 					showHacksList();
+					showTabGUI();
 				}
 			}
 		}
@@ -7180,6 +7367,9 @@ function showAccountManagerButton() {
     onClick: function(viewarg){
 	if(hacksList != null) {
 		hacksList.dismiss();
+	}
+	if(tabGUI != null) {
+		tabGUI.dismiss();
 	}
 	GUI.dismiss();
 	accountManagerGUI.dismiss();
@@ -7236,6 +7426,11 @@ VertexClientPE.clientTick = function() {
 							if(hacksList != null) {
 								if(hacksList.isShowing()) {
 									hacksList.dismiss();
+								}
+							}
+							if(tabGUI != null) {
+								if(tabGUI.isShowing()) {
+									tabGUI.dismiss();
 								}
 							}
 						}
@@ -7315,6 +7510,7 @@ function dip2px(dips){
 }
 
 var hacksList;
+var tabGUI;
 var statesTextView;
 var musicTextView;
 
@@ -7441,6 +7637,56 @@ function updateHacksList() {
         }));
 }
 
+function showTabGUI() {
+	if(tabGUI == null || !tabGUI.isShowing()) {
+		var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+		ctx.runOnUiThread(new java.lang.Runnable({
+			run: function() {
+				try {
+					var display = new android.util.DisplayMetrics();
+					com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
+
+					var tabGUILayout = new LinearLayout(ctx);
+					tabGUILayout.setOrientation(LinearLayout.HORIZONTAL);
+					tabGUILayout.setGravity(android.view.Gravity.CENTER_VERTICAL);
+					
+					var tabGUILayoutLeft = new LinearLayout(ctx);
+					tabGUILayoutLeft.setOrientation(1);
+					tabGUILayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(ctx.getWindowManager().getDefaultDisplay().getWidth() / 6, android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
+					tabGUILayout.addView(tabGUILayoutLeft);
+					
+					var tabGUILayoutRight = new LinearLayout(ctx);
+					tabGUILayoutRight.setOrientation(1);
+					tabGUILayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(ctx.getWindowManager().getDefaultDisplay().getWidth() / 6, android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
+					if(currentTabGUICategory != null) {
+						tabGUILayout.addView(tabGUILayoutRight);
+					}
+					
+					/*var logo2 = android.util.Base64.decode(logoImage, 0);
+					logoViewer2 = new widget.ImageView(ctx);
+					logoViewer2.setImageBitmap(android.graphics.BitmapFactory.decodeByteArray(logo2, 0, logo2.length));
+					logoViewer2.setLayoutParams(new LinearLayout.LayoutParams(ctx.getWindowManager().getDefaultDisplay().getWidth() / 4, ctx.getWindowManager().getDefaultDisplay().getWidth() / 16));*/
+
+					var categories = [VertexClientPE.category.COMBAT, VertexClientPE.category.BUILDING, VertexClientPE.category.MOVEMENT, VertexClientPE.category.CHAT, VertexClientPE.category.MISC];
+					
+					categories.forEach(function (element, index, array) {
+						tabGUILayoutLeft.addView(new tabGUICategoryButton(element, tabGUILayoutLeft, tabGUILayoutRight, tabGUILayout));
+					});
+					
+					tabGUI = new widget.PopupWindow(tabGUILayout, LinearLayout.LayoutParams.WRAP_CONTENT, ctx.getWindowManager().getDefaultDisplay().getHeight() / 2 - 100);
+					tabGUI.setBackgroundDrawable(/*backgroundGradient(true)*/new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+					if(tabGUIModeSetting != "off") {
+						tabGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 100);
+					}
+				} catch(error) {
+					print('An error occurred: ' + error);
+					VertexClientPE.showBugReportDialog(error);
+				}
+			}
+		}));
+	}
+}
+
 var itemSlot = 0;
 var hasPushed = 0;
 var isChestOpen = false;
@@ -7546,6 +7792,7 @@ function exit() {
 	        //vertexclientpefavmenu.dismiss(); //Close
 			showMenuButton();
 			showHacksList();
+			showTabGUI();
 	    }
     }));
     xLayout.addView(xButton);
@@ -7619,6 +7866,7 @@ function exitSettings(){
     settingsMenu.dismiss(); //Close
 	showMenuButton();
 	showHacksList();
+	showTabGUI();
     }
     }));
     xSettingsLayout.addView(xSettingsButton);
@@ -7648,6 +7896,7 @@ function exitInformation(){
     informationMenu.dismiss(); //Close
 	showMenuButton();
 	showHacksList();
+	showTabGUI();
     }
     }));
     xInformationLayout.addView(xInformationButton);
@@ -7677,6 +7926,7 @@ function exitAddon(){
     addonMenu.dismiss(); //Close
 	showMenuButton();
 	showHacksList();
+	showTabGUI();
     }
     }));
     xAddonLayout.addView(xAddonButton);
