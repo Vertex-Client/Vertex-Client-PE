@@ -4680,7 +4680,7 @@ function tabGUICategoryButton(category, layout, layoutToBeOpened, layoutMain) {
 	var tabGUICategoryButtonLayout = new LinearLayout(ctx);
 	tabGUICategoryButtonLayout.setOrientation(1);
 	
-	var categoryButton = clientButton(VertexClientPE.category.toRealName(category));
+	var categoryButton = clientButton(VertexClientPE.category.toName(category));
 	categoryButton.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (ctx.getWindowManager().getDefaultDisplay().getHeight() / 3) / 5));
 	categoryButton.setOnClickListener(new android.view.View.OnClickListener({
 		onClick: function(viewarg) {
