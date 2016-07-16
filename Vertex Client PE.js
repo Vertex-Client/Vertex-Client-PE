@@ -129,6 +129,19 @@ VertexClientPE.menuIsShowing = false;
 
 var _0x199a=["\x69\x73\x50\x72\x6F","\x67\x65\x74\x50\x72\x65\x66\x65\x72\x65\x6E\x63\x65\x73","\x56\x65\x72\x74\x65\x78\x43\x6C\x69\x65\x6E\x74\x50\x45\x2E\x69\x73\x50\x72\x6F","\x67\x65\x74\x53\x74\x72\x69\x6E\x67","\x73\x65\x74\x49\x73\x50\x72\x6F","\x54\x68\x69\x73\x49\x73\x53\x70\x61\x72\x74\x61"];VertexClientPE[_0x199a[0]]=function(){var _0xf36dx1=ctx[_0x199a[1]](ctx.MODE_PRIVATE);return _0xf36dx1[_0x199a[3]](_0x199a[2],null)};VertexClientPE[_0x199a[4]]=function(){var _0xf36dx2=_0x199a[5];return _0xf36dx2}
 
+var _0xda74=["\x68\x61\x73\x45\x61\x72\x6E\x65\x64\x50\x72\x6F\x56\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x67\x65\x74\x50\x72\x65\x66\x65\x72\x65\x6E\x63\x65\x73","\x56\x65\x72\x74\x65\x78\x43\x6C\x69\x65\x6E\x74\x50\x45\x2E\x68\x61\x73\x45\x61\x72\x6E\x65\x64\x50\x72\x6F\x56\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x67\x65\x74\x53\x74\x72\x69\x6E\x67","\x74\x72\x75\x65"];VertexClientPE[_0xda74[0]]= function(){var _0xdb22x1=ctx[_0xda74[1]](ctx.MODE_PRIVATE);if(_0xdb22x1[_0xda74[3]](_0xda74[2],null)== _0xda74[4]){return true}else {return false}}
+
+VertexClientPE.giveProVertexCash = function() {
+	if(!VertexClientPE.hasEarnedProVertexCash()) {
+		var sharedPref = ctx.getPreferences(ctx.MODE_PRIVATE);
+		var editor = sharedPref.edit();
+		var currentCash = sharedPref.getInt("VertexClientPE.vertexCash", 0);
+		editor.putInt("VertexClientPE.vertexCash", currentCash + 500);
+		editor.putString("VertexClientPE.hasEarnedProVertexCash", "true");
+		editor.commit();
+	}
+}
+
 VertexClientPE.isRemote = false;
 VertexClientPE.playerIsInGame = false;
 
@@ -301,7 +314,7 @@ VertexClientPE.modules = [];
 VertexClientPE.addons = [];
 
 VertexClientPE.loadAddons = function() {
-	if(Launcher.isBlockLauncher() || Launcher.isMcpeMaster()) {
+	if(Launcher.isBlockLauncher() || Launcher.isToolbox()) {
 		net.zhuoweizhang.mcpelauncher.ScriptManager.callScriptMethod("addonLoadHook", []);
 	}
 	if(Launcher.isMcpeMaster()) {
@@ -1414,12 +1427,12 @@ var criticals = {
 		this.state = !this.state;
 	},
 	onAttack: function(a, v) {
-		if(Launcher.isBlockLauncher() || Launcher.isToolbox()) {
+		//if(Launcher.isBlockLauncher() || Launcher.isToolbox()) {
 			Entity.setVelY(getPlayerEnt(), 0.64);
-		}
+		/*}
 		if(Launcher.isMcpeMaster()) {
 			com.mcbox.pesdk.launcher.playerJump();
-		}
+		}/
 	}
 }
 
@@ -5976,6 +5989,11 @@ function newLevel() {
 	autoLeaveStage = 0;
 	VertexClientPE.playerIsInGame = true;
 	VertexClientPE.loadMainSettings();
+	if(VertexClientPE.isPro()) {
+		if(!VertexClientPE.hasEarnedProVertexCash()) {
+			//VertexClientPE.giveProVertexCash();
+		}
+	}
 	if(!hasLoadedAddons) {
 		hasLoadedAddons = true;
 		VertexClientPE.loadAddons();
@@ -6465,6 +6483,57 @@ function addonScreen() {
                     addonMenu = new widget.PopupWindow(addonMenuLayout1, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
                     addonMenu.setBackgroundDrawable(backgroundGradient());
                     addonMenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
+                } catch(error) {
+                    print('An error occurred: ' + error);
+                }
+            }
+        }));
+}
+
+function shopScreen() {
+	var display = new android.util.DisplayMetrics();
+	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
+    var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+        ctx.runOnUiThread(new java.lang.Runnable({
+            run: function() {
+                try {
+                	if(GUI != null) {
+                		if(GUI.isShowing()) {
+                			GUI.dismiss();
+                		}
+                	}
+                	if(hacksList != null) {
+                		if(hacksList.isShowing()) {
+                			hacksList.dismiss();
+                		}
+                	}
+					if(tabGUI != null) {
+                		if(tabGUI.isShowing()) {
+                			tabGUI.dismiss();
+                		}
+                	}
+
+					var shopMenuLayout = new LinearLayout(ctx);
+                    shopMenuLayout.setOrientation(1);
+                    shopMenuLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					
+					var shopMenuLayoutScroll = new ScrollView(ctx);
+					
+					var shopMenuLayout1 = new LinearLayout(ctx);
+                    shopMenuLayout1.setOrientation(1);
+                    shopMenuLayout1.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					
+					shopMenuLayoutScroll.addView(shopMenuLayout);
+					shopMenuLayout1.addView(shopMenuLayoutScroll);
+					
+					var shopTitle = clientTextView("Shop", true);
+					shopTitle.setTextSize(25);
+					shopTitle.setGravity(android.view.Gravity.CENTER);
+					shopMenuLayout.addView(shopTitle);
+
+                    shopMenu = new widget.PopupWindow(shopMenuLayout1, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
+                    shopMenu.setBackgroundDrawable(backgroundGradient());
+                    shopMenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
                 } catch(error) {
                     print('An error occurred: ' + error);
                 }
