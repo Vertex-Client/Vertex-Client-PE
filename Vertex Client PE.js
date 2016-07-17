@@ -1432,7 +1432,7 @@ var criticals = {
 		/*}
 		if(Launcher.isMcpeMaster()) {
 			com.mcbox.pesdk.launcher.playerJump();
-		}/
+		}*/
 	}
 }
 
@@ -3973,6 +3973,21 @@ VertexClientPE.healthTags = function() {
             if(Entity.getEntityTypeId(mobs[i]) == 22) {
                 Entity.setNameTag(mobs[i], nameColor + "Ocelot " + healthColor + Entity.getHealth(mobs[i]) + "/10");
             }
+			if(Entity.getEntityTypeId(mobs[i]) == 23) {
+                Entity.setNameTag(mobs[i], nameColor + "Horse " + healthColor + Entity.getHealth(mobs[i]) + "/10");
+            }
+			if(Entity.getEntityTypeId(mobs[i]) == 24) {
+                Entity.setNameTag(mobs[i], nameColor + "Donkey " + healthColor + Entity.getHealth(mobs[i]) + "/10"); //TODO: CHANGE HORSE MAX HEALTH
+            }
+			if(Entity.getEntityTypeId(mobs[i]) == 25) {
+                Entity.setNameTag(mobs[i], nameColor + "Mule " + healthColor + Entity.getHealth(mobs[i]) + "/10");
+            }
+			if(Entity.getEntityTypeId(mobs[i]) == 26) {
+                Entity.setNameTag(mobs[i], nameColor + "Skeleton Horse " + healthColor + Entity.getHealth(mobs[i]) + "/10");
+            }
+			if(Entity.getEntityTypeId(mobs[i]) == 27) {
+                Entity.setNameTag(mobs[i], nameColor + "Zombie Horse " + healthColor + Entity.getHealth(mobs[i]) + "/10");
+            }
             if(Entity.getEntityTypeId(mobs[i]) == 32) {
                 Entity.setNameTag(mobs[i], nameColor + "Zombie " + healthColor + Entity.getHealth(mobs[i]) + "/20");
             }
@@ -5872,6 +5887,7 @@ VertexClientPE.setup = function() {
 		setupDone();
 	} else {
 		VertexClientPE.showSplashScreen();
+		tts.speak("Welcome back " + ModPE.getPlayerName() + "! Thanks for using Vertex Client PE!", android.speech.tts.TextToSpeech.QUEUE_FLUSH, null);
 	}
 }
 
