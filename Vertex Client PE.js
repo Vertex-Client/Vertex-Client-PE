@@ -393,9 +393,17 @@ var panic = {
 				element.onToggle();
 			}
 		});
-		if(topBar != null && topBar.isShowing()) {
-			VertexClientPE.closeMenu();
-			VertexClientPE.showMenu();
+		if(menuBar != null) {
+			if(menuBar.isShowing()) {
+				VertexClientPE.closeMenu();
+				VertexClientPE.showMenu();
+			}
+		}
+		if(tabGUI != null) {
+			if(tabGUI.isShowing()) {
+				tabGUI.dismiss();
+				showTabGUI();
+			}
 		}
 	}
 }
@@ -412,9 +420,17 @@ var yesCheatPlus = {
 	onToggle: function() {
 		this.state = !this.state;
 		yesCheatPlusState = this.state;
-		if(topBar != null && topBar.isShowing()) {
-			VertexClientPE.closeMenu();
-			VertexClientPE.showMenu();
+		if(menuBar != null) {
+			if(menuBar.isShowing()) {
+				VertexClientPE.closeMenu();
+				VertexClientPE.showMenu();
+			}
+		}
+		if(tabGUI != null) {
+			if(tabGUI.isShowing()) {
+				tabGUI.dismiss();
+				showTabGUI();
+			}
 		}
 	}
 }
