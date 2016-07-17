@@ -131,11 +131,13 @@ var _0x199a=["\x69\x73\x50\x72\x6F","\x67\x65\x74\x50\x72\x65\x66\x65\x72\x65\x6
 
 var _0xda74=["\x68\x61\x73\x45\x61\x72\x6E\x65\x64\x50\x72\x6F\x56\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x67\x65\x74\x50\x72\x65\x66\x65\x72\x65\x6E\x63\x65\x73","\x56\x65\x72\x74\x65\x78\x43\x6C\x69\x65\x6E\x74\x50\x45\x2E\x68\x61\x73\x45\x61\x72\x6E\x65\x64\x50\x72\x6F\x56\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x67\x65\x74\x53\x74\x72\x69\x6E\x67","\x74\x72\x75\x65"];VertexClientPE[_0xda74[0]]= function(){var _0xdb22x1=ctx[_0xda74[1]](ctx.MODE_PRIVATE);if(_0xdb22x1[_0xda74[3]](_0xda74[2],null)== _0xda74[4]){return true}else {return false}}
 
+var _0xb21b=["\x67\x65\x74\x56\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x67\x65\x74\x50\x72\x65\x66\x65\x72\x65\x6E\x63\x65\x73","\x56\x65\x72\x74\x65\x78\x43\x6C\x69\x65\x6E\x74\x50\x45\x2E\x76\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x67\x65\x74\x49\x6E\x74"];VertexClientPE[_0xb21b[0]]= function(){var _0x602dx1=ctx[_0xb21b[1]](ctx.MODE_PRIVATE);var _0x602dx2=_0x602dx1[_0xb21b[3]](_0xb21b[2],0);return _0x602dx2}
+
 VertexClientPE.giveProVertexCash = function() {
 	if(!VertexClientPE.hasEarnedProVertexCash()) {
 		var sharedPref = ctx.getPreferences(ctx.MODE_PRIVATE);
 		var editor = sharedPref.edit();
-		var currentCash = sharedPref.getInt("VertexClientPE.vertexCash", 0);
+		var currentCash = VertexClientPE.getVertexCash();
 		editor.putInt("VertexClientPE.vertexCash", currentCash + 500);
 		editor.putString("VertexClientPE.hasEarnedProVertexCash", "true");
 		editor.commit();
@@ -3010,6 +3012,7 @@ VertexClientPE.showMoreDialog = function() {
 				var settingsButton = clientButton("Settings");
 				var addonsButton = clientButton("Addons");
 				var webBrowserButton = clientButton("Webbrowser");
+				var shopButton = clientButton("Shop");
 				var informationButton = clientButton("Information");
 				var kitsButton = clientButton("Kits");
 				var newLineText = new widget.TextView(ctx);
@@ -3022,6 +3025,7 @@ VertexClientPE.showMoreDialog = function() {
 				dialogLayout.addView(settingsButton);
 				dialogLayout.addView(addonsButton);
 				dialogLayout.addView(webBrowserButton);
+				dialogLayout.addView(shopButton);
 				dialogLayout.addView(informationButton);
 				//dialogLayout.addView(kitsButton);
 				dialogLayout.addView(newLineText);
@@ -3054,6 +3058,14 @@ VertexClientPE.showMoreDialog = function() {
 						VertexClientPE.closeMenu();
 						webBrowserScreen();
 						overlayWebBrowser();
+					}
+				});
+				shopButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+						VertexClientPE.closeMenu();
+						shopScreen();
+						exitShop();
 					}
 				});
 				informationButton.setOnClickListener(new android.view.View.OnClickListener() {
@@ -6562,6 +6574,10 @@ function shopScreen() {
 					shopTitle.setTextSize(25);
 					shopTitle.setGravity(android.view.Gravity.CENTER);
 					shopMenuLayout.addView(shopTitle);
+					
+					var shopCashText = clientTextView("\u26C1 " + VertexClientPE.getVertexCash());
+					shopCashText.setGravity(android.view.Gravity.CENTER);
+					shopMenuLayout.addView(shopCashText);
 
                     shopMenu = new widget.PopupWindow(shopMenuLayout1, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
                     shopMenu.setBackgroundDrawable(backgroundGradient());
@@ -7705,7 +7721,7 @@ VertexClientPE.clientTick = function() {
                 .postDelayed(new java.lang.Runnable({
                     run: function() {
 						try{
-							if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false)  && (menu == null || menu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false) && (webBrowserMenu == null || webBrowserMenu.isShowing() == false)) {
+							if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false)  && (menu == null || menu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false) && (webBrowserMenu == null || webBrowserMenu.isShowing() == false) && (shopMenu == null || shopMenu.isShowing() == false)) {
 								VertexClientPE.isRemote = true;
 								if(Launcher.isBlockLauncher()) {
 									net.zhuoweizhang.mcpelauncher.ScriptManager.isRemote = true;
@@ -7725,7 +7741,7 @@ VertexClientPE.clientTick = function() {
 							print("Use BlockLauncher v1.12.2 or above!");
 							ModPE.log(e);
 						}
-						if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (menu == null || menu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false) && (webBrowserMenu == null || webBrowserMenu.isShowing() == false)) {
+						if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (menu == null || menu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false) && (webBrowserMenu == null || webBrowserMenu.isShowing() == false) && (shopMenu == null || shopMenu.isShowing() == false)) {
 							VertexClientPE.isRemote = true;
 							showMenuButton();
 						}
@@ -8303,6 +8319,38 @@ function overlayWebBrowser() {
 				exitWebBrowserUI = new widget.PopupWindow(xWebBrowserLayout, dip2px(40), dip2px(40));
 				exitWebBrowserUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
 				exitWebBrowserUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
+			} catch(exception) {
+				print(exception);
+				VertexClientPE.showBugReportDialog(exception);
+			}
+		}
+	}));
+}
+
+function exitShop() {
+    var ctxe = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+    ctxe.runOnUiThread(new java.lang.Runnable({
+		run: function() {
+			try {
+				var xShopLayout = new LinearLayout(ctxe);
+				var xShopButton = new Button(ctxe);
+				xShopButton.setText('X');//Text
+				xShopButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
+				xShopButton.setTextColor(android.graphics.Color.WHITE);
+				xShopButton.setOnClickListener(new android.view.View.OnClickListener({
+					onClick: function(viewarg){
+						exitShopUI.dismiss(); //Close
+						shopMenu.dismiss(); //Close
+						showMenuButton();
+						showHacksList();
+						showTabGUI();
+					}
+				}));
+				xShopLayout.addView(xShopButton);
+				
+				exitShopUI = new widget.PopupWindow(xShopLayout, dip2px(40), dip2px(40));
+				exitShopUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				exitShopUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
 			} catch(exception) {
 				print(exception);
 				VertexClientPE.showBugReportDialog(exception);
