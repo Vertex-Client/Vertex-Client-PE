@@ -3840,6 +3840,24 @@ VertexClientPE.toast = function(message, vibrate) {
 	}));
 }
 
+VertexClientPE.moneyToast = function() {
+	ctx.runOnUiThread(new java.lang.Runnable({
+		run: function() {
+			var layout = new LinearLayout(ctx);
+			layout.setOrientation(1);
+			layout.setBackground(backgroundSpecial(16));
+			var text = clientTextView("\u26C1 " + VertexClientPE.getVertexCash());
+			text.setTextColor(android.graphics.Color.parseColor("#FFD700"));
+			text.setPadding(10, 10, 10, 10);
+			layout.addView(text);
+			toast = new widget.Toast(ctx);
+			toast.setView(layout);
+			toast.setGravity(android.view.Gravity.CENTER | android.view.Gravity.TOP, 0, 0);
+			toast.show();
+		}
+	}));
+}
+
 VertexClientPE.syntaxError = function(syntax) {
 	VertexClientPE.clientMessage(ChatColor.DARK_RED + "Syntax error!");
 	VertexClientPE.clientMessage(syntax);
@@ -7860,6 +7878,8 @@ VertexClientPE.specialTick = function() {
     }))
 }
 
+var secondTickTimer = 0;
+
 VertexClientPE.secondTick = function() {
 	ctx.runOnUiThread(new java.lang.Runnable({
         run: function() {
@@ -7870,6 +7890,14 @@ VertexClientPE.secondTick = function() {
 							element.onInterval();
 						}
 					});
+					if(secondTickTimer == 60) {
+						var extraCash = VertexClientPE.isPro()?20:10;
+						VertexClientPE.setVertexCash(VertexClient.getVertexCash() + extraCash);
+						secondTickTimer = 0;
+						VertexClientPE.moneyToast();
+					} else {
+						secondTickTimer += 1;
+					}
 					VertexClientPE.secondTick();
 				}
 			}), 1000);
