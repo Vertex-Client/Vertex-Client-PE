@@ -42,6 +42,9 @@ var topBarHeight = screenHeight / 10;
 
 var customHeight = topBarHeight / 2;
 
+var sharedPref = ctx.getPreferences(ctx.MODE_PRIVATE);
+var editor = sharedPref.edit();
+
 var ScreenType = {
 	start_screen: "start_screen",
 	hud: "hud_screen",
@@ -133,16 +136,9 @@ var _0xda74=["\x68\x61\x73\x45\x61\x72\x6E\x65\x64\x50\x72\x6F\x56\x65\x72\x74\x
 
 var _0xb21b=["\x67\x65\x74\x56\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x67\x65\x74\x50\x72\x65\x66\x65\x72\x65\x6E\x63\x65\x73","\x56\x65\x72\x74\x65\x78\x43\x6C\x69\x65\x6E\x74\x50\x45\x2E\x76\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x67\x65\x74\x49\x6E\x74"];VertexClientPE[_0xb21b[0]]= function(){var _0x602dx1=ctx[_0xb21b[1]](ctx.MODE_PRIVATE);var _0x602dx2=_0x602dx1[_0xb21b[3]](_0xb21b[2],0);return _0x602dx2}
 
-VertexClientPE.giveProVertexCash = function() {
-	if(!VertexClientPE.hasEarnedProVertexCash()) {
-		var sharedPref = ctx.getPreferences(ctx.MODE_PRIVATE);
-		var editor = sharedPref.edit();
-		var currentCash = VertexClientPE.getVertexCash();
-		editor.putInt("VertexClientPE.vertexCash", currentCash + 500);
-		editor.putString("VertexClientPE.hasEarnedProVertexCash", "true");
-		editor.commit();
-	}
-}
+var _0xe844=["\x67\x69\x76\x65\x50\x72\x6F\x56\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x68\x61\x73\x45\x61\x72\x6E\x65\x64\x50\x72\x6F\x56\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x67\x65\x74\x50\x72\x65\x66\x65\x72\x65\x6E\x63\x65\x73","\x65\x64\x69\x74","\x67\x65\x74\x56\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x56\x65\x72\x74\x65\x78\x43\x6C\x69\x65\x6E\x74\x50\x45\x2E\x76\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x70\x75\x74\x49\x6E\x74","\x56\x65\x72\x74\x65\x78\x43\x6C\x69\x65\x6E\x74\x50\x45\x2E\x68\x61\x73\x45\x61\x72\x6E\x65\x64\x50\x72\x6F\x56\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x74\x72\x75\x65","\x70\x75\x74\x53\x74\x72\x69\x6E\x67","\x63\x6F\x6D\x6D\x69\x74","\x69\x73\x44\x65\x76\x4D\x6F\x64\x65","\x47\x61\x76\x65\x20\x70\x72\x6F\x20\x63\x61\x73\x68","\x41\x6C\x72\x65\x61\x64\x79\x20\x67\x61\x76\x65\x20\x70\x72\x6F\x20\x63\x61\x73\x68"];VertexClientPE[_0xe844[0]]= function(){if(!VertexClientPE[_0xe844[1]]()){var _0x3b1cx1=ctx[_0xe844[2]](ctx.MODE_PRIVATE);var _0x3b1cx2=_0x3b1cx1[_0xe844[3]]();var _0x3b1cx3=VertexClientPE[_0xe844[4]]();_0x3b1cx2[_0xe844[6]](_0xe844[5],_0x3b1cx3+ 500);_0x3b1cx2[_0xe844[9]](_0xe844[7],_0xe844[8]);_0x3b1cx2[_0xe844[10]]();if(VertexClientPE[_0xe844[11]]()){print(_0xe844[12])}}else {if(VertexClientPE[_0xe844[11]]()){print(_0xe844[13])}}}
+
+var _0xc116=["\x73\x65\x74\x56\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x56\x65\x72\x74\x65\x78\x43\x6C\x69\x65\x6E\x74\x50\x45\x2E\x76\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x70\x75\x74\x49\x6E\x74","\x63\x6F\x6D\x6D\x69\x74"];VertexClientPE[_0xc116[0]]= function(_0x5824x1){editor[_0xc116[2]](_0xc116[1],_0x5824x1);editor[_0xc116[3]]()}
 
 VertexClientPE.isRemote = false;
 VertexClientPE.playerIsInGame = false;
@@ -311,6 +307,8 @@ VertexClientPE.category = {
 	}
 }
 
+VertexClientPE.shopFeatures = [];
+
 VertexClientPE.modules = [];
 
 VertexClientPE.addons = [];
@@ -323,6 +321,29 @@ VertexClientPE.loadAddons = function() {
 		com.mcbox.pesdk.mcpelauncher.ScriptManager.callScriptMethod("addonLoadHook", []);
 	}
 }
+
+VertexClientPE.registerShopFeature = function(obj) {
+	VertexClientPE.shopFeatures.push(obj);
+}
+
+VertexClientPE.initShopFeatures = function() {
+	VertexClientPE.shopFeatures.forEach(function(element, index, array) {
+		if(element.bought == "true") {
+			element.onUnlock();
+		}
+	});
+}
+
+var inventoryPlusPlus = {
+	name: "Inventory++",
+	desc: "None.",
+	price: 500,
+	onUnlock: function() {
+		VertexClientPE.toast("Not available yet!");
+	}
+}
+
+VertexClientPE.registerShopFeature(inventoryPlusPlus);
 
 VertexClientPE.registerModule = function(obj) {
 	VertexClientPE.modules.push(obj);
@@ -662,7 +683,7 @@ var timer = {
 
 var nuker = {
 	name: "Nuker",
-	desc: "Automatically destroys blocks around you.",
+	desc: "Automatically destroys blocks around you. Can be used on servers when YesCheat+ is enabled.",
 	category: VertexClientPE.category.BUILDING,
 	type: "Mod",
 	state: false,
@@ -4065,11 +4086,13 @@ VertexClientPE.healthTags = function() {
 VertexClientPE.nuker = function(x, y, z, range, mode) {
 	mode = (mode==null)?"cube":mode;
 	range = (range==null)?3:range;
+	var destroyFunction = yesCheatPlusState?Level.destroyBlock:setTile;
+	var destroyLastParam = yesCheatPlusState?false:0;
 	if(mode == "cube") {
 		for(var blockX = - range; blockX <= range; blockX++) {
 			for(var blockY = - range; blockY <= range; blockY++) {
 				for(var blockZ = - range; blockZ <= range; blockZ++) {
-					setTile(x + blockX, y + blockY, z + blockZ, 0);
+					destroyFunction(x + blockX, y + blockY, z + blockZ, destroyLastParam);
 				}
 			}
 		}
@@ -4077,7 +4100,7 @@ VertexClientPE.nuker = function(x, y, z, range, mode) {
 		for(var blockX = - range; blockX <= range; blockX++) {
 			for(var blockY = - 1; blockY <= range; blockY++) {
 				for(var blockZ = - range; blockZ <= range; blockZ++) {
-					setTile(x + blockX, y + blockY, z + blockZ, 0);
+					destroyFunction(x + blockX, y + blockY, z + blockZ, destroyLastParam);
 				}
 			}
 		}
@@ -4086,7 +4109,7 @@ VertexClientPE.nuker = function(x, y, z, range, mode) {
 			for(var blockY = - range; blockY <= range; blockY++) {
 				for(var blockZ = - range; blockZ <= range; blockZ++) {
 					if(Block.getDestroyTime(getTile(x + blockX, y + blockY, z + blockZ)) == 0) {
-						setTile(x + blockX, y + blockY, z + blockZ, 0);
+						destroyFunction(x + blockX, y + blockY, z + blockZ, destroyLastParam);
 					}
 				}
 			}
@@ -4638,6 +4661,43 @@ function clientButton(text, desc, color, round) //menu buttons
     return defaultButton;
 }
 
+function shopFeatureButton(shopFeature, cashTextView) {
+	var shopFeatureButtonText = (sharedPref.getString("VertexClientPE.bought" + shopFeature.name, "false")=="true")?"Purchased":shopFeature.price.toString();
+	var shopFeatureLayout = new LinearLayout(ctx);
+	shopFeatureLayout.setOrientation(LinearLayout.HORIZONTAL);
+	var shopFeatureLayoutLeft = new LinearLayout(ctx);
+	shopFeatureLayoutLeft.setOrientation(1);
+	shopFeatureLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 2, display.heightPixels / 4));
+	var shopFeatureLayoutRight = new LinearLayout(ctx);
+	shopFeatureLayoutRight.setOrientation(1);
+	shopFeatureLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 2, display.heightPixels / 4));
+	shopFeatureLayout.addView(shopFeatureLayoutLeft);
+	shopFeatureLayout.addView(shopFeatureLayoutRight);
+	var shopFeatureText = clientTextView(shopFeature.name);
+	shopFeatureLayoutLeft.addView(shopFeatureText);
+	var shopFeatureClientButton = clientButton(shopFeatureButtonText);
+	shopFeatureClientButton.setOnClickListener(new android.view.View.OnClickListener() {
+		onClick: function(v) {
+			if(sharedPref.getString("VertexClientPE.bought" + shopFeature.name, "false") != "true") {
+				if(shopFeature.price <= VertexClientPE.getVertexCash()) {
+					editor.putInt("VertexClientPE.vertexCash", VertexClientPE.getVertexCash() - shopFeature.price);
+					editor.commit();
+					cashTextView.setText("\u26C1 " + VertexClientPE.getVertexCash());
+					editor.putString("VertexClientPE.bought" + shopFeature.name, "true");
+					editor.commit();
+					shopFeatureClientButton.setText("Purchased");
+					shopFeature.onUnlock();
+				} else {
+					VertexClientPE.toast("You need " + (shopFeature.price - VertexClientPE.getVertexCash()).toString() + " more V€rt€xCash to buy this!");
+				}
+			}
+		}
+	});
+	
+	shopFeatureLayoutRight.addView(shopFeatureClientButton);
+	return shopFeatureLayout;
+}
+
 function modButton(mod, buttonOnly) {
 	if(mod.type == null) {
 		mod.type = "Mod";
@@ -4870,19 +4930,22 @@ function tabGUICategoryButton(category, layout, layoutToBeOpened, layoutMain) {
 			} else {
 				if(themeSetting == "white") {
 					categoryButton.setTextColor(android.graphics.Color.BLACK);
-				} else {
-					categoryButton.setTextColor(android.graphics.Color.WHITE);
-				}
-				if(themeSetting == "white") {
 					categoryButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.WHITE);
 				} else {
+					categoryButton.setTextColor(android.graphics.Color.WHITE);
 					categoryButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.BLACK);
 				}
 				currentTabGUICategory = null;
 			}
 			for(var i = 0; i < layout.getChildCount(); i++) {
 				if(layout.getChildAt(i).getChildAt(0) != categoryButton) {
-					layout.getChildAt(i).getChildAt(0).setTextColor(android.graphics.Color.WHITE);
+					if(themeSetting == "white") {
+						layout.getChildAt(i).getChildAt(0).setTextColor(android.graphics.Color.BLACK);
+						layout.getChildAt(i).getChildAt(0).setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.WHITE);
+					} else {
+						layout.getChildAt(i).getChildAt(0).setTextColor(android.graphics.Color.WHITE);
+						layout.getChildAt(i).getChildAt(0).setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.BLACK);
+					}
 				}
 			}
 			if(currentTabGUICategory != null) {
@@ -5910,6 +5973,7 @@ VertexClientPE.downloadPro = function() {
 
 VertexClientPE.setup = function() {
 	VertexClientPE.loadSupport();
+	VertexClientPE.initShopFeatures();
 	if(VertexClientPE.loadMainSettings() == null) {
 		VertexClientPE.showSetupScreen();
 		setupDone();
@@ -6034,8 +6098,9 @@ function newLevel() {
 	VertexClientPE.playerIsInGame = true;
 	VertexClientPE.loadMainSettings();
 	if(VertexClientPE.isPro()) {
+		VertexClientPE.giveProVertexCash();
 		if(!VertexClientPE.hasEarnedProVertexCash()) {
-			//VertexClientPE.giveProVertexCash();
+			VertexClientPE.toast("You just earned 500 V€rt€xCash because you activated Pro successfully!");
 		}
 	}
 	if(!hasLoadedAddons) {
@@ -6109,6 +6174,8 @@ function leaveGame() {
 	}));
 }
 
+var androidSupport = JavaImporter(android.support, android.support.design, android.support.design.widget);
+
 function settingsScreen() {
 	var display = new android.util.DisplayMetrics();
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
@@ -6131,9 +6198,17 @@ function settingsScreen() {
                 			tabGUI.dismiss();
                 		}
                 	}
+					
                     var settingsMenuLayout = new LinearLayout(ctx);
                     settingsMenuLayout.setOrientation(1);
                     settingsMenuLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					
+					with(androidSupport) {
+						var settingsTabLayout = new TabLayout(ctx);
+						settingsTabLayout.addTab(settingsTabLayout.newTab().setText("Theme & layout"));
+						settingsTabLayout.addTab(settingsTabLayout.newTab().setText("Misc"));
+						settingsMenuLayout.addView(settingsTabLayout);
+					}
 					
 					var settingsMenuScroll = new ScrollView(ctx);
 					
@@ -6567,17 +6642,29 @@ function shopScreen() {
                     shopMenuLayout1.setOrientation(1);
                     shopMenuLayout1.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
 					
-					shopMenuLayoutScroll.addView(shopMenuLayout);
-					shopMenuLayout1.addView(shopMenuLayoutScroll);
-					
 					var shopTitle = clientTextView("Shop", true);
 					shopTitle.setTextSize(25);
 					shopTitle.setGravity(android.view.Gravity.CENTER);
-					shopMenuLayout.addView(shopTitle);
+					shopMenuLayout1.addView(shopTitle);
 					
+					var shopCashLayout = new LinearLayout(ctx);
+					shopCashLayout.setOrientation(1);
+					shopCashLayout.setLayoutParams(new android.view.ViewGroup.LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
+					shopCashLayout.setBackground(backgroundSpecial(16));
 					var shopCashText = clientTextView("\u26C1 " + VertexClientPE.getVertexCash());
+					shopCashText.setTextColor(android.graphics.Color.parseColor("#FFD700"));
 					shopCashText.setGravity(android.view.Gravity.CENTER);
-					shopMenuLayout.addView(shopCashText);
+					shopCashText.setPadding(10, 10, 10, 10);
+					shopCashLayout.addView(shopCashText);
+					
+					shopMenuLayout1.addView(shopCashLayout);
+					shopMenuLayout1.addView(clientTextView("\n"));
+					shopMenuLayoutScroll.addView(shopMenuLayout);
+					shopMenuLayout1.addView(shopMenuLayoutScroll);
+					
+					VertexClientPE.shopFeatures.forEach(function(element, index, array) {
+						shopMenuLayout.addView(new shopFeatureButton(element, shopCashText));
+					});
 
                     shopMenu = new widget.PopupWindow(shopMenuLayout1, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
                     shopMenu.setBackgroundDrawable(backgroundGradient());
