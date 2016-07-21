@@ -6174,8 +6174,6 @@ function leaveGame() {
 	}));
 }
 
-var androidSupport = JavaImporter(android.support, android.support.design, android.support.design.widget);
-
 function settingsScreen() {
 	var display = new android.util.DisplayMetrics();
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
@@ -6202,13 +6200,6 @@ function settingsScreen() {
                     var settingsMenuLayout = new LinearLayout(ctx);
                     settingsMenuLayout.setOrientation(1);
                     settingsMenuLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
-					
-					with(androidSupport) {
-						var settingsTabLayout = new TabLayout(ctx);
-						settingsTabLayout.addTab(settingsTabLayout.newTab().setText("Theme & layout"));
-						settingsTabLayout.addTab(settingsTabLayout.newTab().setText("Misc"));
-						settingsMenuLayout.addView(settingsTabLayout);
-					}
 					
 					var settingsMenuScroll = new ScrollView(ctx);
 					
