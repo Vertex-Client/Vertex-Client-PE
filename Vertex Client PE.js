@@ -6119,6 +6119,10 @@ function newLevel() {
 		VertexClientPE.giveProVertexCash();
 		if(!VertexClientPE.hasEarnedProVertexCash()) {
 			VertexClientPE.toast("You just earned 500 V€rt€xCash because you activated Pro successfully!");
+			VertexClientPE.moneyToast();
+			if(shopCashText != null) {
+				shopCashText.setText("\u26C1 " + VertexClientPE.getVertexCash());
+			}
 		}
 	}
 	if(!hasLoadedAddons) {
@@ -6618,6 +6622,8 @@ function addonScreen() {
         }));
 }
 
+var shopCashText;
+
 function shopScreen() {
 	var display = new android.util.DisplayMetrics();
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
@@ -6660,7 +6666,7 @@ function shopScreen() {
 					shopCashLayout.setOrientation(1);
 					shopCashLayout.setLayoutParams(new android.view.ViewGroup.LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
 					shopCashLayout.setBackground(backgroundSpecial(16));
-					var shopCashText = clientTextView("\u26C1 " + VertexClientPE.getVertexCash());
+					shopCashText = clientTextView("\u26C1 " + VertexClientPE.getVertexCash());
 					shopCashText.setTextColor(android.graphics.Color.parseColor("#FFD700"));
 					shopCashText.setGravity(android.view.Gravity.CENTER);
 					shopCashText.setPadding(10, 10, 10, 10);
@@ -7892,9 +7898,12 @@ VertexClientPE.secondTick = function() {
 					});
 					if(secondTickTimer == 60) {
 						var extraCash = VertexClientPE.isPro()?20:10;
-						VertexClientPE.setVertexCash(VertexClient.getVertexCash() + extraCash);
+						VertexClientPE.setVertexCash(VertexClientPE.getVertexCash() + extraCash);
 						secondTickTimer = 0;
 						VertexClientPE.moneyToast();
+						if(shopCashText != null) {
+							shopCashText.setText("\u26C1 " + VertexClientPE.getVertexCash());
+						}
 					} else {
 						secondTickTimer += 1;
 					}
