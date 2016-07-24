@@ -112,12 +112,14 @@ String.prototype.replaceAll = function(str1, str2, ignore)
 }
 
 var isSupported = true;
+var isAuthorized = true;
 
 var VertexClientPE = {
 	name: "Vertex Client PE",
 	getName: function() {
 		return VertexClientPE.name;
 	},
+	author: "peacestorm",
 	isDev: false,
 	isDevMode: function() {
 		return VertexClientPE.isDev;
@@ -336,6 +338,7 @@ VertexClientPE.initShopFeatures = function() {
 
 var inventoryPlusPlus = {
 	name: "Inventory++",
+	shortName: "Inventory++",
 	desc: "None.",
 	price: 500,
 	onUnlock: function() {
@@ -343,7 +346,18 @@ var inventoryPlusPlus = {
 	}
 }
 
-VertexClientPE.registerShopFeature(inventoryPlusPlus);
+var playerCustomizer = {
+	name: "Player Customizer",
+	shortName: "PlayerCustomizer",
+	desc: "A screen where you can customize your player.",
+	price: 1000,
+	onUnlock: function() {
+		VertexClientPE.toast("Not available yet!");
+	}
+}
+
+//VertexClientPE.registerShopFeature(inventoryPlusPlus);
+VertexClientPE.registerShopFeature(playerCustomizer);
 
 VertexClientPE.registerModule = function(obj) {
 	VertexClientPE.modules.push(obj);
@@ -398,7 +412,17 @@ function registerModulesFromAddon(modArray) {
 	});
 }
 
-VertexClientPE.getFeatureCount = function() {
+VertexClientPE.getCommandCount = () => {
+	var commandCount = 0;
+	VertexClientPE.modules.forEach(function(element, index, array) {
+		if(element.type == "Command") {
+			commandCount++;
+		}
+	});
+	return commandCount;
+}
+
+VertexClientPE.getFeatureCount = () => {
 	return VertexClientPE.modules.length;
 }
 
@@ -1642,6 +1666,9 @@ var autoWalk = {
 		toDirectionalVector(playerDir, (getYaw() + 90) * DEG_TO_RAD, getPitch() * DEG_TO_RAD * -1);
 		var player = getPlayerEnt();
 		setVelX(player, playerWalkSpeed * playerDir[0]);
+		if(Player.isFlying()) {
+			setVelY(player, playerWalkSpeed * playerDir[1]);	
+		}
 		setVelZ(player, playerWalkSpeed * playerDir[2]);
 	}
 }
@@ -3033,28 +3060,37 @@ VertexClientPE.showMoreDialog = function() {
 				var settingsButton = clientButton("Settings");
 				var addonsButton = clientButton("Addons");
 				var webBrowserButton = clientButton("Webbrowser");
+				var playerCustomizerButton = clientButton("Player Customizer");
 				var shopButton = clientButton("Shop");
 				var informationButton = clientButton("Information");
 				var kitsButton = clientButton("Kits");
 				var newLineText = new widget.TextView(ctx);
 				newLineText.setText("\n");
 				var cancelButton = clientButton("Cancel");
+				var dialogLayout1 = new LinearLayout(ctx);
+				dialogLayout1.setBackgroundDrawable(backgroundGradient());
+				dialogLayout1.setOrientation(LinearLayout.VERTICAL);
 				var dialogLayout = new LinearLayout(ctx);
-				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
-				dialogLayout.addView(moreTitle);
+				var dialogScrollView = new ScrollView(ctx);
+				dialogScrollView.addView(dialogLayout);
+				dialogLayout1.addView(moreTitle);
+				dialogLayout1.addView(dialogScrollView);
 				dialogLayout.addView(settingsButton);
 				dialogLayout.addView(addonsButton);
 				dialogLayout.addView(webBrowserButton);
+				if(sharedPref.getString("VertexClientPE.boughtPlayerCustomizer", "false") == "true") {
+					dialogLayout.addView(playerCustomizerButton);
+				}
 				dialogLayout.addView(shopButton);
 				dialogLayout.addView(informationButton);
 				//dialogLayout.addView(kitsButton);
-				dialogLayout.addView(newLineText);
-				dialogLayout.addView(cancelButton);
+				//dialogLayout1.addView(newLineText);
+				//dialogLayout1.addView(cancelButton);
 				var dialog = new android.app.Dialog(ctx);
 				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
-				dialog.setContentView(dialogLayout);
+				dialog.setContentView(dialogLayout1);
 				dialog.setTitle("More");
 				dialog.show();
 				settingsButton.setOnClickListener(new android.view.View.OnClickListener() {
@@ -3079,6 +3115,14 @@ VertexClientPE.showMoreDialog = function() {
 						VertexClientPE.closeMenu();
 						webBrowserScreen();
 						overlayWebBrowser();
+					}
+				});
+				playerCustomizerButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+						VertexClientPE.closeMenu();
+						playerCustomizerScreen();
+						exitPlayerCustomizer();
 					}
 				});
 				shopButton.setOnClickListener(new android.view.View.OnClickListener() {
@@ -3885,6 +3929,7 @@ var p, y, xx, yy, zz;
 var sayMsg;
 
 VertexClientPE.commandManager = function(cmd) {
+	var _0x4eba=["\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x6F\x75\x74\x64\x61\x74\x65\x64\x2C\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C","\x74\x6F\x61\x73\x74","\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C","\x53\x6F\x72\x72\x79\x2C\x20\x74\x68\x69\x73\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x69\x73\x20\x6E\x6F\x74\x20\x73\x75\x70\x70\x6F\x72\x74\x65\x64\x20\x61\x6E\x79\x6D\x6F\x72\x65\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x75\x70\x67\x72\x61\x64\x65\x20\x74\x6F\x20\x74\x68\x65\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x2E"];if(!isAuthorized){if(!isSupported){VertexClientPE[_0x4eba[1]](_0x4eba[0])}else {VertexClientPE[_0x4eba[1]](_0x4eba[2])};return}else {if(!isSupported){VertexClientPE[_0x4eba[1]](_0x4eba[3]);return}}
 	var finished = false;
 	commandSplit = cmd.split(" ");
 	VertexClientPE.modules.forEach(function(element, index, array) {
@@ -4680,7 +4725,7 @@ function clientButton(text, desc, color, round) //menu buttons
 }
 
 function shopFeatureButton(shopFeature, cashTextView) {
-	var shopFeatureButtonText = (sharedPref.getString("VertexClientPE.bought" + shopFeature.name, "false")=="true")?"Purchased":shopFeature.price.toString();
+	var shopFeatureButtonText = (sharedPref.getString("VertexClientPE.bought" + shopFeature.shortName, "false")=="true")?"Purchased":shopFeature.price.toString();
 	var shopFeatureLayout = new LinearLayout(ctx);
 	shopFeatureLayout.setOrientation(LinearLayout.HORIZONTAL);
 	var shopFeatureLayoutLeft = new LinearLayout(ctx);
@@ -4696,12 +4741,12 @@ function shopFeatureButton(shopFeature, cashTextView) {
 	var shopFeatureClientButton = clientButton(shopFeatureButtonText);
 	shopFeatureClientButton.setOnClickListener(new android.view.View.OnClickListener() {
 		onClick: function(v) {
-			if(sharedPref.getString("VertexClientPE.bought" + shopFeature.name, "false") != "true") {
+			if(sharedPref.getString("VertexClientPE.bought" + shopFeature.shortName, "false") != "true") {
 				if(shopFeature.price <= VertexClientPE.getVertexCash()) {
 					editor.putInt("VertexClientPE.vertexCash", VertexClientPE.getVertexCash() - shopFeature.price);
 					editor.commit();
 					cashTextView.setText("\u26C1 " + VertexClientPE.getVertexCash());
-					editor.putString("VertexClientPE.bought" + shopFeature.name, "true");
+					editor.putString("VertexClientPE.bought" + shopFeature.shortName, "true");
 					editor.commit();
 					shopFeatureClientButton.setText("Purchased");
 					shopFeature.onUnlock();
@@ -4782,6 +4827,7 @@ function modButton(mod, buttonOnly) {
 	}
 	defaultClientButton.setOnClickListener(new android.view.View.OnClickListener({
 		onClick: function(viewarg) {
+			var _0x4eba=["\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x6F\x75\x74\x64\x61\x74\x65\x64\x2C\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C","\x74\x6F\x61\x73\x74","\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C","\x53\x6F\x72\x72\x79\x2C\x20\x74\x68\x69\x73\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x69\x73\x20\x6E\x6F\x74\x20\x73\x75\x70\x70\x6F\x72\x74\x65\x64\x20\x61\x6E\x79\x6D\x6F\x72\x65\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x75\x70\x67\x72\x61\x64\x65\x20\x74\x6F\x20\x74\x68\x65\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x2E"];if(!isAuthorized){if(!isSupported){VertexClientPE[_0x4eba[1]](_0x4eba[0])}else {VertexClientPE[_0x4eba[1]](_0x4eba[2])};return}else {if(!isSupported){VertexClientPE[_0x4eba[1]](_0x4eba[3]);return}}
 			if(mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) {
 				VertexClientPE.showProDialog(mod.name);
 				return;
@@ -6622,6 +6668,11 @@ function addonScreen() {
         }));
 }
 
+function playerCustomizerScreen() {
+	VertexClientPE.toast("Not available");
+	return;
+}
+
 var shopCashText;
 
 function shopScreen() {
@@ -6884,10 +6935,7 @@ VertexClientPE.showMenuBar = function() {
 }
 
 VertexClientPE.showMenu = function() {
-	if(!isSupported) {
-		VertexClientPE.toast("Sorry, this version is not supported anymore! Please upgrade to the latest version.");
-		return;
-	}
+	var _0x4eba=["\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x6F\x75\x74\x64\x61\x74\x65\x64\x2C\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C","\x74\x6F\x61\x73\x74","\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C","\x53\x6F\x72\x72\x79\x2C\x20\x74\x68\x69\x73\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x69\x73\x20\x6E\x6F\x74\x20\x73\x75\x70\x70\x6F\x72\x74\x65\x64\x20\x61\x6E\x79\x6D\x6F\x72\x65\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x75\x70\x67\x72\x61\x64\x65\x20\x74\x6F\x20\x74\x68\x65\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x2E"];if(!isAuthorized){if(!isSupported){VertexClientPE[_0x4eba[1]](_0x4eba[0])}else {VertexClientPE[_0x4eba[1]](_0x4eba[2])};return}else {if(!isSupported){VertexClientPE[_0x4eba[1]](_0x4eba[3]);return}}
 	menuBtn.setBackgroundDrawable(iconClickedClientGUI);
 	if(menuType == "normal") {
 		VertexClientPE.showCombatMenu();
@@ -7823,6 +7871,7 @@ VertexClientPE.clientTick = function() {
                 .postDelayed(new java.lang.Runnable({
                     run: function() {
 						try{
+							var _0x43af=["\x61\x75\x74\x68\x6F\x72","\x70\x65\x61\x63\x65\x73\x74\x6F\x72\x6D"];if(VertexClientPE[_0x43af[0]]!= _0x43af[1]){isAuthorized= false}
 							if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false)  && (menu == null || menu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false) && (webBrowserMenu == null || webBrowserMenu.isShowing() == false) && (shopMenu == null || shopMenu.isShowing() == false)) {
 								VertexClientPE.isRemote = true;
 								if(Launcher.isBlockLauncher()) {
