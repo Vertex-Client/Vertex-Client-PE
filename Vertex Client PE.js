@@ -243,6 +243,7 @@ var vertexclientpemiscmenu;
 var settingsMenu;
 var addonMenu;
 var webBrowserMenu;
+var playerCustomizerMenu;
 var informationMenu;
 var topBar;
 var menuBar;
@@ -680,7 +681,10 @@ var timer = {
 		timerSpeedSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 			onProgressChanged: function() {
 				timerSpeed = timerSpeedSlider.getProgress();
-				timerSpeedTitle.setText("Speed: | " + timerSpeed);
+				timerSpeedTitle.setText("Speed: | " + timerSpeed + " * 20 ticks");
+				if(this.state) {
+					ModPE.setGameSpeed(20 * timerSpeed);
+				}
 			}
 		});
 		var space = clientTextView("\n");
@@ -2030,11 +2034,9 @@ var antiAFK = {
 			Entity.setRot(player, yaw + 90, pitch);
 			setVelX(player, playerWalkSpeed * playerDir[0]);
 			setVelZ(player, playerWalkSpeed * playerDir[2]);
-		} else if(this.timer == 6) {
-			var player = getPlayerEnt();
+			this.timer = 0;
 			setVelX(player, 0);
 			setVelZ(player, 0);
-			this.timer = 0;
 		}
 	}
 }
@@ -2045,7 +2047,6 @@ var autoLeave = {
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
-	timer: 0,
 	isStateMod: function() {
 		return true;
 	},
@@ -2067,6 +2068,39 @@ var autoLeave = {
 		if(Entity.getHealth(getPlayerEnt()) <= 8) {
 			ModPE.restart();
 		}
+	}
+}
+
+var noDownGlide = {
+	name: "NoDownGlide",
+	desc: "Prevents you from flying upwards and downwards (and falling).",
+	category: VertexClientPE.category.MOVEMENT,
+	type: "Mod",
+	state: false,
+	yCoord: 0,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.yCoord = getPlayerX();
+		this.state = !this.state;
+	},
+	onTick: function() {
+		Entity.setVelY(getPlayerEnt(), -0.000000000001);
+		Entity.setPosition(getPlayerEnt(), 0, this.yCoord, 0);
+	}
+}
+
+var teleport = {
+	name: "Teleport",
+	desc: "Teleports you to the given coordinates.",
+	category: VertexClientPE.category.MISC,
+	type: "Mod",
+	isStateMod: function() {
+		return false;
+	},
+	onToggle: function() {
+		VertexClientPE.showTeleportDialog();
 	}
 }
 
@@ -2095,6 +2129,7 @@ VertexClientPE.registerModule(flight);
 VertexClientPE.registerModule(glide);
 VertexClientPE.registerModule(highJump);
 VertexClientPE.registerModule(liquidWalk);
+VertexClientPE.registerModule(noDownGlide);
 VertexClientPE.registerModule(ride);
 VertexClientPE.registerModule(tapTeleporter);
 VertexClientPE.registerModule(timer);
@@ -2129,6 +2164,7 @@ VertexClientPE.registerModule(itemGiver);
 VertexClientPE.registerModule(onlyDay);
 VertexClientPE.registerModule(orderAPizza);
 //VertexClientPE.registerModule(remoteView);
+VertexClientPE.registerModule(teleport);
 //VertexClientPE.registerModule(tracers);
 VertexClientPE.registerModule(yesCheatPlus);
 VertexClientPE.registerModule(zoom);
@@ -3187,7 +3223,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
 				dialogLayout.addView(modEnter);
 				
 				var settingsLinearLayout = new ScrollView(ctx);
-				settingsLinearLayout.setLayoutParams(new android.view.ViewGroup.LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT, display.heightPixels / 3));
+				settingsLinearLayout.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels, display.heightPixels / 3));
 				var settingsScrollView = new ScrollView(ctx);
 				
 				if(mod.getSettingsLayout) {
@@ -3442,6 +3478,133 @@ VertexClientPE.showItemGiverDialog = function() {
 				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
 				dialog.setContentView(dialogLayoutBase);
 				dialog.setTitle("ItemGiver");
+				dialog.show();
+				var window = dialog.getWindow();
+				window.setLayout(display.widthPixels, display.heightPixels);
+				closeButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+					}
+				});
+			} catch(e) {
+				print("Error: " + e);
+				VertexClientPE.showBugReportDialog(e);
+			}
+		}
+	});
+}
+
+VertexClientPE.showTeleportDialog = function() {
+	ctx.runOnUiThread(new java.lang.Runnable() {
+		run: function() {
+			try {
+				VertexClientPE.loadMainSettings();
+				var teleportTitle = clientTextView("Teleport", true);
+				var closeButton = clientButton("Close");
+				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
+				var dialogLayoutBase = new LinearLayout(ctx);
+				dialogLayoutBase.setOrientation(1);
+				var dialogLayoutBody = new LinearLayout(ctx);
+				dialogLayoutBody.setOrientation(LinearLayout.HORIZONTAL);
+				var dialogLayoutBodyLeftWrap = new LinearLayout(ctx);
+				dialogLayoutBodyLeftWrap.setOrientation(1);
+				var dialogLayoutBodyLeftScroll = new ScrollView(ctx);
+				dialogLayoutBodyLeftWrap.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels - display.widthPixels / 3, LinearLayout.LayoutParams.WRAP_CONTENT));
+				var dialogLayoutBodyRightWrap = new LinearLayout(ctx);
+				dialogLayoutBodyRightWrap.setOrientation(1);
+				var dialogLayoutBodyRightScroll = new ScrollView(ctx);
+				dialogLayoutBodyRightWrap.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, LinearLayout.LayoutParams.WRAP_CONTENT));
+				var dialogTableLayout = new widget.TableLayout(ctx);
+				var dialogTableRow;
+				var tempButton;
+				var teleportNameText = clientTextView("Teleport location: Unknown");
+				var teleportXInput = new EditText(ctx);
+				teleportXInput.setTextColor(android.graphics.Color.WHITE);
+				teleportXInput.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+				teleportXInput.setHint("X");
+				var teleportYInput = new EditText(ctx);
+				teleportYInput.setTextColor(android.graphics.Color.WHITE);
+				teleportYInput.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+				teleportYInput.setHint("Y");
+				var teleportZInput = new EditText(ctx);
+				teleportZInput.setTextColor(android.graphics.Color.WHITE);
+				teleportZInput.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+				teleportZInput.setHint("Z");
+				
+				/*teleportXInput.addTextChangedListener(new android.text.TextWatcher() {
+					onTextChanged: function() {
+						teleportName = "Unknown";
+						teleportNameText.setText("Name: " + teleportName);
+					}
+				});*/
+				
+				var teleportButton = clientButton("Teleport");
+				teleportButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(viewArg) {
+						tpX = teleportXInput.getText();
+						tpY = teleportYInput.getText();
+						tpZ = teleportZInput.getText();
+						Entity.setPosition(getPlayerEnt(), tpX, tpY, tpZ);
+					}
+				});
+				
+				var comingSoonText = clientTextView("\nSaved teleport locations are coming soon!");
+				dialogTableLayout.addView(comingSoonText);
+				/*itemGiverItems.forEach(function(element, index, array) {
+					if(index % 2 == 1) {
+						if(!dialogTableRow) {
+							dialogTableRow = new widget.TableRow(ctx);
+						}
+						tempButton = clientButton(Item.getName(element.itemId.toString()));
+						tempButton.setOnClickListener(new android.view.View.OnClickListener() {
+							onClick: function(viewArg) {
+								itemIdInput.setText(element.itemId.toString());
+							}
+						});
+						dialogTableRow.addView(tempButton);
+						dialogTableLayout.addView(dialogTableRow);
+						dialogTableRow = null;
+						tempButton = null;
+					} else {
+						dialogTableRow = new widget.TableRow(ctx);
+						tempButton = clientButton(Item.getName(element.itemId.toString()));
+						tempButton.setOnClickListener(new android.view.View.OnClickListener() {
+							onClick: function(viewArg) {
+								itemIdInput.setText(element.itemId.toString());
+							}
+						});
+						dialogTableRow.addView(tempButton);
+						tempButton = null;
+					}
+				});
+				if(dialogTableRow != null) {
+					dialogTableLayout.addView(dialogTableRow);
+				}*/
+				var dialogRightLayout = new LinearLayout(ctx);
+				dialogRightLayout.setOrientation(1);
+				
+				dialogRightLayout.addView(teleportNameText);
+				dialogRightLayout.addView(teleportXInput);
+				dialogRightLayout.addView(teleportYInput);
+				dialogRightLayout.addView(teleportZInput);
+				dialogRightLayout.addView(teleportButton);
+				dialogRightLayout.addView(clientTextView("\n"));
+				dialogRightLayout.addView(closeButton);
+				dialogLayoutBase.setBackgroundDrawable(backgroundGradient());
+				dialogLayoutBase.addView(teleportTitle);
+				dialogLayoutBase.addView(dialogLayoutBody);
+				dialogLayoutBody.addView(dialogLayoutBodyLeftWrap);
+				dialogLayoutBody.addView(dialogLayoutBodyRightWrap);
+				dialogLayoutBodyLeftWrap.addView(dialogLayoutBodyLeftScroll);
+				dialogLayoutBodyRightWrap.addView(dialogLayoutBodyRightScroll);
+				dialogLayoutBodyLeftScroll.addView(dialogTableLayout);
+				dialogLayoutBodyRightScroll.addView(dialogRightLayout);
+				//dialogLayout.addView(dialogTableLayout);
+				var dialog = new android.app.Dialog(ctx);
+				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
+				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				dialog.setContentView(dialogLayoutBase);
+				dialog.setTitle("Teleport");
 				dialog.show();
 				var window = dialog.getWindow();
 				window.setLayout(display.widthPixels, display.heightPixels);
@@ -4287,7 +4450,7 @@ VertexClientPE.boatFly = function() { //some parts of this function are made by 
 		setVelX(ent, playerWalkSpeed * playerDir[0]);
 		setVelY(ent, playerWalkSpeed * playerDir[1]);
 		setVelZ(ent, playerWalkSpeed * playerDir[2]);*/
-		var ent = getPlayerEnt();
+		var ent = Entity.getRiding(getPlayerEnt());
 		setVelX(ent, playerWalkSpeed * playerDir[0]);
 		setVelY(ent, playerWalkSpeed * playerDir[1]);
 		setVelZ(ent, playerWalkSpeed * playerDir[2]);
@@ -6669,8 +6832,54 @@ function addonScreen() {
 }
 
 function playerCustomizerScreen() {
-	VertexClientPE.toast("Not available");
-	return;
+	var display = new android.util.DisplayMetrics();
+	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
+    var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+        ctx.runOnUiThread(new java.lang.Runnable({
+            run: function() {
+                try {
+                	if(GUI != null) {
+                		if(GUI.isShowing()) {
+                			GUI.dismiss();
+                		}
+                	}
+                	if(hacksList != null) {
+                		if(hacksList.isShowing()) {
+                			hacksList.dismiss();
+                		}
+                	}
+					if(tabGUI != null) {
+                		if(tabGUI.isShowing()) {
+                			tabGUI.dismiss();
+                		}
+                	}
+
+					var playCustomizerLayout = new LinearLayout(ctx);
+                    playCustomizerLayout.setOrientation(1);
+                    playCustomizerLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					
+					var playCustomizerLayoutScroll = new ScrollView(ctx);
+					
+					var playCustomizerLayout1 = new LinearLayout(ctx);
+                    playCustomizerLayout1.setOrientation(1);
+                    playCustomizerLayout1.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					
+					var playerCustomizerTitle = clientTextView("Player Customizer", true);
+					playerCustomizerTitle.setTextSize(25);
+					playerCustomizerTitle.setGravity(android.view.Gravity.CENTER);
+					playCustomizerLayout1.addView(playerCustomizerTitle);
+					
+					playCustomizerLayoutScroll.addView(playCustomizerLayout);
+					playCustomizerLayout1.addView(playCustomizerLayoutScroll);
+
+                    playerCustomizerMenu = new widget.PopupWindow(playCustomizerLayout1, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
+                    playerCustomizerMenu.setBackgroundDrawable(backgroundGradient());
+                    playerCustomizerMenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
+                } catch(error) {
+                    print('An error occurred: ' + error);
+                }
+            }
+        }));
 }
 
 var shopCashText;
@@ -7872,7 +8081,7 @@ VertexClientPE.clientTick = function() {
                     run: function() {
 						try{
 							var _0x43af=["\x61\x75\x74\x68\x6F\x72","\x70\x65\x61\x63\x65\x73\x74\x6F\x72\x6D"];if(VertexClientPE[_0x43af[0]]!= _0x43af[1]){isAuthorized= false}
-							if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false)  && (menu == null || menu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false) && (webBrowserMenu == null || webBrowserMenu.isShowing() == false) && (shopMenu == null || shopMenu.isShowing() == false)) {
+							if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false)  && (menu == null || menu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false) && (webBrowserMenu == null || webBrowserMenu.isShowing() == false) && (playerCustomizerMenu == null || playerCustomizerMenu.isShowing() == false) && (shopMenu == null || shopMenu.isShowing() == false)) {
 								VertexClientPE.isRemote = true;
 								if(Launcher.isBlockLauncher()) {
 									net.zhuoweizhang.mcpelauncher.ScriptManager.isRemote = true;
@@ -7892,7 +8101,7 @@ VertexClientPE.clientTick = function() {
 							print("Use BlockLauncher v1.12.2 or above!");
 							ModPE.log(e);
 						}
-						if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (menu == null || menu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false) && (webBrowserMenu == null || webBrowserMenu.isShowing() == false) && (shopMenu == null || shopMenu.isShowing() == false)) {
+						if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (menu == null || menu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false) && (webBrowserMenu == null || webBrowserMenu.isShowing() == false) && (playerCustomizerMenu == null || playerCustomizerMenu.isShowing() == false) && (shopMenu == null || shopMenu.isShowing() == false)) {
 							VertexClientPE.isRemote = true;
 							showMenuButton();
 						}
@@ -8483,6 +8692,38 @@ function overlayWebBrowser() {
 				exitWebBrowserUI = new widget.PopupWindow(xWebBrowserLayout, dip2px(40), dip2px(40));
 				exitWebBrowserUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
 				exitWebBrowserUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
+			} catch(exception) {
+				print(exception);
+				VertexClientPE.showBugReportDialog(exception);
+			}
+		}
+	}));
+}
+
+function exitPlayerCustomizer() {
+    var ctxe = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+    ctxe.runOnUiThread(new java.lang.Runnable({
+		run: function() {
+			try {
+				var xPlayerCustomizerLayout = new LinearLayout(ctxe);
+				var xPlayerCustomizerButton = new Button(ctxe);
+				xPlayerCustomizerButton.setText('X');//Text
+				xPlayerCustomizerButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
+				xPlayerCustomizerButton.setTextColor(android.graphics.Color.WHITE);
+				xPlayerCustomizerButton.setOnClickListener(new android.view.View.OnClickListener({
+					onClick: function(viewarg){
+						exitPlayerCustomizerUI.dismiss(); //Close
+						playerCustomizerMenu.dismiss(); //Close
+						showMenuButton();
+						showHacksList();
+						showTabGUI();
+					}
+				}));
+				xPlayerCustomizerLayout.addView(xPlayerCustomizerButton);
+				
+				exitPlayerCustomizerUI = new widget.PopupWindow(xPlayerCustomizerLayout, dip2px(40), dip2px(40));
+				exitPlayerCustomizerUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				exitPlayerCustomizerUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
 			} catch(exception) {
 				print(exception);
 				VertexClientPE.showBugReportDialog(exception);
