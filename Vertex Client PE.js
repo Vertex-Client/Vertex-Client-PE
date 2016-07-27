@@ -3347,7 +3347,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
 
 var itemGiverItems = [];
 
-for(var i = 257; i <= 4096; i++) {
+for(var i = 0; i <= 4096; i++) {
 	if(Item.isValidItem(i)) {
 		itemGiverItems.push({
 			itemId: i
@@ -3429,6 +3429,7 @@ VertexClientPE.showItemGiverDialog = function() {
 							dialogTableRow = new widget.TableRow(ctx);
 						}
 						tempButton = clientButton(Item.getName(element.itemId.toString()));
+						tempButton.setPadding(0, 0, 0, 0);
 						tempButton.setOnClickListener(new android.view.View.OnClickListener() {
 							onClick: function(viewArg) {
 								itemIdInput.setText(element.itemId.toString());
@@ -3441,6 +3442,7 @@ VertexClientPE.showItemGiverDialog = function() {
 					} else {
 						dialogTableRow = new widget.TableRow(ctx);
 						tempButton = clientButton(Item.getName(element.itemId.toString()));
+						tempButton.setPadding(0, 0, 0, 0);
 						tempButton.setOnClickListener(new android.view.View.OnClickListener() {
 							onClick: function(viewArg) {
 								itemIdInput.setText(element.itemId.toString());
@@ -3494,6 +3496,8 @@ VertexClientPE.showItemGiverDialog = function() {
 	});
 }
 
+var tpX, tpY, tpZ;
+
 VertexClientPE.showTeleportDialog = function() {
 	ctx.runOnUiThread(new java.lang.Runnable() {
 		run: function() {
@@ -3541,10 +3545,15 @@ VertexClientPE.showTeleportDialog = function() {
 				var teleportButton = clientButton("Teleport");
 				teleportButton.setOnClickListener(new android.view.View.OnClickListener() {
 					onClick: function(viewArg) {
-						tpX = teleportXInput.getText();
-						tpY = teleportYInput.getText();
-						tpZ = teleportZInput.getText();
-						Entity.setPosition(getPlayerEnt(), tpX, tpY, tpZ);
+						tpX = parseInt(teleportXInput.getText());
+						tpY = parseInt(teleportYInput.getText());
+						tpZ = parseInt(teleportZInput.getText());
+						if(tpX != null && tpY != null && tpZ != null && tpX != "" && tpY != "" && tpZ != "" && !isNaN(tpX) && !isNaN(tpY) && !isNaN(tpZ)) {
+							Entity.setPosition(getPlayerEnt(), tpX,  tpY,  tpZ);
+							VertexClientPE.toast("Successfully teleported player to " + tpX + ", " + tpY + ", " + tpZ);
+						} else {
+							VertexClientPE.toast("Please enter valid coordinates!");
+						}
 					}
 				});
 				
@@ -5724,7 +5733,11 @@ VertexClientPE.loadNews = function() {
     } catch(err) {
 		news = "News couldn't be loaded";
         ModPE.log("[Vertex Client PE] VertexClientPE.loadNews() caught an error: " + err);
-    }
+    } finally {
+		if(news == null || news == undefined) {
+			news = "News couldn't be loaded";
+		}
+	}
 }
 
 VertexClientPE.loadSupport = function() {
@@ -6206,7 +6219,7 @@ VertexClientPE.setup = function() {
 		setupDone();
 	} else {
 		VertexClientPE.showSplashScreen();
-		tts.speak("Welcome back " + ModPE.getPlayerName() + "! Thanks for using Vertex Client PE!", android.speech.tts.TextToSpeech.QUEUE_FLUSH, null);
+		//tts.speak("Welcome back " + ModPE.getPlayerName() + "! Thanks for using Vertex Client PE!", android.speech.tts.TextToSpeech.QUEUE_FLUSH, null);
 	}
 }
 
@@ -6871,6 +6884,41 @@ function playerCustomizerScreen() {
 					
 					playCustomizerLayoutScroll.addView(playCustomizerLayout);
 					playCustomizerLayout1.addView(playCustomizerLayoutScroll);
+					
+					var playerCustomizerTableLayout = new widget.TableLayout(ctx);
+					
+					playCustomizerLayout.addView(playerCustomizerTableLayout);
+					
+					/*itemGiverItems.forEach(function(element, index, array) {
+						if(index % 2 == 1) {
+							if(!dialogTableRow) {
+								dialogTableRow = new widget.TableRow(ctx);
+							}
+							tempButton = clientButton(Item.getName(element.itemId.toString()));
+							tempButton.setOnClickListener(new android.view.View.OnClickListener() {
+								onClick: function(viewArg) {
+									Entity.setRenderType(getPlayerEnt(), -1);
+								}
+							});
+							dialogTableRow.addView(tempButton);
+							dialogTableLayout.addView(dialogTableRow);
+							dialogTableRow = null;
+							tempButton = null;
+						} else {
+							dialogTableRow = new widget.TableRow(ctx);
+							tempButton = clientButton(Item.getName(element.itemId.toString()));
+							tempButton.setOnClickListener(new android.view.View.OnClickListener() {
+								onClick: function(viewArg) {
+									Entity.setRenderType(getPlayerEnt(), -1);
+								}
+							});
+							dialogTableRow.addView(tempButton);
+							tempButton = null;
+						}
+					});
+					if(dialogTableRow != null) {
+						dialogTableLayout.addView(dialogTableRow);
+					}*/
 
                     playerCustomizerMenu = new widget.PopupWindow(playCustomizerLayout1, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
                     playerCustomizerMenu.setBackgroundDrawable(backgroundGradient());
