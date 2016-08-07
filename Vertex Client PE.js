@@ -127,7 +127,12 @@ var VertexClientPE = {
 	isSupported: function() {
 		return isSupported;
 	},
-	accounts: new org.json.JSONArray()
+	accounts: new org.json.JSONArray(),
+	currentWorld: {
+		deathX: -1,
+		deathY: -1,
+		deathZ: -1
+	}
 };
 
 VertexClientPE.menuIsShowing = false;
@@ -212,6 +217,7 @@ var chestTracersRange = 10;
 var tabGUIModeSetting = "on";
 var chestTracersGroundMode = "on";
 var chestTracersParticle = "on";
+var antiLagDropRemoverSetting = "on";
 //---------------------------
 var combatName = "Combat";
 var buildingName = "Building";
@@ -239,11 +245,14 @@ var menu;
 var exitUI;
 var exitWebBrowserUI;
 var reloadWebBrowserUI;
+var exitDashboardUI;
 var vertexclientpemiscmenu;
+var dashboardMenu;
 var settingsMenu;
 var addonMenu;
 var webBrowserMenu;
 var playerCustomizerMenu;
+var optiFineMenu;
 var informationMenu;
 var topBar;
 var menuBar;
@@ -347,6 +356,16 @@ var inventoryPlusPlus = {
 	}
 }
 
+var optiFine = {
+	name: "OptiFine",
+	shortName: "OptiFine",
+	desc: "More (mostly) performance/lag related settings.",
+	price: 200,
+	onUnlock: function() {
+		VertexClientPE.toast("Not available yet!");
+	}
+}
+
 var playerCustomizer = {
 	name: "Player Customizer",
 	shortName: "PlayerCustomizer",
@@ -358,6 +377,7 @@ var playerCustomizer = {
 }
 
 //VertexClientPE.registerShopFeature(inventoryPlusPlus);
+VertexClientPE.registerShopFeature(optiFine);
 VertexClientPE.registerShopFeature(playerCustomizer);
 
 VertexClientPE.registerModule = function(obj) {
@@ -413,7 +433,7 @@ function registerModulesFromAddon(modArray) {
 	});
 }
 
-VertexClientPE.getCommandCount = () => {
+VertexClientPE.getCommandCount = function() {
 	var commandCount = 0;
 	VertexClientPE.modules.forEach(function(element, index, array) {
 		if(element.type == "Command") {
@@ -423,7 +443,7 @@ VertexClientPE.getCommandCount = () => {
 	return commandCount;
 }
 
-VertexClientPE.getFeatureCount = () => {
+VertexClientPE.getFeatureCount = function() {
 	return VertexClientPE.modules.length;
 }
 
@@ -1937,6 +1957,11 @@ var chestTracers = {
 		var groundModeCheckBox = new widget.CheckBox(ctx);
 		groundModeCheckBox.setChecked(chestTracersGroundMode == "on");
 		groundModeCheckBox.setText("Ground Mode");
+		if(themeSetting == "white") {
+			groundModeCheckBox.setTextColor(android.graphics.Color.BLACK);
+		} else {
+			groundModeCheckBox.setTextColor(android.graphics.Color.WHITE);
+		}
 		groundModeCheckBox.setTypeface(VertexClientPE.font);
 		groundModeCheckBox.setOnClickListener(new android.view.View.OnClickListener() {
 			onClick: function(v) {
@@ -2568,6 +2593,9 @@ var tp = {
 				return;
 			}
 			if(getTile(x, y, z) != null) {
+				Entity.setPosition(getPlayerEnt(), x, y, z);
+				VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully teleported player to " + x + ", " + y + ", " + z + "!");
+			} else {
 				VertexClientPE.syntaxError("." + this.syntax);
 			}
 		} catch(e) {
@@ -2667,6 +2695,7 @@ var rename = {
 		var renameItem = Player.getInventorySlot(renameSlot);
 		if(renameName  != null && renameName.replaceAll(" ", "") != "" && renameItem != 0) {
 			Player.setItemCustomName(renameSlot, renameName);
+			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully renamed item to " + renameName + "!");
 		} else if(renameName.replaceAll(" ", "") == "") {
 			VertexClientPE.clientMessage(ChatColor.RED + "Error: please enter a valid name!");
 		} else if(renameItem == 0) {
@@ -3093,10 +3122,12 @@ VertexClientPE.showMoreDialog = function() {
 		run: function() {
 			try {
 				var moreTitle = clientTextView("More", true);
+				var dashboardButton = clientButton("Dashboard");
 				var settingsButton = clientButton("Settings");
 				var addonsButton = clientButton("Addons");
 				var webBrowserButton = clientButton("Webbrowser");
 				var playerCustomizerButton = clientButton("Player Customizer");
+				var optiFineButton = clientButton("OptiFine");
 				var shopButton = clientButton("Shop");
 				var informationButton = clientButton("Information");
 				var kitsButton = clientButton("Kits");
@@ -3112,11 +3143,15 @@ VertexClientPE.showMoreDialog = function() {
 				dialogScrollView.addView(dialogLayout);
 				dialogLayout1.addView(moreTitle);
 				dialogLayout1.addView(dialogScrollView);
+				dialogLayout.addView(dashboardButton);
 				dialogLayout.addView(settingsButton);
 				dialogLayout.addView(addonsButton);
 				dialogLayout.addView(webBrowserButton);
 				if(sharedPref.getString("VertexClientPE.boughtPlayerCustomizer", "false") == "true") {
 					dialogLayout.addView(playerCustomizerButton);
+				}
+				if(sharedPref.getString("VertexClientPE.boughtOptiFine", "false") == "true") {
+					dialogLayout.addView(optiFineButton);
 				}
 				dialogLayout.addView(shopButton);
 				dialogLayout.addView(informationButton);
@@ -3129,6 +3164,14 @@ VertexClientPE.showMoreDialog = function() {
 				dialog.setContentView(dialogLayout1);
 				dialog.setTitle("More");
 				dialog.show();
+				dashboardButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+						VertexClientPE.closeMenu();
+						dashboardScreen();
+						exitDashboard();
+					}
+				});
 				settingsButton.setOnClickListener(new android.view.View.OnClickListener() {
 					onClick: function(view) {
 						dialog.dismiss();
@@ -3159,6 +3202,14 @@ VertexClientPE.showMoreDialog = function() {
 						VertexClientPE.closeMenu();
 						playerCustomizerScreen();
 						exitPlayerCustomizer();
+					}
+				});
+				optiFineButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+						VertexClientPE.closeMenu();
+						optiFineScreen();
+						exitOptiFine();
 					}
 				});
 				shopButton.setOnClickListener(new android.view.View.OnClickListener() {
@@ -3496,7 +3547,7 @@ VertexClientPE.showItemGiverDialog = function() {
 	});
 }
 
-var tpX, tpY, tpZ;
+var tpX, tpY, tpZ, teleportName;
 
 VertexClientPE.showTeleportDialog = function() {
 	ctx.runOnUiThread(new java.lang.Runnable() {
@@ -3518,7 +3569,8 @@ VertexClientPE.showTeleportDialog = function() {
 				dialogLayoutBodyRightWrap.setOrientation(1);
 				var dialogLayoutBodyRightScroll = new ScrollView(ctx);
 				dialogLayoutBodyRightWrap.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, LinearLayout.LayoutParams.WRAP_CONTENT));
-				var dialogTableLayout = new widget.TableLayout(ctx);
+				var dialogLeftLayout = new LinearLayout(ctx);
+				dialogLeftLayout.setOrientation(1);
 				var dialogTableRow;
 				var tempButton;
 				var teleportNameText = clientTextView("Teleport location: Unknown");
@@ -3535,12 +3587,38 @@ VertexClientPE.showTeleportDialog = function() {
 				teleportZInput.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
 				teleportZInput.setHint("Z");
 				
-				/*teleportXInput.addTextChangedListener(new android.text.TextWatcher() {
+				teleportXInput.addTextChangedListener(new android.text.TextWatcher() {
 					onTextChanged: function() {
-						teleportName = "Unknown";
+						if(teleportXInput.getText() == VertexClientPE.currentWorld.deathX && teleportYInput.getText() == VertexClientPE.currentWorld.deathY && teleportZInput.getText() == VertexClientPE.currentWorld.deathZ) {
+							teleportName = "Last death";
+						} else {
+							teleportName = "Unknown";
+						}
 						teleportNameText.setText("Name: " + teleportName);
 					}
-				});*/
+				});
+				
+				teleportYInput.addTextChangedListener(new android.text.TextWatcher() {
+					onTextChanged: function() {
+						if(teleportXInput.getText() == VertexClientPE.currentWorld.deathX && teleportYInput.getText() == VertexClientPE.currentWorld.deathY && teleportZInput.getText() == VertexClientPE.currentWorld.deathZ) {
+							teleportName = "Last death";
+						} else {
+							teleportName = "Unknown";
+						}
+						teleportNameText.setText("Name: " + teleportName);
+					}
+				});
+				
+				teleportZInput.addTextChangedListener(new android.text.TextWatcher() {
+					onTextChanged: function() {
+						if(teleportXInput.getText() == VertexClientPE.currentWorld.deathX && teleportYInput.getText() == VertexClientPE.currentWorld.deathY && teleportZInput.getText() == VertexClientPE.currentWorld.deathZ) {
+							teleportName = "Last death";
+						} else {
+							teleportName = "Unknown";
+						}
+						teleportNameText.setText("Name: " + teleportName);
+					}
+				});
 				
 				var teleportButton = clientButton("Teleport");
 				teleportButton.setOnClickListener(new android.view.View.OnClickListener() {
@@ -3557,38 +3635,21 @@ VertexClientPE.showTeleportDialog = function() {
 					}
 				});
 				
-				var comingSoonText = clientTextView("\nSaved teleport locations are coming soon!");
-				dialogTableLayout.addView(comingSoonText);
-				/*itemGiverItems.forEach(function(element, index, array) {
-					if(index % 2 == 1) {
-						if(!dialogTableRow) {
-							dialogTableRow = new widget.TableRow(ctx);
-						}
-						tempButton = clientButton(Item.getName(element.itemId.toString()));
-						tempButton.setOnClickListener(new android.view.View.OnClickListener() {
-							onClick: function(viewArg) {
-								itemIdInput.setText(element.itemId.toString());
-							}
-						});
-						dialogTableRow.addView(tempButton);
-						dialogTableLayout.addView(dialogTableRow);
-						dialogTableRow = null;
-						tempButton = null;
-					} else {
-						dialogTableRow = new widget.TableRow(ctx);
-						tempButton = clientButton(Item.getName(element.itemId.toString()));
-						tempButton.setOnClickListener(new android.view.View.OnClickListener() {
-							onClick: function(viewArg) {
-								itemIdInput.setText(element.itemId.toString());
-							}
-						});
-						dialogTableRow.addView(tempButton);
-						tempButton = null;
+				var deathTeleportButton = clientButton("Last death");
+				deathTeleportButton.setTextColor(android.graphics.Color.RED);
+				deathTeleportButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(viewArg) {
+						teleportXInput.setText(parseInt(VertexClientPE.currentWorld.deathX).toString());
+						teleportYInput.setText(parseInt(VertexClientPE.currentWorld.deathY).toString());
+						teleportZInput.setText(parseInt(VertexClientPE.currentWorld.deathZ).toString());
 					}
 				});
-				if(dialogTableRow != null) {
-					dialogTableLayout.addView(dialogTableRow);
-				}*/
+				if(VertexClientPE.loadDeathCoords()) {
+					dialogLeftLayout.addView(deathTeleportButton);
+				}
+				
+				var comingSoonText = clientTextView("\nSaved teleport locations are coming soon!");
+				//dialogLeftLayout.addView(comingSoonText);
 				var dialogRightLayout = new LinearLayout(ctx);
 				dialogRightLayout.setOrientation(1);
 				
@@ -3606,7 +3667,7 @@ VertexClientPE.showTeleportDialog = function() {
 				dialogLayoutBody.addView(dialogLayoutBodyRightWrap);
 				dialogLayoutBodyLeftWrap.addView(dialogLayoutBodyLeftScroll);
 				dialogLayoutBodyRightWrap.addView(dialogLayoutBodyRightScroll);
-				dialogLayoutBodyLeftScroll.addView(dialogTableLayout);
+				dialogLayoutBodyLeftScroll.addView(dialogLeftLayout);
 				dialogLayoutBodyRightScroll.addView(dialogRightLayout);
 				//dialogLayout.addView(dialogTableLayout);
 				var dialog = new android.app.Dialog(ctx);
@@ -3994,7 +4055,6 @@ VertexClientPE.showCategoryDialog = function(titleView, currentName, categoryId)
 								break;
 						}
 						VertexClientPE.saveMainSettings();
-						VertexClientPE.loadMainSettings();
 						titleView.setText(currentName);
 					}
 				});
@@ -4132,34 +4192,34 @@ VertexClientPE.commandManager = function(cmd) {
 var mp;
 
 var music = [
-	["Jim Yosef – Eclipse [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Jim%20Yosef%20-%20Eclipse.mp3"],
-	["Ahrix – Nova [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Ahrix%20-%20Nova.mp3"],
-	["SirensCeol – Coming Home [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/SirensCeol%20-%20Coming%20Home.mp3"],
-	["Diviners feat. Contacreast – Tropic Love [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Diviners%20ft.%20Contacreast%20-%20Tropic%20Love%20%28Original%20Mix%29.mp3"],
-	["Distrion & Alex Skrindo – Entropy", "http://files-cdn.nocopyrightsounds.co.uk/Distrion%20%26%20Alex%20Skrindo%20-%20Entropy.mp3"],
-	["Disfigure – Blank [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Disfigure%20-%20Blank.mp3"],
-	["DEAF KEV – Invincible [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/DEAF%20KEV%20-%20Invincible.mp3"],
-	["Different Heaven & EH!DE – My Heart [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20%26%20EH%21DE%20-%20My%20Heart.mp3"],
-	["William Ekh – Adventure (feat. Alexa Lusader)", "http://files-cdn.nocopyrightsounds.co.uk/William%20Ekh%20-%20Adventure%20%28feat.%20Alexa%20Lusader%29.mp3"],
-	["Different Heaven – Nekozilla", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20-%20Nekozilla.mp3"],
-	["Tobu – Candyland [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Tobu%20-%20Candyland.mp3"],
-	["Jim Yosef – Firefly [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/jim-yosef-firefly-ncs-release.mp3"]
+	["Jim Yosef - Eclipse [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Jim%20Yosef%20-%20Eclipse.mp3"],
+	["Ahrix - Nova [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Ahrix%20-%20Nova.mp3"],
+	["SirensCeol - Coming Home [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/SirensCeol%20-%20Coming%20Home.mp3"],
+	["Diviners feat. Contacreast - Tropic Love [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Diviners%20ft.%20Contacreast%20-%20Tropic%20Love%20%28Original%20Mix%29.mp3"],
+	["Distrion & Alex Skrindo - Entropy", "http://files-cdn.nocopyrightsounds.co.uk/Distrion%20%26%20Alex%20Skrindo%20-%20Entropy.mp3"],
+	["Disfigure - Blank [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Disfigure%20-%20Blank.mp3"],
+	["DEAF KEV - Invincible [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/DEAF%20KEV%20-%20Invincible.mp3"],
+	["Different Heaven & EH!DE - My Heart [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20%26%20EH%21DE%20-%20My%20Heart.mp3"],
+	["William Ekh - Adventure (feat. Alexa Lusader)", "http://files-cdn.nocopyrightsounds.co.uk/William%20Ekh%20-%20Adventure%20%28feat.%20Alexa%20Lusader%29.mp3"],
+	["Different Heaven - Nekozilla", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20-%20Nekozilla.mp3"],
+	["Tobu - Candyland [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Tobu%20-%20Candyland.mp3"],
+	["Jim Yosef - Firefly [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/jim-yosef-firefly-ncs-release.mp3"]
 ];
 
 VertexClientPE.resetMusic = function() {
 	music = [
-		["Jim Yosef – Eclipse [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Jim%20Yosef%20-%20Eclipse.mp3"],
-		["Ahrix – Nova [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Ahrix%20-%20Nova.mp3"],
-		["SirensCeol – Coming Home [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/SirensCeol%20-%20Coming%20Home.mp3"],
-		["Diviners feat. Contacreast – Tropic Love [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Diviners%20ft.%20Contacreast%20-%20Tropic%20Love%20%28Original%20Mix%29.mp3"],
-		["Distrion & Alex Skrindo – Entropy", "http://files-cdn.nocopyrightsounds.co.uk/Distrion%20%26%20Alex%20Skrindo%20-%20Entropy.mp3"],
-		["Disfigure – Blank [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Disfigure%20-%20Blank.mp3"],
-		["DEAF KEV – Invincible [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/DEAF%20KEV%20-%20Invincible.mp3"],
-		["Different Heaven & EH!DE – My Heart [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20%26%20EH%21DE%20-%20My%20Heart.mp3"],
-		["William Ekh – Adventure (feat. Alexa Lusader)", "http://files-cdn.nocopyrightsounds.co.uk/William%20Ekh%20-%20Adventure%20%28feat.%20Alexa%20Lusader%29.mp3"],
-		["Different Heaven – Nekozilla", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20-%20Nekozilla.mp3"],
-		["Tobu – Candyland [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Tobu%20-%20Candyland.mp3"],
-		["Jim Yosef – Firefly [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/jim-yosef-firefly-ncs-release.mp3"]
+		["Jim Yosef - Eclipse [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Jim%20Yosef%20-%20Eclipse.mp3"],
+		["Ahrix - Nova [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Ahrix%20-%20Nova.mp3"],
+		["SirensCeol - Coming Home [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/SirensCeol%20-%20Coming%20Home.mp3"],
+		["Diviners feat. Contacreast - Tropic Love [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Diviners%20ft.%20Contacreast%20-%20Tropic%20Love%20%28Original%20Mix%29.mp3"],
+		["Distrion & Alex Skrindo - Entropy", "http://files-cdn.nocopyrightsounds.co.uk/Distrion%20%26%20Alex%20Skrindo%20-%20Entropy.mp3"],
+		["Disfigure - Blank [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Disfigure%20-%20Blank.mp3"],
+		["DEAF KEV - Invincible [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/DEAF%20KEV%20-%20Invincible.mp3"],
+		["Different Heaven & EH!DE - My Heart [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20%26%20EH%21DE%20-%20My%20Heart.mp3"],
+		["William Ekh - Adventure (feat. Alexa Lusader)", "http://files-cdn.nocopyrightsounds.co.uk/William%20Ekh%20-%20Adventure%20%28feat.%20Alexa%20Lusader%29.mp3"],
+		["Different Heaven - Nekozilla", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20-%20Nekozilla.mp3"],
+		["Tobu - Candyland [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Tobu%20-%20Candyland.mp3"],
+		["Jim Yosef - Firefly [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/jim-yosef-firefly-ncs-release.mp3"]
 	];
 }
 
@@ -4494,6 +4554,7 @@ VertexClientPE.teleporter = function(x, y, z) {
 }
 
 var settingsPath = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/games/com.mojang/minecraftpe/";
+var worldsPath = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/games/com.mojang/minecraftWorlds/";
 
 VertexClientPE.saveAutoSpammerMessage = function() {
     java.io.File(settingsPath).mkdirs();
@@ -4579,6 +4640,43 @@ VertexClientPE.loadAccounts = function() {
 	} catch(e) {
 		//error
 	}
+}
+
+VertexClientPE.loadDeathCoords = function() {
+    if(!java.io.File(worldsPath + Level.getWorldDir() + "/" + "death.dat").exists())
+        return;
+    var file = new java.io.File(worldsPath + Level.getWorldDir() + "/" + "death.dat");
+    var fos = new java.io.FileInputStream(file);
+    var str = new java.lang.StringBuilder();
+    var ch;
+    while((ch = fos.read()) != -1)
+        str.append(java.lang.Character(ch));
+	if(str.toString().split(",")[0] != null && str.toString().split(",")[0] != undefined) {
+		VertexClientPE.currentWorld.deathX = parseInt(str.toString().split(",")[0]); //Here we split text by ","
+	}
+	if(str.toString().split(",")[1] != null && str.toString().split(",")[1] != undefined) {
+		VertexClientPE.currentWorld.deathY = parseInt(str.toString().split(",")[1]); //Here we split text by ","
+	}
+	if(str.toString().split(",")[2] != null && str.toString().split(",")[2] != undefined) {
+		VertexClientPE.currentWorld.deathZ = parseInt(str.toString().split(",")[2]); //Here we split text by ","
+	}
+    fos.close();
+	return true;
+}
+
+VertexClientPE.saveDeathCoords = function() {
+    java.io.File(settingsPath).mkdirs();
+    var newFile = new java.io.File(worldsPath + Level.getWorldDir() + "/" + "death.dat");
+    newFile.createNewFile();
+    var outWrite = new java.io.OutputStreamWriter(new java.io.FileOutputStream(newFile));
+    outWrite.append(VertexClientPE.currentWorld.deathX.toString());
+    outWrite.append("," + VertexClientPE.currentWorld.deathY.toString());
+    outWrite.append("," + VertexClientPE.currentWorld.deathZ.toString());
+
+    outWrite.close();
+	
+	VertexClientPE.saveAutoSpammerMessage();
+	VertexClientPE.saveCategorySettings();
 }
 
 VertexClientPE.saveMainSettings = function() {
@@ -5512,7 +5610,7 @@ function blackSubTitle(subtitle) // TextView with colored background (edited by 
 	return title;
 }
 
-function backgroundSpecial(round, color) {
+function backgroundSpecial(round, color, showProLine) {
 	var bg = android.graphics.drawable.GradientDrawable();
 	if(round == true) {
 		bg.setCornerRadius(8);
@@ -5591,6 +5689,9 @@ function backgroundSpecial(round, color) {
 		bg.setColor(android.graphics.Color.parseColor("#70E1E1E1"));
 	} else if(color == "black") {
 		bg.setColor(android.graphics.Color.parseColor("#70141414"));
+	}
+	if(showProLine && VertexClientPE.isPro()) {
+		bg.setStroke(dip2px(1), android.graphics.Color.parseColor("#70DAA520"));
 	}
 	bg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
 
@@ -6323,6 +6424,7 @@ VertexClientPE.update = function() {
 }
 
 function newLevel() {
+	lagTimer = 0;
 	ctx.runOnUiThread(new java.lang.Runnable() {
 		run: function() {
 			if(accountManager != null) {
@@ -6337,10 +6439,11 @@ function newLevel() {
 	autoLeaveStage = 0;
 	VertexClientPE.playerIsInGame = true;
 	VertexClientPE.loadMainSettings();
+	VertexClientPE.loadDeathCoords();
 	if(VertexClientPE.isPro()) {
 		VertexClientPE.giveProVertexCash();
 		if(!VertexClientPE.hasEarnedProVertexCash()) {
-			VertexClientPE.toast("You just earned 500 V€rt€xCash because you activated Pro successfully!");
+			VertexClientPE.toast("You just earned 500 V?rt?xCash because you activated Pro successfully!");
 			VertexClientPE.moneyToast();
 			if(shopCashText != null) {
 				shopCashText.setText("\u26C1 " + VertexClientPE.getVertexCash());
@@ -6385,6 +6488,15 @@ function newLevel() {
 		if(getRandomInt(0, 20) == 10) {
 			VertexClientPE.showUpgradeDialog();
 		}
+	}
+}
+
+function deathHook(a, v) {
+	if(v == getPlayerEnt()) {
+		VertexClientPE.currentWorld.deathX = getPlayerX();
+		VertexClientPE.currentWorld.deathY = getPlayerY();
+		VertexClientPE.currentWorld.deathZ = getPlayerZ();
+		VertexClientPE.saveDeathCoords();
 	}
 }
 
@@ -6844,6 +6956,12 @@ function addonScreen() {
         }));
 }
 
+/**
+  * function playerCustomizerScreen()
+  * @author peacestorm
+  * @since v1.1
+  * @todo Models/morphing, collision size, particles?
+ */
 function playerCustomizerScreen() {
 	var display = new android.util.DisplayMetrics();
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
@@ -6885,11 +7003,107 @@ function playerCustomizerScreen() {
 					playCustomizerLayoutScroll.addView(playCustomizerLayout);
 					playCustomizerLayout1.addView(playCustomizerLayoutScroll);
 					
-					var playerCustomizerTableLayout = new widget.TableLayout(ctx);
+					var playerModelButton = clientButton("Player");
+					if(Entity.getRenderType(getPlayerEnt()) == EntityRenderType.player) {
+						playerModelButton.setTextColor(android.graphics.Color.GREEN);
+					}
+					playerModelButton.setOnClickListener(new android.view.View.OnClickListener() {
+						onClick: function() {
+							Entity.setRenderType(getPlayerEnt(), EntityRenderType.player);
+							playerModelButton.setTextColor(android.graphics.Color.GREEN);
+							skeletonModelButton.setTextColor(android.graphics.Color.WHITE);
+							spiderModelButton.setTextColor(android.graphics.Color.WHITE);
+						}
+					});
+					playCustomizerLayout.addView(playerModelButton);
 					
-					playCustomizerLayout.addView(playerCustomizerTableLayout);
+					var skeletonModelButton = clientButton("Skeleton");
+					if(Entity.getRenderType(getPlayerEnt()) == EntityRenderType.skeleton) {
+						skeletonModelButton.setTextColor(android.graphics.Color.GREEN);
+					}
+					skeletonModelButton.setOnClickListener(new android.view.View.OnClickListener() {
+						onClick: function() {
+							Entity.setRenderType(getPlayerEnt(), EntityRenderType.skeleton);
+							playerModelButton.setTextColor(android.graphics.Color.WHITE);
+							skeletonModelButton.setTextColor(android.graphics.Color.GREEN);
+							spiderModelButton.setTextColor(android.graphics.Color.WHITE);
+						}
+					});
+					playCustomizerLayout.addView(skeletonModelButton);
 					
-					/*itemGiverItems.forEach(function(element, index, array) {
+					var spiderModelButton = clientButton("Spider");
+					if(Entity.getRenderType(getPlayerEnt()) == EntityRenderType.spider) {
+						spiderModelButton.setTextColor(android.graphics.Color.GREEN);
+					}
+					spiderModelButton.setOnClickListener(new android.view.View.OnClickListener() {
+						onClick: function() {
+							Entity.setRenderType(getPlayerEnt(), EntityRenderType.spider);
+							playerModelButton.setTextColor(android.graphics.Color.WHITE);
+							skeletonModelButton.setTextColor(android.graphics.Color.WHITE);
+							spiderModelButton.setTextColor(android.graphics.Color.GREEN);
+						}
+					});
+					playCustomizerLayout.addView(spiderModelButton);
+					
+					var changeModelButton = clientButton("Change Model \u25BC")
+					//playCustomizerLayout.addView(changeModelButton);
+
+                    playerCustomizerMenu = new widget.PopupWindow(playCustomizerLayout1, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
+                    playerCustomizerMenu.setBackgroundDrawable(backgroundGradient());
+                    playerCustomizerMenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
+                } catch(error) {
+                    print('An error occurred: ' + error);
+                }
+            }
+        }));
+}
+
+function optiFineScreen() {
+	var display = new android.util.DisplayMetrics();
+	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
+    var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+        ctx.runOnUiThread(new java.lang.Runnable({
+            run: function() {
+                try {
+                	if(GUI != null) {
+                		if(GUI.isShowing()) {
+                			GUI.dismiss();
+                		}
+                	}
+                	if(hacksList != null) {
+                		if(hacksList.isShowing()) {
+                			hacksList.dismiss();
+                		}
+                	}
+					if(tabGUI != null) {
+                		if(tabGUI.isShowing()) {
+                			tabGUI.dismiss();
+                		}
+                	}
+
+					var optiFineLayout = new LinearLayout(ctx);
+                    optiFineLayout.setOrientation(1);
+                    optiFineLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					
+					var optiFineLayoutScroll = new ScrollView(ctx);
+					
+					var optiFineLayout1 = new LinearLayout(ctx);
+                    optiFineLayout1.setOrientation(1);
+                    optiFineLayout1.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					
+					var optiFineTitle = clientTextView("OptiFine", true);
+					optiFineTitle.setTextSize(25);
+					optiFineTitle.setGravity(android.view.Gravity.CENTER);
+					optiFineLayout1.addView(optiFineTitle);
+					
+					optiFineLayoutScroll.addView(optiFineLayout);
+					optiFineLayout1.addView(optiFineLayoutScroll);
+					
+					/*var playerCustomizerTableLayout = new widget.TableLayout(ctx);
+					
+					optiFineLayout.addView(playerCustomizerTableLayout);
+					
+					itemGiverItems.forEach(function(element, index, array) {
 						if(index % 2 == 1) {
 							if(!dialogTableRow) {
 								dialogTableRow = new widget.TableRow(ctx);
@@ -6919,10 +7133,25 @@ function playerCustomizerScreen() {
 					if(dialogTableRow != null) {
 						dialogTableLayout.addView(dialogTableRow);
 					}*/
+					var antiLagDropRemoverButton = new android.widget.Switch(ctx);
+					antiLagDropRemoverButton.setText("Automatically remove dropped items to reduce lag");
+					antiLagDropRemoverButton.setChecked(antiLagDropRemoverSetting=="on"?true:false);
+					antiLagDropRemoverButton.setOnCheckedChangeListener(new android.widget.CompoundButton.OnCheckedChangeListener({
+						onCheckedChanged: function(){
+							if(antiLagDropRemoverSetting == "off") {
+								antiLagDropRemoverSetting = "on";
+							} else if(antiLagDropRemoverSetting == "on") {
+								antiLagDropRemoverSetting = "off";
+							}
+							lagTimer = 0;
+							VertexClientPE.saveMainSettings();
+						}
+					}));
+					optiFineLayout.addView(antiLagDropRemoverButton);
 
-                    playerCustomizerMenu = new widget.PopupWindow(playCustomizerLayout1, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
-                    playerCustomizerMenu.setBackgroundDrawable(backgroundGradient());
-                    playerCustomizerMenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
+                    optiFineMenu = new widget.PopupWindow(optiFineLayout1, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
+                    optiFineMenu.setBackgroundDrawable(backgroundGradient());
+                    optiFineMenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
                 } catch(error) {
                     print('An error occurred: ' + error);
                 }
@@ -6999,6 +7228,54 @@ function shopScreen() {
         }));
 }
 
+function dashboardScreen() {
+	ctx.runOnUiThread(new java.lang.Runnable({
+		run: function() {
+			try {
+				if(GUI != null) {
+					if(GUI.isShowing()) {
+						GUI.dismiss();
+					}
+				}
+				if(hacksList != null) {
+					if(hacksList.isShowing()) {
+						hacksList.dismiss();
+					}
+				}
+				if(tabGUI != null) {
+					if(tabGUI.isShowing()) {
+						tabGUI.dismiss();
+					}
+				}
+
+				var dashboardMenuLayout = new LinearLayout(ctx);
+				dashboardMenuLayout.setOrientation(1);
+				dashboardMenuLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+				
+				var dashboardMenuLayoutScroll = new ScrollView(ctx);
+				
+				var dashboardMenuLayout1 = new LinearLayout(ctx);
+				dashboardMenuLayout1.setOrientation(1);
+				dashboardMenuLayout1.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+				
+				var dashboardTitle = clientTextView("Dashboard", true);
+				dashboardTitle.setTextSize(25);
+				dashboardTitle.setGravity(android.view.Gravity.CENTER);
+				dashboardMenuLayout1.addView(dashboardTitle);
+				
+				dashboardMenuLayout1.addView(clientTextView("\n"));
+				dashboardMenuLayoutScroll.addView(dashboardMenuLayout);
+				dashboardMenuLayout1.addView(dashboardMenuLayoutScroll);
+				dashboardMenu = new widget.PopupWindow(dashboardMenuLayout1, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
+				dashboardMenu.setBackgroundDrawable(backgroundGradient());
+				dashboardMenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
+			} catch(error) {
+				print('An error occurred: ' + error);
+			}
+		}
+	}));
+}
+
 var webBrowserWebView;
 
 function webBrowserScreen() {
@@ -7048,14 +7325,14 @@ function webBrowserScreen() {
 				webBrowserMenu.setBackgroundDrawable(backgroundGradient());
 				webBrowserMenu.setOnDismissListener(new widget.PopupWindow.OnDismissListener() {
 					onDismiss: function() {
-						if(reloadWebBrowserUI != null) {
+						/*if(reloadWebBrowserUI != null) {
 							if(reloadWebBrowserUI.isShowing()) {
 								reloadWebBrowserUI.dismiss();
 							}
-						}
+						}*/
 						if(exitWebBrowserUI != null) {
 							if(exitWebBrowserUI.isShowing()) {
-								exitWebBrowserUI.dismiss();
+								xWebBrowserButton.performClick();
 							}
 						}
 					}
@@ -7191,6 +7468,11 @@ VertexClientPE.showMenuBar = function() {
 	}));
 }
 
+/**
+ * function VertexClientPE.showMenu()
+ * @author peacestorm
+ * @since v1.1
+*/
 VertexClientPE.showMenu = function() {
 	var _0x4eba=["\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x6F\x75\x74\x64\x61\x74\x65\x64\x2C\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C","\x74\x6F\x61\x73\x74","\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C","\x53\x6F\x72\x72\x79\x2C\x20\x74\x68\x69\x73\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x69\x73\x20\x6E\x6F\x74\x20\x73\x75\x70\x70\x6F\x72\x74\x65\x64\x20\x61\x6E\x79\x6D\x6F\x72\x65\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x75\x70\x67\x72\x61\x64\x65\x20\x74\x6F\x20\x74\x68\x65\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x2E"];if(!isAuthorized){if(!isSupported){VertexClientPE[_0x4eba[1]](_0x4eba[0])}else {VertexClientPE[_0x4eba[1]](_0x4eba[2])};return}else {if(!isSupported){VertexClientPE[_0x4eba[1]](_0x4eba[3]);return}}
 	menuBtn.setBackgroundDrawable(iconClickedClientGUI);
@@ -7208,6 +7490,11 @@ VertexClientPE.showMenu = function() {
 	//VertexClientPE.showTopBar();
 }
 
+/**
+ * function VertexClientPE.closeMenu()
+ * @author peacestorm
+ * @since v1.1
+*/
 VertexClientPE.closeMenu = function() {
 	if(menuType == "normal") {
 		if(vertexclientpemiscmenu != null) {
@@ -7241,6 +7528,11 @@ VertexClientPE.closeMenu = function() {
 
 var currentTab = "Combat";
 
+/**
+ * function mainMenu()
+ * @author peacestorm
+ * @since v1.0-pre
+*/
 function mainMenu() {
 	VertexClientPE.loadMainSettings();
 	var display = new android.util.DisplayMetrics();
@@ -7982,9 +8274,9 @@ VertexClientPE.showFavMenu = function() {
     });
 }
 
-function changeColor(view) {
+function changeColor(view, color) {
 	if(view != null) {
-		view.setColorFilter(new android.graphics.LightingColorFilter(android.graphics.Color.RED, 0));
+		view.setColorFilter(new android.graphics.LightingColorFilter(color, 0));
 	}
 }
 
@@ -8077,7 +8369,7 @@ function showMenuButton() {
 	if(menuAnimationsSetting == "on") {
 		GUI.setAnimationStyle(android.R.style.Animation_Translucent);
 	}
-    GUI.setBackgroundDrawable(backgroundSpecial("cornerright", themeSetting));
+    GUI.setBackgroundDrawable(backgroundSpecial("cornerright", themeSetting, true));
 	if(mainButtonPositionSetting == "top-right") {
 		GUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
 	}if(mainButtonPositionSetting == "bottom-right") {
@@ -8129,7 +8421,7 @@ VertexClientPE.clientTick = function() {
                     run: function() {
 						try{
 							var _0x43af=["\x61\x75\x74\x68\x6F\x72","\x70\x65\x61\x63\x65\x73\x74\x6F\x72\x6D"];if(VertexClientPE[_0x43af[0]]!= _0x43af[1]){isAuthorized= false}
-							if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false)  && (menu == null || menu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false) && (webBrowserMenu == null || webBrowserMenu.isShowing() == false) && (playerCustomizerMenu == null || playerCustomizerMenu.isShowing() == false) && (shopMenu == null || shopMenu.isShowing() == false)) {
+							if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false)  && (menu == null || menu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false) && (webBrowserMenu == null || webBrowserMenu.isShowing() == false) && (playerCustomizerMenu == null || playerCustomizerMenu.isShowing() == false) && (optiFineMenu == null || optiFineMenu.isShowing() == false) && (shopMenu == null || shopMenu.isShowing() == false) && (dashboardMenu == null || dashboardMenu.isShowing() == false)) {
 								VertexClientPE.isRemote = true;
 								if(Launcher.isBlockLauncher()) {
 									net.zhuoweizhang.mcpelauncher.ScriptManager.isRemote = true;
@@ -8149,7 +8441,7 @@ VertexClientPE.clientTick = function() {
 							print("Use BlockLauncher v1.12.2 or above!");
 							ModPE.log(e);
 						}
-						if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (menu == null || menu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false) && (webBrowserMenu == null || webBrowserMenu.isShowing() == false) && (playerCustomizerMenu == null || playerCustomizerMenu.isShowing() == false) && (shopMenu == null || shopMenu.isShowing() == false)) {
+						if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (menu == null || menu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false) && (webBrowserMenu == null || webBrowserMenu.isShowing() == false) && (playerCustomizerMenu == null || playerCustomizerMenu.isShowing() == false) && (optiFineMenu == null || optiFineMenu.isShowing() == false) && (shopMenu == null || shopMenu.isShowing() == false) && (dashboardMenu == null || dashboardMenu.isShowing() == false)) {
 							VertexClientPE.isRemote = true;
 							showMenuButton();
 						}
@@ -8191,6 +8483,7 @@ VertexClientPE.specialTick = function() {
 }
 
 var secondTickTimer = 0;
+var lagTimer = 0;
 
 VertexClientPE.secondTick = function() {
 	ctx.runOnUiThread(new java.lang.Runnable({
@@ -8212,6 +8505,32 @@ VertexClientPE.secondTick = function() {
 						}
 					} else {
 						secondTickTimer += 1;
+					}
+					
+					if(antiLagDropRemoverSetting == "on" && VertexClientPE.playerIsInGame && !VertexClientPE.isRemote) {
+						if(lagTimer == 0) {
+							VertexClientPE.clientMessage("Dropped items will be removed in " + ChatColor.RED + "two minutes" + ChatColor.WHITE + "!");
+							lagTimer++;
+						} else {
+                            if(lagTimer >= 1 && lagTimer < 120) {
+								if(lagTimer == 60) {
+									VertexClientPE.clientMessage("Dropped items will be removed in " + ChatColor.RED + "one minute" + ChatColor.WHITE + "!");
+								}
+							    lagTimer++;
+						    } else if(lagTimer == 120) {
+							    Entity.getAll().forEach(function(element, index, array) {
+								    if(Entity.getEntityTypeId(element) == EntityType.ITEM) {
+									    try {
+										    Entity.remove(element);
+									    } catch(e) {
+										    print("An error occurred: " + e);
+									    }
+								    }
+								});
+								VertexClientPE.clientMessage("Successfully removed dropped items!");
+							    lagTimer = 0;
+							}
+						}
 					}
 					VertexClientPE.secondTick();
 				}
@@ -8697,6 +9016,8 @@ function exitAddon() {
 	}));
 }
 
+var xWebBrowserButton;
+
 function overlayWebBrowser() {
     var ctxe = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
     ctxe.runOnUiThread(new java.lang.Runnable({
@@ -8717,7 +9038,7 @@ function overlayWebBrowser() {
 				reloadWebBrowserLayout.addView(reloadWebBrowserButton);
 				
 				var xWebBrowserLayout = new LinearLayout(ctxe);
-				var xWebBrowserButton = new Button(ctxe);
+				xWebBrowserButton = new Button(ctxe);
 				xWebBrowserButton.setText("X");//Text
 				xWebBrowserButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
 				xWebBrowserButton.setTextColor(android.graphics.Color.WHITE);
@@ -8780,6 +9101,38 @@ function exitPlayerCustomizer() {
 	}));
 }
 
+function exitOptiFine() {
+    var ctxe = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+    ctxe.runOnUiThread(new java.lang.Runnable({
+		run: function() {
+			try {
+				var xOptiFineLayout = new LinearLayout(ctxe);
+				var xOptiFineButton = new Button(ctxe);
+				xOptiFineButton.setText('X');//Text
+				xOptiFineButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
+				xOptiFineButton.setTextColor(android.graphics.Color.WHITE);
+				xOptiFineButton.setOnClickListener(new android.view.View.OnClickListener({
+					onClick: function(viewarg){
+						exitOptiFineUI.dismiss(); //Close
+						optiFineMenu.dismiss(); //Close
+						showMenuButton();
+						showHacksList();
+						showTabGUI();
+					}
+				}));
+				xOptiFineLayout.addView(xOptiFineButton);
+				
+				exitOptiFineUI = new widget.PopupWindow(xOptiFineLayout, dip2px(40), dip2px(40));
+				exitOptiFineUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				exitOptiFineUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
+			} catch(exception) {
+				print(exception);
+				VertexClientPE.showBugReportDialog(exception);
+			}
+		}
+	}));
+}
+
 function exitShop() {
     var ctxe = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
     ctxe.runOnUiThread(new java.lang.Runnable({
@@ -8804,6 +9157,38 @@ function exitShop() {
 				exitShopUI = new widget.PopupWindow(xShopLayout, dip2px(40), dip2px(40));
 				exitShopUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
 				exitShopUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
+			} catch(exception) {
+				print(exception);
+				VertexClientPE.showBugReportDialog(exception);
+			}
+		}
+	}));
+}
+
+function exitDashboard() {
+    var ctxe = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+    ctxe.runOnUiThread(new java.lang.Runnable({
+		run: function() {
+			try {
+				var xDashboardLayout = new LinearLayout(ctxe);
+				var xDashboardButton = new Button(ctxe);
+				xDashboardButton.setText('X');//Text
+				xDashboardButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
+				xDashboardButton.setTextColor(android.graphics.Color.WHITE);
+				xDashboardButton.setOnClickListener(new android.view.View.OnClickListener({
+					onClick: function(viewarg) {
+						exitDashboardUI.dismiss(); //Close
+						dashboardMenu.dismiss(); //Close
+						showMenuButton();
+						showHacksList();
+						showTabGUI();
+					}
+				}));
+				xDashboardLayout.addView(xDashboardButton);
+				
+				exitDashboardUI = new widget.PopupWindow(xDashboardLayout, dip2px(40), dip2px(40));
+				exitDashboardUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				exitDashboardUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
 			} catch(exception) {
 				print(exception);
 				VertexClientPE.showBugReportDialog(exception);
