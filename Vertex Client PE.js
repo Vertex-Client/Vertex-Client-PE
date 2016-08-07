@@ -2188,7 +2188,7 @@ VertexClientPE.registerModule(derp);
 VertexClientPE.registerModule(itemGiver);
 VertexClientPE.registerModule(onlyDay);
 VertexClientPE.registerModule(orderAPizza);
-//VertexClientPE.registerModule(remoteView);
+VertexClientPE.registerModule(remoteView);
 VertexClientPE.registerModule(teleport);
 //VertexClientPE.registerModule(tracers);
 VertexClientPE.registerModule(yesCheatPlus);
@@ -6443,7 +6443,7 @@ function newLevel() {
 	if(VertexClientPE.isPro()) {
 		VertexClientPE.giveProVertexCash();
 		if(!VertexClientPE.hasEarnedProVertexCash()) {
-			VertexClientPE.toast("You just earned 500 V?rt?xCash because you activated Pro successfully!");
+			VertexClientPE.toast("You just earned 500 V€rt€xCash because you activated Pro successfully!");
 			VertexClientPE.moneyToast();
 			if(shopCashText != null) {
 				shopCashText.setText("\u26C1 " + VertexClientPE.getVertexCash());
