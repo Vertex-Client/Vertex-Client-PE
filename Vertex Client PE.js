@@ -216,7 +216,7 @@ var menuType = "normal";
 var chestTracersRange = 10;
 var tabGUIModeSetting = "on";
 var chestTracersGroundMode = "on";
-var chestTracersParticle = "on";
+var chestTracersParticle = "flame";
 var antiLagDropRemoverSetting = "on";
 //---------------------------
 var combatName = "Combat";
@@ -248,6 +248,7 @@ var reloadWebBrowserUI;
 var exitDashboardUI;
 var vertexclientpemiscmenu;
 var dashboardMenu;
+var shopMenu;
 var settingsMenu;
 var addonMenu;
 var webBrowserMenu;
@@ -3576,15 +3577,15 @@ VertexClientPE.showTeleportDialog = function() {
 				var teleportNameText = clientTextView("Teleport location: Unknown");
 				var teleportXInput = new EditText(ctx);
 				teleportXInput.setTextColor(android.graphics.Color.WHITE);
-				teleportXInput.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+				teleportXInput.setInputType(android.text.InputType.TYPE_CLASS_NUMBER | android.text.InputType.TYPE_NUMBER_FLAG_SIGNED);
 				teleportXInput.setHint("X");
 				var teleportYInput = new EditText(ctx);
 				teleportYInput.setTextColor(android.graphics.Color.WHITE);
-				teleportYInput.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+				teleportYInput.setInputType(android.text.InputType.TYPE_CLASS_NUMBER | android.text.InputType.TYPE_NUMBER_FLAG_SIGNED);
 				teleportYInput.setHint("Y");
 				var teleportZInput = new EditText(ctx);
 				teleportZInput.setTextColor(android.graphics.Color.WHITE);
-				teleportZInput.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+				teleportZInput.setInputType(android.text.InputType.TYPE_CLASS_NUMBER | android.text.InputType.TYPE_NUMBER_FLAG_SIGNED);
 				teleportZInput.setHint("Z");
 				
 				teleportXInput.addTextChangedListener(new android.text.TextWatcher() {
@@ -3623,9 +3624,9 @@ VertexClientPE.showTeleportDialog = function() {
 				var teleportButton = clientButton("Teleport");
 				teleportButton.setOnClickListener(new android.view.View.OnClickListener() {
 					onClick: function(viewArg) {
-						tpX = parseInt(teleportXInput.getText());
-						tpY = parseInt(teleportYInput.getText());
-						tpZ = parseInt(teleportZInput.getText());
+						tpX = teleportXInput.getText();
+						tpY = teleportYInput.getText();
+						tpZ = teleportZInput.getText();
 						if(tpX != null && tpY != null && tpZ != null && tpX != "" && tpY != "" && tpZ != "" && !isNaN(tpX) && !isNaN(tpY) && !isNaN(tpZ)) {
 							Entity.setPosition(getPlayerEnt(), tpX,  tpY,  tpZ);
 							VertexClientPE.toast("Successfully teleported player to " + tpX + ", " + tpY + ", " + tpZ);
@@ -3639,9 +3640,9 @@ VertexClientPE.showTeleportDialog = function() {
 				deathTeleportButton.setTextColor(android.graphics.Color.RED);
 				deathTeleportButton.setOnClickListener(new android.view.View.OnClickListener() {
 					onClick: function(viewArg) {
-						teleportXInput.setText(parseInt(VertexClientPE.currentWorld.deathX).toString());
-						teleportYInput.setText(parseInt(VertexClientPE.currentWorld.deathY).toString());
-						teleportZInput.setText(parseInt(VertexClientPE.currentWorld.deathZ).toString());
+						teleportXInput.setText(VertexClientPE.currentWorld.deathX.toString());
+						teleportYInput.setText(VertexClientPE.currentWorld.deathY.toString());
+						teleportZInput.setText(VertexClientPE.currentWorld.deathZ.toString());
 					}
 				});
 				if(VertexClientPE.loadDeathCoords()) {
@@ -7266,6 +7267,22 @@ function dashboardScreen() {
 				dashboardMenuLayout1.addView(clientTextView("\n"));
 				dashboardMenuLayoutScroll.addView(dashboardMenuLayout);
 				dashboardMenuLayout1.addView(dashboardMenuLayoutScroll);
+				
+				var statusType = "normal user";
+				if(ModPE.getPlayerName() == "peacestorm") {
+					statusType = "developer";
+				}
+				var statusTextView = clientTextView("Status: " + statusType);
+				
+				var proType = "no";
+				if(VertexClientPE.isPro()) {
+					proType = "yes";
+				}
+				var proTextView = clientTextView("Pro: " + proType);
+				
+				dashboardMenuLayout.addView(statusTextView);
+				dashboardMenuLayout.addView(proTextView);
+				
 				dashboardMenu = new widget.PopupWindow(dashboardMenuLayout1, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
 				dashboardMenu.setBackgroundDrawable(backgroundGradient());
 				dashboardMenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
