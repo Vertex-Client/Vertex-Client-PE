@@ -182,6 +182,16 @@ var f = 0;
 
 VertexClientPE.font = android.graphics.Typeface.create("sans-serif-thin", android.graphics.Typeface.NORMAL);
 
+VertexClientPE.getDeviceName = function() {
+	var manufacturer = android.os.Build.MANUFACTURER;
+	var model = android.os.Build.MODEL;
+	if (model.startsWith(manufacturer)) {
+		return model;
+	} else {
+		return manufacturer + " " + model;
+	}
+}
+
 var tts = new android.speech.tts.TextToSpeech(ctx, new android.speech.tts.TextToSpeech.OnInitListener({
 	onInit: function(status) {
 		tts.setLanguage(java.util.Locale.US);
@@ -5443,6 +5453,35 @@ function clientTextView(text, shadow) //menu buttons
     return defaultTextView;
 }
 
+function clientSectionTitle(text) {
+	var defaultTextView = new widget.TextView(ctx);
+    defaultTextView.setText(text);
+	if(themeSetting == "white") {
+		defaultTextView.setTextColor(android.graphics.Color.BLACK);
+	} else {
+		defaultTextView.setTextColor(android.graphics.Color.WHITE);
+	}
+    defaultTextView.setTypeface(VertexClientPE.font);
+	
+	if(themeSetting == "white") {
+		defaultTextView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.WHITE);
+	} else {
+		defaultTextView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.BLACK);
+	}
+	defaultTextView.setBackgroundDrawable(backgroundSpecial());
+    defaultTextView.setPadding(0, 0, 0, 0);
+    defaultTextView.setLineSpacing(0, 1.15);
+    return defaultTextView;
+}
+
+function clientHR() {//horizontal divider
+	var defaultView = new android.view.View(ctx);
+	defaultView.setLayoutParams(new LinearLayout.LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT, 5));
+	defaultView.setBackgroundColor(android.graphics.Color.parseColor("#B3B3B3"));
+	
+    return defaultView;
+}
+
 function categoryTitle(text) {
 	var categoryTitleLayout = new LinearLayout(ctx);
 	categoryTitleLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -6864,6 +6903,12 @@ function informationScreen() {
                 			tabGUI.dismiss();
                 		}
                 	}
+					
+					var informationMenuLayout1 = new LinearLayout(ctx);
+					informationMenuLayout1.setOrientation(1);
+                    informationMenuLayout1.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					
+					var informationMenuScrollView = new ScrollView(ctx);
 
                     var informationMenuLayout = new LinearLayout(ctx);
                     informationMenuLayout.setOrientation(1);
@@ -6872,7 +6917,10 @@ function informationScreen() {
 					var informationTitle = clientTextView("Information", true);
 					informationTitle.setTextSize(25);
 					informationTitle.setGravity(android.view.Gravity.CENTER);
-					informationMenuLayout.addView(informationTitle);
+					
+					informationMenuScrollView.addView(informationMenuLayout);
+					informationMenuLayout1.addView(informationTitle);
+					informationMenuLayout1.addView(informationMenuScrollView);
 					
 					var informationText = clientTextView("\u00A9 peacestorm, MyNameIsTriXz, _TXMO and LPMG | 2015 - 2016. Some rights reserved.\nThanks to @Herqux_ and @MyNameIsTriXz for graphic designs.", true);
 					
@@ -6883,10 +6931,63 @@ function informationScreen() {
 					}
 					}));
 					
+					var enterOne = clientTextView("\n");
+					var hrView = clientHR();
+					var enterTwo = clientTextView("\n");
+					
 					informationMenuLayout.addView(informationText);
 					informationMenuLayout.addView(websiteButton);
+					informationMenuLayout.addView(enterOne);
+					informationMenuLayout.addView(hrView);
+					informationMenuLayout.addView(enterTwo);
+					
+					var minecraftInfoTitle = clientSectionTitle("Minecraft info");
+				
+					var minecraftVersion = ModPE.getMinecraftVersion();
+					var minecraftVersionTextView = clientTextView("Version: " + minecraftVersion);
+					
+					var username = ModPE.getPlayerName();
+					var usernameTextView = clientTextView("Username: " + username);
+					
+					var clientId = ModPE.getClientId();
+					var clientIdTextView = clientTextView("Client ID: " + clientId);
+					
+					var vertexInfoTitle = clientSectionTitle("Vertex info");
+					
+					var vertexVersion = VertexClientPE.currentVersion;
+					var vertexVersionTextView = clientTextView("Version: " + vertexVersion);
+					
+					var statusType = "normal user";
+					if(ModPE.getPlayerName() == "peacestorm") {
+						statusType = "developer";
+					}
+					var statusTextView = clientTextView("Status: " + statusType);
+					
+					var proType = "no";
+					if(VertexClientPE.isPro()) {
+						proType = "yes";
+					}
+					var proTextView = clientTextView("Pro: " + proType);
+					
+					var deviceInfoTitle = clientSectionTitle("Device info");
+					
+					var deviceType = VertexClientPE.getDeviceName();
+					var deviceTextView = clientTextView("Device: " + deviceType);
+					
+					informationMenuLayout.addView(minecraftInfoTitle);
+					informationMenuLayout.addView(minecraftVersionTextView);
+					informationMenuLayout.addView(usernameTextView);
+					informationMenuLayout.addView(clientIdTextView);
+					//-------------------------------------------
+					informationMenuLayout.addView(vertexInfoTitle);
+					informationMenuLayout.addView(vertexVersionTextView);
+					informationMenuLayout.addView(statusTextView);
+					informationMenuLayout.addView(proTextView);
+					//-------------------------------------------
+					informationMenuLayout.addView(deviceInfoTitle);
+					informationMenuLayout.addView(deviceTextView);
 
-                    informationMenu = new widget.PopupWindow(informationMenuLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
+                    informationMenu = new widget.PopupWindow(informationMenuLayout1, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
                     informationMenu.setBackgroundDrawable(backgroundGradient());
                     informationMenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
                 } catch(error) {
@@ -7267,21 +7368,6 @@ function dashboardScreen() {
 				dashboardMenuLayout1.addView(clientTextView("\n"));
 				dashboardMenuLayoutScroll.addView(dashboardMenuLayout);
 				dashboardMenuLayout1.addView(dashboardMenuLayoutScroll);
-				
-				var statusType = "normal user";
-				if(ModPE.getPlayerName() == "peacestorm") {
-					statusType = "developer";
-				}
-				var statusTextView = clientTextView("Status: " + statusType);
-				
-				var proType = "no";
-				if(VertexClientPE.isPro()) {
-					proType = "yes";
-				}
-				var proTextView = clientTextView("Pro: " + proType);
-				
-				dashboardMenuLayout.addView(statusTextView);
-				dashboardMenuLayout.addView(proTextView);
 				
 				dashboardMenu = new widget.PopupWindow(dashboardMenuLayout1, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
 				dashboardMenu.setBackgroundDrawable(backgroundGradient());
