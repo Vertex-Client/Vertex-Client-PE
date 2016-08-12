@@ -81,25 +81,6 @@ function screenChangeHook(screenName) {
 	}
 }
 
-/*KeyEvent.Callback.onKeyUp = function(keyCode, event) {
-    switch(keyCode) {
-        case KeyEvent.KEYCODE_D:
-            print("test");
-            return true;
-        case KeyEvent.KEYCODE_F:
-            moveShip(MOVE_RIGHT);
-            return true;
-        case KeyEvent.KEYCODE_J:
-            fireMachineGun();
-            return true;
-        case KeyEvent.KEYCODE_K:
-            fireMissile();
-            return true;
-        default:
-            return super.onKeyUp(keyCode, event);
-    }
-}*/
-
 // ####################
 // # CLIENT FUNCTIONS #
 // ####################
@@ -3134,17 +3115,10 @@ VertexClientPE.showMoreDialog = function() {
 			try {
 				var moreTitle = clientTextView("More", true);
 				var dashboardButton = clientButton("Dashboard");
-				var settingsButton = clientButton("Settings");
-				var addonsButton = clientButton("Addons");
 				var webBrowserButton = clientButton("Webbrowser");
 				var playerCustomizerButton = clientButton("Player Customizer");
 				var optiFineButton = clientButton("OptiFine");
 				var shopButton = clientButton("Shop");
-				var informationButton = clientButton("Information");
-				var kitsButton = clientButton("Kits");
-				var newLineText = new widget.TextView(ctx);
-				newLineText.setText("\n");
-				var cancelButton = clientButton("Cancel");
 				var dialogLayout1 = new LinearLayout(ctx);
 				dialogLayout1.setBackgroundDrawable(backgroundGradient());
 				dialogLayout1.setOrientation(LinearLayout.VERTICAL);
@@ -3155,8 +3129,6 @@ VertexClientPE.showMoreDialog = function() {
 				dialogLayout1.addView(moreTitle);
 				dialogLayout1.addView(dialogScrollView);
 				dialogLayout.addView(dashboardButton);
-				dialogLayout.addView(settingsButton);
-				dialogLayout.addView(addonsButton);
 				dialogLayout.addView(webBrowserButton);
 				if(sharedPref.getString("VertexClientPE.boughtPlayerCustomizer", "false") == "true") {
 					dialogLayout.addView(playerCustomizerButton);
@@ -3165,10 +3137,6 @@ VertexClientPE.showMoreDialog = function() {
 					dialogLayout.addView(optiFineButton);
 				}
 				dialogLayout.addView(shopButton);
-				dialogLayout.addView(informationButton);
-				//dialogLayout.addView(kitsButton);
-				//dialogLayout1.addView(newLineText);
-				//dialogLayout1.addView(cancelButton);
 				var dialog = new android.app.Dialog(ctx);
 				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -3181,22 +3149,6 @@ VertexClientPE.showMoreDialog = function() {
 						VertexClientPE.closeMenu();
 						dashboardScreen();
 						exitDashboard();
-					}
-				});
-				settingsButton.setOnClickListener(new android.view.View.OnClickListener() {
-					onClick: function(view) {
-						dialog.dismiss();
-						VertexClientPE.closeMenu();
-						settingsScreen();
-						exitSettings();
-					}
-				});
-				addonsButton.setOnClickListener(new android.view.View.OnClickListener() {
-					onClick: function(view) {
-						dialog.dismiss();
-						VertexClientPE.closeMenu();
-						addonScreen();
-						exitAddon();
 					}
 				});
 				webBrowserButton.setOnClickListener(new android.view.View.OnClickListener() {
@@ -3229,26 +3181,6 @@ VertexClientPE.showMoreDialog = function() {
 						VertexClientPE.closeMenu();
 						shopScreen();
 						exitShop();
-					}
-				});
-				informationButton.setOnClickListener(new android.view.View.OnClickListener() {
-					onClick: function(view) {
-						dialog.dismiss();
-						VertexClientPE.closeMenu();
-						informationScreen();
-						exitInformation();
-					}
-				});
-				kitsButton.setOnClickListener(new android.view.View.OnClickListener() {
-					onClick: function(view) {
-						dialog.dismiss();
-						VertexClientPE.closeMenu();
-						VertexClientPE.showKitsScreen();
-					}
-				});
-				cancelButton.setOnClickListener(new android.view.View.OnClickListener() {
-					onClick: function(view) {
-						dialog.dismiss();
 					}
 				});
 			} catch(e) {
@@ -3491,6 +3423,7 @@ VertexClientPE.showItemGiverDialog = function() {
 							dialogTableRow = new widget.TableRow(ctx);
 						}
 						tempButton = clientButton(Item.getName(element.itemId.toString()));
+						tempButton.setLayoutParams(new widget.TableRow.LayoutParams((display.widthPixels - display.widthPixels / 3) / 2, LinearLayout.LayoutParams.WRAP_CONTENT));
 						tempButton.setPadding(0, 0, 0, 0);
 						tempButton.setOnClickListener(new android.view.View.OnClickListener() {
 							onClick: function(viewArg) {
@@ -3504,6 +3437,7 @@ VertexClientPE.showItemGiverDialog = function() {
 					} else {
 						dialogTableRow = new widget.TableRow(ctx);
 						tempButton = clientButton(Item.getName(element.itemId.toString()));
+						tempButton.setLayoutParams(new widget.TableRow.LayoutParams((display.widthPixels - display.widthPixels / 3) / 2, LinearLayout.LayoutParams.WRAP_CONTENT));
 						tempButton.setPadding(0, 0, 0, 0);
 						tempButton.setOnClickListener(new android.view.View.OnClickListener() {
 							onClick: function(viewArg) {
@@ -3928,83 +3862,6 @@ VertexClientPE.showJavascriptConsoleDialog = function() {
 			}
 		}
 	});
-}
-
-VertexClientPE.showKitsScreen = function() {
-	var display = new android.util.DisplayMetrics();
-	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
-    var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
-        ctx.runOnUiThread(new java.lang.Runnable({
-            run: function() {
-                try {
-					var kitsScreenLayout = new LinearLayout(ctx);
-					kitsScreenLayout.setOrientation(0);
-					kitsScreenLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
-					
-					var kitsScreenScrollView = new ScrollView(ctx);
-					kitsScreenLayout.addView(kitsScreenScrollView);
-					
-					var kitsScreenLayout1 = new LinearLayout(ctx);
-					kitsScreenLayout1.setOrientation(LinearLayout.HORIZONTAL);
-					kitsScreenLayout1.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
-					kitsScreenScrollView.addView(kitsScreenLayout1);
-					
-					var kitsScreenLayoutLeft = new LinearLayout(ctx);
-					kitsScreenLayoutLeft.setOrientation(1);
-					kitsScreenLayoutLeft.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
-					kitsScreenLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, LinearLayout.LayoutParams.WRAP_CONTENT));
-					kitsScreenLayout1.addView(kitsScreenLayoutLeft);
-					
-					var kitsScreenLayoutCenter = new LinearLayout(ctx);
-					kitsScreenLayoutCenter.setOrientation(1);
-					kitsScreenLayoutCenter.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
-					kitsScreenLayoutCenter.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, LinearLayout.LayoutParams.WRAP_CONTENT));
-					kitsScreenLayout1.addView(kitsScreenLayoutCenter);
-					
-					var kitsScreenLayoutRight = new LinearLayout(ctx);
-					kitsScreenLayoutRight.setOrientation(1);
-					kitsScreenLayoutRight.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
-					kitsScreenLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 3, LinearLayout.LayoutParams.WRAP_CONTENT));
-					kitsScreenLayout1.addView(kitsScreenLayoutRight);
-					
-					var combatKitButton = new Button(ctx);
-					combatKitButton.setText("Combat");
-					combatKitButton.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 4, display.widthPixels / 4));
-					combatKitButton.setBackgroundDrawable(combatKitClientGUI);
-					combatKitButton.setOnClickListener(new android.view.View.OnClickListener({
-						onClick: function(viewarg) {
-							//todo
-						}
-					}));
-					kitsScreenLayoutLeft.addView(combatKitButton);
-					
-					var toolsKitButton = clientButton("Tools");
-					toolsKitButton.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
-					toolsKitButton.setOnClickListener(new android.view.View.OnClickListener({
-						onClick: function(viewarg) {
-							//todo
-						}
-					}));
-					//kitsScreenLayoutCenter.addView(toolsKitButton);
-					
-					var kitsButtonBlue = clientButton("Unknown");
-					kitsButtonBlue.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
-					kitsButtonBlue.setOnClickListener(new android.view.View.OnClickListener({
-						onClick: function(viewarg) {
-							//todo
-						}
-					}));
-					//kitsScreenLayoutRight.addView(kitsButtonBlue);
-					
-					kitsScreen = new widget.PopupWindow(kitsScreenLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
-					kitsScreen.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.parseColor("#0080FF")));
-					kitsScreen.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
-				} catch(error) {
-					print('An error occurred: ' + error);
-					VertexClientPE.showBugReportDialog(error);
-				}
-			}
-		}));
 }
 
 VertexClientPE.showCategoryDialog = function(titleView, currentName, categoryId) {
@@ -5040,6 +4897,19 @@ function shopFeatureButton(shopFeature, cashTextView) {
 	
 	shopFeatureLayoutRight.addView(shopFeatureClientButton);
 	return shopFeatureLayout;
+}
+
+function tileButton(tileText, tileIcon) {
+	var params = new widget.GridLayout.LayoutParams();
+	//params.setMargins(0.5, 0.5, 0.5, 0.5);
+	params.width = display.widthPixels / 4;
+	params.height = display.widthPixels / 4;
+	
+	var defaultTileButton = clientButton(tileText);
+	defaultTileButton.setCompoundDrawablesWithIntrinsicBounds(0, tileIcon, 0, 0);
+	defaultTileButton.setLayoutParams(params);
+	
+	return defaultTileButton;
 }
 
 function modButton(mod, buttonOnly) {
@@ -6918,8 +6788,9 @@ function informationScreen() {
 					informationTitle.setTextSize(25);
 					informationTitle.setGravity(android.view.Gravity.CENTER);
 					
-					informationMenuScrollView.addView(informationMenuLayout);
 					informationMenuLayout1.addView(informationTitle);
+					informationMenuLayout1.addView(clientTextView("\n"));
+					informationMenuScrollView.addView(informationMenuLayout);
 					informationMenuLayout1.addView(informationMenuScrollView);
 					
 					var informationText = clientTextView("\u00A9 peacestorm, MyNameIsTriXz, _TXMO and LPMG | 2015 - 2016. Some rights reserved.\nThanks to @Herqux_ and @MyNameIsTriXz for graphic designs.", true);
@@ -7350,9 +7221,9 @@ function dashboardScreen() {
 					}
 				}
 
-				var dashboardMenuLayout = new LinearLayout(ctx);
-				dashboardMenuLayout.setOrientation(1);
-				dashboardMenuLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+				var dashboardMenuLayout = new widget.GridLayout(ctx);
+				dashboardMenuLayout.setColumnCount(4);
+				dashboardMenuLayout.setRowCount(3);
 				
 				var dashboardMenuLayoutScroll = new ScrollView(ctx);
 				
@@ -7368,6 +7239,59 @@ function dashboardScreen() {
 				dashboardMenuLayout1.addView(clientTextView("\n"));
 				dashboardMenuLayoutScroll.addView(dashboardMenuLayout);
 				dashboardMenuLayout1.addView(dashboardMenuLayoutScroll);
+				
+				var settingsIconButton = tileButton("Settings", android.R.drawable.ic_menu_preferences);
+				var informationIconButton = tileButton("Information", android.R.drawable.ic_menu_info_details);
+				var updateCenterIconButton = tileButton("Update Center", android.R.drawable.stat_sys_download);
+				var shopIconButton = tileButton("Shop", android.R.drawable.stat_sys_download);
+				var addonsIconButton = tileButton("Addons", android.R.drawable.ic_menu_more);
+				var shutDownIconButton = tileButton("Shutdown", android.R.drawable.ic_lock_power_off);
+				
+				settingsIconButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						exitDashboardUI.dismiss();
+						dashboardMenu.dismiss();
+						settingsScreen();
+						exitSettings();
+					}
+				});
+				
+				informationIconButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						exitDashboardUI.dismiss();
+						dashboardMenu.dismiss();
+						informationScreen();
+						exitInformation();
+					}
+				});
+				
+				addonsIconButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						exitDashboardUI.dismiss();
+						dashboardMenu.dismiss();
+						addonScreen();
+						exitAddon();
+					}
+				});
+				
+				shutDownIconButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						VertexClientPE.toast("See you later!");
+						new java.lang.Thread(new java.lang.Runnable() {
+							run: function() {
+								java.lang.Thread.sleep(1000);
+								java.lang.System.exit(0);
+							}
+						}).start();
+					}
+				});
+				
+				dashboardMenuLayout.addView(settingsIconButton);
+				dashboardMenuLayout.addView(informationIconButton);
+				//dashboardMenuLayout.addView(updateCenterIconButton);
+				//dashboardMenuLayout.addView(shopIconButton);
+				dashboardMenuLayout.addView(addonsIconButton);
+				dashboardMenuLayout.addView(shutDownIconButton);
 				
 				dashboardMenu = new widget.PopupWindow(dashboardMenuLayout1, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
 				dashboardMenu.setBackgroundDrawable(backgroundGradient());
@@ -9028,13 +8952,30 @@ function exitSettings() {
     ctxe.runOnUiThread(new java.lang.Runnable({
 		run: function() {
 			try {
+				var backSettingsLayout = new LinearLayout(ctxe);
+				var backSettingsButton = new Button(ctxe);
+				backSettingsButton.setText("<");//Text
+				backSettingsButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#00BFFF"), android.graphics.PorterDuff.Mode.MULTIPLY);
+				backSettingsButton.setTextColor(android.graphics.Color.WHITE);
+				backSettingsButton.setOnClickListener(new android.view.View.OnClickListener({
+					onClick: function(viewarg){
+						backSettingsUI.dismiss(); //Close
+						exitSettingsUI.dismiss(); //Close
+						settingsMenu.dismiss(); //Close
+						dashboardScreen();
+						exitDashboard();
+					}
+				}));
+				backSettingsLayout.addView(backSettingsButton);
+				
 				var xSettingsLayout = new LinearLayout(ctxe);
 				var xSettingsButton = new Button(ctxe);
-				xSettingsButton.setText('X');//Text
+				xSettingsButton.setText("X");//Text
 				xSettingsButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
 				xSettingsButton.setTextColor(android.graphics.Color.WHITE);
 				xSettingsButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(viewarg){
+						backSettingsUI.dismiss(); //Close
 						exitSettingsUI.dismiss(); //Close
 						settingsMenu.dismiss(); //Close
 						showMenuButton();
@@ -9043,6 +8984,10 @@ function exitSettings() {
 					}
 				}));
 				xSettingsLayout.addView(xSettingsButton);
+				
+				backSettingsUI = new widget.PopupWindow(backSettingsLayout, dip2px(40), dip2px(40));
+				backSettingsUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				backSettingsUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
 				
 				exitSettingsUI = new widget.PopupWindow(xSettingsLayout, dip2px(40), dip2px(40));
 				exitSettingsUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -9060,13 +9005,30 @@ function exitInformation() {
     ctxe.runOnUiThread(new java.lang.Runnable({
 		run: function() {
 			try {
+				var backInformationLayout = new LinearLayout(ctxe);
+				var backInformationButton = new Button(ctxe);
+				backInformationButton.setText("<");//Text
+				backInformationButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#00BFFF"), android.graphics.PorterDuff.Mode.MULTIPLY);
+				backInformationButton.setTextColor(android.graphics.Color.WHITE);
+				backInformationButton.setOnClickListener(new android.view.View.OnClickListener({
+					onClick: function(viewarg){
+						backInformationUI.dismiss(); //Close
+						exitInformationUI.dismiss(); //Close
+						informationMenu.dismiss(); //Close
+						dashboardScreen();
+						exitDashboard();
+					}
+				}));
+				backInformationLayout.addView(backInformationButton);
+				
 				var xInformationLayout = new LinearLayout(ctxe);
 				var xInformationButton = new Button(ctxe);
-				xInformationButton.setText('X');//Text
+				xInformationButton.setText("X");//Text
 				xInformationButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
 				xInformationButton.setTextColor(android.graphics.Color.WHITE);
 				xInformationButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(viewarg){
+						backInformationUI.dismiss(); //Close
 						exitInformationUI.dismiss(); //Close
 						informationMenu.dismiss(); //Close
 						showMenuButton();
@@ -9075,6 +9037,10 @@ function exitInformation() {
 					}
 				}));
 				xInformationLayout.addView(xInformationButton);
+				
+				backInformationUI = new widget.PopupWindow(backInformationLayout, dip2px(40), dip2px(40));
+				backInformationUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				backInformationUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
 				
 				exitInformationUI = new widget.PopupWindow(xInformationLayout, dip2px(40), dip2px(40));
 				exitInformationUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -9092,13 +9058,30 @@ function exitAddon() {
     ctxe.runOnUiThread(new java.lang.Runnable({
 		run: function() {
 			try {
+				var backAddonLayout = new LinearLayout(ctxe);
+				var backAddonButton = new Button(ctxe);
+				backAddonButton.setText("<");//Text
+				backAddonButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#00BFFF"), android.graphics.PorterDuff.Mode.MULTIPLY);
+				backAddonButton.setTextColor(android.graphics.Color.WHITE);
+				backAddonButton.setOnClickListener(new android.view.View.OnClickListener({
+					onClick: function(viewarg){
+						backAddonUI.dismiss(); //Close
+						exitAddonUI.dismiss(); //Close
+						addonMenu.dismiss(); //Close
+						dashboardScreen();
+						exitDashboard();
+					}
+				}));
+				backAddonLayout.addView(backAddonButton);
+				
 				var xAddonLayout = new LinearLayout(ctxe);
 				var xAddonButton = new Button(ctxe);
-				xAddonButton.setText('X');//Text
+				xAddonButton.setText("X");//Text
 				xAddonButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
 				xAddonButton.setTextColor(android.graphics.Color.WHITE);
 				xAddonButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(viewarg){
+						backAddonUI.dismiss(); //Close
 						exitAddonUI.dismiss(); //Close
 						addonMenu.dismiss(); //Close
 						showMenuButton();
@@ -9107,6 +9090,10 @@ function exitAddon() {
 					}
 				}));
 				xAddonLayout.addView(xAddonButton);
+				
+				backAddonUI = new widget.PopupWindow(backAddonLayout, dip2px(40), dip2px(40));
+				backAddonUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				backAddonUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
 				
 				exitAddonUI = new widget.PopupWindow(xAddonLayout, dip2px(40), dip2px(40));
 				exitAddonUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
