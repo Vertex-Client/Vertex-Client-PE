@@ -2104,7 +2104,7 @@ var noDownGlide = {
 	},
 	onTick: function() {
 		Entity.setVelY(getPlayerEnt(), -0.000000000001);
-		Entity.setPosition(getPlayerEnt(), 0, this.yCoord, 0);
+		Entity.setPosition(getPlayerEnt(), getPlayerX(), this.yCoord, getPlayerZ());
 	}
 }
 
@@ -5715,6 +5715,8 @@ function backgroundGradient(round) // TextView with colored background (edited b
 		ModPE.langEdit("menu.copyright", "\u00A9Mojang AB | \u00A71Vertex Client PE by peacestorm");
 	} if(themeSetting == "purple") {
 		ModPE.langEdit("menu.copyright", "\u00A9Mojang AB | \u00A75Vertex Client PE by peacestorm");
+	} if(themeSetting == "yellow") {
+		ModPE.langEdit("menu.copyright", "\u00A9Mojang AB | \u00A7eVertex Client PE by peacestorm");
 	} if(themeSetting == "white") {
 		ModPE.langEdit("menu.copyright", "\u00A9Mojang AB | \u00A7fVertex Client PE by peacestorm");
 	} if(themeSetting == "black") {
@@ -5889,6 +5891,12 @@ VertexClientPE.showSplashScreen = function() {
 						VertexClientPEMainMenuText = "<font color='#0000FF'>" + VertexClientPE.getVersion("current") + "</font>";
 					}if(themeSetting == "purple") {
 						VertexClientPEMainMenuText = "<font color='#800080'>" + VertexClientPE.getVersion("current") + "</font>";
+					}if(themeSetting == "yellow") {
+						VertexClientPEMainMenuText = "<font color='#FFFF00'>" + VertexClientPE.getVersion("current") + "</font>";
+					}if(themeSetting == "white") {
+						VertexClientPEMainMenuText = "<font color='#FFFFFF'>" + VertexClientPE.getVersion("current") + "</font>";
+					}if(themeSetting == "black") {
+						VertexClientPEMainMenuText = "<font color='#000000'>" + VertexClientPE.getVersion("current") + "</font>";
 					}
 					var text = VertexClientPEMainMenuText + " - Welcome back " + ModPE.getPlayerName() + "!";
 					var TitleText = clientTextView(text, true);
