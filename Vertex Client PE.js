@@ -209,6 +209,7 @@ var tabGUIModeSetting = "on";
 var chestTracersGroundMode = "on";
 var chestTracersParticle = "flame";
 var antiLagDropRemoverSetting = "on";
+var useLightThemeSetting = "off";
 //---------------------------
 var combatName = "Combat";
 var buildingName = "Building";
@@ -4579,6 +4580,8 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + tabGUIModeSetting.toString());
 	outWrite.append("," + chestTracersGroundMode.toString());
 	outWrite.append("," + chestTracersParticle.toString());
+	outWrite.append("," + antiLagDropRemoverSetting.toString());
+	outWrite.append("," + useLightThemeSetting.toString());
 
     outWrite.close();
 	
@@ -4659,6 +4662,12 @@ VertexClientPE.loadMainSettings = function() {
 	}
 	if(str.toString().split(",")[19] != null && str.toString().split(",")[19] != undefined) {
 		chestTracersParticle = str.toString().split(",")[19]; //Here we split text by ","
+	}
+	if(str.toString().split(",")[20] != null && str.toString().split(",")[20] != undefined) {
+		antiLagDropRemoverSetting = str.toString().split(",")[20]; //Here we split text by ","
+	}
+	if(str.toString().split(",")[21] != null && str.toString().split(",")[21] != undefined) {
+		useLightThemeSetting = str.toString().split(",")[21]; //Here we split text by ","
 	}
     fos.close();
 	VertexClientPE.loadAutoSpammerSettings();
@@ -4752,7 +4761,7 @@ var getStretchedImage = function(bm, x, y, stretchWidth, stretchHeight, width, h
     return new android.graphics.drawable.BitmapDrawable(blank);
 };
 
-function clientButton(text, desc, color, round, lightColor) //menu buttons
+function clientButton(text, desc, color, round, forceLightColor) //menu buttons
 {
 	if(color == null) {
 		color = themeSetting;
@@ -4801,7 +4810,7 @@ function clientButton(text, desc, color, round, lightColor) //menu buttons
 		}
 		bg.setCornerRadii(radiiFloatArray);
 	}
-	if(lightColor == true) {
+	if(forceLightColor == true || useLightThemeSetting == "on") {
 		bg.setColor(android.graphics.Color.parseColor("#00994C"));
 		bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#00CC66"));
 	} else {
@@ -4810,7 +4819,7 @@ function clientButton(text, desc, color, round, lightColor) //menu buttons
 	}
 	bg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
 	if(color == "red") {
-		if(lightColor == true) {
+		if(forceLightColor == true || useLightThemeSetting == "on") {
 			bg.setColor(android.graphics.Color.parseColor("#FF3333"));
 			bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#FF6666"));
 		} else {
@@ -4818,7 +4827,7 @@ function clientButton(text, desc, color, round, lightColor) //menu buttons
 			bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#821010"));
 		}
 	}if(color == "blue") {
-		if(lightColor == true) {
+		if(forceLightColor == true || useLightThemeSetting == "on") {
 			bg.setColor(android.graphics.Color.parseColor("#0080FF"));
 			bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#3399FF"));
 		} else {
@@ -4844,19 +4853,19 @@ function clientButton(text, desc, color, round, lightColor) //menu buttons
         onTouch: function(v, event) {
             var action = event.getActionMasked();
             if(action == android.view.MotionEvent.ACTION_CANCEL || action == android.view.MotionEvent.ACTION_UP) {
-				if(lightColor == true) {
+				if(forceLightColor == true || useLightThemeSetting == "on") {
 					bg.setColor(android.graphics.Color.parseColor("#00994C"));
 				} else {
 					bg.setColor(android.graphics.Color.parseColor("#0B5B25"));
 				}
                 if(color == "red") {
-					if(lightColor == true) {
+					if(forceLightColor == true || useLightThemeSetting == "on") {
 						bg.setColor(android.graphics.Color.parseColor("#FF3333"));
 					} else {
 						bg.setColor(android.graphics.Color.parseColor("#5B0C0C"));
 					}
 				}if(color == "blue") {
-					if(lightColor == true) {
+					if(forceLightColor == true || useLightThemeSetting == "on") {
 						bg.setColor(android.graphics.Color.parseColor("#0080FF"));
 					} else {
 						bg.setColor(android.graphics.Color.parseColor("#0A175B"));
@@ -4871,19 +4880,19 @@ function clientButton(text, desc, color, round, lightColor) //menu buttons
 					bg.setColor(android.graphics.Color.parseColor("#141414"));
 				}
             } else {
-				if(lightColor == true) {
+				if(forceLightColor == true || useLightThemeSetting == "on") {
 					bg.setColor(android.graphics.Color.parseColor("#00CC66"));
 				} else {
 					bg.setColor(android.graphics.Color.parseColor("#0F8219"));
 				}
                 if(color == "red") {
-					if(lightColor == true) {
+					if(forceLightColor == true || useLightThemeSetting == "on") {
 						bg.setColor(android.graphics.Color.parseColor("#FF6666"));
 					} else {
 						bg.setColor(android.graphics.Color.parseColor("#821010"));
 					}
 				}if(color == "blue") {
-					if(lightColor == true) {
+					if(forceLightColor == true || useLightThemeSetting == "on") {
 						bg.setColor(android.graphics.Color.parseColor("#3399FF"));
 					} else {
 						bg.setColor(android.graphics.Color.parseColor("#0E3882"));
@@ -5573,7 +5582,7 @@ function blackSubTitle(subtitle) // TextView with colored background (edited by 
 	return title;
 }
 
-function backgroundSpecial(round, color, showProLine) {
+function backgroundSpecial(round, color, showProLine, lightColor) {
 	var bg = android.graphics.drawable.GradientDrawable();
 	if(round == true) {
 		bg.setCornerRadius(8);
@@ -5641,11 +5650,23 @@ function backgroundSpecial(round, color, showProLine) {
 	if(color == null) {
 		bg.setColor(android.graphics.Color.parseColor("#70151515"));
 	} else if(color == "green") {
-		bg.setColor(android.graphics.Color.parseColor("#700B5B25"));
+		if(useLightThemeSetting == "on") {
+			bg.setColor(android.graphics.Color.parseColor("#7000994C"));
+		} else {
+			bg.setColor(android.graphics.Color.parseColor("#700B5B25"));
+		}
 	} else if(color == "red") {
-		bg.setColor(android.graphics.Color.parseColor("#705B0C0C"));
+		if(useLightThemeSetting == "on") {
+			bg.setColor(android.graphics.Color.parseColor("#70FF3333"));
+		} else {
+			bg.setColor(android.graphics.Color.parseColor("#705B0C0C"));
+		}
 	} else if(color == "blue") {
-		bg.setColor(android.graphics.Color.parseColor("#700A175B"));
+		if(useLightThemeSetting == "on") {
+			bg.setColor(android.graphics.Color.parseColor("#700080FF"));
+		} else {
+			bg.setColor(android.graphics.Color.parseColor("#700A175B"));
+		}
 	} else if(color == "purple") {
 		bg.setColor(android.graphics.Color.parseColor("#709F018C"));
 	} else if(color == "yellow") {
@@ -5680,14 +5701,29 @@ function backgroundGradient(round) // TextView with colored background (edited b
 	} else if(round != false && round != null) {
 		bg.setCornerRadius(round);
 	}
-	bg.setColor(android.graphics.Color.parseColor("#700B5B25"));
-	bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#700F8219"));
+	if(useLightThemeSetting == "on") {
+		bg.setColor(android.graphics.Color.parseColor("#7000994C"));
+		bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#7000CC66"));
+	} else {
+		bg.setColor(android.graphics.Color.parseColor("#700B5B25"));
+		bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#700F8219"));
+	}
 	if(themeSetting == "red") {
-		bg.setColor(android.graphics.Color.parseColor("#705B0C0C"));
-		bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#70821010"));
+		if(useLightThemeSetting == "on") {
+			bg.setColor(android.graphics.Color.parseColor("#70FF3333"));
+			bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#70FF6666"));
+		} else {
+			bg.setColor(android.graphics.Color.parseColor("#705B0C0C"));
+			bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#70821010"));
+		}
 	}if(themeSetting == "blue") {
-		bg.setColor(android.graphics.Color.parseColor("#700A175B"));
-		bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#700E3882"));
+		if(useLightThemeSetting == "on") {
+			bg.setColor(android.graphics.Color.parseColor("#700080FF"));
+			bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#703399FF"));
+		} else {
+			bg.setColor(android.graphics.Color.parseColor("#700A175B"));
+			bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#700E3882"));
+		}
 	}if(themeSetting == "purple") {
 		bg.setColor(android.graphics.Color.parseColor("#709F018C"));
 		bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#70BC21AB"));
@@ -6677,6 +6713,26 @@ function settingsScreen() {
 					}
 					}));
 					
+					var useLightThemeSettingButton = clientButton("Lighter theme colors", "Use light theme colors if available.");
+					if(useLightThemeSetting == "on") {
+						useLightThemeSettingButton.setText("Lighter theme colors | ON");
+					} else if(useLightThemeSetting == "off") {
+						useLightThemeSettingButton.setText("Lighter theme colors | OFF");
+					}
+					useLightThemeSettingButton.setOnClickListener(new android.view.View.OnClickListener({
+					onClick: function(viewarg){
+						if(useLightThemeSetting == "on") {
+							useLightThemeSetting = "off";
+							useLightThemeSettingButton.setText("Lighter theme colors | OFF");
+							VertexClientPE.saveMainSettings();
+						} else if(useLightThemeSetting == "off") {
+							useLightThemeSetting = "on";
+							useLightThemeSettingButton.setText("Lighter theme colors | ON");
+							VertexClientPE.saveMainSettings();
+						}
+					}
+					}));
+					
 					var menuTypeSettingButton = clientButton("Menu style", "Sets the Client's menu style.");
 					if(menuType == "normal") {
 						menuTypeSettingButton.setText("Menu style | Normal");
@@ -6808,6 +6864,7 @@ function settingsScreen() {
 					settingsMenuLayout.addView(tabGUIModeSettingButton);
 					settingsMenuLayout.addView(mainButtonPositionSettingButton);
 					settingsMenuLayout.addView(themeSettingButton);
+					settingsMenuLayout.addView(useLightThemeSettingButton);
 					settingsMenuLayout.addView(menuTypeSettingButton);
 					settingsMenuLayout.addView(showNewsSettingButton);
 					settingsMenuLayout.addView(menuAnimationsSettingButton);
@@ -8619,7 +8676,7 @@ VertexClientPE.secondTick = function() {
 						secondTickTimer += 1;
 					}
 					
-					if(antiLagDropRemoverSetting == "on" && VertexClientPE.playerIsInGame && !VertexClientPE.isRemote) {
+					if(antiLagDropRemoverSetting == "on" && VertexClientPE.playerIsInGame && !VertexClientPE.isRemote && sharedPref.getString("VertexClientPE.boughtOptiFine", "false") == "true") {
 						if(lagTimer == 0) {
 							VertexClientPE.clientMessage("Dropped items will be removed in " + ChatColor.RED + "two minutes" + ChatColor.WHITE + "!");
 							lagTimer++;
