@@ -3803,6 +3803,52 @@ VertexClientPE.showUpgradeDialog = function(featureName) {
 	});
 }
 
+VertexClientPE.showAddonDialog = function(addon) {
+	ctx.runOnUiThread(new java.lang.Runnable() {
+		run: function() {
+			try {
+				var dialogTitle = clientTextView(addon.name);
+				dialogTitle.setTextSize(25);
+				var dialogDescTitle = clientTextView("Description:");
+				var dialogDesc = clientTextView(addon.desc);
+				var dialogVersion = clientTextView("Version: " + addon.current_version);
+				var dialogTargetVersion = clientTextView("Target version: " + addon.target_version);
+				var btn = clientButton("Close");
+				var inputBar = new EditText(ctx);
+				var dialogLayout = new LinearLayout(ctx);
+				dialogLayout.setBackgroundDrawable(backgroundGradient());
+				dialogLayout.setOrientation(LinearLayout.VERTICAL);
+				dialogLayout.setPadding(10, 10, 10, 10);
+				if(addon.target_version == VertexClientPE.currentVersion) {
+					dialogTargetVersion.setTextColor(Color.GREEN);
+				} else {
+					dialogTargetVersion.setTextColor(Color.RED);
+				}
+				dialogLayout.addView(dialogTitle);
+				dialogLayout.addView(dialogDescTitle);
+				dialogLayout.addView(dialogDesc);
+				dialogLayout.addView(dialogVersion);
+				dialogLayout.addView(dialogTargetVersion);
+				dialogLayout.addView(btn);
+				var dialog = new android.app.Dialog(ctx);
+				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
+				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
+				dialog.setContentView(dialogLayout);
+				dialog.setTitle(addon.name);
+				dialog.show();
+				btn.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+					}
+				});
+			} catch(e) {
+				print("Error: " + e);
+				VertexClientPE.showBugReportDialog(e);
+			}
+		}
+	});
+}
+
 var consoleInput;
 
 VertexClientPE.showJavascriptConsoleDialog = function() {
@@ -5120,7 +5166,6 @@ function addonButton(addon) {
 	
 	var defaultClientButton = clientButton(addon.name + " v" + addon.current_version, addon.desc);
 	defaultClientButton.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 2, display.heightPixels / 8));
-	defaultClientButton.setAlpha(0.54);
 	defaultClientButton.setEllipsize(android.text.TextUtils.TruncateAt.MARQUEE);
 	defaultClientButton.setMarqueeRepeatLimit(-1);
 	defaultClientButton.setSingleLine();
@@ -5128,9 +5173,15 @@ function addonButton(addon) {
 	defaultClientButton.setSelected(true);
 	defaultClientButton.setOnClickListener(new android.view.View.OnClickListener({
 		onClick: function(viewarg) {
-			VertexClientPE.toast(addon.desc);
+			VertexClientPE.showAddonDialog(addon);
 		}
 	}));
+	defaultClientButton.setOnLongClickListener(new android.view.View.OnLongClickListener() {
+		onLongClick: function(viewArg) {
+			VertexClientPE.toast(addon.desc);
+			return true;
+		}
+	});
 	//var _0x9276=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\uD83D\uDD12\x20","\x73\x65\x74\x54\x65\x78\x74"];if(isProFeature&&VertexClientPE[_0x9276[0]]()!=_0x9276[1]){defaultClientButton[_0x9276[3]](_0x9276[2]+mod.name)}
 	addonButtonLayout.addView(defaultClientButton);
 	
