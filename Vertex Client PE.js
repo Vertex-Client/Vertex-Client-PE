@@ -114,7 +114,8 @@ var VertexClientPE = {
 		deathX: -1,
 		deathY: -1,
 		deathZ: -1
-	}
+	},
+	latestReleaseDownloadCount: null
 };
 
 VertexClientPE.menuIsShowing = false;
@@ -5840,12 +5841,46 @@ VertexClientPE.loadSupport = function() {
 	//print(isSupported);
 }
 
+VertexClientPE.loadDownloadCount = function() {
+    try {
+        // download content
+        var url = new java.net.URL("https://api.github.com/repos/Vertex-Client/Vertex-Client-PE/releases/latest");
+        var connection = url.openConnection();
+
+        // get content
+        dlCountInputStream = connection.getInputStream();
+
+        // read result
+        var loadedDLCount = "";
+        var bufferedDLCountReader = new java.io.BufferedReader(new java.io.InputStreamReader(dlCountInputStream));
+        var rowDLCount = "";
+        while((rowDLCount = bufferedDLCountReader.readLine()) != null) {
+            loadedDLCount += rowDLCount;
+        }
+		VertexClientPE.latestReleaseDownloadCount = new org.json.JSONObject(loadedDLCount.toString()).getInt("download_count");
+		print(VertexClientPE.latestReleaseDownloadCount);
+
+        // close what needs to be closed
+        bufferedDLCountReader.close();
+
+        // test
+        //clientMessage(VertexClientPE.getVersion("current"); + " " + latestVersion);
+    } catch(err) {
+		ModPE.log("[Vertex Client PE] VertexClientPE.loadDownloadCount() caught an error: " + err);
+		return;
+    }
+	var sharedPref = ctx.getPreferences(ctx.MODE_PRIVATE);
+	var editor = sharedPref.edit();
+	editor.putString("VertexClientPE.latestReleaseDownloadCount", VertexClientPE.latestReleaseDownloadCount.toString());
+	editor.commit();
+	//print(isSupported);
+}
+
 new java.lang.Thread(new java.lang.Runnable() {
 	run: function() {
 		VertexClientPE.loadMainSettings();
+		VertexClientPE.loadNews();
 		if(showNewsSetting == "on") {
-			VertexClientPE.loadNews();
-			var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
 			ctx.runOnUiThread(new java.lang.Runnable({
 				run: function() {
 					VertexClientPE.toast(news);
@@ -6279,6 +6314,7 @@ VertexClientPE.downloadPro = function() {
 
 VertexClientPE.setup = function() {
 	VertexClientPE.loadSupport();
+	VertexClientPE.loadDownloadCount();
 	VertexClientPE.initShopFeatures();
 	if(VertexClientPE.loadMainSettings() == null) {
 		VertexClientPE.showSetupScreen();
@@ -8860,7 +8896,7 @@ function showTabGUI() {
 						tabGUILayoutLeft.addView(new tabGUICategoryButton(element, tabGUILayoutLeft, tabGUILayoutRight, tabGUILayout));
 					});
 					
-					tabGUI = new widget.PopupWindow(tabGUILayout, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+					tabGUI = new widget.PopupWindow(tabGUILayout, LinearLayout.LayoutParams.WRAP_CONTENT, ctx.getWindowManager().getDefaultDisplay().getHeight() / 3);
 					tabGUI.setBackgroundDrawable(/*backgroundGradient(true)*/new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 					if(tabGUIModeSetting != "off") {
 						tabGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 100);
