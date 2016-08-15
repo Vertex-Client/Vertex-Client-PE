@@ -29,6 +29,7 @@ var AnimationUtils = animation.AnimationUtils;
 var TranslateAnimation = animation.TranslateAnimation;
 var AccelerateInterpolator = animation.AccelerateInterpolator;
 var ViewPager = android.support.v4.view.ViewPager;
+var Color = graphics.Color;
 
 var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
 var display = new android.util.DisplayMetrics();
@@ -775,18 +776,18 @@ var nuker = {
 		nukerModeLayoutCenter.addView(nukerModeFlatButton);
 		nukerModeLayoutRight.addView(nukerModeSmashButton);
 		if(nukerMode == "cube") {
-			nukerModeCubeButton.setTextColor(android.graphics.Color.GREEN);
+			nukerModeCubeButton.setTextColor(Color.GREEN);
 		}if(nukerMode == "flat") {
-			nukerModeFlatButton.setTextColor(android.graphics.Color.GREEN);
+			nukerModeFlatButton.setTextColor(Color.GREEN);
 		}if(nukerMode == "smash") {
-			nukerModeSmashButton.setTextColor(android.graphics.Color.GREEN);
+			nukerModeSmashButton.setTextColor(Color.GREEN);
 		}
 		nukerModeCubeButton.setOnClickListener(new android.view.View.OnClickListener() {
 			onClick: function(view) {
 				nukerMode = "cube";
-				nukerModeCubeButton.setTextColor(android.graphics.Color.GREEN);
-				nukerModeFlatButton.setTextColor(android.graphics.Color.WHITE);
-				nukerModeSmashButton.setTextColor(android.graphics.Color.WHITE);
+				nukerModeCubeButton.setTextColor(Color.GREEN);
+				nukerModeFlatButton.setTextColor(Color.WHITE);
+				nukerModeSmashButton.setTextColor(Color.WHITE);
 				VertexClientPE.saveMainSettings();
 				VertexClientPE.loadMainSettings();
 			}
@@ -794,9 +795,9 @@ var nuker = {
 		nukerModeFlatButton.setOnClickListener(new android.view.View.OnClickListener() {
 			onClick: function(view) {
 				nukerMode = "flat";
-				nukerModeCubeButton.setTextColor(android.graphics.Color.WHITE);
-				nukerModeFlatButton.setTextColor(android.graphics.Color.GREEN);
-				nukerModeSmashButton.setTextColor(android.graphics.Color.WHITE);
+				nukerModeCubeButton.setTextColor(Color.WHITE);
+				nukerModeFlatButton.setTextColor(Color.GREEN);
+				nukerModeSmashButton.setTextColor(Color.WHITE);
 				VertexClientPE.saveMainSettings();
 				VertexClientPE.loadMainSettings();
 			}
@@ -804,9 +805,9 @@ var nuker = {
 		nukerModeSmashButton.setOnClickListener(new android.view.View.OnClickListener() {
 			onClick: function(view) {
 				nukerMode = "smash";
-				nukerModeCubeButton.setTextColor(android.graphics.Color.WHITE);
-				nukerModeFlatButton.setTextColor(android.graphics.Color.WHITE);
-				nukerModeSmashButton.setTextColor(android.graphics.Color.GREEN);
+				nukerModeCubeButton.setTextColor(Color.WHITE);
+				nukerModeFlatButton.setTextColor(Color.WHITE);
+				nukerModeSmashButton.setTextColor(Color.GREEN);
 				VertexClientPE.saveMainSettings();
 				VertexClientPE.loadMainSettings();
 			}
@@ -1063,7 +1064,7 @@ var autoSpammer = {
 		var spamMessageInput = new EditText(ctx);
 		var autoSpammerMessageEnter = clientTextView("\n");
 		spamMessageInput.setText(spamMessage);
-		spamMessageInput.setTextColor(android.graphics.Color.WHITE);
+		spamMessageInput.setTextColor(Color.WHITE);
 		spamMessageInput.setHint("Spam message");
 		spamMessageInput.addTextChangedListener(new android.text.TextWatcher() {
 			onTextChanged: function() {
@@ -1906,18 +1907,18 @@ var chestTracers = {
 		chestTracersParticleLayout.addView(chestTracersParticleLayoutRight);
 		
 		if(chestTracersParticle == "flame") {
-			chestTracersFlameButton.setTextColor(android.graphics.Color.GREEN);
+			chestTracersFlameButton.setTextColor(Color.GREEN);
 		}if(chestTracersParticle == "redstone") {
-			chestTracersRedstoneButton.setTextColor(android.graphics.Color.GREEN);
+			chestTracersRedstoneButton.setTextColor(Color.GREEN);
 		}if(chestTracersParticle == "critical") {
-			chestTracersCriticalButton.setTextColor(android.graphics.Color.GREEN);
+			chestTracersCriticalButton.setTextColor(Color.GREEN);
 		}
 		chestTracersFlameButton.setOnClickListener(new android.view.View.OnClickListener() {
 			onClick: function(view) {
 				chestTracersParticle = "flame";
-				chestTracersFlameButton.setTextColor(android.graphics.Color.GREEN);
-				chestTracersRedstoneButton.setTextColor(android.graphics.Color.WHITE);
-				chestTracersCriticalButton.setTextColor(android.graphics.Color.WHITE);
+				chestTracersFlameButton.setTextColor(Color.GREEN);
+				chestTracersRedstoneButton.setTextColor(Color.WHITE);
+				chestTracersCriticalButton.setTextColor(Color.WHITE);
 				VertexClientPE.saveMainSettings();
 				VertexClientPE.loadMainSettings();
 			}
@@ -1925,9 +1926,9 @@ var chestTracers = {
 		chestTracersRedstoneButton.setOnClickListener(new android.view.View.OnClickListener() {
 			onClick: function(view) {
 				chestTracersParticle = "redstone";
-				chestTracersFlameButton.setTextColor(android.graphics.Color.WHITE);
-				chestTracersRedstoneButton.setTextColor(android.graphics.Color.GREEN);
-				chestTracersCriticalButton.setTextColor(android.graphics.Color.WHITE);
+				chestTracersFlameButton.setTextColor(Color.WHITE);
+				chestTracersRedstoneButton.setTextColor(Color.GREEN);
+				chestTracersCriticalButton.setTextColor(Color.WHITE);
 				VertexClientPE.saveMainSettings();
 				VertexClientPE.loadMainSettings();
 			}
@@ -1935,9 +1936,9 @@ var chestTracers = {
 		chestTracersCriticalButton.setOnClickListener(new android.view.View.OnClickListener() {
 			onClick: function(view) {
 				chestTracersParticle = "critical";
-				chestTracersFlameButton.setTextColor(android.graphics.Color.WHITE);
-				chestTracersRedstoneButton.setTextColor(android.graphics.Color.WHITE);
-				chestTracersCriticalButton.setTextColor(android.graphics.Color.GREEN);
+				chestTracersFlameButton.setTextColor(Color.WHITE);
+				chestTracersRedstoneButton.setTextColor(Color.WHITE);
+				chestTracersCriticalButton.setTextColor(Color.GREEN);
 				VertexClientPE.saveMainSettings();
 				VertexClientPE.loadMainSettings();
 			}
@@ -1951,9 +1952,9 @@ var chestTracers = {
 		groundModeCheckBox.setChecked(chestTracersGroundMode == "on");
 		groundModeCheckBox.setText("Ground Mode");
 		if(themeSetting == "white") {
-			groundModeCheckBox.setTextColor(android.graphics.Color.BLACK);
+			groundModeCheckBox.setTextColor(Color.BLACK);
 		} else {
-			groundModeCheckBox.setTextColor(android.graphics.Color.WHITE);
+			groundModeCheckBox.setTextColor(Color.WHITE);
 		}
 		groundModeCheckBox.setTypeface(VertexClientPE.font);
 		groundModeCheckBox.setOnClickListener(new android.view.View.OnClickListener() {
@@ -3022,21 +3023,21 @@ VertexClientPE.showSignEditorDialog = function() {
 				dialogLayout.addView(btn1);
 				var dialog = new android.app.Dialog(ctx);
 				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
-				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
 				dialog.setTitle("SignEditor");
 				inputBar.setHint("Line 1");
 				inputBar.setText(Level.getSignText(signX, signY, signZ, 0));
-				inputBar.setTextColor(android.graphics.Color.WHITE);
+				inputBar.setTextColor(Color.WHITE);
 				inputBar1.setHint("Line 2");
 				inputBar1.setText(Level.getSignText(signX, signY, signZ, 1));
-				inputBar1.setTextColor(android.graphics.Color.WHITE);
+				inputBar1.setTextColor(Color.WHITE);
 				inputBar2.setHint("Line 3");
 				inputBar2.setText(Level.getSignText(signX, signY, signZ, 2));
-				inputBar2.setTextColor(android.graphics.Color.WHITE);
+				inputBar2.setTextColor(Color.WHITE);
 				inputBar3.setHint("Line 4");
 				inputBar3.setText(Level.getSignText(signX, signY, signZ, 3));
-				inputBar3.setTextColor(android.graphics.Color.WHITE);
+				inputBar3.setTextColor(Color.WHITE);
 				dialog.show();
 				btn.setOnClickListener(new android.view.View.OnClickListener() {
 					onClick: function(view) {
@@ -3085,11 +3086,11 @@ VertexClientPE.showBugReportDialog = function(exception) {
 				dialogLayout.addView(btn1);
 				var dialog = new android.app.Dialog(ctx);
 				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
-				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
 				dialog.setTitle("An error occurred");
 				inputBar.setHint("Title of the issue");
-				inputBar.setTextColor(android.graphics.Color.WHITE);
+				inputBar.setTextColor(Color.WHITE);
 				dialog.show();
 				btn.setOnClickListener(new android.view.View.OnClickListener() {
 					onClick: function(view) {
@@ -3140,7 +3141,7 @@ VertexClientPE.showMoreDialog = function() {
 				dialogLayout.addView(shopButton);
 				var dialog = new android.app.Dialog(ctx);
 				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
-				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 				dialog.setContentView(dialogLayout1);
 				dialog.setTitle("More");
 				dialog.show();
@@ -3255,11 +3256,11 @@ VertexClientPE.showModDialog = function(mod, btn) {
 					if(mod.state) {
 						toggleButton.setText("Disable");
 						if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
-							toggleButton.setTextColor(android.graphics.Color.RED);
+							toggleButton.setTextColor(Color.RED);
 						} else {
-							toggleButton.setTextColor(android.graphics.Color.GREEN);
+							toggleButton.setTextColor(Color.GREEN);
 						}
-						toggleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.BLACK);
+						toggleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color.BLACK);
 					} else {
 						toggleButton.setText("Enable");
 					}
@@ -3290,24 +3291,24 @@ VertexClientPE.showModDialog = function(mod, btn) {
 								if(mod.state) {
 									toggleButton.setText("Disable");
 									if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
-										toggleButton.setTextColor(android.graphics.Color.RED);
-										btn.setTextColor(android.graphics.Color.RED);
+										toggleButton.setTextColor(Color.RED);
+										btn.setTextColor(Color.RED);
 									} else {
-										toggleButton.setTextColor(android.graphics.Color.GREEN);
-										btn.setTextColor(android.graphics.Color.GREEN);
+										toggleButton.setTextColor(Color.GREEN);
+										btn.setTextColor(Color.GREEN);
 									}
-									toggleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.BLACK);
-									btn.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.BLACK);
+									toggleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color.BLACK);
+									btn.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color.BLACK);
 								} else if(!mod.state) {
 									toggleButton.setText("Enable");
 									if(themeSetting == "white") {
-										toggleButton.setTextColor(android.graphics.Color.BLACK);
-										btn.setTextColor(android.graphics.Color.BLACK);
-										toggleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.WHITE);
-										btn.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.WHITE);
+										toggleButton.setTextColor(Color.BLACK);
+										btn.setTextColor(Color.BLACK);
+										toggleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color.WHITE);
+										btn.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color.WHITE);
 									} else {
-										toggleButton.setTextColor(android.graphics.Color.WHITE);
-										btn.setTextColor(android.graphics.Color.WHITE);
+										toggleButton.setTextColor(Color.WHITE);
+										btn.setTextColor(Color.WHITE);
 									}
 								}
 							}
@@ -3321,7 +3322,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
 				}
 				var dialog = new android.app.Dialog(ctx);
 				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
-				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
 				dialog.setTitle(mod.name);
 				dialog.setOnDismissListener(new android.content.DialogInterface.OnDismissListener() {
@@ -3384,15 +3385,15 @@ VertexClientPE.showItemGiverDialog = function() {
 				var tempButton;
 				var itemNameText = clientTextView("Name: Unknown");
 				var itemIdInput = new EditText(ctx);
-				itemIdInput.setTextColor(android.graphics.Color.WHITE);
+				itemIdInput.setTextColor(Color.WHITE);
 				itemIdInput.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
 				itemIdInput.setHint("Id");
 				var itemAmountInput = new EditText(ctx);
-				itemAmountInput.setTextColor(android.graphics.Color.WHITE);
+				itemAmountInput.setTextColor(Color.WHITE);
 				itemAmountInput.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
 				itemAmountInput.setHint("Amount");
 				var itemDataInput = new EditText(ctx);
-				itemDataInput.setTextColor(android.graphics.Color.WHITE);
+				itemDataInput.setTextColor(Color.WHITE);
 				itemDataInput.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
 				itemDataInput.setHint("Data");
 				
@@ -3481,7 +3482,7 @@ VertexClientPE.showItemGiverDialog = function() {
 				//dialogLayout.addView(dialogTableLayout);
 				var dialog = new android.app.Dialog(ctx);
 				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
-				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 				dialog.setContentView(dialogLayoutBase);
 				dialog.setTitle("ItemGiver");
 				dialog.show();
@@ -3528,15 +3529,15 @@ VertexClientPE.showTeleportDialog = function() {
 				var tempButton;
 				var teleportNameText = clientTextView("Teleport location: Unknown");
 				var teleportXInput = new EditText(ctx);
-				teleportXInput.setTextColor(android.graphics.Color.WHITE);
+				teleportXInput.setTextColor(Color.WHITE);
 				teleportXInput.setInputType(android.text.InputType.TYPE_CLASS_NUMBER | android.text.InputType.TYPE_NUMBER_FLAG_SIGNED);
 				teleportXInput.setHint("X");
 				var teleportYInput = new EditText(ctx);
-				teleportYInput.setTextColor(android.graphics.Color.WHITE);
+				teleportYInput.setTextColor(Color.WHITE);
 				teleportYInput.setInputType(android.text.InputType.TYPE_CLASS_NUMBER | android.text.InputType.TYPE_NUMBER_FLAG_SIGNED);
 				teleportYInput.setHint("Y");
 				var teleportZInput = new EditText(ctx);
-				teleportZInput.setTextColor(android.graphics.Color.WHITE);
+				teleportZInput.setTextColor(Color.WHITE);
 				teleportZInput.setInputType(android.text.InputType.TYPE_CLASS_NUMBER | android.text.InputType.TYPE_NUMBER_FLAG_SIGNED);
 				teleportZInput.setHint("Z");
 				
@@ -3589,7 +3590,7 @@ VertexClientPE.showTeleportDialog = function() {
 				});
 				
 				var deathTeleportButton = clientButton("Last death");
-				deathTeleportButton.setTextColor(android.graphics.Color.RED);
+				deathTeleportButton.setTextColor(Color.RED);
 				deathTeleportButton.setOnClickListener(new android.view.View.OnClickListener() {
 					onClick: function(viewArg) {
 						teleportXInput.setText(VertexClientPE.currentWorld.deathX.toString());
@@ -3625,7 +3626,7 @@ VertexClientPE.showTeleportDialog = function() {
 				//dialogLayout.addView(dialogTableLayout);
 				var dialog = new android.app.Dialog(ctx);
 				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
-				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 				dialog.setContentView(dialogLayoutBase);
 				dialog.setTitle("Teleport");
 				dialog.show();
@@ -3656,11 +3657,11 @@ VertexClientPE.showAddAccountDialog = function() {
 				VertexClientPE.loadMainSettings();
 				var accountTitle = clientTextView("Add account", true);
 				accountNameInput = new EditText(ctx);
-				accountNameInput.setTextColor(android.graphics.Color.WHITE);
+				accountNameInput.setTextColor(Color.WHITE);
 				accountNameInput.setSingleLine(true);
 				accountNameInput.setHint("Enter an username");
 				accountClientIdInput = new EditText(ctx);
-				accountClientIdInput.setTextColor(android.graphics.Color.WHITE);
+				accountClientIdInput.setTextColor(Color.WHITE);
 				accountClientIdInput.setHint("Enter a client id (wip, added later)");
 				var okButton = clientButton("Ok");
 				var cancelButton = clientButton("Cancel");
@@ -3674,7 +3675,7 @@ VertexClientPE.showAddAccountDialog = function() {
 				dialogLayout.addView(cancelButton);
 				var dialog = new android.app.Dialog(ctx);
 				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
-				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
 				dialog.setTitle("Add account");
 				dialog.show();
@@ -3736,7 +3737,7 @@ VertexClientPE.showProDialog = function(featureName) {
 				dialogLayout.addView(btn1);
 				var dialog = new android.app.Dialog(ctx);
 				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
-				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
 				dialog.setTitle(featureName + " requires Vertex Client PE Pro");
 				dialog.show();
@@ -3778,7 +3779,7 @@ VertexClientPE.showUpgradeDialog = function(featureName) {
 				dialogLayout.addView(btn1);
 				var dialog = new android.app.Dialog(ctx);
 				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
-				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
 				dialog.setTitle("Hey, why not get Vertex Client PE Pro and enjoy all the features for free?");
 				dialog.show();
@@ -3820,11 +3821,11 @@ VertexClientPE.showJavascriptConsoleDialog = function() {
 				dialogLayout.addView(btn1);
 				var dialog = new android.app.Dialog(ctx);
 				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
-				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
 				dialog.setTitle("Javascript Console");
 				inputBar.setHint("Javascript input");
-				inputBar.setTextColor(android.graphics.Color.WHITE);
+				inputBar.setTextColor(Color.WHITE);
 				dialog.show();
 				btn.setOnClickListener(new android.view.View.OnClickListener() {
 					onClick: function(view) {
@@ -3891,12 +3892,12 @@ VertexClientPE.showCategoryDialog = function(titleView, currentName, categoryId)
 				dialogLayout.addView(btn);
 				var dialog = new android.app.Dialog(ctx);
 				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
-				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
 				dialog.setTitle("Rename category \'" + currentName + "\'");
 				inputBar.setHint("Category name");
 				inputBar.setText(currentName);
-				inputBar.setTextColor(android.graphics.Color.WHITE);
+				inputBar.setTextColor(Color.WHITE);
 				dialog.show();
 				inputBar.addTextChangedListener(new android.text.TextWatcher() {
 					onTextChanged: function() {
@@ -3999,7 +4000,7 @@ VertexClientPE.moneyToast = function() {
 			layout.setOrientation(1);
 			layout.setBackground(backgroundSpecial(16));
 			var text = clientTextView("\u26C1 " + VertexClientPE.getVertexCash());
-			text.setTextColor(android.graphics.Color.parseColor("#FFD700"));
+			text.setTextColor(Color.parseColor("#FFD700"));
 			text.setPadding(10, 10, 10, 10);
 			layout.addView(text);
 			toast = new widget.Toast(ctx);
@@ -4766,14 +4767,17 @@ function clientButton(text, desc, color, round, forceLightColor) //menu buttons
 	if(color == null) {
 		color = themeSetting;
 	}
+	if(forceLightColor == null) {
+		forceLightColor = useLightThemeSetting=="on";
+	}
     var display = new android.util.DisplayMetrics();
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
     var defaultButton = new Button(ctx);
     defaultButton.setText(text);
 	if(color == "white") {
-		defaultButton.setTextColor(android.graphics.Color.BLACK);
+		defaultButton.setTextColor(Color.BLACK);
 	} else {
-		defaultButton.setTextColor(android.graphics.Color.WHITE);
+		defaultButton.setTextColor(Color.WHITE);
 	}
 	defaultButton.setTypeface(VertexClientPE.font);
 	if(desc != null && desc != undefined) {
@@ -4810,42 +4814,42 @@ function clientButton(text, desc, color, round, forceLightColor) //menu buttons
 		}
 		bg.setCornerRadii(radiiFloatArray);
 	}
-	if(forceLightColor == true || useLightThemeSetting == "on") {
-		bg.setColor(android.graphics.Color.parseColor("#00994C"));
-		bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#00CC66"));
+	if(forceLightColor == true) {
+		bg.setColor(Color.parseColor("#00994C"));
+		bg.setStroke(dip2px(2), Color.parseColor("#00CC66"));
 	} else {
-		bg.setColor(android.graphics.Color.parseColor("#0B5B25"));
-		bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#0F8219"));
+		bg.setColor(Color.parseColor("#0B5B25"));
+		bg.setStroke(dip2px(2), Color.parseColor("#0F8219"));
 	}
 	bg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
 	if(color == "red") {
-		if(forceLightColor == true || useLightThemeSetting == "on") {
-			bg.setColor(android.graphics.Color.parseColor("#FF3333"));
-			bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#FF6666"));
+		if(forceLightColor == true) {
+			bg.setColor(Color.parseColor("#FF3333"));
+			bg.setStroke(dip2px(2), Color.parseColor("#FF6666"));
 		} else {
-			bg.setColor(android.graphics.Color.parseColor("#5B0C0C"));
-			bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#821010"));
+			bg.setColor(Color.parseColor("#5B0C0C"));
+			bg.setStroke(dip2px(2), Color.parseColor("#821010"));
 		}
 	}if(color == "blue") {
-		if(forceLightColor == true || useLightThemeSetting == "on") {
-			bg.setColor(android.graphics.Color.parseColor("#0080FF"));
-			bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#3399FF"));
+		if(forceLightColor == true) {
+			bg.setColor(Color.parseColor("#0080FF"));
+			bg.setStroke(dip2px(2), Color.parseColor("#3399FF"));
 		} else {
-			bg.setColor(android.graphics.Color.parseColor("#0A175B"));
-			bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#0E3882"));
+			bg.setColor(Color.parseColor("#0A175B"));
+			bg.setStroke(dip2px(2), Color.parseColor("#0E3882"));
 		}
 	}if(color == "purple") {
-		bg.setColor(android.graphics.Color.parseColor("#9F018C"));
-		bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#BC21AB"));
+		bg.setColor(Color.parseColor("#9F018C"));
+		bg.setStroke(dip2px(2), Color.parseColor("#BC21AB"));
 	}if(color == "yellow") {
-		bg.setColor(android.graphics.Color.parseColor("#CCCC00"));
-		bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#FFFF00"));
+		bg.setColor(Color.parseColor("#CCCC00"));
+		bg.setStroke(dip2px(2), Color.parseColor("#FFFF00"));
 	}if(color == "white") {
-		bg.setColor(android.graphics.Color.parseColor("#E1E1E1"));
-		bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#FFFFFF"));
+		bg.setColor(Color.parseColor("#E1E1E1"));
+		bg.setStroke(dip2px(2), Color.parseColor("#FFFFFF"));
 	}if(color == "black") {
-		bg.setColor(android.graphics.Color.parseColor("#141414"));
-		bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#1E1E1E"));
+		bg.setColor(Color.parseColor("#141414"));
+		bg.setStroke(dip2px(2), Color.parseColor("#1E1E1E"));
 	}
 	
 	defaultButton.setTransformationMethod(null);
@@ -4853,58 +4857,58 @@ function clientButton(text, desc, color, round, forceLightColor) //menu buttons
         onTouch: function(v, event) {
             var action = event.getActionMasked();
             if(action == android.view.MotionEvent.ACTION_CANCEL || action == android.view.MotionEvent.ACTION_UP) {
-				if(forceLightColor == true || useLightThemeSetting == "on") {
-					bg.setColor(android.graphics.Color.parseColor("#00994C"));
+				if(forceLightColor == true) {
+					bg.setColor(Color.parseColor("#00994C"));
 				} else {
-					bg.setColor(android.graphics.Color.parseColor("#0B5B25"));
+					bg.setColor(Color.parseColor("#0B5B25"));
 				}
                 if(color == "red") {
-					if(forceLightColor == true || useLightThemeSetting == "on") {
-						bg.setColor(android.graphics.Color.parseColor("#FF3333"));
+					if(forceLightColor == true) {
+						bg.setColor(Color.parseColor("#FF3333"));
 					} else {
-						bg.setColor(android.graphics.Color.parseColor("#5B0C0C"));
+						bg.setColor(Color.parseColor("#5B0C0C"));
 					}
 				}if(color == "blue") {
-					if(forceLightColor == true || useLightThemeSetting == "on") {
-						bg.setColor(android.graphics.Color.parseColor("#0080FF"));
+					if(forceLightColor == true) {
+						bg.setColor(Color.parseColor("#0080FF"));
 					} else {
-						bg.setColor(android.graphics.Color.parseColor("#0A175B"));
+						bg.setColor(Color.parseColor("#0A175B"));
 					}
 				}if(color == "purple") {
-					bg.setColor(android.graphics.Color.parseColor("#9F018C"));
+					bg.setColor(Color.parseColor("#9F018C"));
 				}if(color == "yellow") {
-					bg.setColor(android.graphics.Color.parseColor("#CCCC00"));
+					bg.setColor(Color.parseColor("#CCCC00"));
 				}if(color == "white") {
-					bg.setColor(android.graphics.Color.parseColor("#E1E1E1"));
+					bg.setColor(Color.parseColor("#E1E1E1"));
 				}if(color == "black") {
-					bg.setColor(android.graphics.Color.parseColor("#141414"));
+					bg.setColor(Color.parseColor("#141414"));
 				}
             } else {
-				if(forceLightColor == true || useLightThemeSetting == "on") {
-					bg.setColor(android.graphics.Color.parseColor("#00CC66"));
+				if(forceLightColor == true) {
+					bg.setColor(Color.parseColor("#00CC66"));
 				} else {
-					bg.setColor(android.graphics.Color.parseColor("#0F8219"));
+					bg.setColor(Color.parseColor("#0F8219"));
 				}
                 if(color == "red") {
-					if(forceLightColor == true || useLightThemeSetting == "on") {
-						bg.setColor(android.graphics.Color.parseColor("#FF6666"));
+					if(forceLightColor == true) {
+						bg.setColor(Color.parseColor("#FF6666"));
 					} else {
-						bg.setColor(android.graphics.Color.parseColor("#821010"));
+						bg.setColor(Color.parseColor("#821010"));
 					}
 				}if(color == "blue") {
-					if(forceLightColor == true || useLightThemeSetting == "on") {
-						bg.setColor(android.graphics.Color.parseColor("#3399FF"));
+					if(forceLightColor == true) {
+						bg.setColor(Color.parseColor("#3399FF"));
 					} else {
-						bg.setColor(android.graphics.Color.parseColor("#0E3882"));
+						bg.setColor(Color.parseColor("#0E3882"));
 					}
 				}if(color == "purple") {
-					bg.setColor(android.graphics.Color.parseColor("#BC21AB"));
+					bg.setColor(Color.parseColor("#BC21AB"));
 				}if(color == "yellow") {
-					bg.setColor(android.graphics.Color.parseColor("#FFFF00"));
+					bg.setColor(Color.parseColor("#FFFF00"));
 				}if(color == "white") {
-					bg.setColor(android.graphics.Color.parseColor("#FFFFFF"));
+					bg.setColor(Color.parseColor("#FFFFFF"));
 				}if(color == "black") {
-					bg.setColor(android.graphics.Color.parseColor("#1E1E1E"));
+					bg.setColor(Color.parseColor("#1E1E1E"));
 				}
             }
             return false;
@@ -4915,9 +4919,9 @@ function clientButton(text, desc, color, round, forceLightColor) //menu buttons
     defaultButton.setPaintFlags(defaultButton.getPaintFlags() | android.graphics.Paint.SUBPIXEL_TEXT_FLAG);
     defaultButton.setTextSize(15);
 	if(color == "white") {
-		defaultButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.WHITE);
+		defaultButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color.WHITE);
 	} else {
-		defaultButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.BLACK);
+		defaultButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color.BLACK);
 	}
 	defaultButton.setPadding(0, 0, 0, 0);
     defaultButton.setLineSpacing(0, 1.15);
@@ -5032,11 +5036,11 @@ function modButton(mod, buttonOnly) {
 	defaultClientButton.setSelected(true);
 	if(mod.isStateMod() && mod.state) {
 		if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
-			defaultClientButton.setTextColor(android.graphics.Color.RED);
+			defaultClientButton.setTextColor(Color.RED);
 		} else {
-			defaultClientButton.setTextColor(android.graphics.Color.GREEN);
+			defaultClientButton.setTextColor(Color.GREEN);
 		}
-		defaultClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.BLACK);
+		defaultClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color.BLACK);
 	}
 	defaultClientButton.setOnClickListener(new android.view.View.OnClickListener({
 		onClick: function(viewarg) {
@@ -5065,18 +5069,18 @@ function modButton(mod, buttonOnly) {
 			if(mod.isStateMod()) {
 				if(mod.state) {
 					if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
-						defaultClientButton.setTextColor(android.graphics.Color.RED);
+						defaultClientButton.setTextColor(Color.RED);
 					} else {
-						defaultClientButton.setTextColor(android.graphics.Color.GREEN);
+						defaultClientButton.setTextColor(Color.GREEN);
 					}
-					defaultClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.BLACK);
+					defaultClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color.BLACK);
 				} else if(!mod.state) {
 					if(themeSetting == "white") {
-						defaultClientButton.setTextColor(android.graphics.Color.BLACK);
-						defaultClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.WHITE);
+						defaultClientButton.setTextColor(Color.BLACK);
+						defaultClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color.WHITE);
 					} else {
-						defaultClientButton.setTextColor(android.graphics.Color.WHITE);
-						defaultClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.BLACK);
+						defaultClientButton.setTextColor(Color.WHITE);
+						defaultClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color.BLACK);
 					}
 				}
 			}
@@ -5143,8 +5147,8 @@ function categoryTab(category) {
 	var defaultClientButton = clientButton(categoryName);
 	defaultClientButton.setAlpha(0.54);
 	if(currentTab == categoryRealName) {
-		defaultClientButton.setTextColor(android.graphics.Color.GREEN);
-		defaultClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.BLACK);
+		defaultClientButton.setTextColor(Color.GREEN);
+		defaultClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color.BLACK);
 	}
 	defaultClientButton.setEllipsize(android.text.TextUtils.TruncateAt.MARQUEE);
 	defaultClientButton.setMarqueeRepeatLimit(-1);
@@ -5200,28 +5204,28 @@ function tabGUICategoryButton(category, layout, layoutToBeOpened, layoutMain) {
 	categoryButton.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (ctx.getWindowManager().getDefaultDisplay().getHeight() / 3) / 5));
 	categoryButton.setOnClickListener(new android.view.View.OnClickListener({
 		onClick: function(viewarg) {
-			if(categoryButton.getCurrentTextColor() != android.graphics.Color.GREEN) {
-				categoryButton.setTextColor(android.graphics.Color.GREEN);
-				categoryButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.BLACK);
+			if(categoryButton.getCurrentTextColor() != Color.GREEN) {
+				categoryButton.setTextColor(Color.GREEN);
+				categoryButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color.BLACK);
 				currentTabGUICategory = category;
 			} else {
 				if(themeSetting == "white") {
-					categoryButton.setTextColor(android.graphics.Color.BLACK);
-					categoryButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.WHITE);
+					categoryButton.setTextColor(Color.BLACK);
+					categoryButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color.WHITE);
 				} else {
-					categoryButton.setTextColor(android.graphics.Color.WHITE);
-					categoryButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.BLACK);
+					categoryButton.setTextColor(Color.WHITE);
+					categoryButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color.BLACK);
 				}
 				currentTabGUICategory = null;
 			}
 			for(var i = 0; i < layout.getChildCount(); i++) {
 				if(layout.getChildAt(i).getChildAt(0) != categoryButton) {
 					if(themeSetting == "white") {
-						layout.getChildAt(i).getChildAt(0).setTextColor(android.graphics.Color.BLACK);
-						layout.getChildAt(i).getChildAt(0).setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.WHITE);
+						layout.getChildAt(i).getChildAt(0).setTextColor(Color.BLACK);
+						layout.getChildAt(i).getChildAt(0).setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color.WHITE);
 					} else {
-						layout.getChildAt(i).getChildAt(0).setTextColor(android.graphics.Color.WHITE);
-						layout.getChildAt(i).getChildAt(0).setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.BLACK);
+						layout.getChildAt(i).getChildAt(0).setTextColor(Color.WHITE);
+						layout.getChildAt(i).getChildAt(0).setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color.BLACK);
 					}
 				}
 			}
@@ -5352,9 +5356,9 @@ function clientTextButton(text, shadow) //menu buttons
 	
 	if(shadow == true && shadow != null && shadow != undefined) {
 		if(android.os.Build.VERSION.SDK_INT > 19) { // KITKAT
-			defaultTextButton.setShadowLayer(1, Math.round(defaultTextButton.getLineHeight() / 8), Math.round(defaultTextButton.getLineHeight() / 8), android.graphics.Color.parseColor("#FF333333"));
+			defaultTextButton.setShadowLayer(1, Math.round(defaultTextButton.getLineHeight() / 8), Math.round(defaultTextButton.getLineHeight() / 8), Color.parseColor("#FF333333"));
 		} else {
-			defaultTextButton.setShadowLayer(0.0001, Math.round(defaultTextButton.getLineHeight() / 8), Math.round(defaultTextButton.getLineHeight() / 8), android.graphics.Color.parseColor("#FF333333"));
+			defaultTextButton.setShadowLayer(0.0001, Math.round(defaultTextButton.getLineHeight() / 8), Math.round(defaultTextButton.getLineHeight() / 8), Color.parseColor("#FF333333"));
 		}
 	}
     defaultTextButton.setPadding(0, 0, 0, 0);
@@ -5367,17 +5371,17 @@ function clientTextView(text, shadow) //menu buttons
     var defaultTextView = new widget.TextView(ctx);
     defaultTextView.setText(text);
 	if(themeSetting == "white") {
-		defaultTextView.setTextColor(android.graphics.Color.BLACK);
+		defaultTextView.setTextColor(Color.BLACK);
 	} else {
-		defaultTextView.setTextColor(android.graphics.Color.WHITE);
+		defaultTextView.setTextColor(Color.WHITE);
 	}
     defaultTextView.setTypeface(VertexClientPE.font);
 	
 	if(shadow == true && shadow != null && shadow != undefined) {
 		if(themeSetting == "white") {
-			defaultTextView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.WHITE);
+			defaultTextView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color.WHITE);
 		} else {
-			defaultTextView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.BLACK);
+			defaultTextView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color.BLACK);
 		}
 	}
     defaultTextView.setPadding(0, 0, 0, 0);
@@ -5385,22 +5389,36 @@ function clientTextView(text, shadow) //menu buttons
     return defaultTextView;
 }
 
-function clientSectionTitle(text) {
+function clientSectionTitle(text, style) {
 	var defaultTextView = new widget.TextView(ctx);
     defaultTextView.setText(text);
 	if(themeSetting == "white") {
-		defaultTextView.setTextColor(android.graphics.Color.BLACK);
+		defaultTextView.setTextColor(Color.BLACK);
 	} else {
-		defaultTextView.setTextColor(android.graphics.Color.WHITE);
+		defaultTextView.setTextColor(Color.WHITE);
 	}
     defaultTextView.setTypeface(VertexClientPE.font);
 	
 	if(themeSetting == "white") {
-		defaultTextView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.WHITE);
+		defaultTextView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color.WHITE);
 	} else {
-		defaultTextView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), android.graphics.Color.BLACK);
+		defaultTextView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color.BLACK);
 	}
-	defaultTextView.setBackgroundDrawable(backgroundSpecial());
+	
+	if(style == "rainbow") {
+		var rainbowInt = java.lang.reflect.Array.newInstance(java.lang.Integer.TYPE, 7);
+		rainbowInt[0] = Color.RED;
+		rainbowInt[1] = Color.MAGENTA;
+		rainbowInt[2] = Color.BLUE;
+		rainbowInt[3] = Color.CYAN;
+		rainbowInt[4] = Color.GREEN;
+		rainbowInt[5] = Color.YELLOW;
+		rainbowInt[6] = Color.RED;
+		var rainbowBg = new android.graphics.drawable.GradientDrawable(android.graphics.drawable.GradientDrawable.Orientation.LEFT_RIGHT, rainbowInt);
+		defaultTextView.setBackgroundDrawable(rainbowBg);
+	} else {
+		defaultTextView.setBackgroundDrawable(backgroundSpecial());
+	}
     defaultTextView.setPadding(0, 0, 0, 0);
     defaultTextView.setLineSpacing(0, 1.15);
     return defaultTextView;
@@ -5409,7 +5427,7 @@ function clientSectionTitle(text) {
 function clientHR() {//horizontal divider
 	var defaultView = new android.view.View(ctx);
 	defaultView.setLayoutParams(new LinearLayout.LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT, 5));
-	defaultView.setBackgroundColor(android.graphics.Color.parseColor("#B3B3B3"));
+	defaultView.setBackgroundColor(Color.parseColor("#B3B3B3"));
 	
     return defaultView;
 }
@@ -5438,18 +5456,7 @@ function categoryTitle(text) {
 	defaultSettingsButton.setAlpha(0.54);
 	categoryTitleLayoutLeft.addView(defaultSettingsButton);
 	
-	var defaultTitle = greenSubTitle(text);
-	if(themeSetting == "blue") {
-		defaultTitle = blueSubTitle(text);
-	} if(themeSetting == "red") {
-		defaultTitle = redSubTitle(text);
-	} if(themeSetting == "purple") {
-		defaultTitle = purpleSubTitle(text);
-	} if(themeSetting == "white") {
-		defaultTitle = whiteSubTitle(text);
-	} if(themeSetting == "black") {
-		defaultTitle = blackSubTitle(text);
-	}
+	var defaultTitle = coloredSubTitle(text);
 	defaultTitle.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 3, display.heightPixels / 20));
 	defaultTitle.setGravity(view.Gravity.CENTER);
 	categoryTitleLayoutMiddle.addView(defaultTitle);
@@ -5480,104 +5487,50 @@ function categoryTitle(text) {
 	}
 }
 
-function greenSubTitle(subtitle) // TextView with colored background (edited by peacestorm)
+function coloredSubTitle(subtitle) // TextView with colored background (edited by peacestorm)
 {
-	var padding = dip2px(8);
-
 	var bg = android.graphics.drawable.GradientDrawable();
-	bg.setColor(android.graphics.Color.parseColor("#0B5B25"));
+	if(useLightThemeSetting == "on") {
+		bg.setColor(Color.parseColor("#00994C"));
+		bg.setStroke(dip2px(2), Color.parseColor("#00CC66"));
+	} else {
+		bg.setColor(Color.parseColor("#0B5B25"));
+		bg.setStroke(dip2px(2), Color.parseColor("#0F8219"));
+	}
+	if(themeSetting == "red") {
+		if(useLightThemeSetting == "on") {
+			bg.setColor(Color.parseColor("#FF3333"));
+			bg.setStroke(dip2px(2), Color.parseColor("#FF6666"));
+		} else {
+			bg.setColor(Color.parseColor("#5B0C0C"));
+			bg.setStroke(dip2px(2), Color.parseColor("#821010"));
+		}
+	}if(themeSetting == "blue") {
+		if(useLightThemeSetting == "on") {
+			bg.setColor(Color.parseColor("#0080FF"));
+			bg.setStroke(dip2px(2), Color.parseColor("#3399FF"));
+		} else {
+			bg.setColor(Color.parseColor("#0A175B"));
+			bg.setStroke(dip2px(2), Color.parseColor("#0E3882"));
+		}
+	}if(themeSetting == "purple") {
+		bg.setColor(Color.parseColor("#9F018C"));
+		bg.setStroke(dip2px(2), Color.parseColor("#BC21AB"));
+	}if(themeSetting == "yellow") {
+		bg.setColor(Color.parseColor("#CCCC00"));
+		bg.setStroke(dip2px(2), Color.parseColor("#FFFF00"));
+	}if(themeSetting == "white") {
+		bg.setColor(Color.parseColor("#E1E1E1"));
+		bg.setStroke(dip2px(2), Color.parseColor("#FFFFFF"));
+	}if(themeSetting == "black") {
+		bg.setColor(Color.parseColor("#141414"));
+		bg.setStroke(dip2px(2), Color.parseColor("#1E1E1E"));
+	}
 	bg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
-	bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#0F8219"));
 
 	var title = clientTextView(subtitle, true);
 	title.setAlpha(0.54);
 	title.setBackgroundDrawable(bg);
-	//title.setPadding(padding, padding, padding, padding);
-
-	return title;
-}
-
-function redSubTitle(subtitle) // TextView with colored background (edited by peacestorm)
-{
-	var padding = dip2px(8);
-
-	var bg = android.graphics.drawable.GradientDrawable();
-	bg.setColor(android.graphics.Color.parseColor("#5B0C0C"));
-	bg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
-	bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#821010"));
-
-	var title = clientTextView(subtitle, true);
-	title.setAlpha(0.54);
-	title.setBackgroundDrawable(bg);
-	//title.setPadding(padding, padding, padding, padding);
-
-	return title;
-}
-
-function blueSubTitle(subtitle) // TextView with colored background (edited by peacestorm)
-{
-	var padding = dip2px(8);
-
-	var bg = android.graphics.drawable.GradientDrawable();
-	bg.setColor(android.graphics.Color.parseColor("#0A175B"));
-	bg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
-	bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#0E3882"));
-
-	var title = clientTextView(subtitle, true);
-	title.setAlpha(0.54);
-	title.setBackgroundDrawable(bg);
-	//title.setPadding(padding, padding, padding, padding);
-
-	return title;
-}
-
-function purpleSubTitle(subtitle) // TextView with colored background (edited by peacestorm)
-{
-	var padding = dip2px(8);
-
-	var bg = android.graphics.drawable.GradientDrawable();
-	bg.setColor(android.graphics.Color.parseColor("#9F018C"));
-	bg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
-	bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#BC21AB"));
-
-	var title = clientTextView(subtitle, true);
-	title.setAlpha(0.54);
-	title.setBackgroundDrawable(bg);
-	//title.setPadding(padding, padding, padding, padding);
-
-	return title;
-}
-
-function whiteSubTitle(subtitle) // TextView with colored background (edited by peacestorm)
-{
-	var padding = dip2px(8);
-
-	var bg = android.graphics.drawable.GradientDrawable();
-	bg.setColor(android.graphics.Color.parseColor("#E1E1E1"));
-	bg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
-	bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#FFFFFF"));
-
-	var title = clientTextView(subtitle, true);
-	title.setAlpha(0.54);
-	title.setBackgroundDrawable(bg);
-	//title.setPadding(padding, padding, padding, padding);
-
-	return title;
-}
-
-function blackSubTitle(subtitle) // TextView with colored background (edited by peacestorm)
-{
-	var padding = dip2px(8);
-
-	var bg = android.graphics.drawable.GradientDrawable();
-	bg.setColor(android.graphics.Color.parseColor("#141414"));
-	bg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
-	bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#1E1E1E"));
-
-	var title = clientTextView(subtitle, true);
-	title.setAlpha(0.54);
-	title.setBackgroundDrawable(bg);
-	//title.setPadding(padding, padding, padding, padding);
 
 	return title;
 }
@@ -5648,36 +5601,36 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
 		}
 	}
 	if(color == null) {
-		bg.setColor(android.graphics.Color.parseColor("#70151515"));
+		bg.setColor(Color.parseColor("#70151515"));
 	} else if(color == "green") {
 		if(useLightThemeSetting == "on") {
-			bg.setColor(android.graphics.Color.parseColor("#7000994C"));
+			bg.setColor(Color.parseColor("#7000994C"));
 		} else {
-			bg.setColor(android.graphics.Color.parseColor("#700B5B25"));
+			bg.setColor(Color.parseColor("#700B5B25"));
 		}
 	} else if(color == "red") {
 		if(useLightThemeSetting == "on") {
-			bg.setColor(android.graphics.Color.parseColor("#70FF3333"));
+			bg.setColor(Color.parseColor("#70FF3333"));
 		} else {
-			bg.setColor(android.graphics.Color.parseColor("#705B0C0C"));
+			bg.setColor(Color.parseColor("#705B0C0C"));
 		}
 	} else if(color == "blue") {
 		if(useLightThemeSetting == "on") {
-			bg.setColor(android.graphics.Color.parseColor("#700080FF"));
+			bg.setColor(Color.parseColor("#700080FF"));
 		} else {
-			bg.setColor(android.graphics.Color.parseColor("#700A175B"));
+			bg.setColor(Color.parseColor("#700A175B"));
 		}
 	} else if(color == "purple") {
-		bg.setColor(android.graphics.Color.parseColor("#709F018C"));
+		bg.setColor(Color.parseColor("#709F018C"));
 	} else if(color == "yellow") {
-		bg.setColor(android.graphics.Color.parseColor("#70CCCC00"));
+		bg.setColor(Color.parseColor("#70CCCC00"));
 	} else if(color == "white") {
-		bg.setColor(android.graphics.Color.parseColor("#70E1E1E1"));
+		bg.setColor(Color.parseColor("#70E1E1E1"));
 	} else if(color == "black") {
-		bg.setColor(android.graphics.Color.parseColor("#70141414"));
+		bg.setColor(Color.parseColor("#70141414"));
 	}
 	if(showProLine && VertexClientPE.isPro()) {
-		bg.setStroke(dip2px(1), android.graphics.Color.parseColor("#70DAA520"));
+		bg.setStroke(dip2px(1), Color.parseColor("#70DAA520"));
 	}
 	bg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
 
@@ -5702,40 +5655,40 @@ function backgroundGradient(round) // TextView with colored background (edited b
 		bg.setCornerRadius(round);
 	}
 	if(useLightThemeSetting == "on") {
-		bg.setColor(android.graphics.Color.parseColor("#7000994C"));
-		bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#7000CC66"));
+		bg.setColor(Color.parseColor("#7000994C"));
+		bg.setStroke(dip2px(2), Color.parseColor("#7000CC66"));
 	} else {
-		bg.setColor(android.graphics.Color.parseColor("#700B5B25"));
-		bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#700F8219"));
+		bg.setColor(Color.parseColor("#700B5B25"));
+		bg.setStroke(dip2px(2), Color.parseColor("#700F8219"));
 	}
 	if(themeSetting == "red") {
 		if(useLightThemeSetting == "on") {
-			bg.setColor(android.graphics.Color.parseColor("#70FF3333"));
-			bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#70FF6666"));
+			bg.setColor(Color.parseColor("#70FF3333"));
+			bg.setStroke(dip2px(2), Color.parseColor("#70FF6666"));
 		} else {
-			bg.setColor(android.graphics.Color.parseColor("#705B0C0C"));
-			bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#70821010"));
+			bg.setColor(Color.parseColor("#705B0C0C"));
+			bg.setStroke(dip2px(2), Color.parseColor("#70821010"));
 		}
 	}if(themeSetting == "blue") {
 		if(useLightThemeSetting == "on") {
-			bg.setColor(android.graphics.Color.parseColor("#700080FF"));
-			bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#703399FF"));
+			bg.setColor(Color.parseColor("#700080FF"));
+			bg.setStroke(dip2px(2), Color.parseColor("#703399FF"));
 		} else {
-			bg.setColor(android.graphics.Color.parseColor("#700A175B"));
-			bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#700E3882"));
+			bg.setColor(Color.parseColor("#700A175B"));
+			bg.setStroke(dip2px(2), Color.parseColor("#700E3882"));
 		}
 	}if(themeSetting == "purple") {
-		bg.setColor(android.graphics.Color.parseColor("#709F018C"));
-		bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#70BC21AB"));
+		bg.setColor(Color.parseColor("#709F018C"));
+		bg.setStroke(dip2px(2), Color.parseColor("#70BC21AB"));
 	}if(themeSetting == "yellow") {
-		bg.setColor(android.graphics.Color.parseColor("#70CCCC00"));
-		bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#70FFFF00"));
+		bg.setColor(Color.parseColor("#70CCCC00"));
+		bg.setStroke(dip2px(2), Color.parseColor("#70FFFF00"));
 	}if(themeSetting == "white") {
-		bg.setColor(android.graphics.Color.parseColor("#70E1E1E1"));
-		bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#70FFFFFF"));
+		bg.setColor(Color.parseColor("#70E1E1E1"));
+		bg.setStroke(dip2px(2), Color.parseColor("#70FFFFFF"));
 	}if(themeSetting == "black") {
-		bg.setColor(android.graphics.Color.parseColor("#70141414"));
-		bg.setStroke(dip2px(2), android.graphics.Color.parseColor("#701E1E1E"));
+		bg.setColor(Color.parseColor("#70141414"));
+		bg.setStroke(dip2px(2), Color.parseColor("#701E1E1E"));
 	}
 	bg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
 
@@ -6159,14 +6112,14 @@ VertexClientPE.showSetupScreen = function() {
 					
 					var setupButtonGreen = clientButton("Green", null, "green");
 					setupButtonGreen.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
-					setupButtonGreen.setTextColor(android.graphics.Color.GREEN);
+					setupButtonGreen.setTextColor(Color.GREEN);
 					setupButtonGreen.setOnClickListener(new android.view.View.OnClickListener({
 						onClick: function(viewarg) {
 							setupColor = "green";
-							setupButtonGreen.setTextColor(android.graphics.Color.GREEN);
-							setupButtonRed.setTextColor(android.graphics.Color.WHITE);
-							setupButtonBlue.setTextColor(android.graphics.Color.WHITE);
-							setupButtonPurple.setTextColor(android.graphics.Color.WHITE);
+							setupButtonGreen.setTextColor(Color.GREEN);
+							setupButtonRed.setTextColor(Color.WHITE);
+							setupButtonBlue.setTextColor(Color.WHITE);
+							setupButtonPurple.setTextColor(Color.WHITE);
 						}
 					}));
 					setupScreenLayoutBottomLeft.addView(setupButtonGreen);
@@ -6176,10 +6129,10 @@ VertexClientPE.showSetupScreen = function() {
 					setupButtonRed.setOnClickListener(new android.view.View.OnClickListener({
 						onClick: function(viewarg) {
 							setupColor = "red";
-							setupButtonGreen.setTextColor(android.graphics.Color.WHITE);
-							setupButtonRed.setTextColor(android.graphics.Color.GREEN);
-							setupButtonBlue.setTextColor(android.graphics.Color.WHITE);
-							setupButtonPurple.setTextColor(android.graphics.Color.WHITE);
+							setupButtonGreen.setTextColor(Color.WHITE);
+							setupButtonRed.setTextColor(Color.GREEN);
+							setupButtonBlue.setTextColor(Color.WHITE);
+							setupButtonPurple.setTextColor(Color.WHITE);
 						}
 					}));
 					setupScreenLayoutBottomCenter.addView(setupButtonRed);
@@ -6189,10 +6142,10 @@ VertexClientPE.showSetupScreen = function() {
 					setupButtonBlue.setOnClickListener(new android.view.View.OnClickListener({
 						onClick: function(viewarg) {
 							setupColor = "blue";
-							setupButtonGreen.setTextColor(android.graphics.Color.WHITE);
-							setupButtonRed.setTextColor(android.graphics.Color.WHITE);
-							setupButtonBlue.setTextColor(android.graphics.Color.GREEN);
-							setupButtonPurple.setTextColor(android.graphics.Color.WHITE);
+							setupButtonGreen.setTextColor(Color.WHITE);
+							setupButtonRed.setTextColor(Color.WHITE);
+							setupButtonBlue.setTextColor(Color.GREEN);
+							setupButtonPurple.setTextColor(Color.WHITE);
 						}
 					}));
 					setupScreenLayoutBottomCenter1.addView(setupButtonBlue);
@@ -6202,10 +6155,10 @@ VertexClientPE.showSetupScreen = function() {
 					setupButtonPurple.setOnClickListener(new android.view.View.OnClickListener({
 						onClick: function(viewarg) {
 							setupColor = "purple";
-							setupButtonGreen.setTextColor(android.graphics.Color.WHITE);
-							setupButtonRed.setTextColor(android.graphics.Color.WHITE);
-							setupButtonBlue.setTextColor(android.graphics.Color.WHITE);
-							setupButtonPurple.setTextColor(android.graphics.Color.GREEN);
+							setupButtonGreen.setTextColor(Color.WHITE);
+							setupButtonRed.setTextColor(Color.WHITE);
+							setupButtonBlue.setTextColor(Color.WHITE);
+							setupButtonPurple.setTextColor(Color.GREEN);
 						}
 					}));
 					setupScreenLayoutBottomRight.addView(setupButtonPurple);
@@ -6215,7 +6168,7 @@ VertexClientPE.showSetupScreen = function() {
 					setupScreenLayout.addView(setupText);
 					
 					setupScreen = new widget.PopupWindow(setupScreenLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
-					setupScreen.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.parseColor("#0080FF")));
+					setupScreen.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.parseColor("#0080FF")));
 					setupScreen.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
 				} catch(error) {
 					print('An error occurred: ' + error);
@@ -6583,6 +6536,8 @@ function settingsScreen() {
 					settingsMenuScroll.addView(settingsMenuLayout);
 					settingsMenuLayout1.addView(settingsMenuScroll);
 					
+					var generalTitle = clientSectionTitle("General", "rainbow");
+					
 					var hacksListModeSettingButton = clientButton("Hacks List Mode");
 					if(hacksListModeSetting == "on") {
 						hacksListModeSettingButton.setText("Hacks List Mode | Normal");
@@ -6609,7 +6564,7 @@ function settingsScreen() {
 						}
 					}));
 					
-					var tabGUIModeSettingButton = clientButton("Hacks List Mode");
+					var tabGUIModeSettingButton = clientButton("TabGUI Mode");
 					if(tabGUIModeSetting == "on") {
 						tabGUIModeSettingButton.setText("TabGUI Mode | Shown");
 					} else if(tabGUIModeSetting == "off") {
@@ -6648,6 +6603,8 @@ function settingsScreen() {
 						}
 					}
 					}));
+					
+					var themeTitle = clientSectionTitle("Theme", "rainbow");
 					
 					var themeSettingButton = clientButton("Theme", "Sets the Client's theme.");
 					if(themeSetting == "green") {
@@ -6733,6 +6690,8 @@ function settingsScreen() {
 					}
 					}));
 					
+					var menuTitle = clientSectionTitle("Menu", "rainbow");
+					
 					var menuTypeSettingButton = clientButton("Menu style", "Sets the Client's menu style.");
 					if(menuType == "normal") {
 						menuTypeSettingButton.setText("Menu style | Normal");
@@ -6753,23 +6712,26 @@ function settingsScreen() {
 					}
 					}));
 					
-					var showNewsSettingButton = clientButton("Show news", "Show news at start.");
-					if(showNewsSetting == "on") {
-						showNewsSettingButton.setText("Show news | ON");
-					} else if(showNewsSetting == "off") {
-						showNewsSettingButton.setText("Show news | OFF");
+					var sizeSettingButton = clientButton("Size setting", "Change menu size to fit your screen size better (this only works for the normal menu style).");
+					if(sizeSetting == "normal") {
+						sizeSettingButton.setText("Size setting | NORMAL");
+					} else if(sizeSetting == "small") {
+						sizeSettingButton.setText("Size setting | SMALL");
 					}
-					showNewsSettingButton.setOnClickListener(new android.view.View.OnClickListener({
+					sizeSettingButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(viewarg){
-						if(showNewsSetting == "on") {
-							showNewsSetting = "off";
-							showNewsSettingButton.setText("Show news | OFF");
+						if(sizeSetting == "normal") {
+							sizeSetting = "small";
+							customHeight = topBarHeight;
+							sizeSettingButton.setText("Size setting | SMALL");
 							VertexClientPE.saveMainSettings();
-						} else if(showNewsSetting == "off") {
-							showNewsSetting = "on";
-							showNewsSettingButton.setText("Show news | ON");
+						} else if(sizeSetting == "small") {
+							sizeSetting = "normal";
+							customHeight = customHeight;
+							sizeSettingButton.setText("Size setting | NORMAL");
 							VertexClientPE.saveMainSettings();
 						}
+						VertexClientPE.toast("Now restart your launcher to make it work (this only works for the normal menu style)!");
 					}
 					}));
 					
@@ -6788,6 +6750,28 @@ function settingsScreen() {
 						} else if(menuAnimationsSetting == "off") {
 							menuAnimationsSetting = "on";
 							menuAnimationsSettingButton.setText("Menu animations | ON");
+							VertexClientPE.saveMainSettings();
+						}
+					}
+					}));
+					
+					var otherTitle = clientSectionTitle("Other", "rainbow");
+					
+					var showNewsSettingButton = clientButton("Show news", "Show news at start.");
+					if(showNewsSetting == "on") {
+						showNewsSettingButton.setText("Show news | ON");
+					} else if(showNewsSetting == "off") {
+						showNewsSettingButton.setText("Show news | OFF");
+					}
+					showNewsSettingButton.setOnClickListener(new android.view.View.OnClickListener({
+					onClick: function(viewarg){
+						if(showNewsSetting == "on") {
+							showNewsSetting = "off";
+							showNewsSettingButton.setText("Show news | OFF");
+							VertexClientPE.saveMainSettings();
+						} else if(showNewsSetting == "off") {
+							showNewsSetting = "on";
+							showNewsSettingButton.setText("Show news | ON");
 							VertexClientPE.saveMainSettings();
 						}
 					}
@@ -6837,39 +6821,20 @@ function settingsScreen() {
 					}
 					}));
 					
-					var sizeSettingButton = clientButton("Size setting", "Change menu size to fit your screen size better (this only works for the normal menu style).");
-					if(sizeSetting == "normal") {
-						sizeSettingButton.setText("Size setting | NORMAL");
-					} else if(sizeSetting == "small") {
-						sizeSettingButton.setText("Size setting | SMALL");
-					}
-					sizeSettingButton.setOnClickListener(new android.view.View.OnClickListener({
-					onClick: function(viewarg){
-						if(sizeSetting == "normal") {
-							sizeSetting = "small";
-							customHeight = topBarHeight;
-							sizeSettingButton.setText("Size setting | SMALL");
-							VertexClientPE.saveMainSettings();
-						} else if(sizeSetting == "small") {
-							sizeSetting = "normal";
-							customHeight = customHeight;
-							sizeSettingButton.setText("Size setting | NORMAL");
-							VertexClientPE.saveMainSettings();
-						}
-						VertexClientPE.toast("Now restart your launcher to make it work (this only works for the normal menu style)!");
-					}
-					}));
-					
+					settingsMenuLayout.addView(generalTitle);
 					settingsMenuLayout.addView(hacksListModeSettingButton);
 					settingsMenuLayout.addView(tabGUIModeSettingButton);
 					settingsMenuLayout.addView(mainButtonPositionSettingButton);
+					settingsMenuLayout.addView(themeTitle);
 					settingsMenuLayout.addView(themeSettingButton);
 					settingsMenuLayout.addView(useLightThemeSettingButton);
+					settingsMenuLayout.addView(menuTitle);
 					settingsMenuLayout.addView(menuTypeSettingButton);
-					settingsMenuLayout.addView(showNewsSettingButton);
-					settingsMenuLayout.addView(menuAnimationsSettingButton);
-					settingsMenuLayout.addView(playMusicSettingButton);
 					settingsMenuLayout.addView(sizeSettingButton);
+					settingsMenuLayout.addView(menuAnimationsSettingButton);
+					settingsMenuLayout.addView(otherTitle);
+					settingsMenuLayout.addView(showNewsSettingButton);
+					settingsMenuLayout.addView(playMusicSettingButton);
 
                     settingsMenu = new widget.PopupWindow(settingsMenuLayout1, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
                     settingsMenu.setBackgroundDrawable(backgroundGradient());
@@ -7109,42 +7074,42 @@ function playerCustomizerScreen() {
 					
 					var playerModelButton = clientButton("Player");
 					if(Entity.getRenderType(getPlayerEnt()) == EntityRenderType.player) {
-						playerModelButton.setTextColor(android.graphics.Color.GREEN);
+						playerModelButton.setTextColor(Color.GREEN);
 					}
 					playerModelButton.setOnClickListener(new android.view.View.OnClickListener() {
 						onClick: function() {
 							Entity.setRenderType(getPlayerEnt(), EntityRenderType.player);
-							playerModelButton.setTextColor(android.graphics.Color.GREEN);
-							skeletonModelButton.setTextColor(android.graphics.Color.WHITE);
-							spiderModelButton.setTextColor(android.graphics.Color.WHITE);
+							playerModelButton.setTextColor(Color.GREEN);
+							skeletonModelButton.setTextColor(Color.WHITE);
+							spiderModelButton.setTextColor(Color.WHITE);
 						}
 					});
 					playCustomizerLayout.addView(playerModelButton);
 					
 					var skeletonModelButton = clientButton("Skeleton");
 					if(Entity.getRenderType(getPlayerEnt()) == EntityRenderType.skeleton) {
-						skeletonModelButton.setTextColor(android.graphics.Color.GREEN);
+						skeletonModelButton.setTextColor(Color.GREEN);
 					}
 					skeletonModelButton.setOnClickListener(new android.view.View.OnClickListener() {
 						onClick: function() {
 							Entity.setRenderType(getPlayerEnt(), EntityRenderType.skeleton);
-							playerModelButton.setTextColor(android.graphics.Color.WHITE);
-							skeletonModelButton.setTextColor(android.graphics.Color.GREEN);
-							spiderModelButton.setTextColor(android.graphics.Color.WHITE);
+							playerModelButton.setTextColor(Color.WHITE);
+							skeletonModelButton.setTextColor(Color.GREEN);
+							spiderModelButton.setTextColor(Color.WHITE);
 						}
 					});
 					playCustomizerLayout.addView(skeletonModelButton);
 					
 					var spiderModelButton = clientButton("Spider");
 					if(Entity.getRenderType(getPlayerEnt()) == EntityRenderType.spider) {
-						spiderModelButton.setTextColor(android.graphics.Color.GREEN);
+						spiderModelButton.setTextColor(Color.GREEN);
 					}
 					spiderModelButton.setOnClickListener(new android.view.View.OnClickListener() {
 						onClick: function() {
 							Entity.setRenderType(getPlayerEnt(), EntityRenderType.spider);
-							playerModelButton.setTextColor(android.graphics.Color.WHITE);
-							skeletonModelButton.setTextColor(android.graphics.Color.WHITE);
-							spiderModelButton.setTextColor(android.graphics.Color.GREEN);
+							playerModelButton.setTextColor(Color.WHITE);
+							skeletonModelButton.setTextColor(Color.WHITE);
+							spiderModelButton.setTextColor(Color.GREEN);
 						}
 					});
 					playCustomizerLayout.addView(spiderModelButton);
@@ -7308,7 +7273,7 @@ function shopScreen() {
 					shopCashLayout.setLayoutParams(new android.view.ViewGroup.LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
 					shopCashLayout.setBackground(backgroundSpecial(16));
 					shopCashText = clientTextView("\u26C1 " + VertexClientPE.getVertexCash());
-					shopCashText.setTextColor(android.graphics.Color.parseColor("#FFD700"));
+					shopCashText.setTextColor(Color.parseColor("#FFD700"));
 					shopCashText.setGravity(android.view.Gravity.CENTER);
 					shopCashText.setPadding(10, 10, 10, 10);
 					shopCashLayout.addView(shopCashText);
@@ -7370,16 +7335,6 @@ function dashboardScreen() {
 				//dashboardMenuLayout1.addView(clientTextView("\n"));
 				dashboardMenuLayoutScroll.addView(dashboardMenuLayout);
 				dashboardMenuLayout1.addView(dashboardMenuLayoutScroll);
-				
-				var rainbowInt = java.lang.reflect.Array.newInstance(java.lang.Integer.TYPE, 8);
-				rainbowInt[0] = android.graphics.Color.RED;
-				rainbowInt[1] = android.graphics.Color.MAGENTA;
-				rainbowInt[2] = android.graphics.Color.BLUE;
-				rainbowInt[3] = android.graphics.Color.CYAN;
-				rainbowInt[4] = android.graphics.Color.GREEN;
-				rainbowInt[5] = android.graphics.Color.YELLOW;
-				rainbowInt[6] = android.graphics.Color.RED;
-				var rainbowBg = new android.graphics.drawable.GradientDrawable(android.graphics.drawable.GradientDrawable.Orientation.LEFT_RIGHT, rainbowInt);
 				
 				var settingsIconButton = tileButton("Settings", android.R.drawable.ic_menu_preferences, "green");
 				//settingsIconButton.setBackgroundDrawable(rainbowBg);
@@ -7580,7 +7535,7 @@ VertexClientPE.showTopBar = function() {
 						topBarLayoutCenterRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(topBarWidth / 3 / 3, LinearLayout.LayoutParams.WRAP_CONTENT));
 						topBarLayoutCenter.addView(topBarLayoutCenterRight);
 						var proTextView = clientTextView("Pro", true);
-						proTextView.setTextColor(android.graphics.Color.parseColor("#FF4500"));
+						proTextView.setTextColor(Color.parseColor("#FF4500"));
 						topBarLayoutCenterLeft.addView(logoViewer4);
 						topBarLayoutCenterRight.addView(proTextView);
 					} else {
@@ -8456,7 +8411,7 @@ VertexClientPE.showLSD = function() {
 				lsdLayout = new LinearLayout(ctx);
 				lsdMenu = new widget.PopupWindow(lsdLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
 				lsdMenu.setTouchable(false);
-				lsdMenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.GREEN));
+				lsdMenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.GREEN));
 				lsdMenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
 			} catch(e) {
 				print(e);
@@ -8474,7 +8429,7 @@ function showMenuButton() {
 	var display = new android.util.DisplayMetrics();
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
     menuBtn = new Button(ctx);
-    menuBtn.setTextColor(android.graphics.Color.WHITE); //Color
+    menuBtn.setTextColor(Color.WHITE); //Color
 	//menuBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 10, display.heightPixels / 10));
 	if(VertexClientPE.menuIsShowing) {
 		menuBtn.setBackgroundDrawable(iconClickedClientGUI);
@@ -8574,7 +8529,7 @@ function showAccountManagerButton() {
 	if(menuAnimationsSetting == "on") {
 		accountManagerGUI.setAnimationStyle(android.R.style.Animation_Translucent);
 	}
-    accountManagerGUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+    accountManagerGUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 	if(mainButtonPositionSetting == "top-right") {
 		accountManagerGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.BOTTOM, 90, 0);
 	}if(mainButtonPositionSetting == "bottom-right") {
@@ -8719,13 +8674,13 @@ VertexClientPE.lsdTick = function() {
 							//if(lsdState) {
 								var randomLsd = Math.floor((Math.random() * 4) + 1);
 								if(randomLsd == 1) {
-									lsdMenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.RED));
+									lsdMenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.RED));
 								} if(randomLsd == 2) {
-									lsdMenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.GREEN));
+									lsdMenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.GREEN));
 								} if(randomLsd == 3) {
-									lsdMenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.BLUE));
+									lsdMenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.BLUE));
 								} if(randomLsd == 4) {
-									lsdMenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.YELLOW));
+									lsdMenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.YELLOW));
 								}
 							//}
 						}
@@ -8906,7 +8861,7 @@ function showTabGUI() {
 					});
 					
 					tabGUI = new widget.PopupWindow(tabGUILayout, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-					tabGUI.setBackgroundDrawable(/*backgroundGradient(true)*/new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+					tabGUI.setBackgroundDrawable(/*backgroundGradient(true)*/new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 					if(tabGUIModeSetting != "off") {
 						tabGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 100);
 					}
@@ -8956,7 +8911,7 @@ VertexClientPE.showChestUI = function(x, y, z) {
 				}));
                 chestLayout.addView(chestStealButton);
                 chestUI = new widget.PopupWindow(chestLayout, dip2px(40), dip2px(40));
-                chestUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+                chestUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
                 chestUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
             }
      }));
@@ -8978,8 +8933,8 @@ function setupDone() {
 				var doneLayout = new LinearLayout(ctx);
 				var doneButton = new Button(ctx);
 				doneButton.setText("\u2713");//Text
-				doneButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#008000"), android.graphics.PorterDuff.Mode.MULTIPLY);
-				doneButton.setTextColor(android.graphics.Color.WHITE);
+				doneButton.getBackground().setColorFilter(Color.parseColor("#008000"), android.graphics.PorterDuff.Mode.MULTIPLY);
+				doneButton.setTextColor(Color.WHITE);
 				doneButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(viewarg){
 						themeSetting = setupColor;
@@ -8995,7 +8950,7 @@ function setupDone() {
 				doneLayout.addView(doneButton);
 				
 				doneUI = new widget.PopupWindow(doneLayout, dip2px(40), dip2px(40));
-				doneUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				doneUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 				doneUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
 			} catch(exception) {
 				print(exception);
@@ -9013,8 +8968,8 @@ function exit() {
 				var xLayout = new LinearLayout(ctxe);
 				var xButton = new Button(ctxe);
 				xButton.setText("X");//Text
-				xButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
-				xButton.setTextColor(android.graphics.Color.WHITE);
+				xButton.getBackground().setColorFilter(Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
+				xButton.setTextColor(Color.WHITE);
 				xButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(viewarg){
 						topBar.dismiss();
@@ -9035,7 +8990,7 @@ function exit() {
 				var moreLayout = new LinearLayout(ctxe);
 				var moreButton = clientButton("...", "Opens the \"More\" menu");
 				moreButton.setCornerRadius(20);
-				moreButton.setTextColor(android.graphics.Color.WHITE);
+				moreButton.setTextColor(Color.WHITE);
 				moreButton.setOnClickListener(new android.view.View.OnClickListener({
 				onClick: function(viewarg){
 					VertexClientPE.showMoreDialog();
@@ -9044,11 +8999,11 @@ function exit() {
 				moreLayout.addView(moreButton);
 				
 				exitUI = new widget.PopupWindow(xLayout, dip2px(40), dip2px(40));
-				exitUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				exitUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 				exitUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
 				
 				moreUI = new widget.PopupWindow(moreLayout, dip2px(40), dip2px(40));
-				moreUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				moreUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 				moreUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
 			} catch(exception) {
 				print(exception);
@@ -9066,8 +9021,8 @@ function exitAccountManager() {
 				var xAccountManagerLayout = new LinearLayout(ctxe);
 				var xAccountManagerButton = new Button(ctxe);
 				xAccountManagerButton.setText('X');//Text
-				xAccountManagerButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
-				xAccountManagerButton.setTextColor(android.graphics.Color.WHITE);
+				xAccountManagerButton.getBackground().setColorFilter(Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
+				xAccountManagerButton.setTextColor(Color.WHITE);
 				xAccountManagerButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(viewarg){
 						exitAccountManagerUI.dismiss(); //Close
@@ -9079,7 +9034,7 @@ function exitAccountManager() {
 				xAccountManagerLayout.addView(xAccountManagerButton);
 				
 				exitAccountManagerUI = new widget.PopupWindow(xAccountManagerLayout, dip2px(40), dip2px(40));
-				exitAccountManagerUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				exitAccountManagerUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 				exitAccountManagerUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
 			} catch(exception) {
 				print(exception);
@@ -9097,8 +9052,8 @@ function exitSettings() {
 				var backSettingsLayout = new LinearLayout(ctxe);
 				var backSettingsButton = new Button(ctxe);
 				backSettingsButton.setText("<");//Text
-				backSettingsButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#00BFFF"), android.graphics.PorterDuff.Mode.MULTIPLY);
-				backSettingsButton.setTextColor(android.graphics.Color.WHITE);
+				backSettingsButton.getBackground().setColorFilter(Color.parseColor("#00BFFF"), android.graphics.PorterDuff.Mode.MULTIPLY);
+				backSettingsButton.setTextColor(Color.WHITE);
 				backSettingsButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(viewarg){
 						backSettingsUI.dismiss(); //Close
@@ -9113,8 +9068,8 @@ function exitSettings() {
 				var xSettingsLayout = new LinearLayout(ctxe);
 				var xSettingsButton = new Button(ctxe);
 				xSettingsButton.setText("X");//Text
-				xSettingsButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
-				xSettingsButton.setTextColor(android.graphics.Color.WHITE);
+				xSettingsButton.getBackground().setColorFilter(Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
+				xSettingsButton.setTextColor(Color.WHITE);
 				xSettingsButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(viewarg){
 						backSettingsUI.dismiss(); //Close
@@ -9128,11 +9083,11 @@ function exitSettings() {
 				xSettingsLayout.addView(xSettingsButton);
 				
 				backSettingsUI = new widget.PopupWindow(backSettingsLayout, dip2px(40), dip2px(40));
-				backSettingsUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				backSettingsUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 				backSettingsUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
 				
 				exitSettingsUI = new widget.PopupWindow(xSettingsLayout, dip2px(40), dip2px(40));
-				exitSettingsUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				exitSettingsUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 				exitSettingsUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
 			} catch(exception) {
 				print(exception);
@@ -9150,8 +9105,8 @@ function exitInformation() {
 				var backInformationLayout = new LinearLayout(ctxe);
 				var backInformationButton = new Button(ctxe);
 				backInformationButton.setText("<");//Text
-				backInformationButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#00BFFF"), android.graphics.PorterDuff.Mode.MULTIPLY);
-				backInformationButton.setTextColor(android.graphics.Color.WHITE);
+				backInformationButton.getBackground().setColorFilter(Color.parseColor("#00BFFF"), android.graphics.PorterDuff.Mode.MULTIPLY);
+				backInformationButton.setTextColor(Color.WHITE);
 				backInformationButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(viewarg){
 						backInformationUI.dismiss(); //Close
@@ -9166,8 +9121,8 @@ function exitInformation() {
 				var xInformationLayout = new LinearLayout(ctxe);
 				var xInformationButton = new Button(ctxe);
 				xInformationButton.setText("X");//Text
-				xInformationButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
-				xInformationButton.setTextColor(android.graphics.Color.WHITE);
+				xInformationButton.getBackground().setColorFilter(Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
+				xInformationButton.setTextColor(Color.WHITE);
 				xInformationButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(viewarg){
 						backInformationUI.dismiss(); //Close
@@ -9181,11 +9136,11 @@ function exitInformation() {
 				xInformationLayout.addView(xInformationButton);
 				
 				backInformationUI = new widget.PopupWindow(backInformationLayout, dip2px(40), dip2px(40));
-				backInformationUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				backInformationUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 				backInformationUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
 				
 				exitInformationUI = new widget.PopupWindow(xInformationLayout, dip2px(40), dip2px(40));
-				exitInformationUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				exitInformationUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 				exitInformationUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
 			} catch(exception) {
 				print(exception);
@@ -9203,8 +9158,8 @@ function exitAddon() {
 				var backAddonLayout = new LinearLayout(ctxe);
 				var backAddonButton = new Button(ctxe);
 				backAddonButton.setText("<");//Text
-				backAddonButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#00BFFF"), android.graphics.PorterDuff.Mode.MULTIPLY);
-				backAddonButton.setTextColor(android.graphics.Color.WHITE);
+				backAddonButton.getBackground().setColorFilter(Color.parseColor("#00BFFF"), android.graphics.PorterDuff.Mode.MULTIPLY);
+				backAddonButton.setTextColor(Color.WHITE);
 				backAddonButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(viewarg){
 						backAddonUI.dismiss(); //Close
@@ -9219,8 +9174,8 @@ function exitAddon() {
 				var xAddonLayout = new LinearLayout(ctxe);
 				var xAddonButton = new Button(ctxe);
 				xAddonButton.setText("X");//Text
-				xAddonButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
-				xAddonButton.setTextColor(android.graphics.Color.WHITE);
+				xAddonButton.getBackground().setColorFilter(Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
+				xAddonButton.setTextColor(Color.WHITE);
 				xAddonButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(viewarg){
 						backAddonUI.dismiss(); //Close
@@ -9234,11 +9189,11 @@ function exitAddon() {
 				xAddonLayout.addView(xAddonButton);
 				
 				backAddonUI = new widget.PopupWindow(backAddonLayout, dip2px(40), dip2px(40));
-				backAddonUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				backAddonUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 				backAddonUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
 				
 				exitAddonUI = new widget.PopupWindow(xAddonLayout, dip2px(40), dip2px(40));
-				exitAddonUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				exitAddonUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 				exitAddonUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
 			} catch(exception) {
 				print(exception);
@@ -9258,8 +9213,8 @@ function overlayWebBrowser() {
 				var reloadWebBrowserLayout = new LinearLayout(ctxe);
 				var reloadWebBrowserButton = new Button(ctxe);
 				reloadWebBrowserButton.setText("\u21BB");//Text
-				reloadWebBrowserButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#0B6138"), android.graphics.PorterDuff.Mode.MULTIPLY);
-				reloadWebBrowserButton.setTextColor(android.graphics.Color.WHITE);
+				reloadWebBrowserButton.getBackground().setColorFilter(Color.parseColor("#0B6138"), android.graphics.PorterDuff.Mode.MULTIPLY);
+				reloadWebBrowserButton.setTextColor(Color.WHITE);
 				reloadWebBrowserButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(viewarg) {
 						if(webBrowserWebView != null) {
@@ -9272,8 +9227,8 @@ function overlayWebBrowser() {
 				var xWebBrowserLayout = new LinearLayout(ctxe);
 				xWebBrowserButton = new Button(ctxe);
 				xWebBrowserButton.setText("X");//Text
-				xWebBrowserButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
-				xWebBrowserButton.setTextColor(android.graphics.Color.WHITE);
+				xWebBrowserButton.getBackground().setColorFilter(Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
+				xWebBrowserButton.setTextColor(Color.WHITE);
 				xWebBrowserButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(viewarg) {
 						reloadWebBrowserUI.dismiss(); //Close
@@ -9287,11 +9242,11 @@ function overlayWebBrowser() {
 				xWebBrowserLayout.addView(xWebBrowserButton);
 				
 				reloadWebBrowserUI = new widget.PopupWindow(reloadWebBrowserLayout, dip2px(40), dip2px(40));
-				reloadWebBrowserUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				reloadWebBrowserUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 				reloadWebBrowserUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
 				
 				exitWebBrowserUI = new widget.PopupWindow(xWebBrowserLayout, dip2px(40), dip2px(40));
-				exitWebBrowserUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				exitWebBrowserUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 				exitWebBrowserUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
 			} catch(exception) {
 				print(exception);
@@ -9309,8 +9264,8 @@ function exitPlayerCustomizer() {
 				var xPlayerCustomizerLayout = new LinearLayout(ctxe);
 				var xPlayerCustomizerButton = new Button(ctxe);
 				xPlayerCustomizerButton.setText('X');//Text
-				xPlayerCustomizerButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
-				xPlayerCustomizerButton.setTextColor(android.graphics.Color.WHITE);
+				xPlayerCustomizerButton.getBackground().setColorFilter(Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
+				xPlayerCustomizerButton.setTextColor(Color.WHITE);
 				xPlayerCustomizerButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(viewarg){
 						exitPlayerCustomizerUI.dismiss(); //Close
@@ -9323,7 +9278,7 @@ function exitPlayerCustomizer() {
 				xPlayerCustomizerLayout.addView(xPlayerCustomizerButton);
 				
 				exitPlayerCustomizerUI = new widget.PopupWindow(xPlayerCustomizerLayout, dip2px(40), dip2px(40));
-				exitPlayerCustomizerUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				exitPlayerCustomizerUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 				exitPlayerCustomizerUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
 			} catch(exception) {
 				print(exception);
@@ -9341,8 +9296,8 @@ function exitOptiFine() {
 				var xOptiFineLayout = new LinearLayout(ctxe);
 				var xOptiFineButton = new Button(ctxe);
 				xOptiFineButton.setText('X');//Text
-				xOptiFineButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
-				xOptiFineButton.setTextColor(android.graphics.Color.WHITE);
+				xOptiFineButton.getBackground().setColorFilter(Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
+				xOptiFineButton.setTextColor(Color.WHITE);
 				xOptiFineButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(viewarg){
 						exitOptiFineUI.dismiss(); //Close
@@ -9355,7 +9310,7 @@ function exitOptiFine() {
 				xOptiFineLayout.addView(xOptiFineButton);
 				
 				exitOptiFineUI = new widget.PopupWindow(xOptiFineLayout, dip2px(40), dip2px(40));
-				exitOptiFineUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				exitOptiFineUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 				exitOptiFineUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
 			} catch(exception) {
 				print(exception);
@@ -9373,8 +9328,8 @@ function exitShop() {
 				var xShopLayout = new LinearLayout(ctxe);
 				var xShopButton = new Button(ctxe);
 				xShopButton.setText('X');//Text
-				xShopButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
-				xShopButton.setTextColor(android.graphics.Color.WHITE);
+				xShopButton.getBackground().setColorFilter(Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
+				xShopButton.setTextColor(Color.WHITE);
 				xShopButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(viewarg){
 						exitShopUI.dismiss(); //Close
@@ -9387,7 +9342,7 @@ function exitShop() {
 				xShopLayout.addView(xShopButton);
 				
 				exitShopUI = new widget.PopupWindow(xShopLayout, dip2px(40), dip2px(40));
-				exitShopUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				exitShopUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 				exitShopUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
 			} catch(exception) {
 				print(exception);
@@ -9405,8 +9360,8 @@ function exitDashboard() {
 				var xDashboardLayout = new LinearLayout(ctxe);
 				var xDashboardButton = new Button(ctxe);
 				xDashboardButton.setText('X');//Text
-				xDashboardButton.getBackground().setColorFilter(android.graphics.Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
-				xDashboardButton.setTextColor(android.graphics.Color.WHITE);
+				xDashboardButton.getBackground().setColorFilter(Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
+				xDashboardButton.setTextColor(Color.WHITE);
 				xDashboardButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(viewarg) {
 						exitDashboardUI.dismiss(); //Close
@@ -9419,7 +9374,7 @@ function exitDashboard() {
 				xDashboardLayout.addView(xDashboardButton);
 				
 				exitDashboardUI = new widget.PopupWindow(xDashboardLayout, dip2px(40), dip2px(40));
-				exitDashboardUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+				exitDashboardUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 				exitDashboardUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
 			} catch(exception) {
 				print(exception);
