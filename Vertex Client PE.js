@@ -3015,6 +3015,7 @@ VertexClientPE.showSignEditorDialog = function() {
 				var dialogLayout = new LinearLayout(ctx);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
+				dialogLayout.setPadding(10, 10, 10, 10);
 				dialogLayout.addView(signEditorTitle);
 				dialogLayout.addView(inputBar);
 				dialogLayout.addView(inputBar1);
@@ -3080,6 +3081,7 @@ VertexClientPE.showBugReportDialog = function(exception) {
 				var dialogLayout = new LinearLayout(ctx);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
+				dialogLayout.setPadding(10, 10, 10, 10);
 				dialogLayout.addView(bugReportTitle);
 				dialogLayout.addView(inputBar);
 				dialogLayout.addView(exceptionTextView);
@@ -3117,6 +3119,7 @@ VertexClientPE.showMoreDialog = function() {
 		run: function() {
 			try {
 				var moreTitle = clientTextView("More", true);
+				var moreHR = clientHR();
 				var dashboardButton = clientButton("Dashboard");
 				var webBrowserButton = clientButton("Webbrowser");
 				var playerCustomizerButton = clientButton("Player Customizer");
@@ -3125,11 +3128,14 @@ VertexClientPE.showMoreDialog = function() {
 				var dialogLayout1 = new LinearLayout(ctx);
 				dialogLayout1.setBackgroundDrawable(backgroundGradient());
 				dialogLayout1.setOrientation(LinearLayout.VERTICAL);
+				dialogLayout1.setPadding(10, 10, 10, 10);
+				dialogLayout1.setGravity(android.view.Gravity.CENTER);
 				var dialogLayout = new LinearLayout(ctx);
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
 				var dialogScrollView = new ScrollView(ctx);
 				dialogScrollView.addView(dialogLayout);
 				dialogLayout1.addView(moreTitle);
+				dialogLayout1.addView(moreHR);
 				dialogLayout1.addView(dialogScrollView);
 				dialogLayout.addView(dashboardButton);
 				dialogLayout.addView(webBrowserButton);
@@ -3217,6 +3223,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
 				var dialogLayout = new LinearLayout(ctx);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
+				dialogLayout.setPadding(10, 10, 10, 10);
 				dialogLayout.addView(modTitleLayout);
 				if(mod.source != null) {
 					dialogLayout.addView(clientTextView("Source: " + mod.source + "\n"));
@@ -3669,6 +3676,7 @@ VertexClientPE.showAddAccountDialog = function() {
 				var dialogLayout = new LinearLayout(ctx);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
+				dialogLayout.setPadding(10, 10, 10, 10);
 				dialogLayout.addView(accountTitle);
 				dialogLayout.addView(accountNameInput);
 				//dialogLayout.addView(accountClientIdInput);
@@ -3732,6 +3740,7 @@ VertexClientPE.showProDialog = function(featureName) {
 				var dialogLayout = new LinearLayout(ctx);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
+				dialogLayout.setPadding(10, 10, 10, 10);
 				dialogLayout.addView(dialogTitle);
 				dialogLayout.addView(dialogDesc);
 				dialogLayout.addView(btn);
@@ -3774,6 +3783,7 @@ VertexClientPE.showUpgradeDialog = function(featureName) {
 				var dialogLayout = new LinearLayout(ctx);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
+				dialogLayout.setPadding(10, 10, 10, 10);
 				dialogLayout.addView(dialogTitle);
 				dialogLayout.addView(dialogDesc);
 				dialogLayout.addView(btn);
@@ -3862,6 +3872,7 @@ VertexClientPE.showJavascriptConsoleDialog = function() {
 				var dialogLayout = new LinearLayout(ctx);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
+				dialogLayout.setPadding(10, 10, 10, 10);
 				dialogLayout.addView(javascriptConsoleTitle);
 				dialogLayout.addView(inputBar);
 				dialogLayout.addView(btn);
@@ -3934,6 +3945,7 @@ VertexClientPE.showCategoryDialog = function(titleView, currentName, categoryId)
 				var dialogLayout = new LinearLayout(ctx);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
+				dialogLayout.setPadding(10, 10, 10, 10);
 				dialogLayout.addView(categoryDialogTitle);
 				dialogLayout.addView(inputBar);
 				dialogLayout.addView(btn);
