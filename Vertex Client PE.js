@@ -134,8 +134,10 @@ VertexClientPE.isRemote = false;
 VertexClientPE.playerIsInGame = false;
 
 VertexClientPE.currentVersion = "1.1";
+VertexClientPE.currentVersionDesc = "The Summer Update";
 VertexClientPE.targetVersion = "MCPE v0.15.x alpha";
 VertexClientPE.latestVersion;
+VertexClientPE.latestVersionDesc;
 var latestPocketEditionVersion;
 var news;
 
@@ -212,6 +214,8 @@ var chestTracersGroundMode = "on";
 var chestTracersParticle = "flame";
 var antiLagDropRemoverSetting = "on";
 var useLightThemeSetting = "off";
+var buttonStyleSetting = "normal";
+var cmdPrefix = ".";
 //---------------------------
 var combatName = "Combat";
 var buildingName = "Building";
@@ -219,6 +223,8 @@ var movementName = "Movement";
 var chatName = "Chat";
 var miscName = "Misc";
 //End of settings
+
+var userIsNewToCurrentVersion = false;
 
 var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
 
@@ -242,6 +248,7 @@ var reloadWebBrowserUI;
 var exitDashboardUI;
 var vertexclientpemiscmenu;
 var dashboardMenu;
+var updateCenterMenu;
 var shopMenu;
 var settingsMenu;
 var addonMenu;
@@ -559,7 +566,9 @@ var killAura = {
 			var y = Entity.getY(mobs[i]) - getPlayerY();
 			var z = Entity.getZ(mobs[i]) - getPlayerZ();
 			if(x*x+y*y+z*z<=killAuraRange*killAuraRange && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION && Entity.getHealth(mobs[i]) != 0) {
-				//setRot(getPlayerEnt(), (Math.atan2(z, x) - 90) * Math.pi / 180, getPitch());
+				/*if(getPitch() >= -90 && getPitch() <= 90) {
+					Entity.setRot(getPlayerEnt(), (Math.atan2(z, x) - 90) * Math.PI / 180, getPitch());
+				}*/
 				if(autoSwordState) {
 					VertexClientPE.autoSword(getPlayerEnt(), mobs[i]);
 				}
@@ -1165,6 +1174,11 @@ var tpAura = {
 					if (getTile(playerPos[0], playerPos[1], playerPos[2]) == 0 && getTile(playerPos[0], playerPos[1] - 1, playerPos[2]) == 0 && getTile(playerPos[0], playerPos[1] - 2, playerPos[2]) == 0) {
 						Entity.setPosition(Player.getEntity(), playerPos[0], playerPos[1], playerPos[2]);
 					}
+					
+					/*if(getPitch() >= -90 && getPitch() <= 90) {
+						Entity.setRot(getPlayerEnt(), (Math.atan2(z, x) - 90) * Math.PI / 180, getPitch());
+					}*/
+					
 					break;
 				}
 			}
@@ -1173,6 +1187,8 @@ var tpAura = {
 	},
 	onAttack: function(a, v) {
 		if(a == getPlayerEnt()) {
+			var x = Entity.getX(v) - getPlayerX();
+			var z = Entity.getZ(v) - getPlayerZ();
 			var playerPos = new Array(getPlayerX(), getPlayerY() + 0.5, getPlayerZ());
 			var victimPos = new Array(Entity.getX(v), Entity.getY(v), Entity.getZ(v));
 			var diffPos = new Array(victimPos[0] - playerPos[0], null, victimPos[2] - playerPos[2]);
@@ -1182,6 +1198,10 @@ var tpAura = {
 			if(getTile(playerPos[0], playerPos[1], playerPos[2]) == 0 && getTile(playerPos[0], playerPos[1] - 1, playerPos[2]) == 0 && getTile(playerPos[0], playerPos[1] - 2, playerPos[2]) == 0) {
 				Entity.setPosition(Player.getEntity(), playerPos[0], playerPos[1], playerPos[2]);
 			}
+			
+			/*if(getPitch() >= -90 && getPitch() <= 90) {
+				Entity.setRot(getPlayerEnt(), (Math.atan2(z, x) - 90) * Math.PI / 180, getPitch());
+			}*/
 		}
 	}
 }
@@ -2124,7 +2144,62 @@ var teleport = {
 	}
 }
 
+var antiKnockback = {
+	name: "AntiKnockback",
+	desc: "Prevents you from getting knockback while being attacked.",
+	category: VertexClientPE.category.COMBAT,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onHurt: function(a, v) {
+		if(v == getPlayerEnt()) {
+			if(this.x && this.y && this.z) {
+				Entity.setPosition(getPlayerEnt(), this.x, this.y, this.z);
+			}
+			this.x = getPlayerX();
+			this.y = getPlayerY();
+			this.z = getPlayerZ();
+		}
+	}
+}
+
+var antiBurn = {
+	name: "AntiBurn",
+	desc: "Prevents you from getting burned down.",
+	category: VertexClientPE.category.COMBAT,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onTick: function() {
+		var x = getPlayerX();
+		var y = getPlayerY();
+		var z = getPlayerZ();
+		var blockOne = getTile(x, y, z);
+		var blockTwo = getTile(x, y - 1, z);
+		var blockThree = getTile(x, y - 2, z);
+		setTile(x, y, z, 9);
+		setTile(x, y - 1, z, 9);
+		setTile(x, y - 2, z, 9);
+		setTile(x, y, z, blockOne);
+		setTile(x, y - 1, z, blockTwo);
+		setTile(x, y - 2, z, blockThree);
+		Entity.setFireTicks(getPlayerEnt(), 0);
+	}
+}
+
 //COMBAT
+//VertexClientPE.registerModule(antiKnockback);
+//VertexClientPE.registerModule(antiBurn);
 VertexClientPE.registerModule(arrowGun);
 VertexClientPE.registerModule(autoLeave);
 VertexClientPE.registerModule(autoSword);
@@ -2325,10 +2400,8 @@ function textPacketReceiveHook(type, sender, message) {
 	}
 }
 
-var cmdPrefix = ".";
-
 function chatHook(text) {
-	if(text.charAt(0) == cmdPrefix) {
+	if(text.startsWith(cmdPrefix)) {
 		preventDefault();
 		if(Launcher.isBlockLauncher()) {
 			com.mojang.minecraftpe.MainActivity.currentMainActivity.get().nativeSetTextboxText("");
@@ -2386,7 +2459,7 @@ VertexClientPE.showHelpPage = function(page) {
 	commands.forEach(function(element, index, array) {
 		if(element.syntax != null) {
 			if(index >= 8*(page-1) && index <= 8*page-1) {
-				VertexClientPE.clientMessage("." + element.syntax);
+				VertexClientPE.clientMessage(cmdPrefix + element.syntax);
 			}
 		}
 	});
@@ -2536,7 +2609,7 @@ var give = {
 					var itemId = commandSplit[1];
 				}
 			} else {
-				VertexClientPE.syntaxError("." + this.syntax);
+				VertexClientPE.syntaxError(cmdPrefix + this.syntax);
 				return;
 			}
 			if(commandSplit[2] != null) {
@@ -2552,7 +2625,7 @@ var give = {
 			if(Item.isValidItem(itemId)) {
 				Player.addItemInventory(itemId, count, data);
 			} else {
-				VertexClientPE.syntaxError("." + this.syntax);
+				VertexClientPE.syntaxError(cmdPrefix + this.syntax);
 			}
 		} catch(e) {
 			//syntax?
@@ -2572,26 +2645,26 @@ var tp = {
 			if(commandSplit[1] != null) {
 				var x = commandSplit[1];
 			} else {
-				VertexClientPE.syntaxError("." + this.syntax);
+				VertexClientPE.syntaxError(cmdPrefix + this.syntax);
 				return;
 			}
 			if(commandSplit[2] != null) {
 				var y = commandSplit[2];
 			} else {
-				VertexClientPE.syntaxError("." + this.syntax);
+				VertexClientPE.syntaxError(cmdPrefix + this.syntax);
 				return;
 			}
 			if(commandSplit[3] != null) {
 				var z = commandSplit[3];
 			} else {
-				VertexClientPE.syntaxError("." + this.syntax);
+				VertexClientPE.syntaxError(cmdPrefix + this.syntax);
 				return;
 			}
 			if(getTile(x, y, z) != null) {
 				Entity.setPosition(getPlayerEnt(), x, y, z);
 				VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully teleported player to " + x + ", " + y + ", " + z + "!");
 			} else {
-				VertexClientPE.syntaxError("." + this.syntax);
+				VertexClientPE.syntaxError(cmdPrefix + this.syntax);
 			}
 		} catch(e) {
 			//syntax?
@@ -2611,7 +2684,7 @@ var version = {
 			if(typeof VertexClientPE.getVersion(commandSplit[1]) !== "undefined") {
 				VertexClientPE.clientMessage(VertexClientPE.getVersion(commandSplit[1]));
 			} else {
-				VertexClientPE.syntaxError("." + this.syntax);
+				VertexClientPE.syntaxError(cmdPrefix + this.syntax);
 			}
 		} catch(e) {
 			//syntax?
@@ -4642,6 +4715,8 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + chestTracersParticle.toString());
 	outWrite.append("," + antiLagDropRemoverSetting.toString());
 	outWrite.append("," + useLightThemeSetting.toString());
+	outWrite.append("," + buttonStyleSetting.toString());
+	outWrite.append("," + cmdPrefix.toString());
 
     outWrite.close();
 	
@@ -4728,6 +4803,12 @@ VertexClientPE.loadMainSettings = function() {
 	}
 	if(str.toString().split(",")[21] != null && str.toString().split(",")[21] != undefined) {
 		useLightThemeSetting = str.toString().split(",")[21]; //Here we split text by ","
+	}
+	if(str.toString().split(",")[22] != null && str.toString().split(",")[22] != undefined) {
+		buttonStyleSetting = str.toString().split(",")[22]; //Here we split text by ","
+	}
+	if(str.toString().split(",")[23] != null && str.toString().split(",")[23] != undefined) {
+		cmdPrefix = str.toString().split(",")[23]; //Here we split text by ","
 	}
     fos.close();
 	VertexClientPE.loadAutoSpammerSettings();
@@ -4821,13 +4902,16 @@ var getStretchedImage = function(bm, x, y, stretchWidth, stretchHeight, width, h
     return new android.graphics.drawable.BitmapDrawable(blank);
 };
 
-function clientButton(text, desc, color, round, forceLightColor) //menu buttons
+function clientButton(text, desc, color, round, forceLightColor, forceNormalStyle) //menu buttons
 {
 	if(color == null) {
 		color = themeSetting;
 	}
-	if(forceLightColor == null) {
+	if(forceLightColor == null || forceLightColor == false) {
 		forceLightColor = useLightThemeSetting=="on";
+	}
+	if(forceNormalStyle == null || forceNormalStyle == false) {
+		forceNormalStyle = buttonStyleSetting=="normal";
 	}
     var display = new android.util.DisplayMetrics();
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
@@ -4911,6 +4995,10 @@ function clientButton(text, desc, color, round, forceLightColor) //menu buttons
 		bg.setStroke(dip2px(2), Color.parseColor("#1E1E1E"));
 	}
 	
+	if(forceNormalStyle == false) {
+		bg.setColor(Color.parseColor("#000000"));
+	}
+	
 	defaultButton.setTransformationMethod(null);
     defaultButton.setOnTouchListener(new android.view.View.OnTouchListener() {
         onTouch: function(v, event) {
@@ -4941,6 +5029,10 @@ function clientButton(text, desc, color, round, forceLightColor) //menu buttons
 					bg.setColor(Color.parseColor("#E1E1E1"));
 				}if(color == "black") {
 					bg.setColor(Color.parseColor("#141414"));
+				}
+				
+				if(forceNormalStyle == false) {
+					bg.setColor(Color.parseColor("#000000"));
 				}
             } else {
 				if(forceLightColor == true) {
@@ -5024,13 +5116,70 @@ function shopFeatureButton(shopFeature, cashTextView) {
 	return shopFeatureLayout;
 }
 
+function updatePaneButton(updateVersion, updateDesc) {
+	var updatePaneLayout = new LinearLayout(ctx);
+	updatePaneLayout.setOrientation(LinearLayout.HORIZONTAL);
+	updatePaneLayout.setGravity(android.view.Gravity.CENTER);
+	updatePaneLayout.setBackground(backgroundSpecial(true));
+	var updatePaneLayoutLeft = new LinearLayout(ctx);
+	updatePaneLayoutLeft.setOrientation(1);
+	updatePaneLayoutLeft.setGravity(android.view.Gravity.CENTER);
+	updatePaneLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 2 - dip2px(10), display.heightPixels / 4));
+	var updatePaneLayoutRight = new LinearLayout(ctx);
+	updatePaneLayoutRight.setOrientation(1);
+	updatePaneLayoutRight.setGravity(android.view.Gravity.CENTER);
+	updatePaneLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 2 - dip2px(10), display.heightPixels / 4));
+	updatePaneLayout.addView(updatePaneLayoutLeft);
+	updatePaneLayout.addView(updatePaneLayoutRight);
+	var updatePaneText = clientTextView("v" + updateVersion);
+	updatePaneText.setTypeface(VertexClientPE.font, android.graphics.Typeface.BOLD);
+	var updatePaneDescText = clientTextView(updateDesc);
+	updatePaneLayoutLeft.addView(updatePaneText);
+	updatePaneLayoutLeft.addView(updatePaneDescText);
+	var updatePaneDownloadButton = clientButton("Download");
+	updatePaneDownloadButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.stat_sys_download, 0, 0, 0);
+	updatePaneDownloadButton.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, display.heightPixels / 8));
+	updatePaneDownloadButton.setOnClickListener(new android.view.View.OnClickListener() {
+		onClick: function(v) {
+			var updateGithubVersion = updateVersion;
+			if(updateGithubVersion.indexOf("Alpha") != -1 || updateGithubVersion.indexOf("Beta") != -1) {
+				updateGithubVersion = updateGithubVersion.split(" ")[0] + "-" + updateGithubVersion.split(" ")[1];
+			}
+			ModPE.goToURL("https://github.com/Vertex-Client/Vertex-Client-PE/releases/download/v" + updateGithubVersion + "/Vertex_Client_PE.modpkg");
+		}
+	});
+	var updatePaneInformationButton = clientButton("Info");
+	updatePaneInformationButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_menu_info_details, 0, 0, 0);
+	updatePaneInformationButton.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, display.heightPixels / 8));
+	updatePaneInformationButton.setOnClickListener(new android.view.View.OnClickListener() {
+		onClick: function(v) {
+			var updateGithubVersion = updateVersion;
+			if(updateGithubVersion.indexOf("Alpha") != -1 || updateGithubVersion.indexOf("Beta") != -1) {
+				updateGithubVersion = updateGithubVersion.split(" ")[0] + "-" + updateGithubVersion.split(" ")[1];
+			}
+			ModPE.goToURL("https://github.com/Vertex-Client/Vertex-Client-PE/releases/tag/v" + updateGithubVersion);
+		}
+	});
+	var updatePaneTypeText = clientTextView("Current")
+	
+	if(updateVersion != VertexClientPE.currentVersion) {
+		updatePaneLayoutRight.addView(updatePaneDownloadButton);
+	} else {
+		updatePaneLayoutRight.addView(updatePaneTypeText);
+	}
+	
+	updatePaneLayoutRight.addView(updatePaneInformationButton);
+	
+	return updatePaneLayout;
+}
+
 function tileButton(tileText, tileIcon, tileColor) {
 	var params = new widget.GridLayout.LayoutParams();
 	params.setMargins(5, 5, 5, 5);
 	params.width = display.widthPixels / 4 - dip2px(5);
 	params.height = display.widthPixels / 4 - dip2px(5);
 	
-	var defaultTileButton = clientButton(tileText, null, tileColor, false, true);
+	var defaultTileButton = clientButton(tileText, null, tileColor, false, true, true);
 	defaultTileButton.setCompoundDrawablesWithIntrinsicBounds(0, tileIcon, 0, 0);
 	defaultTileButton.setLayoutParams(params);
 	
@@ -5515,7 +5664,7 @@ function categoryTitle(text) {
 	categoryTitleLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.heightPixels / 3 - display.heightPixels / 4, display.heightPixels / 20));
 	categoryTitleLayout.addView(categoryTitleLayoutRight);
 	
-	var defaultSettingsButton = clientButton("\u270E", null, null, "left");
+	var defaultSettingsButton = clientButton("\u270E", null, null, "left", false, true);
 	defaultSettingsButton.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 3 - display.heightPixels / 4, display.heightPixels / 20));
 	defaultSettingsButton.setAlpha(0.54);
 	categoryTitleLayoutLeft.addView(defaultSettingsButton);
@@ -5525,7 +5674,7 @@ function categoryTitle(text) {
 	defaultTitle.setGravity(view.Gravity.CENTER);
 	categoryTitleLayoutMiddle.addView(defaultTitle);
 	
-	var defaultArrowButton = clientButton("\u25BD", null, null, "right");
+	var defaultArrowButton = clientButton("\u25BD", null, null, "right", false, true);
 	defaultArrowButton.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 3 - display.heightPixels / 4, display.heightPixels / 20));
 	defaultArrowButton.setAlpha(0.54);
 	categoryTitleLayoutRight.addView(defaultArrowButton);
@@ -5701,6 +5850,85 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
 	return bg;
 }
 
+function backgroundRainbow(round) {
+	var bg = android.graphics.drawable.GradientDrawable();
+	if(round == true) {
+		bg.setCornerRadius(8);
+	} else if(round != false && round != null) {
+		var radiiFloatArray = java.lang.reflect.Array.newInstance(java.lang.Float.TYPE, 9);
+		var radius = 0;
+		if(round == "left") {
+			for(var i = 0; i <= 7; i++) {
+				if(i == 0 || i == 1 || i == 6 || i == 7) {
+					radiiFloatArray[i] = 8;
+				} else {
+					radiiFloatArray[i] = radius;
+				}
+			}
+			bg.setCornerRadii(radiiFloatArray);
+		} else if(round == "right") {
+			for(var i = 0; i <= 7; i++) {
+				if(i == 2 || i == 3 || i == 4 || i == 5) {
+					radiiFloatArray[i] = 8;
+				} else {
+					radiiFloatArray[i] = radius;
+				}
+			}
+			bg.setCornerRadii(radiiFloatArray);
+		} else if(round == "cornerleft") {
+			for(var i = 0; i <= 7; i++) {
+				if(i == 6 || i == 7) {
+					radiiFloatArray[i] = 180;
+				} else {
+					radiiFloatArray[i] = radius;
+				}
+			}
+			bg.setCornerRadii(radiiFloatArray);
+		} else if(round == "cornerright") {
+			for(var i = 0; i <= 7; i++) {
+				if(i == 4 || i == 5) {
+					radiiFloatArray[i] = 180;
+				} else {
+					radiiFloatArray[i] = radius;
+				}
+			}
+			bg.setCornerRadii(radiiFloatArray);
+		} else if(round == "bottom") {
+			for(var i = 0; i <= 7; i++) {
+				if(i >= 4) {
+					radiiFloatArray[i] = 8;
+				} else {
+					radiiFloatArray[i] = radius;
+				}
+			}
+			bg.setCornerRadii(radiiFloatArray);
+		} else if(round == "invertcornerright") {
+			for(var i = 0; i <= 7; i++) {
+				if(i == 2 || i == 3) {
+					radiiFloatArray[i] = -180;
+				} else {
+					radiiFloatArray[i] = radius;
+				}
+			}
+			bg.setCornerRadii(radiiFloatArray);
+		} else if(round != false && round != null) {
+			bg.setCornerRadius(round);
+		}
+	}
+	var rainbowInt = java.lang.reflect.Array.newInstance(java.lang.Integer.TYPE, 7);
+	rainbowInt[0] = Color.RED;
+	rainbowInt[1] = Color.MAGENTA;
+	rainbowInt[2] = Color.BLUE;
+	rainbowInt[3] = Color.CYAN;
+	rainbowInt[4] = Color.GREEN;
+	rainbowInt[5] = Color.YELLOW;
+	rainbowInt[6] = Color.RED;
+	var bg = new android.graphics.drawable.GradientDrawable(android.graphics.drawable.GradientDrawable.Orientation.LEFT_RIGHT, rainbowInt);
+	bg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+
+	return bg;
+}
+
 function backgroundGradient(round) // TextView with colored background (edited by peacestorm)
 {
 	var bg = android.graphics.drawable.GradientDrawable();
@@ -5829,6 +6057,47 @@ VertexClientPE.checkForUpdates = function() {
 	editor.commit();
 	themeSetup = "off";
 	VertexClientPE.setupTheme();
+}
+
+VertexClientPE.loadUpdateDescription = function() {
+    try {
+        // download content
+        var url = new java.net.URL("https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/update/Updater/Version-Desc/" + VertexClientPE.latestVersion);
+        var connection = url.openConnection();
+
+        // get content
+        inputStream = connection.getInputStream();
+
+        // read result
+        var loadedUpdateDesc = "";
+        var bufferedUpdateDescReader = new java.io.BufferedReader(new java.io.InputStreamReader(inputStream));
+        var rowUpdateDesc = "";
+        while((rowUpdateDesc = bufferedVersionReader.readLine()) != null) {
+            loadedUpdateDesc += rowUpdateDesc;
+        }
+		
+		VertexClientPE.latestVersionDesc = loadedUpdateDesc;
+
+        // close what needs to be closed
+        bufferedVersionReader.close();
+
+        // test
+        //clientMessage(VertexClientPE.getVersion("current"); + " " + latestVersion);
+    } catch(err) {
+        ModPE.log("[Vertex Client PE] VertexClientPE.loadUpdateDescription() caught an error: " + err);
+		var sharedPref = ctx.getPreferences(ctx.MODE_PRIVATE);
+		if(sharedPref.getString("VertexClientPE.latestVersionDesc", null) != null && sharedPref.getString("VertexClientPE.latestVersionDesc", null) != undefined) {
+			VertexClientPE.latestVersionDesc = sharedPref.getString("VertexClientPE.latestVersionDesc", null);
+		} else {
+			VertexClientPE.latestVersionDesc = "Unknown";
+		}
+		return;
+    }
+	
+	var sharedPref = ctx.getPreferences(ctx.MODE_PRIVATE);
+	var editor = sharedPref.edit();
+	editor.putString("VertexClientPE.latestVersionDesc", VertexClientPE.latestVersionDesc);
+	editor.commit();
 }
 
 VertexClientPE.loadNews = function() {
@@ -6096,7 +6365,10 @@ VertexClientPE.showSplashScreen = function() {
 							VertexClientPE.clientTick();
 							VertexClientPE.specialTick();
 							VertexClientPE.secondTick();
-							//showAccountManagerButton();
+							showAccountManagerButton();
+							if(userIsNewToCurrentVersion == true) {
+								updateCenterScreen();
+							}
 							ModPE.goToURL("https://www.youtube.com/c/AgameRGaming");
 					}}));
 					playButton.setOnClickListener(new android.view.View.OnClickListener({
@@ -6107,6 +6379,9 @@ VertexClientPE.showSplashScreen = function() {
 							VertexClientPE.specialTick();
 							VertexClientPE.secondTick();
 							showAccountManagerButton();
+							if(userIsNewToCurrentVersion == true) {
+								updateCenterScreen();
+							}
 					}}));
 					twitterButton.setOnClickListener(new android.view.View.OnClickListener({
 						onClick: function(viewarg) {
@@ -6115,7 +6390,10 @@ VertexClientPE.showSplashScreen = function() {
 							VertexClientPE.clientTick();
 							VertexClientPE.specialTick();
 							VertexClientPE.secondTick();
-							//showAccountManagerButton();
+							showAccountManagerButton();
+							if(userIsNewToCurrentVersion == true) {
+								updateCenterScreen();
+							}
 							ModPE.goToURL("http://twitter.com/VertexHX");
 					}}));
 					
@@ -6375,8 +6653,23 @@ VertexClientPE.downloadPro = function() {
 	ModPE.goToURL("http://filecred.com/A8C1G574");
 }
 
+VertexClientPE.getHasUsedCurrentVersion = function() {
+	return sharedPref.getString("VertexClientPE.lastUsedVersion", null) != VertexClientPE.currentVersion;
+}
+
+VertexClientPE.setHasUsedCurrentVersion = function(opt) {
+	if(opt == true) {
+		editor.putString("VertexClientPE.lastUsedVersion", VertexClientPE.currentVersion);
+	}
+	if(opt == false) {
+		editor.putString("VertexClientPE.lastUsedVersion", null);
+	}
+}
+
 VertexClientPE.setup = function() {
 	VertexClientPE.loadSupport();
+	VertexClientPE.checkForUpdates();
+	VertexClientPE.loadUpdateDescription();
 	VertexClientPE.loadDownloadCount();
 	VertexClientPE.initShopFeatures();
 	if(VertexClientPE.loadMainSettings() == null) {
@@ -6385,6 +6678,10 @@ VertexClientPE.setup = function() {
 	} else {
 		VertexClientPE.showSplashScreen();
 		//tts.speak("Welcome back " + ModPE.getPlayerName() + "! Thanks for using Vertex Client PE!", android.speech.tts.TextToSpeech.QUEUE_FLUSH, null);
+	}
+	
+	if(!VertexClientPE.getHasUsedCurrentVersion()) {
+		userIsNewToCurrentVersion = true;
 	}
 }
 
@@ -6705,63 +7002,63 @@ function settingsScreen() {
 					
 					var themeTitle = clientSectionTitle("Theme", "rainbow");
 					
-					var themeSettingButton = clientButton("Theme", "Sets the Client's theme.");
+					var themeSettingButton = clientButton("Color", "Sets the Client's theme.");
 					if(themeSetting == "green") {
-						themeSettingButton.setText("Theme | Green");
+						themeSettingButton.setText("Color | Green");
 					} else if(themeSetting == "red") {
-						themeSettingButton.setText("Theme | Red");
+						themeSettingButton.setText("Color | Red");
 					} else if(themeSetting == "blue") {
-						themeSettingButton.setText("Theme | Blue");
+						themeSettingButton.setText("Color | Blue");
 					} else if(themeSetting == "purple") {
-						themeSettingButton.setText("Theme | Purple");
+						themeSettingButton.setText("Color | Purple");
 					} else if(themeSetting == "yellow") {
-						themeSettingButton.setText("Theme | Yellow");
+						themeSettingButton.setText("Color | Yellow");
 					} else if(themeSetting == "white") {
-						themeSettingButton.setText("Theme | White");
+						themeSettingButton.setText("Color | White");
 					} else if(themeSetting == "black") {
-						themeSettingButton.setText("Theme | Black");
+						themeSettingButton.setText("Color | Black");
 					}
 					themeSettingButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(viewarg){
 						if(themeSetting == "green") {
 							themeSetting = "red";
-							themeSettingButton.setText("Theme | Red");
+							themeSettingButton.setText("Color | Red");
 							themeSetup = "off";
 							VertexClientPE.saveMainSettings();
 							VertexClientPE.setupTheme();
 						} else if(themeSetting == "red") {
 							themeSetting = "blue";
-							themeSettingButton.setText("Theme | Blue");
+							themeSettingButton.setText("Color | Blue");
 							themeSetup = "off";
 							VertexClientPE.saveMainSettings();
 							VertexClientPE.setupTheme();
 						} else if(themeSetting == "blue") {
 							themeSetting = "purple";
-							themeSettingButton.setText("Theme | Purple");
+							themeSettingButton.setText("Color | Purple");
 							themeSetup = "off";
 							VertexClientPE.saveMainSettings();
 							VertexClientPE.setupTheme();
 						} else if(themeSetting == "purple") {
 							themeSetting = "yellow";
-							themeSettingButton.setText("Theme | Yellow");
+							themeSettingButton.setText("Color | Yellow");
 							themeSetup = "off";
 							VertexClientPE.saveMainSettings();
 							VertexClientPE.setupTheme();
 						} else if(themeSetting == "yellow") {
 							themeSetting = "white";
-							themeSettingButton.setText("Theme | White");
+							themeSettingButton.setText("Color | White");
 							themeSetup = "off";
 							VertexClientPE.saveMainSettings();
 							VertexClientPE.setupTheme();
 						} else if(themeSetting == "white") {
 							themeSetting = "black";
-							themeSettingButton.setText("Theme | Black");
+							themeSettingButton.setText("Color | Black");
 							themeSetup = "off";
 							VertexClientPE.saveMainSettings();
 							VertexClientPE.setupTheme();
 						} else if(themeSetting == "black") {
 							themeSetting = "green";
-							themeSettingButton.setText("Theme | Green");
+							themeSettingButton.setText("Color | Green");
 							themeSetup = "off";
 							VertexClientPE.saveMainSettings();
 							VertexClientPE.setupTheme();
@@ -6784,6 +7081,26 @@ function settingsScreen() {
 						} else if(useLightThemeSetting == "off") {
 							useLightThemeSetting = "on";
 							useLightThemeSettingButton.setText("Lighter theme colors | ON");
+							VertexClientPE.saveMainSettings();
+						}
+					}
+					}));
+					
+					var buttonStyleSettingButton = clientButton("Button style", "Change the button style.");
+					if(buttonStyleSetting == "normal") {
+						buttonStyleSettingButton.setText("Button style | Normal");
+					} else if(buttonStyleSetting == "legacy") {
+						buttonStyleSettingButton.setText("Button style | Legacy");
+					}
+					buttonStyleSettingButton.setOnClickListener(new android.view.View.OnClickListener({
+					onClick: function(viewarg){
+						if(buttonStyleSetting == "normal") {
+							buttonStyleSetting = "legacy";
+							buttonStyleSettingButton.setText("Button style | Lecacy");
+							VertexClientPE.saveMainSettings();
+						} else if(buttonStyleSetting == "legacy") {
+							buttonStyleSetting = "normal";
+							buttonStyleSettingButton.setText("Button style | Normal");
 							VertexClientPE.saveMainSettings();
 						}
 					}
@@ -6927,6 +7244,7 @@ function settingsScreen() {
 					settingsMenuLayout.addView(themeTitle);
 					settingsMenuLayout.addView(themeSettingButton);
 					settingsMenuLayout.addView(useLightThemeSettingButton);
+					settingsMenuLayout.addView(buttonStyleSettingButton);
 					settingsMenuLayout.addView(menuTitle);
 					settingsMenuLayout.addView(menuTypeSettingButton);
 					settingsMenuLayout.addView(sizeSettingButton);
@@ -7389,6 +7707,68 @@ function shopScreen() {
                     shopMenu = new widget.PopupWindow(shopMenuLayout1, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
                     shopMenu.setBackgroundDrawable(backgroundGradient());
                     shopMenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
+                } catch(error) {
+                    print('An error occurred: ' + error);
+                }
+            }
+        }));
+}
+
+function updateCenterScreen() {
+	var display = new android.util.DisplayMetrics();
+	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
+    var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+        ctx.runOnUiThread(new java.lang.Runnable({
+            run: function() {
+                try {
+                	if(GUI != null) {
+                		if(GUI.isShowing()) {
+                			GUI.dismiss();
+                		}
+                	}
+                	if(hacksList != null) {
+                		if(hacksList.isShowing()) {
+                			hacksList.dismiss();
+                		}
+                	}
+					if(tabGUI != null) {
+                		if(tabGUI.isShowing()) {
+                			tabGUI.dismiss();
+                		}
+                	}
+
+					var updateCenterMenuLayout = new LinearLayout(ctx);
+                    updateCenterMenuLayout.setOrientation(1);
+                    updateCenterMenuLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					
+					var updateCenterMenuLayoutScroll = new ScrollView(ctx);
+					
+					var updateCenterMenuLayout1 = new LinearLayout(ctx);
+                    updateCenterMenuLayout1.setOrientation(1);
+                    updateCenterMenuLayout1.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					updateCenterMenuLayout1.setPadding(10, 0, 10, 0);
+					
+					var updateCenterTitle = clientTextView("Update Center", true);
+					updateCenterTitle.setTextSize(25);
+					updateCenterTitle.setGravity(android.view.Gravity.CENTER);
+					
+					updateCenterMenuLayout1.addView(updateCenterTitle);
+					updateCenterMenuLayout1.addView(clientTextView("\n"));
+					updateCenterMenuLayoutScroll.addView(updateCenterMenuLayout);
+					updateCenterMenuLayout1.addView(updateCenterMenuLayoutScroll);
+					
+					var latestUpdateView = updatePaneButton(VertexClientPE.latestVersion, VertexClientPE.latestVersionDesc);
+					var updateEnterView = new widget.TextView(ctx);
+					updateEnterView.setText("\n");
+					var currentUpdateView = updatePaneButton(VertexClientPE.currentVersion, VertexClientPE.currentVersionDesc);
+					
+					updateCenterMenuLayout.addView(latestUpdateView);
+					updateCenterMenuLayout.addView(updateEnterView);
+					updateCenterMenuLayout.addView(currentUpdateView);
+
+                    updateCenterMenu = new widget.PopupWindow(updateCenterMenuLayout1, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
+                    updateCenterMenu.setBackgroundDrawable(backgroundGradient());
+                    updateCenterMenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
                 } catch(error) {
                     print('An error occurred: ' + error);
                 }
@@ -8644,7 +9024,7 @@ VertexClientPE.clientTick = function() {
                     run: function() {
 						try{
 							var _0x43af=["\x61\x75\x74\x68\x6F\x72","\x70\x65\x61\x63\x65\x73\x74\x6F\x72\x6D"];if(VertexClientPE[_0x43af[0]]!= _0x43af[1]){isAuthorized= false}
-							if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false)  && (menu == null || menu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false) && (webBrowserMenu == null || webBrowserMenu.isShowing() == false) && (playerCustomizerMenu == null || playerCustomizerMenu.isShowing() == false) && (optiFineMenu == null || optiFineMenu.isShowing() == false) && (shopMenu == null || shopMenu.isShowing() == false) && (dashboardMenu == null || dashboardMenu.isShowing() == false)) {
+							if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false)  && (menu == null || menu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false) && (webBrowserMenu == null || webBrowserMenu.isShowing() == false) && (playerCustomizerMenu == null || playerCustomizerMenu.isShowing() == false) && (optiFineMenu == null || optiFineMenu.isShowing() == false) && (shopMenu == null || shopMenu.isShowing() == false) && (dashboardMenu == null || dashboardMenu.isShowing() == false) && (updateCenterMenu == null || updateCenterMenu.isShowing() == false)) {
 								VertexClientPE.isRemote = true;
 								if(Launcher.isBlockLauncher()) {
 									net.zhuoweizhang.mcpelauncher.ScriptManager.isRemote = true;
@@ -8664,7 +9044,7 @@ VertexClientPE.clientTick = function() {
 							print("Use BlockLauncher v1.12.2 or above!");
 							ModPE.log(e);
 						}
-						if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (menu == null || menu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false) && (webBrowserMenu == null || webBrowserMenu.isShowing() == false) && (playerCustomizerMenu == null || playerCustomizerMenu.isShowing() == false) && (optiFineMenu == null || optiFineMenu.isShowing() == false) && (shopMenu == null || shopMenu.isShowing() == false) && (dashboardMenu == null || dashboardMenu.isShowing() == false)) {
+						if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (menu == null || menu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false) && (webBrowserMenu == null || webBrowserMenu.isShowing() == false) && (playerCustomizerMenu == null || playerCustomizerMenu.isShowing() == false) && (optiFineMenu == null || optiFineMenu.isShowing() == false) && (shopMenu == null || shopMenu.isShowing() == false) && (dashboardMenu == null || dashboardMenu.isShowing() == false) && (updateCenterMenu == null || updateCenterMenu.isShowing() == false)) {
 							VertexClientPE.isRemote = true;
 							showMenuButton();
 						}
@@ -9044,6 +9424,9 @@ function setupDone() {
 						showMenuButton();
 						showAccountManagerButton();
 						VertexClientPE.setupTheme();
+						if(userIsNewToCurrentVersion == true) {
+							updateCenterScreen();
+						}
 					}
 				}));
 				doneLayout.addView(doneButton);
