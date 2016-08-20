@@ -6736,6 +6736,168 @@ VertexClientPE.getHighestBlockDifference = function() {
 	}
 }
 
+var renderTypes = [
+	EntityRenderType.arrow,
+	EntityRenderType.bat,
+	EntityRenderType.blaze,
+	EntityRenderType.boat,
+	//EntityRenderType.camera,
+	EntityRenderType.chicken,
+	EntityRenderType.cow,
+	EntityRenderType.creeper,
+	EntityRenderType.egg,
+	EntityRenderType.enderman,
+	EntityRenderType.expPotion,
+	EntityRenderType.experienceOrb,
+	//EntityRenderType.fallingTile,
+	EntityRenderType.fireball,
+	EntityRenderType.fishHook,
+	EntityRenderType.ghast,
+	EntityRenderType.human,
+	EntityRenderType.ironGolem,
+	//EntityRenderType.item,
+	//EntityRenderType.lavaSlime,
+	EntityRenderType.lightningBolt,
+	//EntityRenderType.map,
+	//EntityRenderType.minecart,
+	EntityRenderType.mushroomCow,
+	EntityRenderType.ocelot,
+	//EntityRenderType.painting,
+	//EntityRenderType.pig,
+	EntityRenderType.player,
+	EntityRenderType.rabbit,
+	EntityRenderType.sheep,
+	EntityRenderType.silverfish,
+	EntityRenderType.skeleton,
+	//EntityRenderType.slime,
+	EntityRenderType.smallFireball,
+	EntityRenderType.snowGolem,
+	EntityRenderType.snowball,
+	//EntityRenderType.spider,
+	EntityRenderType.squid,
+	EntityRenderType.thrownPotion,
+	//EntityRenderType.tnt,
+	//EntityRenderType.unknownItem,
+	//EntityRenderType.villager,
+	EntityRenderType.villagerZombie,
+	EntityRenderType.witch,
+	//EntityRenderType.wolf,
+	EntityRenderType.zombie,
+	EntityRenderType.zombiePigman
+];
+
+Entity.renderTypeToName = function(rT) {
+	switch(rT) {
+		case EntityRenderType.arrow:
+			return "Arrow";
+		case EntityRenderType.bat:
+			return "Bat";
+		case EntityRenderType.blaze:
+			return "Blaze";
+		case EntityRenderType.boat:
+			return "Boat";
+		case EntityRenderType.camera:
+			return "Camera";
+		case EntityRenderType.chicken:
+			return "Chicken";
+		case EntityRenderType.cow:
+			return "Cow";
+		case EntityRenderType.creeper:
+			return "Creeper";
+		case EntityRenderType.egg:
+			return "Egg";
+		case EntityRenderType.enderman:
+			return "Enderman";
+		case EntityRenderType.expPotion:
+			return "Experience Potion";
+		case EntityRenderType.experienceOrb:
+			return "Experience Orb";
+		case EntityRenderType.fallingTile:
+			return "Falling Tile";
+		case EntityRenderType.fireball:
+			return "Fireball";
+		case EntityRenderType.fishHook:
+			return "Fish Hook";
+		case EntityRenderType.ghast:
+			return "Ghast";
+		case EntityRenderType.human:
+			return "Human (Zombie)";
+		case EntityRenderType.ironGolem:
+			return "Iron Golem";
+		case EntityRenderType.item:
+			return "Item";
+		case EntityRenderType.lavaSlime:
+			return "Magma Cube";
+		case EntityRenderType.lightningBolt:
+			return "Lightning Bolt";
+		case EntityRenderType.map:
+			return "Map";
+		case EntityRenderType.minecart:
+			return "Minecart";
+		case EntityRenderType.mushroomCow:
+			return "Mooshroom";
+		case EntityRenderType.ocelot:
+			return "Ocelot";
+		case EntityRenderType.painting:
+			return "Painting";
+		case EntityRenderType.pig:
+			return "Pig";
+		case EntityRenderType.player:
+			return "Player";
+		case EntityRenderType.rabbit:
+			return "Rabbit";
+		case EntityRenderType.sheep:
+			return "Sheep";
+		case EntityRenderType.silverfish:
+			return "Silverfish";
+		case EntityRenderType.skeleton:
+			return "Skeleton";
+		case EntityRenderType.slime:
+			return "Slime";
+		case EntityRenderType.smallFireball:
+			return "Small Fireball";
+		case EntityRenderType.snowGolem:
+			return "Snow Golem";
+		case EntityRenderType.snowball:
+			return "Snowball";
+		case EntityRenderType.spider:
+			return "Spider";
+		case EntityRenderType.squid:
+			return "Squid";
+		case EntityRenderType.thrownPotion:
+			return "Thrown Potion";
+		case EntityRenderType.tnt:
+			return "TNT";
+		case EntityRenderType.unknownItem:
+			return "Unknown Item";
+		case EntityRenderType.villager:
+			return "Villager";
+		case EntityRenderType.villagerZombie:
+			return "Zombie Villager";
+		case EntityRenderType.witch:
+			return "Witch";
+		case EntityRenderType.wolf:
+			return "Wolf";
+		case EntityRenderType.zombie:
+			return "Zombie";
+		case EntityRenderType.zombiePigman:
+			return "Zombie Pigman";
+		default:
+			return "Unknown";
+	}
+}
+
+VertexClientPE.setPlayerModel = function(rT, layout) {
+	Entity.setRenderType(getPlayerEnt(), rT);
+	for(var i = 0; i < layout.getChildCount(); i++) {
+		if(layout.getChildAt(i).getText() == Entity.renderTypeToName(rT)) {
+			layout.getChildAt(i).setTextColor(Color.GREEN);
+		} else {
+			layout.getChildAt(i).setTextColor(Color.WHITE);
+		}
+	}
+}
+
 var hasLoadedAddons = false;
 
 VertexClientPE.update = function() {
@@ -6833,6 +6995,7 @@ function newLevel() {
 		VertexClientPE.loadAddons();
 	}
 	VertexClientPE.playMusic();
+	//VertexClientPE.initPlayerCustomizer();
 	new java.lang.Thread(new java.lang.Runnable() {
 		run: function() {
 			VertexClientPE.checkForUpdates();
@@ -7498,64 +7661,38 @@ function playerCustomizerScreen() {
 					
 					var playCustomizerLayoutScroll = new ScrollView(ctx);
 					
-					var playCustomizerLayout1 = new LinearLayout(ctx);
-                    playCustomizerLayout1.setOrientation(1);
-                    playCustomizerLayout1.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					var playerCustomizerLayout1 = new LinearLayout(ctx);
+                    playerCustomizerLayout1.setOrientation(1);
+                    playerCustomizerLayout1.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
 					
 					var playerCustomizerTitle = clientTextView("Player Customizer", true);
 					playerCustomizerTitle.setTextSize(25);
 					playerCustomizerTitle.setGravity(android.view.Gravity.CENTER);
-					playCustomizerLayout1.addView(playerCustomizerTitle);
+					playerCustomizerLayout1.addView(playerCustomizerTitle);
 					
 					playCustomizerLayoutScroll.addView(playCustomizerLayout);
-					playCustomizerLayout1.addView(playCustomizerLayoutScroll);
+					playerCustomizerLayout1.addView(playCustomizerLayoutScroll);
 					
-					var playerModelButton = clientButton("Player");
-					if(Entity.getRenderType(getPlayerEnt()) == EntityRenderType.player) {
-						playerModelButton.setTextColor(Color.GREEN);
-					}
-					playerModelButton.setOnClickListener(new android.view.View.OnClickListener() {
-						onClick: function() {
-							Entity.setRenderType(getPlayerEnt(), EntityRenderType.player);
-							playerModelButton.setTextColor(Color.GREEN);
-							skeletonModelButton.setTextColor(Color.WHITE);
-							spiderModelButton.setTextColor(Color.WHITE);
+					var playerCustomizerMorphingLayout = LinearLayout(ctx);
+					playerCustomizerMorphingLayout.setOrientation(1);
+					playCustomizerLayout.addView(playerCustomizerMorphingLayout);
+					
+					renderTypes.forEach(function(element, index, array) {
+						var rTButton = clientButton(Entity.renderTypeToName(element));
+						if(element == Entity.getRenderType(getPlayerEnt())) {
+							rTButton.setTextColor(Color.GREEN);
+						}
+						rTButton.setOnClickListener(new android.view.View.OnClickListener() {
+							onClick: function() {
+								VertexClientPE.setPlayerModel(element, playerCustomizerMorphingLayout);
+							}
+						});
+						if(Entity.renderTypeToName(element) != "Unknown") {
+							playerCustomizerMorphingLayout.addView(rTButton);
 						}
 					});
-					playCustomizerLayout.addView(playerModelButton);
-					
-					var skeletonModelButton = clientButton("Skeleton");
-					if(Entity.getRenderType(getPlayerEnt()) == EntityRenderType.skeleton) {
-						skeletonModelButton.setTextColor(Color.GREEN);
-					}
-					skeletonModelButton.setOnClickListener(new android.view.View.OnClickListener() {
-						onClick: function() {
-							Entity.setRenderType(getPlayerEnt(), EntityRenderType.skeleton);
-							playerModelButton.setTextColor(Color.WHITE);
-							skeletonModelButton.setTextColor(Color.GREEN);
-							spiderModelButton.setTextColor(Color.WHITE);
-						}
-					});
-					playCustomizerLayout.addView(skeletonModelButton);
-					
-					var spiderModelButton = clientButton("Spider");
-					if(Entity.getRenderType(getPlayerEnt()) == EntityRenderType.spider) {
-						spiderModelButton.setTextColor(Color.GREEN);
-					}
-					spiderModelButton.setOnClickListener(new android.view.View.OnClickListener() {
-						onClick: function() {
-							Entity.setRenderType(getPlayerEnt(), EntityRenderType.spider);
-							playerModelButton.setTextColor(Color.WHITE);
-							skeletonModelButton.setTextColor(Color.WHITE);
-							spiderModelButton.setTextColor(Color.GREEN);
-						}
-					});
-					playCustomizerLayout.addView(spiderModelButton);
-					
-					var changeModelButton = clientButton("Change Model \u25BC")
-					//playCustomizerLayout.addView(changeModelButton);
 
-                    playerCustomizerMenu = new widget.PopupWindow(playCustomizerLayout1, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
+                    playerCustomizerMenu = new widget.PopupWindow(playerCustomizerLayout1, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
                     playerCustomizerMenu.setBackgroundDrawable(backgroundGradient());
                     playerCustomizerMenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
                 } catch(error) {
