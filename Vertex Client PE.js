@@ -8868,6 +8868,7 @@ function showMenuButton() {
 				VertexClientPE.toast("You need to be in game to open the menu!");
 			} else {
 				VertexClientPE.closeMenu();
+				VertexClientPE.menuIsShowing = false;
 				if(!hacksList.isShowing()) {
 					showHacksList();
 					showTabGUI();
