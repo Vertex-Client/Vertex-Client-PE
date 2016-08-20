@@ -3283,10 +3283,27 @@ VertexClientPE.showModDialog = function(mod, btn) {
 				var modTitle = clientTextView(mod.name, true);
 				modTitle.setTextSize(20);
 				var modFavButton = new Button(ctx);
-				modFavButton.setBackgroundDrawable(ctx.getResources().getDrawable(android.R.drawable.btn_star_big_off));
-				modFavButton.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+				modFavButton.setLayoutParams(new LinearLayout.LayoutParams(64, 64));
 				modTitleLayout.addView(modTitle);
-				//modTitleLayout.addView(modFavButton);
+				modTitleLayout.addView(modFavButton);
+				if(sharedPref.getString("VertexClientPE.mods." + mod.name + ".isFavorite", "false") == "true") {
+					modFavButton.setBackgroundDrawable(ctx.getResources().getDrawable(android.R.drawable.btn_star_big_on));
+				} else {
+					modFavButton.setBackgroundDrawable(ctx.getResources().getDrawable(android.R.drawable.btn_star_big_off));
+				}
+				modFavButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(v) {
+						if(sharedPref.getString("VertexClientPE.mods." + mod.name + ".isFavorite", "false") == "true") {
+							editor.putString("VertexClientPE.mods." + mod.name + ".isFavorite", "false");
+							editor.commit();
+							modFavButton.setBackgroundDrawable(ctx.getResources().getDrawable(android.R.drawable.btn_star_big_off));
+						} else {
+							editor.putString("VertexClientPE.mods." + mod.name + ".isFavorite", "true");
+							editor.commit();
+							modFavButton.setBackgroundDrawable(ctx.getResources().getDrawable(android.R.drawable.btn_star_big_on));
+						}
+					}
+				});
 				var modTypeText = clientTextView("Type: " + mod.type + "\n");
 				var modDescTitle = clientTextView("Description:");
 				var modDescText = clientTextView(mod.desc);
@@ -6892,6 +6909,7 @@ function leaveGame() {
 }
 
 function settingsScreen() {
+	VertexClientPE.menuIsShowing = true;
 	var display = new android.util.DisplayMetrics();
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
     var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
@@ -7265,6 +7283,7 @@ function settingsScreen() {
 }
 
 function informationScreen() {
+	VertexClientPE.menuIsShowing = true;
 	var display = new android.util.DisplayMetrics();
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
     var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
@@ -7382,6 +7401,7 @@ function informationScreen() {
 }
 
 function addonScreen() {
+	VertexClientPE.menuIsShowing = true;
 	var display = new android.util.DisplayMetrics();
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
     var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
@@ -7449,6 +7469,7 @@ function addonScreen() {
   * @todo Models/morphing, collision size, particles?
  */
 function playerCustomizerScreen() {
+	VertexClientPE.menuIsShowing = true;
 	var display = new android.util.DisplayMetrics();
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
     var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
@@ -7545,6 +7566,7 @@ function playerCustomizerScreen() {
 }
 
 function optiFineScreen() {
+	VertexClientPE.menuIsShowing = true;
 	var display = new android.util.DisplayMetrics();
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
     var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
@@ -7648,6 +7670,7 @@ function optiFineScreen() {
 var shopCashText;
 
 function shopScreen() {
+	VertexClientPE.menuIsShowing = true;
 	var display = new android.util.DisplayMetrics();
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
     var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
@@ -7715,6 +7738,7 @@ function shopScreen() {
 }
 
 function updateCenterScreen() {
+	VertexClientPE.menuIsShowing = true;
 	var display = new android.util.DisplayMetrics();
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
     var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
@@ -7762,8 +7786,10 @@ function updateCenterScreen() {
 					updateEnterView.setText("\n");
 					var currentUpdateView = updatePaneButton(VertexClientPE.currentVersion, VertexClientPE.currentVersionDesc);
 					
-					updateCenterMenuLayout.addView(latestUpdateView);
-					updateCenterMenuLayout.addView(updateEnterView);
+					if(VertexClientPE.latestVersion != VertexClientPE.currentVersion) {
+						updateCenterMenuLayout.addView(latestUpdateView);
+						updateCenterMenuLayout.addView(updateEnterView);
+					}
 					updateCenterMenuLayout.addView(currentUpdateView);
 
                     updateCenterMenu = new widget.PopupWindow(updateCenterMenuLayout1, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
@@ -7777,6 +7803,7 @@ function updateCenterScreen() {
 }
 
 function dashboardScreen() {
+	VertexClientPE.menuIsShowing = true;
 	ctx.runOnUiThread(new java.lang.Runnable({
 		run: function() {
 			try {
@@ -7882,6 +7909,7 @@ function dashboardScreen() {
 var webBrowserWebView;
 
 function webBrowserScreen() {
+	VertexClientPE.menuIsShowing = true;
 	var display = new android.util.DisplayMetrics();
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
     var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
@@ -7943,97 +7971,6 @@ function webBrowserScreen() {
 				webBrowserMenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
 			} catch(error) {
 				print('An error occurred: ' + error);
-			}
-		}
-	}));
-}
-
-VertexClientPE.showTopBar = function() {
-	var display = new android.util.DisplayMetrics();
-	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
-    var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
-        ctx.runOnUiThread(new java.lang.Runnable({
-            run: function() {
-                try {
-					var topBarWidth = menuType=="normal"?ctx.getWindowManager().getDefaultDisplay().getWidth():ctx.getWindowManager().getDefaultDisplay().getWidth()/1.8;
-					
-					var topBarLayout = new LinearLayout(ctx);
-					topBarLayout.setOrientation(LinearLayout.HORIZONTAL);
-					
-					var topBarLayoutLeft = new LinearLayout(ctx);
-					topBarLayoutLeft.setOrientation(1);
-					topBarLayoutLeft.setGravity(android.view.Gravity.LEFT);
-					topBarLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(topBarWidth / 3, LinearLayout.LayoutParams.WRAP_CONTENT));
-					topBarLayout.addView(topBarLayoutLeft);
-					
-					var topBarLayoutCenter = new LinearLayout(ctx);
-					topBarLayoutCenter.setOrientation(LinearLayout.HORIZONTAL);
-					topBarLayoutCenter.setGravity(android.view.Gravity.CENTER);
-					topBarLayoutCenter.setLayoutParams(new android.view.ViewGroup.LayoutParams(topBarWidth / 3, LinearLayout.LayoutParams.WRAP_CONTENT));
-					topBarLayout.addView(topBarLayoutCenter);
-					
-					var topBarLayoutRight = new LinearLayout(ctx);
-					topBarLayoutRight.setOrientation(1);
-					topBarLayoutRight.setGravity(android.view.Gravity.RIGHT);
-					topBarLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(topBarWidth / 3, LinearLayout.LayoutParams.WRAP_CONTENT));
-					topBarLayout.addView(topBarLayoutRight);
-					
-					var moreButton = clientButton("...", null, null, true);
-					moreButton.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 10, display.heightPixels / 10));
-					moreButton.setOnClickListener(new android.view.View.OnClickListener({
-						onClick: function(viewarg) {
-							VertexClientPE.showMoreDialog();
-						}
-					}));
-					topBarLayoutLeft.addView(moreButton);
-					
-					var exitButton = clientButton("X", null, null, true);
-					exitButton.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 10, display.heightPixels / 10));
-					exitButton.setOnClickListener(new android.view.View.OnClickListener({
-						onClick: function(viewarg) {
-							VertexClientPE.closeMenu();
-							showMenuButton();
-							showHacksList();
-							showTabGUI();
-						}
-					}));
-					topBarLayoutRight.addView(exitButton);
-					
-					var logo4 = android.util.Base64.decode(logoImage, 0);
-					var logoViewer4 = new widget.ImageView(ctx);
-					logoViewer4.setImageBitmap(android.graphics.BitmapFactory.decodeByteArray(logo4, 0, logo4.length));
-					if(VertexClientPE.isPro()) {
-						var topBarLayoutCenterLeft = new LinearLayout(ctx);
-						topBarLayoutCenterLeft.setOrientation(1);
-						//topBarLayoutCenterLeft.setGravity(android.view.Gravity.LEFT);
-						topBarLayoutCenterLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams((topBarWidth / 3 / 3) * 2, LinearLayout.LayoutParams.WRAP_CONTENT));
-						topBarLayoutCenter.addView(topBarLayoutCenterLeft);
-						var topBarLayoutCenterRight = new LinearLayout(ctx);
-						topBarLayoutCenterRight.setOrientation(1);
-						//topBarLayoutCenterRight.setGravity(android.view.Gravity.RIGHT);
-						topBarLayoutCenterRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(topBarWidth / 3 / 3, LinearLayout.LayoutParams.WRAP_CONTENT));
-						topBarLayoutCenter.addView(topBarLayoutCenterRight);
-						var proTextView = clientTextView("Pro", true);
-						proTextView.setTextColor(Color.parseColor("#FF4500"));
-						topBarLayoutCenterLeft.addView(logoViewer4);
-						topBarLayoutCenterRight.addView(proTextView);
-					} else {
-						topBarLayoutCenter.addView(logoViewer4);
-					}
-					
-					topBar = new widget.PopupWindow(topBarLayout, topBarWidth, topBarHeight);
-					/*topBar.setBackgroundDrawable(backgroundGradient());
-					if(themeSetting == "red") {
-						topBar.setBackgroundDrawable(backgroundRedClientGUI);
-					}if(themeSetting == "blue") {
-						topBar.setBackgroundDrawable(backgroundBlueClientGUI);
-					}if(themeSetting == "purple") {
-						topBar.setBackgroundDrawable(backgroundPurpleClientGUI);
-					}*/
-					topBar.setBackgroundDrawable(backgroundGradient());
-					topBar.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
-				} catch(error) {
-					print('An error occurred: ' + error);
 			}
 		}
 	}));
@@ -8121,7 +8058,6 @@ VertexClientPE.closeMenu = function() {
 			}
 		}
 	}
-	VertexClientPE.menuIsShowing = false;
 	if(GUI != null) {
 		if(GUI.isShowing()) {
 			menuBtn.setBackgroundDrawable(iconClientGUI);
@@ -8901,6 +8837,7 @@ VertexClientPE.showLSD = function() {
 
 function showMenuButton() {
 	VertexClientPE.loadMainSettings();
+	VertexClientPE.menuIsShowing = false;
 	var layout = new LinearLayout(ctx);
     layout.setOrientation(1);
 	layout.setGravity(android.view.Gravity.CENTER);
@@ -8910,11 +8847,7 @@ function showMenuButton() {
     menuBtn = new Button(ctx);
     menuBtn.setTextColor(Color.WHITE); //Color
 	//menuBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 10, display.heightPixels / 10));
-	if(VertexClientPE.menuIsShowing) {
-		menuBtn.setBackgroundDrawable(iconClickedClientGUI);
-	} else {
-		menuBtn.setBackgroundDrawable(iconClientGUI);
-	}
+	menuBtn.setBackgroundDrawable(iconClientGUI);
 	menuBtn.setAlpha(0.54);
     menuBtn.setOnClickListener(new android.view.View.OnClickListener({
     onClick: function(viewarg){
@@ -9140,34 +9073,6 @@ VertexClientPE.secondTick = function() {
 			}), 1000);
         }
     }));
-}
-
-VertexClientPE.lsdTick = function() {
-	var lsdTime = Math.floor((Math.random() * 3) + 1);
-	ctx.runOnUiThread(new java.lang.Runnable({
-        run: function() {
-            /*new android.os.Handler()
-                .postDelayed(new java.lang.Runnable({
-                    run: function() {*/
-						if(VertexClientPE.playerIsInGame && lsdMenu != null) {
-							//if(lsdState) {
-								var randomLsd = Math.floor((Math.random() * 4) + 1);
-								if(randomLsd == 1) {
-									lsdMenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.RED));
-								} if(randomLsd == 2) {
-									lsdMenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.GREEN));
-								} if(randomLsd == 3) {
-									lsdMenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.BLUE));
-								} if(randomLsd == 4) {
-									lsdMenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.YELLOW));
-								}
-							//}
-						}
-                        /*eval(VertexClientPE.lsdTick());
-                    }
-                }), 1000 * 1);*/
-        }
-    }))
 }
  
 function dip2px(dips){
