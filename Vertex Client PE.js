@@ -56,7 +56,10 @@ var ScreenType = {
 	options_screen: "options_screen"
 };
 
+var currentScreen;
+
 function screenChangeHook(screenName) {
+	currentScreen = screenName;
 	if(screenName == ScreenType.hud || screenName == ScreenType.ingame) {
 		if((hacksList == null || !hacksList.isShowing()) && !VertexClientPE.menuIsShowing) {
 			showHacksList();
@@ -252,6 +255,7 @@ var updateCenterMenu;
 var shopMenu;
 var settingsMenu;
 var addonMenu;
+var updateCenterMenu;
 var webBrowserMenu;
 var playerCustomizerMenu;
 var optiFineMenu;
@@ -2197,6 +2201,40 @@ var antiBurn = {
 	}
 }
 
+var lifeSaver = {
+	name: "LifeSaver",
+	desc: "Prevents you from getting in touch with dangerous blocks.",
+	category: VertexClientPE.category.COMBAT,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onTick: function() {
+		//coming soon
+	}
+}
+
+var autoBuild = {
+	name: "AutoBuild",
+	desc: "Automatically build structures.",
+	category: VertexClientPE.category.COMBAT,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onTick: function() {
+		//coming soon
+	}
+}
+
 //COMBAT
 //VertexClientPE.registerModule(antiKnockback);
 //VertexClientPE.registerModule(antiBurn);
@@ -2212,6 +2250,7 @@ VertexClientPE.registerModule(godMode);
 VertexClientPE.registerModule(healthTags);
 VertexClientPE.registerModule(instaKill);
 VertexClientPE.registerModule(killAura);
+//VertexClientPE.registerModule(lifeSaver);
 VertexClientPE.registerModule(noHurt);
 VertexClientPE.registerModule(regen);
 VertexClientPE.registerModule(tpAura);
@@ -2230,6 +2269,7 @@ VertexClientPE.registerModule(tapTeleporter);
 VertexClientPE.registerModule(timer);
 VertexClientPE.registerModule(wallHack);
 //BUILDING
+//VertexClientPE.registerModule(autoBuild);
 VertexClientPE.registerModule(autoMine);
 VertexClientPE.registerModule(autoPlace);
 VertexClientPE.registerModule(fastBreak);
@@ -6089,14 +6129,14 @@ VertexClientPE.loadUpdateDescription = function() {
         var loadedUpdateDesc = "";
         var bufferedUpdateDescReader = new java.io.BufferedReader(new java.io.InputStreamReader(inputStream));
         var rowUpdateDesc = "";
-        while((rowUpdateDesc = bufferedVersionReader.readLine()) != null) {
+        while((rowUpdateDesc = bufferedUpdateDescReader.readLine()) != null) {
             loadedUpdateDesc += rowUpdateDesc;
         }
 		
 		VertexClientPE.latestVersionDesc = loadedUpdateDesc;
 
         // close what needs to be closed
-        bufferedVersionReader.close();
+        bufferedUpdateDescReader.close();
 
         // test
         //clientMessage(VertexClientPE.getVersion("current"); + " " + latestVersion);
@@ -7982,7 +8022,7 @@ function dashboardScreen() {
 				var settingsIconButton = tileButton("Settings", android.R.drawable.ic_menu_preferences, "green");
 				//settingsIconButton.setBackgroundDrawable(rainbowBg);
 				var informationIconButton = tileButton("Information", android.R.drawable.ic_menu_info_details, "yellow");
-				var updateCenterIconButton = tileButton("Update Center", android.R.drawable.stat_sys_download);
+				var updateCenterIconButton = tileButton("Update Center", android.R.drawable.stat_sys_download, "white");
 				var shopIconButton = tileButton("Shop", android.R.drawable.stat_sys_download);
 				var addonsIconButton = tileButton("Addons", android.R.drawable.ic_menu_more, "blue");
 				var shutDownIconButton = tileButton("Shutdown", android.R.drawable.ic_lock_power_off, "red");
@@ -8002,6 +8042,15 @@ function dashboardScreen() {
 						dashboardMenu.dismiss();
 						informationScreen();
 						exitInformation();
+					}
+				});
+				
+				updateCenterIconButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						exitDashboardUI.dismiss();
+						dashboardMenu.dismiss();
+						updateCenterScreen();
+						exitUpdateCenter();
 					}
 				});
 				
@@ -8028,7 +8077,7 @@ function dashboardScreen() {
 				
 				dashboardMenuLayout.addView(settingsIconButton);
 				dashboardMenuLayout.addView(informationIconButton);
-				//dashboardMenuLayout.addView(updateCenterIconButton);
+				dashboardMenuLayout.addView(updateCenterIconButton);
 				//dashboardMenuLayout.addView(shopIconButton);
 				dashboardMenuLayout.addView(addonsIconButton);
 				dashboardMenuLayout.addView(shutDownIconButton);
@@ -8956,22 +9005,6 @@ function changeColor(view, color) {
 	}
 }
 
-VertexClientPE.showLSD = function() {
-	ctx.runOnUiThread(new java.lang.Runnable() {
-        run: function() {
-            try {
-				lsdLayout = new LinearLayout(ctx);
-				lsdMenu = new widget.PopupWindow(lsdLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
-				lsdMenu.setTouchable(false);
-				lsdMenu.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.GREEN));
-				lsdMenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
-			} catch(e) {
-				print(e);
-			}
-		}
-	})
-}
-
 function showMenuButton() {
 	VertexClientPE.loadMainSettings();
 	VertexClientPE.menuIsShowing = false;
@@ -9006,7 +9039,7 @@ function showMenuButton() {
 			} else {
 				VertexClientPE.closeMenu();
 				VertexClientPE.menuIsShowing = false;
-				if(!hacksList.isShowing()) {
+				if(!hacksList.isShowing() && !tabGUI.isShowing() && (currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud)) {
 					showHacksList();
 					showTabGUI();
 				}
@@ -9048,6 +9081,11 @@ function showMenuButton() {
 		GUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
 	}if(mainButtonPositionSetting == "bottom-right") {
 		GUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.BOTTOM, 0, 0);
+	}
+	
+	if(currentScreen == ScreenType.ingame || currentScreen == ScreenType.ingame) {
+		showHacksList();
+		showTabGUI();
 	}
 }
 
@@ -9160,57 +9198,54 @@ var secondTickTimer = 0;
 var lagTimer = 0;
 
 VertexClientPE.secondTick = function() {
-	ctx.runOnUiThread(new java.lang.Runnable({
-        run: function() {
-            new android.os.Handler().postDelayed(new java.lang.Runnable({
-				run: function() {
-					VertexClientPE.modules.forEach(function(element, index, array) {
-						if(element.isStateMod() && element.state && element.onInterval) {
-							element.onInterval();
-						}
-					});
-					if(secondTickTimer == 60) {
-						var extraCash = VertexClientPE.isPro()?20:10;
-						VertexClientPE.setVertexCash(VertexClientPE.getVertexCash() + extraCash);
-						secondTickTimer = 0;
-						VertexClientPE.moneyToast();
-						if(shopCashText != null) {
-							shopCashText.setText("\u26C1 " + VertexClientPE.getVertexCash());
-						}
-					} else {
-						secondTickTimer += 1;
-					}
-					
-					if(antiLagDropRemoverSetting == "on" && VertexClientPE.playerIsInGame && !VertexClientPE.isRemote && sharedPref.getString("VertexClientPE.boughtOptiFine", "false") == "true") {
-						if(lagTimer == 0) {
-							VertexClientPE.clientMessage("Dropped items will be removed in " + ChatColor.RED + "two minutes" + ChatColor.WHITE + "!");
-							lagTimer++;
-						} else {
-                            if(lagTimer >= 1 && lagTimer < 120) {
-								if(lagTimer == 60) {
-									VertexClientPE.clientMessage("Dropped items will be removed in " + ChatColor.RED + "one minute" + ChatColor.WHITE + "!");
-								}
-							    lagTimer++;
-						    } else if(lagTimer == 120) {
-							    Entity.getAll().forEach(function(element, index, array) {
-								    if(Entity.getEntityTypeId(element) == EntityType.ITEM) {
-									    try {
-										    Entity.remove(element);
-									    } catch(e) {
-										    print("An error occurred: " + e);
-									    }
-								    }
-								});
-								VertexClientPE.clientMessage("Successfully removed dropped items!");
-							    lagTimer = 0;
-							}
-						}
-					}
-					VertexClientPE.secondTick();
+	new java.lang.Thread(new java.lang.Runnable() {
+		run: function() {
+			java.lang.Thread.sleep(1000);
+			VertexClientPE.modules.forEach(function(element, index, array) {
+				if(element.isStateMod() && element.state && element.onInterval) {
+					element.onInterval();
 				}
-			}), 1000);
-        }
-    }));
+			});
+			if(secondTickTimer == 60) {
+				var extraCash = VertexClientPE.isPro()?20:10;
+				VertexClientPE.setVertexCash(VertexClientPE.getVertexCash() + extraCash);
+				secondTickTimer = 0;
+				VertexClientPE.moneyToast();
+				if(shopCashText != null) {
+					shopCashText.setText("\u26C1 " + VertexClientPE.getVertexCash());
+				}
+			} else {
+				secondTickTimer += 1;
+			}
+			
+			if(antiLagDropRemoverSetting == "on" && VertexClientPE.playerIsInGame && !VertexClientPE.isRemote && sharedPref.getString("VertexClientPE.boughtOptiFine", "false") == "true") {
+				if(lagTimer == 0) {
+					VertexClientPE.clientMessage("Dropped items will be removed in " + ChatColor.RED + "two minutes" + ChatColor.WHITE + "!");
+					lagTimer++;
+				} else {
+					if(lagTimer >= 1 && lagTimer < 120) {
+						if(lagTimer == 60) {
+							VertexClientPE.clientMessage("Dropped items will be removed in " + ChatColor.RED + "one minute" + ChatColor.WHITE + "!");
+						}
+						lagTimer++;
+					} else if(lagTimer == 120) {
+						Entity.getAll().forEach(function(element, index, array) {
+							if(Entity.getEntityTypeId(element) == EntityType.ITEM) {
+								try {
+									Entity.remove(element);
+								} catch(e) {
+									print("An error occurred: " + e);
+								}
+							}
+						});
+						VertexClientPE.clientMessage("Successfully removed dropped items!");
+						lagTimer = 0;
+					}
+				}
+			}
+			VertexClientPE.secondTick();
+		}
+	}).start();
 }
  
 function dip2px(dips){
@@ -9485,59 +9520,6 @@ function setupDone() {
 	}));
 }
 	
-function exit() {
-    var ctxe = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
-    ctxe.runOnUiThread(new java.lang.Runnable({
-		run: function() {
-			try {
-				var xLayout = new LinearLayout(ctxe);
-				var xButton = new Button(ctxe);
-				xButton.setText("X");//Text
-				xButton.getBackground().setColorFilter(Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
-				xButton.setTextColor(Color.WHITE);
-				xButton.setOnClickListener(new android.view.View.OnClickListener({
-					onClick: function(viewarg){
-						topBar.dismiss();
-						showingMenu = false;
-						vertexclientpecombatmenu.dismiss(); //Close
-						vertexclientpebuildingmenu.dismiss(); //Close
-						vertexclientpemovementmenu.dismiss(); //Close
-						vertexclientpechatmenu.dismiss(); //Close
-						vertexclientpemiscmenu.dismiss(); //Close
-						//vertexclientpefavmenu.dismiss(); //Close
-						showMenuButton();
-						showHacksList();
-						showTabGUI();
-					}
-				}));
-				xLayout.addView(xButton);
-				
-				var moreLayout = new LinearLayout(ctxe);
-				var moreButton = clientButton("...", "Opens the \"More\" menu");
-				moreButton.setCornerRadius(20);
-				moreButton.setTextColor(Color.WHITE);
-				moreButton.setOnClickListener(new android.view.View.OnClickListener({
-				onClick: function(viewarg){
-					VertexClientPE.showMoreDialog();
-				}
-				}));
-				moreLayout.addView(moreButton);
-				
-				exitUI = new widget.PopupWindow(xLayout, dip2px(40), dip2px(40));
-				exitUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
-				exitUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
-				
-				moreUI = new widget.PopupWindow(moreLayout, dip2px(40), dip2px(40));
-				moreUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
-				moreUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
-			} catch(exception) {
-				print(exception);
-				VertexClientPE.showBugReportDialog(exception);
-			}
-		}
-	}));
-}
-	
 function exitAccountManager() {
     var ctxe = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
     ctxe.runOnUiThread(new java.lang.Runnable({
@@ -9601,8 +9583,6 @@ function exitSettings() {
 						exitSettingsUI.dismiss(); //Close
 						settingsMenu.dismiss(); //Close
 						showMenuButton();
-						showHacksList();
-						showTabGUI();
 					}
 				}));
 				xSettingsLayout.addView(xSettingsButton);
@@ -9654,8 +9634,6 @@ function exitInformation() {
 						exitInformationUI.dismiss(); //Close
 						informationMenu.dismiss(); //Close
 						showMenuButton();
-						showHacksList();
-						showTabGUI();
 					}
 				}));
 				xInformationLayout.addView(xInformationButton);
@@ -9707,8 +9685,6 @@ function exitAddon() {
 						exitAddonUI.dismiss(); //Close
 						addonMenu.dismiss(); //Close
 						showMenuButton();
-						showHacksList();
-						showTabGUI();
 					}
 				}));
 				xAddonLayout.addView(xAddonButton);
@@ -9720,6 +9696,57 @@ function exitAddon() {
 				exitAddonUI = new widget.PopupWindow(xAddonLayout, dip2px(40), dip2px(40));
 				exitAddonUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 				exitAddonUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
+			} catch(exception) {
+				print(exception);
+				VertexClientPE.showBugReportDialog(exception);
+			}
+		}
+	}));
+}
+
+function exitUpdateCenter() {
+    var ctxe = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+    ctxe.runOnUiThread(new java.lang.Runnable({
+		run: function() {
+			try {
+				var backUpdateCenterLayout = new LinearLayout(ctxe);
+				var backUpdateCenterButton = new Button(ctxe);
+				backUpdateCenterButton.setText("<");//Text
+				backUpdateCenterButton.getBackground().setColorFilter(Color.parseColor("#00BFFF"), android.graphics.PorterDuff.Mode.MULTIPLY);
+				backUpdateCenterButton.setTextColor(Color.WHITE);
+				backUpdateCenterButton.setOnClickListener(new android.view.View.OnClickListener({
+					onClick: function(viewarg){
+						backUpdateCenterUI.dismiss(); //Close
+						exitUpdateCenterUI.dismiss(); //Close
+						updateCenterMenu.dismiss(); //Close
+						dashboardScreen();
+						exitDashboard();
+					}
+				}));
+				backUpdateCenterLayout.addView(backUpdateCenterButton);
+				
+				var xUpdateCenterLayout = new LinearLayout(ctxe);
+				var xUpdateCenterButton = new Button(ctxe);
+				xUpdateCenterButton.setText("X");//Text
+				xUpdateCenterButton.getBackground().setColorFilter(Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
+				xUpdateCenterButton.setTextColor(Color.WHITE);
+				xUpdateCenterButton.setOnClickListener(new android.view.View.OnClickListener({
+					onClick: function(viewarg){
+						backUpdateCenterUI.dismiss(); //Close
+						exitUpdateCenterUI.dismiss(); //Close
+						updateCenterMenu.dismiss(); //Close
+						showMenuButton();
+					}
+				}));
+				xUpdateCenterLayout.addView(xUpdateCenterButton);
+				
+				backUpdateCenterUI = new widget.PopupWindow(backUpdateCenterLayout, dip2px(40), dip2px(40));
+				backUpdateCenterUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
+				backUpdateCenterUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
+				
+				exitUpdateCenterUI = new widget.PopupWindow(xUpdateCenterLayout, dip2px(40), dip2px(40));
+				exitUpdateCenterUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
+				exitUpdateCenterUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
 			} catch(exception) {
 				print(exception);
 				VertexClientPE.showBugReportDialog(exception);
@@ -9760,8 +9787,6 @@ function overlayWebBrowser() {
 						exitWebBrowserUI.dismiss(); //Close
 						webBrowserMenu.dismiss(); //Close
 						showMenuButton();
-						showHacksList();
-						showTabGUI();
 					}
 				}));
 				xWebBrowserLayout.addView(xWebBrowserButton);
@@ -9796,8 +9821,6 @@ function exitPlayerCustomizer() {
 						exitPlayerCustomizerUI.dismiss(); //Close
 						playerCustomizerMenu.dismiss(); //Close
 						showMenuButton();
-						showHacksList();
-						showTabGUI();
 					}
 				}));
 				xPlayerCustomizerLayout.addView(xPlayerCustomizerButton);
@@ -9828,8 +9851,6 @@ function exitOptiFine() {
 						exitOptiFineUI.dismiss(); //Close
 						optiFineMenu.dismiss(); //Close
 						showMenuButton();
-						showHacksList();
-						showTabGUI();
 					}
 				}));
 				xOptiFineLayout.addView(xOptiFineButton);
@@ -9860,8 +9881,6 @@ function exitShop() {
 						exitShopUI.dismiss(); //Close
 						shopMenu.dismiss(); //Close
 						showMenuButton();
-						showHacksList();
-						showTabGUI();
 					}
 				}));
 				xShopLayout.addView(xShopButton);
@@ -9892,8 +9911,6 @@ function exitDashboard() {
 						exitDashboardUI.dismiss(); //Close
 						dashboardMenu.dismiss(); //Close
 						showMenuButton();
-						showHacksList();
-						showTabGUI();
 					}
 				}));
 				xDashboardLayout.addView(xDashboardButton);
