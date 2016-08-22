@@ -218,6 +218,8 @@ var chestTracersParticle = "flame";
 var antiLagDropRemoverSetting = "on";
 var useLightThemeSetting = "off";
 var buttonStyleSetting = "normal";
+var mcpeGUISetting = "default";
+//---------------------------
 var cmdPrefix = ".";
 //---------------------------
 var combatName = "Combat";
@@ -2204,7 +2206,7 @@ var antiBurn = {
 var lifeSaver = {
 	name: "LifeSaver",
 	desc: "Prevents you from getting in touch with dangerous blocks.",
-	category: VertexClientPE.category.COMBAT,
+	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
 	isStateMod: function() {
@@ -2221,7 +2223,7 @@ var lifeSaver = {
 var autoBuild = {
 	name: "AutoBuild",
 	desc: "Automatically build structures.",
-	category: VertexClientPE.category.COMBAT,
+	category: VertexClientPE.category.BUILDING,
 	type: "Mod",
 	state: false,
 	isStateMod: function() {
@@ -2232,6 +2234,35 @@ var autoBuild = {
 	},
 	onTick: function() {
 		//coming soon
+	}
+}
+
+var speedHack = {
+	name: "SpeedHack",
+	desc: "Allows you to walk really fast on the ground.",
+	category: VertexClientPE.category.MOVEMENT,
+	type: "Mod",
+	state: false,
+	frictionArray: [],
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+		if(this.state) {
+			for(var i = 0; i <= 256; i++) {
+				if(this.frictionArray[i] == null || this.frictionArray[i] == undefined) {
+					this.frictionArray[i] = Block.getFriction(i);
+				}
+				Block.setFriction(i, 0.1);
+			}
+		} else {
+			for(var i = 0; i <= 256; i++) {
+				if(this.frictionArray[i] != null && this.frictionArray[i] != undefined) {
+					Block.setFriction(i, this.frictionArray[i]);
+				}
+			}
+		}
 	}
 }
 
@@ -2265,6 +2296,7 @@ VertexClientPE.registerModule(highJump);
 VertexClientPE.registerModule(liquidWalk);
 VertexClientPE.registerModule(noDownGlide);
 VertexClientPE.registerModule(ride);
+VertexClientPE.registerModule(speedHack);
 VertexClientPE.registerModule(tapTeleporter);
 VertexClientPE.registerModule(timer);
 VertexClientPE.registerModule(wallHack);
@@ -4773,7 +4805,8 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + antiLagDropRemoverSetting.toString());
 	outWrite.append("," + useLightThemeSetting.toString());
 	outWrite.append("," + buttonStyleSetting.toString());
-	outWrite.append("," + cmdPrefix.toString());
+	outWrite.append("," + mcpeGUISetting.toString());
+	//outWrite.append("," + cmdPrefix.toString());
 
     outWrite.close();
 	
@@ -4865,7 +4898,7 @@ VertexClientPE.loadMainSettings = function() {
 		buttonStyleSetting = str.toString().split(",")[22]; //Here we split text by ","
 	}
 	if(str.toString().split(",")[23] != null && str.toString().split(",")[23] != undefined) {
-		cmdPrefix = str.toString().split(",")[23]; //Here we split text by ","
+		mcpeGUISetting = str.toString().split(",")[23]; //Here we split text by ","
 	}
     fos.close();
 	VertexClientPE.loadAutoSpammerSettings();
@@ -4873,36 +4906,39 @@ VertexClientPE.loadMainSettings = function() {
 	return true;
 }
 
-VertexClientPE.setupTheme = function() {
+VertexClientPE.setupMCPEGUI = function() {
 	VertexClientPE.loadMainSettings();
-	ModPE.overrideTexture("images/gui/title.png","http://Vertex-Client.github.io/bootstrap/img/title.png");
-	if(themeSetting == "green") {
+	if(mcpeGUISetting == "default") {
+		ModPE.resetImages();
+	}
+	if(mcpeGUISetting == "green") {
 		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/BCA6vgv.png");
 		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/dY3c1Jl.png");
 	}
-	if(themeSetting == "red") {
+	if(mcpeGUISetting == "red") {
 		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/BxuGkEJ.png");
 		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/S3qiQ01.png");
 	}
-	if(themeSetting == "blue") {
+	if(mcpeGUISetting == "blue") {
 		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/X5rCyoN.png");
 		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/t6tGtMk.png");
 	}
-	if(themeSetting == "purple") {
+	if(mcpeGUISetting == "purple") {
 		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/3xsluNN.png");
 		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/R9te7Bd.png");
 	}
-	if(themeSetting == "white") {
+	if(mcpeGUISetting == "white") {
 		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/GlwhFt5.png");
 		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/gsn6Qfp.png");
 	}
-	if(themeSetting == "black") {
+	if(mcpeGUISetting == "black") {
 		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/l7nG7ZU.png");
 		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/MZeX8XN.png");
 	}
+	ModPE.overrideTexture("images/gui/title.png","http://Vertex-Client.github.io/bootstrap/img/title.png");
 }
 
-VertexClientPE.setupTheme();
+VertexClientPE.setupMCPEGUI();
 
 var createUiThread = function(func) {
     getContext().runOnUiThread(new java.lang.Runnable({
@@ -6114,7 +6150,7 @@ VertexClientPE.checkForUpdates = function() {
 	editor.putString("VertexClientPE.latestVersion", VertexClientPE.latestVersion);
 	editor.commit();
 	themeSetup = "off";
-	VertexClientPE.setupTheme();
+	VertexClientPE.setupMCPEGUI();
 }
 
 VertexClientPE.loadUpdateDescription = function() {
@@ -7245,45 +7281,31 @@ function settingsScreen() {
 						if(themeSetting == "green") {
 							themeSetting = "red";
 							themeSettingButton.setText("Color | Red");
-							themeSetup = "off";
 							VertexClientPE.saveMainSettings();
-							VertexClientPE.setupTheme();
 						} else if(themeSetting == "red") {
 							themeSetting = "blue";
 							themeSettingButton.setText("Color | Blue");
-							themeSetup = "off";
 							VertexClientPE.saveMainSettings();
-							VertexClientPE.setupTheme();
 						} else if(themeSetting == "blue") {
 							themeSetting = "purple";
 							themeSettingButton.setText("Color | Purple");
-							themeSetup = "off";
 							VertexClientPE.saveMainSettings();
-							VertexClientPE.setupTheme();
 						} else if(themeSetting == "purple") {
 							themeSetting = "yellow";
 							themeSettingButton.setText("Color | Yellow");
-							themeSetup = "off";
 							VertexClientPE.saveMainSettings();
-							VertexClientPE.setupTheme();
 						} else if(themeSetting == "yellow") {
 							themeSetting = "white";
 							themeSettingButton.setText("Color | White");
-							themeSetup = "off";
 							VertexClientPE.saveMainSettings();
-							VertexClientPE.setupTheme();
 						} else if(themeSetting == "white") {
 							themeSetting = "black";
 							themeSettingButton.setText("Color | Black");
-							themeSetup = "off";
 							VertexClientPE.saveMainSettings();
-							VertexClientPE.setupTheme();
 						} else if(themeSetting == "black") {
 							themeSetting = "green";
 							themeSettingButton.setText("Color | Green");
-							themeSetup = "off";
 							VertexClientPE.saveMainSettings();
-							VertexClientPE.setupTheme();
 						}
 					}
 					}));
@@ -7325,6 +7347,64 @@ function settingsScreen() {
 							buttonStyleSettingButton.setText("Button style | Normal");
 							VertexClientPE.saveMainSettings();
 						}
+					}
+					}));
+					
+					var mcpeGUISettingButton = clientButton("MCPE GUI", "Change the MCPE GUI.");
+					if(mcpeGUISetting == "default") {
+						mcpeGUISettingButton.setText("MCPE GUI | Default");
+					} else if(mcpeGUISetting == "green") {
+						mcpeGUISettingButton.setText("MCPE GUI | Green");
+					} else if(mcpeGUISetting == "red") {
+						mcpeGUISettingButton.setText("MCPE GUI | Red");
+					} else if(mcpeGUISetting == "blue") {
+						mcpeGUISettingButton.setText("MCPE GUI | Blue");
+					} else if(mcpeGUISetting == "purple") {
+						mcpeGUISettingButton.setText("MCPE GUI | Purple");
+					} else if(mcpeGUISetting == "yellow") {
+						mcpeGUISettingButton.setText("MCPE GUI | Yellow");
+					} else if(mcpeGUISetting == "white") {
+						mcpeGUISettingButton.setText("MCPE GUI | White");
+					} else if(mcpeGUISetting == "black") {
+						mcpeGUISettingButton.setText("MCPE GUI | Black");
+					}
+					mcpeGUISettingButton.setOnClickListener(new android.view.View.OnClickListener({
+					onClick: function(viewarg){
+						if(mcpeGUISetting == "default") {
+							mcpeGUISetting = "green";
+							mcpeGUISettingButton.setText("MCPE GUI | Green");
+							VertexClientPE.saveMainSettings();
+						} else if(mcpeGUISetting == "green") {
+							mcpeGUISetting = "red";
+							mcpeGUISettingButton.setText("MCPE GUI | Red");
+							VertexClientPE.saveMainSettings();
+						} else if(mcpeGUISetting == "red") {
+							mcpeGUISetting = "blue";
+							mcpeGUISettingButton.setText("MCPE GUI | Blue");
+							VertexClientPE.saveMainSettings();
+						} else if(mcpeGUISetting == "blue") {
+							mcpeGUISetting = "purple";
+							mcpeGUISettingButton.setText("MCPE GUI | Purple");
+							VertexClientPE.saveMainSettings();
+						} else if(mcpeGUISetting == "purple") {
+							mcpeGUISetting = "yellow";
+							mcpeGUISettingButton.setText("MCPE GUI | Yellow");
+							VertexClientPE.saveMainSettings();
+						} else if(mcpeGUISetting == "yellow") {
+							mcpeGUISetting = "white";
+							mcpeGUISettingButton.setText("MCPE GUI | White");
+							VertexClientPE.saveMainSettings();
+						} else if(mcpeGUISetting == "white") {
+							mcpeGUISetting = "black";
+							mcpeGUISettingButton.setText("MCPE GUI | Black");
+							VertexClientPE.saveMainSettings();
+						} else if(mcpeGUISetting == "black") {
+							mcpeGUISetting = "default";
+							mcpeGUISettingButton.setText("MCPE GUI | Default");
+							VertexClientPE.saveMainSettings();
+						}
+						VertexClientPE.setupMCPEGUI();
+						VertexClientPE.toast("Restart your MCPE launcher now!");
 					}
 					}));
 					
@@ -7467,6 +7547,7 @@ function settingsScreen() {
 					settingsMenuLayout.addView(themeSettingButton);
 					settingsMenuLayout.addView(useLightThemeSettingButton);
 					settingsMenuLayout.addView(buttonStyleSettingButton);
+					settingsMenuLayout.addView(mcpeGUISettingButton);
 					settingsMenuLayout.addView(menuTitle);
 					settingsMenuLayout.addView(menuTypeSettingButton);
 					settingsMenuLayout.addView(sizeSettingButton);
@@ -9504,7 +9585,7 @@ function setupDone() {
 						setupScreen.dismiss();
 						showMenuButton();
 						showAccountManagerButton();
-						VertexClientPE.setupTheme();
+						VertexClientPE.setupMCPEGUI();
 						if(userIsNewToCurrentVersion == true) {
 							updateCenterScreen();
 						}
