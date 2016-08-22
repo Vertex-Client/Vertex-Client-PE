@@ -193,7 +193,7 @@ var tts = new android.speech.tts.TextToSpeech(ctx, new android.speech.tts.TextTo
  */
  
 var hacksListModeSetting = "on";
-var mainButtonPositionSetting = "top-right";
+var mainButtonPositionSetting = "top-left";
 var healthTagsSetting = "off";
 var themeSetting = "green";
 var spamMessage = "Spam!!!!!";
@@ -2126,7 +2126,7 @@ var noDownGlide = {
 		return true;
 	},
 	onToggle: function() {
-		this.yCoord = getPlayerX();
+		this.yCoord = getPlayerY();
 		this.state = !this.state;
 	},
 	onTick: function() {
@@ -5349,6 +5349,7 @@ function modButton(mod, buttonOnly) {
 					}
 				}
 			}
+			updateHacksList();
 		}
 	}));
 	//var _0x9276=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\uD83D\uDD12\x20","\x73\x65\x74\x54\x65\x78\x74"];if(isProFeature&&VertexClientPE[_0x9276[0]]()!=_0x9276[1]){defaultClientButton[_0x9276[3]](_0x9276[2]+mod.name)}
@@ -7204,16 +7205,16 @@ function settingsScreen() {
 					var mainButtonPositionSettingButton = clientButton("Main button position", "Sets the main menu's button position.");
 					if(mainButtonPositionSetting == "top-right") {
 						mainButtonPositionSettingButton.setText("Main button position | Top-right");
-					} else if(mainButtonPositionSetting == "bottom-right") {
-						mainButtonPositionSettingButton.setText("Main button position | Bottom-right");
+					} else {
+						mainButtonPositionSettingButton.setText("Main button position | Top-left");
 					}
 					mainButtonPositionSettingButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(viewarg){
 						if(mainButtonPositionSetting == "top-right") {
-							mainButtonPositionSetting = "bottom-right";
-							mainButtonPositionSettingButton.setText("Main button position | Bottom-right");
+							mainButtonPositionSetting = "top-left";
+							mainButtonPositionSettingButton.setText("Main button position | Top-left");
 							VertexClientPE.saveMainSettings();
-						} else if(mainButtonPositionSetting == "bottom-right") {
+						} else {
 							mainButtonPositionSetting = "top-right";
 							mainButtonPositionSettingButton.setText("Main button position | Top-right");
 							VertexClientPE.saveMainSettings();
@@ -9011,7 +9012,6 @@ function showMenuButton() {
 	var layout = new LinearLayout(ctx);
     layout.setOrientation(1);
 	layout.setGravity(android.view.Gravity.CENTER);
-	layout.setPadding(0, 0, 10, 10);
 	var display = new android.util.DisplayMetrics();
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
     menuBtn = new Button(ctx);
@@ -9076,14 +9076,17 @@ function showMenuButton() {
 	if(menuAnimationsSetting == "on") {
 		GUI.setAnimationStyle(android.R.style.Animation_Translucent);
 	}
-    GUI.setBackgroundDrawable(backgroundSpecial("cornerright", themeSetting, true));
 	if(mainButtonPositionSetting == "top-right") {
+		layout.setPadding(10, 0, 0, 10);
+		GUI.setBackgroundDrawable(backgroundSpecial("cornerleft", themeSetting, true));
+		GUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
+	} else {
+		layout.setPadding(0, 0, 10, 10);
+		GUI.setBackgroundDrawable(backgroundSpecial("cornerright", themeSetting, true));
 		GUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
-	}if(mainButtonPositionSetting == "bottom-right") {
-		GUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.BOTTOM, 0, 0);
 	}
 	
-	if(currentScreen == ScreenType.ingame || currentScreen == ScreenType.ingame) {
+	if(currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud) {
 		showHacksList();
 		showTabGUI();
 	}
