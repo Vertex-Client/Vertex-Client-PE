@@ -30,6 +30,33 @@ var TranslateAnimation = animation.TranslateAnimation;
 var AccelerateInterpolator = animation.AccelerateInterpolator;
 var ViewPager = android.support.v4.view.ViewPager;
 var Color = graphics.Color;
+var javascript = org.mozilla.javascript;
+var ScriptableObject = javascript.ScriptableObject;
+var Scriptable = javascript.Scriptable;
+var Context = javascript.Context;
+var Function = javascript.Function;
+var Runnable = java.lang.Runnable;
+var Thread = java.lang.Thread;
+var io = java.io;
+var File = io.File;
+var util = java.util;
+var Scanner = util.Scanner;
+var nio = java.nio;
+var ByteBuffer = nio.ByteBuffer;
+var FloatBuffer = nio.FloatBuffer;
+var ByteOrder = nio.ByteOrder;
+var ShortBuffer = nio.ShortBuffer;
+var opengl = android.opengl;
+var GLSurfaceView = opengl.GLSurfaceView;
+var Renderer = GLSurfaceView.Renderer;
+var GLU = opengl.GLU;
+var opengles = javax.microedition.khronos.opengles;
+var GL10 = opengles.GL10;
+var PopupWindow = widget.PopupWindow;
+var RelativeLayout = widget.RelativeLayout;
+var Gravity = view.Gravity;
+var PixelFormat = graphics.PixelFormat;
+var ScriptManager = net.zhuoweizhang.mcpelauncher.ScriptManager;
 
 var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
 var display = new android.util.DisplayMetrics();
@@ -187,6 +214,173 @@ var tts = new android.speech.tts.TextToSpeech(ctx, new android.speech.tts.TextTo
 }));
 
 /**
+ * ########
+ *  RENDER
+ * ########
+ */
+
+VertexClientPE.Render = {};
+
+VertexClientPE.Render.getFloatBuffer = function(floatArray) {
+	var byteBuffer = ByteBuffer.allocateDirect(floatArray.length * 4);
+    byteBuffer.order(ByteOrder.nativeOrder());
+    
+    var floatBuffer = byteBuffer.asFloatBuffer();
+    floatBuffer.put(floatArray);
+    floatBuffer.position(0);
+     
+    return floatBuffer;
+}
+ 
+VertexClientPE.Render.getShortBuffer = function(shortArray) {
+    var byteBuffer = ByteBuffer.allocateDirect(shortArray.length * 2);
+    byteBuffer.order(ByteOrder.nativeOrder());
+    
+    var shortBuffer = byteBuffer.asShortBuffer();
+    shortBuffer.put(shortArray);
+    shortBuffer.position(0);
+     
+    return shortBuffer;
+}
+
+var virtualWorldView;
+ 
+var parentView = ctx.getWindow().getDecorView();
+ 
+var width, height;
+
+VertexClientPE.Render.renderer = new Renderer({
+    onSurfaceCreated : function(gl, config) {
+        gl.glClearColor(0, 0, 0, 0);
+         
+        gl.glShadeModel(GL10.GL_SMOOTH);
+ 
+        gl.glClearDepthf(1.0);
+ 
+        gl.glEnable(GL10.GL_DEPTH_TEST);
+ 
+        gl.glDepthFunc(GL10.GL_LEQUAL);
+ 
+        gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
+    },
+     
+    onSurfaceChanged : function(gl, w, h) {
+        width = w;
+        height = h;
+         
+        gl.glMatrixMode(GL10.GL_PROJECTION);
+ 
+        gl.glLoadIdentity();
+         
+        GLU.gluPerspective(gl, 70.0, width / height, 0.1, 100);
+ 
+        gl.glMatrixMode(GL10.GL_MODELVIEW);
+ 
+        gl.glLoadIdentity();
+    },
+     
+    onDrawFrame : function(gl) {
+         
+        gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+         
+        gl.glLoadIdentity();
+         
+        gl.glDisable(GL10.GL_LIGHTING);
+         
+        var yaw = getYaw() % 360;
+        var pitch = getPitch() % 360;
+         
+        var eyeX = getPlayerX(0);
+        var eyeY = getPlayerY(1) + 1;
+        var eyeZ = getPlayerZ(2);
+         
+        var dCenterX = Math.sin(yaw / 180 * Math.PI);
+        var dCenterZ = Math.cos(yaw / 180 * Math.PI);
+        var dCenterY = Math.sqrt(dCenterX * dCenterX + dCenterZ * dCenterZ) * Math.tan((pitch - 180) / 180 * Math.PI);
+         
+        var centerX = eyeX - dCenterX;
+        var centerZ = eyeZ + dCenterZ;
+        var centerY = eyeY - dCenterY;
+         
+        GLU.gluLookAt(gl, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, 0, 1, 0);
+         
+        VertexClientPE.modules.forEach(function(element, index, array) {
+			if(element.state && element.onRender) {
+				element.onRender(gl);
+			}
+		});
+    },
+});
+
+VertexClientPE.Render.initViews = function() {
+	ctx.runOnUiThread(new java.lang.Runnable() {
+		run: function() {
+			virtualWorldView = new GLSurfaceView(ctx);
+			virtualWorldView.setZOrderOnTop(true);
+			virtualWorldView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+			virtualWorldView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+			virtualWorldView.setRenderer(VertexClientPE.Render.renderer);
+			 
+			parentView.addView(virtualWorldView);
+		}
+	});
+}
+
+VertexClientPE.Render.deinitViews = function() {
+	ctx.runOnUiThread(new java.lang.Runnable() {
+		run: function() {
+			parentView.removeView(virtualWorldView);
+		}
+	});
+}
+
+VertexClientPE.drawCubeShapedBox = function(gl, x, y, z) {
+    var vertex = [
+        0, 0, 0,
+        1.0, 0, 0,
+        0, 0, 1.0,
+        1.0, 0, 1.0,
+ 
+        0, 1.0, 0,
+        1.0, 1.0, 0,
+        0, 1.0, 1.0,
+        1.0, 1.0, 1.0,
+    ];
+ 
+    var index = [
+        0, 1,
+		0, 2,
+		0, 4,
+
+		3, 1,
+		3, 2,
+		3, 7,
+
+		5, 4,
+		5, 7,
+		5, 1,
+
+		6, 4,
+		6, 7,
+		6, 2
+    ];
+	
+	var vertexBuffer = VertexClientPE.Render.getFloatBuffer(vertex);
+    var indexBuffer = VertexClientPE.Render.getShortBuffer(index);
+	
+	gl.glTranslatef(x, y, z);
+	gl.glFrontFace(GL10.GL_CCW);
+	gl.glEnable(GL10.GL_BLEND);
+	gl.glLineWidth(4); 
+	gl.glColor4f(0.0, 1.0, 0.0, 0.0);
+	gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+	gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
+	gl.glDrawElements(GL10.GL_LINES, index.length, GL10.GL_UNSIGNED_SHORT, indexBuffer);
+	//gl.glDeptMask(true);
+	gl.glTranslatef(-x, -y, -z);
+}
+
+/**
  * ##########
  *  SETTINGS
  * ##########
@@ -219,6 +413,7 @@ var antiLagDropRemoverSetting = "on";
 var useLightThemeSetting = "off";
 var buttonStyleSetting = "normal";
 var mcpeGUISetting = "default";
+var chestESPRange = 50;
 //---------------------------
 var cmdPrefix = ".";
 //---------------------------
@@ -574,7 +769,9 @@ var killAura = {
 			if(x*x+y*y+z*z<=killAuraRange*killAuraRange && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION && Entity.getHealth(mobs[i]) != 0) {
 				/*if(getPitch() >= -90 && getPitch() <= 90) {
 					Entity.setRot(getPlayerEnt(), (Math.atan2(z, x) - 90) * Math.PI / 180, getPitch());
-				}*/
+				}
+				var dCenterY = Math.sqrt(x * x + z * z) * Math.tan((getPitch() - 180) / 180 * Math.PI);
+				Entity.setRot(getPlayerEnt(), dCenterY, getPitch());*/
 				if(autoSwordState) {
 					VertexClientPE.autoSword(getPlayerEnt(), mobs[i]);
 				}
@@ -2266,6 +2463,79 @@ var speedHack = {
 	}
 }
 
+//todo: implement slider
+var chestESP = {
+	name: "ChestESP",
+	desc: "Allows you to find chests easily by showing boxes around them.",
+	category: VertexClientPE.category.MISC,
+	type: "Mod",
+	state: false,
+	chests: [],
+	findChests: function() {
+		this.chests = [];
+		var x = getPlayerX();
+		var y = getPlayerY();
+		var z = getPlayerZ();
+		var newX;
+		var newY;
+		var newZ;
+		for(var blockX = - chestESPRange; blockX <= chestESPRange; blockX++) {
+			for(var blockY = - chestESPRange; blockY <= chestESPRange; blockY++) {
+				for(var blockZ = - chestESPRange; blockZ <= chestESPRange; blockZ++) {
+					newX = x + blockX;
+					newY = y + blockY;
+					newZ = z + blockZ;
+					if(getTile(newX, newY, newZ) == 54) {
+						this.chests.push({
+							x: newX,
+							y: newY,
+							z: newZ
+						});
+					}
+				}
+			}
+		}
+	},
+	requiresPro: function() {
+		return true;
+	},
+	getSettingsLayout: function() {
+		var chestESPSettingsLayout = new LinearLayout(ctx);
+		chestESPSettingsLayout.setOrientation(1);
+		var chestESPRangeTitle = clientTextView("Range: | " + chestESPRange);
+		var chestESPRangeSlider = new SeekBar(ctx);
+		chestESPRangeSlider.setProgress(chestESPRange);
+		chestESPRangeSlider.setMax(25);
+		chestESPRangeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+			onProgressChanged: function() {
+				chestESPRange = chestESPRangeSlider.getProgress();
+				chestESPRangeTitle.setText("Range: | " + chestESPRange);
+			}
+		});
+		
+		chestESPSettingsLayout.addView(chestESPRangeTitle);
+		chestESPSettingsLayout.addView(chestESPRangeSlider);
+		return chestESPSettingsLayout;
+	},
+	onModDialogDismiss: function() {
+		VertexClientPE.saveMainSettings();
+	},
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+		if(this.state) {
+			this.findChests();
+		}
+	},
+	onRender: function(gl) {
+		this.chests.forEach(function(element, index, array) {
+			VertexClientPE.drawCubeShapedBox(gl, element.x, element.y, element.z);
+		});
+	}
+}
+
 //COMBAT
 //VertexClientPE.registerModule(antiKnockback);
 //VertexClientPE.registerModule(antiBurn);
@@ -2324,6 +2594,7 @@ VertexClientPE.registerModule(panic);
 VertexClientPE.registerModule(switchGamemode);
 VertexClientPE.registerModule(antiAFK);
 VertexClientPE.registerModule(autoSwitch);
+VertexClientPE.registerModule(chestESP);
 VertexClientPE.registerModule(chestTracers);
 VertexClientPE.registerModule(coordsDisplay);
 VertexClientPE.registerModule(derp);
@@ -4861,6 +5132,7 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + useLightThemeSetting.toString());
 	outWrite.append("," + buttonStyleSetting.toString());
 	outWrite.append("," + mcpeGUISetting.toString());
+	outWrite.append("," + chestESPRange.toString());
 	//outWrite.append("," + cmdPrefix.toString());
 
     outWrite.close();
@@ -4954,6 +5226,9 @@ VertexClientPE.loadMainSettings = function() {
 	}
 	if(str.toString().split(",")[23] != null && str.toString().split(",")[23] != undefined) {
 		mcpeGUISetting = str.toString().split(",")[23]; //Here we split text by ","
+	}
+	if(str.toString().split(",")[24] != null && str.toString().split(",")[24] != undefined) {
+		chestESPRange = str.toString().split(",")[24]; //Here we split text by ","
 	}
     fos.close();
 	VertexClientPE.loadAutoSpammerSettings();
@@ -7166,6 +7441,7 @@ function newLevel() {
 			VertexClientPE.showUpgradeDialog();
 		}
 	}
+	VertexClientPE.Render.initViews();
 }
 
 function deathHook(a, v) {
@@ -7200,6 +7476,7 @@ function leaveGame() {
 			if(mp != null) {
 				mp.stop();
 			}
+			VertexClientPE.Render.deinitViews();
 			musicText = "None";
 			VertexClientPE.playerIsInGame = false;
 			VertexClientPE.isRemote = false;
