@@ -507,6 +507,27 @@ var menuBar;
  * #########
  */
 
+VertexClientPE.favourites = [];
+
+VertexClientPE.addView = function(layout, modButtonView) {
+	try {
+		var isFavourite;
+		for(var fav in VertexClientPE.favourites) {
+			if(VertexClientPE.favourites[fav] == modButtonView.getName()) {
+				favMenuLayout.addView(modButtonView.getLayout());
+				isFavourite = true;
+				break;
+			}
+		}
+		if(!isFavourite) {
+			layout.addView(modButtonView.getLayout());
+		}
+	} catch(e) {
+		clientMessage("Error: " + e);
+		VertexClientPE.showBugReportDialog(e);
+	}
+};
+
 VertexClientPE.category = {
 	COMBAT: 0,
 	BUILDING: 1,
@@ -586,7 +607,7 @@ var optiFine = {
 	desc: "More (mostly) performance/lag related settings.",
 	price: 200,
 	onUnlock: function() {
-		VertexClientPE.toast("Not available yet!");
+		//VertexClientPE.toast("Not available yet!");
 	}
 };
 
@@ -596,13 +617,24 @@ var playerCustomizer = {
 	desc: "A screen where you can customize your player.",
 	price: 1000,
 	onUnlock: function() {
-		VertexClientPE.toast("Not available yet!");
+		//VertexClientPE.toast("Not available yet!");
+	}
+};
+
+var webBrowser = {
+	name: "Webbrowser",
+	shortName: "Webbrowser",
+	desc: "Browse the internet within Minecraft PE.",
+	price: 500,
+	onUnlock: function() {
+		//VertexClientPE.toast("Not available yet!");
 	}
 };
 
 //VertexClientPE.registerShopFeature(inventoryPlusPlus);
 VertexClientPE.registerShopFeature(optiFine);
 VertexClientPE.registerShopFeature(playerCustomizer);
+VertexClientPE.registerShopFeature(webBrowser);
 
 VertexClientPE.registerModule = function(obj) {
 	VertexClientPE.modules.push(obj);
@@ -3581,12 +3613,14 @@ VertexClientPE.showMoreDialog = function() {
 				dialogLayout1.addView(moreHR);
 				dialogLayout1.addView(dialogScrollView);
 				dialogLayout.addView(dashboardButton);
-				dialogLayout.addView(webBrowserButton);
+				if(sharedPref.getString("VertexClientPE.boughtOptiFine", "false") == "true") {
+					dialogLayout.addView(optiFineButton);
+				}
 				if(sharedPref.getString("VertexClientPE.boughtPlayerCustomizer", "false") == "true") {
 					dialogLayout.addView(playerCustomizerButton);
 				}
-				if(sharedPref.getString("VertexClientPE.boughtOptiFine", "false") == "true") {
-					dialogLayout.addView(optiFineButton);
+				if(sharedPref.getString("VertexClientPE.boughtWebbrowser", "false") == "true") {
+					dialogLayout.addView(webBrowserButton);
 				}
 				dialogLayout.addView(shopButton);
 				var dialog = new android.app.Dialog(ctx);
@@ -5539,10 +5573,12 @@ function shopFeatureButton(shopFeature, cashTextView) {
 	shopFeatureLayout.setOrientation(LinearLayout.HORIZONTAL);
 	var shopFeatureLayoutLeft = new LinearLayout(ctx);
 	shopFeatureLayoutLeft.setOrientation(1);
-	shopFeatureLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 2, display.heightPixels / 4));
+	shopFeatureLayoutLeft.setGravity(android.view.Gravity.CENTER);
+	shopFeatureLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 2 - dip2px(10), display.heightPixels / 8));
 	var shopFeatureLayoutRight = new LinearLayout(ctx);
 	shopFeatureLayoutRight.setOrientation(1);
-	shopFeatureLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 2, display.heightPixels / 4));
+	shopFeatureLayoutRight.setGravity(android.view.Gravity.CENTER);
+	shopFeatureLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 2 - dip2px(10), display.heightPixels / 8));
 	shopFeatureLayout.addView(shopFeatureLayoutLeft);
 	shopFeatureLayout.addView(shopFeatureLayoutRight);
 	var shopFeatureText = clientTextView(shopFeature.name);
@@ -8230,42 +8266,13 @@ function optiFineScreen() {
 					optiFineLayoutScroll.addView(optiFineLayout);
 					optiFineLayout1.addView(optiFineLayoutScroll);
 					
-					/*var playerCustomizerTableLayout = new widget.TableLayout(ctx);
-					
-					optiFineLayout.addView(playerCustomizerTableLayout);
-					
-					itemGiverItems.forEach(function(element, index, array) {
-						if(index % 2 == 1) {
-							if(!dialogTableRow) {
-								dialogTableRow = new widget.TableRow(ctx);
-							}
-							tempButton = clientButton(Item.getName(element.itemId.toString()));
-							tempButton.setOnClickListener(new android.view.View.OnClickListener() {
-								onClick: function(viewArg) {
-									Entity.setRenderType(getPlayerEnt(), -1);
-								}
-							});
-							dialogTableRow.addView(tempButton);
-							dialogTableLayout.addView(dialogTableRow);
-							dialogTableRow = null;
-							tempButton = null;
-						} else {
-							dialogTableRow = new widget.TableRow(ctx);
-							tempButton = clientButton(Item.getName(element.itemId.toString()));
-							tempButton.setOnClickListener(new android.view.View.OnClickListener() {
-								onClick: function(viewArg) {
-									Entity.setRenderType(getPlayerEnt(), -1);
-								}
-							});
-							dialogTableRow.addView(tempButton);
-							tempButton = null;
-						}
-					});
-					if(dialogTableRow != null) {
-						dialogTableLayout.addView(dialogTableRow);
-					}*/
 					var antiLagDropRemoverButton = new android.widget.Switch(ctx);
 					antiLagDropRemoverButton.setText("Automatically remove dropped items to reduce lag");
+					if(themeSetting == "white") {
+						antiLagDropRemoverButton.setTextColor(Color.BLACK);
+					} else {
+						antiLagDropRemoverButton.setTextColor(Color.WHITE);
+					}
 					antiLagDropRemoverButton.setChecked(antiLagDropRemoverSetting=="on"?true:false);
 					antiLagDropRemoverButton.setOnCheckedChangeListener(new android.widget.CompoundButton.OnCheckedChangeListener({
 						onCheckedChanged: function(){
@@ -8325,6 +8332,7 @@ function shopScreen() {
 					var shopMenuLayout1 = new LinearLayout(ctx);
                     shopMenuLayout1.setOrientation(1);
                     shopMenuLayout1.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					shopMenuLayout1.setPadding(10, 0, 10, 0);
 					
 					var shopTitle = clientTextView("Shop", true);
 					shopTitle.setTextSize(25);
@@ -8468,7 +8476,7 @@ function dashboardScreen() {
 				var settingsIconButton = tileButton("Settings", android.R.drawable.ic_menu_preferences, "green");
 				//settingsIconButton.setBackgroundDrawable(rainbowBg);
 				var informationIconButton = tileButton("Information", android.R.drawable.ic_menu_info_details, "yellow");
-				var updateCenterIconButton = tileButton("Update Center", android.R.drawable.stat_sys_download_done, "white");
+				var updateCenterIconButton = tileButton("Update Center", android.R.drawable.ic_menu_compass, "white");
 				var shopIconButton = tileButton("Shop", android.R.drawable.stat_sys_download);
 				var addonsIconButton = tileButton("Addons", android.R.drawable.ic_menu_more, "blue");
 				var shutDownIconButton = tileButton("Shutdown", android.R.drawable.ic_lock_power_off, "red");
@@ -9655,7 +9663,11 @@ VertexClientPE.secondTick = function() {
 				secondTickTimer = 0;
 				VertexClientPE.moneyToast();
 				if(shopCashText != null) {
-					shopCashText.setText("\u26C1 " + VertexClientPE.getVertexCash());
+					ctx.runOnUiThread(new Runnable() {
+						run: function() {
+							shopCashText.setText("\u26C1 " + VertexClientPE.getVertexCash());
+						}
+					});
 				}
 			} else {
 				secondTickTimer += 1;
