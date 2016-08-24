@@ -119,9 +119,9 @@ function screenChangeHook(screenName) {
 
 String.prototype.replaceAll = function (target, replacement, insensitive) {
 	if (insensitive) {
-		return string.replace(new RegExp(target.replace(/[\\\^\$\.\[\]\|\(\)\?\*\+\{\}\-]/g, ""), "gi"), replacement);
+		return this.replace(new RegExp(target.replace(/[\\\^\$\.\[\]\|\(\)\?\*\+\{\}\-]/g, ""), "gi"), replacement);
 	} else {
-		return string.split(target).join(replacement);
+		return this.split(target).join(replacement);
 	}
 };
 
