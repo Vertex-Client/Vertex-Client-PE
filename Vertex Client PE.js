@@ -59,6 +59,7 @@ var ScreenType = {
 var currentScreen;
 
 function screenChangeHook(screenName) {
+	var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
 	currentScreen = screenName;
 	if(screenName == ScreenType.hud || screenName == ScreenType.ingame) {
 		if((hacksList == null || !hacksList.isShowing()) && !VertexClientPE.menuIsShowing) {
@@ -67,7 +68,6 @@ function screenChangeHook(screenName) {
 		}
 	} else {
 		if(hacksList != null) {
-			var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
 			ctx.runOnUiThread(new java.lang.Runnable({
 				run: function() {
 					hacksList.dismiss();
@@ -75,7 +75,6 @@ function screenChangeHook(screenName) {
 			}));
 		}
 		if(tabGUI != null) {
-			var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
 			ctx.runOnUiThread(new java.lang.Runnable({
 				run: function() {
 					tabGUI.dismiss();
@@ -91,10 +90,13 @@ function screenChangeHook(screenName) {
 
 //Don't copy anything without my permission!
 
-String.prototype.replaceAll = function(str1, str2, ignore) 
-{
-    return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
-}
+String.prototype.replaceAll = function (target, replacement, insensitive) {
+	if (insensitive) {
+		return string.replace(new RegExp(target.replace(/[\\\^\$\.\[\]\|\(\)\?\*\+\{\}\-]/g, ""), "gi"), replacement);
+	} else {
+		return string.split(target).join(replacement);
+	}
+};
 
 var isSupported = true;
 var isAuthorized = true;
@@ -275,10 +277,11 @@ VertexClientPE.favourites = [];
 
 VertexClientPE.addView = function(layout, modButtonView) {
 	try {
+		var isFavourite;
 		for(var fav in VertexClientPE.favourites) {
 			if(VertexClientPE.favourites[fav] == modButtonView.getName()) {
 				favMenuLayout.addView(modButtonView.getLayout());
-				var isFavourite = true;
+				isFavourite = true;
 				break;
 			}
 		}
@@ -289,7 +292,7 @@ VertexClientPE.addView = function(layout, modButtonView) {
 		clientMessage("Error: " + e);
 		VertexClientPE.showBugReportDialog(e);
 	}
-}
+};
 
 VertexClientPE.category = {
 	COMBAT: 0,
@@ -325,7 +328,7 @@ VertexClientPE.category = {
 				return "Miscellaneous";
 		}
 	}
-}
+};
 
 VertexClientPE.shopFeatures = [];
 
@@ -340,11 +343,11 @@ VertexClientPE.loadAddons = function() {
 	if(Launcher.isMcpeMaster()) {
 		com.mcbox.pesdk.mcpelauncher.ScriptManager.callScriptMethod("addonLoadHook", []);
 	}
-}
+};
 
 VertexClientPE.registerShopFeature = function(obj) {
 	VertexClientPE.shopFeatures.push(obj);
-}
+};
 
 VertexClientPE.initShopFeatures = function() {
 	VertexClientPE.shopFeatures.forEach(function(element, index, array) {
@@ -352,7 +355,7 @@ VertexClientPE.initShopFeatures = function() {
 			element.onUnlock();
 		}
 	});
-}
+};
 
 var inventoryPlusPlus = {
 	name: "Inventory++",
@@ -362,7 +365,7 @@ var inventoryPlusPlus = {
 	onUnlock: function() {
 		VertexClientPE.toast("Not available yet!");
 	}
-}
+};
 
 var optiFine = {
 	name: "OptiFine",
@@ -372,7 +375,7 @@ var optiFine = {
 	onUnlock: function() {
 		VertexClientPE.toast("Not available yet!");
 	}
-}
+};
 
 var playerCustomizer = {
 	name: "Player Customizer",
@@ -382,7 +385,7 @@ var playerCustomizer = {
 	onUnlock: function() {
 		VertexClientPE.toast("Not available yet!");
 	}
-}
+};
 
 //VertexClientPE.registerShopFeature(inventoryPlusPlus);
 VertexClientPE.registerShopFeature(optiFine);
@@ -390,7 +393,7 @@ VertexClientPE.registerShopFeature(playerCustomizer);
 
 VertexClientPE.registerModule = function(obj) {
 	VertexClientPE.modules.push(obj);
-}
+};
 
 VertexClientPE.drawTracer = function(x, y, z, groundMode, particleName) {
 	var particleType = ParticleType.flame;
@@ -402,7 +405,7 @@ VertexClientPE.drawTracer = function(x, y, z, groundMode, particleName) {
 	for(var count = 0; count <= 25; count++) {
 		Level.addParticle(particleType, x, y, z, (getPlayerX() - x) / count, groundMode?0:((getPlayerY() - y) / count), (getPlayerZ() - z) / count, 2);
 	}
-}
+};
 
 var shownAddonProDialog = false;
 
@@ -449,11 +452,11 @@ VertexClientPE.getCommandCount = function() {
 		}
 	});
 	return commandCount;
-}
+};
 
 VertexClientPE.getFeatureCount = function() {
 	return VertexClientPE.modules.length;
-}
+};
 
 var panic = {
 	name: "Panic",
@@ -482,7 +485,7 @@ var panic = {
 			}
 		}
 	}
-}
+};
 
 var yesCheatPlus = {
 	name: "YesCheat+",
@@ -509,7 +512,7 @@ var yesCheatPlus = {
 			}
 		}
 	}
-}
+};
 
 var switchGamemode = {
 	name: "Switch Gamemode",
@@ -526,7 +529,7 @@ var switchGamemode = {
 			Level.setGameMode(0);
 		}
 	}
-}
+};
 
 var killAura = {
 	name: "Killaura",
@@ -603,7 +606,7 @@ var killAura = {
 			}
 		}
 	}
-}
+};
 
 var freezeAura = {
 	name: "FreezeAura",
@@ -634,7 +637,7 @@ var freezeAura = {
 			}
 		}
 	}
-}
+};
 
 var fireAura = {
 	name: "FireAura",
@@ -662,7 +665,7 @@ var fireAura = {
 			}
 		}
 	}
-}
+};
 
 var autoSword = {
 	name: "AutoSword",
@@ -680,7 +683,7 @@ var autoSword = {
 	onAttack: function(a, v) {
 		VertexClientPE.autoSword(a, v);
 	}
-}
+};
 
 var homeCommand = {
 	name: "/home",
@@ -694,7 +697,7 @@ var homeCommand = {
 	onToggle: function() {
 		Server.sendChat("/home");
 	}
-}
+};
 
 var timer = {
 	name: "Timer",
@@ -737,7 +740,7 @@ var timer = {
 			ModPE.setGameSpeed(20);
 		}
 	}
-}
+};
 
 var nuker = {
 	name: "Nuker",
@@ -851,7 +854,7 @@ var nuker = {
 		var z = getPlayerZ();
 		VertexClientPE.nuker(x, y, z, nukerRange);
 	}
-}
+};
 
 var fancyChatMsg;
 var fancyChatEndChar;
@@ -880,7 +883,7 @@ var fancyChat = {
 		}
 		VertexClientPE.fancyChat(msg);
 	}
-}
+};
 
 var noHurt = {
 	name: "NoHurt",
@@ -899,7 +902,7 @@ var noHurt = {
 			preventDefault();
 		}
 	}
-}
+};
 
 var ride = {
 	name: "Ride",
@@ -919,7 +922,7 @@ var ride = {
 			VertexClientPE.ride(v);
 		}
 	}
-}
+};
 
 var onlyDay = {
 	name: "OnlyDay",
@@ -936,7 +939,7 @@ var onlyDay = {
 	onTick: function(a, v) {
 		Level.setTime(1000);
 	}
-}
+};
 
 var flight = {
 	name: "Flight",
@@ -955,7 +958,7 @@ var flight = {
 	onTick: function() {
 		Player.setFlying(1);
 	}
-}
+};
 
 var autoTeleporter = {
 	name: "AutoTeleporter",
@@ -974,7 +977,7 @@ var autoTeleporter = {
 			VertexClientPE.teleporter(Player.getPointedBlockX(), Player.getPointedBlockY() + 3, Player.getPointedBlockZ());
 		}
 	}
-}
+};
 
 var tapTeleporter = {
 	name: "TapTeleporter",
@@ -993,7 +996,7 @@ var tapTeleporter = {
 			VertexClientPE.teleporter(x, y + 3, z);
 		}
 	}
-}
+};
 
 var wallHack = {
 	name: "Wallhack",
@@ -1008,7 +1011,7 @@ var wallHack = {
 		this.state = !this.state;
 		Entity.setCollisionSize(Player.getEntity(), this.state?0:0.6, this.state?0:1.8);
 	}
-}
+};
 
 var fastBreak = {
 	name: "FastBreak",
@@ -1023,7 +1026,7 @@ var fastBreak = {
 		this.state = !this.state;
 		this.state?Block.setDestroyTimeAll(0):Block.setDestroyTimeDefaultAll();
 	}
-}
+};
 
 var chatSpeak = {
 	name: "ChatSpeak",
@@ -1042,7 +1045,7 @@ var chatSpeak = {
 			tts.speak(msg, android.speech.tts.TextToSpeech.QUEUE_FLUSH, null);
 		}
 	}
-}
+};
 
 var chatRepeatStage = 0;
 
@@ -1065,7 +1068,7 @@ var chatRepeat = {
 			chatRepeatStage = 0;
 		}
 	}
-}
+};
 
 var autoSpammer = {
 	name: "AutoSpammer",
