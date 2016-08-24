@@ -147,10 +147,50 @@ var VertexClientPE = {
 		deathY: -1,
 		deathZ: -1
 	},
-	latestReleaseDownloadCount: null
+	latestReleaseDownloadCount: null,
+	Utils: {
+		chests: [],
+		fov: 70
+	}
 };
 
 VertexClientPE.menuIsShowing = false;
+
+VertexClientPE.Utils.loadChests = function() {
+	VertexClientPE.Utils.chests = [];
+	try {
+		var x = getPlayerX();
+		var y = getPlayerY();
+		var z = getPlayerZ();
+		var newX;
+		var newY;
+		var newZ;
+		for(var blockX = - chestESPRange; blockX <= chestESPRange; blockX++) {
+			for(var blockY = - chestESPRange; blockY <= chestESPRange; blockY++) {
+				for(var blockZ = - chestESPRange; blockZ <= chestESPRange; blockZ++) {
+					newX = x + blockX;
+					newY = y + blockY;
+					newZ = z + blockZ;
+					if(getTile(newX, newY, newZ) == 54) {
+						VertexClientPE.Utils.chests.push({
+							x: newX,
+							y: newY,
+							z: newZ
+						});
+					}
+				}
+			}
+		}
+	} catch(e) {
+		//an error occured
+	} finally {
+		VertexClientPE.toast("Successfully (re)loaded chests!");
+	}
+}
+
+VertexClientPE.Utils.getChests = function() {
+	return VertexClientPE.Utils.chests;
+}
 
 var _0x199a=["\x69\x73\x50\x72\x6F","\x67\x65\x74\x50\x72\x65\x66\x65\x72\x65\x6E\x63\x65\x73","\x56\x65\x72\x74\x65\x78\x43\x6C\x69\x65\x6E\x74\x50\x45\x2E\x69\x73\x50\x72\x6F","\x67\x65\x74\x53\x74\x72\x69\x6E\x67","\x73\x65\x74\x49\x73\x50\x72\x6F","\x54\x68\x69\x73\x49\x73\x53\x70\x61\x72\x74\x61"];VertexClientPE[_0x199a[0]]=function(){var _0xf36dx1=ctx[_0x199a[1]](ctx.MODE_PRIVATE);return _0xf36dx1[_0x199a[3]](_0x199a[2],null)};VertexClientPE[_0x199a[4]]=function(){var _0xf36dx2=_0x199a[5];return _0xf36dx2}
 
@@ -274,7 +314,7 @@ VertexClientPE.Render.renderer = new Renderer({
  
         gl.glLoadIdentity();
          
-        GLU.gluPerspective(gl, 70.0, width / height, 0.1, 100);
+        GLU.gluPerspective(gl, VertexClientPE.Utils.getFov(), width / height, 0.1, 100);
  
         gl.glMatrixMode(GL10.GL_MODELVIEW);
  
@@ -415,7 +455,7 @@ var antiLagDropRemoverSetting = "on";
 var useLightThemeSetting = "off";
 var buttonStyleSetting = "normal";
 var mcpeGUISetting = "default";
-var chestESPRange = 50;
+var chestESPRange = 25;
 //---------------------------
 var cmdPrefix = ".";
 //---------------------------
@@ -459,7 +499,6 @@ var webBrowserMenu;
 var playerCustomizerMenu;
 var optiFineMenu;
 var informationMenu;
-var topBar;
 var menuBar;
 
 /**
@@ -467,27 +506,6 @@ var menuBar;
  *  MODULES
  * #########
  */
-
-VertexClientPE.favourites = [];
-
-VertexClientPE.addView = function(layout, modButtonView) {
-	try {
-		var isFavourite;
-		for(var fav in VertexClientPE.favourites) {
-			if(VertexClientPE.favourites[fav] == modButtonView.getName()) {
-				favMenuLayout.addView(modButtonView.getLayout());
-				isFavourite = true;
-				break;
-			}
-		}
-		if(!isFavourite) {
-			layout.addView(modButtonView.getLayout());
-		}
-	} catch(e) {
-		clientMessage("Error: " + e);
-		VertexClientPE.showBugReportDialog(e);
-	}
-};
 
 VertexClientPE.category = {
 	COMBAT: 0,
@@ -2473,32 +2491,6 @@ var chestESP = {
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	state: false,
-	chests: [],
-	findChests: function() {
-		this.chests = [];
-		var x = getPlayerX();
-		var y = getPlayerY();
-		var z = getPlayerZ();
-		var newX;
-		var newY;
-		var newZ;
-		for(var blockX = - chestESPRange; blockX <= chestESPRange; blockX++) {
-			for(var blockY = - chestESPRange; blockY <= chestESPRange; blockY++) {
-				for(var blockZ = - chestESPRange; blockZ <= chestESPRange; blockZ++) {
-					newX = x + blockX;
-					newY = y + blockY;
-					newZ = z + blockZ;
-					if(getTile(newX, newY, newZ) == 54) {
-						this.chests.push({
-							x: newX,
-							y: newY,
-							z: newZ
-						});
-					}
-				}
-			}
-		}
-	},
 	requiresPro: function() {
 		return true;
 	},
@@ -2529,11 +2521,12 @@ var chestESP = {
 	onToggle: function() {
 		this.state = !this.state;
 		if(this.state) {
-			this.findChests();
+			VertexClientPE.Utils.loadFov();
+			VertexClientPE.Utils.loadChests();
 		}
 	},
 	onRender: function(gl) {
-		this.chests.forEach(function(element, index, array) {
+		VertexClientPE.Utils.getChests().forEach(function(element, index, array) {
 			VertexClientPE.drawCubeShapedBox(gl, element.x, element.y, element.z);
 		});
 	}
@@ -2689,6 +2682,15 @@ function useItem(x, y, z, itemId, blockId, side, blockDamage) {
 			element.onUseItem(x, y, z, itemId, blockId, side, blockDamage);
 		}
 	});
+	if(blockId == 54) {
+		new java.lang.Thread(new Runnable({
+			run: function() {
+				VertexClientPE.toast("Reloading chests...");
+				java.lang.Thread.sleep(1200);
+				VertexClientPE.Utils.loadChests();
+			}
+		})).start();
+	}
 }
 
 function explodeHook(entity, x, y, z, power, onFire) {
@@ -3296,6 +3298,20 @@ ModPE.getPlayerName = function() {
     return username;
 };
 
+ModPE.getFov = function() {
+    var file = new java.io.File("/sdcard/games/com.mojang/minecraftpe/options.txt");
+    var br = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(file)));
+    var read, fov;
+    while((read = br.readLine()) != null) {
+        if(read.split(":")[0] == "gfx_field_of_view") {
+            fov = read.split(":")[1];
+            break;
+        }
+    }
+    br.close();
+    return fov;
+};
+
 ModPE.setPlayerName = function(username) {
 	saveSetting("mp_username", username);
 }
@@ -3379,6 +3395,14 @@ ModPE.getCurrentUsedSkin = function() {
     br.close();
     return skin;
 };
+
+VertexClientPE.Utils.loadFov = function() {
+	VertexClientPE.Utils.fov = ModPE.getFov();
+}
+
+VertexClientPE.Utils.getFov = function() {
+	return VertexClientPE.Utils.fov;
+}
 
 var URL = "https://www.dominos.com/en/pages/order/";
 
@@ -7394,6 +7418,7 @@ function newLevel() {
 	VertexClientPE.playerIsInGame = true;
 	VertexClientPE.loadMainSettings();
 	VertexClientPE.loadDeathCoords();
+	VertexClientPE.Utils.loadFov();
 	if(VertexClientPE.isPro()) {
 		VertexClientPE.giveProVertexCash();
 		if(!VertexClientPE.hasEarnedProVertexCash()) {
@@ -8634,7 +8659,6 @@ VertexClientPE.showMenu = function() {
 		mainMenu();
 	}
 	VertexClientPE.menuIsShowing = true;
-	//VertexClientPE.showTopBar();
 }
 
 /**
@@ -8726,7 +8750,7 @@ function mainMenu() {
     gradDraw.setCornerRadius(8);*/
      
     //More buttons...
-    menu = new android.widget.PopupWindow(menuLayout, ctx.getWindowManager().getDefaultDisplay().getWidth() / 1.8, ctx.getWindowManager().getDefaultDisplay().getHeight()/* - topBarHeight*/);
+    menu = new android.widget.PopupWindow(menuLayout, ctx.getWindowManager().getDefaultDisplay().getWidth() / 1.8, ctx.getWindowManager().getDefaultDisplay().getHeight());
     menu.setBackgroundDrawable(backgroundGradient());
     menu.setAnimationStyle(android.R.style.Animation_Translucent);
     menu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.BOTTOM, 0, 0);
@@ -10570,6 +10594,15 @@ function destroyBlock(x, y, z, side) {
             if(tile == 250) {
                 Level.dropItem(x, y, z, 0, 247, 64);
             }
+            if(tile == 54) {
+				new java.lang.Thread(new Runnable({
+					run: function() {
+						VertexClientPE.toast("Reloading chests...");
+						java.lang.Thread.sleep(1200);
+						VertexClientPE.Utils.loadChests();
+					}
+				})).start();
+			}
         }
     }
 }
