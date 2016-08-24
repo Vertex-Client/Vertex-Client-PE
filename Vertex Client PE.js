@@ -30,6 +30,33 @@ var TranslateAnimation = animation.TranslateAnimation;
 var AccelerateInterpolator = animation.AccelerateInterpolator;
 var ViewPager = android.support.v4.view.ViewPager;
 var Color = graphics.Color;
+var javascript = org.mozilla.javascript;
+var ScriptableObject = javascript.ScriptableObject;
+var Scriptable = javascript.Scriptable;
+var Context = javascript.Context;
+var Function = javascript.Function;
+var Runnable = java.lang.Runnable;
+var Thread = java.lang.Thread;
+var io = java.io;
+var File = io.File;
+var util = java.util;
+var Scanner = util.Scanner;
+var nio = java.nio;
+var ByteBuffer = nio.ByteBuffer;
+var FloatBuffer = nio.FloatBuffer;
+var ByteOrder = nio.ByteOrder;
+var ShortBuffer = nio.ShortBuffer;
+var opengl = android.opengl;
+var GLSurfaceView = opengl.GLSurfaceView;
+var Renderer = GLSurfaceView.Renderer;
+var GLU = opengl.GLU;
+var opengles = javax.microedition.khronos.opengles;
+var GL10 = opengles.GL10;
+var PopupWindow = widget.PopupWindow;
+var RelativeLayout = widget.RelativeLayout;
+var Gravity = view.Gravity;
+var PixelFormat = graphics.PixelFormat;
+var ScriptManager = net.zhuoweizhang.mcpelauncher.ScriptManager;
 
 var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
 var display = new android.util.DisplayMetrics();
@@ -189,6 +216,173 @@ var tts = new android.speech.tts.TextToSpeech(ctx, new android.speech.tts.TextTo
 }));
 
 /**
+ * ########
+ *  RENDER
+ * ########
+ */
+
+VertexClientPE.Render = {};
+
+VertexClientPE.Render.getFloatBuffer = function(floatArray) {
+	var byteBuffer = ByteBuffer.allocateDirect(floatArray.length * 4);
+    byteBuffer.order(ByteOrder.nativeOrder());
+    
+    var floatBuffer = byteBuffer.asFloatBuffer();
+    floatBuffer.put(floatArray);
+    floatBuffer.position(0);
+     
+    return floatBuffer;
+}
+ 
+VertexClientPE.Render.getShortBuffer = function(shortArray) {
+    var byteBuffer = ByteBuffer.allocateDirect(shortArray.length * 2);
+    byteBuffer.order(ByteOrder.nativeOrder());
+    
+    var shortBuffer = byteBuffer.asShortBuffer();
+    shortBuffer.put(shortArray);
+    shortBuffer.position(0);
+     
+    return shortBuffer;
+}
+
+var virtualWorldView;
+ 
+var parentView = ctx.getWindow().getDecorView();
+ 
+var width, height;
+
+VertexClientPE.Render.renderer = new Renderer({
+    onSurfaceCreated : function(gl, config) {
+        gl.glClearColor(0, 0, 0, 0);
+         
+        gl.glShadeModel(GL10.GL_SMOOTH);
+ 
+        gl.glClearDepthf(1.0);
+ 
+        gl.glEnable(GL10.GL_DEPTH_TEST);
+ 
+        gl.glDepthFunc(GL10.GL_LEQUAL);
+ 
+        gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
+    },
+     
+    onSurfaceChanged : function(gl, w, h) {
+        width = w;
+        height = h;
+         
+        gl.glMatrixMode(GL10.GL_PROJECTION);
+ 
+        gl.glLoadIdentity();
+         
+        GLU.gluPerspective(gl, 70.0, width / height, 0.1, 100);
+ 
+        gl.glMatrixMode(GL10.GL_MODELVIEW);
+ 
+        gl.glLoadIdentity();
+    },
+     
+    onDrawFrame : function(gl) {
+         
+        gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+         
+        gl.glLoadIdentity();
+         
+        gl.glDisable(GL10.GL_LIGHTING);
+         
+        var yaw = getYaw() % 360;
+        var pitch = getPitch() % 360;
+         
+        var eyeX = getPlayerX(0);
+        var eyeY = getPlayerY(1) + 1;
+        var eyeZ = getPlayerZ(2);
+         
+        var dCenterX = Math.sin(yaw / 180 * Math.PI);
+        var dCenterZ = Math.cos(yaw / 180 * Math.PI);
+        var dCenterY = Math.sqrt(dCenterX * dCenterX + dCenterZ * dCenterZ) * Math.tan((pitch - 180) / 180 * Math.PI);
+         
+        var centerX = eyeX - dCenterX;
+        var centerZ = eyeZ + dCenterZ;
+        var centerY = eyeY - dCenterY;
+         
+        GLU.gluLookAt(gl, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, 0, 1, 0);
+         
+        VertexClientPE.modules.forEach(function(element, index, array) {
+			if(element.state && element.onRender) {
+				element.onRender(gl);
+			}
+		});
+    },
+});
+
+VertexClientPE.Render.initViews = function() {
+	ctx.runOnUiThread(new java.lang.Runnable() {
+		run: function() {
+			virtualWorldView = new GLSurfaceView(ctx);
+			virtualWorldView.setZOrderOnTop(true);
+			virtualWorldView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+			virtualWorldView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+			virtualWorldView.setRenderer(VertexClientPE.Render.renderer);
+			 
+			parentView.addView(virtualWorldView);
+		}
+	});
+}
+
+VertexClientPE.Render.deinitViews = function() {
+	ctx.runOnUiThread(new java.lang.Runnable() {
+		run: function() {
+			parentView.removeView(virtualWorldView);
+		}
+	});
+}
+
+VertexClientPE.drawCubeShapedBox = function(gl, x, y, z) {
+    var vertex = [
+        0, 0, 0,
+        1.0, 0, 0,
+        0, 0, 1.0,
+        1.0, 0, 1.0,
+ 
+        0, 1.0, 0,
+        1.0, 1.0, 0,
+        0, 1.0, 1.0,
+        1.0, 1.0, 1.0,
+    ];
+ 
+    var index = [
+        0, 1,
+		0, 2,
+		0, 4,
+
+		3, 1,
+		3, 2,
+		3, 7,
+
+		5, 4,
+		5, 7,
+		5, 1,
+
+		6, 4,
+		6, 7,
+		6, 2
+    ];
+	
+	var vertexBuffer = VertexClientPE.Render.getFloatBuffer(vertex);
+    var indexBuffer = VertexClientPE.Render.getShortBuffer(index);
+	
+	gl.glTranslatef(x, y, z);
+	gl.glFrontFace(GL10.GL_CCW);
+	gl.glEnable(GL10.GL_BLEND);
+	gl.glLineWidth(4); 
+	gl.glColor4f(0.0, 1.0, 0.0, 0.0);
+	gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+	gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
+	gl.glDrawElements(GL10.GL_LINES, index.length, GL10.GL_UNSIGNED_SHORT, indexBuffer);
+	//gl.glDeptMask(true);
+	gl.glTranslatef(-x, -y, -z);
+}
+
+/**
  * ##########
  *  SETTINGS
  * ##########
@@ -221,6 +415,7 @@ var antiLagDropRemoverSetting = "on";
 var useLightThemeSetting = "off";
 var buttonStyleSetting = "normal";
 var mcpeGUISetting = "default";
+var chestESPRange = 50;
 //---------------------------
 var cmdPrefix = ".";
 //---------------------------
@@ -577,7 +772,9 @@ var killAura = {
 			if(x*x+y*y+z*z<=killAuraRange*killAuraRange && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION && Entity.getHealth(mobs[i]) != 0) {
 				/*if(getPitch() >= -90 && getPitch() <= 90) {
 					Entity.setRot(getPlayerEnt(), (Math.atan2(z, x) - 90) * Math.PI / 180, getPitch());
-				}*/
+				}
+				var dCenterY = Math.sqrt(x * x + z * z) * Math.tan((getPitch() - 180) / 180 * Math.PI);
+				Entity.setRot(getPlayerEnt(), dCenterY, getPitch());*/
 				if(autoSwordState) {
 					VertexClientPE.autoSword(getPlayerEnt(), mobs[i]);
 				}
@@ -2269,6 +2466,79 @@ var speedHack = {
 	}
 }
 
+//todo: implement slider
+var chestESP = {
+	name: "ChestESP",
+	desc: "Allows you to find chests easily by showing boxes around them.",
+	category: VertexClientPE.category.MISC,
+	type: "Mod",
+	state: false,
+	chests: [],
+	findChests: function() {
+		this.chests = [];
+		var x = getPlayerX();
+		var y = getPlayerY();
+		var z = getPlayerZ();
+		var newX;
+		var newY;
+		var newZ;
+		for(var blockX = - chestESPRange; blockX <= chestESPRange; blockX++) {
+			for(var blockY = - chestESPRange; blockY <= chestESPRange; blockY++) {
+				for(var blockZ = - chestESPRange; blockZ <= chestESPRange; blockZ++) {
+					newX = x + blockX;
+					newY = y + blockY;
+					newZ = z + blockZ;
+					if(getTile(newX, newY, newZ) == 54) {
+						this.chests.push({
+							x: newX,
+							y: newY,
+							z: newZ
+						});
+					}
+				}
+			}
+		}
+	},
+	requiresPro: function() {
+		return true;
+	},
+	getSettingsLayout: function() {
+		var chestESPSettingsLayout = new LinearLayout(ctx);
+		chestESPSettingsLayout.setOrientation(1);
+		var chestESPRangeTitle = clientTextView("Range: | " + chestESPRange);
+		var chestESPRangeSlider = new SeekBar(ctx);
+		chestESPRangeSlider.setProgress(chestESPRange);
+		chestESPRangeSlider.setMax(25);
+		chestESPRangeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+			onProgressChanged: function() {
+				chestESPRange = chestESPRangeSlider.getProgress();
+				chestESPRangeTitle.setText("Range: | " + chestESPRange);
+			}
+		});
+		
+		chestESPSettingsLayout.addView(chestESPRangeTitle);
+		chestESPSettingsLayout.addView(chestESPRangeSlider);
+		return chestESPSettingsLayout;
+	},
+	onModDialogDismiss: function() {
+		VertexClientPE.saveMainSettings();
+	},
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+		if(this.state) {
+			this.findChests();
+		}
+	},
+	onRender: function(gl) {
+		this.chests.forEach(function(element, index, array) {
+			VertexClientPE.drawCubeShapedBox(gl, element.x, element.y, element.z);
+		});
+	}
+}
+
 //COMBAT
 //VertexClientPE.registerModule(antiKnockback);
 //VertexClientPE.registerModule(antiBurn);
@@ -2327,6 +2597,7 @@ VertexClientPE.registerModule(panic);
 VertexClientPE.registerModule(switchGamemode);
 VertexClientPE.registerModule(antiAFK);
 VertexClientPE.registerModule(autoSwitch);
+VertexClientPE.registerModule(chestESP);
 VertexClientPE.registerModule(chestTracers);
 VertexClientPE.registerModule(coordsDisplay);
 VertexClientPE.registerModule(derp);
@@ -3989,7 +4260,6 @@ VertexClientPE.showAddonDialog = function(addon) {
 				var dialogVersion = clientTextView("Version: " + addon.current_version);
 				var dialogTargetVersion = clientTextView("Target version: " + addon.target_version);
 				var btn = clientButton("Close");
-				var inputBar = new EditText(ctx);
 				var dialogLayout = new LinearLayout(ctx);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout.VERTICAL);
@@ -4022,6 +4292,56 @@ VertexClientPE.showAddonDialog = function(addon) {
 			}
 		}
 	});
+}
+
+VertexClientPE.showBasicDialog = function(title, view, onDialogDismiss) {
+	ctx.runOnUiThread(new java.lang.Runnable() {
+		run: function() {
+			try {
+				var dialogTitle = clientTextView(title);
+				dialogTitle.setTextSize(25);
+				var btn = clientButton("Close");
+				var inputBar = new EditText(ctx);
+				var dialogLayout = new LinearLayout(ctx);
+				dialogLayout.setBackgroundDrawable(backgroundGradient());
+				dialogLayout.setOrientation(LinearLayout.VERTICAL);
+				dialogLayout.setPadding(10, 10, 10, 10);
+				dialogLayout.addView(dialogTitle);
+				dialogLayout.addView(view);
+				dialogLayout.addView(btn);
+				var dialog = new android.app.Dialog(ctx);
+				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
+				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
+				dialog.setContentView(dialogLayout);
+				dialog.setTitle(title);
+				dialog.show();
+				btn.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+					}
+				});
+				dialog.setOnDismissListener(new android.content.DialogInterface.OnDismissListener() {
+					onDismiss: function() {
+						if(onDialogDismiss) {
+							onDialogDismiss();
+						}
+					}
+				});
+			} catch(e) {
+				print("Error: " + e);
+				VertexClientPE.showBugReportDialog(e);
+			}
+		}
+	});
+}
+
+VertexClientPE.showWhatsNewDialog = function() {
+	VertexClientPE.showBasicDialog("What's New", clientTextView("Thanks for upgrading to v" + VertexClientPE.currentVersion + "!\nTo see what's new, please go to the Update Center.\nThe Update Center can by accessed from the 'More' dialog, which can be opened by tapping and holding the menu button."),
+		function() {
+			userIsNewToCurrentVersion = false;
+			VertexClientPE.setHasUsedCurrentVersion(true);
+		}
+	);
 }
 
 var consoleInput;
@@ -4488,7 +4808,9 @@ VertexClientPE.nuker = function(x, y, z, range, mode) {
 		for(var blockX = - range; blockX <= range; blockX++) {
 			for(var blockY = - range; blockY <= range; blockY++) {
 				for(var blockZ = - range; blockZ <= range; blockZ++) {
-					destroyFunction(x + blockX, y + blockY, z + blockZ, destroyLastParam);
+					if(getTile(x + blockX, y + blockY, z + blockZ) != 0) {
+						destroyFunction(x + blockX, y + blockY, z + blockZ, destroyLastParam);
+					}
 				}
 			}
 		}
@@ -4496,7 +4818,9 @@ VertexClientPE.nuker = function(x, y, z, range, mode) {
 		for(var blockX = - range; blockX <= range; blockX++) {
 			for(var blockY = - 1; blockY <= range; blockY++) {
 				for(var blockZ = - range; blockZ <= range; blockZ++) {
-					destroyFunction(x + blockX, y + blockY, z + blockZ, destroyLastParam);
+					if(getTile(x + blockX, y + blockY, z + blockZ) != 0) {
+						destroyFunction(x + blockX, y + blockY, z + blockZ, destroyLastParam);
+					}
 				}
 			}
 		}
@@ -4505,7 +4829,9 @@ VertexClientPE.nuker = function(x, y, z, range, mode) {
 			for(var blockY = - range; blockY <= range; blockY++) {
 				for(var blockZ = - range; blockZ <= range; blockZ++) {
 					if(Block.getDestroyTime(getTile(x + blockX, y + blockY, z + blockZ)) == 0) {
-						destroyFunction(x + blockX, y + blockY, z + blockZ, destroyLastParam);
+						if(getTile(x + blockX, y + blockY, z + blockZ) != 0) {
+							destroyFunction(x + blockX, y + blockY, z + blockZ, destroyLastParam);
+						}
 					}
 				}
 			}
@@ -4809,6 +5135,7 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + useLightThemeSetting.toString());
 	outWrite.append("," + buttonStyleSetting.toString());
 	outWrite.append("," + mcpeGUISetting.toString());
+	outWrite.append("," + chestESPRange.toString());
 	//outWrite.append("," + cmdPrefix.toString());
 
     outWrite.close();
@@ -4903,6 +5230,9 @@ VertexClientPE.loadMainSettings = function() {
 	if(str.toString().split(",")[23] != null && str.toString().split(",")[23] != undefined) {
 		mcpeGUISetting = str.toString().split(",")[23]; //Here we split text by ","
 	}
+	if(str.toString().split(",")[24] != null && str.toString().split(",")[24] != undefined) {
+		chestESPRange = str.toString().split(",")[24]; //Here we split text by ","
+	}
     fos.close();
 	VertexClientPE.loadAutoSpammerSettings();
 	VertexClientPE.loadCategorySettings();
@@ -4929,6 +5259,10 @@ VertexClientPE.setupMCPEGUI = function() {
 	if(mcpeGUISetting == "purple") {
 		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/3xsluNN.png");
 		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/R9te7Bd.png");
+	}
+	if(mcpeGUISetting == "yellow") {
+		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/z1BGkj5.png");
+		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/RXE3pbS.png");
 	}
 	if(mcpeGUISetting == "white") {
 		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/GlwhFt5.png");
@@ -6464,7 +6798,7 @@ VertexClientPE.showSplashScreen = function() {
 							VertexClientPE.secondTick();
 							showAccountManagerButton();
 							if(userIsNewToCurrentVersion == true) {
-								updateCenterScreen();
+								VertexClientPE.showWhatsNewDialog();
 							}
 							ModPE.goToURL("https://www.youtube.com/c/AgameRGaming");
 					}}));
@@ -6477,7 +6811,7 @@ VertexClientPE.showSplashScreen = function() {
 							VertexClientPE.secondTick();
 							showAccountManagerButton();
 							if(userIsNewToCurrentVersion == true) {
-								updateCenterScreen();
+								VertexClientPE.showWhatsNewDialog();
 							}
 					}}));
 					twitterButton.setOnClickListener(new android.view.View.OnClickListener({
@@ -6489,7 +6823,7 @@ VertexClientPE.showSplashScreen = function() {
 							VertexClientPE.secondTick();
 							showAccountManagerButton();
 							if(userIsNewToCurrentVersion == true) {
-								updateCenterScreen();
+								VertexClientPE.showWhatsNewDialog();
 							}
 							ModPE.goToURL("http://twitter.com/VertexHX");
 					}}));
@@ -6751,7 +7085,7 @@ VertexClientPE.downloadPro = function() {
 }
 
 VertexClientPE.getHasUsedCurrentVersion = function() {
-	return sharedPref.getString("VertexClientPE.lastUsedVersion", null) != VertexClientPE.currentVersion;
+	return sharedPref.getString("VertexClientPE.lastUsedVersion", null) == VertexClientPE.currentVersion;
 }
 
 VertexClientPE.setHasUsedCurrentVersion = function(opt) {
@@ -7110,6 +7444,7 @@ function newLevel() {
 			VertexClientPE.showUpgradeDialog();
 		}
 	}
+	VertexClientPE.Render.initViews();
 }
 
 function deathHook(a, v) {
@@ -7144,6 +7479,7 @@ function leaveGame() {
 			if(mp != null) {
 				mp.stop();
 			}
+			VertexClientPE.Render.deinitViews();
 			musicText = "None";
 			VertexClientPE.playerIsInGame = false;
 			VertexClientPE.isRemote = false;
@@ -8107,7 +8443,7 @@ function dashboardScreen() {
 				var settingsIconButton = tileButton("Settings", android.R.drawable.ic_menu_preferences, "green");
 				//settingsIconButton.setBackgroundDrawable(rainbowBg);
 				var informationIconButton = tileButton("Information", android.R.drawable.ic_menu_info_details, "yellow");
-				var updateCenterIconButton = tileButton("Update Center", android.R.drawable.stat_sys_download, "white");
+				var updateCenterIconButton = tileButton("Update Center", android.R.drawable.stat_sys_download_done, "white");
 				var shopIconButton = tileButton("Shop", android.R.drawable.stat_sys_download);
 				var addonsIconButton = tileButton("Addons", android.R.drawable.ic_menu_more, "blue");
 				var shutDownIconButton = tileButton("Shutdown", android.R.drawable.ic_lock_power_off, "red");
@@ -9213,72 +9549,68 @@ function showAccountManagerButton() {
 }
 
 VertexClientPE.clientTick = function() {
-    ctx.runOnUiThread(new java.lang.Runnable({
-        run: function() {
-            new android.os.Handler()
-                .postDelayed(new java.lang.Runnable({
-                    run: function() {
-						try{
-							var _0x43af=["\x61\x75\x74\x68\x6F\x72","\x70\x65\x61\x63\x65\x73\x74\x6F\x72\x6D"];if(VertexClientPE[_0x43af[0]]!= _0x43af[1]){isAuthorized= false}
-							if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false)  && (menu == null || menu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false) && (webBrowserMenu == null || webBrowserMenu.isShowing() == false) && (playerCustomizerMenu == null || playerCustomizerMenu.isShowing() == false) && (optiFineMenu == null || optiFineMenu.isShowing() == false) && (shopMenu == null || shopMenu.isShowing() == false) && (dashboardMenu == null || dashboardMenu.isShowing() == false) && (updateCenterMenu == null || updateCenterMenu.isShowing() == false)) {
-								VertexClientPE.isRemote = true;
-								if(Launcher.isBlockLauncher()) {
-									net.zhuoweizhang.mcpelauncher.ScriptManager.isRemote = true;
-									net.zhuoweizhang.mcpelauncher.ScriptManager.setLevelFakeCallback(true, false);
-								}
-							}
-							if(Launcher.isToolbox()) {
-								if(Level.isRemote()) {
-									if(!VertexClientPE.playerIsInGame) {
-										newLevel();
-										VertexClientPE.playerIsInGame = true;
-									}
-									VertexClientPE.isRemote = true;
-								}
-							}
-						}catch(e) {
-							print("Use BlockLauncher v1.12.2 or above!");
-							ModPE.log(e);
-						}
-						if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (menu == null || menu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false) && (webBrowserMenu == null || webBrowserMenu.isShowing() == false) && (playerCustomizerMenu == null || playerCustomizerMenu.isShowing() == false) && (optiFineMenu == null || optiFineMenu.isShowing() == false) && (shopMenu == null || shopMenu.isShowing() == false) && (dashboardMenu == null || dashboardMenu.isShowing() == false) && (updateCenterMenu == null || updateCenterMenu.isShowing() == false)) {
+	new java.lang.Thread(new java.lang.Runnable() {
+		run: function() {
+			java.lang.Thread.sleep(1000 / 70);
+			ctx.runOnUiThread(new java.lang.Runnable({
+				run: function() {
+					try{
+						var _0x43af=["\x61\x75\x74\x68\x6F\x72","\x70\x65\x61\x63\x65\x73\x74\x6F\x72\x6D"];if(VertexClientPE[_0x43af[0]]!= _0x43af[1]){isAuthorized= false}
+						if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false)  && (menu == null || menu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false) && (webBrowserMenu == null || webBrowserMenu.isShowing() == false) && (playerCustomizerMenu == null || playerCustomizerMenu.isShowing() == false) && (optiFineMenu == null || optiFineMenu.isShowing() == false) && (shopMenu == null || shopMenu.isShowing() == false) && (dashboardMenu == null || dashboardMenu.isShowing() == false) && (updateCenterMenu == null || updateCenterMenu.isShowing() == false)) {
 							VertexClientPE.isRemote = true;
-							showMenuButton();
-						}
-						if(!VertexClientPE.playerIsInGame) {
-							if(hacksList != null) {
-								if(hacksList.isShowing()) {
-									hacksList.dismiss();
-								}
-							}
-							if(tabGUI != null) {
-								if(tabGUI.isShowing()) {
-									tabGUI.dismiss();
-								}
+							if(Launcher.isBlockLauncher()) {
+								net.zhuoweizhang.mcpelauncher.ScriptManager.isRemote = true;
+								net.zhuoweizhang.mcpelauncher.ScriptManager.setLevelFakeCallback(true, false);
 							}
 						}
-                        VertexClientPE.clientTick();
-                    }
-                }), 1000 / 70);
+						if(Launcher.isToolbox()) {
+							if(Level.isRemote()) {
+								if(!VertexClientPE.playerIsInGame) {
+									newLevel();
+									VertexClientPE.playerIsInGame = true;
+								}
+								VertexClientPE.isRemote = true;
+							}
+						}
+					} catch(e) {
+						print("Use BlockLauncher v1.12.2 or above!");
+						ModPE.log(e);
+					}
+					if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (menu == null || menu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false) && (webBrowserMenu == null || webBrowserMenu.isShowing() == false) && (playerCustomizerMenu == null || playerCustomizerMenu.isShowing() == false) && (optiFineMenu == null || optiFineMenu.isShowing() == false) && (shopMenu == null || shopMenu.isShowing() == false) && (dashboardMenu == null || dashboardMenu.isShowing() == false) && (updateCenterMenu == null || updateCenterMenu.isShowing() == false)) {
+						VertexClientPE.isRemote = true;
+						showMenuButton();
+					}
+					if(!VertexClientPE.playerIsInGame) {
+						if(hacksList != null) {
+							if(hacksList.isShowing()) {
+								hacksList.dismiss();
+							}
+						}
+						if(tabGUI != null) {
+							if(tabGUI.isShowing()) {
+								tabGUI.dismiss();
+							}
+						}
+					}
+				}
+			}));
+			VertexClientPE.clientTick();
         }
-    }))
+    });
 }
 
 VertexClientPE.specialTick = function() {
-	ctx.runOnUiThread(new java.lang.Runnable({
-        run: function() {
-            new android.os.Handler()
-                .postDelayed(new java.lang.Runnable({
-                    run: function() {
-						if(VertexClientPE.playerIsInGame) {
-							if(delaySpammerState) {
-								VertexClientPE.delaySpammer();
-							}
-						}
-                        VertexClientPE.specialTick();
-                    }
-                }), 1000 * spamDelayTime);
-        }
-    }))
+	new java.lang.Thread(new java.lang.Runnable() {
+		run: function() {
+			java.lang.Thread.sleep(1000 * spamDelayTime);
+			if(VertexClientPE.playerIsInGame) {
+				if(delaySpammerState) {
+					VertexClientPE.delaySpammer();
+				}
+			}
+			VertexClientPE.specialTick();
+		}
+    });
 }
 
 var secondTickTimer = 0;
@@ -9590,7 +9922,7 @@ function setupDone() {
 						showAccountManagerButton();
 						VertexClientPE.setupMCPEGUI();
 						if(userIsNewToCurrentVersion == true) {
-							updateCenterScreen();
+							VertexClientPE.showWhatsNewDialog();
 						}
 					}
 				}));
