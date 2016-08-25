@@ -1,7 +1,7 @@
 /**
  * ###############################################################
  * @name Vertex Client PE
- * @version v1.1
+ * @version v1.1.1
  * @author peacestorm (@AgameR_Modder)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG
  *
@@ -73,6 +73,18 @@ var customHeight = topBarHeight / 2;
 var sharedPref = ctx.getPreferences(ctx.MODE_PRIVATE);
 var editor = sharedPref.edit();
 
+var Launcher = {
+	isBlockLauncher: function() {
+		return (ctx.getPackageName() == "net.zhuoweizhang.mcpelauncher" || ctx.getPackageName() == "net.zhuoweizhang.mcpelauncher.pro");
+	},
+	isToolbox: function() {
+		return ctx.getPackageName() == "io.mrarm.mctoolbox";
+	},
+	isMcpeMaster: function() {
+		return ctx.getPackageName() == "com.mcbox.pesdkb.mcpelauncher";
+	}
+};
+
 var ScreenType = {
 	start_screen: "start_screen",
 	hud: "hud_screen",
@@ -83,7 +95,7 @@ var ScreenType = {
 	options_screen: "options_screen"
 };
 
-var currentScreen;
+var currentScreen = Launcher.isToolbox()?ScreenType.ingame:null;
 
 function screenChangeHook(screenName) {
 	var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
@@ -205,7 +217,7 @@ var _0xc116=["\x73\x65\x74\x56\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x56\x65\x7
 VertexClientPE.isRemote = false;
 VertexClientPE.playerIsInGame = false;
 
-VertexClientPE.currentVersion = "1.1";
+VertexClientPE.currentVersion = "1.1.1";
 VertexClientPE.currentVersionDesc = "The Summer Update";
 VertexClientPE.targetVersion = "MCPE v0.15.x alpha";
 VertexClientPE.latestVersion;
@@ -467,20 +479,6 @@ var miscName = "Misc";
 //End of settings
 
 var userIsNewToCurrentVersion = false;
-
-var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
-
-var Launcher = {
-	isBlockLauncher: function() {
-		return (ctx.getPackageName() == "net.zhuoweizhang.mcpelauncher" || ctx.getPackageName() == "net.zhuoweizhang.mcpelauncher.pro");
-	},
-	isToolbox: function() {
-		return ctx.getPackageName() == "io.mrarm.mctoolbox";
-	},
-	isMcpeMaster: function() {
-		return ctx.getPackageName() == "com.mcbox.pesdkb.mcpelauncher";
-	}
-};
 
 var GUI;
 var menu;
@@ -8637,7 +8635,7 @@ VertexClientPE.showMenuBar = function() {
 				
 				menuBarLayout.addView(menuBarTextView);
 				
-				menuBar = new widget.PopupWindow(menuBarLayout, menuBarWidth - 180, screenHeight / 20);
+				menuBar = new widget.PopupWindow(menuBarLayout, menuBarWidth - dip2px(90), screenHeight / 20);
 				menuBar.setBackgroundDrawable(backgroundSpecial("bottom"));
 				menuBar.setTouchable(false);
 				menuBar.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 90, 0);
