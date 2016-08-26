@@ -383,7 +383,9 @@ VertexClientPE.Render.initViews = function() {
 VertexClientPE.Render.deinitViews = function() {
 	ctx.runOnUiThread(new java.lang.Runnable() {
 		run: function() {
-			parentView.removeView(virtualWorldView);
+			if(virtualWorldView != null && virtualWorldView != undefined) {
+				parentView.removeView(virtualWorldView);
+			}
 		}
 	});
 }
