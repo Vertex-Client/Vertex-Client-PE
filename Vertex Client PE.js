@@ -7528,7 +7528,7 @@ function leaveGame() {
 			if(tabGUI != null) {
 				tabGUI.dismiss();
 			}
-			if(topBar != null) {
+			if(menuBar != null || menu != null) {
 				VertexClientPE.closeMenu();
 			}
 			showMenuButton();
@@ -9549,7 +9549,7 @@ function showAccountManagerButton() {
 	var display = new android.util.DisplayMetrics();
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
     var menuBtn = clientButton("AM");
-	menuBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 10, display.heightPixels / 10));
+	menuBtn.setLayoutParams(new LinearLayout.LayoutParams(dip2px(40), dip2px(40)));
     menuBtn.setOnClickListener(new android.view.View.OnClickListener({
     onClick: function(viewarg){
 	if(hacksList != null) {
