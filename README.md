@@ -7,13 +7,12 @@ More information: http://Vertex-Client.ml/
 License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.md
 
 ### Todo
-- [ ] Kits UI
-- [ ] Account Manager [aimed for 1.3 Beta]
+- [x] Account Manager
 - [ ] Freecam
 - [ ] AutoBuild
 - [ ] BuildRandom
 - [ ] EntityESP (requires OpenGLES)
-- [ ] ChestESP (OpenGLES?)
+- [x] ChestESP (OpenGLES?)
 - [ ] Tracers (requires OpenGLES)
 - [ ] Twerk
 - [x] CoordsDisplay
@@ -26,34 +25,33 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [ ] FreezeAura
   - [x] Base hack
   - [ ] Particles
-- [x] Ride [aimed for 1.3 Beta]
+- [x] Ride
 - [ ] LSD
-- [ ] AutoTorch [aimed for 1.3 Beta]
-- [x] FireAura [1.3 Beta]
+- [ ] AutoTorch
+- [x] FireAura
 - [ ] Foodhack (all items edible)
 - [ ] TMI-Chest
 - [ ] AutoSteal
 - [ ] Chest steal button
-- [ ] Follow (following entities) [aimed for 1.3 Beta]
-- [x] TapExplosion [aimed for 1.3 Beta]
+- [ ] Follow (following entities)
+- [x] TapExplosion
 - [x] AutoSword
 - [ ] AutoTool
 - [ ] AutoArmor
-- [x] OnlyDay [aimed for 1.3 Beta]
-- [x] AutoTeleporter [aimed for 1.3 Beta]
-- [x] Criticals [aimed for 1.3 Beta]
-- [x] FancyChat [aimed for 1.3 Beta]
+- [x] OnlyDay
+- [x] AutoTeleporter
+- [x] Criticals
+- [x] FancyChat
 - [ ] LogSpammer
 - [ ] BunnyHop
-- [x] Timer settings [aimed for 1.3 Beta]
+- [x] Timer settings
 - [ ] Improve Nuker
   - [x] Range settings
   - [ ] Drop settings
-  - [ ] Use destroyBlock instead of setTile
+  - [x] Use destroyBlock instead of setTile
 - [x] KillAura range setting
 - [x] Music Player
 - [x] YesCheat+ (makes some hacks work better on servers)
-- [ ] Keybinds (when BlockLauncher adds keyboardHook)
 - [ ] Bug fixes
   - [ ] Fix [#7](https://github.com/Vertex-Client/Vertex-Client-PE/issues/7)
   - [x] Fix [#9](https://github.com/Vertex-Client/Vertex-Client-PE/issues/9)
