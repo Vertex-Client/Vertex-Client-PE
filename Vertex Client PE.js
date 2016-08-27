@@ -1,7 +1,7 @@
 /**
  * ###############################################################
  * @name Vertex Client PE
- * @version v1.1.1
+ * @version v1.1.2
  * @author peacestorm (@AgameR_Modder)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG
  *
@@ -217,7 +217,7 @@ var _0xc116=["\x73\x65\x74\x56\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x56\x65\x7
 VertexClientPE.isRemote = false;
 VertexClientPE.playerIsInGame = false;
 
-VertexClientPE.currentVersion = "1.1.1";
+VertexClientPE.currentVersion = "1.1.2";
 VertexClientPE.currentVersionDesc = "The Summer Update";
 VertexClientPE.targetVersion = "MCPE v0.15.x alpha";
 VertexClientPE.latestVersion;
@@ -9534,7 +9534,7 @@ function showMenuButton() {
 		GUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
 	}
 	
-	if(currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud) {
+	if((currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud) && VertexClientPE.playerIsInGame) {
 		showHacksList();
 		showTabGUI();
 	}
@@ -9871,7 +9871,7 @@ function showTabGUI() {
 					tabGUI = new widget.PopupWindow(tabGUILayout, LinearLayout.LayoutParams.WRAP_CONTENT, ctx.getWindowManager().getDefaultDisplay().getHeight() / 3);
 					tabGUI.setBackgroundDrawable(/*backgroundGradient(true)*/new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 					if(tabGUIModeSetting != "off") {
-						tabGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 100);
+						tabGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, dip2px(70));
 					}
 				} catch(error) {
 					print('An error occurred: ' + error);
