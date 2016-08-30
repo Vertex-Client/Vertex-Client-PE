@@ -5,7 +5,7 @@
  * @author peacestorm (@AgameR_Modder)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG
  *
- * Thanks to NoCopyrightSounds and their artists for the music!
+ * Thanks to NoCopyrightSounds and all artists for the music!
  *
  * ###############################################################
  */
@@ -2637,6 +2637,9 @@ VertexClientPE.registerModule(zoom);
 
 function modTick() {
 	VertexClientPE.playerIsInGame = true;
+}
+
+function moduleTick() {
 	if(accountManager != null) {
 		ctx.runOnUiThread(new java.lang.Runnable() {
 			run: function() {
@@ -3395,9 +3398,11 @@ ModPE.getInfo = function(infoName) { //profileName, sessionId
 
 ModPE.setSession = function(sessionId) {
 	//ctx.setLoginInformation(ctx.getAccessToken(), ModPE.getClientId(), ctx.getProfileId(), username);
-	var edit = android.preference.PreferenceManager.getDefaultSharedPreferences(ctx).edit();
+	/*var edit = android.preference.PreferenceManager.getDefaultSharedPreferences(ctx).edit();
 	edit.putString("sessionId", sessionId);
-	edit.commit();
+	edit.commit();*/
+	editor.putString("sessionId", sessionId);
+	editor.commit();
 }
 
 ModPE.playerHasSplitControls = function() {
@@ -4675,6 +4680,7 @@ var music;
 (VertexClientPE.resetMusic = function() {
 	music = [
 		["Ahrix - Nova [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Ahrix%20-%20Nova.mp3"],
+		["Ahxello & Alex Skrindo - Daydreamer", "http://b1.ge.tt/gett/842vbod2/Ahxello+%26+Alex+Skrindo+-+Daydreamer.mp3?index=0&user=user-ixW6scU8M6%E2%80%A6TeP06a11F-&referrer=user-ixW6scU8M6tdtVBWuAeo7oA2hZquSTeP06a11F-&download=1"],
 		["DEAF KEV - Invincible [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/DEAF%20KEV%20-%20Invincible.mp3"],
 		["Different Heaven & EH!DE - My Heart [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20%26%20EH%21DE%20-%20My%20Heart.mp3"],
 		["Different Heaven - Nekozilla", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20-%20Nekozilla.mp3"],
@@ -4685,11 +4691,13 @@ var music;
 		["Jim Yosef - Eclipse [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Jim%20Yosef%20-%20Eclipse.mp3"],
 		["Jim Yosef - Firefly [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/jim-yosef-firefly-ncs-release.mp3"],
 		["Laszlo - Fall To Light [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Laszlo%20-%20Fall%20to%20Light.mp3"],
-		["Lisa Mitchell - Neopolitan Dreams (Nilow Rmx)", "http://b1.ge.tt/gett/4WKD4nd2/Lisa+Mitchell+-+Neopolitan+Dreams+%28Nilow+Rmx?index=0&user=user-ixW6scU8M6%E2%80%A6TeP06a11F-&referrer=user-ixW6scU8M6tdtVBWuAeo7oA2hZquSTeP06a11F-&download=1"],
+		["Lisa Mitchell - Neopolitan Dreams (Nilow Remix)", "http://b1.ge.tt/gett/4WKD4nd2/Lisa+Mitchell+-+Neopolitan+Dreams+%28Nilow+Rmx?index=0&user=user-ixW6scU8M6%E2%80%A6TeP06a11F-&referrer=user-ixW6scU8M6tdtVBWuAeo7oA2hZquSTeP06a11F-&download=1"],
 		["OMFG - Hello", "http://b1.ge.tt/gett/1a353nd2/OMFG+-+Hello.mp3?index=0&user=user-ixW6scU8M6%E2%80%A6TeP06a11F-&referrer=user-ixW6scU8M6tdtVBWuAeo7oA2hZquSTeP06a11F-&download=1"],
 		["SirensCeol - Coming Home [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/SirensCeol%20-%20Coming%20Home.mp3"],
+		["Syn Cole - Feel Good [NCS Release]", "https://dl.dropboxusercontent.com/content_link/XXC2RpC9xcqPJSvKX6zoE3soAOsxxqs3BoorX1rO70lkBqcOGZLp7NqMda9XHXBz/file?dl=1"],
 		["Tobu & Syndec - Dusk [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Tobu%20%26%20Syndec%20-%20Dusk.mp3"],
 		["Tobu - Candyland [NCS Release]", "http://files-cdn.nocopyrightsounds.co.uk/Tobu%20-%20Candyland.mp3"],
+		["Tobu - Roots [NCS Release]", "https://hive-downloads-bwh6b963f4d.bwhog.net/private/downloads/user-2327816/1469285317/Tobu_-_Roots.mp3"],
 		["William Ekh - Adventure (feat. Alexa Lusader)", "http://files-cdn.nocopyrightsounds.co.uk/William%20Ekh%20-%20Adventure%20%28feat.%20Alexa%20Lusader%29.mp3"]
 	];
 })();
@@ -6531,7 +6539,6 @@ VertexClientPE.checkForUpdates = function() {
     } catch(err) {
         VertexClientPE.clientMessage("Can't check for updates, please check your Internet connection.");
         ModPE.log("[Vertex Client PE] VertexClientPE.checkForUpdates() caught an error: " + err);
-		var sharedPref = ctx.getPreferences(ctx.MODE_PRIVATE);
 		if(sharedPref.getString("VertexClientPE.latestVersion", null) != null && sharedPref.getString("VertexClientPE.latestVersion", null) != undefined) {
 			VertexClientPE.latestVersion = sharedPref.getString("VertexClientPE.latestVersion", null);
 		} else {
@@ -6540,8 +6547,6 @@ VertexClientPE.checkForUpdates = function() {
 		return;
     }
 	
-	var sharedPref = ctx.getPreferences(ctx.MODE_PRIVATE);
-	var editor = sharedPref.edit();
 	editor.putString("VertexClientPE.latestVersion", VertexClientPE.latestVersion);
 	editor.commit();
 	themeSetup = "off";
@@ -6574,7 +6579,6 @@ VertexClientPE.loadUpdateDescription = function() {
         //clientMessage(VertexClientPE.getVersion("current"); + " " + latestVersion);
     } catch(err) {
         ModPE.log("[Vertex Client PE] VertexClientPE.loadUpdateDescription() caught an error: " + err);
-		var sharedPref = ctx.getPreferences(ctx.MODE_PRIVATE);
 		if(sharedPref.getString("VertexClientPE.latestVersionDesc", null) != null && sharedPref.getString("VertexClientPE.latestVersionDesc", null) != undefined) {
 			VertexClientPE.latestVersionDesc = sharedPref.getString("VertexClientPE.latestVersionDesc", null);
 		} else {
@@ -6583,8 +6587,6 @@ VertexClientPE.loadUpdateDescription = function() {
 		return;
     }
 	
-	var sharedPref = ctx.getPreferences(ctx.MODE_PRIVATE);
-	var editor = sharedPref.edit();
 	editor.putString("VertexClientPE.latestVersionDesc", VertexClientPE.latestVersionDesc);
 	editor.commit();
 }
@@ -6646,7 +6648,6 @@ VertexClientPE.loadSupport = function() {
         // test
         //clientMessage(VertexClientPE.getVersion("current"); + " " + latestVersion);
     } catch(err) {
-		var sharedPref = ctx.getPreferences(ctx.MODE_PRIVATE);
 		if(sharedPref.getString("VertexClientPE.isSupported_" + VertexClientPE.currentVersion, null) == "false") {
 			isSupported = false;
 		} else {
@@ -6655,8 +6656,6 @@ VertexClientPE.loadSupport = function() {
         ModPE.log("[Vertex Client PE] VertexClientPE.loadSupport() caught an error: " + err);
 		return;
     }
-	var sharedPref = ctx.getPreferences(ctx.MODE_PRIVATE);
-	var editor = sharedPref.edit();
 	editor.putString("VertexClientPE.isSupported_" + VertexClientPE.currentVersion, isSupported.toString());
 	editor.commit();
 	//print(isSupported);
@@ -6690,8 +6689,6 @@ VertexClientPE.loadDownloadCount = function() {
 		ModPE.log("[Vertex Client PE] VertexClientPE.loadDownloadCount() caught an error: " + err);
 		return;
     }
-	var sharedPref = ctx.getPreferences(ctx.MODE_PRIVATE);
-	var editor = sharedPref.edit();
 	editor.putString("VertexClientPE.latestReleaseDownloadCount", VertexClientPE.latestReleaseDownloadCount.toString());
 	editor.commit();
 	//print(isSupported);
@@ -7153,6 +7150,7 @@ VertexClientPE.setHasUsedCurrentVersion = function(opt) {
 	if(opt == false) {
 		editor.putString("VertexClientPE.lastUsedVersion", null);
 	}
+	editor.commit();
 }
 
 VertexClientPE.setup = function() {
@@ -7907,7 +7905,7 @@ function settingsScreen() {
 						//if(playMusicSetting == "on") {
 						if(playMusicSetting == "off") {
 							playMusicSetting = "shuffle";
-							playMusicSettingButton.setText("Music | SHUFFLE");
+							playMusicSettingButton.setText("Automatically play music | SHUFFLE");
 							VertexClientPE.saveMainSettings();
 							if(mp != null) {
 								mp.stop();
@@ -7917,7 +7915,7 @@ function settingsScreen() {
 							VertexClientPE.playMusic();
 						} else if(playMusicSetting == "shuffle") {
 							playMusicSetting = "off";
-							playMusicSettingButton.setText("Music | OFF");
+							playMusicSettingButton.setText("Automatically play music | OFF");
 							VertexClientPE.saveMainSettings();
 							VertexClientPE.resetMusic();
 							if(mp != null) {
@@ -7927,7 +7925,7 @@ function settingsScreen() {
 							musicText = "None";
 						}/* else if(playMusicSetting == "off") {
 							playMusicSetting = "on";
-							playMusicSettingButton.setText("Music | NORMAL");
+							playMusicSettingButton.setText("Automatically play music | NORMAL");
 							VertexClientPE.saveMainSettings();
 							VertexClientPE.loadMainSettings();
 							VertexClientPE.resetMusic();
@@ -9624,6 +9622,9 @@ VertexClientPE.clientTick = function() {
 					}
 				}
 			}));
+			if(VertexClientPE.playerIsInGame) {
+				moduleTick();
+			}
 			VertexClientPE.clientTick();
         }
     });
