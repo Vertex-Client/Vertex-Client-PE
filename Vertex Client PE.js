@@ -66,12 +66,38 @@ ctx.getWindowManager().getDefaultDisplay().getRealSize(size);
 var screenWidth = size.x;
 var screenHeight = size.y;
 
+//android.app.Activity.requestWindowFeature(android.view.Window.FEATURE_CUSTOM_TITLE);
+//android.app.Activity.setContentView(R.layout.main);
+/* ctx.runOnUiThread(new java.lang.Runnable({
+	run: function() {
+		// var test = new android.app.Activity();
+		// test.setContentView(android.R.layout.main);
+		// ctx.startActivity(new android.content.Intent(ctx, test.class));
+		// test.setOnCreateListener(new android.app.Activity.OnCreateListener() {
+			
+		// });
+		//var appClass = net.zhuoweizhang.mcpelauncher.ui.LauncherActivity;
+		try {
+			//var appClass = com.mojang.minecraftpe.MainActivity;
+			//appClass.setTaskDescription(new android.app.ActivityManager.TaskDescription("Lol"));
+			//appClass.setTitle("Vertex Client PE");
+			ctx.setTitle("Vertex Client PE");
+		} catch(e) {
+			print(e);
+		}
+	}
+})); */
+
+//android.getActivity().setTitle("Vertex Client PE");
+
 var topBarHeight = screenHeight / 10;
 
 var customHeight = topBarHeight / 2;
 
 var sharedPref = ctx.getPreferences(ctx.MODE_PRIVATE);
 var editor = sharedPref.edit();
+
+var hasStartedBlSettings = false;
 
 var Launcher = {
 	isBlockLauncher: function() {
@@ -2516,7 +2542,6 @@ var speedHack = {
 	}
 }
 
-//todo: implement slider
 var chestESP = {
 	name: "ChestESP",
 	desc: "Allows you to find chests easily by showing boxes around them.",
@@ -2564,10 +2589,92 @@ var chestESP = {
 	}
 }
 
+var twerk = {
+	name: "Twerk",
+	desc: "Automatically makes you twerk all the time.",
+	category: VertexClientPE.category.MISC,
+	type: "Mod",
+	state: false,
+	timer: 0,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+		this.timer = 0;
+	},
+	onTick: function() {
+		if(this.timer <= 20) {
+			Entity.setSneaking(getPlayerEnt(), true);
+			this.timer++;
+		} else if(this.timer <= 21) {
+			Entity.setSneaking(getPlayerEnt(), false);
+			this.timer = 0;
+		}
+	}
+}
+
+var aimBot = {
+	name: "Aimbot",
+	desc: "Automatically makes you point at entities all the time.",
+	category: VertexClientPE.category.COMBAT,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onTick: function() {
+		var mobs = Entity.getAll();
+		for(var i = 0; i < mobs.length; i++) {
+			var x = Entity.getX(mobs[i]) - getPlayerX();
+			var y = Entity.getY(mobs[i]) - getPlayerY();
+			var z = Entity.getZ(mobs[i]) - getPlayerZ();
+			if(x*x+y*y+z*z<=killAuraRange*killAuraRange && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION && Entity.getHealth(mobs[i]) != 0) {
+				var dirX = Entity.getX(mobs[i]) - getPlayerX();
+				var dirY = Entity.getY(mobs[i]) - getPlayerY();
+				var dirZ = Entity.getZ(mobs[i]) - getPlayerZ();
+				var len = Math.sqrt(dirX*dirX + dirY*dirY + dirZ*dirZ);
+				
+				var pX = dirX;
+				var pY = dirY + 0.5;
+				var pZ = dirZ;
+
+				pX /= len
+				pY /= len;
+				pZ /= len;
+
+				var pitch = Math.asin(pY);
+				var yaw = Math.atan2(pZ, pX);
+
+				pitch = -Math.abs(pitch * 180.0 / Math.PI);
+				yaw = -Math.abs(yaw * 180.0 / Math.PI);
+
+				//yaw += 90;
+				
+				if(pitch > -90 && pitch < 90) {
+					Entity.setRot(getPlayerEnt(), yaw, pitch);
+				}
+			}
+		}
+	}
+}
+
+/*
+var dX = x;
+var dY = y;
+var dZ = z;
+var newYaw = Math.atan2(dZ, dX);
+var newPitch = Math.atan2(Math.sqrt(dZ * dZ + dX * dX), dY) + Math.PI;
+*/
+
 //COMBAT
 //VertexClientPE.registerModule(antiKnockback);
 //VertexClientPE.registerModule(antiBurn);
 VertexClientPE.registerModule(arrowGun);
+//VertexClientPE.registerModule(aimBot);
 VertexClientPE.registerModule(autoLeave);
 VertexClientPE.registerModule(autoSword);
 VertexClientPE.registerModule(bowAimbot);
@@ -2632,14 +2739,12 @@ VertexClientPE.registerModule(orderAPizza);
 VertexClientPE.registerModule(remoteView);
 VertexClientPE.registerModule(teleport);
 //VertexClientPE.registerModule(tracers);
+VertexClientPE.registerModule(twerk);
 VertexClientPE.registerModule(yesCheatPlus);
 VertexClientPE.registerModule(zoom);
 
 function modTick() {
 	VertexClientPE.playerIsInGame = true;
-}
-
-function moduleTick() {
 	if(accountManager != null) {
 		ctx.runOnUiThread(new java.lang.Runnable() {
 			run: function() {
@@ -5669,13 +5774,13 @@ function updatePaneButton(updateVersion, updateDesc) {
 	return updatePaneLayout;
 }
 
-function tileButton(tileText, tileIcon, tileColor) {
+function tileButton(tileText, tileIcon, tileColor, forceLightColor) {
 	var params = new widget.GridLayout.LayoutParams();
 	params.setMargins(5, 5, 5, 5);
 	params.width = display.widthPixels / 4 - dip2px(5);
 	params.height = display.widthPixels / 4 - dip2px(5);
 	
-	var defaultTileButton = clientButton(tileText, null, tileColor, false, true, true);
+	var defaultTileButton = clientButton(tileText, null, tileColor, false, forceLightColor==null?true:forceLightColor, true);
 	defaultTileButton.setCompoundDrawablesWithIntrinsicBounds(0, tileIcon, 0, 0);
 	defaultTileButton.setLayoutParams(params);
 	
@@ -6740,6 +6845,8 @@ VertexClientPE.showSplashScreen = function() {
 					}if(themeSetting == "black") {
 						VertexClientPEMainMenuText = "<font color='#000000'>" + VertexClientPE.getVersion("current") + "</font>";
 					}
+					// var hoverCarButton = ctx.getWindow().getDecorView()./*getContentView().*/findViewById(net.zhuoweizhang.mcpelauncher.R.id.hovercar_main_button);
+					// hoverCarButton.setImageBitmap(android.graphics.BitmapFactory.decodeByteArray(logo1, 0, logo1.length));
 					var text = VertexClientPEMainMenuText + " - Welcome back " + ModPE.getPlayerName() + "!";
 					var TitleText = clientTextView(text, true);
 					TitleText.setText(android.text.Html.fromHtml("<blink>" + text + "</blink>"), widget.TextView.BufferType.SPANNABLE);
@@ -6915,8 +7022,23 @@ VertexClientPE.showSplashScreen = function() {
                     mainMenuListLayoutMiddleMiddle.addView(playButton);
                     mainMenuListLayoutMiddleRight.addView(twitterButton);
 					//mainMenuListLayout.addView(splashSlider);
+					
+					var logoAnimation = android.view.animation.AnimationUtils.loadAnimation(ctx, android.R.anim.slide_in_left);
+					//logoViewer1.startAnimation(logoAnimation);
+					
+					/*logoViewer1.setVisibility(android.view.View.VISIBLE);
+					logoViewer1.setAlpha(0.0);
+					// Start the animation
+					logoViewer1.animate().translationY(logoViewer1.getHeight()).alpha(1.0);
+					logoViewer1.animate().translationY(0).alpha(0.0).setListener(new android.animation.AnimatorListenerAdapter() {
+						onAnimationEnd: function(animation) {
+							logoViewer1.setVisibility(android.view.View.GONE);
+						}
+					});*/
+					
+					// var playButtonAnimation = android.view.animation.AnimationUtils.loadAnimation(ctx, android.R.anim.cycle_interpolator);
+					// playButton.startAnimation(playButtonAnimation);
 
-                    //More buttons...
                     mainMenuTextList = new widget.PopupWindow(mainMenuListLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
                     mainMenuTextList.setBackgroundDrawable(backgroundGradient());
                     mainMenuTextList.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
@@ -7047,7 +7169,10 @@ var accountManagerLayoutRight;
 
 ModPE.restart = function() {
 	if(Launcher.isBlockLauncher()) {
+		VertexClientPE.toast("Restarting...");
 		net.zhuoweizhang.mcpelauncher.ui.NerdyStuffActivity.forceRestart(ctx, 500, true);
+	} else {
+		VertexClientPE.toast("Sorry, restarting only works with BlockLauncher at the moment!");
 	}
 }
 
@@ -8475,6 +8600,8 @@ function dashboardScreen() {
 				var updateCenterIconButton = tileButton("Update Center", android.R.drawable.ic_menu_compass, "white");
 				var shopIconButton = tileButton("Shop", android.R.drawable.stat_sys_download);
 				var addonsIconButton = tileButton("Addons", android.R.drawable.ic_menu_more, "blue");
+				var blockLauncherSettingsIconButton = tileButton("BlockLauncher", net.zhuoweizhang.mcpelauncher.R.drawable.ic_menu_settings_holo_light, "black");
+				var restartIconButton = tileButton("Restart", android.R.drawable.ic_menu_rotate, "green", false);
 				var shutDownIconButton = tileButton("Shutdown", android.R.drawable.ic_lock_power_off, "red");
 				
 				settingsIconButton.setOnClickListener(new android.view.View.OnClickListener() {
@@ -8513,6 +8640,35 @@ function dashboardScreen() {
 					}
 				});
 				
+				addonsIconButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						exitDashboardUI.dismiss();
+						dashboardMenu.dismiss();
+						addonScreen();
+						exitAddon();
+					}
+				});
+				
+				blockLauncherSettingsIconButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						/*exitDashboardUI.dismiss();
+						dashboardMenu.dismiss();*/
+						hasStartedBlSettings = true;
+						var blIntent = new android.content.Intent(ctx, net.zhuoweizhang.mcpelauncher.ui.MainMenuOptionsActivity);
+						ctx.startActivity(blIntent);
+					}
+				});
+				
+				shutDownIconButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						new java.lang.Thread(new java.lang.Runnable() {
+							run: function() {
+								ModPE.restart();
+							}
+						}).start();
+					}
+				});
+				
 				shutDownIconButton.setOnClickListener(new android.view.View.OnClickListener() {
 					onClick: function(view) {
 						VertexClientPE.toast("See you later!");
@@ -8530,6 +8686,10 @@ function dashboardScreen() {
 				dashboardMenuLayout.addView(updateCenterIconButton);
 				//dashboardMenuLayout.addView(shopIconButton);
 				dashboardMenuLayout.addView(addonsIconButton);
+				if(Launcher.isBlockLauncher()) {
+					dashboardMenuLayout.addView(blockLauncherSettingsIconButton);
+					dashboardMenuLayout.addView(restartIconButton);
+				}
 				dashboardMenuLayout.addView(shutDownIconButton);
 				
 				dashboardMenu = new widget.PopupWindow(dashboardMenuLayout1, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
@@ -9457,6 +9617,7 @@ function changeColor(view, color) {
 function showMenuButton() {
 	VertexClientPE.loadMainSettings();
 	VertexClientPE.menuIsShowing = false;
+	hasStartedBlSettings = false;
 	var layout = new LinearLayout(ctx);
     layout.setOrientation(1);
 	layout.setGravity(android.view.Gravity.CENTER);
@@ -9620,11 +9781,13 @@ VertexClientPE.clientTick = function() {
 							}
 						}
 					}
+					if(GUI != null && hasStartedBlSettings) {
+						if(!GUI.isShowing()) {
+							showMenuButton();
+						}
+					}
 				}
 			}));
-			if(VertexClientPE.playerIsInGame) {
-				moduleTick();
-			}
 			VertexClientPE.clientTick();
         }
     });
