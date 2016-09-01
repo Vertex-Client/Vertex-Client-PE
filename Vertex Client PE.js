@@ -3506,8 +3506,9 @@ ModPE.setSession = function(sessionId) {
 	/*var edit = android.preference.PreferenceManager.getDefaultSharedPreferences(ctx).edit();
 	edit.putString("sessionId", sessionId);
 	edit.commit();*/
-	editor.putString("sessionId", sessionId);
-	editor.commit();
+	/*editor.putString("sessionId", sessionId);
+	editor.commit();*/
+	com.mojang.minecraftpe.MainActivity.setSession(sessionId);
 }
 
 ModPE.playerHasSplitControls = function() {
@@ -6266,7 +6267,7 @@ function categoryTitle(text) {
 	categoryTitleLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.heightPixels / 3 - display.heightPixels / 4, display.heightPixels / 20));
 	categoryTitleLayout.addView(categoryTitleLayoutRight);
 	
-	var defaultSettingsButton = clientButton("\u270E", null, null, "left", false, true);
+	var defaultSettingsButton = clientButton("\u270E", null, null, "left", null, true);
 	defaultSettingsButton.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 3 - display.heightPixels / 4, display.heightPixels / 20));
 	defaultSettingsButton.setAlpha(0.54);
 	categoryTitleLayoutLeft.addView(defaultSettingsButton);
@@ -6276,7 +6277,7 @@ function categoryTitle(text) {
 	defaultTitle.setGravity(view.Gravity.CENTER);
 	categoryTitleLayoutMiddle.addView(defaultTitle);
 	
-	var defaultArrowButton = clientButton("\u25BD", null, null, "right", false, true);
+	var defaultArrowButton = clientButton("\u25BD", null, null, "right", null, true);
 	defaultArrowButton.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 3 - display.heightPixels / 4, display.heightPixels / 20));
 	defaultArrowButton.setAlpha(0.54);
 	categoryTitleLayoutRight.addView(defaultArrowButton);
