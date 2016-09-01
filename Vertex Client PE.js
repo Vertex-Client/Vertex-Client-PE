@@ -5506,10 +5506,10 @@ function clientButton(text, desc, color, round, forceLightColor, forceNormalStyl
 	if(color == null) {
 		color = themeSetting;
 	}
-	if(forceLightColor == null || forceLightColor == false) {
+	if(forceLightColor == null) {
 		forceLightColor = useLightThemeSetting=="on";
 	}
-	if(forceNormalStyle == null || forceNormalStyle == false) {
+	if(forceNormalStyle == null) {
 		forceNormalStyle = buttonStyleSetting=="normal";
 	}
     var display = new android.util.DisplayMetrics();
