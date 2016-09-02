@@ -7010,8 +7010,8 @@ VertexClientPE.showSplashScreen = function() {
                     mainMenuListLayoutMiddleMiddle.addView(playButton);
                     mainMenuListLayoutMiddleRight.addView(twitterButton);
 					
-					var logoAnimation = android.view.animation.AnimationUtils.loadAnimation(ctx, android.R.anim.fade_in);
-					logoViewer1.startAnimation(logoAnimation);
+					/* var logoAnimation = android.view.animation.AnimationUtils.loadAnimation(ctx, android.R.anim.fade_in);
+					logoViewer1.startAnimation(logoAnimation); */
 
                     mainMenuTextList = new widget.PopupWindow(mainMenuListLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
                     mainMenuTextList.setBackgroundDrawable(backgroundGradient());
