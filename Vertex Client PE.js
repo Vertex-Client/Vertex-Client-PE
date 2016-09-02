@@ -97,8 +97,6 @@ var customHeight = topBarHeight / 2;
 var sharedPref = ctx.getPreferences(ctx.MODE_PRIVATE);
 var editor = sharedPref.edit();
 
-var hasStartedBlSettings = false;
-
 var Launcher = {
 	isBlockLauncher: function() {
 		return (ctx.getPackageName() == "net.zhuoweizhang.mcpelauncher" || ctx.getPackageName() == "net.zhuoweizhang.mcpelauncher.pro");
@@ -246,6 +244,7 @@ VertexClientPE.playerIsInGame = false;
 VertexClientPE.currentVersion = "1.1.2";
 VertexClientPE.currentVersionDesc = "The Summer Update";
 VertexClientPE.targetVersion = "MCPE v0.15.x alpha";
+VertexClientPE.minVersion = "0.15.0";
 VertexClientPE.latestVersion;
 VertexClientPE.latestVersionDesc;
 var latestPocketEditionVersion;
@@ -276,6 +275,7 @@ var setupColor = "green";
 var f = 0;
 
 VertexClientPE.font = android.graphics.Typeface.create("sans-serif-thin", android.graphics.Typeface.NORMAL);
+VertexClientPE.tileFont = new android.graphics.Typeface.createFromAsset(ctx.getAssets(), "fonts/SegoeWP.ttf");
 
 VertexClientPE.getDeviceName = function() {
 	var manufacturer = android.os.Build.MANUFACTURER;
@@ -5782,6 +5782,7 @@ function tileButton(tileText, tileIcon, tileColor, forceLightColor) {
 	params.height = display.widthPixels / 4 - dip2px(5);
 	
 	var defaultTileButton = clientButton(tileText, null, tileColor, false, forceLightColor==null?true:forceLightColor, true);
+	defaultTileButton.setTypeface(VertexClientPE.tileFont);
 	defaultTileButton.setCompoundDrawablesWithIntrinsicBounds(0, tileIcon, 0, 0);
 	defaultTileButton.setLayoutParams(params);
 	
@@ -6990,29 +6991,6 @@ VertexClientPE.showSplashScreen = function() {
 							}
 							ModPE.goToURL("http://twitter.com/VertexHX");
 					}}));
-					
-					/*var splashSlider = new ViewPager(ctx);
-					splashSlider.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-						onPageSelected: function(position) {
-							VertexClientPE.toast("Page" + position);
-							switch (position) {
-								case 0:
-									break;
-
-								case 1:
-									break;
-
-								case 2:
-									break;
-
-								case 3:
-									break;
-
-								default:
-									break;
-							}
-						}
-					});*/
 
                     mainMenuListLayout.addView(mainMenuListLayoutTop);
                     mainMenuListLayoutTop.addView(TitleText);
@@ -7022,23 +7000,9 @@ VertexClientPE.showSplashScreen = function() {
                     mainMenuListLayoutMiddleLeft.addView(youTubeButton);
                     mainMenuListLayoutMiddleMiddle.addView(playButton);
                     mainMenuListLayoutMiddleRight.addView(twitterButton);
-					//mainMenuListLayout.addView(splashSlider);
 					
-					var logoAnimation = android.view.animation.AnimationUtils.loadAnimation(ctx, android.R.anim.slide_in_left);
-					//logoViewer1.startAnimation(logoAnimation);
-					
-					/*logoViewer1.setVisibility(android.view.View.VISIBLE);
-					logoViewer1.setAlpha(0.0);
-					// Start the animation
-					logoViewer1.animate().translationY(logoViewer1.getHeight()).alpha(1.0);
-					logoViewer1.animate().translationY(0).alpha(0.0).setListener(new android.animation.AnimatorListenerAdapter() {
-						onAnimationEnd: function(animation) {
-							logoViewer1.setVisibility(android.view.View.GONE);
-						}
-					});*/
-					
-					// var playButtonAnimation = android.view.animation.AnimationUtils.loadAnimation(ctx, android.R.anim.cycle_interpolator);
-					// playButton.startAnimation(playButtonAnimation);
+					var logoAnimation = android.view.animation.AnimationUtils.loadAnimation(ctx, android.R.anim.fade_in);
+					logoViewer1.startAnimation(logoAnimation);
 
                     mainMenuTextList = new widget.PopupWindow(mainMenuListLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
                     mainMenuTextList.setBackgroundDrawable(backgroundGradient());
@@ -7291,6 +7255,10 @@ VertexClientPE.setup = function() {
 	} else {
 		VertexClientPE.showSplashScreen();
 		//tts.speak("Welcome back " + ModPE.getPlayerName() + "! Thanks for using Vertex Client PE!", android.speech.tts.TextToSpeech.QUEUE_FLUSH, null);
+	}
+	
+	if(ModPE.getMinecraftVersion() < VertexClientPE.minVersion) {
+		VertexClientPE.showBasicDialog("Compatibility", clientTextView("This version may not be compatible with MCPE v" + ModPE.getMinecraftVersion() + "!"));
 	}
 	
 	if(!VertexClientPE.getHasUsedCurrentVersion()) {
@@ -8601,7 +8569,9 @@ function dashboardScreen() {
 				var updateCenterIconButton = tileButton("Update Center", android.R.drawable.ic_menu_compass, "white");
 				var shopIconButton = tileButton("Shop", android.R.drawable.stat_sys_download);
 				var addonsIconButton = tileButton("Addons", android.R.drawable.ic_menu_more, "blue");
-				var blockLauncherSettingsIconButton = tileButton("BlockLauncher", net.zhuoweizhang.mcpelauncher.R.drawable.ic_menu_settings_holo_light, "black");
+				if(Launcher.isBlockLauncher()) {
+					var blockLauncherSettingsIconButton = tileButton("BlockLauncher", net.zhuoweizhang.mcpelauncher.R.drawable.ic_menu_settings_holo_light, "black");
+				}
 				var restartIconButton = tileButton("Restart", android.R.drawable.ic_menu_rotate, "green", false);
 				var shutDownIconButton = tileButton("Shutdown", android.R.drawable.ic_lock_power_off, "red");
 				
@@ -8650,17 +8620,16 @@ function dashboardScreen() {
 					}
 				});
 				
-				blockLauncherSettingsIconButton.setOnClickListener(new android.view.View.OnClickListener() {
-					onClick: function(view) {
-						/*exitDashboardUI.dismiss();
-						dashboardMenu.dismiss();*/
-						hasStartedBlSettings = true;
-						var blIntent = new android.content.Intent(ctx, net.zhuoweizhang.mcpelauncher.ui.MainMenuOptionsActivity);
-						ctx.startActivity(blIntent);
-					}
-				});
+				if(Launcher.isBlockLauncher()) {
+					blockLauncherSettingsIconButton.setOnClickListener(new android.view.View.OnClickListener() {
+						onClick: function(view) {
+							var blIntent = new android.content.Intent(ctx, net.zhuoweizhang.mcpelauncher.ui.MainMenuOptionsActivity);
+							ctx.startActivity(blIntent);
+						}
+					});
+				}
 				
-				shutDownIconButton.setOnClickListener(new android.view.View.OnClickListener() {
+				restartIconButton.setOnClickListener(new android.view.View.OnClickListener() {
 					onClick: function(view) {
 						new java.lang.Thread(new java.lang.Runnable() {
 							run: function() {
@@ -9618,7 +9587,6 @@ function changeColor(view, color) {
 function showMenuButton() {
 	VertexClientPE.loadMainSettings();
 	VertexClientPE.menuIsShowing = false;
-	hasStartedBlSettings = false;
 	var layout = new LinearLayout(ctx);
     layout.setOrientation(1);
 	layout.setGravity(android.view.Gravity.CENTER);
@@ -9780,11 +9748,6 @@ VertexClientPE.clientTick = function() {
 							if(tabGUI.isShowing()) {
 								tabGUI.dismiss();
 							}
-						}
-					}
-					if(GUI != null && hasStartedBlSettings) {
-						if(!GUI.isShowing()) {
-							showMenuButton();
 						}
 					}
 				}
