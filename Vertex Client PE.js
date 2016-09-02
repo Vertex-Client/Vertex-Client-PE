@@ -3424,6 +3424,10 @@ ModPE.goToURL = function(url) {
 	ctx.startActivity(intent);
 };
 
+ModPE.getAndroidVersion = function() {
+	return com.mojang.minecraftpe.HardwareInformation.getAndroidVersion();
+}
+
 ModPE.getPlayerName = function() {
     var file = new java.io.File("/sdcard/games/com.mojang/minecraftpe/options.txt");
     var br = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(file)));
@@ -5783,6 +5787,11 @@ function tileButton(tileText, tileIcon, tileColor, forceLightColor) {
 	
 	var defaultTileButton = clientButton(tileText, null, tileColor, false, forceLightColor==null?true:forceLightColor, true);
 	defaultTileButton.setTypeface(VertexClientPE.tileFont);
+	defaultTileButton.setEllipsize(android.text.TextUtils.TruncateAt.MARQUEE);
+	defaultTileButton.setMarqueeRepeatLimit(-1);
+	defaultTileButton.setSingleLine();
+	defaultTileButton.setHorizontallyScrolling(true);
+	defaultTileButton.setSelected(true);
 	defaultTileButton.setCompoundDrawablesWithIntrinsicBounds(0, tileIcon, 0, 0);
 	defaultTileButton.setLayoutParams(params);
 	
@@ -7134,8 +7143,13 @@ var accountManagerLayoutRight;
 
 ModPE.restart = function() {
 	if(Launcher.isBlockLauncher()) {
-		VertexClientPE.toast("Restarting...");
-		net.zhuoweizhang.mcpelauncher.ui.NerdyStuffActivity.forceRestart(ctx, 500, true);
+		new java.lang.Thread(new Runnable() {
+			run: function() {
+				VertexClientPE.toast("Restarting...");
+				java.lang.Thread.sleep(1000);
+				net.zhuoweizhang.mcpelauncher.ui.NerdyStuffActivity.forceRestart(ctx, 500, true);
+			}
+		}).start();
 	} else {
 		VertexClientPE.toast("Sorry, restarting only works with BlockLauncher at the moment!");
 	}
@@ -8149,6 +8163,9 @@ function informationScreen() {
 					
 					var deviceInfoTitle = clientSectionTitle("Device info");
 					
+					var androidVersion = ModPE.getAndroidVersion();
+					var androidVersionTextView = clientTextView("Android version: " + androidVersion);
+					
 					var deviceType = VertexClientPE.getDeviceName();
 					var deviceTextView = clientTextView("Device: " + deviceType);
 					
@@ -8163,6 +8180,7 @@ function informationScreen() {
 					informationMenuLayout.addView(proTextView);
 					//-------------------------------------------
 					informationMenuLayout.addView(deviceInfoTitle);
+					informationMenuLayout.addView(androidVersionTextView);
 					informationMenuLayout.addView(deviceTextView);
 
                     informationMenu = new widget.PopupWindow(informationMenuLayout1, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
@@ -8570,7 +8588,7 @@ function dashboardScreen() {
 				var shopIconButton = tileButton("Shop", android.R.drawable.stat_sys_download);
 				var addonsIconButton = tileButton("Addons", android.R.drawable.ic_menu_more, "blue");
 				if(Launcher.isBlockLauncher()) {
-					var blockLauncherSettingsIconButton = tileButton("BlockLauncher", net.zhuoweizhang.mcpelauncher.R.drawable.ic_menu_settings_holo_light, "black");
+					var blockLauncherSettingsIconButton = tileButton("BlockLauncher Settings", net.zhuoweizhang.mcpelauncher.R.drawable.ic_menu_settings_holo_light, "black");
 				}
 				var restartIconButton = tileButton("Restart", android.R.drawable.ic_menu_rotate, "green", false);
 				var shutDownIconButton = tileButton("Shutdown", android.R.drawable.ic_lock_power_off, "red");
@@ -8631,11 +8649,7 @@ function dashboardScreen() {
 				
 				restartIconButton.setOnClickListener(new android.view.View.OnClickListener() {
 					onClick: function(view) {
-						new java.lang.Thread(new java.lang.Runnable() {
-							run: function() {
-								ModPE.restart();
-							}
-						}).start();
+						ModPE.restart();
 					}
 				});
 				
