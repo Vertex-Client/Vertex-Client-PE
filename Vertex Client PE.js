@@ -1,7 +1,7 @@
 /**
  * ###############################################################
  * @name Vertex Client PE
- * @version v1.1.2
+ * @version v1.1.3
  * @author peacestorm (@AgameR_Modder)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG
  *
@@ -241,7 +241,7 @@ var _0xc116=["\x73\x65\x74\x56\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x56\x65\x7
 VertexClientPE.isRemote = false;
 VertexClientPE.playerIsInGame = false;
 
-VertexClientPE.currentVersion = "1.1.2";
+VertexClientPE.currentVersion = "1.1.3";
 VertexClientPE.currentVersionDesc = "The Summer Update";
 VertexClientPE.targetVersion = "MCPE v0.15.x alpha";
 VertexClientPE.minVersion = "0.15.0";
@@ -9768,7 +9768,7 @@ VertexClientPE.clientTick = function() {
 			}));
 			VertexClientPE.clientTick();
         }
-    });
+    }).start();
 }
 
 VertexClientPE.specialTick = function() {
@@ -9782,7 +9782,7 @@ VertexClientPE.specialTick = function() {
 			}
 			VertexClientPE.specialTick();
 		}
-    });
+    }).start();
 }
 
 var secondTickTimer = 0;
