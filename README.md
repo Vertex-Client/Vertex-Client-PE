@@ -14,7 +14,7 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [ ] EntityESP (requires OpenGLES)
 - [x] ChestESP (OpenGLES?)
 - [ ] Tracers (requires OpenGLES)
-- [ ] Twerk
+- [x] Twerk
 - [x] CoordsDisplay
 - [x] FastWalk
 - [x] AutoPlace
@@ -33,7 +33,7 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [ ] TMI-Chest
 - [ ] AutoSteal
 - [ ] Chest steal button
-- [ ] Follow (following entities)
+- [x] Follow (following entities)
 - [x] TapExplosion
 - [x] AutoSword
 - [ ] AutoTool
@@ -52,12 +52,8 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [x] KillAura range setting
 - [x] Music Player
 - [x] YesCheat+ (makes some hacks work better on servers)
-- [ ] Bug fixes
-  - [ ] Fix [#7](https://github.com/Vertex-Client/Vertex-Client-PE/issues/7)
-  - [x] Fix [#9](https://github.com/Vertex-Client/Vertex-Client-PE/issues/9)
-  - [ ] Fix [#10](https://github.com/Vertex-Client/Vertex-Client-PE/issues/10)
-  - [x] Fix [#11](https://github.com/Vertex-Client/Vertex-Client-PE/issues/11)
-  - [x] Fix [#12](https://github.com/Vertex-Client/Vertex-Client-PE/issues/12)
+- [ ] ChatLogger [aimed for v1.2]
+- [ ] Fix typeface/font issues [aimed for v1.2]
 
 ![Vertex Client PE - Menu](http://i.imgur.com/2cp7ZSa.png)
 ![Vertex Client PE - ItemGiver](http://i.imgur.com/ccOhpjz.png)
