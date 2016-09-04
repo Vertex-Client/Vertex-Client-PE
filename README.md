@@ -53,6 +53,8 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [x] Music Player
 - [x] YesCheat+ (makes some hacks work better on servers)
 - [ ] ChatLogger [aimed for v1.2]
+- [ ] New BowAimbot
+- [ ] AutoBridge
 - [ ] Fix typeface/font issues [aimed for v1.2]
 
 ![Vertex Client PE - Menu](http://i.imgur.com/2cp7ZSa.png)
