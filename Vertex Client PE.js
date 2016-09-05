@@ -4767,9 +4767,11 @@ VertexClientPE.commandManager = function(cmd) {
 	}
 }
 
+var mpPlayButton;
 var mpCurrentPositionView;
 var mpTotalDurationView;
 var mpSeekBarView;
+var mpLayout;
 
 VertexClientPE.MusicUtils = {
 	milliSecToMinString: function(mSec) {
@@ -4797,6 +4799,7 @@ VertexClientPE.MusicUtils = {
 	},
 	mp: null,
 	randomMusic: null,
+	isPaused: false,
 	initMusicPlayer: function() {
 		if(this.mp == null) {
 			this.mp = new android.media.MediaPlayer();
@@ -4819,7 +4822,14 @@ VertexClientPE.MusicUtils = {
 				if(mpTotalDurationView != null) {
 					mpTotalDurationView.setText(VertexClientPE.MusicUtils.milliSecToMinString(VertexClientPE.MusicUtils.mp.getDuration()));
 				}
+				if(mpPlayButton != null) {
+					mpPlayButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_media_pause, 0, 0, 0);
+				}
 				mp.start();
+				if(playMusicSetting != "shuffle" && song == null) {
+					mp.pause();
+					VertexClientPE.MusicUtils.isPaused = true;
+				}
 			}
 		});
 		this.mp.setOnBufferingUpdateListener(new android.media.MediaPlayer.OnBufferingUpdateListener() {
@@ -5771,8 +5781,12 @@ function songButton(song, barLayout) {
 	var songClientButton = clientButton(songButtonText);
 	songClientButton.setOnClickListener(new android.view.View.OnClickListener() {
 		onClick: function(v) {
-			VertexClientPE.MusicUtils.startMusicPlayer(song);
+			VertexClientPE.MusicUtils.isPaused = false;
 			barLayout.getLeftTimeView().setText("0:00");
+			if(mpPlayButton != null) {
+				mpPlayButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_media_pause, 0, 0, 0);
+			}
+			VertexClientPE.MusicUtils.startMusicPlayer(song);
 		}
 	});
 	
@@ -5787,13 +5801,13 @@ function musicBar() {
 	musicBarLayout.setGravity(android.view.Gravity.CENTER);
 	var musicBarLayoutLeft = new LinearLayout(ctx);
 	musicBarLayoutLeft.setOrientation(LinearLayout.HORIZONTAL);
-	musicBarLayoutLeft.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 4, LinearLayout.LayoutParams.WRAP_CONTENT));
+	musicBarLayoutLeft.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 3, LinearLayout.LayoutParams.WRAP_CONTENT));
 	var musicBarLayoutMiddle = new LinearLayout(ctx);
 	musicBarLayoutMiddle.setOrientation(LinearLayout.HORIZONTAL);
 	musicBarLayoutMiddle.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 2, LinearLayout.LayoutParams.WRAP_CONTENT));
 	var musicBarLayoutRight = new LinearLayout(ctx);
 	musicBarLayoutRight.setOrientation(1);
-	musicBarLayoutRight.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 4, LinearLayout.LayoutParams.WRAP_CONTENT));
+	musicBarLayoutRight.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 8, LinearLayout.LayoutParams.WRAP_CONTENT));
 	musicBarLayout.addView(musicBarLayoutLeft);
 	musicBarLayout.addView(musicBarLayoutMiddle);
 	musicBarLayout.addView(musicBarLayoutRight);
@@ -5810,10 +5824,8 @@ function musicBar() {
 	musicBarRightTimeView.setText("0:00");
 	musicBarLayoutLeft.addView(musicBarPlayButton);
 	musicBarLayoutLeft.addView(musicBarLeftTimeView);
+	musicBarLayoutMiddle.addView(musicBarSeekBar);
 	musicBarLayoutRight.addView(musicBarRightTimeView);
-	if(VertexClientPE.MusicUtils.mp.isPlaying()) {
-		musicBarLayoutMiddle.addView(musicBarSeekBar);
-	}
 	
 	this.getPlayButton = function() {
 		return musicBarPlayButton;
@@ -7128,9 +7140,7 @@ VertexClientPE.showSplashScreen = function() {
 					logoViewer1.startAnimation(logoAnimation); */
 					
 					VertexClientPE.MusicUtils.initMusicPlayer();
-					if(playMusicSetting == "shuffle") {
-						VertexClientPE.MusicUtils.startMusicPlayer();
-					}
+					VertexClientPE.MusicUtils.startMusicPlayer();
 
                     mainMenuTextList = new widget.PopupWindow(mainMenuListLayout, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
                     mainMenuTextList.setBackgroundDrawable(backgroundGradient());
@@ -8692,8 +8702,14 @@ function musicPlayerScreen() {
 					mpCurrentPositionView = musicPlayerBar.getLeftTimeView();
 					mpTotalDurationView = musicPlayerBar.getRightTimeView();
 					mpSeekBarView = musicPlayerBar.getSeekBar();
-					if(VertexClientPE.MusicUtils.mp.isPlaying()) {
-						mpPlayButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_media_pause, 0, 0, 0);
+					mpLayout = musicPlayerBar.getBarLayout();
+					if(VertexClientPE.MusicUtils.mp.isPlaying() || VertexClientPE.MusicUtils.isPaused) {
+						if(VertexClientPE.MusicUtils.mp.isPlaying()) {
+							mpPlayButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_media_pause, 0, 0, 0);
+						} else if(VertexClientPE.MusicUtils.isPaused) {
+							mpPlayButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_media_play, 0, 0, 0);
+						}
+						mpCurrentPositionView.setText(VertexClientPE.MusicUtils.milliSecToMinString(VertexClientPE.MusicUtils.mp.getCurrentPosition()));
 						mpSeekBarView.setProgress(VertexClientPE.MusicUtils.mp.getCurrentPosition());
 						mpSeekBarView.setMax(VertexClientPE.MusicUtils.mp.getDuration());
 						mpTotalDurationView.setText(VertexClientPE.MusicUtils.milliSecToMinString(VertexClientPE.MusicUtils.mp.getDuration()));
@@ -8702,11 +8718,13 @@ function musicPlayerScreen() {
 					}
 					mpPlayButton.setOnClickListener(new android.view.View.OnClickListener() {
 						onClick: function(v) {
-							if(VertexClientPE.MusicUtils.mp.isPlaying()) {
+							if(VertexClientPE.MusicUtils.mp.isPlaying() && !VertexClientPE.MusicUtils.isPaused) {
 								VertexClientPE.MusicUtils.mp.pause();
+								VertexClientPE.MusicUtils.isPaused = true;
 								mpPlayButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_media_play, 0, 0, 0);
 							} else {
 								VertexClientPE.MusicUtils.mp.start();
+								VertexClientPE.MusicUtils.isPaused = false;
 								mpPlayButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_media_pause, 0, 0, 0);
 							}
 						}
@@ -8719,7 +8737,7 @@ function musicPlayerScreen() {
 					});
 					
 					musicPlayerMenuLayout1.addView(musicPlayerTitle);
-					musicPlayerMenuLayout1.addView(musicPlayerBar.getBarLayout());
+					musicPlayerMenuLayout1.addView(mpLayout);
 					//musicPlayerMenuLayout1.addView(clientTextView("\n"));
 					musicPlayerMenuLayoutScroll.addView(musicPlayerMenuLayout);
 					musicPlayerMenuLayout1.addView(musicPlayerMenuLayoutScroll);
@@ -11046,5 +11064,5 @@ function blockEventHook(x, y, z, e, d) {
 		}
 	}
 }
- 
-//Endd
+
+//What are you doing here? ;-)
