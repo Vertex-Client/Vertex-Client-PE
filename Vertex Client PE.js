@@ -1492,9 +1492,7 @@ var tpAura = {
 						Entity.setPosition(Player.getEntity(), playerPos[0], playerPos[1], playerPos[2]);
 					}
 					
-					/*if(getPitch() >= -90 && getPitch() <= 90) {
-						Entity.setRot(getPlayerEnt(), (Math.atan2(z, x) - 90) * Math.PI / 180, getPitch());
-					}*/
+					VertexClientPE.CombatUtils.aimAtEnt(mobs[i]);
 					
 					break;
 				}
@@ -1516,9 +1514,7 @@ var tpAura = {
 				Entity.setPosition(Player.getEntity(), playerPos[0], playerPos[1], playerPos[2]);
 			}
 			
-			/*if(getPitch() >= -90 && getPitch() <= 90) {
-				Entity.setRot(getPlayerEnt(), (Math.atan2(z, x) - 90) * Math.PI / 180, getPitch());
-			}*/
+			VertexClientPE.CombatUtils.aimAtEnt(mobs[i]);
 		}
 	}
 }
@@ -4874,6 +4870,8 @@ VertexClientPE.MusicUtils.registerSong(new Song("Invincible [NCS Release]", "DEA
 VertexClientPE.MusicUtils.registerSong(new Song("My Heart [NCS Release]", "Different Heaven & EH!DE", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20%26%20EH%21DE%20-%20My%20Heart.mp3"));
 VertexClientPE.MusicUtils.registerSong(new Song("Nekozilla", "Different Heaven", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20-%20Nekozilla.mp3"));
 VertexClientPE.MusicUtils.registerSong(new Song("Blank", "Disfigure", "http://files-cdn.nocopyrightsounds.co.uk/Disfigure%20-%20Blank.mp3"));
+VertexClientPE.MusicUtils.registerSong(new Song("Entropy", "Distrion & Alex Skrindo", "http://files-cdn.nocopyrightsounds.co.uk/Distrion%20%26%20Alex%20Skrindo%20-%20Entropy.mp3"));
+VertexClientPE.MusicUtils.registerSong(new Song("Tropic Love [NCS Release]", "Diviners feat. Contacreast", "http://files-cdn.nocopyrightsounds.co.uk/Diviners%20ft.%20Contacreast%20-%20Tropic%20Love%20%28Original%20Mix%29.mp3"));
 
 var music;
 
