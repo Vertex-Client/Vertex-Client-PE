@@ -309,7 +309,7 @@ var setupColor = "green";
 var f = 0;
 
 VertexClientPE.font = (android.os.Build.VERSION.SDK_INT > 16)?android.graphics.Typeface.create("sans-serif-thin", android.graphics.Typeface.NORMAL):android.graphics.Typeface.DEFAULT;
-VertexClientPE.tileFont = Launcher.isBlockLauncher()?new android.graphics.Typeface.createFromAsset(ctx.getAssets(), "fonts/SegoeWP.ttf"):VertexClientPE.font;
+VertexClientPE.tileFont = (ModPE.getMinecraftVersion() >= "0.15.0" && ModPE.getMinecraftVersion() <= "0.15.7")?new android.graphics.Typeface.createFromAsset(ctx.getAssets(), "fonts/SegoeWP.ttf"):VertexClientPE.font;
 
 VertexClientPE.getDeviceName = function() {
 	var manufacturer = android.os.Build.MANUFACTURER;
@@ -4750,6 +4750,7 @@ VertexClientPE.commandManager = function(cmd) {
 	}
 }
 
+var mpSongTitleView;
 var mpPlayButton;
 var mpCurrentPositionView;
 var mpTotalDurationView;
@@ -4799,6 +4800,9 @@ VertexClientPE.MusicUtils = {
 				musicText = VertexClientPE.MusicUtils.randomMusic.artist + " - " + VertexClientPE.MusicUtils.randomMusic.title;
 				if(hacksList != null) {
 					updateHacksList();
+				}
+				if(mpSongTitleView != null) {
+					mpSongTitleView.setText(musicText);
 				}
 				if(mpSeekBarView != null) {
 					mpSeekBarView.setMax(VertexClientPE.MusicUtils.mp.getDuration());
@@ -5805,11 +5809,13 @@ function songButton(song, barLayout) {
 }
 
 function musicBar() {
+	var musicBarLayout1 = new LinearLayout(ctx);
+	musicBarLayout1.setOrientation(1);
 	var musicBarLayout = new LinearLayout(ctx);
+	musicBarLayout.setBackgroundDrawable(backgroundSpecial());
 	musicBarLayout.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels, LinearLayout.LayoutParams.WRAP_CONTENT));
 	musicBarLayout.setOrientation(LinearLayout.HORIZONTAL);
 	musicBarLayout.setGravity(android.view.Gravity.CENTER);
-	musicBarLayout.setBackground(backgroundSpecial());
 	var musicBarLayoutLeft = new LinearLayout(ctx);
 	musicBarLayoutLeft.setOrientation(LinearLayout.HORIZONTAL);
 	musicBarLayoutLeft.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 8, LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -5822,6 +5828,14 @@ function musicBar() {
 	musicBarLayout.addView(musicBarLayoutLeft);
 	musicBarLayout.addView(musicBarLayoutMiddle);
 	musicBarLayout.addView(musicBarLayoutRight);
+	var musicBarSongTitleView = new clientTextView(musicText);
+	musicBarSongTitleView.setBackgroundDrawable(backgroundSpecial("top", themeSetting));
+	musicBarSongTitleView.setGravity(android.view.Gravity.CENTER);
+	musicBarSongTitleView.setEllipsize(android.text.TextUtils.TruncateAt.MARQUEE);
+	musicBarSongTitleView.setMarqueeRepeatLimit(-1);
+	musicBarSongTitleView.setSingleLine();
+	musicBarSongTitleView.setHorizontallyScrolling(true);
+	musicBarSongTitleView.setSelected(true);
 	var musicBarSeekBar = new SeekBar(ctx);
 	musicBarSeekBar.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
 	if(VertexClientPE.MusicUtils.mp == null) {
@@ -5841,6 +5855,13 @@ function musicBar() {
 	musicBarLayoutMiddle.addView(musicBarSeekBar);
 	musicBarLayoutRight.addView(musicBarRightTimeView);
 	
+	musicBarLayout1.addView(musicBarSongTitleView);
+	musicBarLayout1.addView(musicBarLayout);
+	
+	this.getSongTitleView = function() {
+		return musicBarSongTitleView;
+	}
+	
 	this.getPlayButton = function() {
 		return musicBarPlayButton;
 	}
@@ -5858,7 +5879,7 @@ function musicBar() {
 	}
 	
 	this.getBarLayout = function() {
-		return musicBarLayout;
+		return musicBarLayout1;
 	}
 }
 
@@ -6553,6 +6574,15 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
 				}
 			}
 			bg.setCornerRadii(radiiFloatArray);
+		} else if(round == "top") {
+			for(var i = 0; i <= 7; i++) {
+				if(i <= 3) {
+					radiiFloatArray[i] = 8;
+				} else {
+					radiiFloatArray[i] = radius;
+				}
+			}
+			bg.setCornerRadii(radiiFloatArray);
 		} else if(round == "invertcornerright") {
 			for(var i = 0; i <= 7; i++) {
 				if(i == 2 || i == 3) {
@@ -6595,7 +6625,7 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
 	} else if(color == "black") {
 		bg.setColor(Color.parseColor("#70141414"));
 	}
-	if(showProLine && VertexClientPE.isPro()) {
+	if(showProLine == true && VertexClientPE.isPro()) {
 		bg.setStroke(dip2px(1), Color.parseColor("#70DAA520"));
 	}
 	bg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
@@ -8718,8 +8748,10 @@ function musicPlayerScreen() {
 					
 					var musicPlayerEnter = new widget.TextView(ctx);
 					musicPlayerEnter.setText("\n");
+					musicPlayerEnter.setTextSize(10);
 					
 					var musicPlayerBar = new musicBar();
+					mpSongTitleView = musicPlayerBar.getSongTitleView();
 					mpPlayButton = musicPlayerBar.getPlayButton();
 					mpCurrentPositionView = musicPlayerBar.getLeftTimeView();
 					mpTotalDurationView = musicPlayerBar.getRightTimeView();
@@ -9848,7 +9880,6 @@ function showMenuButton() {
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
     menuBtn = new Button(ctx);
     menuBtn.setTextColor(Color.WHITE); //Color
-	//menuBtn.setLayoutParams(new LinearLayout.LayoutParams(display.heightPixels / 10, display.heightPixels / 10));
 	menuBtn.setBackgroundDrawable(iconClientGUI);
 	menuBtn.setAlpha(0.54);
     menuBtn.setOnClickListener(new android.view.View.OnClickListener({
@@ -9885,23 +9916,6 @@ function showMenuButton() {
             return true;
         }
     });
-	/*menuBtn.setOnTouchListener(new android.view.View.OnTouchListener() {
-        onTouch: function(v, event) {
-            var action = event.getActionMasked();
-            if(action == android.view.MotionEvent.ACTION_CANCEL || action == android.view.MotionEvent.ACTION_UP) {
-                var bNP = iconClientGUI;
-                bNP.setFilterBitmap(false);
-                bNP.setAntiAlias(false);
-                menuBtn.setBackgroundDrawable(bNP);
-            } else {
-                var bNP = iconClickedClientGUI;
-                bNP.setFilterBitmap(false);
-                bNP.setAntiAlias(false);
-                menuBtn.setBackgroundDrawable(bNP);
-            }
-            return false;
-        }
-    });*/
     layout.addView(menuBtn);
      
     GUI = new widget.PopupWindow(layout, dip2px(40), dip2px(40));
@@ -9968,7 +9982,7 @@ VertexClientPE.clientTick = function() {
 				run: function() {
 					try{
 						var _0x43af=["\x61\x75\x74\x68\x6F\x72","\x70\x65\x61\x63\x65\x73\x74\x6F\x72\x6D"];if(VertexClientPE[_0x43af[0]]!= _0x43af[1]){isAuthorized= false}
-						if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false)  && (menu == null || menu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false) && (webBrowserMenu == null || webBrowserMenu.isShowing() == false) && (playerCustomizerMenu == null || playerCustomizerMenu.isShowing() == false) && (optiFineMenu == null || optiFineMenu.isShowing() == false) && (shopMenu == null || shopMenu.isShowing() == false) && (dashboardMenu == null || dashboardMenu.isShowing() == false) && (updateCenterMenu == null || updateCenterMenu.isShowing() == false) && (musicPlayerMenu == null || musicPlayerMenu.isShowing() == false)) {
+						if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing())) {
 							VertexClientPE.isRemote = true;
 							if(Launcher.isBlockLauncher()) {
 								net.zhuoweizhang.mcpelauncher.ScriptManager.isRemote = true;
@@ -9988,7 +10002,7 @@ VertexClientPE.clientTick = function() {
 						print("Use BlockLauncher v1.12.2 or above!");
 						ModPE.log(e);
 					}
-					if(GUI != null && GUI.isShowing() == false && (vertexclientpemiscmenu == null || vertexclientpemiscmenu.isShowing() == false) && (menu == null || menu.isShowing() == false) && (settingsMenu == null || settingsMenu.isShowing() == false) && (informationMenu == null || informationMenu.isShowing() == false) && (accountManager == null || accountManager.isShowing() == false) && (addonMenu == null || addonMenu.isShowing() == false) && (webBrowserMenu == null || webBrowserMenu.isShowing() == false) && (playerCustomizerMenu == null || playerCustomizerMenu.isShowing() == false) && (optiFineMenu == null || optiFineMenu.isShowing() == false) && (shopMenu == null || shopMenu.isShowing() == false) && (dashboardMenu == null || dashboardMenu.isShowing() == false) && (updateCenterMenu == null || updateCenterMenu.isShowing() == false) && (musicPlayerMenu == null || musicPlayerMenu.isShowing() == false)) {
+					if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing())) {
 						VertexClientPE.isRemote = true;
 						showMenuButton();
 					}
