@@ -1689,9 +1689,9 @@ var follow = {
 				var z = Entity.getZ(mobs[i]) - getPlayerZ();
 				if(x*x+y*y+z*z<=10*10 && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION) {
 					if(x*x+y*y+z*z>=2*2) {
-						setVelX(getPlayerEnt(), x);
-						setVelZ(getPlayerEnt(), z);
-						setVelY(getPlayerEnt(), y);
+						setVelX(getPlayerEnt(), x * 0.05);
+						setVelZ(getPlayerEnt(), z * 0.05);
+						setVelY(getPlayerEnt(), y * 0.05);
 					}
 					followStage = 0;
 					break;
@@ -2727,21 +2727,6 @@ VertexClientPE.registerModule(zoom);
 
 function modTick() {
 	VertexClientPE.playerIsInGame = true;
-	if(accountManager != null) {
-		ctx.runOnUiThread(new java.lang.Runnable() {
-			run: function() {
-				accountManager.dismiss();
-				exitAccountManagerUI.dismiss();
-			}
-		});
-	}
-	if(accountManagerGUI != null) {
-		ctx.runOnUiThread(new java.lang.Runnable() {
-			run: function() {
-				accountManagerGUI.dismiss();
-			}
-		});
-	}
 	VertexClientPE.modules.forEach(function(element, index, array) {
 		if(element.isStateMod() && element.state && element.onTick) {
 			if(yesCheatPlusState && element.canBypassYesCheatPlus) {
