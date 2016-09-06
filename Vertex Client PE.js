@@ -4797,6 +4797,7 @@ VertexClientPE.MusicUtils = {
 	},
 	mp: null,
 	randomMusic: null,
+	playingFirstTime: true,
 	isPaused: false,
 	initMusicPlayer: function() {
 		if(this.mp == null) {
@@ -4824,10 +4825,11 @@ VertexClientPE.MusicUtils = {
 					mpPlayButton.setBackgroundResource(android.R.drawable.ic_media_pause);
 				}
 				mp.start();
-				if(playMusicSetting != "shuffle" && song == null) {
+				if(playMusicSetting != "shuffle" && song == null && VertexClientPE.MusicUtils.playingFirstTime) {
 					mp.pause();
 					VertexClientPE.MusicUtils.isPaused = true;
 				}
+				VertexClientPE.MusicUtils.playingFirstTime = false;
 			}
 		});
 		this.mp.setOnBufferingUpdateListener(new android.media.MediaPlayer.OnBufferingUpdateListener() {
@@ -4869,12 +4871,21 @@ VertexClientPE.MusicUtils.registerSong(new Song("Daydreamer", "Ahxello & Alex Sk
 VertexClientPE.MusicUtils.registerSong(new Song("Invincible [NCS Release]", "DEAF KEV", "http://files-cdn.nocopyrightsounds.co.uk/DEAF%20KEV%20-%20Invincible.mp3"));
 VertexClientPE.MusicUtils.registerSong(new Song("My Heart [NCS Release]", "Different Heaven & EH!DE", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20%26%20EH%21DE%20-%20My%20Heart.mp3"));
 VertexClientPE.MusicUtils.registerSong(new Song("Nekozilla", "Different Heaven", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20-%20Nekozilla.mp3"));
-VertexClientPE.MusicUtils.registerSong(new Song("Blank", "Disfigure", "http://files-cdn.nocopyrightsounds.co.uk/Disfigure%20-%20Blank.mp3"));
+VertexClientPE.MusicUtils.registerSong(new Song("Blank [NCS Release]", "Disfigure", "http://files-cdn.nocopyrightsounds.co.uk/Disfigure%20-%20Blank.mp3"));
 VertexClientPE.MusicUtils.registerSong(new Song("Entropy", "Distrion & Alex Skrindo", "http://files-cdn.nocopyrightsounds.co.uk/Distrion%20%26%20Alex%20Skrindo%20-%20Entropy.mp3"));
 VertexClientPE.MusicUtils.registerSong(new Song("Tropic Love [NCS Release]", "Diviners feat. Contacreast", "http://files-cdn.nocopyrightsounds.co.uk/Diviners%20ft.%20Contacreast%20-%20Tropic%20Love%20%28Original%20Mix%29.mp3"));
 VertexClientPE.MusicUtils.registerSong(new Song("Cloud 9 [NCS Release]", "Itro & Tobu", "http://files-cdn.nocopyrightsounds.co.uk/Itro%20%26%20Tobu%20-%20Cloud%209.mp3"));
 VertexClientPE.MusicUtils.registerSong(new Song("Eclipse [NCS Release]", "Jim Yosef", "http://files-cdn.nocopyrightsounds.co.uk/Jim%20Yosef%20-%20Eclipse.mp3"));
 VertexClientPE.MusicUtils.registerSong(new Song("Firefly [NCS Release]", "Jim Yosef", "http://files-cdn.nocopyrightsounds.co.uk/jim-yosef-firefly-ncs-release.mp3"));
+VertexClientPE.MusicUtils.registerSong(new Song("Fall To Light [NCS Release]", "Laszlo", "http://files-cdn.nocopyrightsounds.co.uk/Laszlo%20-%20Fall%20to%20Light.mp3"));
+VertexClientPE.MusicUtils.registerSong(new Song("Neopolitan Dreams (Nilow Remix)", "Lisa Mitchell", "http://b1.ge.tt/gett/4WKD4nd2/Lisa+Mitchell+-+Neopolitan+Dreams+%28Nilow+Rmx?index=0&user=user-ixW6scU8M6%E2%80%A6TeP06a11F-&referrer=user-ixW6scU8M6tdtVBWuAeo7oA2hZquSTeP06a11F-&download=1"));
+VertexClientPE.MusicUtils.registerSong(new Song("Hello", "OMFG", "http://b1.ge.tt/gett/1a353nd2/OMFG+-+Hello.mp3?index=0&user=user-ixW6scU8M6%E2%80%A6TeP06a11F-&referrer=user-ixW6scU8M6tdtVBWuAeo7oA2hZquSTeP06a11F-&download=1"));
+VertexClientPE.MusicUtils.registerSong(new Song("Coming Home [NCS Release]", "SirensCeol", "http://files-cdn.nocopyrightsounds.co.uk/SirensCeol%20-%20Coming%20Home.mp3"));
+VertexClientPE.MusicUtils.registerSong(new Song("Feel Good [NCS Release]", "Syn Cole", "https://www.dropbox.com/s/mitidcr9qbyto93/Syn%20Cole%20-%20Feel%20Good%20%28Radio%20Edit%29%20%5BNCS%5D.mp3?dl=1"));
+VertexClientPE.MusicUtils.registerSong(new Song("Dusk [NCS Release]", "Tobu & Syndec", "http://files-cdn.nocopyrightsounds.co.uk/Tobu%20%26%20Syndec%20-%20Dusk.mp3"));
+VertexClientPE.MusicUtils.registerSong(new Song("Candyland [NCS Release]", "Tobu", "http://files-cdn.nocopyrightsounds.co.uk/Tobu%20-%20Candyland.mp3"));
+VertexClientPE.MusicUtils.registerSong(new Song("Roots [NCS Release]", "Tobu", "https://www.dropbox.com/s/a2m1fqjxaotszy5/Tobu%20-%20Roots.mp3?dl=1"));
+VertexClientPE.MusicUtils.registerSong(new Song("Adventure (feat. Alexa Lusader)", "William Ekh", "http://files-cdn.nocopyrightsounds.co.uk/William%20Ekh%20-%20Adventure%20%28feat.%20Alexa%20Lusader%29.mp3"));
 
 var music;
 
@@ -5565,7 +5576,7 @@ var getStretchedImage = function(bm, x, y, stretchWidth, stretchHeight, width, h
     return new android.graphics.drawable.BitmapDrawable(blank);
 };
 
-function clientButton(text, desc, color, round, forceLightColor, forceNormalStyle) //menu buttons
+function clientButton(text, desc, color, round, forceLightColor, style) //menu buttons
 {
 	if(color == null) {
 		color = themeSetting;
@@ -5573,8 +5584,8 @@ function clientButton(text, desc, color, round, forceLightColor, forceNormalStyl
 	if(forceLightColor == null) {
 		forceLightColor = useLightThemeSetting=="on";
 	}
-	if(forceNormalStyle == null) {
-		forceNormalStyle = buttonStyleSetting=="normal";
+	if(style == null) {
+		style = buttonStyleSetting;
 	}
     var display = new android.util.DisplayMetrics();
 	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
@@ -5658,8 +5669,11 @@ function clientButton(text, desc, color, round, forceLightColor, forceNormalStyl
 		bg.setStroke(dip2px(2), Color.parseColor("#1E1E1E"));
 	}
 	
-	if(forceNormalStyle == false) {
+	if(style == "legacy") {
 		bg.setColor(Color.parseColor("#000000"));
+	}
+	if(style == "legacy_inverted") {
+		bg.setStroke(dip2px(2), Color.parseColor("#000000"));
 	}
 	
 	defaultButton.setTransformationMethod(null);
@@ -5694,7 +5708,7 @@ function clientButton(text, desc, color, round, forceLightColor, forceNormalStyl
 					bg.setColor(Color.parseColor("#141414"));
 				}
 				
-				if(forceNormalStyle == false) {
+				if(style == "legacy") {
 					bg.setColor(Color.parseColor("#000000"));
 				}
             } else {
@@ -5723,6 +5737,10 @@ function clientButton(text, desc, color, round, forceLightColor, forceNormalStyl
 					bg.setColor(Color.parseColor("#FFFFFF"));
 				}if(color == "black") {
 					bg.setColor(Color.parseColor("#1E1E1E"));
+				}
+				
+				if(style == "legacy_inverted") {
+					bg.setColor(Color.parseColor("#000000"));
 				}
             }
             return false;
@@ -7978,16 +7996,22 @@ function settingsScreen() {
 						buttonStyleSettingButton.setText("Button style | Normal");
 					} else if(buttonStyleSetting == "legacy") {
 						buttonStyleSettingButton.setText("Button style | Legacy");
+					} else if(buttonStyleSetting == "legacy_inverted") {
+						buttonStyleSettingButton.setText("Button style | Legacy (inverted)");
 					}
 					buttonStyleSettingButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(viewarg){
-						if(buttonStyleSetting == "normal") {
-							buttonStyleSetting = "legacy";
-							buttonStyleSettingButton.setText("Button style | Lecacy");
+						if(buttonStyleSetting == "legacy") {
+							buttonStyleSetting = "legacy_inverted";
+							buttonStyleSettingButton.setText("Button style | Legacy (inverted)");
 							VertexClientPE.saveMainSettings();
-						} else if(buttonStyleSetting == "legacy") {
+						} else if(buttonStyleSetting == "legacy_inverted") {
 							buttonStyleSetting = "normal";
 							buttonStyleSettingButton.setText("Button style | Normal");
+							VertexClientPE.saveMainSettings();
+						} else if(buttonStyleSetting == "normal") {
+							buttonStyleSetting = "legacy";
+							buttonStyleSettingButton.setText("Button style | Legacy");
 							VertexClientPE.saveMainSettings();
 						}
 					}
