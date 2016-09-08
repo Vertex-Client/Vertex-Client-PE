@@ -189,7 +189,10 @@ var VertexClientPE = {
 	latestReleaseDownloadCount: null,
 	Utils: {
 		chests: [],
-		fov: 70
+		fov: 70,
+		world: {
+			chatMessages: []
+		}
 	},
 	CombatUtils: {
 		aimAtEnt: function(ent) {
@@ -1349,6 +1352,7 @@ var chatSpeak = {
 		this.state = !this.state;
 	},
 	onChatReceive: function(msg, sender) {
+		if(!this.state) return;
 		if(sender != Player.getName(getPlayerEnt())) {
 			tts.speak(msg, android.speech.tts.TextToSpeech.QUEUE_FLUSH, null);
 		}
@@ -1370,6 +1374,7 @@ var chatRepeat = {
 		this.state = !this.state;
 	},
 	onChatReceive: function(msg, sender) {
+		if(!this.state) return;
 		if(sender != Player.getName(getPlayerEnt()) && chatRepeatStage == 0) {
 			chatRepeatStage = 1;
 			Server.sendChat(msg);
@@ -2644,13 +2649,33 @@ var twerk = {
 	}
 }
 
-/*
-var dX = x;
-var dY = y;
-var dZ = z;
-var newYaw = Math.atan2(dZ, dX);
-var newPitch = Math.atan2(Math.sqrt(dZ * dZ + dX * dX), dY) + Math.PI;
-*/
+var chatLog = {
+	name: "ChatLog",
+	desc: "Automatically logs all the chat messages and allows you to view them.",
+	category: VertexClientPE.category.CHAT,
+	type: "Special",
+	isStateMod: function() {
+		return false;
+	},
+	onToggle: function() {
+		var chatString = "";
+		var chatMessages = VertexClientPE.Utils.world.chatMessages;
+		if(chatMessages.length != 0) {
+			VertexClientPE.Utils.world.chatMessages.forEach(function(element, index, array) {
+				if(index != 0) {
+					chatString += "\n"
+				}
+				chatString += element;
+			});
+		} else {
+			chatString = "Nothing to see here, once you send or receive chat messages they'll be displayed here.";
+		}
+		VertexClientPE.showBasicDialog("ChatLog - Display", clientTextView(chatString));
+	},
+	onChatReceive: function(message, sender) {
+		VertexClientPE.Utils.world.chatMessages.push("<" + sender + "> " + message);
+	}
+}
 
 //COMBAT
 //VertexClientPE.registerModule(antiKnockback);
@@ -2701,6 +2726,7 @@ VertexClientPE.registerModule(tapNuker);
 VertexClientPE.registerModule(tapRemover);
 //CHAT
 VertexClientPE.registerModule(autoSpammer);
+VertexClientPE.registerModule(chatLog);
 VertexClientPE.registerModule(chatRepeat);
 VertexClientPE.registerModule(chatSpeak);
 VertexClientPE.registerModule(delaySpammer);
@@ -2828,7 +2854,7 @@ function projectileHitBlockHook(projectile, blockX, blockY, blockZ, side) {
 
 function chatReceiveHook(text, sender) {
 	VertexClientPE.modules.forEach(function(element, index, array) {
-		if(element.isStateMod() && element.state && element.onChatReceive) {
+		if(element.onChatReceive) {
 			if(yesCheatPlusState && element.canBypassYesCheatPlus) {
 				if(!element.canBypassYesCheatPlus()) {
 					return;
@@ -4442,17 +4468,21 @@ VertexClientPE.showBasicDialog = function(title, view, onDialogDismiss) {
 				dialogTitle.setTextSize(25);
 				var btn = clientButton("Close");
 				var inputBar = new EditText(ctx);
+				var dialogLayout1 = new LinearLayout(ctx);
+				var dialogScrollView = new ScrollView(ctx);
 				var dialogLayout = new LinearLayout(ctx);
-				dialogLayout.setBackgroundDrawable(backgroundGradient());
-				dialogLayout.setOrientation(LinearLayout.VERTICAL);
-				dialogLayout.setPadding(10, 10, 10, 10);
-				dialogLayout.addView(dialogTitle);
+				dialogLayout1.setBackgroundDrawable(backgroundGradient());
+				dialogLayout1.setOrientation(LinearLayout.VERTICAL);
+				dialogLayout1.setPadding(10, 10, 10, 10);
+				dialogLayout1.addView(dialogTitle);
 				dialogLayout.addView(view);
 				dialogLayout.addView(btn);
+				dialogScrollView.addView(dialogLayout);
+				dialogLayout1.addView(dialogScrollView);
 				var dialog = new android.app.Dialog(ctx);
 				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
-				dialog.setContentView(dialogLayout);
+				dialog.setContentView(dialogLayout1);
 				dialog.setTitle(title);
 				dialog.show();
 				btn.setOnClickListener(new android.view.View.OnClickListener() {
@@ -5669,6 +5699,9 @@ function clientButton(text, desc, color, round, forceLightColor, style) //menu b
 	if(style == "legacy_inverted") {
 		bg.setStroke(dip2px(2), Color.parseColor("#000000"));
 	}
+	if(style == "transparent") {
+		bg.setColor(Color.TRANSPARENT);
+	}
 	
 	defaultButton.setTransformationMethod(null);
     defaultButton.setOnTouchListener(new android.view.View.OnTouchListener() {
@@ -5704,6 +5737,9 @@ function clientButton(text, desc, color, round, forceLightColor, style) //menu b
 				
 				if(style == "legacy") {
 					bg.setColor(Color.parseColor("#000000"));
+				}
+				if(style == "transparent") {
+					bg.setColor(Color.TRANSPARENT);
 				}
             } else {
 				if(forceLightColor == true) {
@@ -7436,6 +7472,9 @@ VertexClientPE.setHasUsedCurrentVersion = function(opt) {
 }
 
 VertexClientPE.setup = function() {
+	/*if(VertexClientPE.UserUtils.playerIsBanned) {
+		return;
+	}*/
 	VertexClientPE.loadSupport();
 	VertexClientPE.checkForUpdates();
 	VertexClientPE.loadUpdateDescription();
@@ -7769,10 +7808,10 @@ function newLevel() {
 			}
 		}
 	}).start();
-	if(hacksList == null) {
+	if(hacksList == null && !VertexClientPE.menuIsShowing) {
 		showHacksList();
 		showTabGUI();
-	}if(hacksList != null) {
+	}if(hacksList != null && !VertexClientPE.menuIsShowing) {
 		if(!hacksList.isShowing()) {
 			showHacksList();
 			showTabGUI();
@@ -7787,6 +7826,8 @@ function newLevel() {
 		}
 	}
 	VertexClientPE.Render.initViews();
+	VertexClientPE.Utils.loadChests();
+	VertexClientPE.Utils.world.chatMessages = [];
 }
 
 function deathHook(a, v) {
@@ -8018,20 +8059,26 @@ function settingsScreen() {
 						buttonStyleSettingButton.setText("Button style | Legacy");
 					} else if(buttonStyleSetting == "legacy_inverted") {
 						buttonStyleSettingButton.setText("Button style | Legacy (inverted)");
+					} else if(buttonStyleSetting == "transparent") {
+						buttonStyleSettingButton.setText("Button style | Transparent");
 					}
 					buttonStyleSettingButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(viewarg){
-						if(buttonStyleSetting == "legacy") {
-							buttonStyleSetting = "legacy_inverted";
-							buttonStyleSettingButton.setText("Button style | Legacy (inverted)");
-							VertexClientPE.saveMainSettings();
-						} else if(buttonStyleSetting == "legacy_inverted") {
+						if(buttonStyleSetting == "transparent") {
 							buttonStyleSetting = "normal";
 							buttonStyleSettingButton.setText("Button style | Normal");
 							VertexClientPE.saveMainSettings();
 						} else if(buttonStyleSetting == "normal") {
 							buttonStyleSetting = "legacy";
 							buttonStyleSettingButton.setText("Button style | Legacy");
+							VertexClientPE.saveMainSettings();
+						}if(buttonStyleSetting == "legacy") {
+							buttonStyleSetting = "legacy_inverted";
+							buttonStyleSettingButton.setText("Button style | Legacy (inverted)");
+							VertexClientPE.saveMainSettings();
+						} else if(buttonStyleSetting == "legacy_inverted") {
+							buttonStyleSetting = "transparent";
+							buttonStyleSettingButton.setText("Button style | Transparent");
 							VertexClientPE.saveMainSettings();
 						}
 					}
