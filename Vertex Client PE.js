@@ -4476,9 +4476,9 @@ VertexClientPE.showBasicDialog = function(title, view, onDialogDismiss) {
 				dialogLayout1.setPadding(10, 10, 10, 10);
 				dialogLayout1.addView(dialogTitle);
 				dialogLayout.addView(view);
-				dialogLayout.addView(btn);
 				dialogScrollView.addView(dialogLayout);
 				dialogLayout1.addView(dialogScrollView);
+				dialogLayout1.addView(btn);
 				var dialog = new android.app.Dialog(ctx);
 				dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
@@ -6420,18 +6420,9 @@ function clientTextView(text, shadow) //menu buttons
 function clientSectionTitle(text, style) {
 	var defaultTextView = new widget.TextView(ctx);
     defaultTextView.setText(text);
-	if(themeSetting == "white") {
-		defaultTextView.setTextColor(Color.BLACK);
-	} else {
-		defaultTextView.setTextColor(Color.WHITE);
-	}
+	defaultTextView.setTextColor(Color.WHITE);
+	defaultTextView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color.BLACK);
     defaultTextView.setTypeface(VertexClientPE.font);
-	
-	if(themeSetting == "white") {
-		defaultTextView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color.WHITE);
-	} else {
-		defaultTextView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color.BLACK);
-	}
 	
 	if(style == "rainbow") {
 		var rainbowInt = java.lang.reflect.Array.newInstance(java.lang.Integer.TYPE, 7);
@@ -6445,6 +6436,10 @@ function clientSectionTitle(text, style) {
 		var rainbowBg = new android.graphics.drawable.GradientDrawable(android.graphics.drawable.GradientDrawable.Orientation.LEFT_RIGHT, rainbowInt);
 		defaultTextView.setBackgroundDrawable(rainbowBg);
 	} else {
+		if(themeSetting == "white") {
+			defaultTextView.setTextColor(Color.BLACK);
+			defaultTextView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color.WHITE);
+		}
 		defaultTextView.setBackgroundDrawable(backgroundSpecial());
 	}
     defaultTextView.setPadding(0, 0, 0, 0);
@@ -7042,6 +7037,10 @@ VertexClientPE.showSplashScreen = function() {
         ctx.runOnUiThread(new java.lang.Runnable({
             run: function() {
                 try {
+					/*ctx.getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+					ctx.getWindow().setStatusBarColor(ctx.getResources().getColor(net.zhuoweizhang.mcpelauncher.R.color.off_white));
+					ctx.getWindow().setNavigationBarColor(ctx.getResources().getColor(net.zhuoweizhang.mcpelauncher.R.color.off_white));
+					ctx.getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);*/
                     var mainMenuListLayout = new LinearLayout(ctx);
                     mainMenuListLayout.setOrientation(1);
                     mainMenuListLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
@@ -7859,9 +7858,6 @@ function leaveGame() {
 			showAccountManagerButton();
 			VertexClientPE.saveMainSettings();
 			VertexClientPE.editCopyrightText();
-			if(mp != null) {
-				mp.stop();
-			}
 			VertexClientPE.Render.deinitViews();
 			musicText = "None";
 			VertexClientPE.playerIsInGame = false;
