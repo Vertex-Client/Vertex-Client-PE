@@ -2178,10 +2178,6 @@ var aimbot = {
 	},
 	onToggle: function() {
 		this.state = !this.state;
-		if(this.state) {
-			//TODO: Fix y pointing
-			VertexClientPE.toast("Warning! This feature is not finished (yet). Use it with caution.");
-		}
 	},
 	onTick: function() {
 		var mobs = Entity.getAll();
