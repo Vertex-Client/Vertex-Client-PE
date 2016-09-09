@@ -304,6 +304,7 @@ var fancyChatState = false;
 var delaySpammerState = false;
 var autoSwordState = false;
 var yesCheatPlusState = false;
+var chestESPState = false;
 
 var showingMenu = false;
 
@@ -312,7 +313,7 @@ var setupColor = "green";
 var f = 0;
 
 VertexClientPE.font = (android.os.Build.VERSION.SDK_INT > 16)?android.graphics.Typeface.create("sans-serif-thin", android.graphics.Typeface.NORMAL):android.graphics.Typeface.DEFAULT;
-VertexClientPE.tileFont = (ModPE.getMinecraftVersion() >= "0.15.0" && ModPE.getMinecraftVersion() <= "0.15.7")?new android.graphics.Typeface.createFromAsset(ctx.getAssets(), "fonts/SegoeWP.ttf"):VertexClientPE.font;
+VertexClientPE.tileFont = Launcher.isBlockLauncher()?new android.graphics.Typeface.createFromAsset(ctx.getAssets(), "fonts/SegoeWP.ttf"):VertexClientPE.font;
 
 VertexClientPE.getDeviceName = function() {
 	var manufacturer = android.os.Build.MANUFACTURER;
@@ -557,6 +558,7 @@ var musicPlayerMenu;
 var updateCenterMenu;
 var shopMenu;
 var settingsMenu;
+var helpMenu;
 var addonMenu;
 var updateCenterMenu;
 var webBrowserMenu;
@@ -2612,6 +2614,7 @@ var chestESP = {
 	},
 	onToggle: function() {
 		this.state = !this.state;
+		chestESPState = this.state;
 		if(this.state) {
 			VertexClientPE.Utils.loadFov();
 			VertexClientPE.Utils.loadChests();
@@ -2816,13 +2819,15 @@ function useItem(x, y, z, itemId, blockId, side, blockDamage) {
 		}
 	});
 	if(blockId == 54) {
-		new java.lang.Thread(new Runnable({
-			run: function() {
-				VertexClientPE.toast("Reloading chests...");
-				java.lang.Thread.sleep(1200);
-				VertexClientPE.Utils.loadChests();
-			}
-		})).start();
+		if(chestESPState) {
+			new java.lang.Thread(new Runnable({
+				run: function() {
+					VertexClientPE.toast("Reloading chests...");
+					java.lang.Thread.sleep(1200);
+					VertexClientPE.Utils.loadChests();
+				}
+			})).start();
+		}
 	}
 }
 
@@ -5981,6 +5986,36 @@ function updatePaneButton(updateVersion, updateDesc) {
 	return updatePaneLayout;
 }
 
+function helpSection(title, description) {
+	var helpSectionLayout1 = new LinearLayout(ctx);
+	helpSectionLayout1.setOrientation(1);
+	helpSectionLayout1.setGravity(android.view.Gravity.CENTER);
+	helpSectionLayout1.setBackground(backgroundSpecial(true));
+	var helpSectionLayout = new LinearLayout(ctx);
+	helpSectionLayout.setOrientation(LinearLayout.HORIZONTAL);
+	helpSectionLayout.setGravity(android.view.Gravity.CENTER);
+	var helpSectionLayoutLeft = new LinearLayout(ctx);
+	helpSectionLayoutLeft.setOrientation(1);
+	helpSectionLayoutLeft.setGravity(android.view.Gravity.CENTER);
+	helpSectionLayoutLeft.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 2 - dip2px(10), LinearLayout.LayoutParams.WRAP_CONTENT));
+	var helpSectionLayoutRight = new LinearLayout(ctx);
+	helpSectionLayoutRight.setOrientation(1);
+	helpSectionLayoutRight.setGravity(android.view.Gravity.CENTER);
+	helpSectionLayoutRight.setLayoutParams(new android.view.ViewGroup.LayoutParams(display.widthPixels / 2 - dip2px(10), LinearLayout.LayoutParams.WRAP_CONTENT));
+	helpSectionLayout.addView(helpSectionLayoutLeft);
+	helpSectionLayout.addView(helpSectionLayoutRight);
+	var helpSectionTitle = clientTextView(title);
+	helpSectionTitle.setTypeface(VertexClientPE.font, android.graphics.Typeface.BOLD);
+	helpSectionTitle.setBackgroundDrawable(backgroundSpecial("top", themeSetting));
+	var helpSectionDescription = clientTextView(description);
+	helpSectionLayoutLeft.addView(helpSectionDescription);
+	
+	helpSectionLayout1.addView(helpSectionTitle);
+	helpSectionLayout1.addView(helpSectionLayout);
+	
+	return helpSectionLayout1;
+}
+
 function tileButton(tileText, tileIcon, tileColor, forceLightColor) {
 	var params = new widget.GridLayout.LayoutParams();
 	params.setMargins(5, 5, 5, 5);
@@ -7825,7 +7860,9 @@ function newLevel() {
 		}
 	}
 	VertexClientPE.Render.initViews();
-	VertexClientPE.Utils.loadChests();
+	if(chestESPState) {
+		VertexClientPE.Utils.loadChests();
+	}
 	VertexClientPE.Utils.world.chatMessages = [];
 }
 
@@ -8407,6 +8444,71 @@ function informationScreen() {
         }));
 }
 
+var helpSections = [["Where do I report issues?", "You can report issues at http://bit.ly/VertexIssues."], ["How do I earn V€rt€xCash?", "Normal users earn 10 V€rt€xCash every minute, Pro users earn 20 every minute. In addition, Pro users get 500 V€rt€xCash as a gift."], ["Website", "Our website is http://Vertex-Client.ml/."], ["Twitter", "Our Twitter account is @VertexHX."]];
+
+function helpScreen() {
+	VertexClientPE.menuIsShowing = true;
+	var display = new android.util.DisplayMetrics();
+	com.mojang.minecraftpe.MainActivity.currentMainActivity.get().getWindowManager().getDefaultDisplay().getMetrics(display);
+    var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+        ctx.runOnUiThread(new java.lang.Runnable({
+            run: function() {
+                try {
+                	if(GUI != null) {
+                		if(GUI.isShowing()) {
+                			GUI.dismiss();
+                		}
+                	}
+                	if(hacksList != null) {
+                		if(hacksList.isShowing()) {
+                			hacksList.dismiss();
+                		}
+                	}
+					if(tabGUI != null) {
+                		if(tabGUI.isShowing()) {
+                			tabGUI.dismiss();
+                		}
+                	}
+
+					var helpMenuLayout = new LinearLayout(ctx);
+                    helpMenuLayout.setOrientation(1);
+                    helpMenuLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					
+					var helpMenuLayoutScroll = new ScrollView(ctx);
+					
+					var helpMenuLayout1 = new LinearLayout(ctx);
+                    helpMenuLayout1.setOrientation(1);
+                    helpMenuLayout1.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+					helpMenuLayout1.setPadding(10, 0, 10, 0);
+					
+					var helpTitle = clientTextView("Help", true);
+					helpTitle.setTextSize(25);
+					helpTitle.setGravity(android.view.Gravity.CENTER);
+					
+					helpMenuLayout1.addView(helpTitle);
+					helpMenuLayout1.addView(helpEnter);
+					helpMenuLayoutScroll.addView(helpMenuLayout);
+					helpMenuLayout1.addView(helpMenuLayoutScroll);
+					
+					helpSections.forEach(function(element, index, array) {
+						if(index != 0) {
+							var helpEnter = clientTextView("\n");
+							helpEnter.setTextSize(10);
+							helpMenuLayout.addView(helpEnter);
+						}
+						helpMenuLayout.addView(helpSection(element[0], element[1]));
+					});
+
+                    helpMenu = new widget.PopupWindow(helpMenuLayout1, ctx.getWindowManager().getDefaultDisplay().getWidth(), ctx.getWindowManager().getDefaultDisplay().getHeight());
+                    helpMenu.setBackgroundDrawable(backgroundGradient());
+                    helpMenu.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
+                } catch(error) {
+                    print('An error occurred: ' + error);
+                }
+            }
+        }));
+}
+
 function addonScreen() {
 	VertexClientPE.menuIsShowing = true;
 	var display = new android.util.DisplayMetrics();
@@ -8905,6 +9007,7 @@ function dashboardScreen() {
 				var updateCenterIconButton = tileButton("Update Center", android.R.drawable.ic_menu_compass, "white");
 				var shopIconButton = tileButton("Shop", android.R.drawable.stat_sys_download);
 				var musicPlayerIconButton = tileButton("Music Player", android.R.drawable.ic_media_play, "blue", false);
+				var helpIconButton = tileButton("Help", android.R.drawable.ic_menu_help, "purple");
 				var addonsIconButton = tileButton("Addons", android.R.drawable.ic_menu_more, "blue");
 				if(Launcher.isBlockLauncher()) {
 					var blockLauncherSettingsIconButton = tileButton("BlockLauncher Settings", net.zhuoweizhang.mcpelauncher.R.drawable.ic_menu_settings_holo_light, "black");
@@ -8945,6 +9048,15 @@ function dashboardScreen() {
 						dashboardMenu.dismiss();
 						musicPlayerScreen();
 						exitMusicPlayer();
+					}
+				});
+				
+				helpIconButton.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(view) {
+						exitDashboardUI.dismiss();
+						dashboardMenu.dismiss();
+						helpScreen();
+						exitHelp();
 					}
 				});
 				
@@ -8989,6 +9101,7 @@ function dashboardScreen() {
 				dashboardMenuLayout.addView(updateCenterIconButton);
 				//dashboardMenuLayout.addView(shopIconButton);
 				dashboardMenuLayout.addView(musicPlayerIconButton);
+				dashboardMenuLayout.addView(helpIconButton);
 				dashboardMenuLayout.addView(addonsIconButton);
 				if(Launcher.isBlockLauncher()) {
 					dashboardMenuLayout.addView(blockLauncherSettingsIconButton);
@@ -9056,11 +9169,6 @@ function webBrowserScreen() {
 				webBrowserMenu.setBackgroundDrawable(backgroundGradient());
 				webBrowserMenu.setOnDismissListener(new widget.PopupWindow.OnDismissListener() {
 					onDismiss: function() {
-						/*if(reloadWebBrowserUI != null) {
-							if(reloadWebBrowserUI.isShowing()) {
-								reloadWebBrowserUI.dismiss();
-							}
-						}*/
 						if(exitWebBrowserUI != null) {
 							if(exitWebBrowserUI.isShowing()) {
 								xWebBrowserButton.performClick();
@@ -10030,7 +10138,7 @@ VertexClientPE.clientTick = function() {
 				run: function() {
 					try{
 						var _0x43af=["\x61\x75\x74\x68\x6F\x72","\x70\x65\x61\x63\x65\x73\x74\x6F\x72\x6D"];if(VertexClientPE[_0x43af[0]]!= _0x43af[1]){isAuthorized= false}
-						if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing())) {
+						if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing())) {
 							VertexClientPE.isRemote = true;
 							if(Launcher.isBlockLauncher()) {
 								net.zhuoweizhang.mcpelauncher.ScriptManager.isRemote = true;
@@ -10050,7 +10158,7 @@ VertexClientPE.clientTick = function() {
 						print("Use BlockLauncher v1.12.2 or above!");
 						ModPE.log(e);
 					}
-					if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing())) {
+					if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing())) {
 						VertexClientPE.isRemote = true;
 						showMenuButton();
 					}
@@ -10611,6 +10719,57 @@ function exitMusicPlayer() {
 				exitMusicPlayerUI = new widget.PopupWindow(xMusicPlayerLayout, dip2px(40), dip2px(40));
 				exitMusicPlayerUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 				exitMusicPlayerUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
+			} catch(exception) {
+				print(exception);
+				VertexClientPE.showBugReportDialog(exception);
+			}
+		}
+	}));
+}
+
+function exitHelp() {
+    var ctxe = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+    ctxe.runOnUiThread(new java.lang.Runnable({
+		run: function() {
+			try {
+				var backHelpLayout = new LinearLayout(ctxe);
+				var backHelpButton = new Button(ctxe);
+				backHelpButton.setText("<");//Text
+				backHelpButton.getBackground().setColorFilter(Color.parseColor("#00BFFF"), android.graphics.PorterDuff.Mode.MULTIPLY);
+				backHelpButton.setTextColor(Color.WHITE);
+				backHelpButton.setOnClickListener(new android.view.View.OnClickListener({
+					onClick: function(viewarg){
+						backHelpUI.dismiss(); //Close
+						exitHelpUI.dismiss(); //Close
+						helpMenu.dismiss(); //Close
+						dashboardScreen();
+						exitDashboard();
+					}
+				}));
+				backHelpLayout.addView(backHelpButton);
+				
+				var xHelpLayout = new LinearLayout(ctxe);
+				var xHelpButton = new Button(ctxe);
+				xHelpButton.setText("X");//Text
+				xHelpButton.getBackground().setColorFilter(Color.parseColor("#FF0000"), android.graphics.PorterDuff.Mode.MULTIPLY);
+				xHelpButton.setTextColor(Color.WHITE);
+				xHelpButton.setOnClickListener(new android.view.View.OnClickListener({
+					onClick: function(viewarg){
+						backHelpUI.dismiss(); //Close
+						exitHelpUI.dismiss(); //Close
+						helpMenu.dismiss(); //Close
+						showMenuButton();
+					}
+				}));
+				xHelpLayout.addView(xHelpButton);
+				
+				backHelpUI = new widget.PopupWindow(backHelpLayout, dip2px(40), dip2px(40));
+				backHelpUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
+				backHelpUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, 0);
+				
+				exitHelpUI = new widget.PopupWindow(xHelpLayout, dip2px(40), dip2px(40));
+				exitHelpUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
+				exitHelpUI.showAtLocation(ctxe.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 0, 0);
 			} catch(exception) {
 				print(exception);
 				VertexClientPE.showBugReportDialog(exception);
