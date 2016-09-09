@@ -196,32 +196,30 @@ var VertexClientPE = {
 	},
 	CombatUtils: {
 		aimAtEnt: function(ent) {
-			if(Entity.getEntityTypeId(ent) == EntityType.VILLAGER || Entity.getEntityTypeId(ent) == EntityType.PLAYER || Player.isPlayer(ent)) {
-				// Credits to Godsoft0329 aka the developer of DragOP
-				var velocity = 1;
-				var posX = Entity.getX(ent) - Player.getX();
-				var posY = Entity.getEntityTypeId(ent) == EntityType.PLAYER ? Entity.getY(ent) - Player.getY() : Entity.getY(ent) + 1 - Player.getY();
-				var posZ = Entity.getZ(ent) - Player.getZ();
-				var realYaw = (Math.atan2(posZ, posX) * 180 / Math.PI) - 90;
-				var y2 = Math.sqrt(posX * posX + posZ * posZ);
-				var g = 0.007;
-				var tmp = (velocity * velocity * velocity * velocity - g * (g * (y2 * y2) + 2 * posY * (velocity * velocity)));
-				var pitch = -(180 / Math.PI) * (Math.atan((velocity * velocity - Math.sqrt(tmp)) / (g * y2)));
-				if(pitch < 89 && pitch > -89) {
+			// Credits to Godsoft0329 aka the developer of DragOP
+			var velocity = 1;
+			var posX = Entity.getX(ent) - Player.getX();
+			var posY = Entity.getEntityTypeId(ent) == EntityType.PLAYER ? Entity.getY(ent) - Player.getY() : Entity.getY(ent) + 1 - Player.getY();
+			var posZ = Entity.getZ(ent) - Player.getZ();
+			var realYaw = (Math.atan2(posZ, posX) * 180 / Math.PI) - 90;
+			var y2 = Math.sqrt(posX * posX + posZ * posZ);
+			var g = 0.007;
+			var tmp = (velocity * velocity * velocity * velocity - g * (g * (y2 * y2) + 2 * posY * (velocity * velocity)));
+			var pitch = -(180 / Math.PI) * (Math.atan((velocity * velocity - Math.sqrt(tmp)) / (g * y2)));
+			if(pitch < 89 && pitch > -89) {
 
-					/* imYannic's code */
+				/* imYannic's code */
 
-					oldYaw = newYaw;
-					newYaw = realYaw;
+				oldYaw = newYaw;
+				newYaw = realYaw;
 
-					var dist = Math.sqrt(Math.pow(posX, 2) + Math.pow(posY, 2) + Math.pow(posZ, 2));
+				var dist = Math.sqrt(Math.pow(posX, 2) + Math.pow(posY, 2) + Math.pow(posZ, 2));
 
-					yaw = realYaw+(newYaw - oldYaw) * (dist*dist/dist)/(120/45);
+				yaw = realYaw+(newYaw - oldYaw) * (dist*dist/dist)/(120/45);
 
-					Entity.setRot(getPlayerEnt(), yaw, pitch);
+				Entity.setRot(getPlayerEnt(), yaw, pitch);
 
-					/* ---- */
-				}
+				/* ---- */
 			}
 		}
 	}
