@@ -8485,6 +8485,8 @@ function helpScreen() {
 					helpTitle.setTextSize(25);
 					helpTitle.setGravity(android.view.Gravity.CENTER);
 					
+					var helpEnter = clientTextView("\n");
+					
 					helpMenuLayout1.addView(helpTitle);
 					helpMenuLayout1.addView(helpEnter);
 					helpMenuLayoutScroll.addView(helpMenuLayout);
@@ -8492,9 +8494,9 @@ function helpScreen() {
 					
 					helpSections.forEach(function(element, index, array) {
 						if(index != 0) {
-							var helpEnter = clientTextView("\n");
-							helpEnter.setTextSize(10);
-							helpMenuLayout.addView(helpEnter);
+							var helpSectionEnter = clientTextView("\n");
+							helpSectionEnter.setTextSize(10);
+							helpMenuLayout.addView(helpSectionEnter);
 						}
 						helpMenuLayout.addView(helpSection(element[0], element[1]));
 					});
