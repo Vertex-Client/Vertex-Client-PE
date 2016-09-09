@@ -8105,7 +8105,7 @@ function settingsScreen() {
 							buttonStyleSetting = "legacy";
 							buttonStyleSettingButton.setText("Button style | Legacy");
 							VertexClientPE.saveMainSettings();
-						}if(buttonStyleSetting == "legacy") {
+						} else if(buttonStyleSetting == "legacy") {
 							buttonStyleSetting = "legacy_inverted";
 							buttonStyleSettingButton.setText("Button style | Legacy (inverted)");
 							VertexClientPE.saveMainSettings();
