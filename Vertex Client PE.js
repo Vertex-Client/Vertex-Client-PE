@@ -1,7 +1,7 @@
 /**
  * ###############################################################
  * @name Vertex Client PE
- * @version v1.2
+ * @version v1.2.1
  * @author peacestorm (@AgameR_Modder)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG
  *
@@ -65,30 +65,6 @@ var size = new Point();
 ctx.getWindowManager().getDefaultDisplay().getRealSize(size);
 var screenWidth = size.x;
 var screenHeight = size.y;
-
-//android.app.Activity.requestWindowFeature(android.view.Window.FEATURE_CUSTOM_TITLE);
-//android.app.Activity.setContentView(R.layout.main);
-/* ctx.runOnUiThread(new java.lang.Runnable({
-	run: function() {
-		// var test = new android.app.Activity();
-		// test.setContentView(android.R.layout.main);
-		// ctx.startActivity(new android.content.Intent(ctx, test.class));
-		// test.setOnCreateListener(new android.app.Activity.OnCreateListener() {
-			
-		// });
-		//var appClass = net.zhuoweizhang.mcpelauncher.ui.LauncherActivity;
-		try {
-			//var appClass = com.mojang.minecraftpe.MainActivity;
-			//appClass.setTaskDescription(new android.app.ActivityManager.TaskDescription("Lol"));
-			//appClass.setTitle("Vertex Client PE");
-			ctx.setTitle("Vertex Client PE");
-		} catch(e) {
-			print(e);
-		}
-	}
-})); */
-
-//android.getActivity().setTitle("Vertex Client PE");
 
 var topBarHeight = screenHeight / 10;
 
@@ -276,7 +252,7 @@ var _0xc116=["\x73\x65\x74\x56\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x56\x65\x7
 VertexClientPE.isRemote = false;
 VertexClientPE.playerIsInGame = false;
 
-VertexClientPE.currentVersion = "1.2";
+VertexClientPE.currentVersion = "1.2.1";
 VertexClientPE.currentVersionDesc = "The Music Player Update";
 VertexClientPE.targetVersion = "MCPE v0.15.x alpha";
 VertexClientPE.minVersion = "0.15.0";
@@ -884,11 +860,6 @@ var killAura = {
 			var y = Entity.getY(mobs[i]) - getPlayerY();
 			var z = Entity.getZ(mobs[i]) - getPlayerZ();
 			if(x*x+y*y+z*z<=killAuraRange*killAuraRange && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION && Entity.getHealth(mobs[i]) != 0) {
-				/*if(getPitch() >= -90 && getPitch() <= 90) {
-					Entity.setRot(getPlayerEnt(), (Math.atan2(z, x) - 90) * Math.PI / 180, getPitch());
-				}
-				var dCenterY = Math.sqrt(x * x + z * z) * Math.tan((getPitch() - 180) / 180 * Math.PI);
-				Entity.setRot(getPlayerEnt(), dCenterY, getPitch());*/
 				if(autoSwordState) {
 					VertexClientPE.autoSword(getPlayerEnt(), mobs[i]);
 				}
@@ -941,9 +912,6 @@ var freezeAura = {
 			var y = Entity.getY(mobs[i]) - getPlayerY();
 			var z = Entity.getZ(mobs[i]) - getPlayerZ();
 			if(x*x+y*y+z*z<=4*4 && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION) {
-				//setRot(getPlayerEnt(), (Math.atan2(z, x) - 90) * Math.pi / 180, getPitch());
-				/*if(Entity.loadExtraData(mobs[i], "frozen") 
-				Entity.saveExtraData(mobs[i], "");*/
 				Entity.setImmobile(mobs[i], true);
 			}
 		}
@@ -1423,9 +1391,9 @@ var autoSpammer = {
 		} else {
 			Server.sendChat(spamMessage);
 		}
-		/*if(yesCheatPlusState) {
+		if(yesCheatPlusState) {
 			Server.sendChat(" ");
-		}*/
+		}
 	}
 }
 
@@ -1847,12 +1815,7 @@ var criticals = {
 		this.state = !this.state;
 	},
 	onAttack: function(a, v) {
-		//if(Launcher.isBlockLauncher() || Launcher.isToolbox()) {
-			Entity.setVelY(getPlayerEnt(), 0.64);
-		/*}
-		if(Launcher.isMcpeMaster()) {
-			com.mcbox.pesdk.launcher.playerJump();
-		}*/
+		Entity.setVelY(getPlayerEnt(), 0.64);
 	}
 }
 
@@ -1957,21 +1920,6 @@ var healthTags = {
 	},
 	onTick: function() {
 		var mobs = Entity.getAll();
-		/*for(var i = 0; i < mobs.length; i++) {
-			var entity = mobs[i];
-			if(entity != getPlayerEnt()) {
-				if(Entity.getExtraData(entity, "vertex.clientpe.hasusedhealthtags") == null || Entity.getExtraData(entity, "vertex.clientpe.hasusedhealthtags") == "false") {
-					Entity.setExtraData(entity, "vertex.clientpe.hasusedhealthtags", "true");
-					Entity.setExtraData(entity, "vertex.clientpe.lasthealth", Entity.getHealth(entity).toString());
-					Entity.setExtraData(entity, "vertex.clientpe.lastnametag", Entity.getNameTag(entity).toString());
-					Entity.setExtraData(entity, "vertex.clientpe.fulllastnametag", Entity.getNameTag(entity) + Entity.getHealth(entity) + "/" + Entity.getMaxHealth(entity));
-					Entity.setNameTag(entity, Entity.getNameTag(entity) + "\n" + ChatColor.RED + Entity.getHealth(entity) + "/" + Entity.getMaxHealth(entity));
-				} else if(Entity.getExtraData(entity, "vertex.clientpe.hasusedhealthtags") == "true") {
-					Entity.setExtraData(entity, "vertex.clientpe.lasthealth", Entity.getHealth(entity).toString());
-					Entity.setNameTag(entity, Entity.getExtraData(entity, "vertex.clientpe.lastnametag") + "\n" + ChatColor.RED + Entity.getHealth(entity) + "/" + Entity.getMaxHealth(entity));
-				}
-			}
-		}*/
 		VertexClientPE.healthTags();
 	}
 }
@@ -2407,17 +2355,6 @@ var autoLeave = {
 		this.state = !this.state;
 	},
 	onInterval: function() {
-		/*if(Entity.getHealth(getPlayerEnt()) <= 8 && autoLeaveStage == 0) {
-			autoLeaveStage = 1;
-			if(Launcher.isBlockLauncher()) {
-				net.zhuoweizhang.mcpelauncher.ScriptManager.nativeScreenChooserSetScreen(1);
-			}
-			autoLeaveStage = 2;
-		} else if(autoLeaveStage == 2) {
-			if(Launcher.isBlockLauncher()) {
-				net.zhuoweizhang.mcpelauncher.ScriptManager.nativeLeaveGame(false);
-			}
-		}*/
 		if(Entity.getHealth(getPlayerEnt()) <= 8) {
 			ModPE.restart();
 		}
@@ -3498,12 +3435,6 @@ ModPE.getInfo = function(infoName) { //profileName, sessionId
 }
 
 ModPE.setSession = function(sessionId) {
-	//ctx.setLoginInformation(ctx.getAccessToken(), ModPE.getClientId(), ctx.getProfileId(), username);
-	/*var edit = android.preference.PreferenceManager.getDefaultSharedPreferences(ctx).edit();
-	edit.putString("sessionId", sessionId);
-	edit.commit();*/
-	/*editor.putString("sessionId", sessionId);
-	editor.commit();*/
 	com.mojang.minecraftpe.MainActivity.setSession(sessionId);
 }
 
@@ -4667,9 +4598,6 @@ VertexClientPE.switchGameMode = function() {
 VertexClientPE.spectate = function(playerName) {
 	var entities = Entity.getAll();
 	for(var i in entities) {
-		/*if(Entity.getNameTag(entities[i]) != null) {
-			clientMessage(Entity.getNameTag(entities[i]));
-		}*/
 		if(Player.getName(entities[i])  == playerName || Entity.getNameTag(entities[i]) == playerName) {
 			ModPE.setCamera(entities[i]);
 			VertexClientPE.clientMessage("You're now spectating " + playerName + "!");
@@ -4751,7 +4679,7 @@ var p, y, xx, yy, zz;
 var sayMsg;
 
 VertexClientPE.commandManager = function(cmd) {
-	var _0x4eba=["\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x6F\x75\x74\x64\x61\x74\x65\x64\x2C\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C","\x74\x6F\x61\x73\x74","\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C","\x53\x6F\x72\x72\x79\x2C\x20\x74\x68\x69\x73\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x69\x73\x20\x6E\x6F\x74\x20\x73\x75\x70\x70\x6F\x72\x74\x65\x64\x20\x61\x6E\x79\x6D\x6F\x72\x65\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x75\x70\x67\x72\x61\x64\x65\x20\x74\x6F\x20\x74\x68\x65\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x2E"];if(!isAuthorized){if(!isSupported){VertexClientPE[_0x4eba[1]](_0x4eba[0])}else {VertexClientPE[_0x4eba[1]](_0x4eba[2])};return}else {if(!isSupported){VertexClientPE[_0x4eba[1]](_0x4eba[3]);return}}
+	var _0xff55=["\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x6F\x75\x74\x64\x61\x74\x65\x64\x2C\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C","\x74\x6F\x61\x73\x74","\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C"];if(!isAuthorized){if(!isSupported){VertexClientPE[_0xff55[1]](_0xff55[0])}else {VertexClientPE[_0xff55[1]](_0xff55[2])};return}
 	var finished = false;
 	commandSplit = cmd.split(" ");
 	VertexClientPE.modules.forEach(function(element, index, array) {
@@ -4764,13 +4692,13 @@ VertexClientPE.commandManager = function(cmd) {
 		}
 	});
 	switch(commandSplit[0]) {
-		case "spectate": //3
+		/*case "spectate": //3
 			if(commandSplit[1] == null || commandSplit[1] == undefined) {
 				VertexClientPE.syntaxError(".spectate <player>");
 			} else {
 				VertexClientPE.spectate(commandSplit[1]);
 			}
-			break;
+			break;*/
 		default:
 			if(!finished) {
 				VertexClientPE.clientMessage(ChatColor.RED + "Error: command \"" + cmd + "\" not found!");
@@ -5200,24 +5128,6 @@ VertexClientPE.delaySpammer = function() {
 		Server.sendChat(delaySpamMsg);
 	}
 	Entity.setNameTag(getPlayerEnt(), username);
-}
-
-VertexClientPE.boatFly = function() { //some parts of this function are made by @zhuowei
-	if(Entity.getRiding(getPlayerEnt()) != null/* && Entity.getEntityTypeId(Entity.getRiding(getPlayerEnt())) == EntityType.BOAT*/) {
-		toDirectionalVector(playerDir, (getYaw() + 90) * DEG_TO_RAD, getPitch() * DEG_TO_RAD * -1);
-		/*var ent = Entity.getRiding(getPlayerEnt());
-		setVelX(ent, playerWalkSpeed * playerDir[0]);
-		setVelY(ent, playerWalkSpeed * playerDir[1]);
-		setVelZ(ent, playerWalkSpeed * playerDir[2]);
-		var ent = Entity.getRider(getPlayerEnt());
-		setVelX(ent, playerWalkSpeed * playerDir[0]);
-		setVelY(ent, playerWalkSpeed * playerDir[1]);
-		setVelZ(ent, playerWalkSpeed * playerDir[2]);*/
-		var ent = Entity.getRiding(getPlayerEnt());
-		setVelX(ent, playerWalkSpeed * playerDir[0]);
-		setVelY(ent, playerWalkSpeed * playerDir[1]);
-		setVelZ(ent, playerWalkSpeed * playerDir[2]);
-	}
 }
 
 var freecamEntity;
@@ -6095,7 +6005,7 @@ function modButton(mod, buttonOnly) {
 	}
 	defaultClientButton.setOnClickListener(new android.view.View.OnClickListener({
 		onClick: function(viewarg) {
-			var _0x4eba=["\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x6F\x75\x74\x64\x61\x74\x65\x64\x2C\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C","\x74\x6F\x61\x73\x74","\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C","\x53\x6F\x72\x72\x79\x2C\x20\x74\x68\x69\x73\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x69\x73\x20\x6E\x6F\x74\x20\x73\x75\x70\x70\x6F\x72\x74\x65\x64\x20\x61\x6E\x79\x6D\x6F\x72\x65\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x75\x70\x67\x72\x61\x64\x65\x20\x74\x6F\x20\x74\x68\x65\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x2E"];if(!isAuthorized){if(!isSupported){VertexClientPE[_0x4eba[1]](_0x4eba[0])}else {VertexClientPE[_0x4eba[1]](_0x4eba[2])};return}else {if(!isSupported){VertexClientPE[_0x4eba[1]](_0x4eba[3]);return}}
+			var _0xff55=["\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x6F\x75\x74\x64\x61\x74\x65\x64\x2C\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C","\x74\x6F\x61\x73\x74","\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C"];if(!isAuthorized){if(!isSupported){VertexClientPE[_0xff55[1]](_0xff55[0])}else {VertexClientPE[_0xff55[1]](_0xff55[2])};return}
 			if(mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) {
 				VertexClientPE.showProDialog(mod.name);
 				return;
@@ -6335,12 +6245,6 @@ function tabGUICategoryButton(category, layout, layoutToBeOpened, layoutMain) {
 function accountButton(account, layout) {
 	var accountManagerAccountLayout = new LinearLayout(ctx);
 	accountManagerAccountLayout.setOrientation(LinearLayout.HORIZONTAL);
-	/*if(account.name == null || account.name == undefined) {
-		return accountManagerAccountLayout;
-	}
-	if(account.clientId == null || account.clientId == undefined) {
-		return accountManagerAccountLayout;
-	}*/
 	
 	var accountManagerAccountLayoutLeft = new LinearLayout(ctx);
 	accountManagerAccountLayoutLeft.setOrientation(1);
@@ -6361,9 +6265,6 @@ function accountButton(account, layout) {
 	var usernameText = clientTextView(account);
 	usernameText.setTextSize(15);
 	accountManagerAccountLayoutLeft.addView(usernameText);
-	/*var clientIdText = clientTextView(account.clientId);
-	clientIdText.setTextSize(15);
-	accountManagerAccountLayoutCenter.addView(clientIdText);*/
 	var useButton = clientButton("Use");
 	useButton.setLayoutParams(new LinearLayout.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
 	useButton.setOnClickListener(new android.view.View.OnClickListener({
@@ -6375,10 +6276,6 @@ function accountButton(account, layout) {
 				ModPE.setPlayerName(playerName);
 				shouldRestart = true;
 			}
-			/*if(playerClientId != ModPE.getClientId()) {
-				ModPE.changeClientId(playerClientId);
-				shouldRestart = true;
-			}*/
 			if(shouldRestart) {
 				ModPE.restart();
 				return;
@@ -6395,10 +6292,6 @@ function accountButton(account, layout) {
 	deleteButton.setOnClickListener(new android.view.View.OnClickListener({
 		onClick: function(viewarg) {
 			VertexClientPE.removeAccount(account.toString(), layout, accountManagerAccountLayout);
-			/*accountManager.dismiss();
-			exitAccountManagerUI.dismiss();
-			showMenuButton();
-			showAccountManagerButton();*/
 		}
 	}));
 	accountManagerAccountLayoutRight.addView(deleteButton);
@@ -6975,59 +6868,26 @@ VertexClientPE.loadNews = function() {
 	}
 }
 
-VertexClientPE.loadSupport = function() {
-    try {
-        // download content
-        var url = new java.net.URL("https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/update/Support/" + VertexClientPE.currentVersion + "/support");
-        var connection = url.openConnection();
-
-        // get content
-        supportInputStream = connection.getInputStream();
-
-        // read result
-        var loadedSupport = "";
-        var bufferedSupportReader = new java.io.BufferedReader(new java.io.InputStreamReader(supportInputStream));
-        var rowSupport = "";
-        while((rowSupport = bufferedSupportReader.readLine()) != null) {
-            loadedSupport += rowSupport;
-        }
-		isSupported = loadedSupport.toString().split(" ")[0] =="unsupported"?false:true;
-
-        // close what needs to be closed
-        bufferedSupportReader.close();
-
-        // test
-        //clientMessage(VertexClientPE.getVersion("current"); + " " + latestVersion);
-    } catch(err) {
-		if(sharedPref.getString("VertexClientPE.isSupported_" + VertexClientPE.currentVersion, null) == "false") {
-			isSupported = false;
-		} else {
-			isSupported = true;
-		}
-        ModPE.log("[Vertex Client PE] VertexClientPE.loadSupport() caught an error: " + err);
-		return;
-    }
-	editor.putString("VertexClientPE.isSupported_" + VertexClientPE.currentVersion, isSupported.toString());
-	editor.commit();
-	//print(isSupported);
-}
+var _0x498b=["\x6C\x6F\x61\x64\x53\x75\x70\x70\x6F\x72\x74","\x68\x74\x74\x70\x73\x3A\x2F\x2F\x72\x61\x77\x2E\x67\x69\x74\x68\x75\x62\x75\x73\x65\x72\x63\x6F\x6E\x74\x65\x6E\x74\x2E\x63\x6F\x6D\x2F\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2F\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2D\x50\x45\x2F\x75\x70\x64\x61\x74\x65\x2F\x53\x75\x70\x70\x6F\x72\x74\x2F","\x63\x75\x72\x72\x65\x6E\x74\x56\x65\x72\x73\x69\x6F\x6E","\x2F\x73\x75\x70\x70\x6F\x72\x74","\x6E\x65\x74","\x6F\x70\x65\x6E\x43\x6F\x6E\x6E\x65\x63\x74\x69\x6F\x6E","\x67\x65\x74\x49\x6E\x70\x75\x74\x53\x74\x72\x65\x61\x6D","","\x69\x6F","\x72\x65\x61\x64\x4C\x69\x6E\x65","\x20","\x73\x70\x6C\x69\x74","\x75\x6E\x73\x75\x70\x70\x6F\x72\x74\x65\x64","\x63\x6C\x6F\x73\x65","\x56\x65\x72\x74\x65\x78\x43\x6C\x69\x65\x6E\x74\x50\x45\x2E\x69\x73\x53\x75\x70\x70\x6F\x72\x74\x65\x64\x5F","\x67\x65\x74\x53\x74\x72\x69\x6E\x67","\x66\x61\x6C\x73\x65","\x5B\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x5D\x20\x56\x65\x72\x74\x65\x78\x43\x6C\x69\x65\x6E\x74\x50\x45\x2E\x6C\x6F\x61\x64\x53\x75\x70\x70\x6F\x72\x74\x28\x29\x20\x63\x61\x75\x67\x68\x74\x20\x61\x6E\x20\x65\x72\x72\x6F\x72\x3A\x20","\x6C\x6F\x67","\x70\x75\x74\x53\x74\x72\x69\x6E\x67","\x63\x6F\x6D\x6D\x69\x74","\x53\x75\x70\x70\x6F\x72\x74","\x54\x68\x69\x73\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x69\x73\x20\x6E\x6F\x74\x20\x73\x75\x70\x70\x6F\x72\x74\x65\x64\x20\x61\x6E\x79\x6D\x6F\x72\x65\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x75\x70\x67\x72\x61\x64\x65\x20\x74\x6F\x20\x74\x68\x65\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x2E","\x73\x68\x6F\x77\x42\x61\x73\x69\x63\x44\x69\x61\x6C\x6F\x67"];VertexClientPE[_0x498b[0]]= function(){try{var _0x6663x1= new java[_0x498b[4]].URL(_0x498b[1]+ VertexClientPE[_0x498b[2]]+ _0x498b[3]);var _0x6663x2=_0x6663x1[_0x498b[5]]();supportInputStream= _0x6663x2[_0x498b[6]]();var _0x6663x3=_0x498b[7];var _0x6663x4= new java[_0x498b[8]].BufferedReader( new java[_0x498b[8]].InputStreamReader(supportInputStream));var _0x6663x5=_0x498b[7];while((_0x6663x5= _0x6663x4[_0x498b[9]]())!= null){_0x6663x3+= _0x6663x5};isSupported= _0x6663x3.toString()[_0x498b[11]](_0x498b[10])[0]== _0x498b[12]?false:true;_0x6663x4[_0x498b[13]]()}catch(err){if(sharedPref[_0x498b[15]](_0x498b[14]+ VertexClientPE[_0x498b[2]],null)== _0x498b[16]){isSupported= false}else {isSupported= true};ModPE[_0x498b[18]](_0x498b[17]+ err);return};editor[_0x498b[19]](_0x498b[14]+ VertexClientPE[_0x498b[2]],isSupported.toString());editor[_0x498b[20]]();if(!isSupported){VertexClientPE[_0x498b[23]](_0x498b[21],clientTextView(_0x498b[22]))}}
 
 VertexClientPE.loadDownloadCount = function() {
     try {
         // download content
         var url = new java.net.URL("https://api.github.com/repos/Vertex-Client/Vertex-Client-PE/releases/latest");
         var connection = url.openConnection();
-
-        // get content
-        dlCountInputStream = connection.getInputStream();
+		connection.setRequestMethod("GET");
+		connection.setDoOutput(true);
+		connection.connect();
+		connection.getContentLength();
 
         // read result
-        var loadedDLCount = "";
-        var bufferedDLCountReader = new java.io.BufferedReader(new java.io.InputStreamReader(dlCountInputStream));
-        var rowDLCount = "";
-        while((rowDLCount = bufferedDLCountReader.readLine()) != null) {
-            loadedDLCount += rowDLCount;
-        }
+        var input = connection.getInputStream();
+		var contents = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, 1024);
+		var bytesRead = 0;
+		var loadedDLCount;
+		while((bytesRead = input.read(contents)) != -1) { 
+			loadedDLCount += new java.lang.String(contents, 0, bytesRead);			   
+		}
 		VertexClientPE.latestReleaseDownloadCount = new org.json.JSONObject(loadedDLCount.toString()).getInt("download_count");
 		print(VertexClientPE.latestReleaseDownloadCount);
 
@@ -7038,11 +6898,11 @@ VertexClientPE.loadDownloadCount = function() {
         //clientMessage(VertexClientPE.getVersion("current"); + " " + latestVersion);
     } catch(err) {
 		ModPE.log("[Vertex Client PE] VertexClientPE.loadDownloadCount() caught an error: " + err);
+		print(err);
 		return;
     }
 	editor.putString("VertexClientPE.latestReleaseDownloadCount", VertexClientPE.latestReleaseDownloadCount.toString());
 	editor.commit();
-	//print(isSupported);
 }
 
 new java.lang.Thread(new java.lang.Runnable() {
@@ -7066,10 +6926,6 @@ VertexClientPE.showSplashScreen = function() {
         ctx.runOnUiThread(new java.lang.Runnable({
             run: function() {
                 try {
-					/*ctx.getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-					ctx.getWindow().setStatusBarColor(ctx.getResources().getColor(net.zhuoweizhang.mcpelauncher.R.color.off_white));
-					ctx.getWindow().setNavigationBarColor(ctx.getResources().getColor(net.zhuoweizhang.mcpelauncher.R.color.off_white));
-					ctx.getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);*/
                     var mainMenuListLayout = new LinearLayout(ctx);
                     mainMenuListLayout.setOrientation(1);
                     mainMenuListLayout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
@@ -7095,8 +6951,6 @@ VertexClientPE.showSplashScreen = function() {
 					}if(themeSetting == "black") {
 						VertexClientPEMainMenuText = "<font color='#000000'>" + VertexClientPE.getVersion("current") + "</font>";
 					}
-					// var hoverCarButton = ctx.getWindow().getDecorView()./*getContentView().*/findViewById(net.zhuoweizhang.mcpelauncher.R.id.hovercar_main_button);
-					// hoverCarButton.setImageBitmap(android.graphics.BitmapFactory.decodeByteArray(logo1, 0, logo1.length));
 					var text = VertexClientPEMainMenuText + " - Welcome back " + ModPE.getPlayerName() + "!";
 					var TitleText = clientTextView(text, true);
 					TitleText.setText(android.text.Html.fromHtml("<blink>" + text + "</blink>"), widget.TextView.BufferType.SPANNABLE);
@@ -7248,9 +7102,6 @@ VertexClientPE.showSplashScreen = function() {
                     mainMenuListLayoutMiddleLeft.addView(youTubeButton);
                     mainMenuListLayoutMiddleMiddle.addView(playButton);
                     mainMenuListLayoutMiddleRight.addView(twitterButton);
-					
-					/* var logoAnimation = android.view.animation.AnimationUtils.loadAnimation(ctx, android.R.anim.fade_in);
-					logoViewer1.startAnimation(logoAnimation); */
 					
 					VertexClientPE.MusicUtils.initMusicPlayer();
 					VertexClientPE.MusicUtils.startMusicPlayer();
@@ -7500,20 +7351,16 @@ VertexClientPE.setHasUsedCurrentVersion = function(opt) {
 }
 
 VertexClientPE.setup = function() {
-	/*if(VertexClientPE.UserUtils.playerIsBanned) {
-		return;
-	}*/
 	VertexClientPE.loadSupport();
 	VertexClientPE.checkForUpdates();
 	VertexClientPE.loadUpdateDescription();
-	VertexClientPE.loadDownloadCount();
+	//VertexClientPE.loadDownloadCount();
 	VertexClientPE.initShopFeatures();
 	if(VertexClientPE.loadMainSettings() == null) {
 		VertexClientPE.showSetupScreen();
 		setupDone();
 	} else {
 		VertexClientPE.showSplashScreen();
-		//tts.speak("Welcome back " + ModPE.getPlayerName() + "! Thanks for using Vertex Client PE!", android.speech.tts.TextToSpeech.QUEUE_FLUSH, null);
 	}
 	
 	if(ModPE.getMinecraftVersion() < VertexClientPE.minVersion) {
@@ -7528,25 +7375,6 @@ VertexClientPE.setup = function() {
 VertexClientPE.setup();
 
 var coordsButton;
-
-/*var keybind = new JavaAdapter(android.view.KeyEvent.Callback, {
-    onKeyUp: function (keyCode, event) {
-       switch(keyCode) {
-			case KeyEvent.KEYCODE_D:
-				print("test");
-				return true;
-			case KeyEvent.KEYCODE_F:
-				moveShip(MOVE_RIGHT);
-				return true;
-			case KeyEvent.KEYCODE_J:
-				fireMachineGun();
-				return true;
-			case KeyEvent.KEYCODE_K:
-				fireMissile();
-				return true;
-	}
-   }
-});*/
 
 VertexClientPE.getHighestBlockDifference = function() {
 	var x = getPlayerX();
@@ -7726,7 +7554,7 @@ var hasLoadedAddons = false;
 VertexClientPE.update = function() {
 	var ctx = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
 	ctx.runOnUiThread(new java.lang.Runnable({ run: function() {
-		var ru  = new java.lang.Runnable({ run: function() {
+		var ru = new java.lang.Runnable({ run: function() {
 			try {
 				var updateVersion = VertexClientPE.latestVersion;
 				if(VertexClientPE.latestVersion.indexOf("Alpha") != -1 || VertexClientPE.latestVersion.indexOf("Beta") != -1) {
@@ -9218,7 +9046,7 @@ VertexClientPE.showMenuBar = function() {
  * @since v1.1
 */
 VertexClientPE.showMenu = function() {
-	var _0x4eba=["\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x6F\x75\x74\x64\x61\x74\x65\x64\x2C\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C","\x74\x6F\x61\x73\x74","\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C","\x53\x6F\x72\x72\x79\x2C\x20\x74\x68\x69\x73\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x69\x73\x20\x6E\x6F\x74\x20\x73\x75\x70\x70\x6F\x72\x74\x65\x64\x20\x61\x6E\x79\x6D\x6F\x72\x65\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x75\x70\x67\x72\x61\x64\x65\x20\x74\x6F\x20\x74\x68\x65\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x2E"];if(!isAuthorized){if(!isSupported){VertexClientPE[_0x4eba[1]](_0x4eba[0])}else {VertexClientPE[_0x4eba[1]](_0x4eba[2])};return}else {if(!isSupported){VertexClientPE[_0x4eba[1]](_0x4eba[3]);return}}
+	var _0xff55=["\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x6F\x75\x74\x64\x61\x74\x65\x64\x2C\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C","\x74\x6F\x61\x73\x74","\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C"];if(!isAuthorized){if(!isSupported){VertexClientPE[_0xff55[1]](_0xff55[0])}else {VertexClientPE[_0xff55[1]](_0xff55[2])};return}
 	menuBtn.setBackgroundDrawable(iconClickedClientGUI);
 	if(menuType == "normal") {
 		VertexClientPE.showCombatMenu();
@@ -9315,11 +9143,6 @@ function mainMenu() {
 			menuRightLayout.addView(new modButton(element));
 		}
 	});
-	
-	/*var gradDraw = new android.widget.drawable.GradientDrawable(android.graphics.drawable.GradientDrawable.Orientation.TOP_BOTTOM, colors); 
-	gradDraw.setShape(android.widget.drawable.GradientDrawable.RECTANGLE); 
-    gradDraw.setGradientRadius(Math.sqrt(2) * 60); 
-    gradDraw.setCornerRadius(8);*/
      
     //More buttons...
     menu = new android.widget.PopupWindow(menuLayout, ctx.getWindowManager().getDefaultDisplay().getWidth() / 1.8, ctx.getWindowManager().getDefaultDisplay().getHeight());
@@ -10037,10 +9860,6 @@ function showMenuButton() {
     menuBtn.setOnClickListener(new android.view.View.OnClickListener({
     onClick: function(viewarg){
 		if(VertexClientPE.playerIsInGame && !VertexClientPE.menuIsShowing) {
-			if(!isSupported) {
-				VertexClientPE.toast("Sorry, this version is not supported anymore! Please upgrade to the latest version.");
-				return;
-			}
 			if(hacksList != null) {
 				hacksList.dismiss();
 			}
@@ -10144,8 +9963,8 @@ VertexClientPE.clientTick = function() {
 						if(Launcher.isToolbox()) {
 							if(Level.isRemote()) {
 								if(!VertexClientPE.playerIsInGame) {
-									newLevel();
 									VertexClientPE.playerIsInGame = true;
+									newLevel();
 								}
 								VertexClientPE.isRemote = true;
 							}
@@ -10418,11 +10237,6 @@ function showTabGUI() {
 					if(currentTabGUICategory != null) {
 						tabGUILayout.addView(tabGUILayoutRight);
 					}
-					
-					/*var logo2 = android.util.Base64.decode(logoImage, 0);
-					logoViewer2 = new widget.ImageView(ctx);
-					logoViewer2.setImageBitmap(android.graphics.BitmapFactory.decodeByteArray(logo2, 0, logo2.length));
-					logoViewer2.setLayoutParams(new LinearLayout.LayoutParams(ctx.getWindowManager().getDefaultDisplay().getWidth() / 4, ctx.getWindowManager().getDefaultDisplay().getWidth() / 16));*/
 
 					var categories = [VertexClientPE.category.COMBAT, VertexClientPE.category.BUILDING, VertexClientPE.category.MOVEMENT, VertexClientPE.category.CHAT, VertexClientPE.category.MISC];
 					
@@ -10431,7 +10245,7 @@ function showTabGUI() {
 					});
 					
 					tabGUI = new widget.PopupWindow(tabGUILayout, LinearLayout.LayoutParams.WRAP_CONTENT, ctx.getWindowManager().getDefaultDisplay().getHeight() / 3);
-					tabGUI.setBackgroundDrawable(/*backgroundGradient(true)*/new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
+					tabGUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
 					if(tabGUIModeSetting != "off") {
 						tabGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.LEFT | android.view.Gravity.TOP, 0, dip2px(70));
 					}
