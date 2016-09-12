@@ -166,6 +166,7 @@ var VertexClientPE = {
 	Utils: {
 		chests: [],
 		fov: 70,
+		fps: 0,
 		world: {
 			chatMessages: []
 		}
@@ -1888,6 +1889,7 @@ var coordsDisplay = {
 		var x = parseInt(getPlayerX());
 		var y = parseInt(getPlayerY());
 		var z = parseInt(getPlayerZ());
+		var fps = parseInt(VertexClientPE.Utils.fps);
 		ModPE.showTipMessage("\n\n\n" + "X: " + parseInt(x) + " Y: " + parseInt(y) + " Z: " + parseInt(z));
 	}
 }
@@ -2687,6 +2689,7 @@ VertexClientPE.registerModule(zoom);
 
 function modTick() {
 	VertexClientPE.playerIsInGame = true;
+	gameLoop();
 	VertexClientPE.modules.forEach(function(element, index, array) {
 		if(element.isStateMod() && element.state && element.onTick) {
 			if(yesCheatPlusState && element.canBypassYesCheatPlus) {
@@ -7615,77 +7618,87 @@ VertexClientPE.update = function() {
 }
 
 function newLevel() {
-	lagTimer = 0;
-	ctx.runOnUiThread(new java.lang.Runnable() {
-		run: function() {
-			if(accountManager != null) {
-				accountManager.dismiss();
-				exitAccountManagerUI.dismiss();
-			}
-			if(accountManagerGUI != null) {
-				accountManagerGUI.dismiss();
-			}
-		}
-	});
-	autoLeaveStage = 0;
-	VertexClientPE.playerIsInGame = true;
-	VertexClientPE.loadMainSettings();
-	VertexClientPE.loadDeathCoords();
-	VertexClientPE.Utils.loadFov();
-	if(VertexClientPE.isPro()) {
-		VertexClientPE.giveProVertexCash();
-		if(!VertexClientPE.hasEarnedProVertexCash()) {
-			VertexClientPE.toast("You just earned 500 V€rt€xCash because you activated Pro successfully!");
-			VertexClientPE.moneyToast();
-			if(shopCashText != null) {
-				shopCashText.setText("\u26C1 " + VertexClientPE.getVertexCash());
-			}
-		}
-	}
-	if(!hasLoadedAddons) {
-		hasLoadedAddons = true;
-		VertexClientPE.loadAddons();
-	}
-	//VertexClientPE.initPlayerCustomizer();
-	new java.lang.Thread(new java.lang.Runnable() {
-		run: function() {
-			VertexClientPE.checkForUpdates();
-			if(VertexClientPE.latestVersion != VertexClientPE.currentVersion && VertexClientPE.latestVersion != undefined) {
-				VertexClientPE.clientMessage("There is a new version available (v" + VertexClientPE.latestVersion + " for Minecraft Pocket Edition v" + latestPocketEditionVersion + ")!");
-				if(!isSupported) {
-					//VertexClientPE.update();
-				}
-			} else {
-				ctx.runOnUiThread(new java.lang.Runnable() {
-					run: function() {
-						VertexClientPE.toast("You have the latest version");
+	try {
+		lagTimer = 0;
+		ctx.runOnUiThread(new java.lang.Runnable() {
+			run: function() {
+				if(accountManager != null) {
+					if(accountManager.isShowing()) {
+						accountManager.dismiss();
+						exitAccountManagerUI.dismiss();
 					}
-				});
+				}
+				if(accountManagerGUI != null) {
+					if(accountManagerGUI.isShowing()) {
+						accountManagerGUI.dismiss();
+					}
+				}
+			}
+		});
+		autoLeaveStage = 0;
+		VertexClientPE.playerIsInGame = true;
+		VertexClientPE.loadMainSettings();
+		if(!VertexClientPE.isRemote) {
+			VertexClientPE.loadDeathCoords();
+		}
+		VertexClientPE.Utils.loadFov();
+		if(VertexClientPE.isPro()) {
+			VertexClientPE.giveProVertexCash();
+			if(!VertexClientPE.hasEarnedProVertexCash()) {
+				VertexClientPE.toast("You just earned 500 V€rt€xCash because you activated Pro successfully!");
+				VertexClientPE.moneyToast();
+				if(shopCashText != null) {
+					shopCashText.setText("\u26C1 " + VertexClientPE.getVertexCash());
+				}
 			}
 		}
-	}).start();
-	if(hacksList == null && !VertexClientPE.menuIsShowing) {
-		showHacksList();
-		showTabGUI();
-	}if(hacksList != null && !VertexClientPE.menuIsShowing) {
-		if(!hacksList.isShowing()) {
+		if(!hasLoadedAddons) {
+			hasLoadedAddons = true;
+			VertexClientPE.loadAddons();
+		}
+		//VertexClientPE.initPlayerCustomizer();
+		new java.lang.Thread(new java.lang.Runnable() {
+			run: function() {
+				VertexClientPE.checkForUpdates();
+				if(VertexClientPE.latestVersion != VertexClientPE.currentVersion && VertexClientPE.latestVersion != undefined) {
+					VertexClientPE.clientMessage("There is a new version available (v" + VertexClientPE.latestVersion + " for Minecraft Pocket Edition v" + latestPocketEditionVersion + ")!");
+					if(!isSupported) {
+						//VertexClientPE.update();
+					}
+				} else {
+					ctx.runOnUiThread(new java.lang.Runnable() {
+						run: function() {
+							VertexClientPE.toast("You have the latest version");
+						}
+					});
+				}
+			}
+		}).start();
+		if(hacksList == null && !VertexClientPE.menuIsShowing) {
 			showHacksList();
 			showTabGUI();
+		}if(hacksList != null && !VertexClientPE.menuIsShowing) {
+			if(!hacksList.isShowing()) {
+				showHacksList();
+				showTabGUI();
+			}
 		}
-	}
-	if(VertexClientPE.isDevMode()) {
-		VertexClientPE.showBugReportDialog("Warning: Dev mode is enabled!");
-	}
-	if(!VertexClientPE.isPro()) {
-		if(getRandomInt(0, 20) == 10) {
-			VertexClientPE.showUpgradeDialog();
+		if(VertexClientPE.isDevMode()) {
+			VertexClientPE.showBugReportDialog("Warning: Dev mode is enabled!");
 		}
+		if(!VertexClientPE.isPro()) {
+			if(getRandomInt(0, 20) == 10) {
+				VertexClientPE.showUpgradeDialog();
+			}
+		}
+		VertexClientPE.Render.initViews();
+		if(chestESPState) {
+			VertexClientPE.Utils.loadChests();
+		}
+		VertexClientPE.Utils.world.chatMessages = [];
+	} catch(e) {
+		VertexClientPE.showBugReportDialog(e);
 	}
-	VertexClientPE.Render.initViews();
-	if(chestESPState) {
-		VertexClientPE.Utils.loadChests();
-	}
-	VertexClientPE.Utils.world.chatMessages = [];
 }
 
 function deathHook(a, v) {
@@ -9938,11 +9951,14 @@ function showAccountManagerButton() {
 		accountManagerGUI.setAnimationStyle(android.R.style.Animation_Translucent);
 	}
     accountManagerGUI.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
-	if(mainButtonPositionSetting == "top-right") {
-		accountManagerGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.BOTTOM, 90, 0);
-	}if(mainButtonPositionSetting == "bottom-right") {
-		accountManagerGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.TOP, 90, 0);
-	}
+	accountManagerGUI.showAtLocation(ctx.getWindow().getDecorView(), android.view.Gravity.RIGHT | android.view.Gravity.BOTTOM, 90, 0);
+}
+
+var lastLoop = new Date;
+function gameLoop() {
+    var thisLoop = new Date;
+    VertexClientPE.Utils.fps = 1000 / (thisLoop - lastLoop);
+    lastLoop = thisLoop;
 }
 
 VertexClientPE.clientTick = function() {
@@ -9963,8 +9979,8 @@ VertexClientPE.clientTick = function() {
 						if(Launcher.isToolbox()) {
 							if(Level.isRemote()) {
 								if(!VertexClientPE.playerIsInGame) {
-									VertexClientPE.playerIsInGame = true;
 									newLevel();
+									VertexClientPE.playerIsInGame = true;
 								}
 								VertexClientPE.isRemote = true;
 							}
