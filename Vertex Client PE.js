@@ -1889,8 +1889,8 @@ var coordsDisplay = {
 		var x = parseInt(getPlayerX());
 		var y = parseInt(getPlayerY());
 		var z = parseInt(getPlayerZ());
-		var fps = parseInt(VertexClientPE.Utils.fps);
-		ModPE.showTipMessage("\n\n\n" + "X: " + x + " Y: " + y + " Z: " + z + " FPS: " + fps);
+		//var fps = parseInt(VertexClientPE.Utils.fps);
+		ModPE.showTipMessage("\n\n\n" + "X: " + x + " Y: " + y + " Z: " + z);
 	}
 }
 
@@ -10032,7 +10032,6 @@ VertexClientPE.secondTick = function() {
 	new java.lang.Thread(new java.lang.Runnable() {
 		run: function() {
 			java.lang.Thread.sleep(1000);
-			gameLoop();
 			VertexClientPE.modules.forEach(function(element, index, array) {
 				if(element.isStateMod() && element.state && element.onInterval) {
 					element.onInterval();
