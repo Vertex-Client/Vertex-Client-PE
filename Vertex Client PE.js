@@ -183,7 +183,23 @@ function screenChangeHook(screenName) {
                 }
             }));
         }
+		if(screenName == ScreenType.start_screen) {
+			if((mainMenuTextList == null || !mainMenuTextList.isShowing()) && !VertexClientPE.menuIsShowing) {
+				VertexClientPE.showStartScreenBar();
+			}
+		} else {
+			if(mainMenuTextList != null) {
+				if(mainMenuTextList.isShowing()) {
+					CONTEXT.runOnUiThread(new Runnable_({
+						run: function() {
+							mainMenuTextList.dismiss();
+						}
+					}));
+				}
+			}
+		}
     }
+	print(screenName);
 }
 
 // ####################
@@ -584,6 +600,7 @@ var miscName = "Misc";
 
 var userIsNewToCurrentVersion = false;
 
+var mainMenuTextList;
 var GUI;
 var menu;
 var exitUI;
@@ -6937,72 +6954,169 @@ new Thread_(new Runnable_() {
     }
 }).start();
 
-VertexClientPE.showSplashScreen = function() {
+var lastLoop = new Date;
+function gameLoop() {
+    var thisLoop = new Date;
+    VertexClientPE.Utils.fps = 1000 / (thisLoop - lastLoop);
+    lastLoop = thisLoop;
+}
+
+VertexClientPE.clientTick = function() {
+    new Thread_(new Runnable_() {
+        run: function() {
+            Thread_.sleep(1000 / 70);
+            CONTEXT.runOnUiThread(new Runnable_({
+                run: function() {
+                    try{
+                        var _0x43af=["\x61\x75\x74\x68\x6F\x72","\x70\x65\x61\x63\x65\x73\x74\x6F\x72\x6D"];if(VertexClientPE[_0x43af[0]]!= _0x43af[1]){isAuthorized= false}
+                        if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing())) {
+                            VertexClientPE.isRemote = true;
+                            if(Launcher.isBlockLauncher()) {
+                                ScriptManager__.isRemote = true;
+                                ScriptManager__.setLevelFakeCallback(true, false);
+                            }
+                        }
+                        if(Launcher.isToolbox()) {
+                            if(Level.isRemote()) {
+                                if(!VertexClientPE.playerIsInGame) {
+                                    newLevel();
+                                    VertexClientPE.playerIsInGame = true;
+                                }
+                                VertexClientPE.isRemote = true;
+                            }
+                        }
+                    } catch(e) {
+                        print("Use BlockLauncher v1.12.2 or above!");
+                        ModPE.log(e);
+                    }
+                    if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing())) {
+                        VertexClientPE.isRemote = true;
+                        showMenuButton();
+                    }
+                    if(!VertexClientPE.playerIsInGame) {
+                        if(hacksList != null) {
+                            if(hacksList.isShowing()) {
+                                hacksList.dismiss();
+                            }
+                        }
+                        if(tabGUI != null) {
+                            if(tabGUI.isShowing()) {
+                                tabGUI.dismiss();
+                            }
+                        }
+                    }
+                }
+            }));
+            VertexClientPE.clientTick();
+        }
+    }).start();
+}
+
+VertexClientPE.specialTick = function() {
+    new Thread_(new Runnable_() {
+        run: function() {
+            Thread_.sleep(1000 * spamDelayTime);
+            if(VertexClientPE.playerIsInGame) {
+                if(delaySpammerState) {
+                    VertexClientPE.delaySpammer();
+                }
+            }
+            VertexClientPE.specialTick();
+        }
+    }).start();
+}
+
+var secondTickTimer = 0;
+var lagTimer = 0;
+
+VertexClientPE.secondTick = function() {
+    new Thread_(new Runnable_() {
+        run: function() {
+            Thread_.sleep(1000);
+            VertexClientPE.modules.forEach(function(element, index, array) {
+                if(element.isStateMod() && element.state && element.onInterval) {
+                    element.onInterval();
+                }
+            });
+            if(secondTickTimer == 60) {
+                var extraCash = VertexClientPE.isPro()?20:10;
+                VertexClientPE.setVertexCash(VertexClientPE.getVertexCash() + extraCash);
+                secondTickTimer = 0;
+                VertexClientPE.moneyToast();
+                if(shopCashText != null) {
+                    CONTEXT.runOnUiThread(new Runnable_() {
+                        run: function() {
+                            shopCashText.setText("\u26C1 " + VertexClientPE.getVertexCash());
+                        }
+                    });
+                }
+            } else {
+                secondTickTimer += 1;
+            }
+            
+            if(antiLagDropRemoverSetting == "on" && VertexClientPE.playerIsInGame && !VertexClientPE.isRemote && sharedPref.getString("VertexClientPE.boughtOptiFine", "false") == "true") {
+                if(lagTimer == 0) {
+                    VertexClientPE.clientMessage("Dropped items will be removed in " + ChatColor.RED + "two minutes" + ChatColor.WHITE + "!");
+                    lagTimer++;
+                } else {
+                    if(lagTimer >= 1 && lagTimer < 120) {
+                        if(lagTimer == 60) {
+                            VertexClientPE.clientMessage("Dropped items will be removed in " + ChatColor.RED + "one minute" + ChatColor.WHITE + "!");
+                        }
+                        lagTimer++;
+                    } else if(lagTimer == 120) {
+                        Entity.getAll().forEach(function(element, index, array) {
+                            if(Entity.getEntityTypeId(element) == EntityType.ITEM) {
+                                try {
+                                    Entity.remove(element);
+                                } catch(e) {
+                                    print("An error occurred: " + e);
+                                }
+                            }
+                        });
+                        VertexClientPE.clientMessage("Successfully removed dropped items!");
+                        lagTimer = 0;
+                    }
+                }
+            }
+            VertexClientPE.secondTick();
+        }
+    }).start();
+    if(mpCurrentPositionView != null && mpSeekBarView != null) {
+        CONTEXT.runOnUiThread(new Runnable_({
+            run: function() {
+                try{
+                        mpCurrentPositionView.setText(VertexClientPE.MusicUtils.milliSecToMinString(VertexClientPE.MusicUtils.mp.getCurrentPosition()));
+                        mpSeekBarView.setProgress(VertexClientPE.MusicUtils.mp.getCurrentPosition());
+                } catch(e) {
+                    
+                }
+            }
+        }));
+    }
+}
+
+VertexClientPE.showStartScreenBar = function() {
     var display = new DisplayMetrics_();
     CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
         CONTEXT.runOnUiThread(new Runnable_({
             run: function() {
                 try {
+					if(userIsNewToCurrentVersion == true) {
+						VertexClientPE.showWhatsNewDialog();
+					}
+					
                     var mainMenuListLayout = new LinearLayout_(CONTEXT);
                     mainMenuListLayout.setOrientation(1);
                     mainMenuListLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
-                    //--------Add Buttons-------//
-                    var mainMenuListLayoutTop = new LinearLayout_(CONTEXT);
-                    mainMenuListLayoutTop.setOrientation(1);
-                    mainMenuListLayoutTop.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() / 6));
-                    var logo1 = Base64_.decode(logoImage, 0);
-                    var logoViewer1 = new ImageView_(CONTEXT);
-                    logoViewer1.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 2, CONTEXT.getWindowManager().getDefaultDisplay().getHeight() / 4));
-                    logoViewer1.setImageBitmap(BitmapFactory_.decodeByteArray(logo1, 0, logo1.length));
-                    var VertexClientPEMainMenuText = "<font color='#008000'>" + VertexClientPE.getVersion("current") + "</font>";
-                    if(themeSetting == "red") {
-                        VertexClientPEMainMenuText = "<font color='#FF0000'>" + VertexClientPE.getVersion("current") + "</font>";
-                    }if(themeSetting == "blue") {
-                        VertexClientPEMainMenuText = "<font color='#0000FF'>" + VertexClientPE.getVersion("current") + "</font>";
-                    }if(themeSetting == "purple") {
-                        VertexClientPEMainMenuText = "<font color='#800080'>" + VertexClientPE.getVersion("current") + "</font>";
-                    }if(themeSetting == "yellow") {
-                        VertexClientPEMainMenuText = "<font color='#FFFF00'>" + VertexClientPE.getVersion("current") + "</font>";
-                    }if(themeSetting == "white") {
-                        VertexClientPEMainMenuText = "<font color='#FFFFFF'>" + VertexClientPE.getVersion("current") + "</font>";
-                    }if(themeSetting == "black") {
-                        VertexClientPEMainMenuText = "<font color='#000000'>" + VertexClientPE.getVersion("current") + "</font>";
-                    }
-                    var text = VertexClientPEMainMenuText + " - Welcome back " + ModPE.getPlayerName() + "!";
-                    var TitleText = clientTextView(text, true);
-                    TitleText.setText(Html_.fromHtml("<blink>" + text + "</blink>"), TextView_.BufferType.SPANNABLE);
-                    TitleText.setTextSize(18);
-                    TitleText.setGravity(Gravity_.CENTER);
-                    TitleText.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
-                    TitleText.setMarqueeRepeatLimit(-1);
-                    TitleText.setSingleLine();
-                    TitleText.setHorizontallyScrolling(true);
-                    TitleText.setSelected(true);
-                    var newLineText = new TextView_(CONTEXT);
-                    newLineText.setText("\n\n\n");
-                    newLineText.setTextSize(10);
-                    var mainMenuListLayoutMiddle = new LinearLayout_(CONTEXT);
-                    mainMenuListLayoutMiddle.setOrientation(LinearLayout_.HORIZONTAL);
-                    mainMenuListLayoutMiddle.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() / 3));
-                    var mainMenuListLayoutMiddleLeft = new LinearLayout_(CONTEXT);
-                    mainMenuListLayoutMiddleLeft.setOrientation(1);
-                    mainMenuListLayoutMiddleLeft.setGravity(Gravity_.RIGHT);
-                    mainMenuListLayoutMiddleLeft.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 3, CONTEXT.getWindowManager().getDefaultDisplay().getHeight() / 3));
-                    var mainMenuListLayoutMiddleMiddle = new LinearLayout_(CONTEXT);
-                    mainMenuListLayoutMiddleMiddle.setOrientation(1);
-                    mainMenuListLayoutMiddleMiddle.setGravity(Gravity_.CENTER);
-                    mainMenuListLayoutMiddleMiddle.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 3, CONTEXT.getWindowManager().getDefaultDisplay().getHeight() / 3));
-                    var mainMenuListLayoutMiddleRight = new LinearLayout_(CONTEXT);
-                    mainMenuListLayoutMiddleRight.setOrientation(1);
-                    mainMenuListLayoutMiddleRight.setGravity(Gravity_.LEFT);
-                    mainMenuListLayoutMiddleRight.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 3, CONTEXT.getWindowManager().getDefaultDisplay().getHeight() / 3));
-                    mainMenuListLayoutMiddle.addView(mainMenuListLayoutMiddleLeft);
-                    mainMenuListLayoutMiddle.addView(mainMenuListLayoutMiddleMiddle);
-                    mainMenuListLayoutMiddle.addView(mainMenuListLayoutMiddleRight);
+					
+					var enter = new TextView_(CONTEXT);
+					enter.setText("\n");
+					
                     var youTubeButton = new Button_(CONTEXT);
                     youTubeButton.setBackground(splashYouTubeButtonClientGUI);
                     youTubeButton.setGravity(Gravity_.CENTER);
-                    youTubeButton.setLayoutParams(new LinearLayout_.LayoutParams(display.heightPixels / 5, display.heightPixels / 5));
+                    youTubeButton.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(48), dip2px(48)));
                     youTubeButton.setOnTouchListener(new View_.OnTouchListener() {
                         onTouch: function(v, event) {
                             youTubeButton.setSoundEffectsEnabled(false);
@@ -7023,34 +7137,14 @@ VertexClientPE.showSplashScreen = function() {
                             return false;
                         }
                     });
-                    var playButton = new Button_(CONTEXT);
-                    playButton.setBackground(playButtonClientGUI);
-                    playButton.setGravity(Gravity_.CENTER);
-                    playButton.setLayoutParams(new LinearLayout_.LayoutParams(display.heightPixels / 3, display.heightPixels / 3));
-                    playButton.setOnTouchListener(new View_.OnTouchListener() {
-                        onTouch: function(v, event) {
-                            playButton.setSoundEffectsEnabled(false);
-                            var action = event.getActionMasked();
-                            if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
-                                var bNP = playButtonClientGUI;
-                                bNP.setFilterBitmap(false);
-                                bNP.setAntiAlias(false);
-                                playButton.setBackgroundDrawable(bNP);
-                                playButton.setPadding(0, 0, 0, 0);
-                            } else {
-                                var bNP = playButtonClickedClientGUI;
-                                bNP.setFilterBitmap(false);
-                                bNP.setAntiAlias(false);
-                                playButton.setBackgroundDrawable(bNP);
-                                playButton.setPadding(0, Math.round(playButton.getLineHeight() / 8), 0, 0);
-                            }
-                            return false;
-                        }
-                    });
+					
+					var enter1 = new TextView_(CONTEXT);
+					enter1.setText("\n");
+					
                     var twitterButton = new Button_(CONTEXT);
                     twitterButton.setBackgroundDrawable(splashTwitterButtonClientGUI);
                     twitterButton.setGravity(Gravity_.CENTER);
-                    twitterButton.setLayoutParams(new LinearLayout_.LayoutParams(display.heightPixels / 5, display.heightPixels / 5));
+                    twitterButton.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(48), dip2px(48)));
                     twitterButton.setOnTouchListener(new View_.OnTouchListener() {
                         onTouch: function(v, event) {
                             twitterButton.setSoundEffectsEnabled(false);
@@ -7074,58 +7168,28 @@ VertexClientPE.showSplashScreen = function() {
                     
                     youTubeButton.setOnClickListener(new View_.OnClickListener({
                         onClick: function(viewarg) {
-                            mainMenuTextList.dismiss();
-                            showMenuButton();
-                            VertexClientPE.clientTick();
-                            VertexClientPE.specialTick();
-                            VertexClientPE.secondTick();
-                            showAccountManagerButton();
-                            if(userIsNewToCurrentVersion == true) {
-                                VertexClientPE.showWhatsNewDialog();
-                            }
                             ModPE.goToURL("https://www.youtube.com/c/AgameRGaming");
-                    }}));
-                    playButton.setOnClickListener(new View_.OnClickListener({
-                        onClick: function(viewarg) {
-                            mainMenuTextList.dismiss();
-                            showMenuButton();
-                            VertexClientPE.clientTick();
-                            VertexClientPE.specialTick();
-                            VertexClientPE.secondTick();
-                            showAccountManagerButton();
-                            if(userIsNewToCurrentVersion == true) {
-                                VertexClientPE.showWhatsNewDialog();
-                            }
                     }}));
                     twitterButton.setOnClickListener(new View_.OnClickListener({
                         onClick: function(viewarg) {
-                            mainMenuTextList.dismiss();
-                            showMenuButton();
-                            VertexClientPE.clientTick();
-                            VertexClientPE.specialTick();
-                            VertexClientPE.secondTick();
-                            showAccountManagerButton();
-                            if(userIsNewToCurrentVersion == true) {
-                                VertexClientPE.showWhatsNewDialog();
-                            }
                             ModPE.goToURL("http://twitter.com/VertexHX");
                     }}));
-
-                    mainMenuListLayout.addView(mainMenuListLayoutTop);
-                    mainMenuListLayoutTop.addView(TitleText);
-                    mainMenuListLayout.addView(logoViewer1);
-                    mainMenuListLayout.addView(newLineText);
-                    mainMenuListLayout.addView(mainMenuListLayoutMiddle);
-                    mainMenuListLayoutMiddleLeft.addView(youTubeButton);
-                    mainMenuListLayoutMiddleMiddle.addView(playButton);
-                    mainMenuListLayoutMiddleRight.addView(twitterButton);
+					
+					mainMenuListLayout.addView(enter);
+					mainMenuListLayout.addView(youTubeButton);
+					mainMenuListLayout.addView(enter1);
+					mainMenuListLayout.addView(twitterButton);
                     
                     VertexClientPE.MusicUtils.initMusicPlayer();
                     VertexClientPE.MusicUtils.startMusicPlayer();
 
-                    mainMenuTextList = new PopupWindow_(mainMenuListLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+                    mainMenuTextList = new PopupWindow_(mainMenuListLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 6, CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
                     mainMenuTextList.setBackgroundDrawable(backgroundGradient());
-                    mainMenuTextList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+					if(mainButtonPositionSetting == "top-right") {
+						mainMenuTextList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+					} else {
+						mainMenuTextList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
+					}
                 } catch(error) {
                     print('An error occurred: ' + error);
                 }
@@ -7367,6 +7431,7 @@ VertexClientPE.setHasUsedCurrentVersion = function(opt) {
 }
 
 VertexClientPE.setup = function() {
+	currentScreen = ScreenType.start_screen;
     VertexClientPE.loadSupport();
     VertexClientPE.checkForUpdates();
     VertexClientPE.loadUpdateDescription();
@@ -7376,7 +7441,16 @@ VertexClientPE.setup = function() {
         VertexClientPE.showSetupScreen();
         setupDone();
     } else {
-        VertexClientPE.showSplashScreen();
+        VertexClientPE.showStartScreenBar();
+		VertexClientPE.clientTick();
+		VertexClientPE.specialTick();
+		VertexClientPE.secondTick();
+		CONTEXT.runOnUiThread(new Runnable_({
+			run: function() {
+				showMenuButton();
+				showAccountManagerButton();
+			}
+		}));
     }
     
     if(ModPE.getMinecraftVersion() < VertexClientPE.minVersion) {
@@ -7817,6 +7891,11 @@ function settingsScreen() {
                             tabGUI.dismiss();
                         }
                     }
+					if(mainMenuTextList != null) {
+						if(mainMenuTextList.isShowing()) {
+                            mainMenuTextList.dismiss();
+                        }
+					}
                     
                     var settingsMenuLayout = new LinearLayout_(CONTEXT);
                     settingsMenuLayout.setOrientation(1);
@@ -8235,6 +8314,11 @@ function informationScreen() {
                             tabGUI.dismiss();
                         }
                     }
+					if(mainMenuTextList != null) {
+						if(mainMenuTextList.isShowing()) {
+                            mainMenuTextList.dismiss();
+                        }
+					}
                     
                     var informationMenuLayout1 = new LinearLayout_(CONTEXT);
                     informationMenuLayout1.setOrientation(1);
@@ -8358,6 +8442,11 @@ function helpScreen() {
                             tabGUI.dismiss();
                         }
                     }
+					if(mainMenuTextList != null) {
+						if(mainMenuTextList.isShowing()) {
+                            mainMenuTextList.dismiss();
+                        }
+					}
 
                     var helpMenuLayout = new LinearLayout_(CONTEXT);
                     helpMenuLayout.setOrientation(1);
@@ -8422,6 +8511,11 @@ function addonScreen() {
                             tabGUI.dismiss();
                         }
                     }
+					if(mainMenuTextList != null) {
+						if(mainMenuTextList.isShowing()) {
+                            mainMenuTextList.dismiss();
+                        }
+					}
 
                     var addonMenuLayout = new LinearLayout_(CONTEXT);
                     addonMenuLayout.setOrientation(1);
@@ -8489,6 +8583,11 @@ function playerCustomizerScreen() {
                             tabGUI.dismiss();
                         }
                     }
+					if(mainMenuTextList != null) {
+						if(mainMenuTextList.isShowing()) {
+                            mainMenuTextList.dismiss();
+                        }
+					}
 
                     var playCustomizerLayout = new LinearLayout_(CONTEXT);
                     playCustomizerLayout.setOrientation(1);
@@ -8559,6 +8658,11 @@ function optiFineScreen() {
                             tabGUI.dismiss();
                         }
                     }
+					if(mainMenuTextList != null) {
+						if(mainMenuTextList.isShowing()) {
+                            mainMenuTextList.dismiss();
+                        }
+					}
 
                     var optiFineLayout = new LinearLayout_(CONTEXT);
                     optiFineLayout.setOrientation(1);
@@ -8633,6 +8737,11 @@ function shopScreen() {
                             tabGUI.dismiss();
                         }
                     }
+					if(mainMenuTextList != null) {
+						if(mainMenuTextList.isShowing()) {
+                            mainMenuTextList.dismiss();
+                        }
+					}
 
                     var shopMenuLayout = new LinearLayout_(CONTEXT);
                     shopMenuLayout.setOrientation(1);
@@ -8701,6 +8810,11 @@ function updateCenterScreen() {
                             tabGUI.dismiss();
                         }
                     }
+					if(mainMenuTextList != null) {
+						if(mainMenuTextList.isShowing()) {
+                            mainMenuTextList.dismiss();
+                        }
+					}
 
                     var updateCenterMenuLayout = new LinearLayout_(CONTEXT);
                     updateCenterMenuLayout.setOrientation(1);
@@ -8765,6 +8879,11 @@ function musicPlayerScreen() {
                             tabGUI.dismiss();
                         }
                     }
+					if(mainMenuTextList != null) {
+						if(mainMenuTextList.isShowing()) {
+                            mainMenuTextList.dismiss();
+                        }
+					}
 
                     var musicPlayerMenuLayout = new LinearLayout_(CONTEXT);
                     musicPlayerMenuLayout.setOrientation(1);
@@ -8866,6 +8985,11 @@ function dashboardScreen() {
                         tabGUI.dismiss();
                     }
                 }
+				if(mainMenuTextList != null) {
+					if(mainMenuTextList.isShowing()) {
+						mainMenuTextList.dismiss();
+					}
+				}
 
                 var dashboardMenuLayout = new GridLayout_(CONTEXT);
                 dashboardMenuLayout.setColumnCount(4);
@@ -9028,6 +9152,11 @@ function webBrowserScreen() {
                         tabGUI.dismiss();
                     }
                 }
+				if(mainMenuTextList != null) {
+					if(mainMenuTextList.isShowing()) {
+						mainMenuTextList.dismiss();
+					}
+				}
 
                 var webBrowserMenuLayout = new LinearLayout_(CONTEXT);
                 webBrowserMenuLayout.setOrientation(1);
@@ -9959,6 +10088,11 @@ function showMenuButton() {
         showHacksList();
         showTabGUI();
     }
+	if(currentScreen == ScreenType.start_screen) {
+		if((mainMenuTextList == null || !mainMenuTextList.isShowing()) && !VertexClientPE.menuIsShowing) {
+			VertexClientPE.showStartScreenBar();
+		}
+	}
 }
 
 function showAccountManagerButton() {
@@ -9990,149 +10124,7 @@ function showAccountManagerButton() {
         accountManagerGUI.setAnimationStyle(android.R.style.Animation_Translucent);
     }
     accountManagerGUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-    accountManagerGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.BOTTOM, 90, 0);
-}
-
-var lastLoop = new Date;
-function gameLoop() {
-    var thisLoop = new Date;
-    VertexClientPE.Utils.fps = 1000 / (thisLoop - lastLoop);
-    lastLoop = thisLoop;
-}
-
-VertexClientPE.clientTick = function() {
-    new Thread_(new Runnable_() {
-        run: function() {
-            Thread_.sleep(1000 / 70);
-            CONTEXT.runOnUiThread(new Runnable_({
-                run: function() {
-                    try{
-                        var _0x43af=["\x61\x75\x74\x68\x6F\x72","\x70\x65\x61\x63\x65\x73\x74\x6F\x72\x6D"];if(VertexClientPE[_0x43af[0]]!= _0x43af[1]){isAuthorized= false}
-                        if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing())) {
-                            VertexClientPE.isRemote = true;
-                            if(Launcher.isBlockLauncher()) {
-                                ScriptManager__.isRemote = true;
-                                ScriptManager__.setLevelFakeCallback(true, false);
-                            }
-                        }
-                        if(Launcher.isToolbox()) {
-                            if(Level.isRemote()) {
-                                if(!VertexClientPE.playerIsInGame) {
-                                    newLevel();
-                                    VertexClientPE.playerIsInGame = true;
-                                }
-                                VertexClientPE.isRemote = true;
-                            }
-                        }
-                    } catch(e) {
-                        print("Use BlockLauncher v1.12.2 or above!");
-                        ModPE.log(e);
-                    }
-                    if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing())) {
-                        VertexClientPE.isRemote = true;
-                        showMenuButton();
-                    }
-                    if(!VertexClientPE.playerIsInGame) {
-                        if(hacksList != null) {
-                            if(hacksList.isShowing()) {
-                                hacksList.dismiss();
-                            }
-                        }
-                        if(tabGUI != null) {
-                            if(tabGUI.isShowing()) {
-                                tabGUI.dismiss();
-                            }
-                        }
-                    }
-                }
-            }));
-            VertexClientPE.clientTick();
-        }
-    }).start();
-}
-
-VertexClientPE.specialTick = function() {
-    new Thread_(new Runnable_() {
-        run: function() {
-            Thread_.sleep(1000 * spamDelayTime);
-            if(VertexClientPE.playerIsInGame) {
-                if(delaySpammerState) {
-                    VertexClientPE.delaySpammer();
-                }
-            }
-            VertexClientPE.specialTick();
-        }
-    }).start();
-}
-
-var secondTickTimer = 0;
-var lagTimer = 0;
-
-VertexClientPE.secondTick = function() {
-    new Thread_(new Runnable_() {
-        run: function() {
-            Thread_.sleep(1000);
-            VertexClientPE.modules.forEach(function(element, index, array) {
-                if(element.isStateMod() && element.state && element.onInterval) {
-                    element.onInterval();
-                }
-            });
-            if(secondTickTimer == 60) {
-                var extraCash = VertexClientPE.isPro()?20:10;
-                VertexClientPE.setVertexCash(VertexClientPE.getVertexCash() + extraCash);
-                secondTickTimer = 0;
-                VertexClientPE.moneyToast();
-                if(shopCashText != null) {
-                    CONTEXT.runOnUiThread(new Runnable_() {
-                        run: function() {
-                            shopCashText.setText("\u26C1 " + VertexClientPE.getVertexCash());
-                        }
-                    });
-                }
-            } else {
-                secondTickTimer += 1;
-            }
-            
-            if(antiLagDropRemoverSetting == "on" && VertexClientPE.playerIsInGame && !VertexClientPE.isRemote && sharedPref.getString("VertexClientPE.boughtOptiFine", "false") == "true") {
-                if(lagTimer == 0) {
-                    VertexClientPE.clientMessage("Dropped items will be removed in " + ChatColor.RED + "two minutes" + ChatColor.WHITE + "!");
-                    lagTimer++;
-                } else {
-                    if(lagTimer >= 1 && lagTimer < 120) {
-                        if(lagTimer == 60) {
-                            VertexClientPE.clientMessage("Dropped items will be removed in " + ChatColor.RED + "one minute" + ChatColor.WHITE + "!");
-                        }
-                        lagTimer++;
-                    } else if(lagTimer == 120) {
-                        Entity.getAll().forEach(function(element, index, array) {
-                            if(Entity.getEntityTypeId(element) == EntityType.ITEM) {
-                                try {
-                                    Entity.remove(element);
-                                } catch(e) {
-                                    print("An error occurred: " + e);
-                                }
-                            }
-                        });
-                        VertexClientPE.clientMessage("Successfully removed dropped items!");
-                        lagTimer = 0;
-                    }
-                }
-            }
-            VertexClientPE.secondTick();
-        }
-    }).start();
-    if(mpCurrentPositionView != null && mpSeekBarView != null) {
-        CONTEXT.runOnUiThread(new Runnable_({
-            run: function() {
-                try{
-                        mpCurrentPositionView.setText(VertexClientPE.MusicUtils.milliSecToMinString(VertexClientPE.MusicUtils.mp.getCurrentPosition()));
-                        mpSeekBarView.setProgress(VertexClientPE.MusicUtils.mp.getCurrentPosition());
-                } catch(e) {
-                    
-                }
-            }
-        }));
-    }
+    accountManagerGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.BOTTOM, 0, 0);
 }
  
 function dip2px(dips){
@@ -10378,6 +10370,9 @@ function setupDone() {
                         setupScreen.dismiss();
                         showMenuButton();
                         showAccountManagerButton();
+						VertexClientPE.clientTick();
+						VertexClientPE.specialTick();
+						VertexClientPE.secondTick();
                         VertexClientPE.setupMCPEGUI();
                         if(userIsNewToCurrentVersion == true) {
                             VertexClientPE.showWhatsNewDialog();
