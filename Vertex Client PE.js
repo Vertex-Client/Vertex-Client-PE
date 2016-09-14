@@ -199,7 +199,6 @@ function screenChangeHook(screenName) {
 			}
 		}
     }
-	print(screenName);
 }
 
 // ####################
@@ -7441,7 +7440,6 @@ VertexClientPE.setup = function() {
         VertexClientPE.showSetupScreen();
         setupDone();
     } else {
-        VertexClientPE.showStartScreenBar();
 		VertexClientPE.clientTick();
 		VertexClientPE.specialTick();
 		VertexClientPE.secondTick();
