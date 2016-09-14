@@ -16,6 +16,7 @@
 // Underbar(_) is for preventing duplicate variables such as java.lang.String and String(Javascript)
 
 const AlertDialog_ = android.app.AlertDialog,
+    DownloadManager_ = android.app.DownloadManager,
     Dialog_ = android.app.Dialog,
     Notification_ = android.app.Notification,
     PendingIntent_ = android.app.PendingIntent,
@@ -100,8 +101,9 @@ const AlertDialog_ = android.app.AlertDialog,
     NerdyStuffActivity_ = net.zhuoweizhang.mcpelauncher.ui.NerdyStuffActivity,
     JSONArray_ = org.json.JSONArray,
     JSONObject_ = org.json.JSONObject,
-    CONTEXT = MainActivity_.currentMainActivity.get();
-
+    CONTEXT = MainActivity_.currentMainActivity.get(),
+    GITHUB_URL = "https://github.com/Vertex-Client/Vertex-Client.github.io/raw/master/",
+    PATH = "/sdcard/games/com.mojang/";
 
 var ScrollView = android.widget.ScrollView;
 var EditText = android.widget.EditText;
@@ -137,13 +139,13 @@ var editor = sharedPref.edit();
 
 var Launcher = {
     isBlockLauncher: function() {
-        return (CONTEXT.getPackageName() === "net.zhuoweizhang.mcpelauncher" || CONTEXT.getPackageName() === "net.zhuoweizhang.mcpelauncher.pro");
+        return (CONTEXT.getPackageName() == "net.zhuoweizhang.mcpelauncher" || CONTEXT.getPackageName() == "net.zhuoweizhang.mcpelauncher.pro");
     },
     isToolbox: function() {
-        return CONTEXT.getPackageName() === "io.mrarm.mctoolbox";
+        return CONTEXT.getPackageName() == "io.mrarm.mctoolbox";
     },
     isMcpeMaster: function() {
-        return CONTEXT.getPackageName() === "com.mcbox.pesdkb.mcpelauncher";
+        return CONTEXT.getPackageName() == "com.mcbox.pesdkb.mcpelauncher";
     }
 };
 
@@ -3365,14 +3367,14 @@ var youTubeYouTubeButton = " iVBORw0KGgoAAAANSUhEUgAAAGQAAABiCAYAAACmu3ZJAAAABGd
 var youTubeYouTubeButtonClicked = " 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 ";
 var pathFont = Environment_.getExternalStorageDirectory().getAbsolutePath() + "/games/com.mojang";
 
-Base64Decode(Base64_.decode(iconIcon, 0), pathFont + "/clienticon_new.png");
+/*Base64Decode(Base64_.decode(iconIcon, 0), pathFont + "/clienticon_new.png");
 Base64Decode(Base64_.decode(iconIconClicked, 0), pathFont + "/clienticon_new_clicked.png");
 Base64Decode(Base64_.decode(playPlayButton, 0), pathFont + "/play_button.png");
 Base64Decode(Base64_.decode(playPlayButtonClicked, 0), pathFont + "/play_button_clicked.png");
 Base64Decode(Base64_.decode(twitterTwitterButton, 0), pathFont + "/twitter_button.png");
 Base64Decode(Base64_.decode(youTubeYouTubeButton, 0), pathFont + "/youtube_button.png");
 Base64Decode(Base64_.decode(twitterTwitterButtonClicked, 0), pathFont + "/twitter_button_clicked.png");
-Base64Decode(Base64_.decode(youTubeYouTubeButtonClicked, 0), pathFont + "/youtube_button_clicked.png");
+Base64Decode(Base64_.decode(youTubeYouTubeButtonClicked, 0), pathFont + "/youtube_button_clicked.png");*/
 
 var imgIcon = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/clienticon_new.png");
 var imgIconClicked = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/clienticon_new_clicked.png");
@@ -7301,11 +7303,12 @@ ModPE.restart = function() {
             run: function() {
                 VertexClientPE.toast("Restarting...");
                 Thread_.sleep(1000);
+                new File_(CONTEXT.getFilesDir() + "/running.lock").delete();
                 NerdyStuffActivity_.forceRestart(CONTEXT, 500, true);
             }
         }).start();
     } else {
-        VertexClientPE.toast("Sorry, restarting only works with BlockLauncher at the moment!");
+        VertexClientPE.toast("Sorry, Automatic restarting only works with BlockLauncher at the moment! Please restart launcher by yourself.");
     }
 }
 
@@ -7432,7 +7435,55 @@ VertexClientPE.setup = function() {
     }
 }
 
-VertexClientPE.setup();
+function downloadFile(path, url) {
+    try {
+        let file = new File_(path),
+            filename = file.getName(),
+            downloadManager = new DownloadManager_.Request(new Uri_.parse(url));
+        downloadManager.setTitle(filename);
+        downloadManager.setNotificationVisibility(0);
+        downloadManager.setDestinationInExternalPublicDir(file.getParent().replace("/sdcard", ""), filename);
+        CONTEXT.getSystemService(Context_.DOWNLOAD_SERVICE).enqueue(downloadManager);
+    } catch (e) {
+        print(e);
+    }
+};
+
+function checkFile() {
+    let res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png"],
+        isExists = true;
+    for (let i = res.length; i--;) {
+        if (!new File_(PATH, res[i]).exists()) {
+            downloadFile(PATH + res[i], GITHUB_URL + "bootstrap/img/" + res[i]);
+            isExists = false;
+        }
+    }
+    if (isExists) {
+        VertexClientPE.setup();
+    } else {
+        new Thread_({
+            run() {
+                print("Downloading resource files...");
+                while (!isExists) {
+                    Thread_.sleep(1000);
+                    for (let i = res.length; i--;) {
+                        if (!new File_(PATH, res[i]).exists()) {
+                            isExists = false;
+                            break;
+                        } else {
+                            isExists = true;
+                        }
+                    }
+                }
+                print("All files is downloaded successfully. Launcher will be restart after 3 seconds later.");
+                Thread_.sleep(3000);
+                ModPE.restart();
+            }
+        }).start();
+    }
+}
+
+checkFile();
 
 var coordsButton;
 
