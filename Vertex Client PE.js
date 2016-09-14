@@ -3379,17 +3379,21 @@ var imgIconClicked = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/
 var imgPlayButton = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/play_button.png");
 var imgPlayButtonClicked = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/play_button_clicked.png");
 var imgTwitterButton = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/twitter_button.png");
-var imgYouTubeButton = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/youtube_button.png");
 var imgTwitterButtonClicked = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/twitter_button_clicked.png");
+var imgYouTubeButton = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/youtube_button.png");
 var imgYouTubeButtonClicked = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/youtube_button_clicked.png");
+var imgGitHubButton = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/github_button.png");
+var imgGitHubButtonClicked = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/github_button_clicked.png");
 var iconClientGUI = new BitmapDrawable_(imgIcon);
 var iconClickedClientGUI = new BitmapDrawable_(imgIconClicked)
 var playButtonClientGUI = new BitmapDrawable_(imgPlayButton);
 var playButtonClickedClientGUI = new BitmapDrawable_(imgPlayButtonClicked);
 var splashTwitterButtonClientGUI = new BitmapDrawable_(imgTwitterButton);
-var splashYouTubeButtonClientGUI = new BitmapDrawable_(imgYouTubeButton);
 var splashTwitterButtonClickedClientGUI = new BitmapDrawable_(imgTwitterButtonClicked);
+var splashYouTubeButtonClientGUI = new BitmapDrawable_(imgYouTubeButton);
 var splashYouTubeButtonClickedClientGUI = new BitmapDrawable_(imgYouTubeButtonClicked);
+var splashGitHubButtonClientGUI = new BitmapDrawable_(imgGitHubButton);
+var splashGitHubButtonClickedClientGUI = new BitmapDrawable_(imgGitHubButtonClicked);
 
 function Base64Decode(byteArray, Path) {
     try {
@@ -7164,6 +7168,34 @@ VertexClientPE.showStartScreenBar = function() {
                             return false;
                         }
                     });
+					
+					var enter2 = new TextView_(CONTEXT);
+					enter2.setText("\n");
+					
+                    var gitHubButton = new Button_(CONTEXT);
+                    gitHubButton.setBackgroundDrawable(splashGitHubButtonClientGUI);
+                    gitHubButton.setGravity(Gravity_.CENTER);
+                    gitHubButton.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(48), dip2px(48)));
+                    gitHubButton.setOnTouchListener(new View_.OnTouchListener() {
+                        onTouch: function(v, event) {
+                            gitHubButton.setSoundEffectsEnabled(false);
+                            var action = event.getActionMasked();
+                            if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
+                                var bNP = splashGitHubButtonClientGUI;
+                                bNP.setFilterBitmap(false);
+                                bNP.setAntiAlias(false);
+                                gitHubButton.setBackgroundDrawable(bNP);
+                                gitHubButton.setPadding(0, 0, 0, 0);
+                            } else {
+                                var bNP = splashGitHubButtonClickedClientGUI;
+                                bNP.setFilterBitmap(false);
+                                bNP.setAntiAlias(false);
+                                gitHubButton.setBackgroundDrawable(bNP);
+                                gitHubButton.setPadding(0, Math.round(gitHubButton.getLineHeight() / 8), 0, 0);
+                            }
+                            return false;
+                        }
+                    });
                     
                     youTubeButton.setOnClickListener(new View_.OnClickListener({
                         onClick: function(viewarg) {
@@ -7173,11 +7205,17 @@ VertexClientPE.showStartScreenBar = function() {
                         onClick: function(viewarg) {
                             ModPE.goToURL("http://twitter.com/VertexHX");
                     }}));
+					gitHubButton.setOnClickListener(new View_.OnClickListener({
+                        onClick: function(viewarg) {
+                            ModPE.goToURL("https://github.com/Vertex-Client");
+                    }}));
 					
 					mainMenuListLayout.addView(enter);
 					mainMenuListLayout.addView(youTubeButton);
 					mainMenuListLayout.addView(enter1);
 					mainMenuListLayout.addView(twitterButton);
+					mainMenuListLayout.addView(enter2);
+					mainMenuListLayout.addView(gitHubButton);
                     
                     VertexClientPE.MusicUtils.initMusicPlayer();
                     VertexClientPE.MusicUtils.startMusicPlayer();
@@ -7475,7 +7513,7 @@ function downloadFile(path, url) {
 };
 
 (function checkFiles() {
-    let res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png"],
+    let res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png", "github_button.png", "github_button_clicked.png"],
         isExists = true;
     for (let i = res.length; i--;) {
         if (!new File_(PATH, res[i]).exists()) {
