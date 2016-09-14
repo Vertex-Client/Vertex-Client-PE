@@ -7526,7 +7526,7 @@ function downloadFile(path, url) {
     } else {
         new Thread_({
             run() {
-                print("Downloading resource files...");
+                VertexClientPE.toast("Downloading resource files...");
                 while (!isExists) {
                     Thread_.sleep(1000);
                     for (let i = res.length; i--;) {
@@ -7538,7 +7538,7 @@ function downloadFile(path, url) {
                         }
                     }
                 }
-                print("All files are downloaded successfully. Your launcher will be restarted in 3 seconds.");
+                VertexClientPE.toast("All files are downloaded successfully. Your launcher will be restarted in 3 seconds.");
                 Thread_.sleep(3000);
                 ModPE.restart();
             }
@@ -10228,13 +10228,14 @@ function showHacksList() {
                     }
                     musicTextView = clientTextView("\u266B Currently playing: " + musicText, true);
                     
-                    statesTextView.setTextSize(15);
+                    statesTextView.setTextSize(16);
                     statesTextView.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
                     statesTextView.setMarqueeRepeatLimit(-1);
                     statesTextView.setSingleLine();
                     statesTextView.setHorizontallyScrolling(true);
                     statesTextView.setSelected(true);
-                    musicTextView.setTextSize(15);
+                    musicTextView.setTextSize(16);
+                    musicTextView.setPadding(0, 0, dip2px(8), 0);
                     musicTextView.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
                     musicTextView.setMarqueeRepeatLimit(-1);
                     musicTextView.setSingleLine();
