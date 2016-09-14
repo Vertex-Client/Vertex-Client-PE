@@ -7220,8 +7220,8 @@ VertexClientPE.showStartScreenBar = function() {
                     VertexClientPE.MusicUtils.initMusicPlayer();
                     VertexClientPE.MusicUtils.startMusicPlayer();
 
-                    mainMenuTextList = new PopupWindow_(mainMenuListLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 6, CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
-                    mainMenuTextList.setBackgroundDrawable(backgroundGradient());
+                    mainMenuTextList = new PopupWindow_(mainMenuListLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 8, CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+                    mainMenuTextList.setBackgroundDrawable(backgroundSpecial());
 					if(mainButtonPositionSetting == "top-right") {
 						mainMenuTextList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
 					} else {
@@ -10229,6 +10229,7 @@ function showHacksList() {
                     musicTextView = clientTextView("\u266B Currently playing: " + musicText, true);
                     
                     statesTextView.setTextSize(16);
+					statesTextView.setPadding(0, 0, dip2px(8), 0);
                     statesTextView.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
                     statesTextView.setMarqueeRepeatLimit(-1);
                     statesTextView.setSingleLine();
