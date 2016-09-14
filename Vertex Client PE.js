@@ -159,6 +159,62 @@ var ScreenType = {
     options_screen: "options_screen"
 };
 
+function Vector3(x, y, z) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
+    this.Distance = function (vector2) {
+        var deltax = this.x - vector2.x;
+        var deltaz = this.z - vector2.z;
+        var deltay = this.y - vector2.y;
+        var distance = Math.sqrt(deltax * deltax + deltay* deltay + deltaz * deltaz);
+        return distance;
+    }
+    this.updatePosition = function (x, y, z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+    this.getDistanceVector = function (vector) {
+        return new Vector3(this.x - vector.x, this.y - vector.y, this.z - vector.z);
+    }
+    this.moveAlongPoint = function (otherVector, factor) {
+        var distanceVector = this.getDistanceVector(otherVector);
+        var newPoint = new Vector3(distanceVector.x * factor + this.x, distanceVector.y * factor + this.y, distanceVector.z * factor + this.z);
+        return newPoint;
+    }
+
+    this.getNormalizedVector = function(){
+        return new Vector3((this.x / this.getLength()), (this.y / this.getLength()), (this.z / this.getLength()))
+    }
+
+    this.getLength = function(){
+        return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2) + Math.pow(this.z, 2));
+    }
+    this.add = function(vector){
+        return new Vector3(this.x + vector.x, this.y + vector.y, this.z + vector.z);
+    }
+
+    this.multiplyWithNumber = function (num) {
+        return new Vector3(this.x * num, this.y * num, this.z * num);
+    }
+
+    this.moveAlongDirectionalVector = function(dirvector, distance){
+        var normalizedVector = dirvector.getNormalizedVector();
+        return this.add(normalizedVector.multiplyWithNumber(distance));
+    }
+
+    this.getYAngle = function(){
+        var scalarprod = (this.y)/(this.getLength()*(new Vector3(0,1,0)).getLength());
+        return Math.acos(scalarprod);
+    }
+    this.compare = function (vector) {
+        if (Math.round(this.x) == Math.round(vector.x) && Math.round(this.y) == Math.round(vector.y) && Math.round(this.z) == Math.round(vector.z))
+            return true;
+        return false;
+    }
+}
+
 var currentScreen = Launcher.isToolbox()?ScreenType.ingame:null;
 
 function screenChangeHook(screenName) {
@@ -2689,6 +2745,24 @@ var chatLog = {
     },
     onChatReceive: function(message, sender) {
         VertexClientPE.Utils.world.chatMessages.push("<" + sender + "> " + message);
+    }
+}
+
+var fastBridge = {
+    name: "FastBridge",
+    desc: "Automatically teleports you on top of placed blocks.",
+    category: VertexClientPE.category.MOVEMENT,
+    type: "Mod",
+	state: false,
+    isStateMod: function() {
+        return true;
+    },
+	onToggle: function() {
+        this.state = !this.state;
+    },
+    onUseItem: function(x, y, z, itemId, blockId, side, blockDamage) {
+        var fastBridgeVector = new Vector3(x-(side==4?1:0)+(side==5?1:0),y-(side==0?1:0)+(side==1?1:0),z-(side==2?1:0)+(side==3?1:0));
+		Entity.setPosition(getPlayerEnt(), fastBridgeVector.x, fastBridgeVector.y + 1, fastBridgeVector.z);
     }
 }
 
@@ -7801,6 +7875,11 @@ function newLevel() {
                         accountManagerGUI.dismiss();
                     }
                 }
+				if(mainMenuTextList != null) {
+					if(mainMenuTextList.isShowing()) {
+						mainMenuTextList.dismiss();
+					}
+				}
             }
         });
         autoLeaveStage = 0;
