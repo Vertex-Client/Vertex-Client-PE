@@ -6644,6 +6644,24 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
                 }
             }
             bg.setCornerRadii(radiiFloatArray);
+        } else if(round == "bottomleft") {
+            for(var i = 0; i <= 7; i++) {
+                if(i >= 4 && i <= 5) {
+                    radiiFloatArray[i] = 8;
+                } else {
+                    radiiFloatArray[i] = radius;
+                }
+            }
+            bg.setCornerRadii(radiiFloatArray);
+        } else if(round == "bottomright") {
+            for(var i = 0; i <= 7; i++) {
+                if(i >= 6) {
+                    radiiFloatArray[i] = 8;
+                } else {
+                    radiiFloatArray[i] = radius;
+                }
+            }
+            bg.setCornerRadii(radiiFloatArray);
         } else if(round == "top") {
             for(var i = 0; i <= 7; i++) {
                 if(i <= 3) {
@@ -7182,7 +7200,7 @@ VertexClientPE.showStartScreenBar = function() {
 					}
 					
                     var mainMenuListLayout = new LinearLayout_(CONTEXT);
-                    mainMenuListLayout.setOrientation(1);
+                    mainMenuListLayout.setOrientation(LinearLayout_.HORIZONTAL);
                     mainMenuListLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 					
 					var enter = new TextView_(CONTEXT);
@@ -7282,21 +7300,22 @@ VertexClientPE.showStartScreenBar = function() {
                             ModPE.goToURL("https://github.com/Vertex-Client");
                     }}));
 					
-					mainMenuListLayout.addView(enter);
+					//mainMenuListLayout.addView(enter);
 					mainMenuListLayout.addView(youTubeButton);
-					mainMenuListLayout.addView(enter1);
+					//mainMenuListLayout.addView(enter1);
 					mainMenuListLayout.addView(twitterButton);
-					mainMenuListLayout.addView(enter2);
+					//mainMenuListLayout.addView(enter2);
 					mainMenuListLayout.addView(gitHubButton);
                     
                     VertexClientPE.MusicUtils.initMusicPlayer();
                     VertexClientPE.MusicUtils.startMusicPlayer();
 
-                    mainMenuTextList = new PopupWindow_(mainMenuListLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 8, CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
-                    mainMenuTextList.setBackgroundDrawable(backgroundSpecial());
+                    mainMenuTextList = new PopupWindow_(mainMenuListLayout, dip2px(150), dip2px(50));
 					if(mainButtonPositionSetting == "top-right") {
+						mainMenuTextList.setBackgroundDrawable(backgroundSpecial("bottomleft"));
 						mainMenuTextList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
 					} else {
+						mainMenuTextList.setBackgroundDrawable(backgroundSpecial("bottomright"));
 						mainMenuTextList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
 					}
                 } catch(error) {
@@ -7441,15 +7460,6 @@ ModPE.restart = function () {
         print(e);
     }
 };
-
-VertexClientPE.addAccount = function(str) {
-    var username = str.split(" ")[0];
-    var clientId = str.split(" ")[1];
-    VertexClientPE.accounts.push({
-        username: username,
-        clientId: clientId
-    })
-}
 
 VertexClientPE.removeAccount = function(str, layout, view) {
     if(VertexClientPE.accounts.length() != null) {
@@ -7863,6 +7873,7 @@ VertexClientPE.update = function() {
 
 function newLevel() {
     try {
+		currentScreen = ScreenType.ingame;
         lagTimer = 0;
         CONTEXT.runOnUiThread(new Runnable_() {
             run: function() {
