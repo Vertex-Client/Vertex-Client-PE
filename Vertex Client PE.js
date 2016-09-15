@@ -15,7 +15,8 @@
 // #############
 // Underbar(_) is for preventing duplicate variables such as java.lang.String and String(Javascript)
 
-const AlertDialog_ = android.app.AlertDialog,
+const AlarmManager_ = android.app.AlarmManager,
+    AlertDialog_ = android.app.AlertDialog,
     DownloadManager_ = android.app.DownloadManager,
     Dialog_ = android.app.Dialog,
     Notification_ = android.app.Notification,
@@ -41,6 +42,7 @@ const AlertDialog_ = android.app.AlertDialog,
     Build_ = android.os.Build,
     Environment_ = android.os.Environment,
     Handler_ = android.os.Handler,
+    SystemClock_ = android.os.SystemClock,
     PreferenceManager_ = android.preference.PreferenceManager,
     TextToSpeech_ = android.speech.tts.TextToSpeech,
     ViewPager_ = android.support.v4.view.ViewPager,
@@ -167,52 +169,48 @@ function Vector3(x, y, z) {
         var deltax = this.x - vector2.x;
         var deltaz = this.z - vector2.z;
         var deltay = this.y - vector2.y;
-        var distance = Math.sqrt(deltax * deltax + deltay* deltay + deltaz * deltaz);
+        var distance = Math.sqrt(deltax * deltax + deltay * deltay + deltaz * deltaz);
         return distance;
-    }
+    };
     this.updatePosition = function (x, y, z) {
         this.x = x;
         this.y = y;
         this.z = z;
-    }
+    };
     this.getDistanceVector = function (vector) {
         return new Vector3(this.x - vector.x, this.y - vector.y, this.z - vector.z);
-    }
+    };
     this.moveAlongPoint = function (otherVector, factor) {
         var distanceVector = this.getDistanceVector(otherVector);
         var newPoint = new Vector3(distanceVector.x * factor + this.x, distanceVector.y * factor + this.y, distanceVector.z * factor + this.z);
         return newPoint;
-    }
-
-    this.getNormalizedVector = function(){
-        return new Vector3((this.x / this.getLength()), (this.y / this.getLength()), (this.z / this.getLength()))
-    }
-
-    this.getLength = function(){
+    };
+    this.getNormalizedVector = function () {
+        return new Vector3((this.x / this.getLength()), (this.y / this.getLength()), (this.z / this.getLength()));
+    };
+    this.getLength = function () {
         return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2) + Math.pow(this.z, 2));
-    }
-    this.add = function(vector){
+    };
+    this.add = function (vector) {
         return new Vector3(this.x + vector.x, this.y + vector.y, this.z + vector.z);
-    }
-
+    };
     this.multiplyWithNumber = function (num) {
         return new Vector3(this.x * num, this.y * num, this.z * num);
-    }
-
-    this.moveAlongDirectionalVector = function(dirvector, distance){
+    };
+    this.moveAlongDirectionalVector = function (dirvector, distance) {
         var normalizedVector = dirvector.getNormalizedVector();
         return this.add(normalizedVector.multiplyWithNumber(distance));
-    }
-
-    this.getYAngle = function(){
-        var scalarprod = (this.y)/(this.getLength()*(new Vector3(0,1,0)).getLength());
+    };
+    this.getYAngle = function () {
+        var scalarprod = (this.y) / (this.getLength() * (new Vector3(0, 1, 0)).getLength());
         return Math.acos(scalarprod);
-    }
+    };
     this.compare = function (vector) {
-        if (Math.round(this.x) == Math.round(vector.x) && Math.round(this.y) == Math.round(vector.y) && Math.round(this.z) == Math.round(vector.z))
+        if (Math.round(this.x) === Math.round(vector.x) && Math.round(this.y) === Math.round(vector.y) && Math.round(this.z) === Math.round(vector.z)) {
             return true;
+        }
         return false;
-    }
+    };
 }
 
 var currentScreen = Launcher.isToolbox()?ScreenType.ingame:null;
@@ -7425,20 +7423,24 @@ var accountManagerLayoutLeft;
 var accountManagerLayoutCenter;
 var accountManagerLayoutRight;
 
-ModPE.restart = function() {
-    if(Launcher.isBlockLauncher()) {
-        new Thread_(new Runnable_() {
-            run: function() {
+ModPE.restart = function () {
+    try {
+        let alarmManager = CONTEXT.getSystemService("alarm"),
+            intent = CONTEXT.getPackageManager().getLaunchIntentForPackage(CONTEXT.getPackageName());
+        intent.addFlags(335544320);
+        alarmManager.set(3, SystemClock_.elapsedRealtime() + 500, PendingIntent_.getActivity(CONTEXT, 0, intent, 0));
+        new File_(CONTEXT.getFilesDir() + "/running.lock").delete();
+        new Thread_({
+            run() {
                 VertexClientPE.toast("Restarting...");
-                Thread_.sleep(1000);
-                new File_(CONTEXT.getFilesDir() + "/running.lock").delete();
-                NerdyStuffActivity_.forceRestart(CONTEXT, 500, true);
+                Thread_.sleep(500);
+                System_.exit(0);
             }
         }).start();
-    } else {
-        VertexClientPE.toast("Sorry, Automatic restarting only works with BlockLauncher at the moment! Please restart launcher by yourself.");
+    } catch (e) {
+        print(e);
     }
-}
+};
 
 VertexClientPE.addAccount = function(str) {
     var username = str.split(" ")[0];
