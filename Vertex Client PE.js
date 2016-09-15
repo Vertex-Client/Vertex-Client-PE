@@ -5910,8 +5910,10 @@ function musicBar() {
     musicBarPlayButton.setText("");
     var musicBarLeftTimeView = new TextView_(CONTEXT);
     musicBarLeftTimeView.setText("0:00");
+    musicBarLeftTimeView.setTextColor(Color_.WHITE);
     var musicBarRightTimeView = new TextView_(CONTEXT);
     musicBarRightTimeView.setText("0:00");
+    musicBarRightTimeView.setTextColor(Color_.WHITE);
     musicBarLayoutLeft.addView(musicBarPlayButton);
     musicBarLayoutLeft.addView(musicBarLeftTimeView);
     musicBarLayoutMiddle.addView(musicBarSeekBar);
@@ -6712,6 +6714,9 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
         bg.setColor(Color_.parseColor("#70E1E1E1"));
     } else if(color == "black") {
         bg.setColor(Color_.parseColor("#70141414"));
+    } else if (color[0] === "#"){
+        bg.setColor(Color_.parseColor(color));
+        bg.setStroke(dip2px(1), Color_.parseColor("#ffffff"));
     }
     if(showProLine == true && VertexClientPE.isPro()) {
         bg.setStroke(dip2px(1), Color_.parseColor("#70DAA520"));
@@ -7202,6 +7207,7 @@ VertexClientPE.showStartScreenBar = function() {
                     var mainMenuListLayout = new LinearLayout_(CONTEXT);
                     mainMenuListLayout.setOrientation(LinearLayout_.HORIZONTAL);
                     mainMenuListLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
+                    mainMenuListLayout.setPadding(dip2px(8),dip2px(8),dip2px(8),dip2px(8))
 					
 					var enter = new TextView_(CONTEXT);
 					enter.setText("\n");
@@ -7209,7 +7215,7 @@ VertexClientPE.showStartScreenBar = function() {
                     var youTubeButton = new Button_(CONTEXT);
                     youTubeButton.setBackground(splashYouTubeButtonClientGUI);
                     youTubeButton.setGravity(Gravity_.CENTER);
-                    youTubeButton.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(48), dip2px(48)));
+                    youTubeButton.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(42), dip2px(42)));
                     youTubeButton.setOnTouchListener(new View_.OnTouchListener() {
                         onTouch: function(v, event) {
                             youTubeButton.setSoundEffectsEnabled(false);
@@ -7237,7 +7243,7 @@ VertexClientPE.showStartScreenBar = function() {
                     var twitterButton = new Button_(CONTEXT);
                     twitterButton.setBackgroundDrawable(splashTwitterButtonClientGUI);
                     twitterButton.setGravity(Gravity_.CENTER);
-                    twitterButton.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(48), dip2px(48)));
+                    twitterButton.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(42), dip2px(42)));
                     twitterButton.setOnTouchListener(new View_.OnTouchListener() {
                         onTouch: function(v, event) {
                             twitterButton.setSoundEffectsEnabled(false);
@@ -7265,7 +7271,7 @@ VertexClientPE.showStartScreenBar = function() {
                     var gitHubButton = new Button_(CONTEXT);
                     gitHubButton.setBackgroundDrawable(splashGitHubButtonClientGUI);
                     gitHubButton.setGravity(Gravity_.CENTER);
-                    gitHubButton.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(48), dip2px(48)));
+                    gitHubButton.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(42), dip2px(42)));
                     gitHubButton.setOnTouchListener(new View_.OnTouchListener() {
                         onTouch: function(v, event) {
                             gitHubButton.setSoundEffectsEnabled(false);
@@ -7310,12 +7316,12 @@ VertexClientPE.showStartScreenBar = function() {
                     VertexClientPE.MusicUtils.initMusicPlayer();
                     VertexClientPE.MusicUtils.startMusicPlayer();
 
-                    mainMenuTextList = new PopupWindow_(mainMenuListLayout, dip2px(150), dip2px(50));
+                    mainMenuTextList = new PopupWindow_(mainMenuListLayout, -2, -2);
 					if(mainButtonPositionSetting == "top-right") {
-						mainMenuTextList.setBackgroundDrawable(backgroundSpecial("bottomleft"));
+						mainMenuTextList.setBackgroundDrawable(backgroundSpecial("bottomleft", "#212121"));
 						mainMenuTextList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
 					} else {
-						mainMenuTextList.setBackgroundDrawable(backgroundSpecial("bottomright"));
+						mainMenuTextList.setBackgroundDrawable(backgroundSpecial("bottomright", "#212121"));
 						mainMenuTextList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
 					}
                 } catch(error) {
