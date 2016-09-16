@@ -6701,11 +6701,17 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
         bg.setColor(Color_.parseColor("#70E1E1E1"));
     } else if(color == "black") {
         bg.setColor(Color_.parseColor("#70141414"));
-    } else if (color[0] === "#"){
-        bg.setColor(Color_.parseColor(color));
-        bg.setStroke(dip2px(1), Color_.parseColor("#ffffff"));
+    } else if (typeof color ==="string" && color[0] === "#") {
+        if (color.indexOf("|") < 0) {
+            bg.setColor(Color_.parseColor(color));
+        } else {
+            let arr = color.split("|");
+            bg.setColor(Color_.parseColor(arr[0]));
+            bg.setStroke(dip2px(1), Color_.parseColor(arr[1]));
+        }
     }
-    if(showProLine == true && VertexClientPE.isPro()) {
+    
+    if (showProLine == true && VertexClientPE.isPro()) {
         bg.setStroke(dip2px(1), Color_.parseColor("#70DAA520"));
     }
     bg.setShape(GradientDrawable_.RECTANGLE);
@@ -7305,10 +7311,10 @@ VertexClientPE.showStartScreenBar = function() {
 
                     mainMenuTextList = new PopupWindow_(mainMenuListLayout, -2, -2);
 					if(mainButtonPositionSetting == "top-right") {
-						mainMenuTextList.setBackgroundDrawable(backgroundSpecial("bottomleft", "#212121"));
+						mainMenuTextList.setBackgroundDrawable(backgroundSpecial("bottomleft", "#212121|#ffffff"));
 						mainMenuTextList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
 					} else {
-						mainMenuTextList.setBackgroundDrawable(backgroundSpecial("bottomright", "#212121"));
+						mainMenuTextList.setBackgroundDrawable(backgroundSpecial("bottomright", "#212121|#ffffff"));
 						mainMenuTextList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
 					}
                 } catch(error) {
