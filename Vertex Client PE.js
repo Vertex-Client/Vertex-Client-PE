@@ -9525,7 +9525,7 @@ VertexClientPE.showCategoriesMenu = function () {
                     miscArrow = misc.getRightButton(),
                     menuBarWidth = menuType == "normal" ? CONTEXT.getWindowManager().getDefaultDisplay().getWidth() : CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 1.8,
                     menuBarLayout = new LinearLayout_(CONTEXT),
-                    menuBarTextView = clientTextView("news", true);
+                    menuBarTextView = clientTextView(news, true);
 
                 vertexclientpecombatmenu = new PopupWindow_(CONTEXT);
                 vertexclientpebuildingmenu = new PopupWindow_(CONTEXT),
