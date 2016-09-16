@@ -2760,7 +2760,12 @@ var fastBridge = {
     onUseItem: function(x, y, z, itemId, blockId, side, blockDamage) {
 		if(itemId != 0 && itemId <= 256) {
 			var fastBridgeVector = new Vector3(x-(side==4?1:0)+(side==5?1:0)+0.5,y-(side==0?1:0)+(side==1?1:0)+1,z-(side==2?1:0)+(side==3?1:0)+1);
-			Entity.setPositionRelative(getPlayerEnt(), fastBridgeVector.x - getPlayerX(), fastBridgeVector.y - getPlayerY(), fastBridgeVector.z - getPlayerZ());
+			new Thread_(new Runnable_() {
+				run: function() {
+					Thread_.sleep(1000);
+					Entity.setPositionRelative(getPlayerEnt(), fastBridgeVector.x - getPlayerX(), fastBridgeVector.y - getPlayerY(), fastBridgeVector.z - getPlayerZ());
+				}
+			}).start();
 		}
     }
 }
@@ -7325,9 +7330,6 @@ VertexClientPE.showStartScreenBar = function() {
 					mainMenuListLayout.addView(twitterButton);
 					//mainMenuListLayout.addView(enter2);
 					mainMenuListLayout.addView(gitHubButton);
-                    
-                    VertexClientPE.MusicUtils.initMusicPlayer();
-                    VertexClientPE.MusicUtils.startMusicPlayer();
 
                     mainMenuTextList = new PopupWindow_(mainMenuListLayout, -2, -2);
 					if(mainButtonPositionSetting == "top-right") {
@@ -7577,6 +7579,8 @@ VertexClientPE.setup = function() {
     VertexClientPE.loadUpdateDescription();
     //VertexClientPE.loadDownloadCount();
     VertexClientPE.initShopFeatures();
+	VertexClientPE.MusicUtils.initMusicPlayer();
+	VertexClientPE.MusicUtils.startMusicPlayer();
     if(VertexClientPE.loadMainSettings() == null) {
         VertexClientPE.showSetupScreen();
         setupDone();
@@ -7988,6 +7992,7 @@ function deathHook(a, v) {
 }
 
 function leaveGame() {
+	currentScreen = ScreenType.start_screen;
     CONTEXT.runOnUiThread(new Runnable_({
         run: function() {
             if(hacksList != null) {
