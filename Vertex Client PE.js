@@ -9568,7 +9568,7 @@ VertexClientPE.showCategoriesMenu = function () {
                         } else if (element.category == VertexClientPE.category.BUILDING) {
                             buildingMenuLayout.addView(new modButton(element));
                         } else if (element.category == VertexClientPE.category.MOVEMENT) {
-                            //movementMenuLayout.addView(new modButton(element));
+                            movementMenuLayout.addView(new modButton(element));
                         } else if (element.category == VertexClientPE.category.CHAT) {
                             chatMenuLayout.addView(new modButton(element));
                         } else if (element.category == VertexClientPE.category.MISC) {
