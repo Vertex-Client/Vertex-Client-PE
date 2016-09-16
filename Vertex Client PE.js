@@ -2478,7 +2478,7 @@ var antiAFK = {
 
 var autoLeave = {
     name: "AutoLeave",
-    desc: "Makes the player shock, rotate and walk around to prevent you from getting disconnected.",
+    desc: "Automatically makes you leave the game when your health is (below) 8.",
     category: VertexClientPE.category.COMBAT,
     type: "Mod",
     state: false,
@@ -5424,15 +5424,15 @@ VertexClientPE.saveMainSettings = function() {
 }
 
 VertexClientPE.loadMainSettings = function () {
-    let file = new File_(settingsPath + "vertexclientpe.txt");
+    var file = new File_(settingsPath + "vertexclientpe.txt");
     if (file.exists()) {
-        let fos = new FileInputStream_(file),
+        var fos = new FileInputStream_(file),
             str = new StringBuilder_(),
             ch;
         while ((ch = fos.read()) != -1) {
             str.append(Character_(ch));
         }
-        let arr = str.toString().split(",");
+        var arr = str.toString().split(",");
         if (arr[0] != null && arr[0] != undefined) {
             hacksListModeSetting = arr[0]; //Here we split text by ","
         }
@@ -6730,7 +6730,7 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
         if (color.indexOf("|") < 0) {
             bg.setColor(Color_.parseColor(color));
         } else {
-            let arr = color.split("|");
+            var arr = color.split("|");
             bg.setColor(Color_.parseColor(arr[0]));
             bg.setStroke(dip2px(1), Color_.parseColor(arr[1]));
         }
@@ -7451,7 +7451,7 @@ var accountManagerLayoutRight;
 
 ModPE.restart = function () {
     try {
-        let alarmManager = CONTEXT.getSystemService("alarm"),
+        var alarmManager = CONTEXT.getSystemService("alarm"),
             intent = CONTEXT.getPackageManager().getLaunchIntentForPackage(CONTEXT.getPackageName());
         intent.addFlags(335544320);
         alarmManager.set(3, SystemClock_.elapsedRealtime() + 500, PendingIntent_.getActivity(CONTEXT, 0, intent, 0));
@@ -7595,7 +7595,7 @@ VertexClientPE.setup = function() {
 
 function downloadFile(path, url) {
     try {
-        let file = new File_(path),
+        var file = new File_(path),
             filename = file.getName(),
             downloadManager = new DownloadManager_.Request(new Uri_.parse(url));
         downloadManager.setTitle(filename);
@@ -7608,9 +7608,9 @@ function downloadFile(path, url) {
 };
 
 (function checkFiles() {
-    let res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png", "github_button.png", "github_button_clicked.png", "vertex_logo.png"],
+    var res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png", "github_button.png", "github_button_clicked.png", "vertex_logo.png"],
         isExists = true;
-    for (let i = res.length; i--;) {
+    for (var i = res.length; i--;) {
         if (!new File_(PATH, res[i]).exists()) {
             downloadFile(PATH + res[i], GITHUB_URL + "bootstrap/img/" + res[i]);
             isExists = false;
@@ -7624,7 +7624,7 @@ function downloadFile(path, url) {
                 VertexClientPE.toast("Downloading resource files...");
                 while (!isExists) {
                     Thread_.sleep(1000);
-                    for (let i = res.length; i--;) {
+                    for (var i = res.length; i--;) {
                         if (!new File_(PATH, res[i]).exists()) {
                             isExists = false;
                             break;
@@ -9517,7 +9517,7 @@ VertexClientPE.showCategoryMenus = function () {
     CONTEXT.runOnUiThread({
         run() {
             try {
-                let display = new DisplayMetrics_(),
+                var display = new DisplayMetrics_(),
                     combatMenuLayout = new LinearLayout_(CONTEXT),
                     combatMenuLayout1 = new LinearLayout_(CONTEXT),
                     combatMenuScrollView = new ScrollView(CONTEXT),
@@ -10745,7 +10745,7 @@ var enabledHacksCounter = 0;
 var musicText = "None";
 
 function showHacksList() {
-    let display = CONTEXT.getWindowManager().getDefaultDisplay(),
+    var display = CONTEXT.getWindowManager().getDefaultDisplay(),
         width = display.getWidth(),
         height = display.getHeight();
     if(hacksList == null || !hacksList.isShowing()) {
