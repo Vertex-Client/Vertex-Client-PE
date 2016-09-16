@@ -2759,10 +2759,10 @@ var fastBridge = {
     },
     onUseItem: function(x, y, z, itemId, blockId, side, blockDamage) {
 		if(itemId != 0 && itemId <= 256) {
-			var fastBridgeVector = new Vector3(x-(side==4?1:0)+(side==5?1:0)+0.5,y-(side==0?1:0)+(side==1?1:0)+1,z-(side==2?1:0)+(side==3?1:0)+1);
+			var fastBridgeVector = new Vector3(x-(side==4?1:0)+(side==5?1:0)+0.5,y-(side==0?1:0)+(side==1?1:0)+2,z-(side==2?1:0)+(side==3?1:0)+1);
 			new Thread_(new Runnable_() {
 				run: function() {
-					Thread_.sleep(1000);
+					Thread_.sleep(100);
 					Entity.setPositionRelative(getPlayerEnt(), fastBridgeVector.x - getPlayerX(), fastBridgeVector.y - getPlayerY(), fastBridgeVector.z - getPlayerZ());
 				}
 			}).start();
@@ -2793,7 +2793,7 @@ VertexClientPE.registerModule(tpAura);
 VertexClientPE.registerModule(autoTeleporter);
 VertexClientPE.registerModule(autoWalk);
 VertexClientPE.registerModule(enderProjectiles);
-//VertexClientPE.registerModule(fastBridge);
+VertexClientPE.registerModule(fastBridge);
 VertexClientPE.registerModule(fastWalk);
 VertexClientPE.registerModule(flight);
 VertexClientPE.registerModule(glide);
@@ -9261,8 +9261,8 @@ function dashboardScreen() {
                 dashboardMenuLayout.addView(addonsIconButton);
                 if(Launcher.isBlockLauncher()) {
                     dashboardMenuLayout.addView(blockLauncherSettingsIconButton);
-                    dashboardMenuLayout.addView(restartIconButton);
                 }
+				dashboardMenuLayout.addView(restartIconButton);
                 dashboardMenuLayout.addView(shutDownIconButton);
                 
                 dashboardMenu = new PopupWindow_(dashboardMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
