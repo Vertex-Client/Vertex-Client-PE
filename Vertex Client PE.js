@@ -5665,40 +5665,60 @@ function clientButton(text, desc, color, round, forceLightColor, style) //menu b
     }
     if(forceLightColor == true) {
         bg.setColor(Color_.parseColor("#00994C"));
-        bg.setStroke(dip2px(2), Color_.parseColor("#00CC66"));
+		if(style != "normal_nostrokes") {
+			bg.setStroke(dip2px(2), Color_.parseColor("#00CC66"));
+		}
     } else {
         bg.setColor(Color_.parseColor("#0B5B25"));
-        bg.setStroke(dip2px(2), Color_.parseColor("#0F8219"));
+		if(style != "normal_nostrokes") {
+			bg.setStroke(dip2px(2), Color_.parseColor("#0F8219"));
+		}
     }
     bg.setShape(GradientDrawable_.RECTANGLE);
     if(color == "red") {
         if(forceLightColor == true) {
             bg.setColor(Color_.parseColor("#FF3333"));
-            bg.setStroke(dip2px(2), Color_.parseColor("#FF6666"));
+			if(style != "normal_nostrokes") {
+				bg.setStroke(dip2px(2), Color_.parseColor("#FF6666"));
+			}
         } else {
             bg.setColor(Color_.parseColor("#5B0C0C"));
-            bg.setStroke(dip2px(2), Color_.parseColor("#821010"));
+			if(style != "normal_nostrokes") {
+				bg.setStroke(dip2px(2), Color_.parseColor("#821010"));
+			}
         }
     }if(color == "blue") {
         if(forceLightColor == true) {
             bg.setColor(Color_.parseColor("#0080FF"));
-            bg.setStroke(dip2px(2), Color_.parseColor("#3399FF"));
+			if(style != "normal_nostrokes") {
+				bg.setStroke(dip2px(2), Color_.parseColor("#3399FF"));
+			}
         } else {
             bg.setColor(Color_.parseColor("#0A175B"));
-            bg.setStroke(dip2px(2), Color_.parseColor("#0E3882"));
+			if(style != "normal_nostrokes") {
+				bg.setStroke(dip2px(2), Color_.parseColor("#0E3882"));
+			}
         }
     }if(color == "purple") {
         bg.setColor(Color_.parseColor("#9F018C"));
-        bg.setStroke(dip2px(2), Color_.parseColor("#BC21AB"));
+		if(style != "normal_nostrokes") {
+			bg.setStroke(dip2px(2), Color_.parseColor("#BC21AB"));
+		}
     }if(color == "yellow") {
         bg.setColor(Color_.parseColor("#CCCC00"));
-        bg.setStroke(dip2px(2), Color_.parseColor("#FFFF00"));
+		if(style != "normal_nostrokes") {
+			bg.setStroke(dip2px(2), Color_.parseColor("#FFFF00"));
+		}
     }if(color == "white") {
         bg.setColor(Color_.parseColor("#E1E1E1"));
-        bg.setStroke(dip2px(2), Color_.parseColor("#FFFFFF"));
+		if(style != "normal_nostrokes") {
+			bg.setStroke(dip2px(2), Color_.parseColor("#FFFFFF"));
+		}
     }if(color == "black") {
         bg.setColor(Color_.parseColor("#141414"));
-        bg.setStroke(dip2px(2), Color_.parseColor("#1E1E1E"));
+		if(style != "normal_nostrokes") {
+			bg.setStroke(dip2px(2), Color_.parseColor("#1E1E1E"));
+		}
     }
     
     if(style == "legacy") {
@@ -8183,6 +8203,8 @@ function settingsScreen() {
                     var buttonStyleSettingButton = clientButton("Button style", "Change the button style.");
                     if(buttonStyleSetting == "normal") {
                         buttonStyleSettingButton.setText("Button style | Normal");
+                    } else if(buttonStyleSetting == "normal_nostrokes") {
+                        buttonStyleSettingButton.setText("Button style | Normal (no strokes)");
                     } else if(buttonStyleSetting == "legacy") {
                         buttonStyleSettingButton.setText("Button style | Legacy");
                     } else if(buttonStyleSetting == "legacy_inverted") {
@@ -8197,6 +8219,10 @@ function settingsScreen() {
                             buttonStyleSettingButton.setText("Button style | Normal");
                             VertexClientPE.saveMainSettings();
                         } else if(buttonStyleSetting == "normal") {
+                            buttonStyleSetting = "normal_nostrokes";
+                            buttonStyleSettingButton.setText("Button style | Normal (no strokes)");
+                            VertexClientPE.saveMainSettings();
+                        } else if(buttonStyleSetting == "normal_nostrokes") {
                             buttonStyleSetting = "legacy";
                             buttonStyleSettingButton.setText("Button style | Legacy");
                             VertexClientPE.saveMainSettings();
