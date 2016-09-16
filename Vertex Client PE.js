@@ -2759,7 +2759,7 @@ var fastBridge = {
     },
     onUseItem: function(x, y, z, itemId, blockId, side, blockDamage) {
 		if(itemId != 0 && itemId <= 256) {
-			var fastBridgeVector = new Vector3(x-(side==4?1:0)+(side==5?1:0)+0.5,y-(side==0?1:0)+(side==1?1:0)+2,z-(side==2?1:0)+(side==3?1:0)+1);
+			var fastBridgeVector = new Vector3(x-(side==4?1:0)+(side==5?1:0)+0.5,y-(side==0?1:0)+(side==1?1:0)+2,z-(side==2?1:0)+(side==3?1:0)+0.5);
 			new Thread_(new Runnable_() {
 				run: function() {
 					Thread_.sleep(100);
