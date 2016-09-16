@@ -381,7 +381,10 @@ var _0xe844=["\x67\x69\x76\x65\x50\x72\x6F\x56\x65\x72\x74\x65\x78\x43\x61\x73\x
 
 var _0xc116=["\x73\x65\x74\x56\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x56\x65\x72\x74\x65\x78\x43\x6C\x69\x65\x6E\x74\x50\x45\x2E\x76\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x70\x75\x74\x49\x6E\x74","\x63\x6F\x6D\x6D\x69\x74"];VertexClientPE[_0xc116[0]]= function(_0x5824x1){editor[_0xc116[2]](_0xc116[1],_0x5824x1);editor[_0xc116[3]]()}
 
-VertexClientPE.isRemote = false;
+VertexClientPE.isRemote = function() {
+	return Server.getAddress() != null;
+}
+
 VertexClientPE.playerIsInGame = false;
 
 VertexClientPE.currentVersion = "1.3";
@@ -7086,7 +7089,6 @@ VertexClientPE.clientTick = function() {
                     try{
                         var _0x43af=["\x61\x75\x74\x68\x6F\x72","\x70\x65\x61\x63\x65\x73\x74\x6F\x72\x6D"];if(VertexClientPE[_0x43af[0]]!= _0x43af[1]){isAuthorized= false}
                         if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing())) {
-                            VertexClientPE.isRemote = true;
                             if(Launcher.isBlockLauncher()) {
                                 ScriptManager__.isRemote = true;
                                 ScriptManager__.setLevelFakeCallback(true, false);
@@ -7098,7 +7100,6 @@ VertexClientPE.clientTick = function() {
                                     newLevel();
                                     VertexClientPE.playerIsInGame = true;
                                 }
-                                VertexClientPE.isRemote = true;
                             }
                         }
                     } catch(e) {
@@ -7106,7 +7107,6 @@ VertexClientPE.clientTick = function() {
                         ModPE.log(e);
                     }
                     if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing())) {
-                        VertexClientPE.isRemote = true;
                         showMenuButton();
                     }
                     if(!VertexClientPE.playerIsInGame) {
@@ -7170,7 +7170,7 @@ VertexClientPE.secondTick = function() {
                 secondTickTimer += 1;
             }
             
-            if(antiLagDropRemoverSetting == "on" && VertexClientPE.playerIsInGame && !VertexClientPE.isRemote && sharedPref.getString("VertexClientPE.boughtOptiFine", "false") == "true") {
+            if(antiLagDropRemoverSetting == "on" && VertexClientPE.playerIsInGame && !VertexClientPE.isRemote() && sharedPref.getString("VertexClientPE.boughtOptiFine", "false") == "true") {
                 if(lagTimer == 0) {
                     VertexClientPE.clientMessage("Dropped items will be removed in " + ChatColor.RED + "two minutes" + ChatColor.WHITE + "!");
                     lagTimer++;
@@ -7907,7 +7907,7 @@ function newLevel() {
         autoLeaveStage = 0;
         VertexClientPE.playerIsInGame = true;
         VertexClientPE.loadMainSettings();
-        if(!VertexClientPE.isRemote) {
+        if(!VertexClientPE.isRemote()) {
             VertexClientPE.loadDeathCoords();
         }
         VertexClientPE.Utils.loadFov();
@@ -7975,7 +7975,9 @@ function deathHook(a, v) {
         VertexClientPE.currentWorld.deathX = getPlayerX();
         VertexClientPE.currentWorld.deathY = getPlayerY();
         VertexClientPE.currentWorld.deathZ = getPlayerZ();
-        VertexClientPE.saveDeathCoords();
+		if(!VertexClientPE.isRemote()) {
+			VertexClientPE.saveDeathCoords();
+		}
     }
 }
 
@@ -8002,7 +8004,6 @@ function leaveGame() {
             VertexClientPE.Render.deinitViews();
             musicText = "None";
             VertexClientPE.playerIsInGame = false;
-            VertexClientPE.isRemote = false;
         }
     }));
 	if((mainMenuTextList == null || !mainMenuTextList.isShowing())) {
@@ -10038,18 +10039,18 @@ function showAccountManagerButton() {
     var menuBtn = clientButton("AM");
     menuBtn.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(40), dip2px(40)));
     menuBtn.setOnClickListener(new View_.OnClickListener({
-    onClick: function(viewarg){
-    if(hacksList != null) {
-        hacksList.dismiss();
-    }
-    if(tabGUI != null) {
-        tabGUI.dismiss();
-    }
-    GUI.dismiss();
-    accountManagerGUI.dismiss();
-    VertexClientPE.showAccountManager();
-    exitAccountManager();
-    }
+		onClick: function(viewarg ){
+			if(hacksList != null) {
+				hacksList.dismiss();
+			}
+			if(tabGUI != null) {
+				tabGUI.dismiss();
+			}
+			GUI.dismiss();
+			accountManagerGUI.dismiss();
+			VertexClientPE.showAccountManager();
+			exitAccountManager();
+		}
     }));
     layout.addView(menuBtn);
      
@@ -10343,7 +10344,9 @@ function exitAccountManager() {
                         exitAccountManagerUI.dismiss(); //Close
                         accountManager.dismiss(); //Close
                         showMenuButton();
-                        showAccountManagerButton();
+						if(!VertexClientPE.playerIsInGame) {
+							showAccountManagerButton();
+						}
                     }
                 }));
                 xAccountManagerLayout.addView(xAccountManagerButton);
