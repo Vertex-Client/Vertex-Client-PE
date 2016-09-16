@@ -237,7 +237,7 @@ function screenChangeHook(screenName) {
             }));
         }
 		if(screenName == ScreenType.start_screen) {
-			if((mainMenuTextList == null || !mainMenuTextList.isShowing()) && !VertexClientPE.menuIsShowing) {
+			if((mainMenuTextList == null || !mainMenuTextList.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
 				VertexClientPE.showStartScreenBar();
 			}
 		} else {
@@ -7225,10 +7225,7 @@ VertexClientPE.showStartScreenBar = function() {
                     var mainMenuListLayout = new LinearLayout_(CONTEXT);
                     mainMenuListLayout.setOrientation(LinearLayout_.HORIZONTAL);
                     mainMenuListLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
-                    mainMenuListLayout.setPadding(dip2px(8),dip2px(8),dip2px(8),dip2px(8))
-					
-					var enter = new TextView_(CONTEXT);
-					enter.setText("\n");
+                    mainMenuListLayout.setPadding(dip2px(8),dip2px(8),dip2px(8),dip2px(8));
 					
                     var youTubeButton = new Button_(CONTEXT);
                     youTubeButton.setBackground(splashYouTubeButtonClientGUI);
@@ -7255,9 +7252,6 @@ VertexClientPE.showStartScreenBar = function() {
                         }
                     });
 					
-					var enter1 = new TextView_(CONTEXT);
-					enter1.setText("\n");
-					
                     var twitterButton = new Button_(CONTEXT);
                     twitterButton.setBackgroundDrawable(splashTwitterButtonClientGUI);
                     twitterButton.setGravity(Gravity_.CENTER);
@@ -7282,9 +7276,6 @@ VertexClientPE.showStartScreenBar = function() {
                             return false;
                         }
                     });
-					
-					var enter2 = new TextView_(CONTEXT);
-					enter2.setText("\n");
 					
                     var gitHubButton = new Button_(CONTEXT);
                     gitHubButton.setBackgroundDrawable(splashGitHubButtonClientGUI);
@@ -7324,11 +7315,8 @@ VertexClientPE.showStartScreenBar = function() {
                             ModPE.goToURL("https://github.com/Vertex-Client");
                     }}));
 					
-					//mainMenuListLayout.addView(enter);
 					mainMenuListLayout.addView(youTubeButton);
-					//mainMenuListLayout.addView(enter1);
 					mainMenuListLayout.addView(twitterButton);
-					//mainMenuListLayout.addView(enter2);
 					mainMenuListLayout.addView(gitHubButton);
 
                     mainMenuTextList = new PopupWindow_(mainMenuListLayout, -2, -2);
@@ -8017,6 +8005,9 @@ function leaveGame() {
             VertexClientPE.isRemote = false;
         }
     }));
+	if((mainMenuTextList == null || !mainMenuTextList.isShowing())) {
+		VertexClientPE.showStartScreenBar();
+	}
 }
 
 function settingsScreen() {
@@ -10702,7 +10693,7 @@ function showMenuButton() {
         showTabGUI();
     }
 	if(currentScreen == ScreenType.start_screen) {
-		if((mainMenuTextList == null || !mainMenuTextList.isShowing()) && !VertexClientPE.menuIsShowing) {
+		if((mainMenuTextList == null || !mainMenuTextList.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
 			VertexClientPE.showStartScreenBar();
 		}
 	}
