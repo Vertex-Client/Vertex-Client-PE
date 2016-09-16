@@ -1,13 +1,13 @@
 /**
- * ###############################################################
+ * #####################################################################
  * @name Vertex Client PE
  * @version v1.3
  * @author peacestorm (@AgameR_Modder)
- * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG
+ * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36
  *
  * Thanks to NoCopyrightSounds and all artists for the music!
  *
- * ###############################################################
+ * #####################################################################
  */
 
 // #############
@@ -2758,8 +2758,10 @@ var fastBridge = {
         this.state = !this.state;
     },
     onUseItem: function(x, y, z, itemId, blockId, side, blockDamage) {
-        var fastBridgeVector = new Vector3(x-(side==4?1:0)+(side==5?1:0),y-(side==0?1:0)+(side==1?1:0),z-(side==2?1:0)+(side==3?1:0));
-		Entity.setPosition(getPlayerEnt(), fastBridgeVector.x, fastBridgeVector.y + 1, fastBridgeVector.z);
+		if(itemId != 0 && itemId <= 256) {
+			var fastBridgeVector = new Vector3(x-(side==4?1:0)+(side==5?1:0)+0.5,y-(side==0?1:0)+(side==1?1:0)+1,z-(side==2?1:0)+(side==3?1:0)+1);
+			Entity.setPositionRelative(getPlayerEnt(), fastBridgeVector.x - getPlayerX(), fastBridgeVector.y - getPlayerY(), fastBridgeVector.z - getPlayerZ());
+		}
     }
 }
 
@@ -9354,7 +9356,7 @@ VertexClientPE.showMenu = function() {
     var _0xff55=["\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x6F\x75\x74\x64\x61\x74\x65\x64\x2C\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C","\x74\x6F\x61\x73\x74","\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C"];if(!isAuthorized){if(!isSupported){VertexClientPE[_0xff55[1]](_0xff55[0])}else {VertexClientPE[_0xff55[1]](_0xff55[2])};return}
     menuBtn.setBackgroundDrawable(iconClickedClientGUI);
     if(menuType == "normal") {
-        VertexClientPE.showCategoriesMenu();
+        VertexClientPE.showCategoryMenus();
     } else if(menuType == "halfscreen") {
         mainMenu();
     }
@@ -9483,7 +9485,7 @@ var favdown = false;
 
 var combatMenuShown = false;
 
-VertexClientPE.showCategoriesMenu = function () {
+VertexClientPE.showCategoryMenus = function () {
     CONTEXT.runOnUiThread({
         run() {
             try {
