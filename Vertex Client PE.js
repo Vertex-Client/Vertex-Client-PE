@@ -1,7 +1,7 @@
 /**
  * #####################################################################
  * @name Vertex Client PE
- * @version v1.3
+ * @version v1.3.1
  * @author peacestorm (@AgameR_Modder)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36
  *
@@ -387,7 +387,7 @@ VertexClientPE.isRemote = function() {
 
 VertexClientPE.playerIsInGame = false;
 
-VertexClientPE.currentVersion = "1.3";
+VertexClientPE.currentVersion = "1.3.1";
 VertexClientPE.currentVersionDesc = "The Performance Update";
 VertexClientPE.targetVersion = "MCPE v0.15.x alpha";
 VertexClientPE.minVersion = "0.15.0";
@@ -3898,12 +3898,12 @@ VertexClientPE.showModDialog = function(mod, btn) {
                 dialogLayout.addView(modEnter);
                 
                 var settingsLinearLayout = new ScrollView(CONTEXT);
-                settingsLinearLayout_.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels, display.heightPixels / 3));
+                settingsLinearLayout.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels, display.heightPixels / 3));
                 var settingsScrollView = new ScrollView(CONTEXT);
                 
                 if(mod.getSettingsLayout) {
                     dialogLayout.addView(settingsLinearLayout);
-                    settingsLinearLayout_.addView(settingsScrollView);
+                    settingsLinearLayout.addView(settingsScrollView);
                     settingsScrollView.addView(mod.getSettingsLayout());
                 }
                 
