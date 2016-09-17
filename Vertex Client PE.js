@@ -1267,7 +1267,7 @@ var nuker = {
         var x = getPlayerX();
         var y = getPlayerY();
         var z = getPlayerZ();
-        VertexClientPE.nuker(x, y, z, nukerRange);
+        nuke(x, y, z, nukerRange);
     }
 };
 
@@ -1846,7 +1846,7 @@ var tapNuker = {
         this.state = !this.state;
     },
     onUseItem: function(x, y, z, itemId, blockId, side, blockDamage) {
-        VertexClientPE.nuker(x, y, z, tapNukerRange, "cube");
+        nuke(x, y, z, tapNukerRange, "cube");
     }
 }
 
@@ -5099,7 +5099,7 @@ VertexClientPE.healthTags = function() {
     }
 }
 
-VertexClientPE.nuker = function(x, y, z, range, mode) {
+function nuke(x, y, z, range, mode) {
     mode = (mode==null)?"cube":mode;
     range = (range==null)?3:range;
     var destroyFunction = yesCheatPlusState?Level.destroyBlock:setTile;
