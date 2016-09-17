@@ -3920,7 +3920,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
                         } else {
                             toggleButton.setTextColor(Color_.GREEN);
                         }
-                        toggleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_BLACK);
+                        toggleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
                     } else {
                         toggleButton.setText("Enable");
                     }
@@ -3957,7 +3957,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
                                         toggleButton.setTextColor(Color_.GREEN);
                                         btn.setTextColor(Color_.GREEN);
                                     }
-                                    toggleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_BLACK);
+                                    toggleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
                                     btn.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
                                 } else if(!mod.state) {
                                     toggleButton.setText("Enable");
