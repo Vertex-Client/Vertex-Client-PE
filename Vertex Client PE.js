@@ -683,21 +683,9 @@ var menuBar;
  * #########
  */
 
-VertexClientPE.favourites = [];
-
 VertexClientPE.addView = function(layout, modButtonView) {
     try {
-        var isFavourite;
-        for(var fav in VertexClientPE.favourites) {
-            if(VertexClientPE.favourites[fav] == modButtonView.getName()) {
-                favMenuLayout.addView(modButtonView.getLayout());
-                isFavourite = true;
-                break;
-            }
-        }
-        if(!isFavourite) {
-            layout.addView(modButtonView.getLayout());
-        }
+        layout.addView(modButtonView.getLayout());
     } catch(e) {
         clientMessage("Error: " + e);
         VertexClientPE.showBugReportDialog(e);
@@ -6884,8 +6872,8 @@ function backgroundGradient(round) // TextView with colored background (edited b
     return bg;
 }
 
+VertexClientPE.loadMainSettings();
 (VertexClientPE.editCopyrightText = function() {
-    VertexClientPE.loadMainSettings();
     ModPE.langEdit("menu.copyright", "\u00A9Mojang AB | \u00A72Vertex Client PE by peacestorm");
     if(themeSetting == "red") {
         ModPE.langEdit("menu.copyright", "\u00A9Mojang AB | \u00A74Vertex Client PE by peacestorm");
