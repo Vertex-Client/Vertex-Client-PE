@@ -1,7 +1,7 @@
 /**
  * #####################################################################
  * @name Vertex Client PE
- * @version v1.3.1
+ * @version v1.3.2
  * @author peacestorm (@AgameR_Modder)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36
  *
@@ -387,7 +387,7 @@ VertexClientPE.isRemote = function() {
 
 VertexClientPE.playerIsInGame = false;
 
-VertexClientPE.currentVersion = "1.3.1";
+VertexClientPE.currentVersion = "1.3.2";
 VertexClientPE.currentVersionDesc = "The Performance Update";
 VertexClientPE.targetVersion = "MCPE v0.15.x alpha";
 VertexClientPE.minVersion = "0.15.0";
@@ -4056,15 +4056,15 @@ VertexClientPE.showItemGiverDialog = function() {
                 var dialogTableRow;
                 var tempButton;
                 var itemNameText = clientTextView("Name: Unknown");
-                var itemIdInput = new EditText_(CONTEXT);
+                var itemIdInput = new EditText(CONTEXT);
                 itemIdInput.setTextColor(Color_.WHITE);
                 itemIdInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
                 itemIdInput.setHint("Id");
-                var itemAmountInput = new EditText_(CONTEXT);
+                var itemAmountInput = new EditText(CONTEXT);
                 itemAmountInput.setTextColor(Color_.WHITE);
                 itemAmountInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
                 itemAmountInput.setHint("Amount");
-                var itemDataInput = new EditText_(CONTEXT);
+                var itemDataInput = new EditText(CONTEXT);
                 itemDataInput.setTextColor(Color_.WHITE);
                 itemDataInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
                 itemDataInput.setHint("Data");
@@ -9564,8 +9564,8 @@ VertexClientPE.showCategoryMenus = function () {
 
                 vertexclientpecombatmenu = new PopupWindow_(CONTEXT);
                 vertexclientpebuildingmenu = new PopupWindow_(CONTEXT),
-                    vertexclientpemovementmenu = new PopupWindow_(CONTEXT),
-                    vertexclientpechatmenu = new PopupWindow_(CONTEXT);
+				vertexclientpemovementmenu = new PopupWindow_(CONTEXT),
+				vertexclientpechatmenu = new PopupWindow_(CONTEXT);
                 vertexclientpemiscmenu = new PopupWindow_(CONTEXT);
 
                 CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
