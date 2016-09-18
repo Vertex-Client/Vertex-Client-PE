@@ -658,6 +658,7 @@ var userIsNewToCurrentVersion = false;
 var mainMenuTextList;
 var GUI;
 var menu;
+var fullScreenMenu;
 var exitUI;
 var exitWebBrowserUI;
 var reloadWebBrowserUI;
@@ -881,17 +882,18 @@ var panic = {
                 element.onToggle();
             }
         });
-        if(menuBar != null) {
-            if(menuBar.isShowing()) {
-                VertexClientPE.closeMenu();
-                VertexClientPE.showMenu();
-            }
-        }
+		if(VertexClientPE.menuIsShowing) {
+			VertexClientPE.closeMenu();
+            VertexClientPE.showMenu();
+		}
         if(tabGUI != null) {
             if(tabGUI.isShowing()) {
                 tabGUI.dismiss();
                 showTabGUI();
             }
+        }
+		if(hacksList != null && hacksList.isShowing()) {
+            updateHacksList();
         }
     }
 };
@@ -908,17 +910,18 @@ var yesCheatPlus = {
     onToggle: function() {
         this.state = !this.state;
         yesCheatPlusState = this.state;
-        if(menuBar != null) {
-            if(menuBar.isShowing()) {
-                VertexClientPE.closeMenu();
-                VertexClientPE.showMenu();
-            }
-        }
+        if(VertexClientPE.menuIsShowing) {
+			VertexClientPE.closeMenu();
+            VertexClientPE.showMenu();
+		}
         if(tabGUI != null) {
             if(tabGUI.isShowing()) {
                 tabGUI.dismiss();
                 showTabGUI();
             }
+        }
+		if(hacksList != null && hacksList.isShowing()) {
+            updateHacksList();
         }
     }
 };
@@ -3267,9 +3270,6 @@ var panic_cmd = {
     },
     onCall: function(cmd) {
         panic.onToggle();
-        if(hacksList != null && hacksList.isShowing()) {
-            updateHacksList();
-        }
     }
 }
 
@@ -6189,6 +6189,9 @@ function modButton(mod, buttonOnly) {
     modButtonLayoutRight.addView(defaultInfoButton);
     
     if(buttonOnly == null || !buttonOnly) {
+		/* if(sharedPref.getString("VertexClientPE.mods." + mod.name + ".isFavorite", "false") == "true") {
+			modButtonLayout.setBackgroundColor(Color_.RED);
+		} */
         return modButtonLayout;
     } else if(buttonOnly) {
         return defaultClientButton;
@@ -7080,7 +7083,7 @@ VertexClientPE.clientTick = function() {
                 run: function() {
                     try{
                         var _0x43af=["\x61\x75\x74\x68\x6F\x72","\x70\x65\x61\x63\x65\x73\x74\x6F\x72\x6D"];if(VertexClientPE[_0x43af[0]]!= _0x43af[1]){isAuthorized= false}
-                        if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing())) {
+                        if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing())) {
                             if(Launcher.isBlockLauncher()) {
                                 ScriptManager__.isRemote = true;
                                 ScriptManager__.setLevelFakeCallback(true, false);
@@ -7098,7 +7101,7 @@ VertexClientPE.clientTick = function() {
                         print("Use BlockLauncher v1.12.2 or above!");
                         ModPE.log(e);
                     }
-                    if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing())) {
+                    if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing())) {
                         showMenuButton();
                     }
                     if(!VertexClientPE.playerIsInGame) {
@@ -8312,6 +8315,8 @@ function settingsScreen() {
                         menuTypeSettingButton.setText("Menu style | Normal");
                     } else if(menuType == "halfscreen") {
                         menuTypeSettingButton.setText("Menu style | Retro");
+                    } else if(menuType == "fullscreen") {
+                        menuTypeSettingButton.setText("Menu style | Fullscreen");
                     }
                     menuTypeSettingButton.setOnClickListener(new View_.OnClickListener({
                     onClick: function(viewarg){
@@ -8320,6 +8325,10 @@ function settingsScreen() {
                             menuTypeSettingButton.setText("Menu style | Retro");
                             VertexClientPE.saveMainSettings();
                         } else if(menuType == "halfscreen") {
+                            menuType = "fullscreen";
+                            menuTypeSettingButton.setText("Menu style | Fullscreen");
+                            VertexClientPE.saveMainSettings();
+                        } else if(menuType == "fullscreen") {
                             menuType = "normal";
                             menuTypeSettingButton.setText("Menu style | Normal");
                             VertexClientPE.saveMainSettings();
@@ -9399,9 +9408,12 @@ VertexClientPE.showMenu = function() {
     menuBtn.setBackgroundDrawable(iconClickedClientGUI);
     if(menuType == "normal") {
         VertexClientPE.showCategoryMenus();
+		VertexClientPE.showMenuBar();
     } else if(menuType == "halfscreen") {
-        mainMenu();
-    }
+        retroMenu();
+    } else {
+		VertexClientPE.showFullScreenMenu();
+	}
     VertexClientPE.menuIsShowing = true;
 }
 
@@ -9421,18 +9433,24 @@ VertexClientPE.closeMenu = function() {
                 vertexclientpemiscmenu.dismiss();
             }
         }
-        if(menuBar != null) {
-            if(menuBar.isShowing()) {
-                menuBar.dismiss();
-            }
-        }
     } else if(menuType == "halfscreen") {
         if(menu != null) {
             if(menu.isShowing()) {
                 menu.dismiss();
             }
         }
+    } else if(menuType == "fullscreen") {
+        if(fullScreenMenu != null) {
+            if(fullScreenMenu.isShowing()) {
+                fullScreenMenu.dismiss();
+            }
+        }
     }
+	if(menuBar != null) {
+		if(menuBar.isShowing()) {
+			menuBar.dismiss();
+		}
+	}
     if(GUI != null) {
         if(GUI.isShowing()) {
             menuBtn.setBackgroundDrawable(iconClientGUI);
@@ -9440,14 +9458,156 @@ VertexClientPE.closeMenu = function() {
     }
 }
 
+VertexClientPE.showFullScreenMenu = function() {
+    VertexClientPE.menuIsShowing = true;
+    var display = new DisplayMetrics_();
+    CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
+        CONTEXT.runOnUiThread(new Runnable_({
+            run: function() {
+                try {
+                    if(hacksList != null) {
+                        if(hacksList.isShowing()) {
+                            hacksList.dismiss();
+                        }
+                    }
+                    if(tabGUI != null) {
+                        if(tabGUI.isShowing()) {
+                            tabGUI.dismiss();
+                        }
+                    }
+					if(mainMenuTextList != null) {
+						if(mainMenuTextList.isShowing()) {
+                            mainMenuTextList.dismiss();
+                        }
+					}
+					
+					var fullScreenMenuLayoutScroll = new android.widget.HorizontalScrollView(CONTEXT);
+
+                    var fullScreenMenuLayout = new LinearLayout_(CONTEXT);
+                    fullScreenMenuLayout.setOrientation(LinearLayout_.HORIZONTAL);
+                    fullScreenMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
+					
+					fullScreenMenuLayoutScroll.addView(fullScreenMenuLayout);
+                    
+					var fullScreenMenuLayout1Combat = new LinearLayout_(CONTEXT);
+					fullScreenMenuLayout1Combat.setOrientation(1);
+					fullScreenMenuLayout1Combat.setGravity(Gravity_.CENTER_HORIZONTAL);
+                    var fullScreenMenuLayout1Building = new LinearLayout_(CONTEXT);
+					fullScreenMenuLayout1Building.setOrientation(1);
+					fullScreenMenuLayout1Building.setGravity(Gravity_.CENTER_HORIZONTAL);
+                    var fullScreenMenuLayout1Movement = new LinearLayout_(CONTEXT);
+					fullScreenMenuLayout1Movement.setOrientation(1);
+					fullScreenMenuLayout1Movement.setGravity(Gravity_.CENTER_HORIZONTAL);
+                    var fullScreenMenuLayout1Chat = new LinearLayout_(CONTEXT);
+					fullScreenMenuLayout1Chat.setOrientation(1);
+					fullScreenMenuLayout1Chat.setGravity(Gravity_.CENTER_HORIZONTAL);
+                    var fullScreenMenuLayout1Misc = new LinearLayout_(CONTEXT);
+					fullScreenMenuLayout1Misc.setOrientation(1);
+					fullScreenMenuLayout1Misc.setGravity(Gravity_.CENTER_HORIZONTAL);
+					
+					var combatSectionTitle = clientTextView(combatName);
+					combatSectionTitle.setTypeface(VertexClientPE.font, Typeface_.BOLD);
+					var buildingSectionTitle = clientTextView(buildingName);
+					buildingSectionTitle.setTypeface(VertexClientPE.font, Typeface_.BOLD);
+					var movementSectionTitle = clientTextView(movementName);
+					movementSectionTitle.setTypeface(VertexClientPE.font, Typeface_.BOLD);
+					var chatSectionTitle = clientTextView(chatName);
+					chatSectionTitle.setTypeface(VertexClientPE.font, Typeface_.BOLD);
+					var miscSectionTitle = clientTextView(miscName);
+					miscSectionTitle.setTypeface(VertexClientPE.font, Typeface_.BOLD);
+					
+					fullScreenMenuLayout1Combat.addView(combatSectionTitle);
+					fullScreenMenuLayout1Building.addView(buildingSectionTitle);
+					fullScreenMenuLayout1Movement.addView(movementSectionTitle);
+					fullScreenMenuLayout1Chat.addView(chatSectionTitle);
+					fullScreenMenuLayout1Misc.addView(miscSectionTitle);
+					
+                    var fullScreenMenuLayoutScrollCombat = new ScrollView(CONTEXT);
+                    var fullScreenMenuLayoutScrollBuilding = new ScrollView(CONTEXT);
+                    var fullScreenMenuLayoutScrollMovement = new ScrollView(CONTEXT);
+                    var fullScreenMenuLayoutScrollChat = new ScrollView(CONTEXT);
+                    var fullScreenMenuLayoutScrollMisc = new ScrollView(CONTEXT);
+					
+					var fullScreenMenuLayoutCombat = new LinearLayout_(CONTEXT);
+					fullScreenMenuLayoutCombat.setOrientation(1);
+                    var fullScreenMenuLayoutBuilding = new LinearLayout_(CONTEXT);
+					fullScreenMenuLayoutBuilding.setOrientation(1);
+                    var fullScreenMenuLayoutMovement = new LinearLayout_(CONTEXT);
+					fullScreenMenuLayoutMovement.setOrientation(1);
+                    var fullScreenMenuLayoutChat = new LinearLayout_(CONTEXT);
+					fullScreenMenuLayoutChat.setOrientation(1);
+                    var fullScreenMenuLayoutMisc = new LinearLayout_(CONTEXT);
+					fullScreenMenuLayoutMisc.setOrientation(1);
+					
+					fullScreenMenuLayoutScrollCombat.addView(fullScreenMenuLayoutCombat);
+					fullScreenMenuLayoutScrollBuilding.addView(fullScreenMenuLayoutBuilding);
+					fullScreenMenuLayoutScrollMovement.addView(fullScreenMenuLayoutMovement);
+					fullScreenMenuLayoutScrollChat.addView(fullScreenMenuLayoutChat);
+					fullScreenMenuLayoutScrollMisc.addView(fullScreenMenuLayoutMisc);
+					
+					fullScreenMenuLayout1Combat.addView(fullScreenMenuLayoutScrollCombat);
+					fullScreenMenuLayout1Building.addView(fullScreenMenuLayoutScrollBuilding);
+					fullScreenMenuLayout1Movement.addView(fullScreenMenuLayoutScrollMovement);
+					fullScreenMenuLayout1Chat.addView(fullScreenMenuLayoutScrollChat);
+					fullScreenMenuLayout1Misc.addView(fullScreenMenuLayoutScrollMisc);
+					
+					fullScreenMenuLayout.addView(fullScreenMenuLayout1Combat);
+					fullScreenMenuLayout.addView(fullScreenMenuLayout1Building);
+					fullScreenMenuLayout.addView(fullScreenMenuLayout1Movement);
+					fullScreenMenuLayout.addView(fullScreenMenuLayout1Chat);
+					fullScreenMenuLayout.addView(fullScreenMenuLayout1Misc);
+                    
+                    var fullScreenMenuLayout1 = new LinearLayout_(CONTEXT);
+                    fullScreenMenuLayout1.setOrientation(1);
+                    fullScreenMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
+                    fullScreenMenuLayout1.setPadding(10, 0, 10, 0);
+                    
+                    fullScreenMenuLayout1.addView(clientTextView("\n"));
+                    fullScreenMenuLayout1.addView(fullScreenMenuLayoutScroll);
+                    
+                    VertexClientPE.modules.forEach(function (element, index, array) {
+						if (element.type == "Mod" || element.type == "Special") {
+							if (element.category == VertexClientPE.category.COMBAT) {
+								fullScreenMenuLayoutCombat.addView(new modButton(element));
+							} else if (element.category == VertexClientPE.category.BUILDING) {
+								fullScreenMenuLayoutBuilding.addView(new modButton(element));
+							} else if (element.category == VertexClientPE.category.MOVEMENT) {
+								fullScreenMenuLayoutMovement.addView(new modButton(element));
+							} else if (element.category == VertexClientPE.category.CHAT) {
+								fullScreenMenuLayoutChat.addView(new modButton(element));
+							} else if (element.category == VertexClientPE.category.MISC) {
+								fullScreenMenuLayoutMisc.addView(new modButton(element));
+							}
+						}
+					});
+
+                    fullScreenMenu = new PopupWindow_(fullScreenMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+                    fullScreenMenu.setBackgroundDrawable(backgroundSpecial());
+                    fullScreenMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+					
+					if(GUI != null) {
+						GUI.dismiss();
+						if(mainButtonPositionSetting == "top-right") {
+							GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
+						} else {
+							GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+						}
+                    }
+                } catch(error) {
+                    print('An error occurred: ' + error);
+                }
+            }
+        }));
+}
+
 var currentTab = "Combat";
 
 /**
- * function mainMenu()
+ * function retroMenu()
  * @author peacestorm
  * @since v1.0-pre
 */
-function mainMenu() {
+function retroMenu() {
     VertexClientPE.loadMainSettings();
     var display = new DisplayMetrics_();
     CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
@@ -9581,10 +9741,7 @@ VertexClientPE.showCategoryMenus = function () {
                     misc = new categoryTitle(miscName, true),
                     miscSettings = misc.getLeftButton(),
                     miscTitle = misc.getMiddleButton(),
-                    miscArrow = misc.getRightButton(),
-                    menuBarWidth = menuType == "normal" ? CONTEXT.getWindowManager().getDefaultDisplay().getWidth() : CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 1.8,
-                    menuBarLayout = new LinearLayout_(CONTEXT),
-                    menuBarTextView = clientTextView(news, true);
+                    miscArrow = misc.getRightButton();
 
                 vertexclientpecombatmenu = new PopupWindow_(CONTEXT);
                 vertexclientpebuildingmenu = new PopupWindow_(CONTEXT),
@@ -9957,20 +10114,6 @@ VertexClientPE.showCategoryMenus = function () {
                     vertexclientpemiscmenu.setAnimationStyle(android.R.style.Animation_Dialog);
                 }
                 vertexclientpemiscmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, misctpopx, misctpopy);
-
-                // Menu
-                menuBarLayout.setOrientation(1);
-
-                menuBarTextView.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
-                menuBarTextView.setMarqueeRepeatLimit(-1);
-                menuBarTextView.setSingleLine();
-                menuBarTextView.setHorizontallyScrolling(true);
-                menuBarTextView.setSelected(true);
-                menuBarLayout.addView(menuBarTextView);
-                menuBar = new PopupWindow_(menuBarLayout, menuBarWidth - dip2px(90), screenHeight / 20);
-                menuBar.setBackgroundDrawable(backgroundSpecial("bottom"));
-                menuBar.setTouchable(false);
-                menuBar.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 90, 0);
             } catch (e) {
                 print("Error: " + e + e.lineNumber);
                 VertexClientPE.showBugReportDialog(e);
