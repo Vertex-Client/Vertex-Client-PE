@@ -1,7 +1,7 @@
 /**
  * #####################################################################
  * @name Vertex Client PE
- * @version v1.3.2
+ * @version v1.4
  * @author peacestorm (@AgameR_Modder)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36
  *
@@ -387,8 +387,8 @@ VertexClientPE.isRemote = function() {
 
 VertexClientPE.playerIsInGame = false;
 
-VertexClientPE.currentVersion = "1.3.2";
-VertexClientPE.currentVersionDesc = "The Performance Update";
+VertexClientPE.currentVersion = "1.4";
+VertexClientPE.currentVersionDesc = "The Settings Update";
 VertexClientPE.targetVersion = "MCPE v0.15.x alpha";
 VertexClientPE.minVersion = "0.15.0";
 VertexClientPE.latestVersion;
@@ -605,7 +605,6 @@ VertexClientPE.drawCubeShapedBox = function(gl, x, y, z) {
     gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
     gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
     gl.glDrawElements(GL10.GL_LINES, index.length, GL10.GL_UNSIGNED_SHORT, indexBuffer);
-    //gl.glDeptMask(true);
     gl.glTranslatef(-x, -y, -z);
 }
 
@@ -643,6 +642,7 @@ var useLightThemeSetting = "off";
 var buttonStyleSetting = "normal";
 var mcpeGUISetting = "default";
 var chestESPRange = 25;
+var transparentBgSetting = "on";
 //---------------------------
 var cmdPrefix = ".";
 //---------------------------
@@ -5406,6 +5406,7 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + buttonStyleSetting.toString());
     outWrite.append("," + mcpeGUISetting.toString());
     outWrite.append("," + chestESPRange.toString());
+    outWrite.append("," + transparentBgSetting.toString());
     //outWrite.append("," + cmdPrefix.toString());
 
     outWrite.close();
@@ -5428,43 +5429,43 @@ VertexClientPE.loadMainSettings = function () {
             hacksListModeSetting = arr[0]; //Here we split text by ","
         }
         if (arr[1] != null && arr[1] != undefined) {
-            mainButtonPositionSetting = arr[1]; //Here we split text by ","
+            mainButtonPositionSetting = arr[1];
         }
         if (arr[2] != null && arr[2] != undefined) {
-            healthTagsSetting = arr[2]; //Here we split text by ","
+            healthTagsSetting = arr[2];
         }
         if (arr[3] != null && arr[3] != undefined) {
-            themeSetting = arr[3]; //Here we split text by ","
+            themeSetting = arr[3];
         }
         if (arr[4] != null && arr[4] != undefined) {
-            playMusicSetting = arr[4]; //Here we split text by ","
+            playMusicSetting = arr[4];
         }
         if (arr[5] != null && arr[5] != undefined) {
-            showNewsSetting = arr[5]; //Here we split text by ","
+            showNewsSetting = arr[5];
         }
         if (arr[6] != null && arr[6] != undefined) {
-            menuAnimationsSetting = arr[6]; //Here we split text by ","
+            menuAnimationsSetting = arr[6];
         }
         if (arr[7] != null && arr[7] != undefined) {
-            nukerMode = arr[7]; //Here we split text by ","
+            nukerMode = arr[7];
         }
         if (arr[8] != null && arr[8] != undefined) {
-            timerSpeed = arr[8]; //Here we split text by ","
+            timerSpeed = arr[8];
         }
         if (arr[9] != null && arr[9] != undefined) {
-            themeSetup = arr[9]; //Here we split text by ","
+            themeSetup = arr[9];
         }
         if (arr[10] != null && arr[10] != undefined) {
-            nukerRange = arr[10]; //Here we split text by ","
+            nukerRange = arr[10];
         }
         if (arr[11] != null && arr[11] != undefined) {
-            killAuraRange = arr[11]; //Here we split text by ","
+            killAuraRange = arr[11];
         }
         if (arr[12] != null && arr[12] != undefined) {
-            spamDelayTime = arr[12]; //Here we split text by ","
+            spamDelayTime = arr[12];
         }
         if (arr[13] != null && arr[13] != undefined) {
-            sizeSetting = arr[13]; //Here we split text by ","
+            sizeSetting = arr[13];
             if (sizeSetting == "normal") {
                 customHeight = topBarHeight / 2;
             } else if (sizeSetting == "small") {
@@ -5472,37 +5473,40 @@ VertexClientPE.loadMainSettings = function () {
             }
         }
         if (arr[14] != null && arr[14] != undefined) {
-            tapNukerRange = arr[14]; //Here we split text by ","
+            tapNukerRange = arr[14];
         }
         if (arr[15] != null && arr[15] != undefined) {
-            menuType = arr[15]; //Here we split text by ","
+            menuType = arr[15];
         }
         if (arr[16] != null && arr[16] != undefined) {
-            chestTracersRange = arr[16]; //Here we split text by ","
+            chestTracersRange = arr[16];
         }
         if (arr[17] != null && arr[17] != undefined) {
-            tabGUIModeSetting = arr[17]; //Here we split text by ","
+            tabGUIModeSetting = arr[17];
         }
         if (arr[18] != null && arr[18] != undefined) {
-            chestTracersGroundMode = arr[18]; //Here we split text by ","
+            chestTracersGroundMode = arr[18];
         }
         if (arr[19] != null && arr[19] != undefined) {
-            chestTracersParticle = arr[19]; //Here we split text by ","
+            chestTracersParticle = arr[19];
         }
         if (arr[20] != null && arr[20] != undefined) {
-            antiLagDropRemoverSetting = arr[20]; //Here we split text by ","
+            antiLagDropRemoverSetting = arr[20];
         }
         if (arr[21] != null && arr[21] != undefined) {
-            useLightThemeSetting = arr[21]; //Here we split text by ","
+            useLightThemeSetting = arr[21];
         }
         if (arr[22] != null && arr[22] != undefined) {
-            buttonStyleSetting = arr[22]; //Here we split text by ","
+            buttonStyleSetting = arr[22];
         }
         if (arr[23] != null && arr[23] != undefined) {
-            mcpeGUISetting = arr[23]; //Here we split text by ","
+            mcpeGUISetting = arr[23];
         }
         if (arr[24] != null && arr[24] != undefined) {
-            chestESPRange = arr[24]; //Here we split text by ","
+            chestESPRange = arr[24];
+        }
+		if (arr[25] != null && arr[25] != undefined) {
+            transparentBgSetting = arr[25];
         }
         fos.close();
         VertexClientPE.loadAutoSpammerSettings();
@@ -6717,7 +6721,7 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
         bg.setColor(Color_.parseColor("#70E1E1E1"));
     } else if(color == "black") {
         bg.setColor(Color_.parseColor("#70141414"));
-    } else if (typeof color ==="string" && color[0] === "#") {
+    } else if (typeof color === "string" && color[0] === "#") {
         if (color.indexOf("|") < 0) {
             bg.setColor(Color_.parseColor(color));
         } else {
@@ -6814,6 +6818,16 @@ function backgroundRainbow(round) {
     return bg;
 }
 
+VertexClientPE.setupGradient = function(gradientDrawable, color, strokeColor) {
+	if(!(gradientDrawable instanceof GradientDrawable_)) {
+		throw new TypeError("The type of the first parameter is not GradientDrawable!");
+		return;
+	}
+	var preset = transparentBgSetting=="on"?"#70":"#";
+	gradientDrawable.setColor(Color_.parseColor(preset + color));
+	gradientDrawable.setStroke(dip2px(2), Color_.parseColor(preset + strokeColor));
+}
+
 function backgroundGradient(round) // TextView with colored background (edited by peacestorm)
 {
     var bg = GradientDrawable_();
@@ -6832,40 +6846,30 @@ function backgroundGradient(round) // TextView with colored background (edited b
         bg.setCornerRadius(round);
     }
     if(useLightThemeSetting == "on") {
-        bg.setColor(Color_.parseColor("#7000994C"));
-        bg.setStroke(dip2px(2), Color_.parseColor("#7000CC66"));
+		VertexClientPE.setupGradient(bg, "00994C", "00CC66");
     } else {
-        bg.setColor(Color_.parseColor("#700B5B25"));
-        bg.setStroke(dip2px(2), Color_.parseColor("#700F8219"));
+		VertexClientPE.setupGradient(bg, "0B5B25", "0F8219");
     }
     if(themeSetting == "red") {
         if(useLightThemeSetting == "on") {
-            bg.setColor(Color_.parseColor("#70FF3333"));
-            bg.setStroke(dip2px(2), Color_.parseColor("#70FF6666"));
+			VertexClientPE.setupGradient(bg, "FF3333", "FF6666");
         } else {
-            bg.setColor(Color_.parseColor("#705B0C0C"));
-            bg.setStroke(dip2px(2), Color_.parseColor("#70821010"));
+			VertexClientPE.setupGradient(bg, "5B0C0C", "821010");
         }
     }if(themeSetting == "blue") {
         if(useLightThemeSetting == "on") {
-            bg.setColor(Color_.parseColor("#700080FF"));
-            bg.setStroke(dip2px(2), Color_.parseColor("#703399FF"));
+			VertexClientPE.setupGradient(bg, "0080FF", "3399FF");
         } else {
-            bg.setColor(Color_.parseColor("#700A175B"));
-            bg.setStroke(dip2px(2), Color_.parseColor("#700E3882"));
+			VertexClientPE.setupGradient(bg, "0A175B", "0E3882");
         }
     }if(themeSetting == "purple") {
-        bg.setColor(Color_.parseColor("#709F018C"));
-        bg.setStroke(dip2px(2), Color_.parseColor("#70BC21AB"));
+		VertexClientPE.setupGradient(bg, "9F018C", "BC21AB");
     }if(themeSetting == "yellow") {
-        bg.setColor(Color_.parseColor("#70CCCC00"));
-        bg.setStroke(dip2px(2), Color_.parseColor("#70FFFF00"));
+		VertexClientPE.setupGradient(bg, "CCCC00", "FFFF00");
     }if(themeSetting == "white") {
-        bg.setColor(Color_.parseColor("#70E1E1E1"));
-        bg.setStroke(dip2px(2), Color_.parseColor("#70FFFFFF"));
+		VertexClientPE.setupGradient(bg, "E1E1E1", "FFFFFF");
     }if(themeSetting == "black") {
-        bg.setColor(Color_.parseColor("#70141414"));
-        bg.setStroke(dip2px(2), Color_.parseColor("#701E1E1E"));
+		VertexClientPE.setupGradient(bg, "141414", "1E1E1E");
     }
     bg.setShape(GradientDrawable_.RECTANGLE);
 
@@ -7994,7 +7998,7 @@ function leaveGame() {
             VertexClientPE.playerIsInGame = false;
         }
     }));
-	if((mainMenuTextList == null || !mainMenuTextList.isShowing())) {
+	if(mainMenuTextList == null || !mainMenuTextList.isShowing()) {
 		VertexClientPE.showStartScreenBar();
 	}
 }
@@ -8222,6 +8226,26 @@ function settingsScreen() {
                         }
                     }
                     }));
+					
+					var transparentBgSettingButton = clientButton("Transparent backgrounds", "Makes screens and dialogs transparent.");
+                    if(transparentBgSetting == "on") {
+                        transparentBgSettingButton.setText("Transparent backgrounds | ON");
+                    } else if(transparentBgSetting == "off") {
+                        transparentBgSettingButton.setText("Transparent backgrounds | OFF");
+                    }
+                    transparentBgSettingButton.setOnClickListener(new View_.OnClickListener({
+                    onClick: function(viewarg){
+                        if(transparentBgSetting == "on") {
+                            transparentBgSetting = "off";
+                            transparentBgSettingButton.setText("Transparent backgrounds | OFF");
+                            VertexClientPE.saveMainSettings();
+                        } else if(transparentBgSetting == "off") {
+                            transparentBgSetting = "on";
+                            transparentBgSettingButton.setText("Transparent backgrounds | ON");
+                            VertexClientPE.saveMainSettings();
+                        }
+                    }
+                    }));
                     
                     var mcpeGUISettingButton = clientButton("MCPE GUI", "Change the MCPE GUI.");
                     if(mcpeGUISetting == "default") {
@@ -8408,6 +8432,7 @@ function settingsScreen() {
                     settingsMenuLayout.addView(themeSettingButton);
                     settingsMenuLayout.addView(useLightThemeSettingButton);
                     settingsMenuLayout.addView(buttonStyleSettingButton);
+                    settingsMenuLayout.addView(transparentBgSettingButton);
                     settingsMenuLayout.addView(mcpeGUISettingButton);
                     settingsMenuLayout.addView(menuTitle);
                     settingsMenuLayout.addView(menuTypeSettingButton);
@@ -9552,8 +9577,8 @@ VertexClientPE.showCategoryMenus = function () {
 
                 vertexclientpecombatmenu = new PopupWindow_(CONTEXT);
                 vertexclientpebuildingmenu = new PopupWindow_(CONTEXT),
-				vertexclientpemovementmenu = new PopupWindow_(CONTEXT),
-				vertexclientpechatmenu = new PopupWindow_(CONTEXT);
+                    vertexclientpemovementmenu = new PopupWindow_(CONTEXT),
+                    vertexclientpechatmenu = new PopupWindow_(CONTEXT);
                 vertexclientpemiscmenu = new PopupWindow_(CONTEXT);
 
                 CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
