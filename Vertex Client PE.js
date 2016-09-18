@@ -9464,10 +9464,17 @@ function mainMenu() {
     menuMiddleLayout.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 1.8 - display.widthPixels / 2.2, display.heightPixels / 1.23));
     menuRightLayout.setOrientation(1);
     menuRightLayout.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2.2, display.heightPixels / 1.23));
-    menuLayout.addView(menuMiddleScroll);
-    menuMiddleScroll.addView(menuMiddleLayout);
-    menuLayout.addView(menuRightScroll);
-    menuRightScroll.addView(menuRightLayout);
+    if(mainButtonPositionSetting == "top-left") {
+		menuLayout.addView(menuMiddleScroll);
+		menuMiddleScroll.addView(menuMiddleLayout);
+		menuLayout.addView(menuRightScroll);
+		menuRightScroll.addView(menuRightLayout);
+	} else {
+		menuLayout.addView(menuRightScroll);
+		menuRightScroll.addView(menuRightLayout);
+		menuLayout.addView(menuMiddleScroll);
+		menuMiddleScroll.addView(menuMiddleLayout);
+	}
     //--------Add Title--------//
     var tabTitle = new TextView_(CONTEXT);
     tabTitle.setText(currentTab);
@@ -9491,7 +9498,11 @@ function mainMenu() {
     menu = new PopupWindow_(menuLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 1.8, CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
     menu.setBackgroundDrawable(backgroundGradient());
     menu.setAnimationStyle(android.R.style.Animation_Translucent);
-    menu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.BOTTOM, 0, 0);
+	if(mainButtonPositionSetting == "top-left") {
+		menu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.BOTTOM, 0, 0);
+	} else {
+		menu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
+	}
     }catch(error){
     print('An error occured: ' + error);
     }
