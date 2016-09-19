@@ -4008,6 +4008,116 @@ VertexClientPE.showModDialog = function(mod, btn) {
     });
 }
 
+function capitalizeColorString(string) {
+    if(string == "green") {
+		return "Green";
+	} else if(string == "red") {
+		return "Red";
+	} else if(string == "blue") {
+		return "Blue";
+	} else if(string == "purple") {
+		return "Purple";
+	} else if(string == "yellow") {
+		return "Yellow";
+	} else if(string == "white") {
+		return "White";
+	} else if(string == "black") {
+		return "Black";
+	}
+}
+
+VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, defaultUseLightColor) {
+	try {
+		CONTEXT.runOnUiThread(new Runnable_() {
+			run: function() {
+				var tileDropDownLayout = new LinearLayout_(CONTEXT);
+				tileDropDownLayout.setOrientation(1);
+				tileDropDownLayout.setGravity(android.view.Gravity.CENTER);
+				var tileDropDownEditText = clientEditText(tileView.getText());
+				tileDropDownEditText.setInputType(InputType_.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+				tileDropDownEditText.addTextChangedListener(new TextWatcher_() {
+                    afterTextChanged: function() {
+                        tileView.setText(tileDropDownEditText.getText());
+						editor.putString("VertexClientPE.tiles." + defaultName + ".name", tileDropDownEditText.getText());
+						editor.commit();
+                    }
+                });
+				
+				var tileDropDownCurrentColorButton = clientButton(capitalizeColorString(sharedPref.getString("VertexClientPE.tiles." + defaultName + ".color", defaultColor)));
+				tileDropDownCurrentColorButton.setOnClickListener(new android.view.View.OnClickListener({
+					onClick: function(v) {
+						var currentColor = sharedPref.getString("VertexClientPE.tiles." + defaultName + ".color", defaultColor);
+						if(currentColor == "green") {
+                            currentColor = "red";
+                            tileDropDownCurrentColorButton.setText("Red");
+                        } else if(currentColor == "red") {
+                            currentColor = "blue";
+                            tileDropDownCurrentColorButton.setText("Blue");
+                        } else if(currentColor == "blue") {
+                            currentColor = "purple";
+                            tileDropDownCurrentColorButton.setText("Purple");
+                        } else if(currentColor == "purple") {
+                            currentColor = "yellow";
+                            tileDropDownCurrentColorButton.setText("Yellow");
+                        } else if(currentColor == "yellow") {
+                            currentColor = "white";
+                            tileDropDownCurrentColorButton.setText("White");
+                        } else if(currentColor == "white") {
+                            currentColor = "black";
+                            tileDropDownCurrentColorButton.setText("Black");
+                        } else if(currentColor == "black") {
+                            currentColor = "green";
+                            tileDropDownCurrentColorButton.setText("Green");
+                        }
+						editor.putString("VertexClientPE.tiles." + defaultName + ".color", currentColor);
+						editor.commit();
+					}
+				}));
+				
+				var tileDropDownUseLightColorCheckBox = new CheckBox_(CONTEXT);
+				tileDropDownUseLightColorCheckBox.setChecked(sharedPref.getBoolean("VertexClientPE.tiles." + defaultName + ".useLightColor", defaultUseLightColor));
+				tileDropDownUseLightColorCheckBox.setText("Lighter color");
+				if(themeSetting == "white") {
+					tileDropDownUseLightColorCheckBox.setTextColor(Color_.BLACK);
+				} else {
+					tileDropDownUseLightColorCheckBox.setTextColor(Color_.WHITE);
+				}
+				tileDropDownUseLightColorCheckBox.setTypeface(VertexClientPE.font);
+				tileDropDownUseLightColorCheckBox.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(v) {
+						editor.putBoolean("VertexClientPE.tiles." + defaultName + ".useLightColor", v.isChecked());
+						editor.commit();
+					}
+				});
+				
+				tileDropDownLayout.addView(tileDropDownEditText);
+				tileDropDownLayout.addView(tileDropDownCurrentColorButton);
+				tileDropDownLayout.addView(tileDropDownUseLightColorCheckBox);
+				
+				var tileDropDown = new PopupWindow_(tileDropDownLayout, LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT, true);
+				tileDropDown.setWidth(LinearLayout_.LayoutParams.WRAP_CONTENT);
+				tileDropDown.setHeight(LinearLayout_.LayoutParams.WRAP_CONTENT);
+				tileDropDown.setBackgroundDrawable(new ColorDrawable_(Color_.BLACK));
+				tileDropDown.setTouchInterceptor(new android.view.View.OnTouchListener() {
+					onTouch: function(v, event) {
+						if(event.getAction() == android.view.ACTION_OUTSIDE) {
+							tileDropDown.dismiss();
+							return true;
+						}
+						return false;
+					}
+				});
+				
+				//sharedPref.getString("VertexClientPE.tiles." + tileText + ".color", tileColor)
+				
+				tileDropDown.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.CENTER, 0, 0);
+			}
+		});
+	} catch(e) {
+		print(e);
+	}
+}
+
 var itemGiverItems = [];
 
 for(var i = 0; i <= 4096; i++) {
@@ -6047,7 +6157,7 @@ function tileButton(tileText, tileIcon, tileColor, forceLightColor) {
     params.width = display.widthPixels / 4 - dip2px(5);
     params.height = display.widthPixels / 4 - dip2px(5);
     
-    var defaultTileButton = clientButton(tileText, null, tileColor, false, forceLightColor==null?true:forceLightColor, true);
+    var defaultTileButton = clientButton(sharedPref.getString("VertexClientPE.tiles." + tileText + ".name", tileText), null, sharedPref.getString("VertexClientPE.tiles." + tileText + ".color", tileColor), false, sharedPref.getBoolean("VertexClientPE.tiles." + tileText + ".useLightColor", forceLightColor==null?true:forceLightColor), true);
     defaultTileButton.setTypeface(VertexClientPE.tileFont);
     defaultTileButton.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
     defaultTileButton.setMarqueeRepeatLimit(-1);
@@ -6056,6 +6166,13 @@ function tileButton(tileText, tileIcon, tileColor, forceLightColor) {
     defaultTileButton.setSelected(true);
     defaultTileButton.setCompoundDrawablesWithIntrinsicBounds(0, tileIcon, 0, 0);
     defaultTileButton.setLayoutParams(params);
+	
+	defaultTileButton.setOnLongClickListener(new View_.OnLongClickListener() {
+        onLongClick: function(viewArg) {
+			VertexClientPE.showTileDropDown(viewArg, tileText, tileColor, forceLightColor==null?true:forceLightColor);
+            return true;
+        }
+    });
     
     return defaultTileButton;
 }
@@ -6438,6 +6555,25 @@ function clientTextButton(text, shadow) //menu buttons
     defaultTextButton.setPadding(0, 0, 0, 0);
     defaultTextButton.setLineSpacing(0, 1.15);
     return defaultTextButton;
+}
+
+function clientEditText(text) //menu buttons
+{
+    var defaultEditText = new EditText(CONTEXT);
+    defaultEditText.setText(text);
+    if(themeSetting == "white") {
+        defaultEditText.setTextColor(Color_.BLACK);
+    } else {
+        defaultEditText.setTextColor(Color_.WHITE);
+    }
+    defaultEditText.setTypeface(VertexClientPE.font);
+    
+	if(themeSetting == "white") {
+		defaultEditText.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
+	} else {
+		defaultEditText.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+	}
+    return defaultEditText;
 }
 
 function clientTextView(text, shadow) //menu buttons
@@ -9181,10 +9317,8 @@ function dashboardScreen() {
                 dashboardMenuLayout1.addView(dashboardMenuLayoutScroll);
                 
                 var settingsIconButton = tileButton("Settings", android.R.drawable.ic_menu_preferences, "green");
-                //settingsIconButton.setBackgroundDrawable(rainbowBg);
                 var informationIconButton = tileButton("Information", android.R.drawable.ic_menu_info_details, "yellow");
                 var updateCenterIconButton = tileButton("Update Center", android.R.drawable.ic_menu_compass, "white");
-                var shopIconButton = tileButton("Shop", android.R.drawable.stat_sys_download);
                 var musicPlayerIconButton = tileButton("Music Player", android.R.drawable.ic_media_play, "blue", false);
                 var helpIconButton = tileButton("Help", android.R.drawable.ic_menu_help, "purple");
                 var addonsIconButton = tileButton("Addons", android.R.drawable.ic_menu_more, "blue");
@@ -9278,7 +9412,6 @@ function dashboardScreen() {
                 dashboardMenuLayout.addView(settingsIconButton);
                 dashboardMenuLayout.addView(informationIconButton);
                 dashboardMenuLayout.addView(updateCenterIconButton);
-                //dashboardMenuLayout.addView(shopIconButton);
                 dashboardMenuLayout.addView(musicPlayerIconButton);
                 dashboardMenuLayout.addView(helpIconButton);
                 dashboardMenuLayout.addView(addonsIconButton);
