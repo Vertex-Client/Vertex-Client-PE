@@ -4033,20 +4033,25 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 				var tileDropDownLayout = new LinearLayout_(CONTEXT);
 				tileDropDownLayout.setOrientation(1);
 				tileDropDownLayout.setGravity(android.view.Gravity.CENTER);
-				var tileDropDownEditText = clientEditText(tileView.getText());
+				
+				var currentName = sharedPref.getString("VertexClientPE.tiles." + defaultName + ".name", defaultName);
+				var currentColor = sharedPref.getString("VertexClientPE.tiles." + defaultName + ".color", defaultColor);
+				var currentUseLightColor = sharedPref.getBoolean("VertexClientPE.tiles." + defaultName + ".useLightColor", defaultUseLightColor);
+				
+				var tileDropDownEditText = clientEditText(currentName);
 				tileDropDownEditText.setInputType(InputType_.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 				tileDropDownEditText.addTextChangedListener(new TextWatcher_() {
                     afterTextChanged: function() {
-                        tileView.setText(tileDropDownEditText.getText());
-						editor.putString("VertexClientPE.tiles." + defaultName + ".name", tileDropDownEditText.getText());
+						currentName = tileDropDownEditText.getText();
+                        tileView.setText(currentName);
+						editor.putString("VertexClientPE.tiles." + defaultName + ".name", currentName);
 						editor.commit();
                     }
                 });
 				
-				var tileDropDownCurrentColorButton = clientButton(capitalizeColorString(sharedPref.getString("VertexClientPE.tiles." + defaultName + ".color", defaultColor)));
+				var tileDropDownCurrentColorButton = clientButton(capitalizeColorString(currentColor));
 				tileDropDownCurrentColorButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(v) {
-						var currentColor = sharedPref.getString("VertexClientPE.tiles." + defaultName + ".color", defaultColor);
 						if(currentColor == "green") {
                             currentColor = "red";
                             tileDropDownCurrentColorButton.setText("Red");
@@ -4071,11 +4076,12 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
                         }
 						editor.putString("VertexClientPE.tiles." + defaultName + ".color", currentColor);
 						editor.commit();
+						VertexClientPE.setupClientButton(tileView, currentName, currentColor, false, currentUseLightColor, true);
 					}
 				}));
 				
 				var tileDropDownUseLightColorCheckBox = new CheckBox_(CONTEXT);
-				tileDropDownUseLightColorCheckBox.setChecked(sharedPref.getBoolean("VertexClientPE.tiles." + defaultName + ".useLightColor", defaultUseLightColor));
+				tileDropDownUseLightColorCheckBox.setChecked(currentUseLightColor);
 				tileDropDownUseLightColorCheckBox.setText("Lighter color");
 				if(themeSetting == "white") {
 					tileDropDownUseLightColorCheckBox.setTextColor(Color_.BLACK);
@@ -4085,14 +4091,34 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 				tileDropDownUseLightColorCheckBox.setTypeface(VertexClientPE.font);
 				tileDropDownUseLightColorCheckBox.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(v) {
-						editor.putBoolean("VertexClientPE.tiles." + defaultName + ".useLightColor", v.isChecked());
+						currentUseLightColor = v.isChecked();
+						editor.putBoolean("VertexClientPE.tiles." + defaultName + ".useLightColor", currentUseLightColor);
 						editor.commit();
+						VertexClientPE.setupClientButton(tileView, currentName, currentColor, false, currentUseLightColor, true);
+					}
+				});
+				
+				var tileDropDownResetButton = clientButton("Reset");
+				tileDropDownResetButton.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(v) {
+						currentName = defaultName;
+						currentColor = defaultColor;
+						currentUseLightColor = defaultUseLightColor;
+						tileDropDownEditText.setText(currentName);
+						tileDropDownCurrentColorButton.setText(capitalizeColorString(currentColor));
+						tileDropDownUseLightColorCheckBox.setChecked(currentUseLightColor);
+						editor.putString("VertexClientPE.tiles." + defaultName + ".name", currentName);
+						editor.putString("VertexClientPE.tiles." + defaultName + ".color", currentColor);
+						editor.putBoolean("VertexClientPE.tiles." + defaultName + ".useLightColor", currentUseLightColor);
+						editor.commit();
+						VertexClientPE.setupClientButton(tileView, currentName, currentColor, false, currentUseLightColor, true);
 					}
 				});
 				
 				tileDropDownLayout.addView(tileDropDownEditText);
 				tileDropDownLayout.addView(tileDropDownCurrentColorButton);
 				tileDropDownLayout.addView(tileDropDownUseLightColorCheckBox);
+				tileDropDownLayout.addView(tileDropDownResetButton);
 				
 				var tileDropDown = new PopupWindow_(tileDropDownLayout, LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT, true);
 				tileDropDown.setWidth(LinearLayout_.LayoutParams.WRAP_CONTENT);
@@ -5718,37 +5744,9 @@ var getStretchedImage = function(bm, x, y, stretchWidth, stretchHeight, width, h
     return new BitmapDrawable_(blank);
 };
 
-function clientButton(text, desc, color, round, forceLightColor, style) //menu buttons
-{
-    if(color == null) {
-        color = themeSetting;
-    }
-    if(forceLightColor == null) {
-        forceLightColor = useLightThemeSetting=="on";
-    }
-    if(style == null) {
-        style = buttonStyleSetting;
-    }
-    var display = new DisplayMetrics_();
-    CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
-    var defaultButton = new Button_(CONTEXT);
-    defaultButton.setText(text);
-    if(color == "white") {
-        defaultButton.setTextColor(Color_.BLACK);
-    } else {
-        defaultButton.setTextColor(Color_.WHITE);
-    }
-    defaultButton.setTypeface(VertexClientPE.font);
-    if(desc != null && desc != undefined) {
-        defaultButton.setOnLongClickListener(new View_.OnLongClickListener() {
-            onLongClick: function(v, t) {
-                VertexClientPE.toast(desc);
-                return true;
-            }
-        });
-    }
-
-    var bg = GradientDrawable_();
+VertexClientPE.setupClientButton = function(buttonView, text, color, round, forceLightColor, style) {
+	buttonView.setText(text);
+	var bg = GradientDrawable_();
     if(round == true) {
         bg.setCornerRadius(10);
     } else if(round != false && round != null) {
@@ -5841,8 +5839,13 @@ function clientButton(text, desc, color, round, forceLightColor, style) //menu b
         bg.setColor(Color_.TRANSPARENT);
     }
     
-    defaultButton.setTransformationMethod(null);
-    defaultButton.setOnTouchListener(new View_.OnTouchListener() {
+	if(color == "white") {
+        buttonView.setTextColor(Color_.BLACK);
+    } else {
+        buttonView.setTextColor(Color_.WHITE);
+    }
+    buttonView.setTransformationMethod(null);
+    buttonView.setOnTouchListener(new View_.OnTouchListener() {
         onTouch: function(v, event) {
             var action = event.getActionMasked();
             if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
@@ -5915,14 +5918,41 @@ function clientButton(text, desc, color, round, forceLightColor, style) //menu b
         }
     });
 
-    defaultButton.setBackgroundDrawable(bg);
-    defaultButton.setPaintFlags(defaultButton.getPaintFlags() | Paint_.SUBPIXEL_TEXT_FLAG);
-    defaultButton.setTextSize(15);
+    buttonView.setBackgroundDrawable(bg);
+    buttonView.setPaintFlags(buttonView.getPaintFlags() | Paint_.SUBPIXEL_TEXT_FLAG);
+    buttonView.setTextSize(15);
     if(color == "white") {
-        defaultButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
+        buttonView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
     } else {
-        defaultButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+        buttonView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
     }
+}
+
+function clientButton(text, desc, color, round, forceLightColor, style) //menu buttons
+{
+    if(color == null) {
+        color = themeSetting;
+    }
+    if(forceLightColor == null) {
+        forceLightColor = useLightThemeSetting=="on";
+    }
+    if(style == null) {
+        style = buttonStyleSetting;
+    }
+    var display = new DisplayMetrics_();
+    CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
+    var defaultButton = new Button_(CONTEXT);
+    defaultButton.setTypeface(VertexClientPE.font);
+    if(desc != null && desc != undefined) {
+        defaultButton.setOnLongClickListener(new View_.OnLongClickListener() {
+            onLongClick: function(v, t) {
+                VertexClientPE.toast(desc);
+                return true;
+            }
+        });
+    }
+
+    VertexClientPE.setupClientButton(defaultButton, text, color, round, forceLightColor, style);
     defaultButton.setPadding(0, 0, 0, 0);
     defaultButton.setLineSpacing(0, 1.15);
     return defaultButton;
