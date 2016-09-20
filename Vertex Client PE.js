@@ -4076,7 +4076,7 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
                         }
 						editor.putString("VertexClientPE.tiles." + defaultName + ".color", currentColor);
 						editor.commit();
-						VertexClientPE.setupClientButton(tileView, currentName, currentColor, false, currentUseLightColor, true);
+						VertexClientPE.setupButton(tileView, currentName, currentColor, false, currentUseLightColor, "tile", 0.1);
 					}
 				}));
 				
@@ -4094,7 +4094,7 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 						currentUseLightColor = v.isChecked();
 						editor.putBoolean("VertexClientPE.tiles." + defaultName + ".useLightColor", currentUseLightColor);
 						editor.commit();
-						VertexClientPE.setupClientButton(tileView, currentName, currentColor, false, currentUseLightColor, true);
+						VertexClientPE.setupButton(tileView, currentName, currentColor, false, currentUseLightColor, "tile", 0.1);
 					}
 				});
 				
@@ -4111,7 +4111,7 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 						editor.putString("VertexClientPE.tiles." + defaultName + ".color", currentColor);
 						editor.putBoolean("VertexClientPE.tiles." + defaultName + ".useLightColor", currentUseLightColor);
 						editor.commit();
-						VertexClientPE.setupClientButton(tileView, currentName, currentColor, false, currentUseLightColor, true);
+						VertexClientPE.setupButton(tileView, currentName, currentColor, false, currentUseLightColor, "tile", 0.1);
 					}
 				});
 				
@@ -5744,7 +5744,7 @@ var getStretchedImage = function(bm, x, y, stretchWidth, stretchHeight, width, h
     return new BitmapDrawable_(blank);
 };
 
-VertexClientPE.setupClientButton = function(buttonView, text, color, round, forceLightColor, style) {
+VertexClientPE.setupButton = function(buttonView, text, color, round, forceLightColor, style, thickness) {
 	buttonView.setText(text);
 	var bg = GradientDrawable_();
     if(round == true) {
@@ -5771,61 +5771,63 @@ VertexClientPE.setupClientButton = function(buttonView, text, color, round, forc
         }
         bg.setCornerRadii(radiiFloatArray);
     }
+	
+	bg.setShape(GradientDrawable_.RECTANGLE);
+	
     if(forceLightColor == true) {
         bg.setColor(Color_.parseColor("#00994C"));
 		if(style != "normal_nostrokes") {
-			bg.setStroke(dip2px(2), Color_.parseColor("#00CC66"));
+			bg.setStroke(thickness, Color_.parseColor("#00CC66"));
 		}
     } else {
         bg.setColor(Color_.parseColor("#0B5B25"));
 		if(style != "normal_nostrokes") {
-			bg.setStroke(dip2px(2), Color_.parseColor("#0F8219"));
+			bg.setStroke(thickness, Color_.parseColor("#0F8219"));
 		}
     }
-    bg.setShape(GradientDrawable_.RECTANGLE);
     if(color == "red") {
         if(forceLightColor == true) {
             bg.setColor(Color_.parseColor("#FF3333"));
 			if(style != "normal_nostrokes") {
-				bg.setStroke(dip2px(2), Color_.parseColor("#FF6666"));
+				bg.setStroke(thickness, Color_.parseColor("#FF6666"));
 			}
         } else {
             bg.setColor(Color_.parseColor("#5B0C0C"));
 			if(style != "normal_nostrokes") {
-				bg.setStroke(dip2px(2), Color_.parseColor("#821010"));
+				bg.setStroke(thickness, Color_.parseColor("#821010"));
 			}
         }
     }if(color == "blue") {
         if(forceLightColor == true) {
             bg.setColor(Color_.parseColor("#0080FF"));
 			if(style != "normal_nostrokes") {
-				bg.setStroke(dip2px(2), Color_.parseColor("#3399FF"));
+				bg.setStroke(thickness, Color_.parseColor("#3399FF"));
 			}
         } else {
             bg.setColor(Color_.parseColor("#0A175B"));
 			if(style != "normal_nostrokes") {
-				bg.setStroke(dip2px(2), Color_.parseColor("#0E3882"));
+				bg.setStroke(thickness, Color_.parseColor("#0E3882"));
 			}
         }
     }if(color == "purple") {
         bg.setColor(Color_.parseColor("#9F018C"));
 		if(style != "normal_nostrokes") {
-			bg.setStroke(dip2px(2), Color_.parseColor("#BC21AB"));
+			bg.setStroke(thickness, Color_.parseColor("#BC21AB"));
 		}
     }if(color == "yellow") {
         bg.setColor(Color_.parseColor("#CCCC00"));
 		if(style != "normal_nostrokes") {
-			bg.setStroke(dip2px(2), Color_.parseColor("#FFFF00"));
+			bg.setStroke(thickness, Color_.parseColor("#FFFF00"));
 		}
     }if(color == "white") {
         bg.setColor(Color_.parseColor("#E1E1E1"));
 		if(style != "normal_nostrokes") {
-			bg.setStroke(dip2px(2), Color_.parseColor("#FFFFFF"));
+			bg.setStroke(thickness, Color_.parseColor("#FFFFFF"));
 		}
     }if(color == "black") {
         bg.setColor(Color_.parseColor("#141414"));
 		if(style != "normal_nostrokes") {
-			bg.setStroke(dip2px(2), Color_.parseColor("#1E1E1E"));
+			bg.setStroke(thickness, Color_.parseColor("#1E1E1E"));
 		}
     }
     
@@ -5833,7 +5835,7 @@ VertexClientPE.setupClientButton = function(buttonView, text, color, round, forc
         bg.setColor(Color_.parseColor("#000000"));
     }
     if(style == "legacy_inverted") {
-        bg.setStroke(dip2px(2), Color_.parseColor("#000000"));
+        bg.setStroke(thickness, Color_.parseColor("#000000"));
     }
     if(style == "transparent") {
         bg.setColor(Color_.TRANSPARENT);
@@ -5850,30 +5852,60 @@ VertexClientPE.setupClientButton = function(buttonView, text, color, round, forc
             var action = event.getActionMasked();
             if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
                 if(forceLightColor == true) {
-                    bg.setColor(Color_.parseColor("#00994C"));
-                } else {
-                    bg.setColor(Color_.parseColor("#0B5B25"));
-                }
+					bg.setColor(Color_.parseColor("#00994C"));
+					if(style != "normal_nostrokes") {
+						bg.setStroke(thickness, Color_.parseColor("#00CC66"));
+					}
+				} else {
+					bg.setColor(Color_.parseColor("#0B5B25"));
+					if(style != "normal_nostrokes") {
+						bg.setStroke(thickness, Color_.parseColor("#0F8219"));
+					}
+				}
                 if(color == "red") {
                     if(forceLightColor == true) {
-                        bg.setColor(Color_.parseColor("#FF3333"));
-                    } else {
-                        bg.setColor(Color_.parseColor("#5B0C0C"));
-                    }
+						bg.setColor(Color_.parseColor("#FF3333"));
+						if(style != "normal_nostrokes") {
+							bg.setStroke(thickness, Color_.parseColor("#FF6666"));
+						}
+					} else {
+						bg.setColor(Color_.parseColor("#5B0C0C"));
+						if(style != "normal_nostrokes") {
+							bg.setStroke(thickness, Color_.parseColor("#821010"));
+						}
+					}
                 }if(color == "blue") {
                     if(forceLightColor == true) {
-                        bg.setColor(Color_.parseColor("#0080FF"));
-                    } else {
-                        bg.setColor(Color_.parseColor("#0A175B"));
-                    }
+						bg.setColor(Color_.parseColor("#0080FF"));
+						if(style != "normal_nostrokes") {
+							bg.setStroke(thickness, Color_.parseColor("#3399FF"));
+						}
+					} else {
+						bg.setColor(Color_.parseColor("#0A175B"));
+						if(style != "normal_nostrokes") {
+							bg.setStroke(thickness, Color_.parseColor("#0E3882"));
+						}
+					}
                 }if(color == "purple") {
                     bg.setColor(Color_.parseColor("#9F018C"));
+					if(style != "normal_nostrokes") {
+						bg.setStroke(thickness, Color_.parseColor("#BC21AB"));
+					}
                 }if(color == "yellow") {
                     bg.setColor(Color_.parseColor("#CCCC00"));
+					if(style != "normal_nostrokes") {
+						bg.setStroke(thickness, Color_.parseColor("#FFFF00"));
+					}
                 }if(color == "white") {
                     bg.setColor(Color_.parseColor("#E1E1E1"));
+					if(style != "normal_nostrokes") {
+						bg.setStroke(thickness, Color_.parseColor("#FFFFFF"));
+					}
                 }if(color == "black") {
                     bg.setColor(Color_.parseColor("#141414"));
+					if(style != "normal_nostrokes") {
+						bg.setStroke(thickness, Color_.parseColor("#1E1E1E"));
+					}
                 }
                 
                 if(style == "legacy") {
@@ -5913,6 +5945,9 @@ VertexClientPE.setupClientButton = function(buttonView, text, color, round, forc
                 if(style == "legacy_inverted") {
                     bg.setColor(Color_.parseColor("#000000"));
                 }
+				if(style == "tile") {
+					bg.setStroke(dip2px(3), Color_.parseColor("#d3d3d3"));
+				}
             }
             return false;
         }
@@ -5928,17 +5963,20 @@ VertexClientPE.setupClientButton = function(buttonView, text, color, round, forc
     }
 }
 
-function clientButton(text, desc, color, round, forceLightColor, style) //menu buttons
+function clientButton(text, desc, color, round, forceLightColor, style, thickness) //menu buttons
 {
-    if(color == null) {
-        color = themeSetting;
-    }
-    if(forceLightColor == null) {
-        forceLightColor = useLightThemeSetting=="on";
-    }
-    if(style == null) {
-        style = buttonStyleSetting;
-    }
+	if(color == null) {
+		color = themeSetting;
+	}
+	if(forceLightColor == null) {
+		forceLightColor = useLightThemeSetting=="on";
+	}
+	if(style == null) {
+		style = buttonStyleSetting;
+	}
+	if(thickness == null) {
+		thickness = dip2px(2);
+	}
     var display = new DisplayMetrics_();
     CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
     var defaultButton = new Button_(CONTEXT);
@@ -5952,7 +5990,7 @@ function clientButton(text, desc, color, round, forceLightColor, style) //menu b
         });
     }
 
-    VertexClientPE.setupClientButton(defaultButton, text, color, round, forceLightColor, style);
+    VertexClientPE.setupButton(defaultButton, text, color, round, forceLightColor, style, thickness);
     defaultButton.setPadding(0, 0, 0, 0);
     defaultButton.setLineSpacing(0, 1.15);
     return defaultButton;
@@ -6187,7 +6225,7 @@ function tileButton(tileText, tileIcon, tileColor, forceLightColor) {
     params.width = display.widthPixels / 4 - dip2px(5);
     params.height = display.widthPixels / 4 - dip2px(5);
     
-    var defaultTileButton = clientButton(sharedPref.getString("VertexClientPE.tiles." + tileText + ".name", tileText), null, sharedPref.getString("VertexClientPE.tiles." + tileText + ".color", tileColor), false, sharedPref.getBoolean("VertexClientPE.tiles." + tileText + ".useLightColor", forceLightColor==null?true:forceLightColor), true);
+    var defaultTileButton = clientButton(sharedPref.getString("VertexClientPE.tiles." + tileText + ".name", tileText), null, sharedPref.getString("VertexClientPE.tiles." + tileText + ".color", tileColor), false, sharedPref.getBoolean("VertexClientPE.tiles." + tileText + ".useLightColor", forceLightColor==null?true:forceLightColor), "tile", 0.1);
     defaultTileButton.setTypeface(VertexClientPE.tileFont);
     defaultTileButton.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
     defaultTileButton.setMarqueeRepeatLimit(-1);
