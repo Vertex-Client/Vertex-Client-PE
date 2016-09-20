@@ -6659,6 +6659,14 @@ function clientSectionTitle(text, style) {
     return defaultTextView;
 }
 
+function clientScreenTitle(defaultText) {
+	defaultScreenTitle = clientTextView(sharedPref.getString("VertexClientPE.tiles." + defaultText + ".name", defaultText), true);
+	defaultScreenTitle.setTextSize(25);
+	defaultScreenTitle.setGravity(Gravity_.CENTER);
+	
+	return defaultScreenTitle;
+}
+
 function clientHR() {//horizontal divider
     var defaultView = new View_(CONTEXT);
     defaultView.setLayoutParams(new LinearLayout_.LayoutParams(ViewGroup_.LayoutParams.MATCH_PARENT, 5));
@@ -8210,9 +8218,7 @@ function settingsScreen() {
                     settingsMenuLayout1.setOrientation(1);
                     settingsMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
                     
-                    var settingsTitle = clientTextView("Settings", true);
-                    settingsTitle.setTextSize(25);
-                    settingsTitle.setGravity(Gravity_.CENTER);
+                    var settingsTitle = clientScreenTitle("Settings");
                     settingsMenuLayout1.addView(settingsTitle);
                     
                     settingsMenuScroll.addView(settingsMenuLayout);
@@ -8666,9 +8672,7 @@ function informationScreen() {
                     informationMenuLayout.setOrientation(1);
                     informationMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
                     
-                    var informationTitle = clientTextView("Information", true);
-                    informationTitle.setTextSize(25);
-                    informationTitle.setGravity(Gravity_.CENTER);
+                    var informationTitle = clientScreenTitle("Information");
                     
                     informationMenuLayout1.addView(informationTitle);
                     informationMenuLayout1.addView(clientTextView("\n"));
@@ -8795,9 +8799,7 @@ function helpScreen() {
                     helpMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
                     helpMenuLayout1.setPadding(10, 0, 10, 0);
                     
-                    var helpTitle = clientTextView("Help", true);
-                    helpTitle.setTextSize(25);
-                    helpTitle.setGravity(Gravity_.CENTER);
+                    var helpTitle = clientScreenTitle("Help");
                     
                     var helpEnter = clientTextView("\n");
                     
@@ -8866,9 +8868,7 @@ function addonScreen() {
                     addonMenuLayoutScroll.addView(addonMenuLayout);
                     addonMenuLayout1.addView(addonMenuLayoutScroll);
                     
-                    var addonTitle = clientTextView("Addons", true);
-                    addonTitle.setTextSize(25);
-                    addonTitle.setGravity(Gravity_.CENTER);
+                    var addonTitle = clientScreenTitle("Addons");
                     addonMenuLayout.addView(addonTitle);
                     
                     if(VertexClientPE.addons.length == 0) {
@@ -9163,9 +9163,7 @@ function updateCenterScreen() {
                     updateCenterMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
                     updateCenterMenuLayout1.setPadding(10, 0, 10, 0);
                     
-                    var updateCenterTitle = clientTextView("Update Center", true);
-                    updateCenterTitle.setTextSize(25);
-                    updateCenterTitle.setGravity(Gravity_.CENTER);
+                    var updateCenterTitle = clientScreenTitle("Update Center");
                     
                     updateCenterMenuLayout1.addView(updateCenterTitle);
                     updateCenterMenuLayout1.addView(clientTextView("\n"));
@@ -9232,9 +9230,7 @@ function musicPlayerScreen() {
                     musicPlayerMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
                     musicPlayerMenuLayout1.setPadding(10, 0, 10, 0);
                     
-                    var musicPlayerTitle = clientTextView("Music Player", true);
-                    musicPlayerTitle.setTextSize(25);
-                    musicPlayerTitle.setGravity(Gravity_.CENTER);
+                    var musicPlayerTitle = clientScreenTitle("Music Player");
                     
                     var musicPlayerEnter = new TextView_(CONTEXT);
                     musicPlayerEnter.setText("\n");
