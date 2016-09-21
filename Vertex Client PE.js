@@ -3441,7 +3441,7 @@ Block.setDestroyTimeDefaultAll = function() {
     }
 }
 
-var imgLogo = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/vertex_logo.png");
+var imgLogo = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/vertex_logo_new.png");
 var imgIcon = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/clienticon_new.png");
 var imgIconClicked = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/clienticon_new_clicked.png");
 var imgPlayButton = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/play_button.png");
@@ -6954,85 +6954,6 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
     return bg;
 }
 
-function backgroundRainbow(round) {
-    var bg = GradientDrawable_();
-    if(round == true) {
-        bg.setCornerRadius(8);
-    } else if(round != false && round != null) {
-        var radiiFloatArray = Array_.newInstance(Float_.TYPE, 9);
-        var radius = 0;
-        if(round == "left") {
-            for(var i = 0; i <= 7; i++) {
-                if(i == 0 || i == 1 || i == 6 || i == 7) {
-                    radiiFloatArray[i] = 8;
-                } else {
-                    radiiFloatArray[i] = radius;
-                }
-            }
-            bg.setCornerRadii(radiiFloatArray);
-        } else if(round == "right") {
-            for(var i = 0; i <= 7; i++) {
-                if(i == 2 || i == 3 || i == 4 || i == 5) {
-                    radiiFloatArray[i] = 8;
-                } else {
-                    radiiFloatArray[i] = radius;
-                }
-            }
-            bg.setCornerRadii(radiiFloatArray);
-        } else if(round == "cornerleft") {
-            for(var i = 0; i <= 7; i++) {
-                if(i == 6 || i == 7) {
-                    radiiFloatArray[i] = 180;
-                } else {
-                    radiiFloatArray[i] = radius;
-                }
-            }
-            bg.setCornerRadii(radiiFloatArray);
-        } else if(round == "cornerright") {
-            for(var i = 0; i <= 7; i++) {
-                if(i == 4 || i == 5) {
-                    radiiFloatArray[i] = 180;
-                } else {
-                    radiiFloatArray[i] = radius;
-                }
-            }
-            bg.setCornerRadii(radiiFloatArray);
-        } else if(round == "bottom") {
-            for(var i = 0; i <= 7; i++) {
-                if(i >= 4) {
-                    radiiFloatArray[i] = 8;
-                } else {
-                    radiiFloatArray[i] = radius;
-                }
-            }
-            bg.setCornerRadii(radiiFloatArray);
-        } else if(round == "invertcornerright") {
-            for(var i = 0; i <= 7; i++) {
-                if(i == 2 || i == 3) {
-                    radiiFloatArray[i] = -180;
-                } else {
-                    radiiFloatArray[i] = radius;
-                }
-            }
-            bg.setCornerRadii(radiiFloatArray);
-        } else if(round != false && round != null) {
-            bg.setCornerRadius(round);
-        }
-    }
-    var rainbowInt = Array_.newInstance(Integer_.TYPE, 7);
-    rainbowInt[0] = Color_.RED;
-    rainbowInt[1] = Color_.MAGENTA;
-    rainbowInt[2] = Color_.BLUE;
-    rainbowInt[3] = Color_.CYAN;
-    rainbowInt[4] = Color_.GREEN;
-    rainbowInt[5] = Color_.YELLOW;
-    rainbowInt[6] = Color_.RED;
-    var bg = new GradientDrawable_(GradientDrawable_.Orientation.LEFT_RIGHT, rainbowInt);
-    bg.setShape(GradientDrawable_.RECTANGLE);
-
-    return bg;
-}
-
 VertexClientPE.setupGradient = function(gradientDrawable, color, strokeColor) {
 	if(!(gradientDrawable instanceof GradientDrawable_)) {
 		throw new TypeError("The type of the first parameter is not GradientDrawable!");
@@ -7815,7 +7736,7 @@ function downloadFile(path, url) {
 };
 
 (function checkFiles() {
-    var res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png", "github_button.png", "github_button_clicked.png", "vertex_logo.png"],
+    var res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png", "github_button.png", "github_button_clicked.png", "vertex_logo_new.png"],
         isExists = true;
     for (var i = res.length; i--;) {
         if (!new File_(PATH, res[i]).exists()) {
@@ -8269,6 +8190,8 @@ function settingsScreen() {
                         hacksListModeSettingButton.setText("Hacks List Mode | Normal");
                     } else if(hacksListModeSetting == "counter") {
                         hacksListModeSettingButton.setText("Hacks List Mode | Counter");
+                    } else if(hacksListModeSetting == "logo") {
+                        hacksListModeSettingButton.setText("Hacks List Mode | Logo");
                     } else if(hacksListModeSetting == "off") {
                         hacksListModeSettingButton.setText("Hacks List Mode | Hidden");
                     }
@@ -8283,6 +8206,10 @@ function settingsScreen() {
                                 hacksListModeSettingButton.setText("Hacks List Mode | Counter");
                                 VertexClientPE.saveMainSettings();
                             } else if(hacksListModeSetting == "counter"){
+                                hacksListModeSetting = "logo";
+                                hacksListModeSettingButton.setText("Hacks List Mode | Logo");
+                                VertexClientPE.saveMainSettings();
+                            } else if(hacksListModeSetting == "logo"){
                                 hacksListModeSetting = "off";
                                 hacksListModeSettingButton.setText("Hacks List Mode | Hidden");
                                 VertexClientPE.saveMainSettings();
@@ -10457,17 +10384,31 @@ function showHacksList() {
                     
                     var hacksListLayoutLeft = new LinearLayout_(CONTEXT);
                     hacksListLayoutLeft.setOrientation(1);
-                    hacksListLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(width / 4, width / 15));
+					hacksListLayoutLeft.setGravity(Gravity_.CENTER);
+                    hacksListLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(width / 8, width / 15));
                     hacksListLayout.addView(hacksListLayoutLeft);
                     
                     var hacksListLayoutRight = new LinearLayout_(CONTEXT);
                     hacksListLayoutRight.setOrientation(1);
-                    hacksListLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(width / 4, width / 15));
-                    hacksListLayout.addView(hacksListLayoutRight);
+					hacksListLayoutRight.setGravity(Gravity_.CENTER);
+					if(hacksListModeSetting != "logo") {
+						hacksListLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(width / 4, width / 15));
+					} else {
+						hacksListLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(LinearLayout_.LayoutParams.WRAP_CONTENT, width / 15));
+					}
+                    
+					hacksListLayout.addView(hacksListLayoutRight);
                     
                     logoViewer2 = new ImageView_(CONTEXT);
                     logoViewer2.setImageBitmap(imgLogo);
-                    logoViewer2.setLayoutParams(new LinearLayout_.LayoutParams(width / 4, width / 16));
+                    logoViewer2.setLayoutParams(new LinearLayout_.LayoutParams(width / 8, width / 16));
+					
+					var versionText = clientTextView("v" + VertexClientPE.currentVersion, true);
+					versionText.setGravity(android.view.Gravity.CENTER);
+					
+					var proText = clientTextView("Pro", true);
+					proText.setGravity(android.view.Gravity.CENTER);
+					proText.setTextColor(Color_.parseColor("#DAA520"));
 
                     var VertexClientPEHacksListText = "Vertex Client PE " + VertexClientPE.getVersion("current");
                     var statesText = "";
@@ -10506,15 +10447,25 @@ function showHacksList() {
                     musicTextView.setSingleLine();
                     musicTextView.setHorizontallyScrolling(true);
                     musicTextView.setSelected(true);
+					logoViewer2.setPadding(dip2px(8), 0, dip2px(8), 0);
+					versionText.setPadding(dip2px(8), 0, dip2px(8), 0);
+					proText.setPadding(dip2px(8), 0, dip2px(8), 0);
                     hacksListLayoutLeft.addView(logoViewer2);
-                    hacksListLayoutRight.addView(statesTextView);
-                    hacksListLayoutRight.addView(musicTextView);
-                    hacksList = new PopupWindow_(hacksListLayout, width / 2, width / 15);
-                    hacksList.setBackgroundDrawable(backgroundGradient(true));
-                    hacksList.setTouchable(false);
-                    if(hacksListModeSetting != "off") {
-                        hacksList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.TOP, 0, 0);
-                    }
+					if(hacksListModeSetting != "logo") {
+						hacksListLayoutRight.addView(statesTextView);
+						hacksListLayoutRight.addView(musicTextView);
+					} else {
+						hacksListLayoutRight.addView(versionText);
+						if(VertexClientPE.isPro()) {
+							hacksListLayoutRight.addView(proText);
+						}
+					}
+					hacksList = new PopupWindow_(hacksListLayout, LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT);
+					hacksList.setBackgroundDrawable(backgroundGradient(true));
+					hacksList.setTouchable(false);
+					if(hacksListModeSetting != "off") {
+						hacksList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.TOP, 0, 0);
+					}
                 } catch(error) {
                     print('An error occurred: ' + error);
                     VertexClientPE.showBugReportDialog(error);
