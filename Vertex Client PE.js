@@ -288,6 +288,7 @@ var VertexClientPE = {
         return isSupported;
     },
     accounts: new JSONArray_(),
+    customTiles: new JSONArray_(),
     currentWorld: {
         deathX: -1,
         deathY: -1,
@@ -2838,6 +2839,7 @@ VertexClientPE.registerModule(twerk);
 VertexClientPE.registerModule(yesCheatPlus);
 VertexClientPE.registerModule(zoom);
 
+//var autoClick = true;
 function modTick() {
     VertexClientPE.playerIsInGame = true;
     VertexClientPE.modules.forEach(function(element, index, array) {
@@ -2850,6 +2852,28 @@ function modTick() {
             element.onTick();
         }
     });
+	/* if(autoClick) {
+		// Obtain MotionEvent object
+		var downTime = SystemClock_.uptimeMillis();
+		var eventTime = SystemClock_.uptimeMillis() + 100;
+		var x = 0.0;
+		var y = 0.0;
+		// List of meta states found here:     developer.android.com/reference/android/view/KeyEvent.html#getMetaState()
+		var metaState = 0;
+		var motionEvent = MotionEvent_.obtain(
+			downTime, 
+			eventTime, 
+			MotionEvent_.ACTION_UP, 
+			x, 
+			y, 
+			metaState
+		);
+
+		// Dispatch touch event to view
+		if(hacksList != null) {
+			hacksList.dispatchTouchEvent(motionEvent);
+		}
+	} */
 }
 
 function attackHook(a, v) {
@@ -3407,19 +3431,19 @@ VertexClientPE.GUI.registerFloatingMenu = function() {
     VertexClientPE.GUI.floatingMenus.push(this);
 }
 
-VertexClientPE.showNotification = function(eventtext) {
+VertexClientPE.showNotification = function(eventTitle, eventText) {
     var mNM = CONTEXT.getSystemService(Context_.NOTIFICATION_SERVICE);
-    var notification = new Notification_(android.R.drawable.ic_menu_edit, "Text", System_.currentTimeMillis());
+    var notification = new Notification_(android.R.drawable.ic_menu_edit, eventText, System_.currentTimeMillis());
 
     // The PendingIntent to launch our activity if the user selects this
     // notification
     var contentIntent = PendingIntent_.getActivity(CONTEXT, 0, new Intent_(CONTEXT), 0);
 
     // Set the info for the views that show in the notification panel.
-    notification.setLatestEventInfo(CONTEXT, "Title", eventtext, contentIntent);
+    notification.setLatestEventInfo(CONTEXT, eventTitle, eventText, contentIntent);
 
     // Send the notification.
-    mNM.notify("Title", 0, notification);
+    mNM.notify(eventTitle, 0, notification);
 }
 
 var nameColor = "\u00A7b";
@@ -5475,6 +5499,36 @@ VertexClientPE.loadAccounts = function() {
     }
 }
 
+VertexClientPE.saveTiles = function() {
+    File_(settingsPath).mkdirs();
+    var newFile = new File_(settingsPath, "vertexclientpe_customtiles.dat");
+    newFile.createNewFile();
+    var stream = new FileOutputStream_(newFile);
+    try {
+        stream.write(VertexClientPE.customTiles.toString().getBytes());
+    } finally {
+        stream.close();
+    }
+}
+
+VertexClientPE.loadTiles = function() {
+    try {
+        if(!File_(settingsPath + "vertexclientpe_customtiles.dat").exists())
+            return;
+        var file = new File_(settingsPath + "vertexclientpe_customtiles.dat");
+        var readed = (new BufferedReader_(new FileReader_(file)));
+        var data = new StringBuilder_();
+        var string;
+        while((string = readed.readLine()) != null) {
+            data.append(string);
+            data.append("\n");
+        }
+        VertexClientPE.customTiles = new JSONArray_(data.toString());
+    } catch(e) {
+        //error
+    }
+}
+
 VertexClientPE.loadDeathCoords = function() {
     if(!File_(worldsPath + Level.getWorldDir() + "/" + "death.dat").exists())
         return;
@@ -6270,7 +6324,9 @@ function modButton(mod, buttonOnly) {
     modButtonLayoutLeft.setOrientation(1);
     if(menuType == "halfscreen") {
         modButtonLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2.5, display.heightPixels / 10));
-    } else {
+    } else if(menuType == "halfscreen_top") {
+		modButtonLayoutLeft.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - (display.widthPixels / 2 - display.widthPixels / 2.5) - 10, display.heightPixels / 12));
+	} else {
         modButtonLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.heightPixels / 2.5 - 10, display.heightPixels / 12));
     }
     modButtonLayout.addView(modButtonLayoutLeft);
@@ -6279,7 +6335,9 @@ function modButton(mod, buttonOnly) {
     modButtonLayoutRight.setOrientation(1);
     if(menuType == "halfscreen") {
         modButtonLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2.2 - display.widthPixels / 2.5, display.heightPixels / 10));
-    } else {
+    } else if(menuType == "halfscreen_top") {
+		modButtonLayoutRight.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2 - display.widthPixels / 2.5 - 10, display.heightPixels / 12));
+	} else {
         modButtonLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.heightPixels / 2 - display.heightPixels / 2.5 - 10, display.heightPixels / 12));
     }
     modButtonLayout.addView(modButtonLayoutRight);
@@ -6289,6 +6347,8 @@ function modButton(mod, buttonOnly) {
     if(buttonOnly == null || !buttonOnly) {
         if(menuType == "halfscreen") {
             defaultClientButton.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2.5, display.heightPixels / 10));
+        } else if(menuType == "halfscreen_top") {
+            defaultClientButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - (display.widthPixels / 2 - display.widthPixels / 2.5) - 10, display.heightPixels / 12));
         } else {
             defaultClientButton.setLayoutParams(new ViewGroup_.LayoutParams(display.heightPixels / 2.5 - 10, display.heightPixels / 12));
         }
@@ -6362,6 +6422,8 @@ function modButton(mod, buttonOnly) {
     var defaultInfoButton = clientButton("...", mod.name + " settings", null, "right");
     if(menuType == "halfscreen") {
         defaultInfoButton.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2.2 - display.widthPixels / 2.5, display.heightPixels / 10));
+    } else if(menuType == "halfscreen_top") {
+        defaultInfoButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2 - display.widthPixels / 2.5 - 10, display.heightPixels / 12));
     } else {
         defaultInfoButton.setLayoutParams(new ViewGroup_.LayoutParams(display.heightPixels / 2 - display.heightPixels / 2.5 - 10, display.heightPixels / 12));
     }
@@ -8451,7 +8513,9 @@ function settingsScreen() {
                     if(menuType == "normal") {
                         menuTypeSettingButton.setText("Menu style | Normal");
                     } else if(menuType == "halfscreen") {
-                        menuTypeSettingButton.setText("Menu style | Retro");
+                        menuTypeSettingButton.setText("Menu style | Tabbed (side)");
+                    } else if(menuType == "halfscreen_top") {
+                        menuTypeSettingButton.setText("Menu style | Tabbed (top)");
                     } else if(menuType == "fullscreen") {
                         menuTypeSettingButton.setText("Menu style | Fullscreen");
                     }
@@ -8459,9 +8523,13 @@ function settingsScreen() {
                     onClick: function(viewarg){
                         if(menuType == "normal") {
                             menuType = "halfscreen";
-                            menuTypeSettingButton.setText("Menu style | Retro");
+                            menuTypeSettingButton.setText("Menu style | Tabbed (side)");
                             VertexClientPE.saveMainSettings();
                         } else if(menuType == "halfscreen") {
+                            menuType = "halfscreen_top";
+                            menuTypeSettingButton.setText("Menu style | Tabbed (top)");
+                            VertexClientPE.saveMainSettings();
+                        } else if(menuType == "halfscreen_top") {
                             menuType = "fullscreen";
                             menuTypeSettingButton.setText("Menu style | Fullscreen");
                             VertexClientPE.saveMainSettings();
@@ -9533,9 +9601,9 @@ VertexClientPE.showMenu = function() {
     if(menuType == "normal") {
         VertexClientPE.showCategoryMenus();
 		VertexClientPE.showMenuBar();
-    } else if(menuType == "halfscreen") {
+    } else if(menuType == "halfscreen" || menuType == "halfscreen_top") {
         retroMenu();
-    } else {
+    } else if(menuType == "fullscreen") {
 		VertexClientPE.showFullScreenMenu();
 	}
     VertexClientPE.menuIsShowing = true;
@@ -9557,7 +9625,7 @@ VertexClientPE.closeMenu = function() {
                 vertexclientpemiscmenu.dismiss();
             }
         }
-    } else if(menuType == "halfscreen") {
+    } else if(menuType == "halfscreen" || menuType == "halfscreen_top") {
         if(menu != null) {
             if(menu.isShowing()) {
                 menu.dismiss();
@@ -9631,14 +9699,19 @@ VertexClientPE.showFullScreenMenu = function() {
 					
 					var combatSectionTitle = clientTextView(combatName);
 					combatSectionTitle.setTypeface(VertexClientPE.font, Typeface_.BOLD);
+					combatSectionTitle.setGravity(Gravity_.CENTER);
 					var buildingSectionTitle = clientTextView(buildingName);
 					buildingSectionTitle.setTypeface(VertexClientPE.font, Typeface_.BOLD);
+					buildingSectionTitle.setGravity(Gravity_.CENTER);
 					var movementSectionTitle = clientTextView(movementName);
 					movementSectionTitle.setTypeface(VertexClientPE.font, Typeface_.BOLD);
+					movementSectionTitle.setGravity(Gravity_.CENTER);
 					var chatSectionTitle = clientTextView(chatName);
 					chatSectionTitle.setTypeface(VertexClientPE.font, Typeface_.BOLD);
+					chatSectionTitle.setGravity(Gravity_.CENTER);
 					var miscSectionTitle = clientTextView(miscName);
 					miscSectionTitle.setTypeface(VertexClientPE.font, Typeface_.BOLD);
+					miscSectionTitle.setGravity(Gravity_.CENTER);
 					
 					fullScreenMenuLayout1Combat.addView(combatSectionTitle);
 					fullScreenMenuLayout1Building.addView(buildingSectionTitle);
@@ -9743,21 +9816,32 @@ function retroMenu() {
     menuMiddleLayout = new LinearLayout_(CONTEXT);
     menuRightLayout = new LinearLayout_(CONTEXT);
     menuRightLayout.setGravity(Gravity_.CENTER);
-    menuLayout.setOrientation(LinearLayout_.HORIZONTAL);
-    menuMiddleLayout.setOrientation(1);
-    menuMiddleLayout.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 1.8 - display.widthPixels / 2.2, display.heightPixels / 1.23));
     menuRightLayout.setOrientation(1);
-    menuRightLayout.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2.2, display.heightPixels / 1.23));
-    if(mainButtonPositionSetting == "top-left") {
+    if(menuType == "halfscreen") {
+		menuMiddleLayout.setOrientation(1);
+		menuLayout.setOrientation(LinearLayout_.HORIZONTAL);
+		menuMiddleLayout.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 1.8 - display.widthPixels / 2.2, display.heightPixels / 1.23));
+		menuRightLayout.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2.2, display.heightPixels / 1.23));
+		if(mainButtonPositionSetting == "top-left") {
+			menuLayout.addView(menuMiddleScroll);
+			menuMiddleScroll.addView(menuMiddleLayout);
+			menuLayout.addView(menuRightScroll);
+			menuRightScroll.addView(menuRightLayout);
+		} else {
+			menuLayout.addView(menuRightScroll);
+			menuRightScroll.addView(menuRightLayout);
+			menuLayout.addView(menuMiddleScroll);
+			menuMiddleScroll.addView(menuMiddleLayout);
+		}
+	} else if(menuType == "halfscreen_top") {
+		menuMiddleLayout.setOrientation(LinearLayout_.HORIZONTAL);
+		menuLayout.setOrientation(1);
+		menuMiddleLayout.setGravity(Gravity_.CENTER);
+		menuRightLayout.setGravity(Gravity_.CENTER);
 		menuLayout.addView(menuMiddleScroll);
 		menuMiddleScroll.addView(menuMiddleLayout);
 		menuLayout.addView(menuRightScroll);
 		menuRightScroll.addView(menuRightLayout);
-	} else {
-		menuLayout.addView(menuRightScroll);
-		menuRightScroll.addView(menuRightLayout);
-		menuLayout.addView(menuMiddleScroll);
-		menuMiddleScroll.addView(menuMiddleLayout);
 	}
     //--------Add Title--------//
     var tabTitle = new TextView_(CONTEXT);
@@ -9779,13 +9863,29 @@ function retroMenu() {
     });
      
     //More buttons...
-    menu = new PopupWindow_(menuLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 1.8, CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+	if(menuType == "halfscreen") {
+		menu = new PopupWindow_(menuLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 1.8, CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+	} else if(menuType == "halfscreen_top") {
+		menu = new PopupWindow_(menuLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() / 2);
+	}
     menu.setBackgroundDrawable(backgroundGradient());
     menu.setAnimationStyle(android.R.style.Animation_Translucent);
-	if(mainButtonPositionSetting == "top-left") {
-		menu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.BOTTOM, 0, 0);
-	} else {
-		menu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
+	if(menuType == "halfscreen") {
+		if(mainButtonPositionSetting == "top-left") {
+			menu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.BOTTOM, 0, 0);
+		} else {
+			menu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
+		}
+	} else if(menuType == "halfscreen_top") {
+		menu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.TOP, 0, 0);
+		if(GUI != null) {
+			GUI.dismiss();
+			if(mainButtonPositionSetting == "top-right") {
+				GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
+			} else {
+				GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+			}
+		}
 	}
     }catch(error){
     print('An error occured: ' + error);
