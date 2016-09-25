@@ -6028,6 +6028,20 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
     }
 }
 
+function drawCircle(color) {
+    var drawable = GradientDrawable_();
+    drawable.setColor(color);
+    drawable.setShape(1);
+    return drawable;
+}
+
+function drawQuarterCircle(color, radius) {
+    var drawable = GradientDrawable_();
+    drawable.setColor(color);
+    drawable.setCornerRadii([0, 0, 0, 0, 0, 0, radius, radius]);
+    return drawable;
+}
+
 function clientButton(text, desc, color, round, forceLightColor, style, thickness) //menu buttons
 {
 	if(color == null) {
@@ -7616,8 +7630,9 @@ VertexClientPE.showSetupScreen = function() {
                     setupScreenLayoutBottomRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 4, LinearLayout_.LayoutParams.WRAP_CONTENT));
 					
                     var logoViewer3 = new ImageView_(CONTEXT);
+                    logoViewer3.setPadding(0, dip2px(16), 0, dip2px(16));
                     logoViewer3.setImageBitmap(imgLogo);
-                    logoViewer3.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 4, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16));
+                    logoViewer3.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 4, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16 + dip2px(32)));
                     setupScreenLayout.addView(logoViewer3);
 					
 					var setupStepRow = new LinearLayout_(CONTEXT);
@@ -7626,8 +7641,9 @@ VertexClientPE.showSetupScreen = function() {
 					setupScreenLayout.addView(setupStepRow);
 					
 					var step1Button = new Button_(CONTEXT);
+					step1Button.setBackgroundDrawable(drawCircle(Color_.parseColor("#80ffffff")));
 					step1Button.setText("1");
-					step1Button.setTextColor(Color_.GREEN);
+					step1Button.setTextColor(Color_.parseColor("#0080FF"));
 					step1Button.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16));
 					step1Button.setOnClickListener(new android.view.View.OnClickListener() {
 						onClick: function(v) {
@@ -7637,7 +7653,7 @@ VertexClientPE.showSetupScreen = function() {
 								setupScreenLayoutBottomCenter.removeAllViews();
 								setupScreenLayoutBottomCenter1.removeAllViews();
 								setupScreenLayoutBottomRight.removeAllViews();
-								step1Button.setTextColor(Color_.GREEN);
+								step1Button.setTextColor(Color_.parseColor("#0080FF"));
 								step2Button.setTextColor(Color_.WHITE);
 								step3Button.setTextColor(Color_.WHITE);
 								setupTextView.setText(setupStep1Text);
@@ -7651,7 +7667,9 @@ VertexClientPE.showSetupScreen = function() {
 						}
 					});
 					var step2Button = new Button_(CONTEXT);
+					step2Button.setBackgroundDrawable(drawCircle(Color_.parseColor("#80ffffff")));
 					step2Button.setText("2");
+					step2Button.setTextColor(Color_.WHITE);
 					step2Button.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16));
 					step2Button.setOnClickListener(new android.view.View.OnClickListener() {
 						onClick: function(v) {
@@ -7662,7 +7680,7 @@ VertexClientPE.showSetupScreen = function() {
 								setupScreenLayoutBottomCenter1.removeAllViews();
 								setupScreenLayoutBottomRight.removeAllViews();
 								step1Button.setTextColor(Color_.WHITE);
-								step2Button.setTextColor(Color_.GREEN);
+								step2Button.setTextColor(Color_.parseColor("#0080FF"));
 								step3Button.setTextColor(Color_.WHITE);
 								setupTextView.setText(setupStep2Text);
 								setupScreenLayoutBottomLeft.addView(setupButtonGreen);
@@ -7679,7 +7697,9 @@ VertexClientPE.showSetupScreen = function() {
 						}
 					});
 					var step3Button = new Button_(CONTEXT);
+					step3Button.setBackgroundDrawable(drawCircle(Color_.parseColor("#80ffffff")));
 					step3Button.setText("3");
+					step3Button.setTextColor(Color_.WHITE);
 					step3Button.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16));
 					step3Button.setOnClickListener(new android.view.View.OnClickListener() {
 						onClick: function(v) {
@@ -7691,9 +7711,9 @@ VertexClientPE.showSetupScreen = function() {
 								setupScreenLayoutBottomRight.removeAllViews();
 								step1Button.setTextColor(Color_.WHITE);
 								step2Button.setTextColor(Color_.WHITE);
-								step3Button.setTextColor(Color_.GREEN);
+								step3Button.setTextColor(Color_.parseColor("#0080FF"));
 								setupTextView.setText(setupStep3Text);
-								doneButton.setText("\u2713");
+								doneButton.setText("DONE");
 								doneButton.setOnClickListener(new View_.OnClickListener({
 									onClick: function(viewarg){
 										themeSetting = setupColor;
@@ -7713,8 +7733,16 @@ VertexClientPE.showSetupScreen = function() {
 						}
 					});
 					
+					var space1 = new TextView_(CONTEXT);
+					space1.setBackgroundDrawable(new ColorDrawable_(Color_.WHITE));
+					
+					var space2 = new TextView_(CONTEXT);
+					space2.setBackgroundDrawable(new ColorDrawable_(Color_.WHITE));
+					
 					setupStepRow.addView(step1Button);
+					setupStepRow.addView(space1, dip2px(8), dip2px(1));
 					setupStepRow.addView(step2Button);
+					setupStepRow.addView(space2, dip2px(8), dip2px(1));
 					setupStepRow.addView(step3Button);
 					
 					var setupTextView = clientTextView("");
@@ -7784,15 +7812,18 @@ VertexClientPE.showSetupScreen = function() {
 					
 					var doneLayout = new LinearLayout_(CONTEXT);
 					var doneButton = new Button_(CONTEXT);
+					doneButton.setBackgroundDrawable(drawQuarterCircle(Color_.parseColor("#80ffffff"), dip2px(60)));
+					doneButton.setGravity(Gravity_.RIGHT | Gravity_.TOP);
+					doneButton.setPadding(0, dip2px(8), dip2px(8), 0);
 					doneButton.setText("NEXT");//Text
-					doneButton.getBackground().setColorFilter(Color_.parseColor("#008000"), PorterDuff_.Mode.MULTIPLY);
+					//doneButton.getBackground().setColorFilter(Color_.parseColor("#008000"), PorterDuff_.Mode.MULTIPLY);
 					doneButton.setTextColor(Color_.WHITE);
 					doneButton.setOnClickListener(new View_.OnClickListener({
 						onClick: function(viewarg){
 							step2Button.performClick();
 						}
 					}));
-					doneLayout.addView(doneButton);
+					doneLayout.addView(doneButton, dip2px(54), dip2px(54));
                     
                     setupScreen = new PopupWindow_(setupScreenLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
                     setupScreen.setBackgroundDrawable(new ColorDrawable_(Color_.parseColor("#0080FF")));
