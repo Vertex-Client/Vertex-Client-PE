@@ -7656,6 +7656,7 @@ VertexClientPE.showSetupScreen = function() {
 								step1Button.setTextColor(Color_.parseColor("#0080FF"));
 								step2Button.setTextColor(Color_.WHITE);
 								step3Button.setTextColor(Color_.WHITE);
+								setupTextView.startAnimation(textAnim);
 								setupTextView.setText(setupStep1Text);
 								doneButton.setText("\u2794");
 								doneButton.setOnClickListener(new View_.OnClickListener({
@@ -7682,6 +7683,7 @@ VertexClientPE.showSetupScreen = function() {
 								step1Button.setTextColor(Color_.WHITE);
 								step2Button.setTextColor(Color_.parseColor("#0080FF"));
 								step3Button.setTextColor(Color_.WHITE);
+								setupTextView.startAnimation(textAnim);
 								setupTextView.setText(setupStep2Text);
 								setupScreenLayoutBottomLeft.addView(setupButtonGreen);
 								setupScreenLayoutBottomCenter.addView(setupButtonRed);
@@ -7712,6 +7714,7 @@ VertexClientPE.showSetupScreen = function() {
 								step1Button.setTextColor(Color_.WHITE);
 								step2Button.setTextColor(Color_.WHITE);
 								step3Button.setTextColor(Color_.parseColor("#0080FF"));
+								setupTextView.startAnimation(textAnim);
 								setupTextView.setText(setupStep3Text);
 								doneButton.setText("\u2713");
 								doneButton.setOnClickListener(new View_.OnClickListener({
@@ -7755,6 +7758,7 @@ VertexClientPE.showSetupScreen = function() {
 					var setupStep3Text = "That's it! Your experience begins here.\nHere's some additional help to get started:\n- You can open the Dashboard and the Shop from the 'More' dialog,\nwhich can be opened by long tapping the menu button.";
 					
 					setupTextView.setText(setupStep1Text);
+					
                     setupScreenLayoutBottom.addView(setupScreenLayoutBottomLeft);
                     setupScreenLayoutBottom.addView(setupScreenLayoutBottomCenter);
                     setupScreenLayoutBottom.addView(setupScreenLayoutBottomCenter1);
@@ -7833,13 +7837,31 @@ VertexClientPE.showSetupScreen = function() {
 					//set animation after being shown, because the animation is for when it dismisses.
 					//setupScreen.setAnimationStyle(android.R.style.Animation_Dialog);
 					
-					var anim = new android.view.animation.AlphaAnimation(0, 1);
-					anim.setInterpolator(new android.view.animation.LinearInterpolator());
-					anim.setRepeatCount(android.view.animation.Animation.INFINITE);
-					anim.setRepeatMode(android.view.animation.Animation.REVERSE);
-					anim.setDuration(1500);
+					var logoAnim = new android.view.animation.AlphaAnimation(0, 1);
+					logoAnim.setInterpolator(new android.view.animation.LinearInterpolator());
+					logoAnim.setRepeatCount(android.view.animation.Animation.INFINITE);
+					logoAnim.setRepeatMode(android.view.animation.Animation.REVERSE);
+					logoAnim.setDuration(1500);
 					
-					logoViewer3.startAnimation(anim);
+					logoViewer3.startAnimation(logoAnim);
+					
+					var textAnim = new android.view.animation.AlphaAnimation(0, 1);
+					textAnim.setInterpolator(new android.view.animation.LinearInterpolator());
+					textAnim.setRepeatCount(android.view.animation.Animation.INFINITE);
+					textAnim.setDuration(1500);
+					textAnim.setAnimationListener(new android.view.animation.Animation.AnimationListener() {
+						onAnimationStart: function(arg0) {
+							
+						},
+						onAnimationRepeat: function(arg0) {
+							setupTextView.clearAnimation();
+						},
+						onAnimationEnd: function(arg0) {
+							setupTextView.clearAnimation();
+						}
+					});
+					
+					setupTextView.startAnimation(textAnim);
 					
 					doneUI = new PopupWindow_(doneLayout, LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT);
 					doneUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
