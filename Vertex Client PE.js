@@ -212,6 +212,48 @@ function Vector3(x, y, z) {
     };
 }
 
+function VectorMathMCPE() {
+    this.getDirectionalVectorFromEntity = function(ent){
+        var mathPitch = ((Entity.getPitch(ent) + 90) * Math.PI) / 180;
+        var mathYaw  = ((Entity.getYaw(ent) + 90)  * Math.PI) / 180;
+        return new Vector3((Math.sin(mathPitch) * Math.cos(mathYaw)), (Math.cos(mathPitch)), (Math.sin(mathPitch) * Math.sin(mathYaw)));
+    }
+    this.extendPlayerFacing = function (distance) {
+        var dirVector = this.getDirectionalVectorFromEntity(Player.getEntity());
+        var playerPos = new Vector3(Player.getX(), Player.getY(), Player.getZ());
+        var newPosition = playerPos.moveAlongDirectionalVector(dirVector, distance);
+        return newPosition;
+    }
+}
+
+function VectorLib() {
+	this.getTile = function (vector, id, data) {
+        Level.getTile(vector.x, vector.y, vector.z);
+    }
+    this.setTile = function (vector, id, data) {
+        Level.setTile(vector.x, vector.y, vector.z, id, data);
+    }
+    this.setPlayerPos = function(position){
+        Entity.setPosition(Player.getEntity(), position.x, position.y, position.z);
+    }
+	this.getCoordsInFrontOfEnt = function(ent) {
+		var yaw = Entity.getYaw(ent);
+		var pitch = Entity.getPitch(ent);
+		yaw *= Math.PI / 180;
+		pitch *= Math.PI / 180 * -1;
+
+		var x = Math.cos(yaw) * Math.cos(pitch);
+		var y = Math.sin(pitch);
+		var z = Math.sin(yaw) * Math.cos(pitch);
+		
+		return new Vector3(Entity.getX(ent) + x, Entity.getY(ent) + y, Entity.getZ(ent) + z);
+	}
+	this.getTileInFrontOfEnt = function(ent) {
+		var vector = this.getCoordsInFrontOfEnt(ent);
+		return getTile(vector.x, vector.y, vector.z);
+	}
+}
+
 var currentScreen = ScreenType.start_screen;
 
 function screenChangeHook(screenName) {
@@ -2529,9 +2571,6 @@ var antiKnockback = {
     category: VertexClientPE.category.COMBAT,
     type: "Mod",
     state: false,
-	x: null,
-	y: null,
-	z: null,
 	lastHealth: null,
 	velTick: 0,
     isStateMod: function() {
@@ -2543,17 +2582,19 @@ var antiKnockback = {
     onTick: function() {
 		if(this.lastHealth == null || this.lastHealth == Entity.getHealth(getPlayerEnt())) {
 			this.lastHealth = Entity.getHealth(getPlayerEnt());
-			this.x = getPlayerX();
-			this.y = getPlayerY();
-			this.z = getPlayerZ();
 		} else if(Entity.getHealth(getPlayerEnt()) < this.lastHealth) {
-			if(this.velTick <= 10) {
-				Entity.setPosition(getPlayerEnt(), this.x, this.y, this.z);
+			if(this.velTick <= 2) {
+				Entity.setImmobile(getPlayerEnt(), true);
 				this.velTick++;
 			} else {
+				Entity.setImmobile(getPlayerEnt(), false);
 				this.lastHealth = Entity.getHealth(getPlayerEnt());
 				this.velTick = 0;
 			}
+		} else if(Entity.getHealth(getPlayerEnt()) > this.lastHealth) {
+			Entity.setImmobile(getPlayerEnt(), false);
+			this.lastHealth = Entity.getHealth(getPlayerEnt());
+			this.velTick = 0;
 		}
     }
 }
@@ -2600,7 +2641,20 @@ var lifeSaver = {
         this.state = !this.state;
     },
     onTick: function() {
-        //coming soon
+		var vectorLib = new VectorLib();
+		for(var bX = - 1; bX <= 1; bX++) {
+			for(var bY = - 1; bY <= 1; bY++) {
+				for(var bZ = - 1; bZ <= 1; bZ++) {
+					var vector = new Vector3(getPlayerX() + bX, getPlayerY() + bY, getPlayerZ() + bZ);
+					if(vectorLib.getTile(vector) == 51) {
+						//move player
+					}
+				}
+			}
+		}
+		/* if(vectorLib.getTileInFrontOfEnt(getPlayerEnt()) == 0) {
+			print("block faced is air");
+		} */
     }
 }
 
