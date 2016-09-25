@@ -322,10 +322,27 @@ var VertexClientPE = {
         return VertexClientPE.name;
     },
     author: "peacestorm",
-    isDev: false,
     isDevMode: function() {
-        return VertexClientPE.isDev;
+        return sharedPref.getBoolean("VertexClientPE.isDevMode", false);
     },
+	isDebugMode: function() {
+        return sharedPref.getBoolean("VertexClientPE.isDebugMode", false);
+    },
+	isExpMode: function() {
+        return sharedPref.getBoolean("VertexClientPE.isExpMode", false);
+    },
+	setIsDevMode: function(bool) {
+		editor.putBoolean("VertexClientPE.isDevMode", bool);
+		editor.commit();
+	},
+	setIsDebugMode: function(bool) {
+		editor.putBoolean("VertexClientPE.isDebugMode", bool);
+		editor.commit();
+	},
+	setIsExpMode: function(bool) {
+		editor.putBoolean("VertexClientPE.isExpMode", bool);
+		editor.commit();
+	},
     isSupported: function() {
         return isSupported;
     },
@@ -712,6 +729,7 @@ var musicPlayerMenu;
 var updateCenterMenu;
 var shopMenu;
 var settingsMenu;
+var devSettingsMenu;
 var helpMenu;
 var addonMenu;
 var updateCenterMenu;
@@ -720,6 +738,8 @@ var playerCustomizerMenu;
 var optiFineMenu;
 var informationMenu;
 var menuBar;
+var hacksList;
+var tabGUI;
 
 /**
  * #########
@@ -2605,6 +2625,9 @@ var antiBurn = {
     category: VertexClientPE.category.COMBAT,
     type: "Mod",
     state: false,
+	isExpMod: function() {
+		return true;
+	},
     isStateMod: function() {
         return true;
     },
@@ -2634,6 +2657,9 @@ var lifeSaver = {
     category: VertexClientPE.category.MOVEMENT,
     type: "Mod",
     state: false,
+	isExpMod: function() {
+		return true;
+	},
     isStateMod: function() {
         return true;
     },
@@ -2648,6 +2674,7 @@ var lifeSaver = {
 					var vector = new Vector3(getPlayerX() + bX, getPlayerY() + bY, getPlayerZ() + bZ);
 					if(vectorLib.getTile(vector) == 51) {
 						//move player
+						VertexClientPE.debugMessage("Now the player should move");
 					}
 				}
 			}
@@ -2664,6 +2691,9 @@ var autoBuild = {
     category: VertexClientPE.category.BUILDING,
     type: "Mod",
     state: false,
+	isExpMod: function() {
+		return true;
+	},
     isStateMod: function() {
         return true;
     },
@@ -2832,7 +2862,7 @@ var fastBridge = {
 
 //COMBAT
 VertexClientPE.registerModule(antiKnockback);
-//VertexClientPE.registerModule(antiBurn);
+VertexClientPE.registerModule(antiBurn);
 VertexClientPE.registerModule(arrowGun);
 VertexClientPE.registerModule(aimbot);
 VertexClientPE.registerModule(autoLeave);
@@ -2845,7 +2875,6 @@ VertexClientPE.registerModule(godMode);
 VertexClientPE.registerModule(healthTags);
 VertexClientPE.registerModule(instaKill);
 VertexClientPE.registerModule(killAura);
-//VertexClientPE.registerModule(lifeSaver);
 VertexClientPE.registerModule(noHurt);
 VertexClientPE.registerModule(regen);
 VertexClientPE.registerModule(tpAura);
@@ -2858,6 +2887,7 @@ VertexClientPE.registerModule(fastWalk);
 VertexClientPE.registerModule(flight);
 VertexClientPE.registerModule(glide);
 VertexClientPE.registerModule(highJump);
+VertexClientPE.registerModule(lifeSaver);
 VertexClientPE.registerModule(liquidWalk);
 VertexClientPE.registerModule(noDownGlide);
 VertexClientPE.registerModule(ride);
@@ -2866,7 +2896,7 @@ VertexClientPE.registerModule(tapTeleporter);
 VertexClientPE.registerModule(timer);
 VertexClientPE.registerModule(wallHack);
 //BUILDING
-//VertexClientPE.registerModule(autoBuild);
+VertexClientPE.registerModule(autoBuild);
 VertexClientPE.registerModule(autoMine);
 VertexClientPE.registerModule(autoPlace);
 VertexClientPE.registerModule(fastBreak);
@@ -4108,6 +4138,8 @@ function capitalizeColorString(string) {
 		return "Purple";
 	} else if(string == "yellow") {
 		return "Yellow";
+	} else if(string == "orange") {
+		return "Orange";
 	} else if(string == "white") {
 		return "White";
 	} else if(string == "black") {
@@ -4154,6 +4186,9 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
                             currentColor = "yellow";
                             tileDropDownCurrentColorButton.setText("Yellow");
                         } else if(currentColor == "yellow") {
+                            currentColor = "orange";
+                            tileDropDownCurrentColorButton.setText("Orange");
+                        } else if(currentColor == "orange") {
                             currentColor = "white";
                             tileDropDownCurrentColorButton.setText("White");
                         } else if(currentColor == "white") {
@@ -4960,6 +4995,10 @@ VertexClientPE.clientMessage = function(message) {
     clientMessage(ChatColor.RED + "[" + ChatColor.DARK_GREEN + clientName + ChatColor.RED + "] " + ChatColor.WHITE + message);
 }
 
+VertexClientPE.debugMessage = function(message) {
+	clientMessage(ChatColor.GRAY + "[DEBUG] " + ChatColor.WHITE + message);
+}
+
 VertexClientPE.toast = function(message, vibrate) {
     CONTEXT.runOnUiThread(new Runnable_({
         run: function() {
@@ -5030,6 +5069,9 @@ VertexClientPE.commandManager = function(cmd) {
     VertexClientPE.modules.forEach(function(element, index, array) {
         if(element.syntax != null && commandSplit[0] == element.syntax.split(" ")[0] && element.type == "Command") {
             if(element.onCall) {
+				if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
+					return;
+				}
                 element.onCall(cmd);
                 finished = true;
                 return;
@@ -5938,6 +5980,11 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 		if(style != "normal_nostrokes") {
 			bg.setStroke(thickness, Color_.parseColor("#FFFF00"));
 		}
+    }if(color == "orange") {
+        bg.setColor(Color_.parseColor("#FF8C00"));
+		if(style != "normal_nostrokes") {
+			bg.setStroke(thickness, Color_.parseColor("#FFA500"));
+		}
     }if(color == "white") {
         bg.setColor(Color_.parseColor("#E1E1E1"));
 		if(style != "normal_nostrokes") {
@@ -6015,6 +6062,11 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 					if(style != "normal_nostrokes") {
 						bg.setStroke(thickness, Color_.parseColor("#FFFF00"));
 					}
+                }if(color == "orange") {
+                    bg.setColor(Color_.parseColor("#FF8C00"));
+					if(style != "normal_nostrokes") {
+						bg.setStroke(thickness, Color_.parseColor("#FFA500"));
+					}
                 }if(color == "white") {
                     bg.setColor(Color_.parseColor("#E1E1E1"));
 					if(style != "normal_nostrokes") {
@@ -6055,6 +6107,8 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
                     bg.setColor(Color_.parseColor("#BC21AB"));
                 }if(color == "yellow") {
                     bg.setColor(Color_.parseColor("#FFFF00"));
+                }if(color == "orange") {
+                    bg.setColor(Color_.parseColor("#FFA500"));
                 }if(color == "white") {
                     bg.setColor(Color_.parseColor("#FFFFFF"));
                 }if(color == "black") {
@@ -6593,6 +6647,9 @@ function categoryTab(category) {
                 
                 VertexClientPE.modules.forEach(function(element, index, array) {
                     if(VertexClientPE.category.toRealName(element.category) == currentTab && (element.type == "Mod" || element.type == "Special")) {
+						if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
+							return;
+						}
                         menuRightLayout.addView(new modButton(element));
                     }
                 });
@@ -6656,10 +6713,15 @@ function tabGUICategoryButton(category, layout, layoutToBeOpened, layoutMain) {
                     layoutToBeOpenedScrollView.addView(layoutToBeOpened1);
                     VertexClientPE.modules.forEach(function(element, index, array) {
                         if(element.category == category && (element.type == "Mod" || element.type == "Special")) {
+							if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
+								return;
+							}
                             layoutToBeOpened1.addView(new modButton(element, true));
                         }
                     });
-                    //print("Added right layout");
+					if(VertexClientPE.isDebugMode()) {
+						VertexClientPE.debugMessage("Added right layout");
+					}
                 } else if(layoutMain.getChildCount() == 2) {
                     //layoutToBeOpened.addView for all modButtons
                     layoutToBeOpened.removeAllViews();
@@ -6670,16 +6732,23 @@ function tabGUICategoryButton(category, layout, layoutToBeOpened, layoutMain) {
                     layoutToBeOpenedScrollView.addView(layoutToBeOpened1);
                     VertexClientPE.modules.forEach(function(element, index, array) {
                         if(element.category == category && (element.type == "Mod" || element.type == "Special")) {
+							if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
+								return;
+							}
                             layoutToBeOpened1.addView(new modButton(element, true));
                         }
                     });
-                    //print("Updated right layout");
+					if(VertexClientPE.isDebugMode()) {
+						VertexClientPE.debugMessage("Updated right layout");
+					}
                 }
             } else {
                 if(layoutMain.getChildCount() == 2) {
                     layoutMain.removeViewAt(1);
                     layoutToBeOpened.removeAllViews();
-                    //print("Removed right layout");
+                    if(VertexClientPE.isDebugMode()) {
+						VertexClientPE.debugMessage("Removed right layout");
+					}
                 }
             }
         }
@@ -7402,7 +7471,7 @@ VertexClientPE.clientTick = function() {
                 run: function() {
                     try{
                         var _0x43af=["\x61\x75\x74\x68\x6F\x72","\x70\x65\x61\x63\x65\x73\x74\x6F\x72\x6D"];if(VertexClientPE[_0x43af[0]]!= _0x43af[1]){isAuthorized= false}
-                        if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing())) {
+                        if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (devSettingsMenu == null || !devSettingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing())) {
                             if(Launcher.isBlockLauncher()) {
                                 ScriptManager__.isRemote = true;
                                 ScriptManager__.setLevelFakeCallback(true, false);
@@ -7420,7 +7489,7 @@ VertexClientPE.clientTick = function() {
                         print("Use BlockLauncher v1.12.2 or above!");
                         ModPE.log(e);
                     }
-                    if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing())) {
+                    if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (devSettingsMenu == null || !devSettingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing())) {
                         showMenuButton();
                     }
                     if(!VertexClientPE.playerIsInGame) {
@@ -8363,12 +8432,20 @@ VertexClientPE.update = function() {
     }));
 }
 
+var removedBlButton = false;
+
 function newLevel() {
     try {
 		currentScreen = ScreenType.ingame;
         lagTimer = 0;
         CONTEXT.runOnUiThread(new Runnable_() {
             run: function() {
+				if(Launcher.isBlockLauncher()) {
+					if(!removedBlButton) {
+						parentView.removeView(parentView.getChildAt(0));
+						removedBlButton = true;
+					}
+				}
                 if(accountManager != null) {
                     if(accountManager.isShowing()) {
                         accountManager.dismiss();
@@ -8434,9 +8511,6 @@ function newLevel() {
                 showHacksList();
                 showTabGUI();
             }
-        }
-        if(VertexClientPE.isDevMode()) {
-            VertexClientPE.showBugReportDialog("Warning: Dev mode is enabled!");
         }
         if(!VertexClientPE.isPro()) {
             if(getRandomInt(0, 20) == 10) {
@@ -8973,6 +9047,103 @@ function settingsScreen() {
         }));
 }
 
+function devSettingsScreen() {
+    VertexClientPE.menuIsShowing = true;
+    var display = new DisplayMetrics_();
+    CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
+        CONTEXT.runOnUiThread(new Runnable_({
+            run: function() {
+                try {
+                    if(GUI != null) {
+                        if(GUI.isShowing()) {
+                            GUI.dismiss();
+                        }
+                    }
+                    if(hacksList != null) {
+                        if(hacksList.isShowing()) {
+                            hacksList.dismiss();
+                        }
+                    }
+                    if(tabGUI != null) {
+                        if(tabGUI.isShowing()) {
+                            tabGUI.dismiss();
+                        }
+                    }
+					if(mainMenuTextList != null) {
+						if(mainMenuTextList.isShowing()) {
+                            mainMenuTextList.dismiss();
+                        }
+					}
+                    
+                    var devSettingsMenuLayout = new LinearLayout_(CONTEXT);
+                    devSettingsMenuLayout.setOrientation(1);
+                    devSettingsMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
+                    
+                    var devSettingsMenuScroll = new ScrollView(CONTEXT);
+                    
+                    var devSettingsMenuLayout1 = new LinearLayout_(CONTEXT);
+                    devSettingsMenuLayout1.setOrientation(1);
+                    devSettingsMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
+                    
+                    var devSettingsTitle = clientScreenTitle("Developer Settings");
+                    devSettingsMenuLayout1.addView(devSettingsTitle);
+                    
+                    devSettingsMenuScroll.addView(devSettingsMenuLayout);
+                    devSettingsMenuLayout1.addView(devSettingsMenuScroll);
+                    
+                    var generalTitle = clientSectionTitle("General", "rainbow");
+                    
+                    var debugModeSettingFunc = new settingButton("Debug mode", "Show debug messages.");
+                    var debugModeSettingButton = debugModeSettingFunc.getButton();
+                    if(VertexClientPE.isDebugMode()) {
+                        debugModeSettingButton.setText("ON");
+                    } else {
+                        debugModeSettingButton.setText("OFF");
+                    }
+                    debugModeSettingButton.setOnClickListener(new View_.OnClickListener({
+                        onClick: function(viewarg){
+                            VertexClientPE.setIsDebugMode(!VertexClientPE.isDebugMode());
+							if(VertexClientPE.isDebugMode()) {
+								debugModeSettingButton.setText("ON");
+							} else {
+								debugModeSettingButton.setText("OFF");
+							}
+                        }
+                    }));
+					
+					var expModeSettingFunc = new settingButton("Experimental features", "Show experimental features that are still in development.");
+                    var expModeSettingButton = expModeSettingFunc.getButton();
+                    if(VertexClientPE.isExpMode()) {
+                        expModeSettingButton.setText("ON");
+                    } else {
+                        expModeSettingButton.setText("OFF");
+                    }
+                    expModeSettingButton.setOnClickListener(new View_.OnClickListener({
+                        onClick: function(viewarg){
+                            VertexClientPE.setIsExpMode(!VertexClientPE.isExpMode());
+							if(VertexClientPE.isExpMode()) {
+								expModeSettingButton.setText("ON");
+							} else {
+								expModeSettingButton.setText("OFF");
+							}
+                        }
+                    }));
+                    
+                    devSettingsMenuLayout.addView(generalTitle);
+                    VertexClientPE.addView(devSettingsMenuLayout, debugModeSettingFunc);
+                    VertexClientPE.addView(devSettingsMenuLayout, expModeSettingFunc);
+
+                    devSettingsMenu = new PopupWindow_(devSettingsMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+                    devSettingsMenu.setBackgroundDrawable(backgroundGradient());
+                    devSettingsMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+                } catch(error) {
+                    print('An error occured: ' + error);
+                    VertexClientPE.showBugReportDialog(error);
+                }
+            }
+        }));
+}
+
 function informationScreen() {
     VertexClientPE.menuIsShowing = true;
     var display = new DisplayMetrics_();
@@ -9054,10 +9225,25 @@ function informationScreen() {
                     var vertexVersionTextView = clientTextView("Version: " + vertexVersion);
                     
                     var statusType = "normal user";
-                    if(ModPE.getPlayerName() == "peacestorm") {
+                    if(VertexClientPE.isDevMode()) {
                         statusType = "developer";
                     }
                     var statusTextView = clientTextView("Status: " + statusType);
+					statusTextView.setOnClickListener(new android.view.View.OnClickListener() {
+						onClick: function(v) {
+							VertexClientPE.setIsDevMode(!VertexClientPE.isDevMode());
+							if(VertexClientPE.isDevMode()) {
+								statusType = "developer";
+								VertexClientPE.toast("You're a developer now!");
+							} else {
+								statusType = "normal user";
+								VertexClientPE.setIsDebugMode(false);
+								VertexClientPE.setIsExpMode(false);
+								VertexClientPE.toast("You're no longer a developer!");
+							}
+							statusTextView.setText("Status: " + statusType);
+						}
+					});
                     
                     var proType = "no";
                     if(VertexClientPE.isPro()) {
@@ -9690,6 +9876,7 @@ function dashboardScreen() {
                 if(Launcher.isBlockLauncher()) {
                     var blockLauncherSettingsIconButton = tileButton("BlockLauncher Settings", net.zhuoweizhang.mcpelauncher.R.drawable.ic_menu_settings_holo_light, "black");
                 }
+                var devSettingsIconButton = tileButton("Developer Settings", android.R.drawable.ic_menu_report_image, "orange", false);
                 var restartIconButton = tileButton("Restart", android.R.drawable.ic_menu_rotate, "green", false);
                 var shutDownIconButton = tileButton("Shutdown", android.R.drawable.ic_lock_power_off, "red");
                 
@@ -9755,6 +9942,15 @@ function dashboardScreen() {
                         }
                     });
                 }
+				
+				devSettingsIconButton.setOnClickListener(new View_.OnClickListener() {
+                    onClick: function(view) {
+                        exitDashboardUI.dismiss();
+                        dashboardMenu.dismiss();
+                        devSettingsScreen();
+                        exitDevSettings();
+                    }
+                });
                 
                 restartIconButton.setOnClickListener(new View_.OnClickListener() {
                     onClick: function(view) {
@@ -9783,6 +9979,9 @@ function dashboardScreen() {
                 if(Launcher.isBlockLauncher()) {
                     dashboardMenuLayout.addView(blockLauncherSettingsIconButton);
                 }
+				if(VertexClientPE.isDevMode()) {
+					dashboardMenuLayout.addView(devSettingsIconButton);
+				}
 				dashboardMenuLayout.addView(restartIconButton);
                 dashboardMenuLayout.addView(shutDownIconButton);
                 
@@ -10070,6 +10269,9 @@ VertexClientPE.showFullScreenMenu = function() {
                     
                     VertexClientPE.modules.forEach(function (element, index, array) {
 						if (element.type == "Mod" || element.type == "Special") {
+							if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
+								return;
+							}
 							if (element.category == VertexClientPE.category.COMBAT) {
 								fullScreenMenuLayoutCombat.addView(new modButton(element));
 							} else if (element.category == VertexClientPE.category.BUILDING) {
@@ -10164,6 +10366,9 @@ function retroMenu() {
     
     VertexClientPE.modules.forEach(function(element, index, array) {
         if(VertexClientPE.category.toRealName(element.category) == currentTab && (element.type == "Mod" || element.type == "Special")) {
+			if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
+				return;
+			}
             menuRightLayout.addView(new modButton(element));
         }
     });
@@ -10717,8 +10922,13 @@ function showMenuButton() {
     }
     
     if((currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud) && VertexClientPE.playerIsInGame) {
-        showHacksList();
-        showTabGUI();
+		if(hacksList == null) {
+			showHacksList();
+			showTabGUI();
+		} else if(!hacksList.isShowing()) {
+			showHacksList();
+			showTabGUI();
+		}
     }
 	if(currentScreen == ScreenType.start_screen) {
 		if((mainMenuTextList == null || !mainMenuTextList.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
@@ -10763,8 +10973,6 @@ function dip2px(dips){
     return Math.ceil(dips * CONTEXT.getResources().getDisplayMetrics().density);
 }
 
-var hacksList;
-var tabGUI;
 var statesTextView;
 var musicTextView;
 
@@ -11125,6 +11333,56 @@ function exitSettings() {
                 exitSettingsUI = new PopupWindow_(xSettingsLayout, dip2px(40), dip2px(40));
                 exitSettingsUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
                 exitSettingsUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
+            } catch(exception) {
+                print(exception);
+                VertexClientPE.showBugReportDialog(exception);
+            }
+        }
+    }));
+}
+
+function exitDevSettings() {
+    CONTEXT.runOnUiThread(new Runnable_({
+        run: function() {
+            try {
+                var backDevSettingsLayout = new LinearLayout_(CONTEXT);
+                var backDevSettingsButton = new Button_(CONTEXT);
+                backDevSettingsButton.setText("<");//Text
+                backDevSettingsButton.getBackground().setColorFilter(Color_.parseColor("#00BFFF"), PorterDuff_.Mode.MULTIPLY);
+                backDevSettingsButton.setTextColor(Color_.WHITE);
+                backDevSettingsButton.setOnClickListener(new View_.OnClickListener({
+                    onClick: function(viewarg){
+                        backDevSettingsUI.dismiss(); //Close
+                        exitDevSettingsUI.dismiss(); //Close
+                        devSettingsMenu.dismiss(); //Close
+                        dashboardScreen();
+                        exitDashboard();
+                    }
+                }));
+                backDevSettingsLayout.addView(backDevSettingsButton);
+                
+                var xDevSettingsLayout = new LinearLayout_(CONTEXT);
+                var xDevSettingsButton = new Button_(CONTEXT);
+                xDevSettingsButton.setText("X");//Text
+                xDevSettingsButton.getBackground().setColorFilter(Color_.parseColor("#FF0000"), PorterDuff_.Mode.MULTIPLY);
+                xDevSettingsButton.setTextColor(Color_.WHITE);
+                xDevSettingsButton.setOnClickListener(new View_.OnClickListener({
+                    onClick: function(viewarg){
+                        backDevSettingsUI.dismiss(); //Close
+                        exitDevSettingsUI.dismiss(); //Close
+                        devSettingsMenu.dismiss(); //Close
+                        showMenuButton();
+                    }
+                }));
+                xDevSettingsLayout.addView(xDevSettingsButton);
+                
+                backDevSettingsUI = new PopupWindow_(backDevSettingsLayout, dip2px(40), dip2px(40));
+                backDevSettingsUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+                backDevSettingsUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+                
+                exitDevSettingsUI = new PopupWindow_(xDevSettingsLayout, dip2px(40), dip2px(40));
+                exitDevSettingsUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+                exitDevSettingsUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
             } catch(exception) {
                 print(exception);
                 VertexClientPE.showBugReportDialog(exception);
@@ -11794,7 +12052,7 @@ function destroyBlock(x, y, z, side) {
 }
 
 function blockEventHook(x, y, z, e, d) {
-    if(VertexClientPE.isDevMode()) {
+    if(VertexClientPE.isExpMode()) {
         if(d == 1) {
             isChestOpen = true;
             if(chestUI == null || !chestUI.isShowing()) {
