@@ -7657,7 +7657,7 @@ VertexClientPE.showSetupScreen = function() {
 								step2Button.setTextColor(Color_.WHITE);
 								step3Button.setTextColor(Color_.WHITE);
 								setupTextView.setText(setupStep1Text);
-								doneButton.setText("NEXT");
+								doneButton.setText("\u2794");
 								doneButton.setOnClickListener(new View_.OnClickListener({
 									onClick: function(viewarg){
 										step2Button.performClick();
@@ -7687,7 +7687,7 @@ VertexClientPE.showSetupScreen = function() {
 								setupScreenLayoutBottomCenter.addView(setupButtonRed);
 								setupScreenLayoutBottomCenter1.addView(setupButtonBlue);
 								setupScreenLayoutBottomRight.addView(setupButtonPurple);
-								doneButton.setText("NEXT");
+								doneButton.setText("\u2794");
 								doneButton.setOnClickListener(new View_.OnClickListener({
 									onClick: function(viewarg){
 										step3Button.performClick();
@@ -7713,12 +7713,13 @@ VertexClientPE.showSetupScreen = function() {
 								step2Button.setTextColor(Color_.WHITE);
 								step3Button.setTextColor(Color_.parseColor("#0080FF"));
 								setupTextView.setText(setupStep3Text);
-								doneButton.setText("DONE");
+								doneButton.setText("\u2713");
 								doneButton.setOnClickListener(new View_.OnClickListener({
 									onClick: function(viewarg){
 										themeSetting = setupColor;
 										VertexClientPE.saveMainSettings();
 										VertexClientPE.editCopyrightText();
+										logoViewer3.clearAnimation();
 										doneUI.dismiss(); //Close
 										setupScreen.dismiss();
 										showMenuButton();
@@ -7815,7 +7816,8 @@ VertexClientPE.showSetupScreen = function() {
 					doneButton.setBackgroundDrawable(drawQuarterCircle(Color_.parseColor("#80ffffff"), dip2px(60)));
 					doneButton.setGravity(Gravity_.RIGHT | Gravity_.TOP);
 					doneButton.setPadding(0, dip2px(8), dip2px(8), 0);
-					doneButton.setText("NEXT");//Text
+					doneButton.setText("\u2794");//Text
+					doneButton.setTextSize(20);
 					//doneButton.getBackground().setColorFilter(Color_.parseColor("#008000"), PorterDuff_.Mode.MULTIPLY);
 					doneButton.setTextColor(Color_.WHITE);
 					doneButton.setOnClickListener(new View_.OnClickListener({
@@ -7828,6 +7830,16 @@ VertexClientPE.showSetupScreen = function() {
                     setupScreen = new PopupWindow_(setupScreenLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
                     setupScreen.setBackgroundDrawable(new ColorDrawable_(Color_.parseColor("#0080FF")));
                     setupScreen.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+					//set animation after being shown, because the animation is for when it dismisses.
+					//setupScreen.setAnimationStyle(android.R.style.Animation_Dialog);
+					
+					var anim = new android.view.animation.AlphaAnimation(0, 1);
+					anim.setInterpolator(new android.view.animation.LinearInterpolator());
+					anim.setRepeatCount(android.view.animation.Animation.INFINITE);
+					anim.setRepeatMode(android.view.animation.Animation.REVERSE);
+					anim.setDuration(1500);
+					
+					logoViewer3.startAnimation(anim);
 					
 					doneUI = new PopupWindow_(doneLayout, LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT);
 					doneUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
