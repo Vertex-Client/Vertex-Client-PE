@@ -365,6 +365,7 @@ var VertexClientPE = {
     CombatUtils: {
         aimAtEnt: function(ent) {
             // Credits to Godsoft0329 aka the developer of DragOP
+			if(Entity.getEntityTypeId(ent) == EntityType.PLAYER && Entity.getNameTag(ent) == "") return;
             var velocity = 1;
             var posX = Entity.getX(ent) - Player.getX();
             var posY = Entity.getEntityTypeId(ent) == EntityType.PLAYER ? Entity.getY(ent) - Player.getY() : Entity.getY(ent) + 1 - Player.getY();
@@ -374,6 +375,7 @@ var VertexClientPE = {
             var g = 0.007;
             var tmp = (velocity * velocity * velocity * velocity - g * (g * (y2 * y2) + 2 * posY * (velocity * velocity)));
             var pitch = -(180 / Math.PI) * (Math.atan((velocity * velocity - Math.sqrt(tmp)) / (g * y2)));
+			
             if(pitch < 89 && pitch > -89) {
 
                 /* imYannic's code */
@@ -703,6 +705,7 @@ var buttonStyleSetting = "normal";
 var mcpeGUISetting = "default";
 var chestESPRange = 25;
 var transparentBgSetting = "on";
+var aimbotUseKillauraRange = "off";
 //---------------------------
 var cmdPrefix = ".";
 //---------------------------
@@ -2314,6 +2317,31 @@ var aimbot = {
     category: VertexClientPE.category.COMBAT,
     type: "Mod",
     state: false,
+	getSettingsLayout: function() {
+        var aimbotSettingsLayout = new LinearLayout_(CONTEXT);
+        aimbotSettingsLayout.setOrientation(1);
+        
+		var useKillauraRangeCheckBox = new CheckBox_(CONTEXT);
+        useKillauraRangeCheckBox.setChecked(aimbotUseKillauraRange == "on");
+        useKillauraRangeCheckBox.setText("Use same range as Killaura");
+        if(themeSetting == "white") {
+            useKillauraRangeCheckBox.setTextColor(Color_.BLACK);
+        } else {
+            useKillauraRangeCheckBox.setTextColor(Color_.WHITE);
+        }
+        useKillauraRangeCheckBox.setTypeface(VertexClientPE.font);
+        useKillauraRangeCheckBox.setOnClickListener(new View_.OnClickListener() {
+            onClick: function(v) {
+                aimbotUseKillauraRange = v.isChecked()?"on":"off";
+                VertexClientPE.saveMainSettings();
+            }
+        });
+        
+        var space = clientTextView("\n");
+        aimbotSettingsLayout.addView(useKillauraRangeCheckBox);
+        aimbotSettingsLayout.addView(space);
+        return aimbotSettingsLayout;
+    },
     isStateMod: function() {
         return true;
     },
@@ -2323,9 +2351,14 @@ var aimbot = {
     onTick: function() {
         var mobs = Entity.getAll();
         for(var i = 0; i < mobs.length; i++) {
+			var x = Entity.getX(mobs[i]) - getPlayerX();
+            var y = Entity.getY(mobs[i]) - getPlayerY();
+            var z = Entity.getZ(mobs[i]) - getPlayerZ();
+			if(aimbotUseKillauraRange == "on" && x*x+y*y+z*z>killAuraRange*killAuraRange) continue;
             var ent = mobs[i];
             if(Entity.getEntityTypeId(ent) != EntityType.ITEM && Entity.getEntityTypeId(ent) != EntityType.ARROW && ent != getPlayerEnt()) {
                 VertexClientPE.CombatUtils.aimAtEnt(ent);
+				return;
             }
         }
     }
@@ -5709,6 +5742,7 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + mcpeGUISetting.toString());
     outWrite.append("," + chestESPRange.toString());
     outWrite.append("," + transparentBgSetting.toString());
+    outWrite.append("," + aimbotUseKillauraRange.toString());
     //outWrite.append("," + cmdPrefix.toString());
 
     outWrite.close();
@@ -5809,6 +5843,9 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[25] != null && arr[25] != undefined) {
             transparentBgSetting = arr[25];
+        }
+		if (arr[26] != null && arr[26] != undefined) {
+            aimbotUseKillauraRange = arr[26];
         }
         fos.close();
         VertexClientPE.loadAutoSpammerSettings();
