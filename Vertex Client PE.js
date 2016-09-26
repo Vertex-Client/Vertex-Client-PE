@@ -717,6 +717,8 @@ var userIsNewToCurrentVersion = false;
 
 var mainMenuTextList;
 var GUI;
+var accountManager;
+var accountManagerGUI;
 var menu;
 var fullScreenMenu;
 var exitUI;
@@ -6470,7 +6472,10 @@ function userBar() {
 	
 	defaultUserLayout.setOnClickListener(new View_.OnClickListener() {
         onClick: function(viewArg) {
-			
+			exitDashboardUI.dismiss();
+            dashboardMenu.dismiss();
+			VertexClientPE.showAccountManager();
+			exitAccountManager();
         }
     });
 	
@@ -6850,7 +6855,6 @@ function accountButton(account, layout) {
             accountManager.dismiss();
             exitAccountManagerUI.dismiss();
             showMenuButton();
-            showAccountManagerButton();
         }
     }));
     accountManagerAccountLayoutRight.addView(useButton);
@@ -7904,7 +7908,6 @@ VertexClientPE.showSetupScreen = function() {
 										doneUI.dismiss(); //Close
 										setupScreen.dismiss();
 										showMenuButton();
-										showAccountManagerButton();
 										VertexClientPE.clientTick();
 										VertexClientPE.specialTick();
 										VertexClientPE.secondTick();
@@ -8186,7 +8189,6 @@ VertexClientPE.setup = function() {
 		CONTEXT.runOnUiThread(new Runnable_({
 			run: function() {
 				showMenuButton();
-				showAccountManagerButton();
 			}
 		}));
     }
@@ -8610,7 +8612,6 @@ function leaveGame() {
                 VertexClientPE.closeMenu();
             }
             showMenuButton();
-            showAccountManagerButton();
             VertexClientPE.saveMainSettings();
             VertexClientPE.editCopyrightText();
             VertexClientPE.Render.deinitViews();
@@ -8648,6 +8649,11 @@ function settingsScreen() {
 					if(mainMenuTextList != null) {
 						if(mainMenuTextList.isShowing()) {
                             mainMenuTextList.dismiss();
+                        }
+					}
+					if(accountManagerGUI != null) {
+						if(accountManagerGUI.isShowing()) {
+                            accountManagerGUI.dismiss();
                         }
 					}
                     
@@ -9135,6 +9141,11 @@ function devSettingsScreen() {
                             mainMenuTextList.dismiss();
                         }
 					}
+					if(accountManagerGUI != null) {
+						if(accountManagerGUI.isShowing()) {
+                            accountManagerGUI.dismiss();
+                        }
+					}
                     
                     var devSettingsMenuLayout = new LinearLayout_(CONTEXT);
                     devSettingsMenuLayout.setOrientation(1);
@@ -9230,6 +9241,11 @@ function informationScreen() {
 					if(mainMenuTextList != null) {
 						if(mainMenuTextList.isShowing()) {
                             mainMenuTextList.dismiss();
+                        }
+					}
+					if(accountManagerGUI != null) {
+						if(accountManagerGUI.isShowing()) {
+                            accountManagerGUI.dismiss();
                         }
 					}
                     
@@ -9373,6 +9389,11 @@ function helpScreen() {
                             mainMenuTextList.dismiss();
                         }
 					}
+					if(accountManagerGUI != null) {
+						if(accountManagerGUI.isShowing()) {
+                            accountManagerGUI.dismiss();
+                        }
+					}
 
                     var helpMenuLayout = new LinearLayout_(CONTEXT);
                     helpMenuLayout.setOrientation(1);
@@ -9438,6 +9459,11 @@ function addonScreen() {
 					if(mainMenuTextList != null) {
 						if(mainMenuTextList.isShowing()) {
                             mainMenuTextList.dismiss();
+                        }
+					}
+					if(accountManagerGUI != null) {
+						if(accountManagerGUI.isShowing()) {
+                            accountManagerGUI.dismiss();
                         }
 					}
 
@@ -9508,6 +9534,11 @@ function playerCustomizerScreen() {
 					if(mainMenuTextList != null) {
 						if(mainMenuTextList.isShowing()) {
                             mainMenuTextList.dismiss();
+                        }
+					}
+					if(accountManagerGUI != null) {
+						if(accountManagerGUI.isShowing()) {
+                            accountManagerGUI.dismiss();
                         }
 					}
 
@@ -9583,6 +9614,11 @@ function optiFineScreen() {
 					if(mainMenuTextList != null) {
 						if(mainMenuTextList.isShowing()) {
                             mainMenuTextList.dismiss();
+                        }
+					}
+					if(accountManagerGUI != null) {
+						if(accountManagerGUI.isShowing()) {
+                            accountManagerGUI.dismiss();
                         }
 					}
 
@@ -9664,6 +9700,11 @@ function shopScreen() {
                             mainMenuTextList.dismiss();
                         }
 					}
+					if(accountManagerGUI != null) {
+						if(accountManagerGUI.isShowing()) {
+                            accountManagerGUI.dismiss();
+                        }
+					}
 
                     var shopMenuLayout = new LinearLayout_(CONTEXT);
                     shopMenuLayout.setOrientation(1);
@@ -9737,6 +9778,11 @@ function updateCenterScreen() {
                             mainMenuTextList.dismiss();
                         }
 					}
+					if(accountManagerGUI != null) {
+						if(accountManagerGUI.isShowing()) {
+                            accountManagerGUI.dismiss();
+                        }
+					}
 
                     var updateCenterMenuLayout = new LinearLayout_(CONTEXT);
                     updateCenterMenuLayout.setOrientation(1);
@@ -9802,6 +9848,11 @@ function musicPlayerScreen() {
 					if(mainMenuTextList != null) {
 						if(mainMenuTextList.isShowing()) {
                             mainMenuTextList.dismiss();
+                        }
+					}
+					if(accountManagerGUI != null) {
+						if(accountManagerGUI.isShowing()) {
+                            accountManagerGUI.dismiss();
                         }
 					}
 
@@ -9906,6 +9957,11 @@ function dashboardScreen() {
 				if(mainMenuTextList != null) {
 					if(mainMenuTextList.isShowing()) {
 						mainMenuTextList.dismiss();
+					}
+				}
+				if(accountManagerGUI != null) {
+					if(accountManagerGUI.isShowing()) {
+						accountManagerGUI.dismiss();
 					}
 				}
 
@@ -10107,6 +10163,11 @@ function webBrowserScreen() {
 				if(mainMenuTextList != null) {
 					if(mainMenuTextList.isShowing()) {
 						mainMenuTextList.dismiss();
+					}
+				}
+				if(accountManagerGUI != null) {
+					if(accountManagerGUI.isShowing()) {
+						accountManagerGUI.dismiss();
 					}
 				}
 
@@ -11020,6 +11081,9 @@ function showMenuButton() {
 			VertexClientPE.showStartScreenBar();
 		}
 	}
+	if((accountManagerGUI == null || !accountManagerGUI.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
+		showAccountManagerButton();
+	}
 }
 
 function showAccountManagerButton() {
@@ -11303,46 +11367,6 @@ VertexClientPE.hideChestUI = function() {
         }
     }));
 }
-
-function setupDone() {
-    CONTEXT.runOnUiThread(new Runnable_({
-        run: function() {
-            try {
-                var doneLayout = new LinearLayout_(CONTEXT);
-                var doneButton = new Button_(CONTEXT);
-                doneButton.setText("\u2713");//Text
-                doneButton.getBackground().setColorFilter(Color_.parseColor("#008000"), PorterDuff_.Mode.MULTIPLY);
-                doneButton.setTextColor(Color_.WHITE);
-                doneButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-                        themeSetting = setupColor;
-                        VertexClientPE.saveMainSettings();
-                        VertexClientPE.editCopyrightText();
-                        doneUI.dismiss(); //Close
-                        setupScreen.dismiss();
-                        showMenuButton();
-                        showAccountManagerButton();
-						VertexClientPE.clientTick();
-						VertexClientPE.specialTick();
-						VertexClientPE.secondTick();
-                        VertexClientPE.setupMCPEGUI();
-                        if(userIsNewToCurrentVersion == true) {
-                            VertexClientPE.showWhatsNewDialog();
-                        }
-                    }
-                }));
-                doneLayout.addView(doneButton);
-                
-                doneUI = new PopupWindow_(doneLayout, dip2px(40), dip2px(40));
-                doneUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                doneUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
-            } catch(exception) {
-                print(exception);
-                VertexClientPE.showBugReportDialog(exception);
-            }
-        }
-    }));
-}
     
 function exitAccountManager() {
     CONTEXT.runOnUiThread(new Runnable_({
@@ -11358,9 +11382,6 @@ function exitAccountManager() {
                         exitAccountManagerUI.dismiss(); //Close
                         accountManager.dismiss(); //Close
                         showMenuButton();
-						if(!VertexClientPE.playerIsInGame) {
-							showAccountManagerButton();
-						}
                     }
                 }));
                 xAccountManagerLayout.addView(xAccountManagerButton);
