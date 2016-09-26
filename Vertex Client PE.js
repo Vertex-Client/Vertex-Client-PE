@@ -719,6 +719,8 @@ var mainMenuTextList;
 var GUI;
 var accountManager;
 var accountManagerGUI;
+var backAccountManagerUI;
+var exitAccountManagerUI;
 var menu;
 var fullScreenMenu;
 var exitUI;
@@ -6475,7 +6477,7 @@ function userBar() {
 			exitDashboardUI.dismiss();
             dashboardMenu.dismiss();
 			VertexClientPE.showAccountManager();
-			exitAccountManager();
+			exitAccountManager(true);
         }
     });
 	
@@ -8106,6 +8108,12 @@ VertexClientPE.showAccountManager = function() {
         CONTEXT.runOnUiThread(new Runnable_({
             run: function() {
                 try {
+					if(mainMenuTextList != null) {
+						if(mainMenuTextList.isShowing()) {
+							mainMenuTextList.dismiss();
+						}
+					}
+					
                     var accountManagerLayout = new LinearLayout_(CONTEXT);
                     accountManagerLayout.setOrientation(1);
                     accountManagerLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
@@ -9266,7 +9274,7 @@ function informationScreen() {
                     informationMenuScrollView.addView(informationMenuLayout);
                     informationMenuLayout1.addView(informationMenuScrollView);
                     
-                    var informationText = clientTextView("\u00A9 peacestorm, MyNameIsTriXz, _TXMO and LPMG | 2015 - 2016. Some rights reserved.\nThanks to @Herqux_ and @MyNameIsTriXz for graphic designs.", true);
+                    var informationText = clientTextView("\u00A9 peacestorm, imYannic, _TXMO, LPMG and Astro36 | 2015 - 2016. Some rights reserved.\nThanks to @_TXMO for the original button graphics and @imYannic for some other graphic designs.", true);
                     
                     var websiteButton = clientButton("Website", "Go to the official Vertex Client PE website");
                     websiteButton.setOnClickListener(new View_.OnClickListener({
@@ -11368,10 +11376,26 @@ VertexClientPE.hideChestUI = function() {
     }));
 }
     
-function exitAccountManager() {
+function exitAccountManager(showBackButton) {
     CONTEXT.runOnUiThread(new Runnable_({
         run: function() {
             try {
+				var backAccountManagerLayout = new LinearLayout_(CONTEXT);
+                var backAccountManagerButton = new Button_(CONTEXT);
+                backAccountManagerButton.setText("<");//Text
+                backAccountManagerButton.getBackground().setColorFilter(Color_.parseColor("#00BFFF"), PorterDuff_.Mode.MULTIPLY);
+                backAccountManagerButton.setTextColor(Color_.WHITE);
+                backAccountManagerButton.setOnClickListener(new View_.OnClickListener({
+                    onClick: function(viewarg){
+                        backAccountManagerUI.dismiss(); //Close
+                        exitAccountManagerUI.dismiss(); //Close
+                        accountManager.dismiss(); //Close
+                        dashboardScreen();
+                        exitDashboard();
+                    }
+                }));
+                backAccountManagerLayout.addView(backAccountManagerButton);
+				
                 var xAccountManagerLayout = new LinearLayout_(CONTEXT);
                 var xAccountManagerButton = new Button_(CONTEXT);
                 xAccountManagerButton.setText('X');//Text
@@ -11379,12 +11403,21 @@ function exitAccountManager() {
                 xAccountManagerButton.setTextColor(Color_.WHITE);
                 xAccountManagerButton.setOnClickListener(new View_.OnClickListener({
                     onClick: function(viewarg){
+						if(backAccountManagerUI != null) {
+							backAccountManagerUI.dismiss(); //Close
+						}
                         exitAccountManagerUI.dismiss(); //Close
                         accountManager.dismiss(); //Close
                         showMenuButton();
                     }
                 }));
                 xAccountManagerLayout.addView(xAccountManagerButton);
+				
+				if(showBackButton) {
+					backAccountManagerUI = new PopupWindow_(backAccountManagerLayout, dip2px(40), dip2px(40));
+					backAccountManagerUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+					backAccountManagerUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+				}
                 
                 exitAccountManagerUI = new PopupWindow_(xAccountManagerLayout, dip2px(40), dip2px(40));
                 exitAccountManagerUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
