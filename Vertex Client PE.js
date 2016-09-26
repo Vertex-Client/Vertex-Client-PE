@@ -3571,6 +3571,7 @@ var imgYouTubeButton = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojan
 var imgYouTubeButtonClicked = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/youtube_button_clicked.png");
 var imgGitHubButton = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/github_button.png");
 var imgGitHubButtonClicked = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/github_button_clicked.png");
+var imgSteveHead = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/stevehead.png");
 var iconClientGUI = new BitmapDrawable_(imgIcon);
 var iconClickedClientGUI = new BitmapDrawable_(imgIconClicked)
 var playButtonClientGUI = new BitmapDrawable_(imgPlayButton);
@@ -6432,6 +6433,53 @@ function tileButton(tileText, tileIcon, tileColor, forceLightColor) {
     return defaultTileButton;
 }
 
+function userBar() {
+    var params = new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT);
+	
+	var defaultUserLayout = new LinearLayout_(CONTEXT);
+	defaultUserLayout.setOrientation(LinearLayout_.HORIZONTAL);
+	defaultUserLayout.setGravity(Gravity_.CENTER);
+	defaultUserLayout.setLayoutParams(params);
+	
+	var steveHeadView = new ImageView_(CONTEXT);
+	steveHeadView.setImageBitmap(imgSteveHead);
+    
+    var defaultUserTextView = clientTextView(Player.getName(getPlayerEnt()), true);
+	defaultUserTextView.setPadding(dip2px(8), 0, 0, 0);
+    defaultUserTextView.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
+    defaultUserTextView.setMarqueeRepeatLimit(-1);
+    defaultUserTextView.setSingleLine();
+    defaultUserTextView.setHorizontallyScrolling(true);
+    defaultUserTextView.setSelected(true);
+	
+	var bg = GradientDrawable_();
+	bg.setColor(Color_.parseColor("#70151515"));
+	defaultUserLayout.setBackgroundDrawable(bg);
+	
+	defaultUserLayout.setOnTouchListener(new View_.OnTouchListener() {
+		onTouch: function(v, event) {
+			var action = event.getActionMasked();
+			if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
+				bg.setStroke(0, Color_.parseColor("#70151515"));
+			} else {
+				bg.setStroke(dip2px(3), Color_.parseColor("#d3d3d3"));
+			}
+			return false;
+		}
+	});
+	
+	defaultUserLayout.setOnClickListener(new View_.OnClickListener() {
+        onClick: function(viewArg) {
+			
+        }
+    });
+	
+	defaultUserLayout.addView(steveHeadView);
+	defaultUserLayout.addView(defaultUserTextView);
+    
+    return defaultUserLayout;
+}
+
 function modButton(mod, buttonOnly) {
     if(mod.type == null) {
         mod.type = "Mod";
@@ -7055,6 +7103,9 @@ function coloredSubTitle(subtitle) // TextView with colored background (edited b
     }if(themeSetting == "yellow") {
         bg.setColor(Color_.parseColor("#CCCC00"));
         bg.setStroke(dip2px(2), Color_.parseColor("#FFFF00"));
+    }if(color == "orange") {
+        bg.setColor(Color_.parseColor("#FF8C00"));
+		bg.setStroke(dip2px(2), Color_.parseColor("#FFA500"));
     }if(themeSetting == "white") {
         bg.setColor(Color_.parseColor("#E1E1E1"));
         bg.setStroke(dip2px(2), Color_.parseColor("#FFFFFF"));
@@ -7187,6 +7238,8 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
         bg.setColor(Color_.parseColor("#709F018C"));
     } else if(color == "yellow") {
         bg.setColor(Color_.parseColor("#70CCCC00"));
+    } else if(color == "orange") {
+        bg.setColor(Color_.parseColor("#70FF8C00"));
     } else if(color == "white") {
         bg.setColor(Color_.parseColor("#70E1E1E1"));
     } else if(color == "black") {
@@ -7247,19 +7300,21 @@ function backgroundGradient(round) // TextView with colored background (edited b
         } else {
 			VertexClientPE.setupGradient(bg, "5B0C0C", "821010");
         }
-    }if(themeSetting == "blue") {
+    } if(themeSetting == "blue") {
         if(useLightThemeSetting == "on") {
 			VertexClientPE.setupGradient(bg, "0080FF", "3399FF");
         } else {
 			VertexClientPE.setupGradient(bg, "0A175B", "0E3882");
         }
-    }if(themeSetting == "purple") {
+    } if(themeSetting == "purple") {
 		VertexClientPE.setupGradient(bg, "9F018C", "BC21AB");
-    }if(themeSetting == "yellow") {
+    } if(themeSetting == "yellow") {
 		VertexClientPE.setupGradient(bg, "CCCC00", "FFFF00");
-    }if(themeSetting == "white") {
+    } if(themeSetting == "orange") {
+		VertexClientPE.setupGradient(bg, "FF8C00", "FFA500");
+    } if(themeSetting == "white") {
 		VertexClientPE.setupGradient(bg, "E1E1E1", "FFFFFF");
-    }if(themeSetting == "black") {
+    } if(themeSetting == "black") {
 		VertexClientPE.setupGradient(bg, "141414", "1E1E1E");
     }
     bg.setShape(GradientDrawable_.RECTANGLE);
@@ -8160,7 +8215,7 @@ function downloadFile(path, url) {
 };
 
 (function checkFiles() {
-    var res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png", "github_button.png", "github_button_clicked.png", "vertex_logo_new.png"],
+    var res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png", "github_button.png", "github_button_clicked.png", "vertex_logo_new.png", "stevehead.png"],
         isExists = true;
     for (var i = res.length; i--;) {
         if (!new File_(PATH, res[i]).exists()) {
@@ -8703,6 +8758,8 @@ function settingsScreen() {
                         themeSettingButton.setText("Purple");
                     } else if(themeSetting == "yellow") {
                         themeSettingButton.setText("Yellow");
+                    } else if(themeSetting == "orange") {
+                        themeSettingButton.setText("Orange");
                     } else if(themeSetting == "white") {
                         themeSettingButton.setText("White");
                     } else if(themeSetting == "black") {
@@ -8727,6 +8784,10 @@ function settingsScreen() {
                             themeSettingButton.setText("Yellow");
                             VertexClientPE.saveMainSettings();
                         } else if(themeSetting == "yellow") {
+                            themeSetting = "orange";
+                            themeSettingButton.setText("Orange");
+                            VertexClientPE.saveMainSettings();
+                        } else if(themeSetting == "orange") {
                             themeSetting = "white";
                             themeSettingButton.setText("White");
                             VertexClientPE.saveMainSettings();
@@ -9858,13 +9919,37 @@ function dashboardScreen() {
                 dashboardMenuLayout1.setOrientation(1);
                 dashboardMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
                 
+				var dashboardTitleLayout = new LinearLayout_(CONTEXT);
+				dashboardTitleLayout.setOrientation(LinearLayout_.HORIZONTAL);
+                dashboardTitleLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
+				dashboardTitleLayout.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels, LinearLayout_.LayoutParams.WRAP_CONTENT));
+				
+				var dashboardTitleLayoutLeft = new LinearLayout_(CONTEXT);
+				dashboardTitleLayoutLeft.setOrientation(1);
+				dashboardTitleLayoutLeft.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, LinearLayout_.LayoutParams.WRAP_CONTENT));
+				
+				var dashboardTitleLayoutCenter = new LinearLayout_(CONTEXT);
+				dashboardTitleLayoutCenter.setOrientation(1);
+				dashboardTitleLayoutCenter.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2, LinearLayout_.LayoutParams.WRAP_CONTENT));
+				
+				var dashboardTitleLayoutRight = new LinearLayout_(CONTEXT);
+				dashboardTitleLayoutRight.setOrientation(1);
+				dashboardTitleLayoutRight.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, LinearLayout_.LayoutParams.WRAP_CONTENT));
+				
+				dashboardTitleLayout.addView(dashboardTitleLayoutLeft);
+				dashboardTitleLayout.addView(dashboardTitleLayoutCenter);
+				dashboardTitleLayout.addView(dashboardTitleLayoutRight);
+				
                 var dashboardTitle = clientTextView("Dashboard", true);
                 dashboardTitle.setTextSize(25);
                 dashboardTitle.setGravity(Gravity_.CENTER);
-                dashboardMenuLayout1.addView(dashboardTitle);
+				
+                dashboardTitleLayoutLeft.addView(userBar());
+                dashboardTitleLayoutCenter.addView(dashboardTitle);
                 
                 //dashboardMenuLayout1.addView(clientTextView("\n"));
                 dashboardMenuLayoutScroll.addView(dashboardMenuLayout);
+				dashboardMenuLayout1.addView(dashboardTitleLayout);
                 dashboardMenuLayout1.addView(dashboardMenuLayoutScroll);
                 
                 var settingsIconButton = tileButton("Settings", android.R.drawable.ic_menu_preferences, "green");
