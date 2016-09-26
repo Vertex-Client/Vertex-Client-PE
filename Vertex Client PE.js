@@ -7103,7 +7103,7 @@ function coloredSubTitle(subtitle) // TextView with colored background (edited b
     }if(themeSetting == "yellow") {
         bg.setColor(Color_.parseColor("#CCCC00"));
         bg.setStroke(dip2px(2), Color_.parseColor("#FFFF00"));
-    }if(color == "orange") {
+    }if(themeSetting == "orange") {
         bg.setColor(Color_.parseColor("#FF8C00"));
 		bg.setStroke(dip2px(2), Color_.parseColor("#FFA500"));
     }if(themeSetting == "white") {
