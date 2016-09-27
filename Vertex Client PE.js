@@ -4178,6 +4178,10 @@ function capitalizeColorString(string) {
 		return "Yellow";
 	} else if(string == "orange") {
 		return "Orange";
+	} else if(string == "brown") {
+		return "Brown";
+	} else if(string == "grey") {
+		return "Grey";
 	} else if(string == "white") {
 		return "White";
 	} else if(string == "black") {
@@ -4227,6 +4231,12 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
                             currentColor = "orange";
                             tileDropDownCurrentColorButton.setText("Orange");
                         } else if(currentColor == "orange") {
+                            currentColor = "brown";
+                            tileDropDownCurrentColorButton.setText("Brown");
+                        } else if(currentColor == "brown") {
+                            currentColor = "grey";
+                            tileDropDownCurrentColorButton.setText("Grey");
+                        } else if(currentColor == "grey") {
                             currentColor = "white";
                             tileDropDownCurrentColorButton.setText("White");
                         } else if(currentColor == "white") {
@@ -6027,6 +6037,16 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 		if(style != "normal_nostrokes") {
 			bg.setStroke(thickness, Color_.parseColor("#FFA500"));
 		}
+    }if(color == "brown") {
+        bg.setColor(Color_.parseColor("#8B4513"));
+		if(style != "normal_nostrokes") {
+			bg.setStroke(thickness, Color_.parseColor("#CD853F"));
+		}
+    }if(color == "grey") {
+        bg.setColor(Color_.parseColor("#808080"));
+		if(style != "normal_nostrokes") {
+			bg.setStroke(thickness, Color_.parseColor("#A9A9A9"));
+		}
     }if(color == "white") {
         bg.setColor(Color_.parseColor("#E1E1E1"));
 		if(style != "normal_nostrokes") {
@@ -6082,7 +6102,7 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 							bg.setStroke(thickness, Color_.parseColor("#821010"));
 						}
 					}
-                }if(color == "blue") {
+                } if(color == "blue") {
                     if(forceLightColor == true) {
 						bg.setColor(Color_.parseColor("#0080FF"));
 						if(style != "normal_nostrokes") {
@@ -6094,27 +6114,37 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 							bg.setStroke(thickness, Color_.parseColor("#0E3882"));
 						}
 					}
-                }if(color == "purple") {
+                } if(color == "purple") {
                     bg.setColor(Color_.parseColor("#9F018C"));
 					if(style != "normal_nostrokes") {
 						bg.setStroke(thickness, Color_.parseColor("#BC21AB"));
 					}
-                }if(color == "yellow") {
+                } if(color == "yellow") {
                     bg.setColor(Color_.parseColor("#CCCC00"));
 					if(style != "normal_nostrokes") {
 						bg.setStroke(thickness, Color_.parseColor("#FFFF00"));
 					}
-                }if(color == "orange") {
+                } if(color == "orange") {
                     bg.setColor(Color_.parseColor("#FF8C00"));
 					if(style != "normal_nostrokes") {
 						bg.setStroke(thickness, Color_.parseColor("#FFA500"));
 					}
-                }if(color == "white") {
+                } if(color == "brown") {
+					bg.setColor(Color_.parseColor("#8B4513"));
+					if(style != "normal_nostrokes") {
+						bg.setStroke(thickness, Color_.parseColor("#CD853F"));
+					}
+				} if(color == "grey") {
+					bg.setColor(Color_.parseColor("#808080"));
+					if(style != "normal_nostrokes") {
+						bg.setStroke(thickness, Color_.parseColor("#A9A9A9"));
+					}
+				} if(color == "white") {
                     bg.setColor(Color_.parseColor("#E1E1E1"));
 					if(style != "normal_nostrokes") {
 						bg.setStroke(thickness, Color_.parseColor("#FFFFFF"));
 					}
-                }if(color == "black") {
+                } if(color == "black") {
                     bg.setColor(Color_.parseColor("#141414"));
 					if(style != "normal_nostrokes") {
 						bg.setStroke(thickness, Color_.parseColor("#1E1E1E"));
@@ -6139,21 +6169,25 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
                     } else {
                         bg.setColor(Color_.parseColor("#821010"));
                     }
-                }if(color == "blue") {
+                } if(color == "blue") {
                     if(forceLightColor == true) {
                         bg.setColor(Color_.parseColor("#3399FF"));
                     } else {
                         bg.setColor(Color_.parseColor("#0E3882"));
                     }
-                }if(color == "purple") {
+                } if(color == "purple") {
                     bg.setColor(Color_.parseColor("#BC21AB"));
-                }if(color == "yellow") {
+                } if(color == "yellow") {
                     bg.setColor(Color_.parseColor("#FFFF00"));
-                }if(color == "orange") {
+                } if(color == "orange") {
                     bg.setColor(Color_.parseColor("#FFA500"));
-                }if(color == "white") {
+                } if(color == "brown") {
+					bg.setColor(Color_.parseColor("#CD853F"));
+				} if(color == "grey") {
+					bg.setColor(Color_.parseColor("#A9A9A9"));
+				} if(color == "white") {
                     bg.setColor(Color_.parseColor("#FFFFFF"));
-                }if(color == "black") {
+                } if(color == "black") {
                     bg.setColor(Color_.parseColor("#1E1E1E"));
                 }
                 
@@ -7149,6 +7183,12 @@ function coloredSubTitle(subtitle) // TextView with colored background (edited b
     }if(themeSetting == "orange") {
         bg.setColor(Color_.parseColor("#FF8C00"));
 		bg.setStroke(dip2px(2), Color_.parseColor("#FFA500"));
+    }if(themeSetting == "brown") {
+		bg.setColor(Color_.parseColor("#8B4513"));
+		bg.setStroke(dip2px(2), Color_.parseColor("#CD853F"));
+    }if(themeSetting == "grey") {
+		bg.setColor(Color_.parseColor("#808080"));
+		bg.setStroke(dip2px(2), Color_.parseColor("#A9A9A9"));
     }if(themeSetting == "white") {
         bg.setColor(Color_.parseColor("#E1E1E1"));
         bg.setStroke(dip2px(2), Color_.parseColor("#FFFFFF"));
@@ -7283,6 +7323,10 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
         bg.setColor(Color_.parseColor("#70CCCC00"));
     } else if(color == "orange") {
         bg.setColor(Color_.parseColor("#70FF8C00"));
+    } else if(color == "brown") {
+		bg.setColor(Color_.parseColor("#708B4513"));
+    } else if(color == "grey") {
+		bg.setColor(Color_.parseColor("#70808080"));
     } else if(color == "white") {
         bg.setColor(Color_.parseColor("#70E1E1E1"));
     } else if(color == "black") {
@@ -7355,6 +7399,10 @@ function backgroundGradient(round) // TextView with colored background (edited b
 		VertexClientPE.setupGradient(bg, "CCCC00", "FFFF00");
     } if(themeSetting == "orange") {
 		VertexClientPE.setupGradient(bg, "FF8C00", "FFA500");
+    } if(themeSetting == "brown") {
+        VertexClientPE.setupGradient(bg, "8B4513", "CD853F");
+    } if(themeSetting == "grey") {
+		VertexClientPE.setupGradient(bg, "808080", "A9A9A9");
     } if(themeSetting == "white") {
 		VertexClientPE.setupGradient(bg, "E1E1E1", "FFFFFF");
     } if(themeSetting == "black") {
@@ -7376,6 +7424,12 @@ VertexClientPE.loadMainSettings();
         ModPE.langEdit("menu.copyright", "\u00A9Mojang AB | \u00A75Vertex Client PE by peacestorm");
     } if(themeSetting == "yellow") {
         ModPE.langEdit("menu.copyright", "\u00A9Mojang AB | \u00A7eVertex Client PE by peacestorm");
+    } if(themeSetting == "orange") {
+        ModPE.langEdit("menu.copyright", "\u00A9Mojang AB | \u00A76Vertex Client PE by peacestorm");
+    } if(themeSetting == "brown") {
+        ModPE.langEdit("menu.copyright", "\u00A9Mojang AB | \u00A70Vertex Client PE by peacestorm");
+    } if(themeSetting == "grey") {
+        ModPE.langEdit("menu.copyright", "\u00A9Mojang AB | \u00A78Vertex Client PE by peacestorm");
     } if(themeSetting == "white") {
         ModPE.langEdit("menu.copyright", "\u00A9Mojang AB | \u00A7fVertex Client PE by peacestorm");
     } if(themeSetting == "black") {
@@ -8811,6 +8865,10 @@ function settingsScreen() {
                         themeSettingButton.setText("Yellow");
                     } else if(themeSetting == "orange") {
                         themeSettingButton.setText("Orange");
+                    } else if(themeSetting == "brown") {
+                        themeSettingButton.setText("Brown");
+                    } else if(themeSetting == "grey") {
+                        themeSettingButton.setText("Grey");
                     } else if(themeSetting == "white") {
                         themeSettingButton.setText("White");
                     } else if(themeSetting == "black") {
@@ -8839,6 +8897,14 @@ function settingsScreen() {
                             themeSettingButton.setText("Orange");
                             VertexClientPE.saveMainSettings();
                         } else if(themeSetting == "orange") {
+                            themeSetting = "brown";
+                            themeSettingButton.setText("Brown");
+                            VertexClientPE.saveMainSettings();
+                        } else if(themeSetting == "brown") {
+                            themeSetting = "grey";
+                            themeSettingButton.setText("Grey");
+                            VertexClientPE.saveMainSettings();
+                        } else if(themeSetting == "grey") {
                             themeSetting = "white";
                             themeSettingButton.setText("White");
                             VertexClientPE.saveMainSettings();
