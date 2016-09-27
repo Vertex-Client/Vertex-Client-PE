@@ -5959,250 +5959,259 @@ var getStretchedImage = function(bm, x, y, stretchWidth, stretchHeight, width, h
 
 VertexClientPE.setupButton = function(buttonView, text, color, round, forceLightColor, style, thickness) {
 	buttonView.setText(text);
-	var bg = GradientDrawable_();
-    if(round == true) {
-        bg.setCornerRadius(10);
-    } else if(round != false && round != null) {
-        var radiiFloatArray = Array_.newInstance(Float_.TYPE, 9);
-        var radius = 0;
-        if(round == "left") {
-            for(var i = 0; i <= 7; i++) {
-                if(i == 0 || i == 1 || i == 6 || i == 7) {
-                    radiiFloatArray[i] = 8;
-                } else {
-                    radiiFloatArray[i] = radius;
-                }
-            }
-        } if(round == "right") {
-            for(var i = 0; i <= 7; i++) {
-                if(i == 2 || i == 3 || i == 4 || i == 5) {
-                    radiiFloatArray[i] = 8;
-                } else {
-                    radiiFloatArray[i] = radius;
-                }
-            }
-        }
-        bg.setCornerRadii(radiiFloatArray);
-    }
-	
-	bg.setShape(GradientDrawable_.RECTANGLE);
-	
-    if(forceLightColor == true) {
-        bg.setColor(Color_.parseColor("#00994C"));
-		if(style != "normal_nostrokes") {
-			bg.setStroke(thickness, Color_.parseColor("#00CC66"));
-		}
-    } else {
-        bg.setColor(Color_.parseColor("#0B5B25"));
-		if(style != "normal_nostrokes") {
-			bg.setStroke(thickness, Color_.parseColor("#0F8219"));
-		}
-    }
-    if(color == "red") {
-        if(forceLightColor == true) {
-            bg.setColor(Color_.parseColor("#FF3333"));
-			if(style != "normal_nostrokes") {
-				bg.setStroke(thickness, Color_.parseColor("#FF6666"));
-			}
-        } else {
-            bg.setColor(Color_.parseColor("#5B0C0C"));
-			if(style != "normal_nostrokes") {
-				bg.setStroke(thickness, Color_.parseColor("#821010"));
-			}
-        }
-    }if(color == "blue") {
-        if(forceLightColor == true) {
-            bg.setColor(Color_.parseColor("#0080FF"));
-			if(style != "normal_nostrokes") {
-				bg.setStroke(thickness, Color_.parseColor("#3399FF"));
-			}
-        } else {
-            bg.setColor(Color_.parseColor("#0A175B"));
-			if(style != "normal_nostrokes") {
-				bg.setStroke(thickness, Color_.parseColor("#0E3882"));
-			}
-        }
-    }if(color == "purple") {
-        bg.setColor(Color_.parseColor("#9F018C"));
-		if(style != "normal_nostrokes") {
-			bg.setStroke(thickness, Color_.parseColor("#BC21AB"));
-		}
-    }if(color == "yellow") {
-        bg.setColor(Color_.parseColor("#CCCC00"));
-		if(style != "normal_nostrokes") {
-			bg.setStroke(thickness, Color_.parseColor("#FFFF00"));
-		}
-    }if(color == "orange") {
-        bg.setColor(Color_.parseColor("#FF8C00"));
-		if(style != "normal_nostrokes") {
-			bg.setStroke(thickness, Color_.parseColor("#FFA500"));
-		}
-    }if(color == "brown") {
-        bg.setColor(Color_.parseColor("#8B4513"));
-		if(style != "normal_nostrokes") {
-			bg.setStroke(thickness, Color_.parseColor("#CD853F"));
-		}
-    }if(color == "grey") {
-        bg.setColor(Color_.parseColor("#808080"));
-		if(style != "normal_nostrokes") {
-			bg.setStroke(thickness, Color_.parseColor("#A9A9A9"));
-		}
-    }if(color == "white") {
-        bg.setColor(Color_.parseColor("#E1E1E1"));
-		if(style != "normal_nostrokes") {
-			bg.setStroke(thickness, Color_.parseColor("#FFFFFF"));
-		}
-    }if(color == "black") {
-        bg.setColor(Color_.parseColor("#141414"));
-		if(style != "normal_nostrokes") {
-			bg.setStroke(thickness, Color_.parseColor("#1E1E1E"));
-		}
-    }
-    
-    if(style == "legacy") {
-        bg.setColor(Color_.parseColor("#000000"));
-    }
-    if(style == "legacy_inverted") {
-        bg.setStroke(thickness, Color_.parseColor("#000000"));
-    }
-    if(style == "transparent") {
-        bg.setColor(Color_.TRANSPARENT);
-    }
-    
 	if(color == "white") {
-        buttonView.setTextColor(Color_.BLACK);
-    } else {
-        buttonView.setTextColor(Color_.WHITE);
-    }
-    buttonView.setTransformationMethod(null);
-    buttonView.setOnTouchListener(new View_.OnTouchListener() {
-        onTouch: function(v, event) {
-            var action = event.getActionMasked();
-            if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
-                if(forceLightColor == true) {
-					bg.setColor(Color_.parseColor("#00994C"));
-					if(style != "normal_nostrokes") {
-						bg.setStroke(thickness, Color_.parseColor("#00CC66"));
+		buttonView.setTextColor(Color_.BLACK);
+	} else {
+		buttonView.setTextColor(Color_.WHITE);
+	}
+	buttonView.setTransformationMethod(null);
+	
+	if(style != "invisible") {
+		var bg = GradientDrawable_();
+		if(round == true) {
+			bg.setCornerRadius(10);
+		} else if(round != false && round != null) {
+			var radiiFloatArray = Array_.newInstance(Float_.TYPE, 9);
+			var radius = 0;
+			if(round == "left") {
+				for(var i = 0; i <= 7; i++) {
+					if(i == 0 || i == 1 || i == 6 || i == 7) {
+						radiiFloatArray[i] = 8;
+					} else {
+						radiiFloatArray[i] = radius;
+					}
+				}
+			} if(round == "right") {
+				for(var i = 0; i <= 7; i++) {
+					if(i == 2 || i == 3 || i == 4 || i == 5) {
+						radiiFloatArray[i] = 8;
+					} else {
+						radiiFloatArray[i] = radius;
+					}
+				}
+			}
+			bg.setCornerRadii(radiiFloatArray);
+		}
+		
+		bg.setShape(GradientDrawable_.RECTANGLE);
+		
+		if(forceLightColor == true) {
+			bg.setColor(Color_.parseColor("#00994C"));
+			if(style != "normal_nostrokes") {
+				bg.setStroke(thickness, Color_.parseColor("#00CC66"));
+			}
+		} else {
+			bg.setColor(Color_.parseColor("#0B5B25"));
+			if(style != "normal_nostrokes") {
+				bg.setStroke(thickness, Color_.parseColor("#0F8219"));
+			}
+		}
+		if(color == "red") {
+			if(forceLightColor == true) {
+				bg.setColor(Color_.parseColor("#FF3333"));
+				if(style != "normal_nostrokes") {
+					bg.setStroke(thickness, Color_.parseColor("#FF6666"));
+				}
+			} else {
+				bg.setColor(Color_.parseColor("#5B0C0C"));
+				if(style != "normal_nostrokes") {
+					bg.setStroke(thickness, Color_.parseColor("#821010"));
+				}
+			}
+		}if(color == "blue") {
+			if(forceLightColor == true) {
+				bg.setColor(Color_.parseColor("#0080FF"));
+				if(style != "normal_nostrokes") {
+					bg.setStroke(thickness, Color_.parseColor("#3399FF"));
+				}
+			} else {
+				bg.setColor(Color_.parseColor("#0A175B"));
+				if(style != "normal_nostrokes") {
+					bg.setStroke(thickness, Color_.parseColor("#0E3882"));
+				}
+			}
+		}if(color == "purple") {
+			bg.setColor(Color_.parseColor("#9F018C"));
+			if(style != "normal_nostrokes") {
+				bg.setStroke(thickness, Color_.parseColor("#BC21AB"));
+			}
+		}if(color == "yellow") {
+			bg.setColor(Color_.parseColor("#CCCC00"));
+			if(style != "normal_nostrokes") {
+				bg.setStroke(thickness, Color_.parseColor("#FFFF00"));
+			}
+		}if(color == "orange") {
+			bg.setColor(Color_.parseColor("#FF8C00"));
+			if(style != "normal_nostrokes") {
+				bg.setStroke(thickness, Color_.parseColor("#FFA500"));
+			}
+		}if(color == "brown") {
+			bg.setColor(Color_.parseColor("#8B4513"));
+			if(style != "normal_nostrokes") {
+				bg.setStroke(thickness, Color_.parseColor("#CD853F"));
+			}
+		}if(color == "grey") {
+			bg.setColor(Color_.parseColor("#808080"));
+			if(style != "normal_nostrokes") {
+				bg.setStroke(thickness, Color_.parseColor("#A9A9A9"));
+			}
+		}if(color == "white") {
+			bg.setColor(Color_.parseColor("#E1E1E1"));
+			if(style != "normal_nostrokes") {
+				bg.setStroke(thickness, Color_.parseColor("#FFFFFF"));
+			}
+		}if(color == "black") {
+			bg.setColor(Color_.parseColor("#141414"));
+			if(style != "normal_nostrokes") {
+				bg.setStroke(thickness, Color_.parseColor("#1E1E1E"));
+			}
+		}
+		
+		if(style == "legacy") {
+			bg.setColor(Color_.parseColor("#000000"));
+		}
+		if(style == "legacy_inverted") {
+			bg.setStroke(thickness, Color_.parseColor("#000000"));
+		}
+		if(style == "transparent") {
+			bg.setColor(Color_.TRANSPARENT);
+		}
+		
+		buttonView.setOnTouchListener(new View_.OnTouchListener() {
+			onTouch: function(v, event) {
+				var action = event.getActionMasked();
+				if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
+					if(forceLightColor == true) {
+						bg.setColor(Color_.parseColor("#00994C"));
+						if(style != "normal_nostrokes") {
+							bg.setStroke(thickness, Color_.parseColor("#00CC66"));
+						}
+					} else {
+						bg.setColor(Color_.parseColor("#0B5B25"));
+						if(style != "normal_nostrokes") {
+							bg.setStroke(thickness, Color_.parseColor("#0F8219"));
+						}
+					}
+					if(color == "red") {
+						if(forceLightColor == true) {
+							bg.setColor(Color_.parseColor("#FF3333"));
+							if(style != "normal_nostrokes") {
+								bg.setStroke(thickness, Color_.parseColor("#FF6666"));
+							}
+						} else {
+							bg.setColor(Color_.parseColor("#5B0C0C"));
+							if(style != "normal_nostrokes") {
+								bg.setStroke(thickness, Color_.parseColor("#821010"));
+							}
+						}
+					} if(color == "blue") {
+						if(forceLightColor == true) {
+							bg.setColor(Color_.parseColor("#0080FF"));
+							if(style != "normal_nostrokes") {
+								bg.setStroke(thickness, Color_.parseColor("#3399FF"));
+							}
+						} else {
+							bg.setColor(Color_.parseColor("#0A175B"));
+							if(style != "normal_nostrokes") {
+								bg.setStroke(thickness, Color_.parseColor("#0E3882"));
+							}
+						}
+					} if(color == "purple") {
+						bg.setColor(Color_.parseColor("#9F018C"));
+						if(style != "normal_nostrokes") {
+							bg.setStroke(thickness, Color_.parseColor("#BC21AB"));
+						}
+					} if(color == "yellow") {
+						bg.setColor(Color_.parseColor("#CCCC00"));
+						if(style != "normal_nostrokes") {
+							bg.setStroke(thickness, Color_.parseColor("#FFFF00"));
+						}
+					} if(color == "orange") {
+						bg.setColor(Color_.parseColor("#FF8C00"));
+						if(style != "normal_nostrokes") {
+							bg.setStroke(thickness, Color_.parseColor("#FFA500"));
+						}
+					} if(color == "brown") {
+						bg.setColor(Color_.parseColor("#8B4513"));
+						if(style != "normal_nostrokes") {
+							bg.setStroke(thickness, Color_.parseColor("#CD853F"));
+						}
+					} if(color == "grey") {
+						bg.setColor(Color_.parseColor("#808080"));
+						if(style != "normal_nostrokes") {
+							bg.setStroke(thickness, Color_.parseColor("#A9A9A9"));
+						}
+					} if(color == "white") {
+						bg.setColor(Color_.parseColor("#E1E1E1"));
+						if(style != "normal_nostrokes") {
+							bg.setStroke(thickness, Color_.parseColor("#FFFFFF"));
+						}
+					} if(color == "black") {
+						bg.setColor(Color_.parseColor("#141414"));
+						if(style != "normal_nostrokes") {
+							bg.setStroke(thickness, Color_.parseColor("#1E1E1E"));
+						}
+					}
+					
+					if(style == "legacy") {
+						bg.setColor(Color_.parseColor("#000000"));
+					}
+					if(style == "legacy_inverted") {
+						bg.setStroke(thickness, Color_.parseColor("#000000"));
+					}
+					if(style == "transparent") {
+						bg.setColor(Color_.TRANSPARENT);
 					}
 				} else {
-					bg.setColor(Color_.parseColor("#0B5B25"));
-					if(style != "normal_nostrokes") {
-						bg.setStroke(thickness, Color_.parseColor("#0F8219"));
+					if(forceLightColor == true) {
+						bg.setColor(Color_.parseColor("#00CC66"));
+					} else {
+						bg.setColor(Color_.parseColor("#0F8219"));
+					}
+					if(color == "red") {
+						if(forceLightColor == true) {
+							bg.setColor(Color_.parseColor("#FF6666"));
+						} else {
+							bg.setColor(Color_.parseColor("#821010"));
+						}
+					} if(color == "blue") {
+						if(forceLightColor == true) {
+							bg.setColor(Color_.parseColor("#3399FF"));
+						} else {
+							bg.setColor(Color_.parseColor("#0E3882"));
+						}
+					} if(color == "purple") {
+						bg.setColor(Color_.parseColor("#BC21AB"));
+					} if(color == "yellow") {
+						bg.setColor(Color_.parseColor("#FFFF00"));
+					} if(color == "orange") {
+						bg.setColor(Color_.parseColor("#FFA500"));
+					} if(color == "brown") {
+						bg.setColor(Color_.parseColor("#CD853F"));
+					} if(color == "grey") {
+						bg.setColor(Color_.parseColor("#A9A9A9"));
+					} if(color == "white") {
+						bg.setColor(Color_.parseColor("#FFFFFF"));
+					} if(color == "black") {
+						bg.setColor(Color_.parseColor("#1E1E1E"));
+					}
+					
+					if(style == "legacy_inverted") {
+						bg.setColor(Color_.parseColor("#000000"));
+					}
+					if(style == "tile") {
+						bg.setStroke(dip2px(3), Color_.parseColor("#d3d3d3"));
 					}
 				}
-                if(color == "red") {
-                    if(forceLightColor == true) {
-						bg.setColor(Color_.parseColor("#FF3333"));
-						if(style != "normal_nostrokes") {
-							bg.setStroke(thickness, Color_.parseColor("#FF6666"));
-						}
-					} else {
-						bg.setColor(Color_.parseColor("#5B0C0C"));
-						if(style != "normal_nostrokes") {
-							bg.setStroke(thickness, Color_.parseColor("#821010"));
-						}
-					}
-                } if(color == "blue") {
-                    if(forceLightColor == true) {
-						bg.setColor(Color_.parseColor("#0080FF"));
-						if(style != "normal_nostrokes") {
-							bg.setStroke(thickness, Color_.parseColor("#3399FF"));
-						}
-					} else {
-						bg.setColor(Color_.parseColor("#0A175B"));
-						if(style != "normal_nostrokes") {
-							bg.setStroke(thickness, Color_.parseColor("#0E3882"));
-						}
-					}
-                } if(color == "purple") {
-                    bg.setColor(Color_.parseColor("#9F018C"));
-					if(style != "normal_nostrokes") {
-						bg.setStroke(thickness, Color_.parseColor("#BC21AB"));
-					}
-                } if(color == "yellow") {
-                    bg.setColor(Color_.parseColor("#CCCC00"));
-					if(style != "normal_nostrokes") {
-						bg.setStroke(thickness, Color_.parseColor("#FFFF00"));
-					}
-                } if(color == "orange") {
-                    bg.setColor(Color_.parseColor("#FF8C00"));
-					if(style != "normal_nostrokes") {
-						bg.setStroke(thickness, Color_.parseColor("#FFA500"));
-					}
-                } if(color == "brown") {
-					bg.setColor(Color_.parseColor("#8B4513"));
-					if(style != "normal_nostrokes") {
-						bg.setStroke(thickness, Color_.parseColor("#CD853F"));
-					}
-				} if(color == "grey") {
-					bg.setColor(Color_.parseColor("#808080"));
-					if(style != "normal_nostrokes") {
-						bg.setStroke(thickness, Color_.parseColor("#A9A9A9"));
-					}
-				} if(color == "white") {
-                    bg.setColor(Color_.parseColor("#E1E1E1"));
-					if(style != "normal_nostrokes") {
-						bg.setStroke(thickness, Color_.parseColor("#FFFFFF"));
-					}
-                } if(color == "black") {
-                    bg.setColor(Color_.parseColor("#141414"));
-					if(style != "normal_nostrokes") {
-						bg.setStroke(thickness, Color_.parseColor("#1E1E1E"));
-					}
-                }
-                
-                if(style == "legacy") {
-                    bg.setColor(Color_.parseColor("#000000"));
-                }
-                if(style == "transparent") {
-                    bg.setColor(Color_.TRANSPARENT);
-                }
-            } else {
-                if(forceLightColor == true) {
-                    bg.setColor(Color_.parseColor("#00CC66"));
-                } else {
-                    bg.setColor(Color_.parseColor("#0F8219"));
-                }
-                if(color == "red") {
-                    if(forceLightColor == true) {
-                        bg.setColor(Color_.parseColor("#FF6666"));
-                    } else {
-                        bg.setColor(Color_.parseColor("#821010"));
-                    }
-                } if(color == "blue") {
-                    if(forceLightColor == true) {
-                        bg.setColor(Color_.parseColor("#3399FF"));
-                    } else {
-                        bg.setColor(Color_.parseColor("#0E3882"));
-                    }
-                } if(color == "purple") {
-                    bg.setColor(Color_.parseColor("#BC21AB"));
-                } if(color == "yellow") {
-                    bg.setColor(Color_.parseColor("#FFFF00"));
-                } if(color == "orange") {
-                    bg.setColor(Color_.parseColor("#FFA500"));
-                } if(color == "brown") {
-					bg.setColor(Color_.parseColor("#CD853F"));
-				} if(color == "grey") {
-					bg.setColor(Color_.parseColor("#A9A9A9"));
-				} if(color == "white") {
-                    bg.setColor(Color_.parseColor("#FFFFFF"));
-                } if(color == "black") {
-                    bg.setColor(Color_.parseColor("#1E1E1E"));
-                }
-                
-                if(style == "legacy_inverted") {
-                    bg.setColor(Color_.parseColor("#000000"));
-                }
-				if(style == "tile") {
-					bg.setStroke(dip2px(3), Color_.parseColor("#d3d3d3"));
-				}
-            }
-            return false;
-        }
-    });
-
-    buttonView.setBackgroundDrawable(bg);
+				return false;
+			}
+		});
+		
+		buttonView.setBackgroundDrawable(bg);
+	} else {
+		buttonView.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+	}
+	
     buttonView.setPaintFlags(buttonView.getPaintFlags() | Paint_.SUBPIXEL_TEXT_FLAG);
     buttonView.setTextSize(15);
     if(color == "white") {
@@ -7125,9 +7134,9 @@ function settingButton(text, desc) {
     var defaultTitle = clientTextView(text, true);
     defaultTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
     defaultTitle.setGravity(Gravity_.CENTER_VERTICAL);
-    settingButtonLayoutLeft.addView(defaultTitle);
 	
-	var defaultSettingsButton = clientButton("", desc, null, null, null, true);
+    settingButtonLayoutLeft.addView(defaultTitle);
+	var defaultSettingsButton = clientButton("", desc);
     defaultSettingsButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
     settingButtonLayoutRight.addView(defaultSettingsButton);
     
@@ -8953,14 +8962,12 @@ function settingsScreen() {
                         buttonStyleSettingButton.setText("Legacy (inverted)");
                     } else if(buttonStyleSetting == "transparent") {
                         buttonStyleSettingButton.setText("Transparent");
+                    } else if(buttonStyleSetting == "invisible") {
+                        buttonStyleSettingButton.setText("Invisible (less lagg)");
                     }
                     buttonStyleSettingButton.setOnClickListener(new View_.OnClickListener({
                     onClick: function(viewarg){
-                        if(buttonStyleSetting == "transparent") {
-                            buttonStyleSetting = "normal";
-                            buttonStyleSettingButton.setText("Normal");
-                            VertexClientPE.saveMainSettings();
-                        } else if(buttonStyleSetting == "normal") {
+                        if(buttonStyleSetting == "normal") {
                             buttonStyleSetting = "normal_nostrokes";
                             buttonStyleSettingButton.setText("Normal (no strokes)");
                             VertexClientPE.saveMainSettings();
@@ -8975,6 +8982,14 @@ function settingsScreen() {
                         } else if(buttonStyleSetting == "legacy_inverted") {
                             buttonStyleSetting = "transparent";
                             buttonStyleSettingButton.setText("Transparent");
+                            VertexClientPE.saveMainSettings();
+                        } else if(buttonStyleSetting == "transparent") {
+                            buttonStyleSetting = "invisible";
+                            buttonStyleSettingButton.setText("Invisible (less lagg)");
+                            VertexClientPE.saveMainSettings();
+                        } else if(buttonStyleSetting == "invisible") {
+                            buttonStyleSetting = "normal";
+                            buttonStyleSettingButton.setText("Normal");
                             VertexClientPE.saveMainSettings();
                         }
                     }
