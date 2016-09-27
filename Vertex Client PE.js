@@ -2135,7 +2135,7 @@ var autoSwitch = {
         this.state = !this.state;
     },
     onTick: function() {
-        if(Player.getSelectedSlotId() != 7) {
+        if(Player.getSelectedSlotId() < 7) {
             Player.setSelectedSlotId(Player.getSelectedSlotId() + 1);
         } else {
             Player.setSelectedSlotId(0);
@@ -5448,7 +5448,7 @@ var fancyChatEndChar;
 VertexClientPE.fancyChat = function(str) {
     fancyChatMsg = new String_(str);
     switch(fancyChatMode) {
-        case "normal":
+        case "default":
             fancyChatEndChar = 0xFEE0;
             break;
         default:
