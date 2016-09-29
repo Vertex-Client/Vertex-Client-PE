@@ -6464,7 +6464,9 @@ function updatePaneButton(updateVersion, updateDesc) {
             ModPE.goToURL("https://github.com/Vertex-Client/Vertex-Client-PE/releases/tag/v" + updateGithubVersion);
         }
     });
-    var updatePaneTypeText = clientTextView("Current")
+	
+    var support = isSupported?"supported":"unsupported";
+    var updatePaneTypeText = clientTextView("Current (" + support + ")");
     
     if(updateVersion != VertexClientPE.currentVersion) {
         updatePaneLayoutRight.addView(updatePaneDownloadButton);
