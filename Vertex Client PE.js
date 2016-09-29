@@ -6020,7 +6020,7 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 					bg.setStroke(thickness, Color_.parseColor("#821010"));
 				}
 			}
-		}if(color == "blue") {
+		} if(color == "blue") {
 			if(forceLightColor == true) {
 				bg.setColor(Color_.parseColor("#0080FF"));
 				if(style != "normal_nostrokes") {
@@ -6032,37 +6032,42 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 					bg.setStroke(thickness, Color_.parseColor("#0E3882"));
 				}
 			}
-		}if(color == "purple") {
+		} if(color == "purple") {
 			bg.setColor(Color_.parseColor("#9F018C"));
 			if(style != "normal_nostrokes") {
 				bg.setStroke(thickness, Color_.parseColor("#BC21AB"));
 			}
-		}if(color == "yellow") {
+		} if(color == "violet") {
+			bg.setColor(Color_.parseColor("#842DCE"));
+			if(style != "normal_nostrokes") {
+				bg.setStroke(thickness, Color_.parseColor("#8D38C9"));
+			}
+		} if(color == "yellow") {
 			bg.setColor(Color_.parseColor("#CCCC00"));
 			if(style != "normal_nostrokes") {
 				bg.setStroke(thickness, Color_.parseColor("#FFFF00"));
 			}
-		}if(color == "orange") {
+		} if(color == "orange") {
 			bg.setColor(Color_.parseColor("#FF8C00"));
 			if(style != "normal_nostrokes") {
 				bg.setStroke(thickness, Color_.parseColor("#FFA500"));
 			}
-		}if(color == "brown") {
+		} if(color == "brown") {
 			bg.setColor(Color_.parseColor("#8B4513"));
 			if(style != "normal_nostrokes") {
 				bg.setStroke(thickness, Color_.parseColor("#CD853F"));
 			}
-		}if(color == "grey") {
+		} if(color == "grey") {
 			bg.setColor(Color_.parseColor("#808080"));
 			if(style != "normal_nostrokes") {
 				bg.setStroke(thickness, Color_.parseColor("#A9A9A9"));
 			}
-		}if(color == "white") {
+		} if(color == "white") {
 			bg.setColor(Color_.parseColor("#E1E1E1"));
 			if(style != "normal_nostrokes") {
 				bg.setStroke(thickness, Color_.parseColor("#FFFFFF"));
 			}
-		}if(color == "black") {
+		} if(color == "black") {
 			bg.setColor(Color_.parseColor("#141414"));
 			if(style != "normal_nostrokes") {
 				bg.setStroke(thickness, Color_.parseColor("#1E1E1E"));
@@ -6122,6 +6127,11 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 						bg.setColor(Color_.parseColor("#9F018C"));
 						if(style != "normal_nostrokes") {
 							bg.setStroke(thickness, Color_.parseColor("#BC21AB"));
+						}
+					} if(color == "violet") {
+						bg.setColor(Color_.parseColor("#842DCE"));
+						if(style != "normal_nostrokes") {
+							bg.setStroke(thickness, Color_.parseColor("#8D38C9"));
 						}
 					} if(color == "yellow") {
 						bg.setColor(Color_.parseColor("#CCCC00"));
@@ -6184,6 +6194,8 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 						}
 					} if(color == "purple") {
 						bg.setColor(Color_.parseColor("#BC21AB"));
+					} if(color == "violet") {
+						bg.setColor(Color_.parseColor("#8D38C9"));
 					} if(color == "yellow") {
 						bg.setColor(Color_.parseColor("#FFFF00"));
 					} if(color == "orange") {
@@ -7193,7 +7205,7 @@ function coloredSubTitle(subtitle) // TextView with colored background (edited b
             bg.setColor(Color_.parseColor("#5B0C0C"));
             bg.setStroke(dip2px(2), Color_.parseColor("#821010"));
         }
-    }if(themeSetting == "blue") {
+    } if(themeSetting == "blue") {
         if(useLightThemeSetting == "on") {
             bg.setColor(Color_.parseColor("#0080FF"));
             bg.setStroke(dip2px(2), Color_.parseColor("#3399FF"));
@@ -7201,25 +7213,28 @@ function coloredSubTitle(subtitle) // TextView with colored background (edited b
             bg.setColor(Color_.parseColor("#0A175B"));
             bg.setStroke(dip2px(2), Color_.parseColor("#0E3882"));
         }
-    }if(themeSetting == "purple") {
+    } if(themeSetting == "purple") {
         bg.setColor(Color_.parseColor("#9F018C"));
         bg.setStroke(dip2px(2), Color_.parseColor("#BC21AB"));
-    }if(themeSetting == "yellow") {
+    } if(themeSetting == "violet") {
+		bg.setColor(Color_.parseColor("#842DCE"));
+		bg.setStroke(dip2px(2), Color_.parseColor("#8D38C9"));
+	} if(themeSetting == "yellow") {
         bg.setColor(Color_.parseColor("#CCCC00"));
         bg.setStroke(dip2px(2), Color_.parseColor("#FFFF00"));
-    }if(themeSetting == "orange") {
+    } if(themeSetting == "orange") {
         bg.setColor(Color_.parseColor("#FF8C00"));
 		bg.setStroke(dip2px(2), Color_.parseColor("#FFA500"));
-    }if(themeSetting == "brown") {
+    } if(themeSetting == "brown") {
 		bg.setColor(Color_.parseColor("#8B4513"));
 		bg.setStroke(dip2px(2), Color_.parseColor("#CD853F"));
-    }if(themeSetting == "grey") {
+    } if(themeSetting == "grey") {
 		bg.setColor(Color_.parseColor("#808080"));
 		bg.setStroke(dip2px(2), Color_.parseColor("#A9A9A9"));
-    }if(themeSetting == "white") {
+    } if(themeSetting == "white") {
         bg.setColor(Color_.parseColor("#E1E1E1"));
         bg.setStroke(dip2px(2), Color_.parseColor("#FFFFFF"));
-    }if(themeSetting == "black") {
+    } if(themeSetting == "black") {
         bg.setColor(Color_.parseColor("#141414"));
         bg.setStroke(dip2px(2), Color_.parseColor("#1E1E1E"));
     }
@@ -7346,7 +7361,9 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
         }
     } else if(color == "purple") {
         bg.setColor(Color_.parseColor("#709F018C"));
-    } else if(color == "yellow") {
+    } else if(color == "violet") {
+		bg.setColor(Color_.parseColor("#70842DCE"));
+	} else if(color == "yellow") {
         bg.setColor(Color_.parseColor("#70CCCC00"));
     } else if(color == "orange") {
         bg.setColor(Color_.parseColor("#70FF8C00"));
@@ -7422,7 +7439,9 @@ function backgroundGradient(round) // TextView with colored background (edited b
         }
     } if(themeSetting == "purple") {
 		VertexClientPE.setupGradient(bg, "9F018C", "BC21AB");
-    } if(themeSetting == "yellow") {
+    } if(themeSetting == "violet") {
+		VertexClientPE.setupGradient(bg, "842DCE", "8D38C9");
+	} if(themeSetting == "yellow") {
 		VertexClientPE.setupGradient(bg, "CCCC00", "FFFF00");
     } if(themeSetting == "orange") {
 		VertexClientPE.setupGradient(bg, "FF8C00", "FFA500");
@@ -8935,6 +8954,8 @@ function settingsScreen() {
                         themeSettingButton.setText("Blue");
                     } else if(themeSetting == "purple") {
                         themeSettingButton.setText("Purple");
+                    } else if(themeSetting == "violet") {
+                        themeSettingButton.setText("Violet");
                     } else if(themeSetting == "yellow") {
                         themeSettingButton.setText("Yellow");
                     } else if(themeSetting == "orange") {
@@ -8963,6 +8984,10 @@ function settingsScreen() {
                             themeSettingButton.setText("Purple");
                             VertexClientPE.saveMainSettings();
                         } else if(themeSetting == "purple") {
+                            themeSetting = "violet";
+                            themeSettingButton.setText("Violet");
+                            VertexClientPE.saveMainSettings();
+                        } else if(themeSetting == "violet") {
                             themeSetting = "yellow";
                             themeSettingButton.setText("Yellow");
                             VertexClientPE.saveMainSettings();
