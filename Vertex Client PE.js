@@ -53,6 +53,8 @@ const AlarmManager_ = android.app.AlarmManager,
     Base64_ = android.util.Base64,
     DisplayMetrics_ = android.util.DisplayMetrics,
     TypedValue_ = android.util.TypedValue,
+    AlphaAnimation_ = android.view.animation.AlphaAnimation,
+    DecelerateInterpolator_ = android.view.animation.DecelerateInterpolator,
     Gravity_ = android.view.Gravity,
     MotionEvent_ = android.view.MotionEvent,
     View_ = android.view.View,
@@ -6235,6 +6237,20 @@ function drawQuarterCircle(color, radius) {
     return drawable;
 }
 
+function fadeIn(duration) {
+    var animation = new AlphaAnimation_(0, 1);
+    animation.setDuration(duration);
+    animation.setInterpolator(new DecelerateInterpolator_());
+    return animation;
+}
+
+function fadeOut(duration) {
+    var animation = new AlphaAnimation_(1, 0);
+    animation.setDuration(duration);
+    animation.setInterpolator(new DecelerateInterpolator_());
+    return animation;
+}
+
 function clientButton(text, desc, color, round, forceLightColor, style, thickness) //menu buttons
 {
 	if(color == null) {
@@ -7742,41 +7758,48 @@ VertexClientPE.secondTick = function() {
     }
 }
 
-VertexClientPE.showSplashScreen = function() {
-	CONTEXT.runOnUiThread(new Runnable_({
-		run: function() {
-			var splashScreenLayout = new LinearLayout_(CONTEXT);
-			splashScreenLayout.setOrientation(1);
-			splashScreenLayout.setGravity(Gravity_.CENTER);
-			
-			var logoViewer5 = new ImageView_(CONTEXT);
-			logoViewer5.setPadding(0, dip2px(16), 0, dip2px(16));
-			logoViewer5.setImageBitmap(imgLogo);
-			logoViewer5.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 4, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16 + dip2px(32)));
-			splashScreenLayout.addView(logoViewer5);
-			
-			splashScreenMenu = new PopupWindow_(splashScreenLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
-			splashScreenMenu.setBackgroundDrawable(new ColorDrawable_(Color_.rgb(0, 128, 255)));
-			splashScreenMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.CENTER, 0, 0);
-		}
-	}));
-	
-	// var textAnim = new android.view.animation.AlphaAnimation(0, 1);
-	// textAnim.setInterpolator(new android.view.animation.LinearInterpolator());
-	// textAnim.setRepeatCount(android.view.animation.Animation.INFINITE);
-	// textAnim.setDuration(1500);
-	// textAnim.setAnimationListener(new android.view.animation.Animation.AnimationListener() {
-		// onAnimationStart: function(arg0) {
-			
-		// },
-		// onAnimationRepeat: function(arg0) {
-			// setupTextView.clearAnimation();
-		// },
-		// onAnimationEnd: function(arg0) {
-			// setupTextView.clearAnimation();
-		// }
-	// });
-}
+VertexClientPE.showSplashScreen = function () {
+    CONTEXT.runOnUiThread(new Runnable_({
+        run: function () {
+            try {
+                var splashScreenLayout = new LinearLayout_(CONTEXT);
+                splashScreenLayout.setOrientation(1);
+                splashScreenLayout.setGravity(Gravity_.CENTER);
+                splashScreenLayout.setBackgroundDrawable(new ColorDrawable_(Color_.rgb(0, 128, 255)));
+
+                var logoViewer5 = new ImageView_(CONTEXT);
+                logoViewer5.setPadding(0, dip2px(16), 0, dip2px(16));
+                logoViewer5.setImageBitmap(imgLogo);
+                logoViewer5.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 4, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16 + dip2px(32)));
+                splashScreenLayout.addView(logoViewer5);
+                splashScreenLayout.startAnimation(fadeIn(500));
+
+                new Thread_({
+                    run: function () {
+                        Thread_.sleep(2500);
+                        CONTEXT.runOnUiThread({
+                            run: function () {
+                                splashScreenLayout.startAnimation(fadeOut(500));
+                            }
+                        });
+                        Thread_.sleep(500);
+                        CONTEXT.runOnUiThread({
+                            run: function () {
+                                splashScreenMenu.dismiss();
+                                splashScreenMenu = null;
+                            }
+                        });
+                    }
+                }).start();
+
+                splashScreenMenu = new PopupWindow_(splashScreenLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+                splashScreenMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.CENTER, 0, 0);
+            } catch (e) {
+                print(e)
+            }
+        }
+    }));
+};
 
 VertexClientPE.showStartScreenBar = function() {
     var display = new DisplayMetrics_();
@@ -8320,7 +8343,6 @@ VertexClientPE.setup = function() {
 			} finally {
 				CONTEXT.runOnUiThread(new Runnable_({
 					run: function() {
-						splashScreenMenu.dismiss();
 						if(VertexClientPE.loadMainSettings() == null) {
 							VertexClientPE.showSetupScreen();
 						} else {
