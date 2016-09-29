@@ -7603,20 +7603,6 @@ VertexClientPE.loadDownloadCount = function() {
     editor.commit();
 }
 
-new Thread_(new Runnable_() {
-    run: function() {
-        VertexClientPE.loadMainSettings();
-        VertexClientPE.loadNews();
-        if(showNewsSetting == "on") {
-            CONTEXT.runOnUiThread(new Runnable_({
-                run: function() {
-                    VertexClientPE.toast(news);
-                }
-            }));
-        }
-    }
-}).start();
-
 var lastLoop = new Date;
 function gameLoop() {
     var thisLoop = new Date;
@@ -7754,6 +7740,42 @@ VertexClientPE.secondTick = function() {
             }
         }));
     }
+}
+
+VertexClientPE.showSplashScreen = function() {
+	CONTEXT.runOnUiThread(new Runnable_({
+		run: function() {
+			var splashScreenLayout = new LinearLayout_(CONTEXT);
+			splashScreenLayout.setOrientation(1);
+			splashScreenLayout.setGravity(Gravity_.CENTER);
+			
+			var logoViewer5 = new ImageView_(CONTEXT);
+			logoViewer5.setPadding(0, dip2px(16), 0, dip2px(16));
+			logoViewer5.setImageBitmap(imgLogo);
+			logoViewer5.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 4, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16 + dip2px(32)));
+			splashScreenLayout.addView(logoViewer5);
+			
+			splashScreenMenu = new PopupWindow_(splashScreenLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+			splashScreenMenu.setBackgroundDrawable(new ColorDrawable_(Color_.rgb(0, 128, 255)));
+			splashScreenMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.CENTER, 0, 0);
+		}
+	}));
+	
+	// var textAnim = new android.view.animation.AlphaAnimation(0, 1);
+	// textAnim.setInterpolator(new android.view.animation.LinearInterpolator());
+	// textAnim.setRepeatCount(android.view.animation.Animation.INFINITE);
+	// textAnim.setDuration(1500);
+	// textAnim.setAnimationListener(new android.view.animation.Animation.AnimationListener() {
+		// onAnimationStart: function(arg0) {
+			
+		// },
+		// onAnimationRepeat: function(arg0) {
+			// setupTextView.clearAnimation();
+		// },
+		// onAnimationEnd: function(arg0) {
+			// setupTextView.clearAnimation();
+		// }
+	// });
 }
 
 VertexClientPE.showStartScreenBar = function() {
@@ -8281,33 +8303,52 @@ VertexClientPE.setHasUsedCurrentVersion = function(opt) {
 
 VertexClientPE.setup = function() {
 	currentScreen = ScreenType.start_screen;
-    VertexClientPE.loadSupport();
-    VertexClientPE.checkForUpdates();
-    VertexClientPE.loadUpdateDescription();
-    //VertexClientPE.loadDownloadCount();
-    VertexClientPE.initShopFeatures();
-	VertexClientPE.MusicUtils.initMusicPlayer();
-	VertexClientPE.MusicUtils.startMusicPlayer();
-    if(VertexClientPE.loadMainSettings() == null) {
-        VertexClientPE.showSetupScreen();
-    } else {
-		VertexClientPE.clientTick();
-		VertexClientPE.specialTick();
-		VertexClientPE.secondTick();
-		CONTEXT.runOnUiThread(new Runnable_({
-			run: function() {
-				showMenuButton();
+	new Thread_(new Runnable_({
+		run: function() {
+			try {
+				VertexClientPE.loadMainSettings();
+				VertexClientPE.showSplashScreen();
+				VertexClientPE.loadSupport();
+				VertexClientPE.checkForUpdates();
+				VertexClientPE.loadUpdateDescription();
+				//VertexClientPE.loadDownloadCount();
+				VertexClientPE.initShopFeatures();
+				VertexClientPE.loadNews();
+				Thread_.sleep(3000);
+			} catch(e) {
+				
+			} finally {
+				CONTEXT.runOnUiThread(new Runnable_({
+					run: function() {
+						splashScreenMenu.dismiss();
+						if(VertexClientPE.loadMainSettings() == null) {
+							VertexClientPE.showSetupScreen();
+						} else {
+							VertexClientPE.clientTick();
+							VertexClientPE.specialTick();
+							VertexClientPE.secondTick();
+							showMenuButton();
+						}
+						
+						if(ModPE.getMinecraftVersion() < VertexClientPE.minVersion) {
+							VertexClientPE.showBasicDialog("Compatibility", clientTextView("This version may not be compatible with MCPE v" + ModPE.getMinecraftVersion() + "!"));
+						}
+						
+						if(!VertexClientPE.getHasUsedCurrentVersion()) {
+							userIsNewToCurrentVersion = true;
+						}
+						
+						VertexClientPE.MusicUtils.initMusicPlayer();
+						VertexClientPE.MusicUtils.startMusicPlayer();
+						
+						if(showNewsSetting == "on") {
+							VertexClientPE.toast(news);
+						}
+					}
+				}));
 			}
-		}));
-    }
-    
-    if(ModPE.getMinecraftVersion() < VertexClientPE.minVersion) {
-        VertexClientPE.showBasicDialog("Compatibility", clientTextView("This version may not be compatible with MCPE v" + ModPE.getMinecraftVersion() + "!"));
-    }
-    
-    if(!VertexClientPE.getHasUsedCurrentVersion()) {
-        userIsNewToCurrentVersion = true;
-    }
+		}
+	})).start();
 }
 
 function downloadFile(path, url) {
