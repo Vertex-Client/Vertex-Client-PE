@@ -4176,6 +4176,8 @@ function capitalizeColorString(string) {
 		return "Blue";
 	} else if(string == "purple") {
 		return "Purple";
+	} else if(string == "violet") {
+		return "Violet";
 	} else if(string == "yellow") {
 		return "Yellow";
 	} else if(string == "orange") {
@@ -4227,6 +4229,9 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
                             currentColor = "purple";
                             tileDropDownCurrentColorButton.setText("Purple");
                         } else if(currentColor == "purple") {
+                            currentColor = "violet";
+                            tileDropDownCurrentColorButton.setText("Violet");
+                        } else if(currentColor == "violet") {
                             currentColor = "yellow";
                             tileDropDownCurrentColorButton.setText("Yellow");
                         } else if(currentColor == "yellow") {
@@ -7467,6 +7472,8 @@ VertexClientPE.loadMainSettings();
     } if(themeSetting == "blue") {
         ModPE.langEdit("menu.copyright", "\u00A9Mojang AB | \u00A71Vertex Client PE by peacestorm");
     } if(themeSetting == "purple") {
+        ModPE.langEdit("menu.copyright", "\u00A9Mojang AB | \u00A75Vertex Client PE by peacestorm");
+    } if(themeSetting == "violet") {
         ModPE.langEdit("menu.copyright", "\u00A9Mojang AB | \u00A75Vertex Client PE by peacestorm");
     } if(themeSetting == "yellow") {
         ModPE.langEdit("menu.copyright", "\u00A9Mojang AB | \u00A7eVertex Client PE by peacestorm");
