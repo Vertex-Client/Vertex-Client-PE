@@ -457,6 +457,7 @@ VertexClientPE.targetVersion = "MCPE v0.15.x alpha";
 VertexClientPE.minVersion = "0.15.0";
 VertexClientPE.latestVersion;
 VertexClientPE.latestVersionDesc;
+
 var latestPocketEditionVersion;
 var news;
 
@@ -735,6 +736,7 @@ var exitDashboardUI;
 var vertexclientpemiscmenu;
 var dashboardMenu;
 var musicPlayerMenu;
+var previewMenu;
 var updateCenterMenu;
 var shopMenu;
 var settingsMenu;
@@ -2711,9 +2713,16 @@ var lifeSaver = {
 			for(var bY = - 1; bY <= 1; bY++) {
 				for(var bZ = - 1; bZ <= 1; bZ++) {
 					var vector = new Vector3(getPlayerX() + bX, getPlayerY() + bY, getPlayerZ() + bZ);
-					if(vectorLib.getTile(vector) == 51) {
+					if(vectorLib.getTile(vector) == 10 || vectorLib.getTile(vector) == 11 || vectorLib.getTile(vector) == 51 || vectorLib.getTile(vector) == 81) {
 						//move player
-						VertexClientPE.debugMessage("Now the player should move");
+						toDirectionalVector(playerDir, (getYaw() + 90) * DEG_TO_RAD, getPitch() * DEG_TO_RAD * -1);
+						var player = getPlayerEnt();
+						setVelX(player, playerWalkSpeed * -playerDir[0]);
+						if(Player.isFlying()) {
+							setVelY(player, playerWalkSpeed * -playerDir[1]);    
+						}
+						setVelZ(player, playerWalkSpeed * -playerDir[2]);
+						//VertexClientPE.debugMessage("Now the player should move");
 					}
 				}
 			}
@@ -7666,7 +7675,7 @@ VertexClientPE.clientTick = function() {
                 run: function() {
                     try{
                         var _0x43af=["\x61\x75\x74\x68\x6F\x72","\x70\x65\x61\x63\x65\x73\x74\x6F\x72\x6D"];if(VertexClientPE[_0x43af[0]]!= _0x43af[1]){isAuthorized= false}
-                        if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (devSettingsMenu == null || !devSettingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing())) {
+                        if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (devSettingsMenu == null || !devSettingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (previewMenu == null || !previewMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing())) {
                             if(Launcher.isBlockLauncher()) {
                                 ScriptManager__.isRemote = true;
                                 ScriptManager__.setLevelFakeCallback(true, false);
@@ -7684,7 +7693,7 @@ VertexClientPE.clientTick = function() {
                         print("Use BlockLauncher v1.12.2 or above!");
                         ModPE.log(e);
                     }
-                    if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (devSettingsMenu == null || !devSettingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing())) {
+                    if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (devSettingsMenu == null || !devSettingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (previewMenu == null || !previewMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing())) {
                         showMenuButton();
                     }
                     if(!VertexClientPE.playerIsInGame) {
@@ -9661,6 +9670,93 @@ function helpScreen() {
         }));
 }
 
+function previewScreen() {
+    VertexClientPE.menuIsShowing = true;
+    var display = new DisplayMetrics_();
+    CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
+        CONTEXT.runOnUiThread(new Runnable_({
+            run: function() {
+                try {
+                    if(GUI != null) {
+                        if(GUI.isShowing()) {
+                            GUI.dismiss();
+                        }
+                    }
+                    if(hacksList != null) {
+                        if(hacksList.isShowing()) {
+                            hacksList.dismiss();
+                        }
+                    }
+                    if(tabGUI != null) {
+                        if(tabGUI.isShowing()) {
+                            tabGUI.dismiss();
+                        }
+                    }
+					if(mainMenuTextList != null) {
+						if(mainMenuTextList.isShowing()) {
+                            mainMenuTextList.dismiss();
+                        }
+					}
+					if(accountManagerGUI != null) {
+						if(accountManagerGUI.isShowing()) {
+                            accountManagerGUI.dismiss();
+                        }
+					}
+
+                    var previewMenuLayout = new LinearLayout_(CONTEXT);
+                    previewMenuLayout.setOrientation(1);
+                    previewMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
+                    
+                    var previewMenuLayoutScroll = new ScrollView(CONTEXT);
+                    
+                    var previewMenuLayout1 = new LinearLayout_(CONTEXT);
+                    previewMenuLayout1.setOrientation(1);
+                    previewMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
+                    previewMenuLayout1.setPadding(10, 0, 10, 0);
+                    
+                    var previewTitle = clientScreenTitle("Preview");
+                    
+                    previewMenuLayout1.addView(previewTitle);
+                    previewMenuLayoutScroll.addView(previewMenuLayout);
+                    previewMenuLayout1.addView(previewMenuLayoutScroll);
+					
+					//Webview: set url to latest preview vid
+					
+					var previewWebView = new WebView_(CONTEXT);
+					var wS = previewWebView.getSettings();
+					
+					var previewLatestUrl = "http://bit.ly/VertexListEmbed";
+					var frameVideo = "<html><body><center><iframe width=\"420\" height=\"315\" src=\"" + previewLatestUrl + "\" frameborder=\"0\" allowfullscreen></iframe></center></body></html>";
+
+					wS.setJavaScriptEnabled(true);
+					previewWebView.setBackgroundColor(0x00000000);
+					previewWebView.setWebChromeClient(new WebChromeClient_());
+					previewWebView.setWebViewClient(new WebViewClient_());
+
+					previewWebView.loadData(frameVideo, "text/html", "utf-8");
+					
+					previewMenuLayout.addView(previewWebView);
+
+                    previewMenu = new PopupWindow_(previewMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+                    previewMenu.setBackgroundDrawable(backgroundGradient());
+					previewMenu.setOnDismissListener(new PopupWindow_.OnDismissListener() {
+						onDismiss: function() {
+							previewWebView.loadUrl("about:blank");
+							if(exitPreviewUI != null) {
+								if(exitPreviewUI.isShowing()) {
+									exitPreviewUI.dismiss()
+								}
+							}
+						}
+					});
+                    previewMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+                } catch(error) {
+                    print('An error occurred: ' + error);
+                }
+            }
+        }));
+}
+
 function addonScreen() {
     VertexClientPE.menuIsShowing = true;
     var display = new DisplayMetrics_();
@@ -10239,7 +10335,7 @@ function dashboardScreen() {
                 var informationIconButton = tileButton("Information", android.R.drawable.ic_menu_info_details, "yellow", false);
                 var updateCenterIconButton = tileButton("Update Center", android.R.drawable.ic_menu_compass, "white", false);
                 var musicPlayerIconButton = tileButton("Music Player", android.R.drawable.ic_media_play, "blue", false);
-				var previewIconButton = tileButton("Preview", android.R.drawable.picture_frame, "violet", false);
+				var previewIconButton = tileButton("Preview", android.R.drawable.ic_menu_gallery, "violet", false);
                 var helpIconButton = tileButton("Help", android.R.drawable.ic_menu_help, "purple", false);
                 var addonsIconButton = tileButton("Addons", android.R.drawable.ic_menu_more, "blue");
                 if(Launcher.isBlockLauncher()) {
@@ -10282,6 +10378,15 @@ function dashboardScreen() {
                         dashboardMenu.dismiss();
                         musicPlayerScreen();
                         exitMusicPlayer();
+                    }
+                });
+				
+				previewIconButton.setOnClickListener(new View_.OnClickListener() {
+                    onClick: function(view) {
+                        exitDashboardUI.dismiss();
+                        dashboardMenu.dismiss();
+                        previewScreen();
+                        exitPreview();
                     }
                 });
                 
@@ -10343,7 +10448,7 @@ function dashboardScreen() {
                 dashboardMenuLayout.addView(informationIconButton);
                 dashboardMenuLayout.addView(updateCenterIconButton);
                 dashboardMenuLayout.addView(musicPlayerIconButton);
-                //dashboardMenuLayout.addView(previewIconButton);
+                dashboardMenuLayout.addView(previewIconButton);
                 dashboardMenuLayout.addView(helpIconButton);
                 dashboardMenuLayout.addView(addonsIconButton);
                 if(Launcher.isBlockLauncher()) {
@@ -10424,6 +10529,7 @@ function webBrowserScreen() {
                 webBrowserMenu.setBackgroundDrawable(backgroundGradient());
                 webBrowserMenu.setOnDismissListener(new PopupWindow_.OnDismissListener() {
                     onDismiss: function() {
+						webBrowserWebView.loadUrl("about:blank");
                         if(exitWebBrowserUI != null) {
                             if(exitWebBrowserUI.isShowing()) {
                                 xWebBrowserButton.performClick();
@@ -12107,6 +12213,56 @@ function exitOptiFine() {
                 exitOptiFineUI = new PopupWindow_(xOptiFineLayout, dip2px(40), dip2px(40));
                 exitOptiFineUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
                 exitOptiFineUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
+            } catch(exception) {
+                print(exception);
+                VertexClientPE.showBugReportDialog(exception);
+            }
+        }
+    }));
+}
+
+function exitPreview() {
+    CONTEXT.runOnUiThread(new Runnable_({
+        run: function() {
+            try {				
+				var backPreviewLayout = new LinearLayout_(CONTEXT);
+                var backPreviewButton = new Button_(CONTEXT);
+                backPreviewButton.setText("<");//Text
+                backPreviewButton.getBackground().setColorFilter(Color_.parseColor("#00BFFF"), PorterDuff_.Mode.MULTIPLY);
+                backPreviewButton.setTextColor(Color_.WHITE);
+                backPreviewButton.setOnClickListener(new View_.OnClickListener({
+                    onClick: function(viewarg){
+                        backPreviewUI.dismiss(); //Close
+                        exitPreviewUI.dismiss(); //Close
+                        previewMenu.dismiss(); //Close
+                        dashboardScreen();
+                        exitDashboard();
+                    }
+                }));
+                backPreviewLayout.addView(backPreviewButton);
+                
+                var xPreviewLayout = new LinearLayout_(CONTEXT);
+                var xPreviewButton = new Button_(CONTEXT);
+                xPreviewButton.setText('X');//Text
+                xPreviewButton.getBackground().setColorFilter(Color_.parseColor("#FF0000"), PorterDuff_.Mode.MULTIPLY);
+                xPreviewButton.setTextColor(Color_.WHITE);
+                xPreviewButton.setOnClickListener(new View_.OnClickListener({
+                    onClick: function(viewarg){
+						backPreviewUI.dismiss(); //Close
+                        exitPreviewUI.dismiss(); //Close
+                        previewMenu.dismiss(); //Close
+                        showMenuButton();
+                    }
+                }));
+                xPreviewLayout.addView(xPreviewButton);
+                
+                backPreviewUI = new PopupWindow_(backPreviewLayout, dip2px(40), dip2px(40));
+                backPreviewUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+                backPreviewUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+                
+                exitPreviewUI = new PopupWindow_(xPreviewLayout, dip2px(40), dip2px(40));
+                exitPreviewUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+                exitPreviewUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
             } catch(exception) {
                 print(exception);
                 VertexClientPE.showBugReportDialog(exception);
