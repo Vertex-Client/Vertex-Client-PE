@@ -8384,6 +8384,10 @@ VertexClientPE.setup = function() {
 			} finally {
 				CONTEXT.runOnUiThread(new Runnable_({
 					run: function() {
+						if(!VertexClientPE.getHasUsedCurrentVersion()) {
+							userIsNewToCurrentVersion = true;
+						}
+						
 						if(VertexClientPE.loadMainSettings() == null) {
 							VertexClientPE.showSetupScreen();
 						} else {
@@ -8395,10 +8399,6 @@ VertexClientPE.setup = function() {
 						
 						if(ModPE.getMinecraftVersion() < VertexClientPE.minVersion) {
 							VertexClientPE.showBasicDialog("Compatibility", clientTextView("This version may not be compatible with MCPE v" + ModPE.getMinecraftVersion() + "!"));
-						}
-						
-						if(!VertexClientPE.getHasUsedCurrentVersion()) {
-							userIsNewToCurrentVersion = true;
 						}
 						
 						VertexClientPE.MusicUtils.initMusicPlayer();
