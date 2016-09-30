@@ -3637,17 +3637,21 @@ ModPE.getAndroidVersion = function() {
 }
 
 ModPE.getPlayerName = function() {
-    var file = new File_("/sdcard/games/com.mojang/minecraftpe/options.txt");
-    var br = new BufferedReader_(new InputStreamReader_(new FileInputStream_(file)));
-    var read, username;
-    while((read = br.readLine()) != null) {
-        if(read.split(":")[0] == "mp_username") {
-            username = read.split(":")[1];
-            break;
-        }
-    }
-    br.close();
-    return username;
+	if(Launcher.isToolbox) {
+		var file = new File_("/sdcard/games/com.mojang/minecraftpe/options.txt");
+		var br = new BufferedReader_(new InputStreamReader_(new FileInputStream_(file)));
+		var read, username;
+		while((read = br.readLine()) != null) {
+			if(read.split(":")[0] == "mp_username") {
+				username = read.split(":")[1];
+				break;
+			}
+		}
+		br.close();
+		return username;
+	}
+	
+	return Player.getName(getPlayerEnt());
 };
 
 ModPE.getFov = function() {
@@ -4907,36 +4911,36 @@ VertexClientPE.showJavascriptConsoleDialog = function() {
                 dialog.show();
                 btn.setOnClickListener(new View_.OnClickListener() {
                     onClick: function(view) {
-                    consoleInput = "js " + inputBar.getText();
-                      var jsLine,
-                          funcResult,
-                          jsRex = /(?:^js(?:\s+)(.*)$)|(?:^js$)/,
-                          matches;
+						consoleInput = "js " + inputBar.getText();
+						var jsLine,
+							funcResult,
+							jsRex = /(?:^js(?:\s+)(.*)$)|(?:^js$)/,
+							matches;
 
-                      if(jsRex.test(consoleInput)) {
+						if(jsRex.test(consoleInput)) {
 
-                        matches = jsRex.exec(consoleInput);
+							matches = jsRex.exec(consoleInput);
 
-                        if(matches[1] === undefined || matches[1] === '') {
-                          print('Usage: js <JavaScript code>');
-                        }
-                        else {
-                          jsLine = matches[1];
-                          // Evaluate the second part of the command as a JavaScript snippet and collect the result
-                          try {
-                            funcResult = eval(jsLine);
-                          }
-                          catch(e) {
-                            clientMessage('JavaScript Error: ' + e.message);
-                          }
-                          
-                          // If a value was returned, post it on the PE chat console
-                          if(funcResult != null) {
-                            clientMessage(funcResult.toString());
-                          }
-                        }
-                      }
-                    }
+							if(matches[1] === undefined || matches[1] === '') {
+							  print('Usage: js <JavaScript code>');
+							}
+							else {
+							  jsLine = matches[1];
+							  // Evaluate the second part of the command as a JavaScript snippet and collect the result
+							  try {
+								funcResult = eval(jsLine);
+							  }
+							  catch(e) {
+								clientMessage('JavaScript Error: ' + e.message);
+							  }
+							  
+							  // If a value was returned, post it on the PE chat console
+							  if(funcResult != null) {
+								clientMessage(funcResult.toString());
+							  }
+							}
+						}
+					}
                 });
                 btn1.setOnClickListener(new View_.OnClickListener() {
                     onClick: function(view) {
@@ -6563,7 +6567,7 @@ function userBar() {
 	var steveHeadView = new ImageView_(CONTEXT);
 	steveHeadView.setImageBitmap(imgSteveHead);
     
-    var defaultUserTextView = clientTextView(Player.getName(getPlayerEnt()), true);
+    var defaultUserTextView = clientTextView(ModPE.getPlayerName(), true);
 	defaultUserTextView.setPadding(dip2px(8), 0, 0, 0);
     defaultUserTextView.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
     defaultUserTextView.setMarqueeRepeatLimit(-1);
@@ -10232,13 +10236,14 @@ function dashboardScreen() {
                 dashboardMenuLayout1.addView(dashboardMenuLayoutScroll);
                 
                 var settingsIconButton = tileButton("Settings", android.R.drawable.ic_menu_preferences, "green");
-                var informationIconButton = tileButton("Information", android.R.drawable.ic_menu_info_details, "yellow");
-                var updateCenterIconButton = tileButton("Update Center", android.R.drawable.ic_menu_compass, "white");
+                var informationIconButton = tileButton("Information", android.R.drawable.ic_menu_info_details, "yellow", false);
+                var updateCenterIconButton = tileButton("Update Center", android.R.drawable.ic_menu_compass, "white", false);
                 var musicPlayerIconButton = tileButton("Music Player", android.R.drawable.ic_media_play, "blue", false);
-                var helpIconButton = tileButton("Help", android.R.drawable.ic_menu_help, "purple");
+				var previewIconButton = tileButton("Preview", android.R.drawable.picture_frame, "violet", false);
+                var helpIconButton = tileButton("Help", android.R.drawable.ic_menu_help, "purple", false);
                 var addonsIconButton = tileButton("Addons", android.R.drawable.ic_menu_more, "blue");
                 if(Launcher.isBlockLauncher()) {
-                    var blockLauncherSettingsIconButton = tileButton("BlockLauncher Settings", net.zhuoweizhang.mcpelauncher.R.drawable.ic_menu_settings_holo_light, "black");
+                    var blockLauncherSettingsIconButton = tileButton("BlockLauncher Settings", net.zhuoweizhang.mcpelauncher.R.drawable.ic_menu_settings_holo_light, "black", false);
                 }
                 var devSettingsIconButton = tileButton("Developer Settings", android.R.drawable.ic_menu_report_image, "orange", false);
                 var restartIconButton = tileButton("Restart", android.R.drawable.ic_menu_rotate, "green", false);
@@ -10338,6 +10343,7 @@ function dashboardScreen() {
                 dashboardMenuLayout.addView(informationIconButton);
                 dashboardMenuLayout.addView(updateCenterIconButton);
                 dashboardMenuLayout.addView(musicPlayerIconButton);
+                //dashboardMenuLayout.addView(previewIconButton);
                 dashboardMenuLayout.addView(helpIconButton);
                 dashboardMenuLayout.addView(addonsIconButton);
                 if(Launcher.isBlockLauncher()) {
