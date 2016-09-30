@@ -7812,7 +7812,14 @@ VertexClientPE.showSplashScreen = function () {
                 logoViewer5.setPadding(0, dip2px(16), 0, dip2px(16));
                 logoViewer5.setImageBitmap(imgLogo);
                 logoViewer5.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 4, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16 + dip2px(32)));
-                splashScreenLayout.addView(logoViewer5);
+                
+				var proViewer = clientTextView("Pro");
+                proViewer.setTextSize(30);
+				proViewer.setGravity(android.view.Gravity.CENTER);
+				proViewer.setTextColor(Color_.parseColor("#DAA520"));
+				
+				splashScreenLayout.addView(logoViewer5);
+				splashScreenLayout.addView(proViewer);
                 splashScreenLayout.startAnimation(fadeIn(500));
 
                 new Thread_({
