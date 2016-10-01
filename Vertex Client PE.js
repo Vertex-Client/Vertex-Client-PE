@@ -6993,6 +6993,9 @@ function accountButton(account, layout) {
                 return;
             }
             accountManager.dismiss();
+			if(backAccountManagerUI != null) {
+				backAccountManagerUI.dismiss();
+			}
             exitAccountManagerUI.dismiss();
             showMenuButton();
         }
