@@ -3609,6 +3609,7 @@ Block.setDestroyTimeDefaultAll = function() {
 }
 
 var imgLogo = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/vertex_logo_new.png");
+var imgProLogo = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/pro_logo.png");
 var imgIcon = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/clienticon_new.png");
 var imgIconClicked = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/clienticon_new_clicked.png");
 var imgPlayButton = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/play_button.png");
@@ -5884,6 +5885,12 @@ VertexClientPE.loadMainSettings = function () {
     }
 }
 
+VertexClientPE.resetData = function() {
+	editor.clear();
+	editor.commit();
+	VertexClientPE.toast("Successfully reset all data!");
+}
+
 VertexClientPE.setupMCPEGUI = function() {
     VertexClientPE.loadMainSettings();
     if(mcpeGUISetting == "default") {
@@ -7812,11 +7819,11 @@ VertexClientPE.showSplashScreen = function () {
                 logoViewer5.setPadding(0, dip2px(16), 0, dip2px(16));
                 logoViewer5.setImageBitmap(imgLogo);
                 logoViewer5.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 4, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16 + dip2px(32)));
-                
-				var proViewer = clientTextView("Pro");
-                proViewer.setTextSize(30);
-				proViewer.setGravity(android.view.Gravity.CENTER);
-				proViewer.setTextColor(Color_.parseColor("#DAA520"));
+				
+				var proViewer = new ImageView_(CONTEXT);
+                proViewer.setPadding(0, dip2px(16), 0, dip2px(16));
+                proViewer.setImageBitmap(imgProLogo);
+                proViewer.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 4, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16 + dip2px(32)));
 				
 				splashScreenLayout.addView(logoViewer5);
 				splashScreenLayout.addView(proViewer);
@@ -8436,28 +8443,28 @@ function downloadFile(path, url) {
 };
 
 (function checkFiles() {
-    var res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png", "github_button.png", "github_button_clicked.png", "vertex_logo_new.png", "stevehead.png"],
-        isExists = true;
+    var res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png", "github_button.png", "github_button_clicked.png", "vertex_logo_new.png", "stevehead.png", "pro_logo.png"],
+        isExisting = true;
     for (var i = res.length; i--;) {
         if (!new File_(PATH, res[i]).exists()) {
             downloadFile(PATH + res[i], GITHUB_URL + "bootstrap/img/" + res[i]);
-            isExists = false;
+            isExisting = false;
         }
     }
-    if (isExists) {
+    if (isExisting) {
         VertexClientPE.setup();
     } else {
         new Thread_({
             run() {
                 VertexClientPE.toast("Downloading resource files...");
-                while (!isExists) {
+                while (!isExisting) {
                     Thread_.sleep(1000);
                     for (var i = res.length; i--;) {
                         if (!new File_(PATH, res[i]).exists()) {
-                            isExists = false;
+                            isExisting = false;
                             break;
                         } else {
-                            isExists = true;
+                            isExisting = true;
                         }
                     }
                 }
@@ -9443,10 +9450,23 @@ function devSettingsScreen() {
 							}
                         }
                     }));
+					
+					var dataTitle = clientSectionTitle("Data", "rainbow");
+					
+					var resetDataSettingFunc = new settingButton("Reset all data", "Resets all data (including Pro).");
+                    var resetDataSettingButton = resetDataSettingFunc.getButton();
+                    resetDataSettingButton.setText("Reset");
+                    resetDataSettingButton.setOnClickListener(new View_.OnClickListener({
+                        onClick: function(viewarg){
+                            VertexClientPE.resetData();
+                        }
+                    }));
                     
                     devSettingsMenuLayout.addView(generalTitle);
                     VertexClientPE.addView(devSettingsMenuLayout, debugModeSettingFunc);
                     VertexClientPE.addView(devSettingsMenuLayout, expModeSettingFunc);
+					devSettingsMenuLayout.addView(dataTitle);
+                    VertexClientPE.addView(devSettingsMenuLayout, resetDataSettingFunc);
 
                     devSettingsMenu = new PopupWindow_(devSettingsMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
                     devSettingsMenu.setBackgroundDrawable(backgroundGradient());
