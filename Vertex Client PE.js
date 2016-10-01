@@ -10990,8 +10990,8 @@ VertexClientPE.showCategoryMenus = function () {
 
                 vertexclientpecombatmenu = new PopupWindow_(CONTEXT);
                 vertexclientpebuildingmenu = new PopupWindow_(CONTEXT),
-                    vertexclientpemovementmenu = new PopupWindow_(CONTEXT),
-                    vertexclientpechatmenu = new PopupWindow_(CONTEXT);
+				vertexclientpemovementmenu = new PopupWindow_(CONTEXT),
+				vertexclientpechatmenu = new PopupWindow_(CONTEXT);
                 vertexclientpemiscmenu = new PopupWindow_(CONTEXT);
 
                 CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
@@ -10999,6 +10999,9 @@ VertexClientPE.showCategoryMenus = function () {
 
                 VertexClientPE.modules.forEach(function (element, index, array) {
                     if (element.type == "Mod" || element.type == "Special") {
+						if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
+							return;
+						}
                         if (element.category == VertexClientPE.category.COMBAT) {
                             combatMenuLayout.addView(new modButton(element));
                         } else if (element.category == VertexClientPE.category.BUILDING) {
