@@ -7826,7 +7826,9 @@ VertexClientPE.showSplashScreen = function () {
                 proViewer.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 4, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16 + dip2px(32)));
 				
 				splashScreenLayout.addView(logoViewer5);
-				splashScreenLayout.addView(proViewer);
+				if(VertexClientPE.isPro()) {
+					splashScreenLayout.addView(proViewer);
+				}
                 splashScreenLayout.startAnimation(fadeIn(500));
 
                 new Thread_({
