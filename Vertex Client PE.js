@@ -4690,6 +4690,9 @@ VertexClientPE.showAddAccountDialog = function() {
                         VertexClientPE.saveAccounts();
                         dialog.dismiss();
                         accountManager.dismiss();
+						if(backAccountManagerUI != null) {
+							backAccountManagerUI.dismiss();
+						}
                         exitAccountManagerUI.dismiss();
                         VertexClientPE.showAccountManager();
                         exitAccountManager();
@@ -11472,7 +11475,7 @@ function showAccountManagerButton() {
 			GUI.dismiss();
 			accountManagerGUI.dismiss();
 			VertexClientPE.showAccountManager();
-			exitAccountManager();
+			exitAccountManager(false);
 		}
     }));
     layout.addView(menuBtn);
@@ -11762,7 +11765,7 @@ function exitAccountManager(showBackButton) {
                 xAccountManagerButton.setTextColor(Color_.WHITE);
                 xAccountManagerButton.setOnClickListener(new View_.OnClickListener({
                     onClick: function(viewarg){
-						if(backAccountManagerUI != null) {
+						if(showBackButton) {
 							backAccountManagerUI.dismiss(); //Close
 						}
                         exitAccountManagerUI.dismiss(); //Close
