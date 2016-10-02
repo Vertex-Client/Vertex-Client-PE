@@ -1,7 +1,7 @@
 /**
  * #####################################################################
  * @name Vertex Client PE
- * @version v1.5
+ * @version v1.6
  * @author peacestorm (@AgameR_Modder)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36
  *
@@ -362,7 +362,44 @@ var VertexClientPE = {
         fps: 0,
         world: {
             chatMessages: []
-        }
+        },
+		takeScreenshot: function(mode) {
+			var now = new java.util.Date();
+			android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
+			var mPath = Environment_.getExternalStorageDirectory().toString() + "/" + now;
+			
+			switch(mode) {
+				case "noGui": {
+					ModPE.takeScreenshot(mPath + ".png");
+					VertexClientPE.toast(mPath + ".png");
+					break;
+				} default: {
+					try {
+						// create bitmap screen capture
+						var v1 = CONTEXT.getWindow().getDecorView().getRootView();
+						var bitmap = Bitmap_.createBitmap(v1.getWidth(), v1.getHeight(), Bitmap_.Config.ARGB_8888);
+						
+						var canvas = new Canvas_(bitmap);
+						v1.draw(canvas);
+
+						var imageFile = new File_(mPath + ".jpg");
+
+						var outputStream = new FileOutputStream_(imageFile);
+						var quality = 100;
+						bitmap.compress(Bitmap_.CompressFormat.JPEG, quality, outputStream);
+						outputStream.flush();
+						outputStream.close();
+
+						VertexClientPE.toast(Uri_.fromFile(imageFile));
+					} catch (e) {
+						// Several error may come out with file handling or OOM
+						//e.printStackTrace();
+						print(e);
+					}
+					break;
+				}
+			}
+		}
     },
     CombatUtils: {
         aimAtEnt: function(ent) {
@@ -451,8 +488,8 @@ VertexClientPE.isRemote = function() {
 
 VertexClientPE.playerIsInGame = false;
 
-VertexClientPE.currentVersion = "1.5";
-VertexClientPE.currentVersionDesc = "The Mods Update";
+VertexClientPE.currentVersion = "1.6";
+VertexClientPE.currentVersionDesc = "The ? Update";
 VertexClientPE.targetVersion = "MCPE v0.15.x alpha";
 VertexClientPE.minVersion = "0.15.0";
 VertexClientPE.latestVersion;
@@ -691,7 +728,6 @@ var playMusicSetting = "off";
 var timerSpeed = 2;
 var themeSetup = "off";
 var nukerRange = 3;
-var nukerRange = 3;
 var killAuraRange = 4;
 var spamDelayTime = 3;
 var sizeSetting = "normal";
@@ -702,13 +738,15 @@ var chestTracersRange = 10;
 var tabGUIModeSetting = "on";
 var chestTracersGroundMode = "on";
 var chestTracersParticle = "flame";
-var antiLagDropRemoverSetting = "on";
+var antiLagDropRemoverSetting = "off";
 var useLightThemeSetting = "off";
 var buttonStyleSetting = "normal";
 var mcpeGUISetting = "default";
 var chestESPRange = 25;
 var transparentBgSetting = "on";
 var aimbotUseKillauraRange = "off";
+var screenshotModeSetting = "noGui";
+var killToMorphSetting = "off";
 //---------------------------
 var cmdPrefix = ".";
 //---------------------------
@@ -3931,6 +3969,7 @@ VertexClientPE.showMoreDialog = function() {
                 var playerCustomizerButton = clientButton("Player Customizer");
                 var optiFineButton = clientButton("OptiFine");
                 var shopButton = clientButton("Shop");
+                var screenshotButton = clientButton("Take a screenshot");
                 var dialogLayout1 = new LinearLayout_(CONTEXT);
                 dialogLayout1.setBackgroundDrawable(backgroundGradient());
                 dialogLayout1.setOrientation(LinearLayout_.VERTICAL);
@@ -3954,6 +3993,7 @@ VertexClientPE.showMoreDialog = function() {
                     dialogLayout.addView(webBrowserButton);
                 }
                 dialogLayout.addView(shopButton);
+                dialogLayout.addView(screenshotButton);
                 var dialog = new Dialog_(CONTEXT);
                 dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
@@ -3998,6 +4038,17 @@ VertexClientPE.showMoreDialog = function() {
                         VertexClientPE.closeMenu();
                         shopScreen();
                         exitShop();
+                    }
+                });
+				screenshotButton.setOnClickListener(new View_.OnClickListener() {
+                    onClick: function(view) {
+						new Thread_(new Runnable_() {
+							run: function() {
+								dialog.dismiss();
+								Thread_.sleep(1000);
+								VertexClientPE.Utils.takeScreenshot(screenshotModeSetting);
+							}
+						}).start();
                     }
                 });
             } catch(e) {
@@ -5777,6 +5828,8 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + chestESPRange.toString());
     outWrite.append("," + transparentBgSetting.toString());
     outWrite.append("," + aimbotUseKillauraRange.toString());
+    outWrite.append("," + screenshotModeSetting.toString());
+    outWrite.append("," + killToMorphSetting.toString());
     //outWrite.append("," + cmdPrefix.toString());
 
     outWrite.close();
@@ -5880,6 +5933,12 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[26] != null && arr[26] != undefined) {
             aimbotUseKillauraRange = arr[26];
+        }
+		if (arr[27] != null && arr[27] != undefined) {
+            screenshotModeSetting = arr[27];
+        }
+		if (arr[28] != null && arr[28] != undefined) {
+            killToMorphSetting = arr[28];
         }
         fos.close();
         VertexClientPE.loadAutoSpammerSettings();
@@ -8827,6 +8886,11 @@ function deathHook(a, v) {
 			VertexClientPE.saveDeathCoords();
 		}
     }
+	if(killToMorphSetting == "on") {
+		if(a == getPlayerEnt()) {
+			Entity.setRenderType(getPlayerEnt(), Entity.getRenderType(v));
+		}
+	}
 }
 
 function leaveGame() {
@@ -9914,8 +9978,30 @@ function playerCustomizerScreen() {
                     playerCustomizerTitle.setTextSize(25);
                     playerCustomizerTitle.setGravity(Gravity_.CENTER);
                     playerCustomizerLayout1.addView(playerCustomizerTitle);
-                    
-                    playCustomizerLayoutScroll.addView(playCustomizerLayout);
+					
+					playCustomizerLayoutScroll.addView(playCustomizerLayout);
+					
+					var killToMorphSettingButton = new Switch_(CONTEXT);
+                    killToMorphSettingButton.setText("Automatically morph when killing entities");
+                    if(themeSetting == "white") {
+                        killToMorphSettingButton.setTextColor(Color_.BLACK);
+                    } else {
+                        killToMorphSettingButton.setTextColor(Color_.WHITE);
+                    }
+					killToMorphSettingButton.setTypeface(VertexClientPE.font);
+                    killToMorphSettingButton.setChecked(killToMorphSetting == "on");
+                    killToMorphSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
+                        onCheckedChanged: function() {
+                            if(killToMorphSetting == "off") {
+                                killToMorphSetting = "on";
+                            } else if(killToMorphSetting == "on") {
+                                killToMorphSetting = "off";
+                            }
+                            VertexClientPE.saveMainSettings();
+                        }
+                    }));
+					
+                    playerCustomizerLayout1.addView(killToMorphSettingButton);
                     playerCustomizerLayout1.addView(playCustomizerLayoutScroll);
                     
                     var playerCustomizerMorphingLayout = LinearLayout_(CONTEXT);
@@ -10005,9 +10091,10 @@ function optiFineScreen() {
                     } else {
                         antiLagDropRemoverButton.setTextColor(Color_.WHITE);
                     }
-                    antiLagDropRemoverButton.setChecked(antiLagDropRemoverSetting=="on"?true:false);
+					antiLagDropRemoverButton.setTypeface(VertexClientPE.font);
+                    antiLagDropRemoverButton.setChecked(antiLagDropRemoverSetting == "on");
                     antiLagDropRemoverButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
-                        onCheckedChanged: function(){
+                        onCheckedChanged: function() {
                             if(antiLagDropRemoverSetting == "off") {
                                 antiLagDropRemoverSetting = "on";
                             } else if(antiLagDropRemoverSetting == "on") {
