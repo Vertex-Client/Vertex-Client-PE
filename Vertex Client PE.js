@@ -125,6 +125,53 @@ var PopupWindow = android.widget.PopupWindow;
 var RelativeLayout = android.widget.RelativeLayout;
 var Gravity = android.view.Gravity;
 
+/**
+ * ##########
+ *  SETTINGS
+ * ##########
+ */
+ 
+var hacksListModeSetting = "on";
+var mainButtonPositionSetting = "top-left";
+var healthTagsSetting = "off";
+var themeSetting = "green";
+var spamMessage = "Spam!!!!!";
+var showNewsSetting = "on";
+var menuAnimationsSetting = "on";
+var nukerMode = "cube";
+var playMusicSetting = "off";
+var timerSpeed = 2;
+var themeSetup = "off";
+var nukerRange = 3;
+var killAuraRange = 4;
+var spamDelayTime = 3;
+var sizeSetting = "normal";
+var fancyChatMode = "default";
+var tapNukerRange = 3;
+var menuType = "normal";
+var chestTracersRange = 10;
+var tabGUIModeSetting = "on";
+var chestTracersGroundMode = "on";
+var chestTracersParticle = "flame";
+var antiLagDropRemoverSetting = "off";
+var useLightThemeSetting = "off";
+var buttonStyleSetting = "normal";
+var mcpeGUISetting = "default";
+var chestESPRange = 25;
+var transparentBgSetting = "on";
+var aimbotUseKillauraRange = "off";
+var screenshotModeSetting = "noGui";
+var killToMorphSetting = "off";
+var fontSetting = "default";
+//---------------------------
+var cmdPrefix = ".";
+//---------------------------
+var combatName = "Combat";
+var buildingName = "Building";
+var movementName = "Movement";
+var chatName = "Chat";
+var miscName = "Misc";
+//End of settings
 
 var display = new DisplayMetrics_();
 CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
@@ -523,8 +570,13 @@ var setupColor = "green";
 
 var f = 0;
 
-VertexClientPE.font = (Build_.VERSION.SDK_INT > 16)?Typeface_.create("sans-serif-thin", Typeface_.NORMAL):Typeface_.DEFAULT;
-VertexClientPE.tileFont = Launcher.isBlockLauncher()?new Typeface_.createFromAsset(CONTEXT.getAssets(), "fonts/SegoeWP.ttf"):VertexClientPE.font;
+try {
+	VertexClientPE.defaultFont = (Build_.VERSION.SDK_INT > 16)?Typeface_.create("sans-serif-thin", Typeface_.NORMAL):Typeface_.DEFAULT;
+	VertexClientPE.font = fontSetting=="minecraft"?Typeface_.createFromFile(new File_(PATH, "minecraft.ttf")):VertexClientPE.defaultFont;
+	VertexClientPE.tileFont = Launcher.isBlockLauncher()?new Typeface_.createFromAsset(CONTEXT.getAssets(), "fonts/SegoeWP.ttf"):VertexClientPE.defaultFont;
+} catch(e) {
+	print(e);
+}
 
 VertexClientPE.getDeviceName = function() {
     var manufacturer = Build_.MANUFACTURER;
@@ -709,53 +761,6 @@ VertexClientPE.drawCubeShapedBox = function(gl, x, y, z) {
     gl.glDrawElements(GL10.GL_LINES, index.length, GL10.GL_UNSIGNED_SHORT, indexBuffer);
     gl.glTranslatef(-x, -y, -z);
 }
-
-/**
- * ##########
- *  SETTINGS
- * ##########
- */
- 
-var hacksListModeSetting = "on";
-var mainButtonPositionSetting = "top-left";
-var healthTagsSetting = "off";
-var themeSetting = "green";
-var spamMessage = "Spam!!!!!";
-var showNewsSetting = "on";
-var menuAnimationsSetting = "on";
-var nukerMode = "cube";
-var playMusicSetting = "off";
-var timerSpeed = 2;
-var themeSetup = "off";
-var nukerRange = 3;
-var killAuraRange = 4;
-var spamDelayTime = 3;
-var sizeSetting = "normal";
-var fancyChatMode = "default";
-var tapNukerRange = 3;
-var menuType = "normal";
-var chestTracersRange = 10;
-var tabGUIModeSetting = "on";
-var chestTracersGroundMode = "on";
-var chestTracersParticle = "flame";
-var antiLagDropRemoverSetting = "off";
-var useLightThemeSetting = "off";
-var buttonStyleSetting = "normal";
-var mcpeGUISetting = "default";
-var chestESPRange = 25;
-var transparentBgSetting = "on";
-var aimbotUseKillauraRange = "off";
-var screenshotModeSetting = "noGui";
-var killToMorphSetting = "off";
-//---------------------------
-var cmdPrefix = ".";
-//---------------------------
-var combatName = "Combat";
-var buildingName = "Building";
-var movementName = "Movement";
-var chatName = "Chat";
-var miscName = "Misc";
-//End of settings
 
 var userIsNewToCurrentVersion = false;
 
@@ -5830,6 +5835,7 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + aimbotUseKillauraRange.toString());
     outWrite.append("," + screenshotModeSetting.toString());
     outWrite.append("," + killToMorphSetting.toString());
+    outWrite.append("," + fontSetting.toString());
     //outWrite.append("," + cmdPrefix.toString());
 
     outWrite.close();
@@ -5939,6 +5945,9 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[28] != null && arr[28] != undefined) {
             killToMorphSetting = arr[28];
+        }
+		if (arr[29] != null && arr[29] != undefined) {
+            fontSetting = arr[29];
         }
         fos.close();
         VertexClientPE.loadAutoSpammerSettings();
@@ -8510,7 +8519,7 @@ function downloadFile(path, url) {
 };
 
 (function checkFiles() {
-    var res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png", "github_button.png", "github_button_clicked.png", "vertex_logo_new.png", "stevehead.png", "pro_logo.png"],
+    var res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png", "github_button.png", "github_button_clicked.png", "vertex_logo_new.png", "stevehead.png", "pro_logo.png", "minecraft.ttf"],
         isExisting = true;
     for (var i = res.length; i--;) {
         if (!new File_(PATH, res[i]).exists()) {
@@ -9269,6 +9278,26 @@ function settingsScreen() {
                         VertexClientPE.toast("Restart your MCPE launcher now!");
                     }
                     }));
+					
+					var fontSettingFunc = new settingButton("Font", "Change the font/typeface.");
+                    var fontSettingButton = fontSettingFunc.getButton();
+                    if(fontSetting == "default") {
+                        fontSettingButton.setText("Default");
+                    } else if(fontSetting == "minecraft") {
+                        fontSettingButton.setText("Minecraft");
+                    }
+					fontSettingButton.setOnClickListener(new View_.OnClickListener({
+						onClick: function(viewarg) {
+							if(fontSetting == "default") {
+								fontSetting = "minecraft";
+								fontSettingButton.setText("Minecraft");
+							} else {
+								fontSetting = "default";
+								fontSettingButton.setText("Default");
+							}
+							VertexClientPE.font = fontSetting=="minecraft"?Typeface_.createFromFile(new File_(PATH, "minecraft.ttf")):VertexClientPE.defaultFont;
+						}
+                    }));
                     
                     var menuTitle = clientSectionTitle("Menu", "rainbow");
                     
@@ -9416,6 +9445,7 @@ function settingsScreen() {
 					VertexClientPE.addView(settingsMenuLayout, buttonStyleSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, transparentBgSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, mcpeGUISettingFunc);
+					VertexClientPE.addView(settingsMenuLayout, fontSettingFunc);
                     settingsMenuLayout.addView(menuTitle);
 					VertexClientPE.addView(settingsMenuLayout, menuTypeSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, sizeSettingFunc);
