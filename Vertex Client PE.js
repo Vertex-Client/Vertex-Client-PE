@@ -8822,8 +8822,8 @@ function newLevel() {
         }
         VertexClientPE.Utils.loadFov();
         if(VertexClientPE.isPro()) {
-            VertexClientPE.giveProVertexCash();
             if(!VertexClientPE.hasEarnedProVertexCash()) {
+				VertexClientPE.giveProVertexCash();
                 VertexClientPE.toast("You just earned 500 V€rt€xCash because you activated Pro successfully!");
                 VertexClientPE.moneyToast();
                 if(shopCashText != null) {
@@ -8835,7 +8835,6 @@ function newLevel() {
             hasLoadedAddons = true;
             VertexClientPE.loadAddons();
         }
-        //VertexClientPE.initPlayerCustomizer();
         new Thread_(new Runnable_() {
             run: function() {
                 VertexClientPE.checkForUpdates();
