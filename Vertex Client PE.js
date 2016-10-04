@@ -2951,6 +2951,23 @@ var fastBridge = {
     }
 }
 
+var noInvisBedrock = {
+	name: "NoInvisBedrock",
+    desc: "Allows you to walk through invisible bedrock.",
+    category: VertexClientPE.category.MOVEMENT,
+    type: "Mod",
+	state: false,
+    isStateMod: function() {
+        return true;
+    },
+	onToggle: function() {
+        this.state = !this.state;
+		if(this.state) {
+			
+		}
+    }
+}
+
 //COMBAT
 VertexClientPE.registerModule(antiKnockback);
 VertexClientPE.registerModule(antiBurn);
@@ -2981,6 +2998,7 @@ VertexClientPE.registerModule(highJump);
 VertexClientPE.registerModule(lifeSaver);
 VertexClientPE.registerModule(liquidWalk);
 VertexClientPE.registerModule(noDownGlide);
+//VertexClientPE.registerModule(noInvisBedrock);
 VertexClientPE.registerModule(ride);
 VertexClientPE.registerModule(speedHack);
 VertexClientPE.registerModule(tapTeleporter);
@@ -9291,11 +9309,12 @@ function settingsScreen() {
 							if(fontSetting == "default") {
 								fontSetting = "minecraft";
 								fontSettingButton.setText("Minecraft");
-							} else {
+							} else if(fontSetting == "minecraft") {
 								fontSetting = "default";
 								fontSettingButton.setText("Default");
 							}
 							VertexClientPE.font = fontSetting=="minecraft"?Typeface_.createFromFile(new File_(PATH, "minecraft.ttf")):VertexClientPE.defaultFont;
+							VertexClientPE.saveMainSettings();
 						}
                     }));
                     
