@@ -10012,11 +10012,31 @@ function playerCustomizerScreen() {
                         }
 					}
 
-                    var playCustomizerLayout = new LinearLayout_(CONTEXT);
-                    playCustomizerLayout.setOrientation(1);
-                    playCustomizerLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
+                    var playerCustomizerLayout = new LinearLayout_(CONTEXT);
+                    playerCustomizerLayout.setOrientation(LinearLayout_.HORIZONTAL);
+                    playerCustomizerLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
+					
+					var playerCustomizerLayoutLeft = new LinearLayout_(CONTEXT);
+                    playerCustomizerLayoutLeft.setOrientation(1);
+                    playerCustomizerLayoutLeft.setGravity(Gravity_.CENTER_HORIZONTAL);
                     
-                    var playCustomizerLayoutScroll = new ScrollView(CONTEXT);
+                    var playerCustomizerLayoutLeftScroll = new ScrollView(CONTEXT);
+					
+					var playerCustomizerLayoutLeft1 = new LinearLayout_(CONTEXT);
+                    playerCustomizerLayoutLeft1.setOrientation(1);
+                    playerCustomizerLayoutLeft1.setGravity(Gravity_.CENTER);
+                    playerCustomizerLayoutLeft1.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2, LinearLayout_.LayoutParams.WRAP_CONTENT));
+					
+					var playerCustomizerLayoutRight = new LinearLayout_(CONTEXT);
+                    playerCustomizerLayoutRight.setOrientation(1);
+                    playerCustomizerLayoutRight.setGravity(Gravity_.CENTER_HORIZONTAL);
+                    
+                    var playerCustomizerLayoutRightScroll = new ScrollView(CONTEXT);
+					
+					var playerCustomizerLayoutRight1 = new LinearLayout_(CONTEXT);
+                    playerCustomizerLayoutRight1.setOrientation(1);
+                    playerCustomizerLayoutRight1.setGravity(Gravity_.CENTER);
+                    playerCustomizerLayoutRight1.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2, LinearLayout_.LayoutParams.WRAP_CONTENT));
                     
                     var playerCustomizerLayout1 = new LinearLayout_(CONTEXT);
                     playerCustomizerLayout1.setOrientation(1);
@@ -10027,7 +10047,19 @@ function playerCustomizerScreen() {
                     playerCustomizerTitle.setGravity(Gravity_.CENTER);
                     playerCustomizerLayout1.addView(playerCustomizerTitle);
 					
-					playCustomizerLayoutScroll.addView(playCustomizerLayout);
+					var playerCustomizerLeftTitle = clientTextView("Morphing", true);
+					playerCustomizerLeftTitle.setBackgroundDrawable(backgroundSpecial(null, themeSetting));
+					
+					var playerCustomizerRightTitle = clientTextView("Options", true);
+					playerCustomizerRightTitle.setBackgroundDrawable(backgroundSpecial(null, themeSetting));
+					
+					playerCustomizerLayoutLeftScroll.addView(playerCustomizerLayoutLeft);
+					playerCustomizerLayoutLeft1.addView(playerCustomizerLeftTitle);
+					playerCustomizerLayoutLeft1.addView(playerCustomizerLayoutLeftScroll);
+					
+					playerCustomizerLayoutRightScroll.addView(playerCustomizerLayoutRight);
+					playerCustomizerLayoutRight1.addView(playerCustomizerRightTitle);
+					playerCustomizerLayoutRight1.addView(playerCustomizerLayoutRightScroll);
 					
 					var killToMorphSettingButton = new Switch_(CONTEXT);
                     killToMorphSettingButton.setText("Automatically morph when killing entities");
@@ -10049,12 +10081,11 @@ function playerCustomizerScreen() {
                         }
                     }));
 					
-                    playerCustomizerLayout1.addView(killToMorphSettingButton);
-                    playerCustomizerLayout1.addView(playCustomizerLayoutScroll);
-                    
-                    var playerCustomizerMorphingLayout = LinearLayout_(CONTEXT);
-                    playerCustomizerMorphingLayout.setOrientation(1);
-                    playCustomizerLayout.addView(playerCustomizerMorphingLayout);
+					playerCustomizerLayoutRight.addView(killToMorphSettingButton);
+					
+                    playerCustomizerLayout1.addView(playerCustomizerLayout);
+                    playerCustomizerLayout.addView(playerCustomizerLayoutLeft1);
+                    playerCustomizerLayout.addView(playerCustomizerLayoutRight1);
                     
                     renderTypes.forEach(function(element, index, array) {
                         var rTButton = clientButton(Entity.renderTypeToName(element));
@@ -10063,11 +10094,11 @@ function playerCustomizerScreen() {
                         }
                         rTButton.setOnClickListener(new View_.OnClickListener() {
                             onClick: function() {
-                                VertexClientPE.setPlayerModel(element, playerCustomizerMorphingLayout);
+                                VertexClientPE.setPlayerModel(element, playerCustomizerLeftLayout);
                             }
                         });
                         if(Entity.renderTypeToName(element) != "Unknown") {
-                            playerCustomizerMorphingLayout.addView(rTButton);
+                            playerCustomizerLayoutLeft.addView(rTButton);
                         }
                     });
 
@@ -10893,20 +10924,15 @@ VertexClientPE.showFullScreenMenu = function() {
 					fullScreenMenuLayout1Misc.setOrientation(1);
 					fullScreenMenuLayout1Misc.setGravity(Gravity_.CENTER_HORIZONTAL);
 					
-					var combatSectionTitle = clientTextView(combatName);
-					combatSectionTitle.setTypeface(VertexClientPE.font, Typeface_.BOLD);
+					var combatSectionTitle = coloredSubTitle(combatName);
 					combatSectionTitle.setGravity(Gravity_.CENTER);
-					var buildingSectionTitle = clientTextView(buildingName);
-					buildingSectionTitle.setTypeface(VertexClientPE.font, Typeface_.BOLD);
+					var buildingSectionTitle = coloredSubTitle(buildingName);
 					buildingSectionTitle.setGravity(Gravity_.CENTER);
-					var movementSectionTitle = clientTextView(movementName);
-					movementSectionTitle.setTypeface(VertexClientPE.font, Typeface_.BOLD);
+					var movementSectionTitle = coloredSubTitle(movementName);
 					movementSectionTitle.setGravity(Gravity_.CENTER);
-					var chatSectionTitle = clientTextView(chatName);
-					chatSectionTitle.setTypeface(VertexClientPE.font, Typeface_.BOLD);
+					var chatSectionTitle = coloredSubTitle(chatName);
 					chatSectionTitle.setGravity(Gravity_.CENTER);
-					var miscSectionTitle = clientTextView(miscName);
-					miscSectionTitle.setTypeface(VertexClientPE.font, Typeface_.BOLD);
+					var miscSectionTitle = coloredSubTitle(miscName);
 					miscSectionTitle.setGravity(Gravity_.CENTER);
 					
 					fullScreenMenuLayout1Combat.addView(combatSectionTitle);
