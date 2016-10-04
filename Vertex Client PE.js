@@ -10642,6 +10642,46 @@ function dashboardScreen() {
 
 var webBrowserWebView;
 
+VertexClientPE.showURLBarDialog = function() {
+    CONTEXT.runOnUiThread(new Runnable_() {
+        run: function() {
+            try {
+				if(webBrowserWebView == null || webBrowserWebView == undefined) {
+					throw new Error("webBrowserWebView is not defined!");
+				}
+                var urlBarDialogTitle = clientTextView("Enter an URL", true);
+                var btn = clientButton("Done");
+                var inputBar = new EditText(CONTEXT);
+                var dialogLayout = new LinearLayout_(CONTEXT);
+                dialogLayout.setBackgroundDrawable(backgroundGradient());
+                dialogLayout.setOrientation(LinearLayout_.VERTICAL);
+                dialogLayout.setPadding(10, 10, 10, 10);
+                dialogLayout.addView(urlBarDialogTitle);
+                dialogLayout.addView(inputBar);
+                dialogLayout.addView(btn);
+                var dialog = new Dialog_(CONTEXT);
+                dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+                dialog.setContentView(dialogLayout);
+                dialog.setTitle("Enter an URL");
+                inputBar.setHint("URL");
+                inputBar.setText(webBrowserWebView.getUrl());
+                inputBar.setTextColor(Color_.WHITE);
+                dialog.show();
+                btn.setOnClickListener(new View_.OnClickListener() {
+                    onClick: function(view) {
+						webBrowserWebView.loadUrl(inputBar.getText().toString());
+                        dialog.dismiss();
+                    }
+                });
+            } catch(e) {
+                print("Error: " + e);
+                VertexClientPE.showBugReportDialog(e);
+            }
+        }
+    });
+}
+
 function webBrowserScreen() {
     VertexClientPE.menuIsShowing = true;
     var display = new DisplayMetrics_();
@@ -12305,6 +12345,18 @@ function overlayWebBrowser() {
                     }
                 }));
                 reloadWebBrowserLayout.addView(reloadWebBrowserButton);
+				
+				var urlBarWebBrowserLayout = new LinearLayout_(CONTEXT);
+                var urlBarWebBrowserButton = new Button_(CONTEXT);
+                urlBarWebBrowserButton.setText("...");//Text
+                urlBarWebBrowserButton.getBackground().setColorFilter(Color_.parseColor("#0B6138"), PorterDuff_.Mode.MULTIPLY);
+                urlBarWebBrowserButton.setTextColor(Color_.WHITE);
+                urlBarWebBrowserButton.setOnClickListener(new View_.OnClickListener({
+                    onClick: function(viewarg) {
+                        VertexClientPE.showURLBarDialog();
+                    }
+                }));
+                urlBarWebBrowserLayout.addView(urlBarWebBrowserButton);
                 
                 var xWebBrowserLayout = new LinearLayout_(CONTEXT);
                 xWebBrowserButton = new Button_(CONTEXT);
@@ -12314,6 +12366,7 @@ function overlayWebBrowser() {
                 xWebBrowserButton.setOnClickListener(new View_.OnClickListener({
                     onClick: function(viewarg) {
                         reloadWebBrowserUI.dismiss(); //Close
+                        urlBarWebBrowserUI.dismiss(); //Close
                         exitWebBrowserUI.dismiss(); //Close
                         webBrowserMenu.dismiss(); //Close
                         showMenuButton();
@@ -12324,6 +12377,10 @@ function overlayWebBrowser() {
                 reloadWebBrowserUI = new PopupWindow_(reloadWebBrowserLayout, dip2px(40), dip2px(40));
                 reloadWebBrowserUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
                 reloadWebBrowserUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+				
+				urlBarWebBrowserUI = new PopupWindow_(urlBarWebBrowserLayout, dip2px(40), dip2px(40));
+                urlBarWebBrowserUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+                urlBarWebBrowserUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, dip2px(40), 0);
                 
                 exitWebBrowserUI = new PopupWindow_(xWebBrowserLayout, dip2px(40), dip2px(40));
                 exitWebBrowserUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
