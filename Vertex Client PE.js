@@ -491,6 +491,8 @@ var VertexClientPE = {
 
 VertexClientPE.menuIsShowing = false;
 
+VertexClientPE.trailsMode = "off";
+
 VertexClientPE.Utils.loadChests = function() {
     VertexClientPE.Utils.chests = [];
     try {
@@ -3115,28 +3117,9 @@ function modTick() {
             element.onTick();
         }
     });
-	/* if(autoClick) {
-		// Obtain MotionEvent object
-		var downTime = SystemClock_.uptimeMillis();
-		var eventTime = SystemClock_.uptimeMillis() + 100;
-		var x = 0.0;
-		var y = 0.0;
-		// List of meta states found here:     developer.android.com/reference/android/view/KeyEvent.html#getMetaState()
-		var metaState = 0;
-		var motionEvent = MotionEvent_.obtain(
-			downTime, 
-			eventTime, 
-			MotionEvent_.ACTION_UP, 
-			x, 
-			y, 
-			metaState
-		);
-
-		// Dispatch touch event to view
-		if(hacksList != null) {
-			hacksList.dispatchTouchEvent(motionEvent);
-		}
-	} */
+	if(VertexClientPE.trailsMode != "off") {
+		VertexClientPE.showTrails();
+	}
 }
 
 function attackHook(a, v) {
@@ -8642,6 +8625,12 @@ VertexClientPE.getHighestBlockDifference = function() {
     }
 }
 
+var trailsModes = [
+	["off", "OFF"],
+	["flame", "Flame"],
+	["redstone", "Redstone"]
+];
+
 var renderTypes = [
     EntityRenderType.arrow,
     EntityRenderType.bat,
@@ -8802,6 +8791,31 @@ VertexClientPE.setPlayerModel = function(rT, layout) {
             layout.getChildAt(i).setTextColor(Color_.WHITE);
         }
     }
+}
+
+VertexClientPE.setTrailsMode = function(trailMode, layout) {
+    VertexClientPE.trailsMode = trailMode[0];
+    for(var i = 0; i < layout.getChildCount(); i++) {
+        if(layout.getChildAt(i).getText() == trailMode[1]) {
+            layout.getChildAt(i).setTextColor(Color_.GREEN);
+        } else {
+            layout.getChildAt(i).setTextColor(Color_.WHITE);
+        }
+    }
+}
+
+VertexClientPE.showTrails = function() {
+	var trailsParticleType;
+	switch(VertexClientPE.trailsMode) {
+		case "flame": {
+			trailsParticleType = ParticleType.flame;
+			break;
+		} case "redstone": {
+			trailsParticleType = ParticleType.redstone;
+			break;
+		}
+	}
+	Level.addParticle(trailsParticleType, getPlayerX(), getPlayerY(), getPlayerZ(), 0, 0, 0, 2);
 }
 
 var hasLoadedAddons = false;
@@ -10104,13 +10118,27 @@ function playerCustomizerScreen() {
                     playerCustomizerLayoutRight1.setOrientation(1);
                     playerCustomizerLayoutRight1.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2, display.heightPixels / 2 - playerCustomizerTitle.getLineHeight() / 2));
 					
+					var playerCustomizerLayoutBottom = new LinearLayout_(CONTEXT);
+                    playerCustomizerLayoutBottom.setOrientation(1);
+                    playerCustomizerLayoutBottom.setGravity(Gravity_.CENTER_HORIZONTAL);
+                    
+                    var playerCustomizerLayoutBottomScroll = new ScrollView(CONTEXT);
+					
+					var playerCustomizerLayoutBottom1 = new LinearLayout_(CONTEXT);
+                    playerCustomizerLayoutBottom1.setOrientation(1);
+                    playerCustomizerLayoutBottom1.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels, display.heightPixels / 2 - playerCustomizerTitle.getLineHeight() / 2));
+					
 					var playerCustomizerLeftTitle = clientTextView("Morphing", true);
 					playerCustomizerLeftTitle.setGravity(Gravity_.CENTER);
 					playerCustomizerLeftTitle.setBackgroundDrawable(backgroundSpecial(null, themeSetting));
 					
-					var playerCustomizerRightTitle = clientTextView("Options", true);
+					var playerCustomizerRightTitle = clientTextView("Trails", true);
 					playerCustomizerRightTitle.setGravity(Gravity_.CENTER);
 					playerCustomizerRightTitle.setBackgroundDrawable(backgroundSpecial(null, themeSetting));
+					
+					var playerCustomizerBottomTitle = clientTextView("Options", true);
+					playerCustomizerBottomTitle.setGravity(Gravity_.CENTER);
+					playerCustomizerBottomTitle.setBackgroundDrawable(backgroundSpecial(null, themeSetting));
 					
 					playerCustomizerLayoutLeftScroll.addView(playerCustomizerLayoutLeft);
 					playerCustomizerLayoutLeft1.addView(playerCustomizerLeftTitle);
@@ -10119,6 +10147,10 @@ function playerCustomizerScreen() {
 					playerCustomizerLayoutRightScroll.addView(playerCustomizerLayoutRight);
 					playerCustomizerLayoutRight1.addView(playerCustomizerRightTitle);
 					playerCustomizerLayoutRight1.addView(playerCustomizerLayoutRightScroll);
+					
+					playerCustomizerLayoutBottomScroll.addView(playerCustomizerLayoutBottom);
+					playerCustomizerLayoutBottom1.addView(playerCustomizerBottomTitle);
+					playerCustomizerLayoutBottom1.addView(playerCustomizerLayoutBottomScroll);
 					
 					var killToMorphSettingButton = new Switch_(CONTEXT);
                     killToMorphSettingButton.setText("Automatically morph when killing entities");
@@ -10140,11 +10172,12 @@ function playerCustomizerScreen() {
                         }
                     }));
 					
-					playerCustomizerLayoutRight.addView(killToMorphSettingButton);
+					playerCustomizerLayoutBottom.addView(killToMorphSettingButton);
 					
                     playerCustomizerLayout1.addView(playerCustomizerLayout);
                     playerCustomizerLayout.addView(playerCustomizerLayoutLeft1);
                     playerCustomizerLayout.addView(playerCustomizerLayoutRight1);
+					playerCustomizerLayout1.addView(playerCustomizerLayoutBottom1);
                     
                     renderTypes.forEach(function(element, index, array) {
                         var rTButton = clientButton(Entity.renderTypeToName(element));
@@ -10159,6 +10192,19 @@ function playerCustomizerScreen() {
                         if(Entity.renderTypeToName(element) != "Unknown") {
                             playerCustomizerLayoutLeft.addView(rTButton);
                         }
+                    });
+					
+					trailsModes.forEach(function(element, index, array) {
+                        var trailButton = clientButton(element[1]);
+                        if(element[0] == VertexClientPE.trailsMode) {
+                            trailButton.setTextColor(Color_.GREEN);
+                        }
+                        trailButton.setOnClickListener(new View_.OnClickListener() {
+                            onClick: function() {
+                                VertexClientPE.setTrailsMode(element, playerCustomizerLayoutRight);
+                            }
+                        });
+                        playerCustomizerLayoutRight.addView(trailButton);
                     });
 
                     playerCustomizerMenu = new PopupWindow_(playerCustomizerLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
