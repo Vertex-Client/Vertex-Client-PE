@@ -449,13 +449,12 @@ var VertexClientPE = {
 		}
     },
     CombatUtils: {
-        aimAtEnt: function(ent) {
+		aimAt: function(x, y, z) {
             // Credits to Godsoft0329 aka the developer of DragOP
-			if(Entity.getEntityTypeId(ent) == EntityType.PLAYER && Entity.getNameTag(ent) == "") return;
             var velocity = 1;
-            var posX = Entity.getX(ent) - Player.getX();
-            var posY = Entity.getEntityTypeId(ent) == EntityType.PLAYER ? Entity.getY(ent) - Player.getY() : Entity.getY(ent) + 1 - Player.getY();
-            var posZ = Entity.getZ(ent) - Player.getZ();
+            var posX = x - Player.getX();
+            var posY = y - Player.getY();
+            var posZ = z - Player.getZ();
             var realYaw = (Math.atan2(posZ, posX) * 180 / Math.PI) - 90;
             var y2 = Math.sqrt(posX * posX + posZ * posZ);
             var g = 0.007;
@@ -477,6 +476,15 @@ var VertexClientPE = {
 
                 /* ---- */
             }
+        },
+        aimAtEnt: function(ent) {
+            // Credits to Godsoft0329 aka the developer of DragOP
+			if(Entity.getEntityTypeId(ent) == EntityType.PLAYER && Entity.getNameTag(ent) == "") return;
+            var velocity = 1;
+            var posX = Entity.getX(ent);
+            var posY = Entity.getEntityTypeId(ent) == EntityType.PLAYER ? Entity.getY(ent) : Entity.getY(ent) + 1;
+            var posZ = Entity.getZ(ent);
+            this.aimAt(x, y, z);
         }
     }
 };
@@ -2968,6 +2976,55 @@ var noInvisBedrock = {
     }
 }
 
+var tapJumpRun = {
+	name: "TapJumpRun",
+    desc: "Allows you to walk and jump to a block automatically on tap.",
+    category: VertexClientPE.category.MOVEMENT,
+    type: "Mod",
+	state: false,
+	destVector: null,
+    isStateMod: function() {
+        return true;
+    },
+	onToggle: function() {
+        this.state = !this.state;
+    },
+	onUseItem: function(x, y, z, itemId, blockId, side) {
+		while(getTile(x, y, z) != 0) {
+			y++;
+		}
+		this.destVector = new Vector3(x, y, z);
+	},
+	onTick: function() {
+		if(this.destVector != null) {
+			if(getPlayerX() != this.destVector.x && getPlayerZ() != this.destVector.z) {
+				Entity.setVelX(getPlayerEnt(), (this.destVector.x - getPlayerX()) * playerWalkSpeed);
+				Entity.setVelY(getPlayerEnt(), (this.destVector.y - getPlayerY()) * playerWalkSpeed);
+				Entity.setVelZ(getPlayerEnt(), (this.destVector.z - getPlayerZ()) * playerWalkSpeed);
+			} else if(this.destVector.x == getPlayerX() && this.destVector.z == getPlayerZ()) {
+				this.destVector = null;
+			}
+		}
+	}
+}
+
+var tapPoint = {
+	name: "TapPoint",
+    desc: "Makes you point/aim at blocks on tap.",
+    category: VertexClientPE.category.MOVEMENT,
+    type: "Mod",
+	state: false,
+    isStateMod: function() {
+        return true;
+    },
+	onToggle: function() {
+        this.state = !this.state;
+    },
+	onUseItem: function(x, y, z, itemId, blockId, side) {
+		VertexClientPE.CombatUtils.aimAt(x, y, z);
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(antiKnockback);
 VertexClientPE.registerModule(antiBurn);
@@ -3001,6 +3058,8 @@ VertexClientPE.registerModule(noDownGlide);
 //VertexClientPE.registerModule(noInvisBedrock);
 VertexClientPE.registerModule(ride);
 VertexClientPE.registerModule(speedHack);
+VertexClientPE.registerModule(tapJumpRun);
+VertexClientPE.registerModule(tapPoint);
 VertexClientPE.registerModule(tapTeleporter);
 VertexClientPE.registerModule(timer);
 VertexClientPE.registerModule(wallHack);
@@ -10011,6 +10070,15 @@ function playerCustomizerScreen() {
                             accountManagerGUI.dismiss();
                         }
 					}
+					
+					var playerCustomizerLayout1 = new LinearLayout_(CONTEXT);
+                    playerCustomizerLayout1.setOrientation(1);
+                    playerCustomizerLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
+                    
+                    var playerCustomizerTitle = clientTextView("Player Customizer", true);
+                    playerCustomizerTitle.setTextSize(25);
+                    playerCustomizerTitle.setGravity(Gravity_.CENTER);
+                    playerCustomizerLayout1.addView(playerCustomizerTitle);
 
                     var playerCustomizerLayout = new LinearLayout_(CONTEXT);
                     playerCustomizerLayout.setOrientation(LinearLayout_.HORIZONTAL);
@@ -10024,8 +10092,7 @@ function playerCustomizerScreen() {
 					
 					var playerCustomizerLayoutLeft1 = new LinearLayout_(CONTEXT);
                     playerCustomizerLayoutLeft1.setOrientation(1);
-                    playerCustomizerLayoutLeft1.setGravity(Gravity_.CENTER);
-                    playerCustomizerLayoutLeft1.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2, LinearLayout_.LayoutParams.WRAP_CONTENT));
+                    playerCustomizerLayoutLeft1.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2, display.heightPixels / 2 - playerCustomizerTitle.getLineHeight() / 2));
 					
 					var playerCustomizerLayoutRight = new LinearLayout_(CONTEXT);
                     playerCustomizerLayoutRight.setOrientation(1);
@@ -10035,22 +10102,14 @@ function playerCustomizerScreen() {
 					
 					var playerCustomizerLayoutRight1 = new LinearLayout_(CONTEXT);
                     playerCustomizerLayoutRight1.setOrientation(1);
-                    playerCustomizerLayoutRight1.setGravity(Gravity_.CENTER);
-                    playerCustomizerLayoutRight1.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2, LinearLayout_.LayoutParams.WRAP_CONTENT));
-                    
-                    var playerCustomizerLayout1 = new LinearLayout_(CONTEXT);
-                    playerCustomizerLayout1.setOrientation(1);
-                    playerCustomizerLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
-                    
-                    var playerCustomizerTitle = clientTextView("Player Customizer", true);
-                    playerCustomizerTitle.setTextSize(25);
-                    playerCustomizerTitle.setGravity(Gravity_.CENTER);
-                    playerCustomizerLayout1.addView(playerCustomizerTitle);
+                    playerCustomizerLayoutRight1.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2, display.heightPixels / 2 - playerCustomizerTitle.getLineHeight() / 2));
 					
 					var playerCustomizerLeftTitle = clientTextView("Morphing", true);
+					playerCustomizerLeftTitle.setGravity(Gravity_.CENTER);
 					playerCustomizerLeftTitle.setBackgroundDrawable(backgroundSpecial(null, themeSetting));
 					
 					var playerCustomizerRightTitle = clientTextView("Options", true);
+					playerCustomizerRightTitle.setGravity(Gravity_.CENTER);
 					playerCustomizerRightTitle.setBackgroundDrawable(backgroundSpecial(null, themeSetting));
 					
 					playerCustomizerLayoutLeftScroll.addView(playerCustomizerLayoutLeft);
@@ -10094,7 +10153,7 @@ function playerCustomizerScreen() {
                         }
                         rTButton.setOnClickListener(new View_.OnClickListener() {
                             onClick: function() {
-                                VertexClientPE.setPlayerModel(element, playerCustomizerLeftLayout);
+                                VertexClientPE.setPlayerModel(element, playerCustomizerLayoutLeft);
                             }
                         });
                         if(Entity.renderTypeToName(element) != "Unknown") {
