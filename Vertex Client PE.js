@@ -163,6 +163,7 @@ var aimbotUseKillauraRange = "off";
 var screenshotModeSetting = "noGui";
 var killToMorphSetting = "off";
 var fontSetting = "default";
+var showMoneyToastsSetting = "on";
 //---------------------------
 var cmdPrefix = ".";
 //---------------------------
@@ -5958,6 +5959,7 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + screenshotModeSetting.toString());
     outWrite.append("," + killToMorphSetting.toString());
     outWrite.append("," + fontSetting.toString());
+    outWrite.append("," + showMoneyToastsSetting.toString());
     //outWrite.append("," + cmdPrefix.toString());
 
     outWrite.close();
@@ -6070,6 +6072,9 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[29] != null && arr[29] != undefined) {
             fontSetting = arr[29];
+        }
+		if (arr[30] != null && arr[30] != undefined) {
+            showMoneyToastsSetting = arr[30];
         }
         fos.close();
         VertexClientPE.loadAutoSpammerSettings();
@@ -7948,7 +7953,9 @@ VertexClientPE.secondTick = function() {
                 var extraCash = VertexClientPE.isPro()?20:10;
                 VertexClientPE.setVertexCash(VertexClientPE.getVertexCash() + extraCash);
                 secondTickTimer = 0;
-                VertexClientPE.moneyToast();
+				if(showMoneyToastsSetting == "on") {
+					VertexClientPE.moneyToast();
+				}
                 if(shopCashText != null) {
                     CONTEXT.runOnUiThread(new Runnable_() {
                         run: function() {
@@ -9555,6 +9562,26 @@ function settingsScreen() {
                         }
                     }
                     }));
+					
+					var showMoneyToastsSettingFunc = new settingButton("Show money updates", "Show a toast message when earning V€rt€xCash.");
+                    var showMoneyToastsSettingButton = showMoneyToastsSettingFunc.getButton();
+                    if(showMoneyToastsSetting == "on") {
+                        showMoneyToastsSettingButton.setText("ON");
+                    } else if(showMoneyToastsSetting == "off") {
+                        showMoneyToastsSettingButton.setText("OFF");
+                    }
+                    showMoneyToastsSettingButton.setOnClickListener(new View_.OnClickListener({
+                    onClick: function(viewarg){
+                        if(showMoneyToastsSetting == "on") {
+                            showMoneyToastsSetting = "off";
+                            showMoneyToastsSettingButton.setText("OFF");
+                        } else if(showMoneyToastsSetting == "off") {
+                            showMoneyToastsSetting = "on";
+                            showMoneyToastsSettingButton.setText("ON");
+                        }
+						VertexClientPE.saveMainSettings();
+                    }
+                    }));
                     
 					var playMusicSettingFunc = new settingButton("Automatically play music", "Automatically play music.");
                     var playMusicSettingButton = playMusicSettingFunc.getButton();
@@ -9606,6 +9633,7 @@ function settingsScreen() {
 					VertexClientPE.addView(settingsMenuLayout, menuAnimationsSettingFunc);
                     settingsMenuLayout.addView(otherTitle);
 					VertexClientPE.addView(settingsMenuLayout, showNewsSettingFunc);
+					VertexClientPE.addView(settingsMenuLayout, showMoneyToastsSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, playMusicSettingFunc);
 
                     settingsMenu = new PopupWindow_(settingsMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
