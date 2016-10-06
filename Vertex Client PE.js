@@ -481,10 +481,9 @@ var VertexClientPE = {
         aimAtEnt: function(ent) {
             // Credits to Godsoft0329 aka the developer of DragOP
 			if(Entity.getEntityTypeId(ent) == EntityType.PLAYER && Entity.getNameTag(ent) == "") return;
-            var velocity = 1;
-            var posX = Entity.getX(ent);
-            var posY = Entity.getEntityTypeId(ent) == EntityType.PLAYER ? Entity.getY(ent) : Entity.getY(ent) + 1;
-            var posZ = Entity.getZ(ent);
+            var x = Entity.getX(ent);
+            var y = Entity.getEntityTypeId(ent) == EntityType.PLAYER ? Entity.getY(ent) : Entity.getY(ent) + 1;
+            var z = Entity.getZ(ent);
             this.aimAt(x, y, z);
         }
     }
@@ -547,7 +546,7 @@ VertexClientPE.isRemote = function() {
 VertexClientPE.playerIsInGame = false;
 
 VertexClientPE.currentVersion = "1.6";
-VertexClientPE.currentVersionDesc = "The ? Update";
+VertexClientPE.currentVersionDesc = "The Utility Update";
 VertexClientPE.targetVersion = "MCPE v0.15.x alpha";
 VertexClientPE.minVersion = "0.15.0";
 VertexClientPE.latestVersion;
@@ -7612,7 +7611,7 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
     }
     
     if (showProLine == true && VertexClientPE.isPro()) {
-        bg.setStroke(dip2px(1), Color_.parseColor("#70DAA520"));
+        bg.setStroke(dip2px(2), Color_.parseColor("#70DAA520"));
     }
     bg.setShape(GradientDrawable_.RECTANGLE);
 
