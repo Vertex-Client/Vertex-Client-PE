@@ -4124,6 +4124,59 @@ VertexClientPE.showMoreDialog = function() {
     });
 }
 
+VertexClientPE.showModEditorDialog = function(defaultName, modTitleView, modButtonView) {
+    CONTEXT.runOnUiThread(new Runnable_() {
+        run: function() {
+            try {
+				var _0xf030=["\x69\x73\x50\x72\x6F","\x52\x65\x6E\x61\x6D\x69\x6E\x67\x20\x6D\x6F\x64\x73","\x73\x68\x6F\x77\x50\x72\x6F\x44\x69\x61\x6C\x6F\x67"];if(!VertexClientPE[_0xf030[0]]()){VertexClientPE[_0xf030[2]](_0xf030[1]);return}
+				
+                var dialogLayout = new LinearLayout_(CONTEXT);
+                dialogLayout.setOrientation(1);
+				dialogLayout.setBackgroundDrawable(backgroundSpecial());
+				dialogLayout.setPadding(1, 1, 1, 1);
+				
+				var modEditorTitleLayout = new LinearLayout_(CONTEXT);
+                modEditorTitleLayout.setOrientation(LinearLayout_.HORIZONTAL);
+				
+                var currentName = sharedPref.getString("VertexClientPE.mods." + defaultName + ".name", defaultName);
+				
+				var modEditorDialogEditText = clientEditText(currentName);
+				modEditorDialogEditText.setInputType(InputType_.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+				modEditorDialogEditText.setTextSize(20);
+				modEditorDialogEditText.addTextChangedListener(new TextWatcher_() {
+                    afterTextChanged: function() {
+						currentName = modEditorDialogEditText.getText();
+                        modTitleView.setText(currentName);
+                        modButtonView.setText(currentName);
+						editor.putString("VertexClientPE.mods." + defaultName + ".name", currentName);
+						editor.commit();
+                    }
+                });
+				
+				modEditorTitleLayout.addView(modEditorDialogEditText);
+				dialogLayout.addView(modEditorTitleLayout);
+				
+                var dialog = new Dialog_(CONTEXT);
+                dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+                dialog.setContentView(dialogLayout);
+                dialog.setTitle(currentName);
+                dialog.show();
+                var window = dialog.getWindow();
+				var windowParams = window.getAttributes();
+				windowParams.gravity = Gravity_.TOP | Gravity_.LEFT;
+				windowParams.y = 0;
+				window.setAttributes(windowParams);
+				window.setDimAmount(0);
+                window.setLayout(display.widthPixels, LinearLayout_.LayoutParams.WRAP_CONTENT);
+            } catch(e) {
+                print("Error: " + e);
+                VertexClientPE.showBugReportDialog(e);
+            }
+        }
+    });
+}
+
 VertexClientPE.showModDialog = function(mod, btn) {
     CONTEXT.runOnUiThread(new Runnable_() {
         run: function() {
@@ -4131,12 +4184,18 @@ VertexClientPE.showModDialog = function(mod, btn) {
                 VertexClientPE.loadMainSettings();
                 var modTitleLayout = new LinearLayout_(CONTEXT);
                 modTitleLayout.setOrientation(LinearLayout_.HORIZONTAL);
-                var modTitle = clientTextView(mod.name, true);
+                var modTitle = clientTextView(sharedPref.getString("VertexClientPE.mods." + mod.name + ".name", mod.name), true);
                 modTitle.setTextSize(20);
+				var modEditButton = new Button_(CONTEXT);
+                modEditButton.setLayoutParams(new LinearLayout_.LayoutParams(64, 64));
+                modEditButton.setBackgroundDrawable(CONTEXT.getResources().getDrawable(android.R.drawable.ic_menu_edit));
+				modEditButton.setOnClickListener(new View_.OnClickListener() {
+                    onClick: function(v) {
+                        VertexClientPE.showModEditorDialog(mod.name, modTitle, btn);
+                    }
+                });
                 var modFavButton = new Button_(CONTEXT);
                 modFavButton.setLayoutParams(new LinearLayout_.LayoutParams(64, 64));
-                modTitleLayout.addView(modTitle);
-                modTitleLayout.addView(modFavButton);
                 if(sharedPref.getString("VertexClientPE.mods." + mod.name + ".isFavorite", "false") == "true") {
                     modFavButton.setBackgroundDrawable(CONTEXT.getResources().getDrawable(android.R.drawable.btn_star_big_on));
                 } else {
@@ -4155,6 +4214,9 @@ VertexClientPE.showModDialog = function(mod, btn) {
                         }
                     }
                 });
+				modTitleLayout.addView(modTitle);
+				modTitleLayout.addView(modEditButton);
+                modTitleLayout.addView(modFavButton);
                 var modTypeText = clientTextView("Type: " + mod.type + "\n");
                 var modDescTitle = clientTextView("Description:");
                 var modDescText = clientTextView(mod.desc);
@@ -6758,8 +6820,8 @@ function modButton(mod, buttonOnly) {
         mod.type = "Mod";
     }
     
-    var modButtonName = mod.name;
-    if(mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) modButtonName = "\uD83D\uDD12 " + mod.name;
+    var modButtonName = sharedPref.getString("VertexClientPE.mods." + mod.name + ".name", mod.name);
+    if(mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) modButtonName = "\uD83D\uDD12 " + modButtonName;
     
     if(mod.state) {
         if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
