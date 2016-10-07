@@ -160,7 +160,7 @@ var mcpeGUISetting = "default";
 var chestESPRange = 25;
 var transparentBgSetting = "on";
 var aimbotUseKillauraRange = "off";
-var screenshotModeSetting = "noGui";
+var screenshotModeSetting = "default";
 var killToMorphSetting = "off";
 var fontSetting = "default";
 var showMoneyToastsSetting = "on";
@@ -424,25 +424,22 @@ var VertexClientPE = {
 				} default: {
 					try {
 						// create bitmap screen capture
-						var v1 = CONTEXT.getWindow().getDecorView().getRootView();
-						var bitmap = Bitmap_.createBitmap(v1.getWidth(), v1.getHeight(), Bitmap_.Config.ARGB_8888);
-						
-						var canvas = new Canvas_(bitmap);
-						v1.draw(canvas);
-
-						var imageFile = new File_(mPath + ".jpg");
-
+						var v1 = CONTEXT.getWindow().getDecorView();
+						v1.setDrawingCacheEnabled(true);
+						var bm = v1.getDrawingCache();
+						var imageFile = new File_(mPath + ".png");
 						var outputStream = new FileOutputStream_(imageFile);
 						var quality = 100;
-						bitmap.compress(Bitmap_.CompressFormat.JPEG, quality, outputStream);
-						outputStream.flush();
-						outputStream.close();
+						var bitmapDrawable = new BitmapDrawable_(bm);
+						bm.compress(Bitmap_.CompressFormat.PNG, quality, outputStream);
 
-						VertexClientPE.toast(Uri_.fromFile(imageFile));
+						outputStream.flush();
 					} catch (e) {
 						// Several error may come out with file handling or OOM
 						//e.printStackTrace();
 						print(e);
+					} finally {
+						outputStream.close();
 					}
 					break;
 				}
@@ -946,7 +943,7 @@ VertexClientPE.drawTracer = function(x, y, z, groundMode, particleName) {
 
 var shownAddonProDialog = false;
 
-function registerAddon(name, desc, current_version, target_version, mods) {
+function registerAddon(name, desc, current_version, target_version, mods, songs) {
     var shouldMessage = true;
     if(!VertexClientPE.isPro()) {
         if(!shownAddonProDialog) {
@@ -963,9 +960,10 @@ function registerAddon(name, desc, current_version, target_version, mods) {
             target_version: target_version
         });
         registerModulesFromAddon(mods);
+        registerSongsFromAddon(songs);
     } catch(e) {
         shouldMessage = false;
-        VertexClientPE.toast("An error occured while loading addons: " + e);
+        VertexClientPE.toast("An error occurred while loading addons: " + e);
     }
     
     if(shouldMessage) {
@@ -977,6 +975,14 @@ function registerModulesFromAddon(modArray) {
     modArray.forEach(function (element, index, array) {
         if(element != null) {
             VertexClientPE.registerModule(element);
+        }
+    });
+}
+
+function registerSongsFromAddon(songArray) {
+    songArray.forEach(function (element, index, array) {
+        if(element != null && element.source != null && element.source != undefined) {
+            VertexClientPE.MusicUtils.registerSong(element);
         }
     });
 }
