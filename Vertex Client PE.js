@@ -10135,12 +10135,23 @@ function addonScreen() {
                     var addonMenuLayout1 = new LinearLayout_(CONTEXT);
                     addonMenuLayout1.setOrientation(1);
                     addonMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
-                    
-                    addonMenuLayoutScroll.addView(addonMenuLayout);
+					
+					var addonTitle = clientScreenTitle("Addons");
+                    addonMenuLayout1.addView(addonTitle);
+					
+					var addonDownloadTextView = clientTextView("Download addons");
+					addonDownloadTextView.setGravity(Gravity_.CENTER);
+					addonDownloadTextView.setPaintFlags(addonDownloadTextView.getPaintFlags() | Paint_.UNDERLINE_TEXT_FLAG);
+					addonDownloadTextView.setOnClickListener(new View_.OnClickListener() {
+						onClick: function(v) {
+							ModPE.goToURL("http://Vertex-Client.ml/");
+						}
+					});
+					addonMenuLayout1.addView(addonDownloadTextView);
+					addonMenuLayout1.addView(clientTextView("\n"));
+					
+					addonMenuLayoutScroll.addView(addonMenuLayout);
                     addonMenuLayout1.addView(addonMenuLayoutScroll);
-                    
-                    var addonTitle = clientScreenTitle("Addons");
-                    addonMenuLayout.addView(addonTitle);
                     
                     if(VertexClientPE.addons.length == 0) {
                         var noAddonsText = clientTextView("You either don't have any addons or you should restart to load them!");
