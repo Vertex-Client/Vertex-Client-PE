@@ -4040,8 +4040,11 @@ VertexClientPE.showMoreDialog = function() {
                 var dashboardButton = clientButton("Dashboard");
                 var webBrowserButton = clientButton("Webbrowser");
                 var playerCustomizerButton = clientButton("Player Customizer");
+				playerCustomizerButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.presence_online, 0, 0);
                 var optiFineButton = clientButton("OptiFine");
+				optiFineButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.ic_input_add, 0, 0);
                 var shopButton = clientButton("Shop");
+				shopButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.stat_notify_more, 0, 0);
                 var screenshotButton = clientButton("Take a screenshot");
                 var dialogLayout1 = new LinearLayout_(CONTEXT);
                 dialogLayout1.setBackgroundDrawable(backgroundGradient());
@@ -4066,7 +4069,9 @@ VertexClientPE.showMoreDialog = function() {
                     dialogLayout.addView(webBrowserButton);
                 }
                 dialogLayout.addView(shopButton);
-                dialogLayout.addView(screenshotButton);
+				if(VertexClientPE.isExpMode()) {
+					dialogLayout.addView(screenshotButton);
+				}
                 var dialog = new Dialog_(CONTEXT);
                 dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
@@ -4141,7 +4146,7 @@ VertexClientPE.showModEditorDialog = function(defaultName, modTitleView, modButt
                 var dialogLayout = new LinearLayout_(CONTEXT);
                 dialogLayout.setOrientation(1);
 				dialogLayout.setBackgroundDrawable(backgroundSpecial());
-				dialogLayout.setPadding(1, 1, 1, 1);
+				dialogLayout.setPadding(1.5, 0, 1, 1);
 				
 				var modEditorTitleLayout = new LinearLayout_(CONTEXT);
                 modEditorTitleLayout.setOrientation(LinearLayout_.HORIZONTAL);
@@ -10777,6 +10782,11 @@ function dashboardScreen() {
                 var devSettingsIconButton = tileButton("Developer Settings", android.R.drawable.ic_menu_report_image, "orange", false);
                 var restartIconButton = tileButton("Restart", android.R.drawable.ic_menu_rotate, "green", false);
                 var shutDownIconButton = tileButton("Shutdown", android.R.drawable.ic_lock_power_off, "red");
+				
+				var testIcons = [android.R.drawable.menu_frame, android.R.drawable.picture_frame, android.R.drawable.menu_full_frame, android.R.drawable.gallery_thumb, android.R.drawable.ic_menu_always_landscape_portrait, android.R.drawable.ic_notification_clear_all, android.R.drawable.ic_notification_overlay, android.R.drawable.stat_notify_more /*shop*/, android.R.drawable.title_bar_tall];
+				testIcons.forEach(function(element, index, array) {
+					dashboardMenuLayout.addView(tileButton("test_" + index, element, "red"));
+				});
                 
                 settingsIconButton.setOnClickListener(new View_.OnClickListener() {
                     onClick: function(view) {
