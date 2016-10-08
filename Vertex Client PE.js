@@ -967,7 +967,7 @@ function registerAddon(name, desc, current_version, target_version, mods, songs)
     }
     
     if(shouldMessage) {
-        VertexClientPE.toast("Successfully loaded the " + name + " addon!");
+        VertexClientPE.addonLoadToast("Successfully loaded the " + name + " addon!");
     }
 }
 
@@ -980,11 +980,13 @@ function registerModulesFromAddon(modArray) {
 }
 
 function registerSongsFromAddon(songArray) {
-    songArray.forEach(function (element, index, array) {
-        if(element != null && element.source != null && element.source != undefined) {
-            VertexClientPE.MusicUtils.registerSong(element);
-        }
-    });
+	if(songArray != null) {
+		songArray.forEach(function (element, index, array) {
+			if(element != null && element.source != null && element.source != undefined) {
+				VertexClientPE.MusicUtils.registerSong(element);
+			}
+		});
+	}
 }
 
 VertexClientPE.getCommandCount = function() {
@@ -5268,7 +5270,28 @@ VertexClientPE.toast = function(message, vibrate) {
             var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message), 0);
             layout.addView(text);
             toast = new Toast_(CONTEXT);
+			toast.setDuration(Toast_.LENGTH_LONG);
             toast.setView(layout);
+            toast.show();
+        }
+    }));
+}
+
+VertexClientPE.addonLoadToast = function(message) {
+    CONTEXT.runOnUiThread(new Runnable_({
+        run: function() {
+            var layout = new LinearLayout_(CONTEXT);
+            layout.setBackground(backgroundSpecial(true));
+			var icon = new android.widget.ImageView(CONTEXT);
+			icon.setImageResource(android.R.drawable.ic_menu_more);
+            var title = VertexClientPE.getName();
+            var _0xc62b=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x20\x50\x72\x6F"];if(VertexClientPE[_0xc62b[0]]()==_0xc62b[1]){title+=_0xc62b[2]}
+            var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message), 0);
+            layout.addView(icon);
+            layout.addView(text);
+            toast = new Toast_(CONTEXT);
+            toast.setView(layout);
+			toast.setGravity(Gravity_.CENTER | Gravity_.TOP, 0, 0);
             toast.show();
         }
     }));
@@ -8625,6 +8648,8 @@ VertexClientPE.setup = function() {
 							VertexClientPE.showBasicDialog("Compatibility", clientTextView("This version may not be compatible with MCPE v" + ModPE.getMinecraftVersion() + "!"));
 						}
 						
+						VertexClientPE.loadAddons();
+						
 						VertexClientPE.MusicUtils.initMusicPlayer();
 						VertexClientPE.MusicUtils.startMusicPlayer();
 						
@@ -9004,10 +9029,6 @@ function newLevel() {
                     shopCashText.setText("\u26C1 " + VertexClientPE.getVertexCash());
                 }
             }
-        }
-        if(!hasLoadedAddons) {
-            hasLoadedAddons = true;
-            VertexClientPE.loadAddons();
         }
         new Thread_(new Runnable_() {
             run: function() {
@@ -10122,9 +10143,9 @@ function addonScreen() {
                     addonMenuLayout.addView(addonTitle);
                     
                     if(VertexClientPE.addons.length == 0) {
-                        var noAddonsText = clientTextView("You don't have any addons!");
+                        var noAddonsText = clientTextView("You either don't have any addons or you should restart to load them!");
+						noAddonsText.setGravity(Gravity_.CENTER);
                         addonMenuLayout.addView(noAddonsText);
-                        noAddonsText.setGravity(Gravity_.CENTER);
                     }
                     
                     VertexClientPE.addons.forEach(function(element, index, array) {
