@@ -10783,10 +10783,10 @@ function dashboardScreen() {
                 var restartIconButton = tileButton("Restart", android.R.drawable.ic_menu_rotate, "green", false);
                 var shutDownIconButton = tileButton("Shutdown", android.R.drawable.ic_lock_power_off, "red");
 				
-				var testIcons = [android.R.drawable.menu_frame, android.R.drawable.picture_frame, android.R.drawable.menu_full_frame, android.R.drawable.gallery_thumb, android.R.drawable.ic_menu_always_landscape_portrait, android.R.drawable.ic_notification_clear_all, android.R.drawable.ic_notification_overlay, android.R.drawable.stat_notify_more /*shop*/, android.R.drawable.title_bar_tall];
-				testIcons.forEach(function(element, index, array) {
-					dashboardMenuLayout.addView(tileButton("test_" + index, element, "red"));
-				});
+				// var testIcons = [android.R.drawable.menu_frame, android.R.drawable.picture_frame, android.R.drawable.menu_full_frame, android.R.drawable.gallery_thumb, android.R.drawable.ic_menu_always_landscape_portrait, android.R.drawable.ic_notification_clear_all, android.R.drawable.ic_notification_overlay, android.R.drawable.stat_notify_more /*shop*/, android.R.drawable.title_bar_tall];
+				// testIcons.forEach(function(element, index, array) {
+					// dashboardMenuLayout.addView(tileButton("test_" + index, element, "red"));
+				// });
                 
                 settingsIconButton.setOnClickListener(new View_.OnClickListener() {
                     onClick: function(view) {
