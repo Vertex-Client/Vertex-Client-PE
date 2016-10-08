@@ -983,7 +983,7 @@ function registerSongsFromAddon(songArray) {
 	if(songArray != null) {
 		songArray.forEach(function (element, index, array) {
 			if(element != null && element.source != null && element.source != undefined) {
-				VertexClientPE.MusicUtils.registerSong(element);
+				VertexClientPE.MusicUtils.registerSong(element, true);
 			}
 		});
 	}
@@ -5391,9 +5391,9 @@ VertexClientPE.MusicUtils = {
     },
     songList: [],
     tempSongList: [],
-    registerSong: function(song) {
+    registerSong: function(song, fromAddon) {
         try {
-            if(!(song instanceof Song)) {
+            if(!(song instanceof Song) && !fromAddon) {
                 throw new TypeError("The registered value is not of the type Song.");
                 return;
             }
