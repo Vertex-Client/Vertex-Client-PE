@@ -4040,11 +4040,11 @@ VertexClientPE.showMoreDialog = function() {
                 var dashboardButton = clientButton("Dashboard");
                 var webBrowserButton = clientButton("Webbrowser");
                 var playerCustomizerButton = clientButton("Player Customizer");
-				playerCustomizerButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.presence_online, 0, 0);
+				//playerCustomizerButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.presence_online, 0, 0);
                 var optiFineButton = clientButton("OptiFine");
-				optiFineButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.ic_input_add, 0, 0);
+				//optiFineButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.ic_input_add, 0, 0);
                 var shopButton = clientButton("Shop");
-				shopButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.stat_notify_more, 0, 0);
+				//shopButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.stat_notify_more, 0, 0);
                 var screenshotButton = clientButton("Take a screenshot");
                 var dialogLayout1 = new LinearLayout_(CONTEXT);
                 dialogLayout1.setBackgroundDrawable(backgroundGradient());
