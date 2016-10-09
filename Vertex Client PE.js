@@ -1,7 +1,7 @@
 /**
  * #####################################################################
  * @name Vertex Client PE
- * @version v1.6
+ * @version v1.7
  * @author peacestorm (@AgameR_Modder)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36
  *
@@ -542,8 +542,8 @@ VertexClientPE.isRemote = function() {
 
 VertexClientPE.playerIsInGame = false;
 
-VertexClientPE.currentVersion = "1.6";
-VertexClientPE.currentVersionDesc = "The Utility Update";
+VertexClientPE.currentVersion = "1.7";
+VertexClientPE.currentVersionDesc = "The Fall Update";
 VertexClientPE.targetVersion = "MCPE v0.15.x alpha";
 VertexClientPE.minVersion = "0.15.0";
 VertexClientPE.latestVersion;
@@ -4372,6 +4372,109 @@ VertexClientPE.showModDialog = function(mod, btn) {
     });
 }
 
+VertexClientPE.showSongDialog = function(song, songBtn, playBar) { //todo; remove/add song buttons from music player song layout when switching favorite
+    CONTEXT.runOnUiThread(new Runnable_() {
+        run: function() {
+            try {
+                VertexClientPE.loadMainSettings();
+				var songLayout = songBtn.getParent().getParent();
+                var songTitleLayout = new LinearLayout_(CONTEXT);
+                songTitleLayout.setOrientation(LinearLayout_.HORIZONTAL);
+                var songTitle = clientTextView(song.title, true);
+                songTitle.setTextSize(20);
+                var songFavButton = new Button_(CONTEXT);
+                songFavButton.setLayoutParams(new LinearLayout_.LayoutParams(64, 64));
+                if(sharedPref.getString("VertexClientPE.songs." + song.title + ".isFavorite", "false") == "true") {
+                    songFavButton.setBackgroundDrawable(CONTEXT.getResources().getDrawable(android.R.drawable.btn_star_big_on));
+                } else {
+                    songFavButton.setBackgroundDrawable(CONTEXT.getResources().getDrawable(android.R.drawable.btn_star_big_off));
+                }
+                songFavButton.setOnClickListener(new View_.OnClickListener() {
+                    onClick: function(v) {
+                        if(sharedPref.getString("VertexClientPE.songs." + song.title + ".isFavorite", "false") == "true") {
+                            editor.putString("VertexClientPE.songs." + song.title + ".isFavorite", "false");
+                            editor.commit();
+                            songFavButton.setBackgroundDrawable(CONTEXT.getResources().getDrawable(android.R.drawable.btn_star_big_off));
+							if(currentMPTab == "Favorite") {
+								songLayout = songBtn.getParent().getParent();
+								songLayout.removeView(songBtn.getParent());
+							}
+                        } else {
+                            editor.putString("VertexClientPE.songs." + song.title + ".isFavorite", "true");
+                            editor.commit();
+                            songFavButton.setBackgroundDrawable(CONTEXT.getResources().getDrawable(android.R.drawable.btn_star_big_on));
+							if(currentMPTab == "Favorite") {
+								songBtnLayout = songButton(song, playBar);
+								songBtn = songBtnLayout.getChildAt(0);
+								songLayout.addView(songBtnLayout);
+							}
+                        }
+                    }
+                });
+				songTitleLayout.addView(songTitle);
+                songTitleLayout.addView(songFavButton);
+                var songArtistText = clientTextView("Artist: " + song.artist + "\n");
+                var closeButton = clientButton("Close");
+                closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
+                var dialogLayout = new LinearLayout_(CONTEXT);
+                dialogLayout.setBackgroundDrawable(backgroundGradient());
+                dialogLayout.setOrientation(LinearLayout_.VERTICAL);
+                dialogLayout.setPadding(10, 10, 10, 10);
+                dialogLayout.addView(songTitleLayout);
+				if(song.source != null) {
+                    dialogLayout.addView(clientTextView("Source: " + song.source + "\n"));
+                }
+				dialogLayout.addView(songArtistText);
+                
+                var settingsLinearLayout = new ScrollView(CONTEXT);
+                settingsLinearLayout.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels, display.heightPixels / 3));
+                var settingsScrollView = new ScrollView(CONTEXT);
+                
+                var dialogExtraLayout = new LinearLayout_(CONTEXT);
+                dialogExtraLayout.setOrientation(LinearLayout_.HORIZONTAL);
+                dialogLayout.addView(dialogExtraLayout);
+				dialogExtraLayoutLeft = new LinearLayout_(CONTEXT);
+				dialogExtraLayoutLeft.setOrientation(1);
+				dialogExtraLayoutLeft.setGravity(Gravity_.CENTER);
+				dialogExtraLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2, display.heightPixels / 10));
+				dialogExtraLayoutRight = new LinearLayout_(CONTEXT);
+				dialogExtraLayoutRight.setOrientation(1);
+				dialogExtraLayoutRight.setGravity(Gravity_.CENTER);
+				dialogExtraLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2, display.heightPixels / 10));
+				dialogExtraLayout.addView(dialogExtraLayoutLeft);
+				dialogExtraLayout.addView(dialogExtraLayoutRight);
+				closeButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 3, display.heightPixels / 10));
+				dialogExtraLayoutLeft.addView(closeButton);
+				var downloadButton = clientButton("Download");
+				downloadButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 3, display.heightPixels / 10));
+				downloadButton.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(view) {
+						ModPE.goToURL(song.url);
+					}
+				});
+				dialogExtraLayoutRight.addView(downloadButton);
+				
+                var dialog = new Dialog_(CONTEXT);
+                dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+                dialog.setContentView(dialogLayout);
+                dialog.setTitle(song.title);
+                dialog.show();
+                var window = dialog.getWindow();
+                window.setLayout(display.widthPixels, display.heightPixels);
+                closeButton.setOnClickListener(new View_.OnClickListener() {
+                    onClick: function(view) {
+                        dialog.dismiss();
+                    }
+                });
+            } catch(e) {
+                print("Error: " + e);
+                VertexClientPE.showBugReportDialog(e);
+            }
+        }
+    });
+}
+
 function capitalizeColorString(string) {
     if(string == "green") {
 		return "Green";
@@ -6594,8 +6697,10 @@ function shopFeatureButton(shopFeature, cashTextView) {
 function songButton(song, barLayout) {
     var songButtonText = song.artist + " - " + song.title;
     var songLayout = new LinearLayout_(CONTEXT);
-    songLayout.setOrientation(1);
+    songLayout.setOrientation(LinearLayout_.HORIZONTAL);
+	var songLeftWidth = display.widthPixels;
     var songClientButton = clientButton(songButtonText);
+	songClientButton.setLayoutParams(new LinearLayout_.LayoutParams(songLeftWidth - dip2px(10) - dip2px(50), LinearLayout_.LayoutParams.WRAP_CONTENT));
     songClientButton.setOnClickListener(new View_.OnClickListener() {
         onClick: function(v) {
             VertexClientPE.MusicUtils.isPaused = false;
@@ -6606,8 +6711,17 @@ function songButton(song, barLayout) {
             VertexClientPE.MusicUtils.startMusicPlayer(song);
         }
     });
+	
+	var songRightButton = clientButton("...");
+	songRightButton.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(50), LinearLayout_.LayoutParams.WRAP_CONTENT));
+    songRightButton.setOnClickListener(new View_.OnClickListener() {
+        onClick: function(v) {
+            VertexClientPE.showSongDialog(song, songClientButton, barLayout);
+        }
+    });
     
     songLayout.addView(songClientButton);
+    songLayout.addView(songRightButton);
     return songLayout;
 }
 
@@ -7087,6 +7201,53 @@ function categoryTab(category) {
     categoryTabLayout.addView(defaultClientButton);
     
     return categoryTabLayout;
+}
+
+var currentMPTab = "All";
+
+function musicPlayerTab(name, tabLayout, songLayout, playBar) {
+    var musicPlayerTabHolderLayout = new LinearLayout_(CONTEXT);
+    musicPlayerTabHolderLayout.setOrientation(1);
+    musicPlayerTabHolderLayout.setGravity(Gravity_.CENTER);
+    
+    var defaultClientButton = clientButton(name);
+    defaultClientButton.setAlpha(0.54);
+	defaultClientButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2 - dip2px(5), LinearLayout_.LayoutParams.WRAP_CONTENT));
+    if(currentMPTab == name) {
+        defaultClientButton.setTextColor(Color_.GREEN);
+        defaultClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+    }
+    defaultClientButton.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
+    defaultClientButton.setMarqueeRepeatLimit(-1);
+    defaultClientButton.setSingleLine();
+    defaultClientButton.setHorizontallyScrolling(true);
+    defaultClientButton.setSelected(true);
+    defaultClientButton.setOnClickListener(new View_.OnClickListener({
+        onClick: function(viewarg) {
+            if(currentMPTab != name) {
+                currentMPTab = name;
+                tabLayout.removeAllViews();
+                songLayout.removeAllViews();
+                
+                var categories = ["All", "Favorite"];
+    
+                categories.forEach(function(element, index, array) {
+                    tabLayout.addView(new musicPlayerTab(element, tabLayout, songLayout, playBar));
+                });
+				
+				VertexClientPE.MusicUtils.songList.forEach(function(element, index, array) {
+					if(currentMPTab == "Favorite" && sharedPref.getString("VertexClientPE.songs." + element.title + ".isFavorite", "false") == "false") {
+						return;
+					}
+					songLayout.addView(songButton(element, playBar));
+                });
+            }
+        }
+    }));
+    //var _0x9276=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\uD83D\uDD12\x20","\x73\x65\x74\x54\x65\x78\x74"];if(isProFeature&&VertexClientPE[_0x9276[0]]()!=_0x9276[1]){defaultClientButton[_0x9276[3]](_0x9276[2]+mod.name)}
+    musicPlayerTabHolderLayout.addView(defaultClientButton);
+    
+    return musicPlayerTabHolderLayout;
 }
 
 var currentTabGUICategory;
@@ -10673,16 +10834,26 @@ function musicPlayerScreen() {
                             mpCurrentPositionView.setText(VertexClientPE.MusicUtils.milliSecToMinString(VertexClientPE.MusicUtils.mp.getCurrentPosition()));
                         }
                     });
+					
+					var mpTabLayout = new LinearLayout_(CONTEXT);
+					mpTabLayout.setOrientation(LinearLayout_.HORIZONTAL);
+					
+					mpTabLayout.addView(musicPlayerTab("All", mpTabLayout, musicPlayerMenuLayout, musicPlayerBar));
+					mpTabLayout.addView(musicPlayerTab("Favorite", mpTabLayout, musicPlayerMenuLayout, musicPlayerBar));
                     
                     musicPlayerMenuLayout1.addView(musicPlayerTitle);
                     musicPlayerMenuLayout1.addView(musicPlayerEnter);
                     musicPlayerMenuLayout1.addView(mpLayout);
+					musicPlayerMenuLayout1.addView(mpTabLayout);
                     musicPlayerMenuLayoutScroll.addView(musicPlayerMenuLayout);
                     musicPlayerMenuLayout1.addView(musicPlayerMenuLayoutScroll);
                     
                     VertexClientPE.MusicUtils.songList.forEach(function(element, index, array) {
-                        musicPlayerMenuLayout.addView(songButton(element, musicPlayerBar));
-                    });
+						if(currentMPTab == "Favorite" && sharedPref.getString("VertexClientPE.songs." + element.title + ".isFavorite", "false") == "false") {
+							return;
+						}
+						musicPlayerMenuLayout.addView(songButton(element, musicPlayerBar));
+					});
 
                     musicPlayerMenu = new PopupWindow_(musicPlayerMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
                     musicPlayerMenu.setBackgroundDrawable(backgroundGradient());
