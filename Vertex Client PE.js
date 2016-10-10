@@ -12174,7 +12174,7 @@ function showHacksList() {
                             if(enabledHacksCounter != 0) {
                                 statesText += " - "
                             }
-                            statesText += element.name;
+                            statesText += sharedPref.getString("VertexClientPE.mods." + element.name + ".name", element.name);
                             enabledHacksCounter++;
                         }
                     });
@@ -12244,7 +12244,7 @@ function updateHacksList() {
                             if(enabledHacksCounter != 0) {
                                 statesText += " - "
                             }
-                            statesText += element.name;
+                            statesText += sharedPref.getString("VertexClientPE.mods." + element.name + ".name", element.name);
                             enabledHacksCounter++;
                         }
                     });
@@ -12775,6 +12775,40 @@ function overlayWebBrowser() {
     CONTEXT.runOnUiThread(new Runnable_({
         run: function() {
             try {
+				var backPageWebBrowserLayout = new LinearLayout_(CONTEXT);
+                var backPageWebBrowserButton = new Button_(CONTEXT);
+                backPageWebBrowserButton.setText("\u2190");//Text
+                backPageWebBrowserButton.getBackground().setColorFilter(Color_.parseColor("#0B6138"), PorterDuff_.Mode.MULTIPLY);
+                backPageWebBrowserButton.setTextColor(Color_.WHITE);
+                backPageWebBrowserButton.setOnClickListener(new View_.OnClickListener({
+                    onClick: function(viewarg) {
+                        if(webBrowserWebView != null) {
+							if(webBrowserWebView.canGoBack()) {
+								webBrowserWebView.goBack();
+							} else {
+								VertexClientPE.toast("Can't go any further!");
+							}
+                        }
+                    }
+                }));
+                backPageWebBrowserLayout.addView(backPageWebBrowserButton);
+				
+				var forwardPageWebBrowserLayout = new LinearLayout_(CONTEXT);
+                var forwardPageWebBrowserButton = new Button_(CONTEXT);
+                forwardPageWebBrowserButton.setText("\u2192");//Text
+                forwardPageWebBrowserButton.getBackground().setColorFilter(Color_.parseColor("#0B6138"), PorterDuff_.Mode.MULTIPLY);
+                forwardPageWebBrowserButton.setTextColor(Color_.WHITE);
+                forwardPageWebBrowserButton.setOnClickListener(new View_.OnClickListener({
+                    onClick: function(viewarg) {
+						if(webBrowserWebView.canGoForward()) {
+							webBrowserWebView.goForward();
+						} else {
+							VertexClientPE.toast("Can't go any further!");
+						}
+                    }
+                }));
+                forwardPageWebBrowserLayout.addView(forwardPageWebBrowserButton);
+				
                 var reloadWebBrowserLayout = new LinearLayout_(CONTEXT);
                 var reloadWebBrowserButton = new Button_(CONTEXT);
                 reloadWebBrowserButton.setText("\u21BB");//Text
@@ -12808,6 +12842,8 @@ function overlayWebBrowser() {
                 xWebBrowserButton.setTextColor(Color_.WHITE);
                 xWebBrowserButton.setOnClickListener(new View_.OnClickListener({
                     onClick: function(viewarg) {
+                        backPageWebBrowserUI.dismiss(); //Close
+                        forwardPageWebBrowserUI.dismiss(); //Close
                         reloadWebBrowserUI.dismiss(); //Close
                         urlBarWebBrowserUI.dismiss(); //Close
                         exitWebBrowserUI.dismiss(); //Close
@@ -12816,14 +12852,22 @@ function overlayWebBrowser() {
                     }
                 }));
                 xWebBrowserLayout.addView(xWebBrowserButton);
+				
+				backPageWebBrowserUI = new PopupWindow_(backPageWebBrowserLayout, dip2px(40), dip2px(40));
+                backPageWebBrowserUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+                backPageWebBrowserUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+				
+				forwardPageWebBrowserUI = new PopupWindow_(forwardPageWebBrowserLayout, dip2px(40), dip2px(40));
+                forwardPageWebBrowserUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+                forwardPageWebBrowserUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, dip2px(40), 0);
                 
                 reloadWebBrowserUI = new PopupWindow_(reloadWebBrowserLayout, dip2px(40), dip2px(40));
                 reloadWebBrowserUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                reloadWebBrowserUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+                reloadWebBrowserUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, dip2px(80), 0);
 				
 				urlBarWebBrowserUI = new PopupWindow_(urlBarWebBrowserLayout, dip2px(40), dip2px(40));
                 urlBarWebBrowserUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                urlBarWebBrowserUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, dip2px(40), 0);
+                urlBarWebBrowserUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, dip2px(120), 0);
                 
                 exitWebBrowserUI = new PopupWindow_(xWebBrowserLayout, dip2px(40), dip2px(40));
                 exitWebBrowserUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
