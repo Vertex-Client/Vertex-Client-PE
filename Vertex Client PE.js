@@ -164,6 +164,7 @@ var screenshotModeSetting = "default";
 var killToMorphSetting = "off";
 var fontSetting = "default";
 var showMoneyToastsSetting = "on";
+var mainButtonStyleSetting = "normal";
 //---------------------------
 var cmdPrefix = ".";
 //---------------------------
@@ -6100,6 +6101,7 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + killToMorphSetting.toString());
     outWrite.append("," + fontSetting.toString());
     outWrite.append("," + showMoneyToastsSetting.toString());
+    outWrite.append("," + mainButtonStyleSetting.toString());
     //outWrite.append("," + cmdPrefix.toString());
 
     outWrite.close();
@@ -6215,6 +6217,9 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[30] != null && arr[30] != undefined) {
             showMoneyToastsSetting = arr[30];
+        }
+		if (arr[31] != null && arr[31] != undefined) {
+            mainButtonStyleSetting = arr[31];
         }
         fos.close();
         VertexClientPE.loadAutoSpammerSettings();
@@ -9411,6 +9416,26 @@ function settingsScreen() {
                         }
                     }
                     }));
+					
+					var mainButtonStyleSettingFunc = new settingButton("Main button style", "Sets the main menu's button style.");
+                    var mainButtonStyleSettingButton = mainButtonStyleSettingFunc.getButton();
+                    if(mainButtonStyleSetting == "normal") {
+                        mainButtonStyleSettingButton.setText("Normal");
+                    } else if(mainButtonStyleSetting == "no_background") {
+                        mainButtonStyleSettingButton.setText("Invisible background");
+                    }
+                    mainButtonStyleSettingButton.setOnClickListener(new View_.OnClickListener({
+                    onClick: function(viewarg){
+                        if(mainButtonStyleSetting == "normal") {
+                            mainButtonStyleSetting = "no_background";
+                            mainButtonStyleSettingButton.setText("Invisible background");
+                        } else if(mainButtonStyleSetting == "no_background") {
+                            mainButtonStyleSetting = "normal";
+                            mainButtonStyleSettingButton.setText("Normal");
+                        }
+						VertexClientPE.saveMainSettings();
+                    }
+                    }));
                     
                     var themeTitle = clientSectionTitle("Theme", "rainbow");
                     
@@ -9816,6 +9841,7 @@ function settingsScreen() {
                     VertexClientPE.addView(settingsMenuLayout, hacksListModeSettingFunc);
                     VertexClientPE.addView(settingsMenuLayout, tabGUIModeSettingFunc);
                     VertexClientPE.addView(settingsMenuLayout, mainButtonPositionSettingFunc);
+                    VertexClientPE.addView(settingsMenuLayout, mainButtonStyleSettingFunc);
                     settingsMenuLayout.addView(themeTitle);
 					VertexClientPE.addView(settingsMenuLayout, themeSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, useLightThemeSettingFunc);
@@ -11130,6 +11156,123 @@ VertexClientPE.showURLBarDialog = function() {
     });
 }
 
+VertexClientPE.latestOutput = "";
+
+VertexClientPE.evalJSOnWebView = function(whatToEval, webView) {
+	webView.evaluateJavascript(whatToEval + ".toString()", new android.webkit.ValueCallback() {
+        onReceiveValue: function(s) {
+            VertexClientPE.latestOutput = s;
+        }
+    });
+}
+
+VertexClientPE.getEvalOutput = function() {
+	return VertexClientPE.latestOutput;
+}
+
+VertexClientPE.showF12Dialog = function() {
+    CONTEXT.runOnUiThread(new Runnable_() {
+        run: function() {
+            try {
+				if(webBrowserWebView == null || webBrowserWebView == undefined) {
+					throw new Error("webBrowserWebView is not defined!");
+				}
+                var consoleDialogTitle = clientTextView("Developer Tools (F12)", true);
+                var enterButton = clientButton("Enter");
+                var closeButton = clientButton("Close");
+                var dialogLayout = new LinearLayout_(CONTEXT);
+                dialogLayout.setBackgroundDrawable(backgroundGradient());
+                dialogLayout.setOrientation(LinearLayout_.VERTICAL);
+                dialogLayout.setPadding(10, 10, 10, 10);
+				
+				var dialogOutputLayout1 = new LinearLayout_(CONTEXT);
+				dialogOutputLayout1.setOrientation(LinearLayout_.VERTICAL);
+				dialogOutputLayout1.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - dip2px(10), display.heightPixels / 2));
+				dialogOutputLayout1.setBackgroundDrawable(backgroundSpecial());
+				
+				var dialogOutputScroll = new ScrollView_(CONTEXT);
+				
+				var dialogOutputLayout = new LinearLayout_(CONTEXT);
+				dialogOutputLayout.setOrientation(LinearLayout_.VERTICAL);
+				
+				var dialogInputLayout1 = new LinearLayout_(CONTEXT);
+				dialogInputLayout1.setOrientation(LinearLayout_.VERTICAL);
+				dialogInputLayout1.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - dip2px(10), display.heightPixels / 6));
+				dialogInputLayout1.setBackgroundDrawable(backgroundSpecial(null, "#212121|#ffffff"));
+				
+				var dialogInputScroll = new ScrollView_(CONTEXT);
+				
+				var dialogInputLayout = new LinearLayout_(CONTEXT);
+				dialogInputLayout.setOrientation(LinearLayout_.VERTICAL);
+				
+				var outputTextView = clientTextView("");
+				dialogOutputLayout.addView(outputTextView);
+				
+				var inputBar = new EditText(CONTEXT);
+				inputBar.setTextColor(Color_.WHITE);
+				dialogInputLayout.addView(inputBar);
+				
+				dialogOutputScroll.addView(dialogOutputLayout);
+				dialogOutputLayout1.addView(dialogOutputScroll);
+				
+				dialogInputScroll.addView(dialogInputLayout);
+				dialogInputLayout1.addView(dialogInputScroll);
+				
+                dialogLayout.addView(consoleDialogTitle);
+				dialogLayout.addView(dialogOutputLayout1);
+				dialogLayout.addView(dialogInputLayout1);
+                dialogLayout.addView(enterButton);
+                dialogLayout.addView(closeButton);
+                var dialog = new Dialog_(CONTEXT);
+                dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+                dialog.setContentView(dialogLayout);
+                dialog.setTitle("Developer Tools (F12)");
+                dialog.show();
+                var window = dialog.getWindow();
+                window.setLayout(display.widthPixels, display.heightPixels);
+				enterButton.setOnClickListener(new View_.OnClickListener() {
+                    onClick: function(view) {
+						try {
+							var input = inputBar.getText();
+							VertexClientPE.evalJSOnWebView(input, webBrowserWebView);
+							new Thread_(new Runnable_() {
+								run: function() {
+									while(VertexClientPE.getEvalOutput() == null || VertexClientPE.getEvalOutput() == "") {
+										Thread_.sleep(10);
+									}
+									CONTEXT.runOnUiThread(new Runnable_() {
+										run: function() {
+											if(outputTextView.getText() == "") {
+												var outputText;
+												outputText = VertexClientPE.getEvalOutput();
+											} else {
+												outputText = outputTextView.getText() + "\n" + VertexClientPE.getEvalOutput();
+											}
+											outputTextView.setText(outputText);
+											VertexClientPE.latestOutput = null;
+										}
+									});
+								}
+							}).start();
+						} catch(e) {
+							print(e);
+						}
+                    }
+                });
+                closeButton.setOnClickListener(new View_.OnClickListener() {
+                    onClick: function(view) {
+                        dialog.dismiss();
+                    }
+                });
+            } catch(e) {
+                print("Error: " + e);
+                VertexClientPE.showBugReportDialog(e);
+            }
+        }
+    });
+}
+
 function webBrowserScreen() {
     VertexClientPE.menuIsShowing = true;
     var display = new DisplayMetrics_();
@@ -12048,13 +12191,25 @@ function showMenuButton() {
     if(menuAnimationsSetting == "on") {
         GUI.setAnimationStyle(android.R.style.Animation_Translucent);
     }
+	
+	var background;
+	if(mainButtonStyleSetting == "normal") {
+		if(mainButtonPositionSetting == "top-right") {
+			background = backgroundSpecial("cornerleft", themeSetting, true);
+		} else {
+			background = backgroundSpecial("cornerright", themeSetting, true);
+		}
+	} else if(mainButtonStyleSetting == "no_background") {
+		background = new ColorDrawable_(Color_.TRANSPARENT);
+	}
+	
     if(mainButtonPositionSetting == "top-right") {
         layout.setPadding(10, 0, 0, 10);
-        GUI.setBackgroundDrawable(backgroundSpecial("cornerleft", themeSetting, true));
+        GUI.setBackgroundDrawable(background);
         GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
     } else {
         layout.setPadding(0, 0, 10, 10);
-        GUI.setBackgroundDrawable(backgroundSpecial("cornerright", themeSetting, true));
+        GUI.setBackgroundDrawable(background);
         GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
     }
     
@@ -12834,6 +12989,19 @@ function overlayWebBrowser() {
                     }
                 }));
                 urlBarWebBrowserLayout.addView(urlBarWebBrowserButton);
+				
+				var devWebBrowserLayout = new LinearLayout_(CONTEXT);
+                var devWebBrowserButton = new Button_(CONTEXT);
+                devWebBrowserButton.setText("F12");//Text
+                devWebBrowserButton.getBackground().setColorFilter(Color_.parseColor("#0B6138"), PorterDuff_.Mode.MULTIPLY);
+                devWebBrowserButton.setTextColor(Color_.WHITE);
+                devWebBrowserButton.setOnClickListener(new View_.OnClickListener({
+                    onClick: function(viewarg) {
+						VertexClientPE.showF12Dialog();
+						VertexClientPE.toast("Still work in progress!");
+                    }
+                }));
+                devWebBrowserLayout.addView(devWebBrowserButton);
                 
                 var xWebBrowserLayout = new LinearLayout_(CONTEXT);
                 xWebBrowserButton = new Button_(CONTEXT);
@@ -12846,6 +13014,7 @@ function overlayWebBrowser() {
                         forwardPageWebBrowserUI.dismiss(); //Close
                         reloadWebBrowserUI.dismiss(); //Close
                         urlBarWebBrowserUI.dismiss(); //Close
+                        devWebBrowserUI.dismiss(); //Close
                         exitWebBrowserUI.dismiss(); //Close
                         webBrowserMenu.dismiss(); //Close
                         showMenuButton();
@@ -12859,7 +13028,7 @@ function overlayWebBrowser() {
 				
 				forwardPageWebBrowserUI = new PopupWindow_(forwardPageWebBrowserLayout, dip2px(40), dip2px(40));
                 forwardPageWebBrowserUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                forwardPageWebBrowserUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, dip2px(40), 0);
+				forwardPageWebBrowserUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, dip2px(40), 0);
                 
                 reloadWebBrowserUI = new PopupWindow_(reloadWebBrowserLayout, dip2px(40), dip2px(40));
                 reloadWebBrowserUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
@@ -12868,7 +13037,13 @@ function overlayWebBrowser() {
 				urlBarWebBrowserUI = new PopupWindow_(urlBarWebBrowserLayout, dip2px(40), dip2px(40));
                 urlBarWebBrowserUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
                 urlBarWebBrowserUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, dip2px(120), 0);
-                
+				
+				devWebBrowserUI = new PopupWindow_(devWebBrowserLayout, dip2px(60), dip2px(40));
+                devWebBrowserUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+                if(VertexClientPE.isDevMode()) {
+					devWebBrowserUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, dip2px(160), 0);
+                }
+				
                 exitWebBrowserUI = new PopupWindow_(xWebBrowserLayout, dip2px(40), dip2px(40));
                 exitWebBrowserUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
                 exitWebBrowserUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
