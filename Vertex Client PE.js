@@ -165,6 +165,7 @@ var killToMorphSetting = "off";
 var fontSetting = "default";
 var showMoneyToastsSetting = "on";
 var mainButtonStyleSetting = "normal";
+var webBrowserStartPageSetting = "https://google.com/";
 //---------------------------
 var cmdPrefix = ".";
 //---------------------------
@@ -361,6 +362,10 @@ String.prototype.replaceAll = function (target, replacement, insensitive) {
     }
 };
 
+Array.prototype.getRandomElement = function() {
+	return this[Math.floor(Math.random() * this.length)];
+}
+
 var isSupported = true;
 var isAuthorized = true;
 
@@ -490,6 +495,15 @@ var VertexClientPE = {
 VertexClientPE.menuIsShowing = false;
 
 VertexClientPE.trailsMode = "off";
+
+VertexClientPE.setWebbrowserStartPage = function(url) {
+	editor.putString("VertexClientPE.webBrowser.startPage", url);
+	editor.commit();
+}
+
+VertexClientPE.getWebbrowserStartPage = function() {
+	return sharedPref.getString("VertexClientPE.webBrowser.startPage", "https://google.com/");
+}
 
 VertexClientPE.Utils.loadChests = function() {
     VertexClientPE.Utils.chests = [];
@@ -3036,6 +3050,25 @@ var tapPoint = {
 	}
 }
 
+var randomTP = {
+	name: "RandomTP",
+    desc: "Teleports you to a random entity when tapping the ground.",
+    category: VertexClientPE.category.MOVEMENT,
+    type: "Mod",
+	state: false,
+    isStateMod: function() {
+        return true;
+    },
+	onToggle: function() {
+        this.state = !this.state;
+    },
+	onUseItem: function(x, y, z, itemId, blockId, side) {
+		preventDefault();
+		var randomEnt = Entity.getAll().getRandomElement();
+		Entity.setPosition(getPlayerEnt(), Entity.getX(randomEnt), Entity.getY(randomEnt) + 1.8, Entity.getZ(randomEnt));
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(antiKnockback);
 VertexClientPE.registerModule(antiBurn);
@@ -3067,6 +3100,7 @@ VertexClientPE.registerModule(lifeSaver);
 VertexClientPE.registerModule(liquidWalk);
 VertexClientPE.registerModule(noDownGlide);
 //VertexClientPE.registerModule(noInvisBedrock);
+VertexClientPE.registerModule(randomTP);
 VertexClientPE.registerModule(ride);
 VertexClientPE.registerModule(speedHack);
 VertexClientPE.registerModule(tapJumpRun);
@@ -5337,6 +5371,52 @@ VertexClientPE.showCategoryDialog = function(titleView, currentName, categoryId)
     });
 }
 
+VertexClientPE.showWebbrowserStartPageDialog = function() {
+    CONTEXT.runOnUiThread(new Runnable_() {
+        run: function() {
+            try {
+                var webBrowserStartPageDialogTitle = clientTextView("Change Webbrowser startpage", true);
+                var btn = clientButton("Close");
+                var inputBar = new EditText(CONTEXT);
+                var dialogLayout = new LinearLayout_(CONTEXT);
+                dialogLayout.setBackgroundDrawable(backgroundGradient());
+                dialogLayout.setOrientation(LinearLayout_.VERTICAL);
+                dialogLayout.setPadding(10, 10, 10, 10);
+                dialogLayout.addView(webBrowserStartPageDialogTitle);
+                dialogLayout.addView(inputBar);
+                dialogLayout.addView(btn);
+                var dialog = new Dialog_(CONTEXT);
+                dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+                dialog.setContentView(dialogLayout);
+                dialog.setTitle("Change Webbrowser startpage");
+                inputBar.setHint("Webbrowser startpage");
+                inputBar.setText(webBrowserStartPageSetting);
+                inputBar.setTextColor(Color_.WHITE);
+                dialog.show();
+                inputBar.addTextChangedListener(new TextWatcher_() {
+                    onTextChanged: function() {
+                        webBrowserStartPageSetting = inputBar.getText();
+                    }
+                });
+                btn.setOnClickListener(new View_.OnClickListener() {
+                    onClick: function(view) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.setOnDismissListener(new DialogInterface_.OnDismissListener() {
+                    onDismiss: function() {
+                        VertexClientPE.saveMainSettings();
+                    }
+                });
+            } catch(e) {
+                print("Error: " + e);
+                VertexClientPE.showBugReportDialog(e);
+            }
+        }
+    });
+}
+
 VertexClientPE.switchGameMode = function() {
     if(Level.getGameMode() == 0) {
         Level.setGameMode(1);
@@ -6102,6 +6182,7 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + fontSetting.toString());
     outWrite.append("," + showMoneyToastsSetting.toString());
     outWrite.append("," + mainButtonStyleSetting.toString());
+    outWrite.append("," + webBrowserStartPageSetting.toString());
     //outWrite.append("," + cmdPrefix.toString());
 
     outWrite.close();
@@ -6220,6 +6301,9 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[31] != null && arr[31] != undefined) {
             mainButtonStyleSetting = arr[31];
+        }
+		if (arr[32] != null && arr[32] != undefined) {
+            webbrowserStartPageSetting = arr[32];
         }
         fos.close();
         VertexClientPE.loadAutoSpammerSettings();
@@ -9836,6 +9920,15 @@ function settingsScreen() {
                         }*/
                     }
                     }));
+					
+					var webBrowserStartPageSettingFunc = new settingButton("Webbrowser startpage", "Change the default webbrowser page.");
+                    var webBrowserStartPageSettingButton = webBrowserStartPageSettingFunc.getButton();
+                    webBrowserStartPageSettingButton.setText("Change");
+                    webBrowserStartPageSettingButton.setOnClickListener(new View_.OnClickListener({
+						onClick: function(viewarg) {
+							VertexClientPE.showWebbrowserStartPageDialog();
+						}
+                    }));
                     
                     settingsMenuLayout.addView(generalTitle);
                     VertexClientPE.addView(settingsMenuLayout, hacksListModeSettingFunc);
@@ -9857,6 +9950,7 @@ function settingsScreen() {
 					VertexClientPE.addView(settingsMenuLayout, showNewsSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, showMoneyToastsSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, playMusicSettingFunc);
+					VertexClientPE.addView(settingsMenuLayout, webBrowserStartPageSettingFunc);
 
                     settingsMenu = new PopupWindow_(settingsMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
                     settingsMenu.setBackgroundDrawable(backgroundGradient());
@@ -11170,6 +11264,8 @@ VertexClientPE.getEvalOutput = function() {
 	return VertexClientPE.latestOutput;
 }
 
+var webbrowserFullOutputText = "";
+
 VertexClientPE.showF12Dialog = function() {
     CONTEXT.runOnUiThread(new Runnable_() {
         run: function() {
@@ -11205,7 +11301,7 @@ VertexClientPE.showF12Dialog = function() {
 				var dialogInputLayout = new LinearLayout_(CONTEXT);
 				dialogInputLayout.setOrientation(LinearLayout_.VERTICAL);
 				
-				var outputTextView = clientTextView("");
+				var outputTextView = clientTextView(webbrowserFullOutputText);
 				dialogOutputLayout.addView(outputTextView);
 				
 				var inputBar = new EditText(CONTEXT);
@@ -11249,6 +11345,7 @@ VertexClientPE.showF12Dialog = function() {
 											} else {
 												outputText = outputTextView.getText() + "\n" + VertexClientPE.getEvalOutput();
 											}
+											webbrowserFullOutputText = outputText;
 											outputTextView.setText(outputText);
 											VertexClientPE.latestOutput = null;
 										}
@@ -11322,7 +11419,7 @@ function webBrowserScreen() {
                 webBrowserWebView.setWebChromeClient(new WebChromeClient_());
                 webBrowserWebView.setWebViewClient(new WebViewClient_());
 
-                webBrowserWebView.loadUrl("https://google.com/");
+                webBrowserWebView.loadUrl(webBrowserStartPageSetting);
                 
                 webBrowserMenuLayout.addView(webBrowserWebView);
 
@@ -11336,6 +11433,7 @@ function webBrowserScreen() {
                                 xWebBrowserButton.performClick();
                             }
                         }
+						webbrowserFullOutputText = null;
                     }
                 });
                 webBrowserMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
@@ -12925,6 +13023,7 @@ function exitUpdateCenter() {
 }
 
 var xWebBrowserButton;
+var setStartPageWebBrowserButton;
 
 function overlayWebBrowser() {
     CONTEXT.runOnUiThread(new Runnable_({
