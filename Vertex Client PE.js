@@ -617,6 +617,378 @@ var tts = new TextToSpeech_(CONTEXT, new TextToSpeech_.OnInitListener({
     }
 }));
 
+//########################################################################################################################################################
+// Minecraft Button Library
+//########################################################################################################################################################
+
+// Library version: 2.1.0
+// Made by Dennis Motta, also known as Desno365
+// https://github.com/Desno365/Minecraft-Button-Library
+
+/*
+	The MIT License (MIT)
+
+	Copyright (c) 2015 Dennis Motta 
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+	SOFTWARE.
+*/
+
+var MinecraftButtonLibrary = {};
+
+//########## CUSTOMIZATION VARIABLES ##########
+// These are the default values of the library, you can change them to make the buttons look how you want to.
+MinecraftButtonLibrary.defaultButtonTextSize = 16; // size of the text
+MinecraftButtonLibrary.defaultButtonPadding = 8; // empty space between borders of the button and the text
+MinecraftButtonLibrary.defaultButtonTextLineSpacing = 4; // empty space between every line of text (can be seen only when the text gets displayed with 2 or more lines)
+MinecraftButtonLibrary.shouldDisplayPaddingAnimationWhenPressed = true; // when true the text is moved down a bit when pressed
+MinecraftButtonLibrary.defaultButtonTextColor = "#FFDDDDDD";
+MinecraftButtonLibrary.defaultButtonTextPressedColor = "#FFFFFF9C";
+MinecraftButtonLibrary.defaultButtonTextShadowColor = "#FF393939";
+MinecraftButtonLibrary.defaultButtonTextPressedShadowColor = "#FF3E3E28";
+//########## CUSTOMIZATION VARIABLES - END ##########
+
+
+//########## GLOBAL VARIABLES ##########
+MinecraftButtonLibrary.Resources = {};
+MinecraftButtonLibrary.ProcessedResources = {};
+
+MinecraftButtonLibrary.context = com.mojang.minecraftpe.MainActivity.currentMainActivity.get();
+MinecraftButtonLibrary.metrics = new android.util.DisplayMetrics();
+MinecraftButtonLibrary.context.getWindowManager().getDefaultDisplay().getMetrics(MinecraftButtonLibrary.metrics);
+MinecraftButtonLibrary.sdcard = new android.os.Environment.getExternalStorageDirectory();
+MinecraftButtonLibrary.LOG_TAG = "Minecraft Button Library ";
+
+MinecraftButtonLibrary.ProcessedResources.font = VertexClientPE.font;
+MinecraftButtonLibrary.ProcessedResources.mcNormalNineDrawable = null;
+MinecraftButtonLibrary.ProcessedResources.mcPressedNineDrawable = null;
+//########## GLOBAL VARIABLES -  END ##########
+
+
+
+//########################################################################################################################################################
+// LIBRARY
+//########################################################################################################################################################
+
+// MinecraftButton(int textSize, bool enableSound, string customTextColor)
+// set an argument null if you want to use the default value
+function MinecraftButton(textSize, enableSound, customTextColor)
+{
+	// textSize is the size of the text, enableSound is a boolean that when sets to true makes the button do a sound when pressed, customTextColor is the string of the color
+
+	if(textSize == null)
+		textSize = MinecraftButtonLibrary.defaultButtonTextSize;
+	if(enableSound == null)
+		enableSound = true;
+	if(customTextColor == null)
+		customTextColor = MinecraftButtonLibrary.defaultButtonTextColor;
+
+	var button = new android.widget.Button(MinecraftButtonLibrary.context);
+	button.setTextSize(textSize);
+	button.setOnTouchListener(new android.view.View.OnTouchListener()
+	{
+		onTouch: function(v, motionEvent)
+		{
+			MinecraftButtonLibrary.onTouch(v, motionEvent, enableSound, customTextColor);
+			return false;
+		}
+	});
+	if (android.os.Build.VERSION.SDK_INT >= 14) // 4.0 and up
+		button.setAllCaps(false);
+	MinecraftButtonLibrary.setButtonBackground(button, MinecraftButtonLibrary.ProcessedResources.mcNormalNineDrawable);
+	button.setTag(false); // is pressed?
+	button.setSoundEffectsEnabled(false);
+	button.setGravity(android.view.Gravity.CENTER);
+	button.setTextColor(android.graphics.Color.parseColor(customTextColor));
+	button.setPadding(MinecraftButtonLibrary.convertDpToPixel(MinecraftButtonLibrary.defaultButtonPadding), MinecraftButtonLibrary.convertDpToPixel(MinecraftButtonLibrary.defaultButtonPadding), MinecraftButtonLibrary.convertDpToPixel(MinecraftButtonLibrary.defaultButtonPadding), MinecraftButtonLibrary.convertDpToPixel(MinecraftButtonLibrary.defaultButtonPadding));
+	MinecraftButtonLibrary.addMinecraftStyleToTextView(button, MinecraftButtonLibrary.defaultButtonTextShadowColor, MinecraftButtonLibrary.defaultButtonTextLineSpacing);
+
+	return button;
+}
+
+// ######### TEXTVIEW UTILS functions #########
+// use this function on your textview (or subclasses) to apply a Minecraft style on it
+MinecraftButtonLibrary.addMinecraftStyleToTextView = function(textview, shadowColor, lineSpacing)
+{
+	// shadowColor is the string of the color, lineSpacing is the empty space between multiple lines in pixels (it will be converted in dp later)
+	// NOTE: you must set the text size before calling this function!
+
+	if(lineSpacing == null)
+		lineSpacing = MinecraftButtonLibrary.defaultButtonTextLineSpacing;
+	if(shadowColor == null)
+		shadowColor = MinecraftButtonLibrary.defaultButtonTextShadowColor;
+
+	textview.setTypeface(MinecraftButtonLibrary.ProcessedResources.font);
+	textview.setPaintFlags(textview.getPaintFlags() | android.graphics.Paint.SUBPIXEL_TEXT_FLAG);
+	textview.setLineSpacing(MinecraftButtonLibrary.convertDpToPixel(lineSpacing), 1);
+	MinecraftButtonLibrary.setShadowToMinecraftFont(textview, shadowColor, lineSpacing);
+}
+
+MinecraftButtonLibrary.setShadowToMinecraftFont = function(textview, shadowColor, lineSpacing)
+{
+	if(lineSpacing == null)
+		lineSpacing = MinecraftButtonLibrary.defaultButtonTextLineSpacing;
+
+	if (android.os.Build.VERSION.SDK_INT >= 19) // 4.4 and up
+		textview.setShadowLayer(1, Math.round((textview.getLineHeight() - MinecraftButtonLibrary.convertDpToPixel(lineSpacing)) / 8), Math.round((textview.getLineHeight() - MinecraftButtonLibrary.convertDpToPixel(lineSpacing)) / 8), android.graphics.Color.parseColor(shadowColor));
+	else
+		textview.setShadowLayer(0.0001, Math.round((textview.getLineHeight() - MinecraftButtonLibrary.convertDpToPixel(lineSpacing)) / 8), Math.round((textview.getLineHeight() - MinecraftButtonLibrary.convertDpToPixel(lineSpacing)) / 8), android.graphics.Color.parseColor(shadowColor));
+}
+// ######### TEXTVIEW UTILS functions - END #########
+
+
+// ######### BUTTON UTILS functions #########
+MinecraftButtonLibrary.setButtonBackground = function(button, background)
+{
+	if (android.os.Build.VERSION.SDK_INT >= 16) // 4.1 and up
+		button.setBackground(background);
+	else
+		button.setBackgroundDrawable(background);
+}
+
+MinecraftButtonLibrary.convertDpToPixel = function(dp)
+{
+	var density = MinecraftButtonLibrary.metrics.density;
+	return (dp * density);
+}
+
+MinecraftButtonLibrary.onTouch = function(v, motionEvent, enableSound, customTextColor)
+{
+	if(enableSound == null)
+		enableSound = true;
+	if(customTextColor == null)
+		customTextColor = MinecraftButtonLibrary.defaultButtonTextColor;
+	
+	var action = motionEvent.getActionMasked();
+	if(action == android.view.MotionEvent.ACTION_DOWN)
+	{
+		// button pressed
+		MinecraftButtonLibrary.changeToPressedState(v);
+	}
+	if(action == android.view.MotionEvent.ACTION_CANCEL || action == android.view.MotionEvent.ACTION_UP)
+	{
+		// button released
+		MinecraftButtonLibrary.changeToNormalState(v, customTextColor);
+		
+		var rect = new android.graphics.Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+		if(rect.contains(v.getLeft() + motionEvent.getX(), v.getTop() + motionEvent.getY())) // detect if the event happens inside the view
+		{
+			// onClick will run soon
+
+			// play sound
+			if(enableSound)
+				Level.playSoundEnt(Player.getEntity(), "random.click", 100, 0);
+		}
+	}
+	if(action == android.view.MotionEvent.ACTION_MOVE)
+	{
+		var rect = new android.graphics.Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+		if(rect.contains(v.getLeft() + motionEvent.getX(), v.getTop() + motionEvent.getY())) // detect if the event happens inside the view
+		{
+			// pointer inside the view
+			if(v.getTag() == false)
+			{
+				// restore pressed state
+				v.setTag(true); // is pressed?
+
+				MinecraftButtonLibrary.changeToPressedState(v);
+			}
+		} else
+		{
+			// pointer outside the view
+			if(v.getTag() == true)
+			{
+				// restore pressed state
+				v.setTag(false); // is pressed?
+
+				MinecraftButtonLibrary.changeToNormalState(v, customTextColor);
+			}
+		}
+	}
+}
+
+MinecraftButtonLibrary.changeToNormalState = function(button, customTextColor)
+{
+	MinecraftButtonLibrary.setButtonBackground(button, MinecraftButtonLibrary.ProcessedResources.mcNormalNineDrawable);
+	button.setTextColor(android.graphics.Color.parseColor(customTextColor));
+	MinecraftButtonLibrary.setShadowToMinecraftFont(button, MinecraftButtonLibrary.defaultButtonTextShadowColor, MinecraftButtonLibrary.defaultButtonTextLineSpacing);
+
+	// reset pressed padding
+	if(MinecraftButtonLibrary.shouldDisplayPaddingAnimationWhenPressed)
+		button.setPadding(MinecraftButtonLibrary.convertDpToPixel(MinecraftButtonLibrary.defaultButtonPadding), MinecraftButtonLibrary.convertDpToPixel(MinecraftButtonLibrary.defaultButtonPadding), MinecraftButtonLibrary.convertDpToPixel(MinecraftButtonLibrary.defaultButtonPadding), MinecraftButtonLibrary.convertDpToPixel(MinecraftButtonLibrary.defaultButtonPadding));
+}
+
+MinecraftButtonLibrary.changeToPressedState = function(button)
+{
+	MinecraftButtonLibrary.setButtonBackground(button, MinecraftButtonLibrary.ProcessedResources.mcPressedNineDrawable);
+	button.setTextColor(android.graphics.Color.parseColor(MinecraftButtonLibrary.defaultButtonTextPressedColor));
+	MinecraftButtonLibrary.setShadowToMinecraftFont(button, MinecraftButtonLibrary.defaultButtonTextPressedShadowColor, MinecraftButtonLibrary.defaultButtonTextLineSpacing);
+
+	// make the effect of a pressed button with padding
+	if(MinecraftButtonLibrary.shouldDisplayPaddingAnimationWhenPressed)
+		button.setPadding(MinecraftButtonLibrary.convertDpToPixel(MinecraftButtonLibrary.defaultButtonPadding), MinecraftButtonLibrary.convertDpToPixel(MinecraftButtonLibrary.defaultButtonPadding) + MinecraftButtonLibrary.convertDpToPixel(2), MinecraftButtonLibrary.convertDpToPixel(MinecraftButtonLibrary.defaultButtonPadding), MinecraftButtonLibrary.convertDpToPixel(MinecraftButtonLibrary.defaultButtonPadding) - MinecraftButtonLibrary.convertDpToPixel(2));
+}
+// ######### END - BUTTON UTILS functions #########
+
+
+// ######### CREATE NINE PATCH functions #########
+MinecraftButtonLibrary.createNinePatchFromRaw = function(bitmap, top, left, bottom, right)
+{
+	var buffer = MinecraftButtonLibrary.createNinePatchBuffer(top, left, bottom, right);
+	return new android.graphics.drawable.NinePatchDrawable(MinecraftButtonLibrary.context.getResources(), bitmap, buffer.array(), new android.graphics.Rect(), "");
+}
+
+MinecraftButtonLibrary.createNinePatchBuffer = function(top, left, bottom, right)
+{
+	// source https://gist.github.com/briangriffey/4391807
+
+	var NO_COLOR = 0x00000001;
+	var buffer = java.nio.ByteBuffer.allocate(84).order(java.nio.ByteOrder.nativeOrder());
+
+	//was translated
+	buffer.put(0x01);
+
+	//divx size
+	buffer.put(0x02);
+
+	//divy size
+	buffer.put(0x02);
+
+	//color size
+	buffer.put(0x09);
+
+	//skip
+	buffer.putInt(0);
+	buffer.putInt(0);
+	
+	//padding
+	buffer.putInt(0);
+	buffer.putInt(0);
+	buffer.putInt(0);
+	buffer.putInt(0);
+
+	//skip 4 bytes
+	buffer.putInt(0);
+
+	buffer.putInt(left);
+	buffer.putInt(right);
+	buffer.putInt(top);
+	buffer.putInt(bottom);
+	buffer.putInt(NO_COLOR);
+	buffer.putInt(NO_COLOR);
+	buffer.putInt(NO_COLOR);
+	buffer.putInt(NO_COLOR);
+	buffer.putInt(NO_COLOR);
+	buffer.putInt(NO_COLOR);
+	buffer.putInt(NO_COLOR);
+	buffer.putInt(NO_COLOR);
+	buffer.putInt(NO_COLOR);
+
+	return buffer;
+}
+
+MinecraftButtonLibrary.createButtonNormalNinePatch = function()
+{
+	var bitmap = android.graphics.Bitmap.createBitmap(MinecraftButtonLibrary.getImageFromTexturePack("images/gui/spritesheet.png"), 8, 32, 8, 8); // get only the correct image from the spritesheet
+	var scaledBitmap = MinecraftButtonLibrary.scaleBitmapToSize(bitmap, MinecraftButtonLibrary.convertDpToPixel(16), MinecraftButtonLibrary.convertDpToPixel(16)); // scale image to a bigger size and based on density
+
+	MinecraftButtonLibrary.ProcessedResources.mcNormalNineDrawable = MinecraftButtonLibrary.createNinePatchFromRaw(scaledBitmap, MinecraftButtonLibrary.convertDpToPixel(4), MinecraftButtonLibrary.convertDpToPixel(4), MinecraftButtonLibrary.convertDpToPixel(12), MinecraftButtonLibrary.convertDpToPixel(14)); // convert to NinePatch
+}
+
+MinecraftButtonLibrary.createButtonPressedNinePatch = function()
+{
+	var bitmap = android.graphics.Bitmap.createBitmap(MinecraftButtonLibrary.getImageFromTexturePack("images/gui/spritesheet.png"), 0, 32, 8, 8); // get only the correct image from the spritesheet
+	var scaledBitmap = MinecraftButtonLibrary.scaleBitmapToSize(bitmap, MinecraftButtonLibrary.convertDpToPixel(16), MinecraftButtonLibrary.convertDpToPixel(16)); // scale image to a bigger size and based on density
+
+	MinecraftButtonLibrary.ProcessedResources.mcPressedNineDrawable = MinecraftButtonLibrary.createNinePatchFromRaw(scaledBitmap, MinecraftButtonLibrary.convertDpToPixel(4), MinecraftButtonLibrary.convertDpToPixel(4), MinecraftButtonLibrary.convertDpToPixel(12), MinecraftButtonLibrary.convertDpToPixel(14)); // convert to NinePatch
+}
+// ######### END - CREATE NINE PATCH functions #########
+
+
+
+MinecraftButtonLibrary.writeFileFromByteArray = function(byteArray, path)
+{
+	var file = new java.io.File(path);
+	if(file.exists())
+		file['delete']();
+	file.createNewFile();
+	var stream = new java.io.FileOutputStream(file);
+	stream.write(byteArray);
+	stream.close();
+	byteArray = null;
+}
+// ######### END - CREATE TYPEFACE functions #########
+
+
+// ######### UTILS functions #########
+MinecraftButtonLibrary.getImageFromTexturePack = function(path)
+{
+	// note: throw error if the image wasn't found
+	var bytes = ModPE.getBytesFromTexturePack(path);
+	return android.graphics.BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+}
+
+MinecraftButtonLibrary.scaleBitmapToSize = function(image, width, height, filter)
+{
+	if(filter == null)
+		filter = false;
+	return android.graphics.Bitmap.createScaledBitmap(image, Math.round(width), Math.round(height), filter);
+}
+
+MinecraftButtonLibrary.deleteFile = function(path)
+{
+	var file = new java.io.File(path);
+
+	if(file.isDirectory())
+	{
+		var directoryFiles = file.listFiles();
+		for(var i in directoryFiles)
+		{
+			deleteFile(directoryFiles[i].getAbsolutePath());
+		}
+		file['delete']();
+	}
+
+	if(file.isFile())
+		file['delete']();
+}
+// ######### END - UTILS functions #########
+
+
+//########################################################################################################################################################
+// START CREATION OF RESOURCES
+//########################################################################################################################################################
+
+new java.lang.Thread(new java.lang.Runnable()
+{
+	run: function()
+	{
+		try
+		{
+			MinecraftButtonLibrary.createButtonNormalNinePatch();
+			MinecraftButtonLibrary.createButtonPressedNinePatch();
+		} catch(e)
+		{
+			print("Error " + e);
+		}
+	}
+}).start();
+
 /**
  * ########
  *  RENDER
@@ -2411,6 +2783,10 @@ var aimbot = {
             useKillauraRangeCheckBox.setTextColor(Color_.WHITE);
         }
         useKillauraRangeCheckBox.setTypeface(VertexClientPE.font);
+		
+		if(fontSetting == "minecraft") {
+			MinecraftButtonLibrary.addMinecraftStyleToTextView(useKillauraRangeCheckBox);
+		}
         useKillauraRangeCheckBox.setOnClickListener(new View_.OnClickListener() {
             onClick: function(v) {
                 aimbotUseKillauraRange = v.isChecked()?"on":"off";
@@ -2548,6 +2924,9 @@ var chestTracers = {
             groundModeCheckBox.setTextColor(Color_.WHITE);
         }
         groundModeCheckBox.setTypeface(VertexClientPE.font);
+		if(fontSetting == "minecraft") {
+			MinecraftButtonLibrary.addMinecraftStyleToTextView(groundModeCheckBox);
+		}
         groundModeCheckBox.setOnClickListener(new View_.OnClickListener() {
             onClick: function(v) {
                 chestTracersGroundMode = v.isChecked()?"on":"off";
@@ -4617,6 +4996,10 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 					tileDropDownUseLightColorCheckBox.setTextColor(Color_.WHITE);
 				}
 				tileDropDownUseLightColorCheckBox.setTypeface(VertexClientPE.font);
+				
+				if(fontSetting == "minecraft") {
+					MinecraftButtonLibrary.addMinecraftStyleToTextView(tileDropDownUseLightColorCheckBox);
+				}
 				tileDropDownUseLightColorCheckBox.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(v) {
 						currentUseLightColor = v.isChecked();
@@ -6316,6 +6699,7 @@ VertexClientPE.loadMainSettings = function () {
         VertexClientPE.loadAutoSpammerSettings();
         VertexClientPE.loadCategorySettings();
 		VertexClientPE.font = fontSetting=="minecraft"?Typeface_.createFromFile(new File_(PATH, "minecraft.ttf")):VertexClientPE.defaultFont;
+		MinecraftButtonLibrary.ProcessedResources.font = VertexClientPE.font;
 		
         return true;
     }
@@ -6754,6 +7138,10 @@ function clientButton(text, desc, color, round, forceLightColor, style, thicknes
     VertexClientPE.setupButton(defaultButton, text, color, round, forceLightColor, style, thickness);
     defaultButton.setPadding(0, 0, 0, 0);
     defaultButton.setLineSpacing(0, 1.15);
+	
+	if(fontSetting == "minecraft" && style != "tile") {
+		MinecraftButtonLibrary.addMinecraftStyleToTextView(defaultButton);
+	}
     return defaultButton;
 }
 
@@ -7537,6 +7925,10 @@ function clientEditText(text) //menu buttons
 	} else {
 		defaultEditText.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
 	}
+	
+	if(fontSetting == "minecraft") {
+		MinecraftButtonLibrary.addMinecraftStyleToTextView(defaultEditText);
+	}
     return defaultEditText;
 }
 
@@ -7560,6 +7952,10 @@ function clientTextView(text, shadow) //menu buttons
     }
     defaultTextView.setPadding(0, 0, 0, 0);
     defaultTextView.setLineSpacing(0, 1.15);
+	
+	if(fontSetting == "minecraft") {
+		MinecraftButtonLibrary.addMinecraftStyleToTextView(defaultTextView);
+	}
     return defaultTextView;
 }
 
@@ -7590,6 +7986,10 @@ function clientSectionTitle(text, style) {
     }
     defaultTextView.setPadding(0, 0, 0, 0);
     defaultTextView.setLineSpacing(0, 1.15);
+	
+	if(fontSetting == "minecraft") {
+		MinecraftButtonLibrary.addMinecraftStyleToTextView(defaultTextView);
+	}
     return defaultTextView;
 }
 
@@ -7598,6 +7998,9 @@ function clientScreenTitle(defaultText) {
 	defaultScreenTitle.setTextSize(25);
 	defaultScreenTitle.setGravity(Gravity_.CENTER);
 	
+	if(fontSetting == "minecraft") {
+		MinecraftButtonLibrary.addMinecraftStyleToTextView(defaultScreenTitle);
+	}
 	return defaultScreenTitle;
 }
 
@@ -9803,6 +10206,7 @@ function settingsScreen() {
 								fontSettingButton.setText("Default");
 							}
 							VertexClientPE.font = fontSetting=="minecraft"?Typeface_.createFromFile(new File_(PATH, "minecraft.ttf")):VertexClientPE.defaultFont;
+							MinecraftButtonLibrary.ProcessedResources.font = VertexClientPE.font;
 							VertexClientPE.saveMainSettings();
 						}
                     }));
@@ -10620,6 +11024,9 @@ function playerCustomizerScreen() {
                         killToMorphSettingButton.setTextColor(Color_.WHITE);
                     }
 					killToMorphSettingButton.setTypeface(VertexClientPE.font);
+					if(fontSetting == "minecraft") {
+						MinecraftButtonLibrary.addMinecraftStyleToTextView(killToMorphSettingButton);
+					}
                     killToMorphSettingButton.setChecked(killToMorphSetting == "on");
                     killToMorphSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
                         onCheckedChanged: function() {
@@ -10736,6 +11143,9 @@ function optiFineScreen() {
                         antiLagDropRemoverButton.setTextColor(Color_.WHITE);
                     }
 					antiLagDropRemoverButton.setTypeface(VertexClientPE.font);
+					if(fontSetting == "minecraft") {
+						MinecraftButtonLibrary.addMinecraftStyleToTextView(antiLagDropRemoverButton);
+					}
                     antiLagDropRemoverButton.setChecked(antiLagDropRemoverSetting == "on");
                     antiLagDropRemoverButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
                         onCheckedChanged: function() {
