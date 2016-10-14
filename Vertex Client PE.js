@@ -166,6 +166,7 @@ var fontSetting = "default";
 var showMoneyToastsSetting = "on";
 var mainButtonStyleSetting = "normal";
 var webBrowserStartPageSetting = "https://google.com/";
+var backgroundStyleSetting = "normal";
 //---------------------------
 var cmdPrefix = ".";
 //---------------------------
@@ -6185,6 +6186,7 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + showMoneyToastsSetting.toString());
     outWrite.append("," + mainButtonStyleSetting.toString());
     outWrite.append("," + webBrowserStartPageSetting.toString());
+    outWrite.append("," + backgroundStyleSetting.toString());
     //outWrite.append("," + cmdPrefix.toString());
 
     outWrite.close();
@@ -6306,6 +6308,9 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[32] != null && arr[32] != undefined) {
             webbrowserStartPageSetting = arr[32];
+        }
+		if (arr[33] != null && arr[33] != undefined) {
+            backgroundStyleSetting = arr[33];
         }
         fos.close();
         VertexClientPE.loadAutoSpammerSettings();
@@ -7922,58 +7927,70 @@ VertexClientPE.setupGradient = function(gradientDrawable, color, strokeColor) {
 
 function backgroundGradient(round) // TextView with colored background (edited by peacestorm)
 {
-    var bg = GradientDrawable_();
-    if(round == true) {
-        var radiiFloatArray = Array_.newInstance(Float_.TYPE, 9);
-        for(var i = 0; i <= 7; i++) {
-            var radius = 0;
-            if(i >= 4) {
-                radiiFloatArray[i] = 16;
-            } else {
-                radiiFloatArray[i] = radius;
-            }
-        }
-        bg.setCornerRadii(radiiFloatArray);
-    } else if(round != false && round != null) {
-        bg.setCornerRadius(round);
-    }
-    if(useLightThemeSetting == "on") {
-		VertexClientPE.setupGradient(bg, "00994C", "00CC66");
-    } else {
-		VertexClientPE.setupGradient(bg, "0B5B25", "0F8219");
-    }
-    if(themeSetting == "red") {
-        if(useLightThemeSetting == "on") {
-			VertexClientPE.setupGradient(bg, "FF3333", "FF6666");
-        } else {
-			VertexClientPE.setupGradient(bg, "5B0C0C", "821010");
-        }
-    } if(themeSetting == "blue") {
-        if(useLightThemeSetting == "on") {
-			VertexClientPE.setupGradient(bg, "0080FF", "3399FF");
-        } else {
-			VertexClientPE.setupGradient(bg, "0A175B", "0E3882");
-        }
-    } if(themeSetting == "purple") {
-		VertexClientPE.setupGradient(bg, "9F018C", "BC21AB");
-    } if(themeSetting == "violet") {
-		VertexClientPE.setupGradient(bg, "842DCE", "8D38C9");
-	} if(themeSetting == "yellow") {
-		VertexClientPE.setupGradient(bg, "CCCC00", "FFFF00");
-    } if(themeSetting == "orange") {
-		VertexClientPE.setupGradient(bg, "FF8C00", "FFA500");
-    } if(themeSetting == "brown") {
-        VertexClientPE.setupGradient(bg, "8B4513", "CD853F");
-    } if(themeSetting == "grey") {
-		VertexClientPE.setupGradient(bg, "808080", "A9A9A9");
-    } if(themeSetting == "white") {
-		VertexClientPE.setupGradient(bg, "E1E1E1", "FFFFFF");
-    } if(themeSetting == "black") {
-		VertexClientPE.setupGradient(bg, "141414", "1E1E1E");
-    }
-    bg.setShape(GradientDrawable_.RECTANGLE);
+	if(backgroundStyleSetting == "normal") {
+		var bg = GradientDrawable_();
+		if(round == true) {
+			var radiiFloatArray = Array_.newInstance(Float_.TYPE, 9);
+			for(var i = 0; i <= 7; i++) {
+				var radius = 0;
+				if(i >= 4) {
+					radiiFloatArray[i] = 16;
+				} else {
+					radiiFloatArray[i] = radius;
+				}
+			}
+			bg.setCornerRadii(radiiFloatArray);
+		} else if(round != false && round != null) {
+			bg.setCornerRadius(round);
+		}
+		if(useLightThemeSetting == "on") {
+			VertexClientPE.setupGradient(bg, "00994C", "00CC66");
+		} else {
+			VertexClientPE.setupGradient(bg, "0B5B25", "0F8219");
+		}
+		if(themeSetting == "red") {
+			if(useLightThemeSetting == "on") {
+				VertexClientPE.setupGradient(bg, "FF3333", "FF6666");
+			} else {
+				VertexClientPE.setupGradient(bg, "5B0C0C", "821010");
+			}
+		} if(themeSetting == "blue") {
+			if(useLightThemeSetting == "on") {
+				VertexClientPE.setupGradient(bg, "0080FF", "3399FF");
+			} else {
+				VertexClientPE.setupGradient(bg, "0A175B", "0E3882");
+			}
+		} if(themeSetting == "purple") {
+			VertexClientPE.setupGradient(bg, "9F018C", "BC21AB");
+		} if(themeSetting == "violet") {
+			VertexClientPE.setupGradient(bg, "842DCE", "8D38C9");
+		} if(themeSetting == "yellow") {
+			VertexClientPE.setupGradient(bg, "CCCC00", "FFFF00");
+		} if(themeSetting == "orange") {
+			VertexClientPE.setupGradient(bg, "FF8C00", "FFA500");
+		} if(themeSetting == "brown") {
+			VertexClientPE.setupGradient(bg, "8B4513", "CD853F");
+		} if(themeSetting == "grey") {
+			VertexClientPE.setupGradient(bg, "808080", "A9A9A9");
+		} if(themeSetting == "white") {
+			VertexClientPE.setupGradient(bg, "E1E1E1", "FFFFFF");
+		} if(themeSetting == "black") {
+			VertexClientPE.setupGradient(bg, "141414", "1E1E1E");
+		}
+		bg.setShape(GradientDrawable_.RECTANGLE);
 
-    return bg;
+		return bg;
+	} else if(backgroundStyleSetting == "minecraft_dirt") {
+		var dirt = new android.graphics.drawable.BitmapDrawable(android.graphics.Bitmap.createScaledBitmap(android.graphics.BitmapFactory.decodeStream(ModPE.openInputStreamFromTexturePack("images/gui/background.png")), dip2px(64), dip2px(64), false));
+		/* if(transparentBgSetting == "on") {
+			dirt.setColorFilter(android.graphics.Color.argb(7, 70, 70, 70), android.graphics.PorterDuff.Mode.MULTIPLY);
+		} else if(transparentBgSetting == "off") { */
+			dirt.setColorFilter(android.graphics.Color.rgb(70, 70, 70), android.graphics.PorterDuff.Mode.MULTIPLY);
+		//}
+		dirt.setTileModeXY(android.graphics.Shader.TileMode.REPEAT, android.graphics.Shader.TileMode.REPEAT);
+		
+		return dirt;
+	}
 }
 
 VertexClientPE.loadMainSettings();
@@ -9668,6 +9685,27 @@ function settingsScreen() {
                     }
                     }));
 					
+					var backgroundStyleSettingFunc = new settingButton("Background style", "Changes the background style.");
+                    var backgroundStyleSettingButton = backgroundStyleSettingFunc.getButton();
+                    if(backgroundStyleSetting == "normal") {
+                        backgroundStyleSettingButton.setText("Normal");
+                    } else if(backgroundStyleSetting == "minecraft_dirt") {
+                        backgroundStyleSettingButton.setText("Minecraft (dirt)");
+                    }
+                    backgroundStyleSettingButton.setOnClickListener(new View_.OnClickListener({
+                    onClick: function(viewarg){
+                        if(backgroundStyleSetting == "normal") {
+                            backgroundStyleSetting = "minecraft_dirt";
+                            backgroundStyleSettingButton.setText("Minecraft (dirt)");
+                            VertexClientPE.saveMainSettings();
+                        } else if(backgroundStyleSetting == "minecraft_dirt") {
+                            backgroundStyleSetting = "normal";
+                            backgroundStyleSettingButton.setText("Normal");
+                            VertexClientPE.saveMainSettings();
+                        }
+                    }
+                    }));
+					
 					var transparentBgSettingFunc = new settingButton("Transparent backgrounds", "Makes screens and dialogs transparent.");
                     var transparentBgSettingButton = transparentBgSettingFunc.getButton();
                     if(transparentBgSetting == "on") {
@@ -9943,6 +9981,7 @@ function settingsScreen() {
 					VertexClientPE.addView(settingsMenuLayout, themeSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, useLightThemeSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, buttonStyleSettingFunc);
+					VertexClientPE.addView(settingsMenuLayout, backgroundStyleSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, transparentBgSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, mcpeGUISettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, fontSettingFunc);
