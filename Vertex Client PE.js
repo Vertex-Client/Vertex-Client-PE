@@ -6310,6 +6310,8 @@ VertexClientPE.loadMainSettings = function () {
         fos.close();
         VertexClientPE.loadAutoSpammerSettings();
         VertexClientPE.loadCategorySettings();
+		VertexClientPE.font = fontSetting=="minecraft"?Typeface_.createFromFile(new File_(PATH, "minecraft.ttf")):VertexClientPE.defaultFont;
+		
         return true;
     }
 }
