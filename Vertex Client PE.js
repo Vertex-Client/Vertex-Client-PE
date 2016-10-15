@@ -169,6 +169,7 @@ var webBrowserStartPageSetting = "https://google.com/";
 var backgroundStyleSetting = "normal";
 var modButtonColorBlockedSetting = "red";
 var modButtonColorEnabledSetting = "green";
+var modButtonColorDisabledSetting = "white";
 //---------------------------
 var cmdPrefix = ".";
 //---------------------------
@@ -181,6 +182,7 @@ var miscName = "Misc";
 
 var modButtonColorBlocked = Color_.RED;
 var modButtonColorEnabled = Color_.GREEN;
+var modButtonColorDisabled = Color_.WHITE;
 
 var display = new DisplayMetrics_();
 CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
@@ -2016,7 +2018,7 @@ var autoSpammer = {
         var autoSpammerMessageLayout = new LinearLayout_(CONTEXT);
         autoSpammerMessageLayout.setOrientation(1);
         var autoSpammerMessageTitle = clientTextView("Message:");
-        var spamMessageInput = new EditText(CONTEXT);
+        var spamMessageInput = new clientEditText();
         var autoSpammerMessageEnter = clientTextView("\n");
         spamMessageInput.setText(spamMessage);
         spamMessageInput.setTextColor(Color_.WHITE);
@@ -4345,10 +4347,10 @@ VertexClientPE.showSignEditorDialog = function() {
                 var signEditorTitle = clientTextView("SignEditor", true);
                 var btn = clientButton("Ok");
                 var btn1 = clientButton("Cancel");
-                var inputBar = new EditText(CONTEXT);
-                var inputBar1 = new EditText(CONTEXT);
-                var inputBar2 = new EditText(CONTEXT);
-                var inputBar3 = new EditText(CONTEXT);
+                var inputBar = new clientEditText();
+                var inputBar1 = new clientEditText();
+                var inputBar2 = new clientEditText();
+                var inputBar3 = new clientEditText();
                 var dialogLayout = new LinearLayout_(CONTEXT);
                 dialogLayout.setBackgroundDrawable(backgroundGradient());
                 dialogLayout.setOrientation(LinearLayout_.VERTICAL);
@@ -4413,7 +4415,7 @@ VertexClientPE.showBugReportDialog = function(exception) {
                 var bugReportTitle = clientTextView("An error occurred", true);
                 var btn = clientButton("Report on GitHub");
                 var btn1 = clientButton("Close");
-                var inputBar = new EditText(CONTEXT);
+                var inputBar = new clientEditText();
                 var exceptionTextView = clientTextView(exception);
                 var dialogLayout = new LinearLayout_(CONTEXT);
                 dialogLayout.setBackgroundDrawable(backgroundGradient());
@@ -5096,15 +5098,15 @@ VertexClientPE.showItemGiverDialog = function() {
                 var dialogTableRow;
                 var tempButton;
                 var itemNameText = clientTextView("Name: Unknown");
-                var itemIdInput = new EditText(CONTEXT);
+                var itemIdInput = clientEditText();
                 itemIdInput.setTextColor(Color_.WHITE);
                 itemIdInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
                 itemIdInput.setHint("Id");
-                var itemAmountInput = new EditText(CONTEXT);
+                var itemAmountInput = clientEditText();
                 itemAmountInput.setTextColor(Color_.WHITE);
                 itemAmountInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
                 itemAmountInput.setHint("Amount");
-                var itemDataInput = new EditText(CONTEXT);
+                var itemDataInput = clientEditText();
                 itemDataInput.setTextColor(Color_.WHITE);
                 itemDataInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
                 itemDataInput.setHint("Data");
@@ -5240,15 +5242,15 @@ VertexClientPE.showTeleportDialog = function() {
                 var dialogTableRow;
                 var tempButton;
                 var teleportNameText = clientTextView("Teleport location: Unknown");
-                var teleportXInput = new EditText(CONTEXT);
+                var teleportXInput = clientEditText();
                 teleportXInput.setTextColor(Color_.WHITE);
                 teleportXInput.setInputType(InputType_.TYPE_CLASS_NUMBER | InputType_.TYPE_NUMBER_FLAG_SIGNED);
                 teleportXInput.setHint("X");
-                var teleportYInput = new EditText(CONTEXT);
+                var teleportYInput = clientEditText();
                 teleportYInput.setTextColor(Color_.WHITE);
                 teleportYInput.setInputType(InputType_.TYPE_CLASS_NUMBER | InputType_.TYPE_NUMBER_FLAG_SIGNED);
                 teleportYInput.setHint("Y");
-                var teleportZInput = new EditText(CONTEXT);
+                var teleportZInput = clientEditText();
                 teleportZInput.setTextColor(Color_.WHITE);
                 teleportZInput.setInputType(InputType_.TYPE_CLASS_NUMBER | InputType_.TYPE_NUMBER_FLAG_SIGNED);
                 teleportZInput.setHint("Z");
@@ -5368,11 +5370,11 @@ VertexClientPE.showAddAccountDialog = function() {
             try {
                 VertexClientPE.loadMainSettings();
                 var accountTitle = clientTextView("Add account", true);
-                accountNameInput = new EditText(CONTEXT);
+                accountNameInput = clientEditText();
                 accountNameInput.setTextColor(Color_.WHITE);
                 accountNameInput.setSingleLine(true);
                 accountNameInput.setHint("Enter an username");
-                accountClientIdInput = new EditText(CONTEXT);
+                accountClientIdInput = clientEditText();
                 accountClientIdInput.setTextColor(Color_.WHITE);
                 accountClientIdInput.setHint("Enter a client id (wip, added later)");
                 var okButton = clientButton("Ok");
@@ -5443,7 +5445,7 @@ VertexClientPE.showProDialog = function(featureName) {
                 var dialogDesc = clientTextView(featureName + " requires Vertex Client PE Pro!\n");
                 var btn = clientButton("Get Pro for free!");
                 var btn1 = clientButton("Close");
-                var inputBar = new EditText(CONTEXT);
+                var inputBar = clientEditText();
                 var dialogLayout = new LinearLayout_(CONTEXT);
                 dialogLayout.setBackgroundDrawable(backgroundGradient());
                 dialogLayout.setOrientation(LinearLayout_.VERTICAL);
@@ -5486,7 +5488,7 @@ VertexClientPE.showUpgradeDialog = function(featureName) {
                 var dialogDesc = clientTextView("Hey, why not get Vertex Client PE Pro and enjoy all the features for free?");
                 var btn = clientButton("Get Pro for free!");
                 var btn1 = clientButton("Close");
-                var inputBar = new EditText(CONTEXT);
+                var inputBar = clientEditText();
                 var dialogLayout = new LinearLayout_(CONTEXT);
                 dialogLayout.setBackgroundDrawable(backgroundGradient());
                 dialogLayout.setOrientation(LinearLayout_.VERTICAL);
@@ -5572,7 +5574,7 @@ VertexClientPE.showBasicDialog = function(title, view, onDialogDismiss) {
                 var dialogTitle = clientTextView(title);
                 dialogTitle.setTextSize(25);
                 var btn = clientButton("Close");
-                var inputBar = new EditText(CONTEXT);
+                var inputBar = clientEditText();
                 var dialogLayout1 = new LinearLayout_(CONTEXT);
                 var dialogScrollView = new ScrollView(CONTEXT);
                 var dialogLayout = new LinearLayout_(CONTEXT);
@@ -5628,7 +5630,7 @@ VertexClientPE.showJavascriptConsoleDialog = function() {
                 var javascriptConsoleTitle = clientTextView("Javascript Console", true);
                 var btn = clientButton("Send");
                 var btn1 = clientButton("Cancel");
-                var inputBar = new EditText(CONTEXT);
+                var inputBar = clientEditText();
                 var dialogLayout = new LinearLayout_(CONTEXT);
                 dialogLayout.setBackgroundDrawable(backgroundGradient());
                 dialogLayout.setOrientation(LinearLayout_.VERTICAL);
@@ -5701,7 +5703,7 @@ VertexClientPE.showCategoryDialog = function(titleView, currentName, categoryId)
                 var _0x25ea=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x52\x65\x6E\x61\x6D\x69\x6E\x67\x20\x63\x61\x74\x65\x67\x6F\x72\x69\x65\x73","\x73\x68\x6F\x77\x50\x72\x6F\x44\x69\x61\x6C\x6F\x67"];if(VertexClientPE[_0x25ea[0]]()!=_0x25ea[1]){VertexClientPE[_0x25ea[3]](_0x25ea[2]);return}
                 var categoryDialogTitle = clientTextView("Rename category \'" + currentName + "\'", true);
                 var btn = clientButton("Close");
-                var inputBar = new EditText(CONTEXT);
+                var inputBar = clientEditText();
                 var dialogLayout = new LinearLayout_(CONTEXT);
                 dialogLayout.setBackgroundDrawable(backgroundGradient());
                 dialogLayout.setOrientation(LinearLayout_.VERTICAL);
@@ -5768,7 +5770,7 @@ VertexClientPE.showWebbrowserStartPageDialog = function() {
             try {
                 var webBrowserStartPageDialogTitle = clientTextView("Change Webbrowser startpage", true);
                 var btn = clientButton("Close");
-                var inputBar = new EditText(CONTEXT);
+                var inputBar = clientEditText();
                 var dialogLayout = new LinearLayout_(CONTEXT);
                 dialogLayout.setBackgroundDrawable(backgroundGradient());
                 dialogLayout.setOrientation(LinearLayout_.VERTICAL);
@@ -6577,6 +6579,7 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + backgroundStyleSetting.toString());
     outWrite.append("," + modButtonColorBlockedSetting.toString());
     outWrite.append("," + modButtonColorEnabledSetting.toString());
+    outWrite.append("," + modButtonColorDisabledSetting.toString());
     //outWrite.append("," + cmdPrefix.toString());
 
     outWrite.close();
@@ -6708,6 +6711,9 @@ VertexClientPE.loadMainSettings = function () {
 		if (arr[35] != null && arr[35] != undefined) {
             modButtonColorEnabledSetting = arr[35];
         }
+		if (arr[36] != null && arr[36] != undefined) {
+            modButtonColorDisabledSetting = arr[36];
+        }
         fos.close();
         VertexClientPE.loadAutoSpammerSettings();
         VertexClientPE.loadCategorySettings();
@@ -6733,6 +6739,12 @@ VertexClientPE.setupModButtonColors = function() {
 		case "yellow":
 			modButtonColorBlocked = Color_.YELLOW;
 			break;
+		case "white":
+			modButtonColorEnabled = Color_.WHITE;
+			break;
+		case "black":
+			modButtonColorEnabled = Color_.BLACK;
+			break;
 	}
 	switch(modButtonColorEnabledSetting) {
 		case "red":
@@ -6746,6 +6758,32 @@ VertexClientPE.setupModButtonColors = function() {
 			break;
 		case "yellow":
 			modButtonColorEnabled = Color_.YELLOW;
+			break;
+		case "white":
+			modButtonColorEnabled = Color_.WHITE;
+			break;
+		case "black":
+			modButtonColorEnabled = Color_.BLACK;
+			break;
+	}
+	switch(modButtonColorDisabledSetting) {
+		case "red":
+			modButtonColorDisabled = Color_.RED;
+			break;
+		case "green":
+			modButtonColorDisabled = Color_.GREEN;
+			break;
+		case "blue":
+			modButtonColorDisabled = Color_.BLUE;
+			break;
+		case "yellow":
+			modButtonColorDisabled = Color_.YELLOW;
+			break;
+		case "white":
+			modButtonColorDisabled = Color_.WHITE;
+			break;
+		case "black":
+			modButtonColorDisabled = Color_.BLACK;
 			break;
 	}
 }
@@ -7570,8 +7608,12 @@ function modButton(mod, buttonOnly) {
         } else {
             defaultClientButton.setTextColor(modButtonColorEnabled);
         }
-        defaultClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
-    }
+		if(fontSetting != "minecraft") {
+			defaultClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+		}
+    } else {
+		defaultClientButton.setTextColor(modButtonColorDisabled);
+	}
     defaultClientButton.setOnClickListener(new View_.OnClickListener({
         onClick: function(viewarg) {
             var _0xff55=["\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x6F\x75\x74\x64\x61\x74\x65\x64\x2C\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C","\x74\x6F\x61\x73\x74","\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C"];if(!isAuthorized){if(!isSupported){VertexClientPE[_0xff55[1]](_0xff55[0])}else {VertexClientPE[_0xff55[1]](_0xff55[2])};return}
@@ -7603,14 +7645,20 @@ function modButton(mod, buttonOnly) {
                     } else {
                         defaultClientButton.setTextColor(modButtonColorEnabled);
                     }
-                    defaultClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+					if(fontSetting != "minecraft") {
+						defaultClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+					}
                 } else if(!mod.state) {
-                    if(themeSetting == "white") {
+                    if(themeSetting == "white" && modButtonColorDisabledSetting == "black") {
                         defaultClientButton.setTextColor(Color_.BLACK);
-                        defaultClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
+						if(fontSetting != "minecraft") {
+							defaultClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
+						}
                     } else {
-                        defaultClientButton.setTextColor(Color_.WHITE);
-                        defaultClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+                        defaultClientButton.setTextColor(modButtonColorDisabled);
+						if(fontSetting != "minecraft") {
+							defaultClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+						}
                     }
                 }
             }
@@ -7689,7 +7737,9 @@ function categoryTab(category) {
     defaultClientButton.setAlpha(0.54);
     if(currentTab == categoryRealName) {
         defaultClientButton.setTextColor(Color_.GREEN);
-        defaultClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+		if(fontSetting != "minecraft") {
+			defaultClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+		}
     }
     defaultClientButton.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
     defaultClientButton.setMarqueeRepeatLimit(-1);
@@ -7750,7 +7800,9 @@ function musicPlayerTab(name, tabLayout, songLayout, playBar) {
 	defaultClientButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2 - dip2px(5), LinearLayout_.LayoutParams.WRAP_CONTENT));
     if(currentMPTab == name) {
         defaultClientButton.setTextColor(Color_.GREEN);
-        defaultClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+		if(fontSetting != "minecraft") {
+			defaultClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+		}
     }
     defaultClientButton.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
     defaultClientButton.setMarqueeRepeatLimit(-1);
@@ -7797,15 +7849,21 @@ function tabGUICategoryButton(category, layout, layoutToBeOpened, layoutMain) {
         onClick: function(viewarg) {
             if(categoryButton.getCurrentTextColor() != Color_.GREEN) {
                 categoryButton.setTextColor(Color_.GREEN);
-                categoryButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+				if(fontSetting != "minecraft") {
+					categoryButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+				}
                 currentTabGUICategory = category;
             } else {
                 if(themeSetting == "white") {
                     categoryButton.setTextColor(Color_.BLACK);
-                    categoryButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
+					if(fontSetting != "minecraft") {
+						categoryButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
+					}
                 } else {
                     categoryButton.setTextColor(Color_.WHITE);
-                    categoryButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+					if(fontSetting != "minecraft") {
+						categoryButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+					}
                 }
                 currentTabGUICategory = null;
             }
@@ -7813,10 +7871,14 @@ function tabGUICategoryButton(category, layout, layoutToBeOpened, layoutMain) {
                 if(layout.getChildAt(i).getChildAt(0) != categoryButton) {
                     if(themeSetting == "white") {
                         layout.getChildAt(i).getChildAt(0).setTextColor(Color_.BLACK);
-                        layout.getChildAt(i).getChildAt(0).setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
+						if(fontSetting != "minecraft") {
+							layout.getChildAt(i).getChildAt(0).setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
+						}
                     } else {
                         layout.getChildAt(i).getChildAt(0).setTextColor(Color_.WHITE);
-                        layout.getChildAt(i).getChildAt(0).setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+						if(fontSetting != "minecraft") {
+							layout.getChildAt(i).getChildAt(0).setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+						}
                     }
                 }
             }
@@ -7944,10 +8006,14 @@ function clientTextButton(text, shadow) //menu buttons
     
     if(shadow == true && shadow != null && shadow != undefined) {
         if(Build_.VERSION.SDK_INT > 19) { // KITKAT
-            defaultTextButton.setShadowLayer(1, Math.round(defaultTextButton.getLineHeight() / 8), Math.round(defaultTextButton.getLineHeight() / 8), Color_.parseColor("#FF333333"));
-        } else {
-            defaultTextButton.setShadowLayer(0.0001, Math.round(defaultTextButton.getLineHeight() / 8), Math.round(defaultTextButton.getLineHeight() / 8), Color_.parseColor("#FF333333"));
-        }
+			if(fontSetting != "minecraft") {
+				defaultTextButton.setShadowLayer(1, Math.round(defaultTextButton.getLineHeight() / 8), Math.round(defaultTextButton.getLineHeight() / 8), Color_.parseColor("#FF333333"));
+			}
+		} else {
+			if(fontSetting != "minecraft") {
+				defaultTextButton.setShadowLayer(0.0001, Math.round(defaultTextButton.getLineHeight() / 8), Math.round(defaultTextButton.getLineHeight() / 8), Color_.parseColor("#FF333333"));
+			}
+		}
     }
     defaultTextButton.setPadding(0, 0, 0, 0);
     defaultTextButton.setLineSpacing(0, 1.15);
@@ -7966,9 +8032,13 @@ function clientEditText(text) //menu buttons
     defaultEditText.setTypeface(VertexClientPE.font);
     
 	if(themeSetting == "white") {
-		defaultEditText.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
+		if(fontSetting != "minecraft") {
+			defaultEditText.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
+		}
 	} else {
-		defaultEditText.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+		if(fontSetting != "minecraft") {
+			defaultEditText.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+		}
 	}
 	
 	if(fontSetting == "minecraft") {
@@ -7990,9 +8060,13 @@ function clientTextView(text, shadow) //menu buttons
     
     if(shadow == true && shadow != null && shadow != undefined) {
         if(themeSetting == "white") {
-            defaultTextView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
+			if(fontSetting != "minecraft") {
+				defaultTextView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
+			}
         } else {
-            defaultTextView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+			if(fontSetting != "minecraft") {
+				defaultTextView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+			}
         }
     }
     defaultTextView.setPadding(0, 0, 0, 0);
@@ -8008,7 +8082,9 @@ function clientSectionTitle(text, style) {
     var defaultTextView = new TextView_(CONTEXT);
     defaultTextView.setText(text);
     defaultTextView.setTextColor(Color_.WHITE);
-    defaultTextView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+	if(fontSetting != "minecraft") {
+		defaultTextView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+	}
     defaultTextView.setTypeface(VertexClientPE.font);
     
     if(style == "rainbow") {
@@ -8025,7 +8101,9 @@ function clientSectionTitle(text, style) {
     } else {
         if(themeSetting == "white") {
             defaultTextView.setTextColor(Color_.BLACK);
-            defaultTextView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
+			if(fontSetting != "minecraft") {
+				defaultTextView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
+			}
         }
         defaultTextView.setBackgroundDrawable(backgroundSpecial());
     }
@@ -10266,6 +10344,10 @@ function settingsScreen() {
                         modButtonColorBlockedSettingButton.setText("Blue");
                     } else if(modButtonColorBlockedSetting == "yellow") {
                         modButtonColorBlockedSettingButton.setText("Yellow");
+                    } else if(modButtonColorBlockedSetting == "white") {
+                        modButtonColorBlockedSettingButton.setText("White");
+                    } else if(modButtonColorBlockedSetting == "black") {
+                        modButtonColorBlockedSettingButton.setText("Black");
                     }
 					modButtonColorBlockedSettingButton.setOnClickListener(new View_.OnClickListener({
 						onClick: function(viewarg) {
@@ -10279,6 +10361,12 @@ function settingsScreen() {
 								modButtonColorBlockedSetting = "yellow";
 								modButtonColorBlockedSettingButton.setText("Yellow");
 							} else if(modButtonColorBlockedSetting == "yellow") {
+								modButtonColorBlockedSetting = "white";
+								modButtonColorBlockedSettingButton.setText("White");
+							} else if(modButtonColorBlockedSetting == "white") {
+								modButtonColorBlockedSetting = "black";
+								modButtonColorBlockedSettingButton.setText("Black");
+							} else if(modButtonColorBlockedSetting == "black") {
 								modButtonColorBlockedSetting = "red";
 								modButtonColorBlockedSettingButton.setText("Red");
 							}
@@ -10297,6 +10385,10 @@ function settingsScreen() {
                         modButtonColorEnabledSettingButton.setText("Blue");
                     } else if(modButtonColorEnabledSetting == "yellow") {
                         modButtonColorEnabledSettingButton.setText("Yellow");
+                    } else if(modButtonColorEnabledSetting == "white") {
+                        modButtonColorEnabledSettingButton.setText("White");
+                    } else if(modButtonColorEnabledSetting == "black") {
+                        modButtonColorEnabledSettingButton.setText("Black");
                     }
 					modButtonColorEnabledSettingButton.setOnClickListener(new View_.OnClickListener({
 						onClick: function(viewarg) {
@@ -10310,8 +10402,55 @@ function settingsScreen() {
 								modButtonColorEnabledSetting = "yellow";
 								modButtonColorEnabledSettingButton.setText("Yellow");
 							} else if(modButtonColorEnabledSetting == "yellow") {
+								modButtonColorEnabledSetting = "white";
+								modButtonColorEnabledSettingButton.setText("White");
+							} else if(modButtonColorEnabledSetting == "white") {
+								modButtonColorEnabledSetting = "black";
+								modButtonColorEnabledSettingButton.setText("Black");
+							} else if(modButtonColorEnabledSetting == "black") {
 								modButtonColorEnabledSetting = "red";
 								modButtonColorEnabledSettingButton.setText("Red");
+							}
+							VertexClientPE.setupModButtonColors();
+							VertexClientPE.saveMainSettings();
+						}
+                    }));
+					
+					var modButtonColorDisabledSettingFunc = new settingButton("Mod button text color (disabled)", "Change the mod button disabled text color.");
+                    var modButtonColorDisabledSettingButton = modButtonColorDisabledSettingFunc.getButton();
+                    if(modButtonColorDisabledSetting == "red") {
+                        modButtonColorDisabledSettingButton.setText("Red");
+                    } else if(modButtonColorDisabledSetting == "green") {
+                        modButtonColorDisabledSettingButton.setText("Green");
+                    } else if(modButtonColorDisabledSetting == "blue") {
+                        modButtonColorDisabledSettingButton.setText("Blue");
+                    } else if(modButtonColorDisabledSetting == "yellow") {
+                        modButtonColorDisabledSettingButton.setText("Yellow");
+                    } else if(modButtonColorDisabledSetting == "white") {
+                        modButtonColorDisabledSettingButton.setText("White");
+                    } else if(modButtonColorDisabledSetting == "black") {
+                        modButtonColorDisabledSettingButton.setText("Black");
+                    }
+					modButtonColorDisabledSettingButton.setOnClickListener(new View_.OnClickListener({
+						onClick: function(viewarg) {
+							if(modButtonColorDisabledSetting == "red") {
+								modButtonColorDisabledSetting = "green";
+								modButtonColorDisabledSettingButton.setText("Green");
+							} else if(modButtonColorDisabledSetting == "green") {
+								modButtonColorDisabledSetting = "blue";
+								modButtonColorDisabledSettingButton.setText("Blue");
+							} else if(modButtonColorDisabledSetting == "blue") {
+								modButtonColorDisabledSetting = "yellow";
+								modButtonColorDisabledSettingButton.setText("Yellow");
+							} else if(modButtonColorDisabledSetting == "yellow") {
+								modButtonColorDisabledSetting = "white";
+								modButtonColorDisabledSettingButton.setText("White");
+							} else if(modButtonColorDisabledSetting == "white") {
+								modButtonColorDisabledSetting = "black";
+								modButtonColorDisabledSettingButton.setText("Black");
+							} else if(modButtonColorDisabledSetting == "black") {
+								modButtonColorDisabledSetting = "red";
+								modButtonColorDisabledSettingButton.setText("Red");
 							}
 							VertexClientPE.setupModButtonColors();
 							VertexClientPE.saveMainSettings();
@@ -10498,6 +10637,7 @@ function settingsScreen() {
 					VertexClientPE.addView(settingsMenuLayout, fontSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, modButtonColorBlockedSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, modButtonColorEnabledSettingFunc);
+					VertexClientPE.addView(settingsMenuLayout, modButtonColorDisabledSettingFunc);
                     settingsMenuLayout.addView(menuTitle);
 					VertexClientPE.addView(settingsMenuLayout, menuTypeSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, sizeSettingFunc);
@@ -11781,7 +11921,7 @@ VertexClientPE.showURLBarDialog = function() {
 				}
                 var urlBarDialogTitle = clientTextView("Enter an URL", true);
                 var btn = clientButton("Done");
-                var inputBar = new EditText(CONTEXT);
+                var inputBar = new clientEditText();
                 var dialogLayout = new LinearLayout_(CONTEXT);
                 dialogLayout.setBackgroundDrawable(backgroundGradient());
                 dialogLayout.setOrientation(LinearLayout_.VERTICAL);
@@ -11866,7 +12006,7 @@ VertexClientPE.showF12Dialog = function() {
 				var outputTextView = clientTextView(webbrowserFullOutputText);
 				dialogOutputLayout.addView(outputTextView);
 				
-				var inputBar = new EditText(CONTEXT);
+				var inputBar = new clientEditText();
 				inputBar.setTextColor(Color_.WHITE);
 				dialogInputLayout.addView(inputBar);
 				
