@@ -167,6 +167,8 @@ var showMoneyToastsSetting = "on";
 var mainButtonStyleSetting = "normal";
 var webBrowserStartPageSetting = "https://google.com/";
 var backgroundStyleSetting = "normal";
+var modButtonColorBlockedSetting = "red";
+var modButtonColorEnabledSetting = "green";
 //---------------------------
 var cmdPrefix = ".";
 //---------------------------
@@ -176,6 +178,9 @@ var movementName = "Movement";
 var chatName = "Chat";
 var miscName = "Misc";
 //End of settings
+
+var modButtonColorBlocked = Color_.RED;
+var modButtonColorEnabled = Color_.GREEN;
 
 var display = new DisplayMetrics_();
 CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
@@ -4697,9 +4702,9 @@ VertexClientPE.showModDialog = function(mod, btn) {
                     if(mod.state) {
                         toggleButton.setText("Disable");
                         if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
-                            toggleButton.setTextColor(Color_.RED);
+                            toggleButton.setTextColor(modButtonColorBlocked);
                         } else {
-                            toggleButton.setTextColor(Color_.GREEN);
+                            toggleButton.setTextColor(modButtonColorEnabled);
                         }
                         toggleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
                     } else {
@@ -4732,11 +4737,11 @@ VertexClientPE.showModDialog = function(mod, btn) {
                                 if(mod.state) {
                                     toggleButton.setText("Disable");
                                     if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
-                                        toggleButton.setTextColor(Color_.RED);
-                                        btn.setTextColor(Color_.RED);
+                                        toggleButton.setTextColor(modButtonColorBlocked);
+                                        btn.setTextColor(modButtonColorBlocked);
                                     } else {
-                                        toggleButton.setTextColor(Color_.GREEN);
-                                        btn.setTextColor(Color_.GREEN);
+                                        toggleButton.setTextColor(modButtonColorEnabled);
+                                        btn.setTextColor(modButtonColorEnabled);
                                     }
                                     toggleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
                                     btn.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
@@ -6570,6 +6575,8 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + mainButtonStyleSetting.toString());
     outWrite.append("," + webBrowserStartPageSetting.toString());
     outWrite.append("," + backgroundStyleSetting.toString());
+    outWrite.append("," + modButtonColorBlockedSetting.toString());
+    outWrite.append("," + modButtonColorEnabledSetting.toString());
     //outWrite.append("," + cmdPrefix.toString());
 
     outWrite.close();
@@ -6695,14 +6702,52 @@ VertexClientPE.loadMainSettings = function () {
 		if (arr[33] != null && arr[33] != undefined) {
             backgroundStyleSetting = arr[33];
         }
+		if (arr[34] != null && arr[34] != undefined) {
+            modButtonColorBlockedSetting = arr[34];
+        }
+		if (arr[35] != null && arr[35] != undefined) {
+            modButtonColorEnabledSetting = arr[35];
+        }
         fos.close();
         VertexClientPE.loadAutoSpammerSettings();
         VertexClientPE.loadCategorySettings();
 		VertexClientPE.font = fontSetting=="minecraft"?Typeface_.createFromFile(new File_(PATH, "minecraft.ttf")):VertexClientPE.defaultFont;
 		MinecraftButtonLibrary.ProcessedResources.font = VertexClientPE.font;
+		VertexClientPE.setupModButtonColors();
 		
         return true;
     }
+}
+
+VertexClientPE.setupModButtonColors = function() {
+	switch(modButtonColorBlockedSetting) {
+		case "red":
+			modButtonColorBlocked = Color_.RED;
+			break;
+		case "green":
+			modButtonColorBlocked = Color_.GREEN;
+			break;
+		case "blue":
+			modButtonColorBlocked = Color_.BLUE;
+			break;
+		case "yellow":
+			modButtonColorBlocked = Color_.YELLOW;
+			break;
+	}
+	switch(modButtonColorEnabledSetting) {
+		case "red":
+			modButtonColorEnabled = Color_.RED;
+			break;
+		case "green":
+			modButtonColorEnabled = Color_.GREEN;
+			break;
+		case "blue":
+			modButtonColorEnabled = Color_.BLUE;
+			break;
+		case "yellow":
+			modButtonColorEnabled = Color_.YELLOW;
+			break;
+	}
 }
 
 VertexClientPE.resetData = function() {
@@ -7521,9 +7566,9 @@ function modButton(mod, buttonOnly) {
     defaultClientButton.setSelected(true);
     if(mod.isStateMod() && mod.state) {
         if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
-            defaultClientButton.setTextColor(Color_.RED);
+            defaultClientButton.setTextColor(modButtonColorBlocked);
         } else {
-            defaultClientButton.setTextColor(Color_.GREEN);
+            defaultClientButton.setTextColor(modButtonColorEnabled);
         }
         defaultClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
     }
@@ -7554,9 +7599,9 @@ function modButton(mod, buttonOnly) {
             if(mod.isStateMod()) {
                 if(mod.state) {
                     if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
-                        defaultClientButton.setTextColor(Color_.RED);
+                        defaultClientButton.setTextColor(modButtonColorBlocked);
                     } else {
-                        defaultClientButton.setTextColor(Color_.GREEN);
+                        defaultClientButton.setTextColor(modButtonColorEnabled);
                     }
                     defaultClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
                 } else if(!mod.state) {
@@ -10210,6 +10255,68 @@ function settingsScreen() {
 							VertexClientPE.saveMainSettings();
 						}
                     }));
+					
+					var modButtonColorBlockedSettingFunc = new settingButton("Mod button text color (blocked)", "Change the mod button blocked text color.");
+                    var modButtonColorBlockedSettingButton = modButtonColorBlockedSettingFunc.getButton();
+                    if(modButtonColorBlockedSetting == "red") {
+                        modButtonColorBlockedSettingButton.setText("Red");
+                    } else if(modButtonColorBlockedSetting == "green") {
+                        modButtonColorBlockedSettingButton.setText("Green");
+                    } else if(modButtonColorBlockedSetting == "blue") {
+                        modButtonColorBlockedSettingButton.setText("Blue");
+                    } else if(modButtonColorBlockedSetting == "yellow") {
+                        modButtonColorBlockedSettingButton.setText("Yellow");
+                    }
+					modButtonColorBlockedSettingButton.setOnClickListener(new View_.OnClickListener({
+						onClick: function(viewarg) {
+							if(modButtonColorBlockedSetting == "red") {
+								modButtonColorBlockedSetting = "green";
+								modButtonColorBlockedSettingButton.setText("Green");
+							} else if(modButtonColorBlockedSetting == "green") {
+								modButtonColorBlockedSetting = "blue";
+								modButtonColorBlockedSettingButton.setText("Blue");
+							} else if(modButtonColorBlockedSetting == "blue") {
+								modButtonColorBlockedSetting = "yellow";
+								modButtonColorBlockedSettingButton.setText("Yellow");
+							} else if(modButtonColorBlockedSetting == "yellow") {
+								modButtonColorBlockedSetting = "red";
+								modButtonColorBlockedSettingButton.setText("Red");
+							}
+							VertexClientPE.setupModButtonColors();
+							VertexClientPE.saveMainSettings();
+						}
+                    }));
+					
+					var modButtonColorEnabledSettingFunc = new settingButton("Mod button text color (enabled)", "Change the mod button enabled text color.");
+                    var modButtonColorEnabledSettingButton = modButtonColorEnabledSettingFunc.getButton();
+                    if(modButtonColorEnabledSetting == "red") {
+                        modButtonColorEnabledSettingButton.setText("Red");
+                    } else if(modButtonColorEnabledSetting == "green") {
+                        modButtonColorEnabledSettingButton.setText("Green");
+                    } else if(modButtonColorEnabledSetting == "blue") {
+                        modButtonColorEnabledSettingButton.setText("Blue");
+                    } else if(modButtonColorEnabledSetting == "yellow") {
+                        modButtonColorEnabledSettingButton.setText("Yellow");
+                    }
+					modButtonColorEnabledSettingButton.setOnClickListener(new View_.OnClickListener({
+						onClick: function(viewarg) {
+							if(modButtonColorEnabledSetting == "red") {
+								modButtonColorEnabledSetting = "green";
+								modButtonColorEnabledSettingButton.setText("Green");
+							} else if(modButtonColorEnabledSetting == "green") {
+								modButtonColorEnabledSetting = "blue";
+								modButtonColorEnabledSettingButton.setText("Blue");
+							} else if(modButtonColorEnabledSetting == "blue") {
+								modButtonColorEnabledSetting = "yellow";
+								modButtonColorEnabledSettingButton.setText("Yellow");
+							} else if(modButtonColorEnabledSetting == "yellow") {
+								modButtonColorEnabledSetting = "red";
+								modButtonColorEnabledSettingButton.setText("Red");
+							}
+							VertexClientPE.setupModButtonColors();
+							VertexClientPE.saveMainSettings();
+						}
+                    }));
                     
                     var menuTitle = clientSectionTitle("Menu", "rainbow");
                     
@@ -10389,6 +10496,8 @@ function settingsScreen() {
 					VertexClientPE.addView(settingsMenuLayout, transparentBgSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, mcpeGUISettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, fontSettingFunc);
+					VertexClientPE.addView(settingsMenuLayout, modButtonColorBlockedSettingFunc);
+					VertexClientPE.addView(settingsMenuLayout, modButtonColorEnabledSettingFunc);
                     settingsMenuLayout.addView(menuTitle);
 					VertexClientPE.addView(settingsMenuLayout, menuTypeSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, sizeSettingFunc);
