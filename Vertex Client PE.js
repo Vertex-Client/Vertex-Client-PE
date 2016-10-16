@@ -2018,7 +2018,7 @@ var autoSpammer = {
         var autoSpammerMessageLayout = new LinearLayout_(CONTEXT);
         autoSpammerMessageLayout.setOrientation(1);
         var autoSpammerMessageTitle = clientTextView("Message:");
-        var spamMessageInput = new clientEditText();
+        var spamMessageInput = clientEditText();
         var autoSpammerMessageEnter = clientTextView("\n");
         spamMessageInput.setText(spamMessage);
         spamMessageInput.setTextColor(Color_.WHITE);
@@ -4347,11 +4347,11 @@ VertexClientPE.showSignEditorDialog = function() {
                 var signEditorTitle = clientTextView("SignEditor", true);
                 var btn = clientButton("Ok");
                 var btn1 = clientButton("Cancel");
-                var inputBar = new clientEditText();
-                var inputBar1 = new clientEditText();
-                var inputBar2 = new clientEditText();
-                var inputBar3 = new clientEditText();
-                var dialogLayout = new LinearLayout_(CONTEXT);
+                var inputBar = clientEditText();
+                var inputBar1 = clientEditText();
+                var inputBar2 = clientEditText();
+                var inputBar3 = clientEditText();
+                var dialogLayout = LinearLayout_(CONTEXT);
                 dialogLayout.setBackgroundDrawable(backgroundGradient());
                 dialogLayout.setOrientation(LinearLayout_.VERTICAL);
                 dialogLayout.setPadding(10, 10, 10, 10);
@@ -4415,7 +4415,7 @@ VertexClientPE.showBugReportDialog = function(exception) {
                 var bugReportTitle = clientTextView("An error occurred", true);
                 var btn = clientButton("Report on GitHub");
                 var btn1 = clientButton("Close");
-                var inputBar = new clientEditText();
+                var inputBar = clientEditText();
                 var exceptionTextView = clientTextView(exception);
                 var dialogLayout = new LinearLayout_(CONTEXT);
                 dialogLayout.setBackgroundDrawable(backgroundGradient());
@@ -8022,6 +8022,10 @@ function clientTextButton(text, shadow) //menu buttons
 
 function clientEditText(text) //menu buttons
 {
+	if(text == null) {
+		text = "";
+	}
+	
     var defaultEditText = new EditText(CONTEXT);
     defaultEditText.setText(text);
     if(themeSetting == "white") {
@@ -11921,7 +11925,7 @@ VertexClientPE.showURLBarDialog = function() {
 				}
                 var urlBarDialogTitle = clientTextView("Enter an URL", true);
                 var btn = clientButton("Done");
-                var inputBar = new clientEditText();
+                var inputBar = clientEditText(webBrowserWebView.getUrl());
                 var dialogLayout = new LinearLayout_(CONTEXT);
                 dialogLayout.setBackgroundDrawable(backgroundGradient());
                 dialogLayout.setOrientation(LinearLayout_.VERTICAL);
@@ -11935,7 +11939,6 @@ VertexClientPE.showURLBarDialog = function() {
                 dialog.setContentView(dialogLayout);
                 dialog.setTitle("Enter an URL");
                 inputBar.setHint("URL");
-                inputBar.setText(webBrowserWebView.getUrl());
                 inputBar.setTextColor(Color_.WHITE);
                 dialog.show();
                 btn.setOnClickListener(new View_.OnClickListener() {
@@ -12006,7 +12009,7 @@ VertexClientPE.showF12Dialog = function() {
 				var outputTextView = clientTextView(webbrowserFullOutputText);
 				dialogOutputLayout.addView(outputTextView);
 				
-				var inputBar = new clientEditText();
+				var inputBar = clientEditText("");
 				inputBar.setTextColor(Color_.WHITE);
 				dialogInputLayout.addView(inputBar);
 				
