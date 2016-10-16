@@ -3473,6 +3473,11 @@ var fullBright = {
 	},
 	onToggle: function() {
         this.state = !this.state;
+		if(this.state) {
+			Block.setLightLevel(0, 15);
+		} else {
+			Block.setLightLevel(0, 0);
+		}
     }
 }
 
@@ -3544,6 +3549,7 @@ VertexClientPE.registerModule(chestESP);
 VertexClientPE.registerModule(chestTracers);
 VertexClientPE.registerModule(coordsDisplay);
 VertexClientPE.registerModule(derp);
+VertexClientPE.registerModule(fullBright);
 VertexClientPE.registerModule(itemGiver);
 VertexClientPE.registerModule(onlyDay);
 VertexClientPE.registerModule(orderAPizza);
