@@ -3446,6 +3446,9 @@ var randomTP = {
     isStateMod: function() {
         return true;
     },
+	getPrice: function() {
+		return 2000;
+	},
 	onToggle: function() {
         this.state = !this.state;
     },
@@ -3454,6 +3457,23 @@ var randomTP = {
 		var randomEnt = Entity.getAll().getRandomElement();
 		Entity.setPosition(getPlayerEnt(), Entity.getX(randomEnt), Entity.getY(randomEnt) + 1.8, Entity.getZ(randomEnt));
 	}
+}
+
+var fullBright = {
+	name: "Fullbright",
+    desc: "Makes air light up.",
+    category: VertexClientPE.category.MISC,
+    type: "Mod",
+	state: false,
+    isStateMod: function() {
+        return true;
+    },
+	getPrice: function() {
+		return 1000;
+	},
+	onToggle: function() {
+        this.state = !this.state;
+    }
 }
 
 //COMBAT
@@ -4708,16 +4728,14 @@ VertexClientPE.showModDialog = function(mod, btn) {
                         } else {
                             toggleButton.setTextColor(modButtonColorEnabled);
                         }
-                        toggleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+						if(fontSetting != "minecraft") {
+							toggleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+						}
                     } else {
                         toggleButton.setText("Enable");
                     }
                     toggleButton.setOnClickListener(new View_.OnClickListener() {
                         onClick: function(view) {
-                            if(mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) {
-                                VertexClientPE.showProDialog(mod.name);
-                                return;
-                            }
                             if(mod.name == "YesCheat+") {
                                 mod.onToggle();
                             } else {
@@ -4745,18 +4763,22 @@ VertexClientPE.showModDialog = function(mod, btn) {
                                         toggleButton.setTextColor(modButtonColorEnabled);
                                         btn.setTextColor(modButtonColorEnabled);
                                     }
-                                    toggleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
-                                    btn.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+									if(fontSetting != "minecraft") {
+										toggleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+                                    }
+									btn.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
                                 } else if(!mod.state) {
                                     toggleButton.setText("Enable");
-                                    if(themeSetting == "white") {
+                                    if(themeSetting == "white" && modButtonColorDisabledSetting == "black") {
                                         toggleButton.setTextColor(Color_.BLACK);
                                         btn.setTextColor(Color_.BLACK);
-                                        toggleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
-                                        btn.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
+										if(fontSetting != "minecraft") {
+											toggleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
+											btn.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
+										}
                                     } else {
-                                        toggleButton.setTextColor(Color_.WHITE);
-                                        btn.setTextColor(Color_.WHITE);
+                                        toggleButton.setTextColor(modButtonColorDisabled);
+                                        btn.setTextColor(modButtonColorDisabled);
                                     }
                                 }
                             }
@@ -5464,6 +5486,58 @@ VertexClientPE.showProDialog = function(featureName) {
                     onClick: function(view) {
                         dialog.dismiss();
                         VertexClientPE.downloadPro();
+                    }
+                });
+                btn1.setOnClickListener(new View_.OnClickListener() {
+                    onClick: function(view) {
+                        dialog.dismiss();
+                    }
+                });
+            } catch(e) {
+                print("Error: " + e);
+                VertexClientPE.showBugReportDialog(e);
+            }
+        }
+    });
+}
+
+VertexClientPE.showModBuyDialog = function(mod, modButton, modInfoButton) {
+    CONTEXT.runOnUiThread(new Runnable_() {
+        run: function() {
+            try {
+                var dialogTitle = clientTextView("Buy");
+                dialogTitle.setTextSize(25);
+                var dialogDesc = clientTextView(new Html_.fromHtml(mod.name + " costs <font color=\"#ffd700\">\u26C1 " + mod.getPrice().toString() + "</font>!\n"), 0);
+                var btn = clientButton("Purchase");
+                var btn1 = clientButton("Close");
+                var inputBar = clientEditText();
+                var dialogLayout = new LinearLayout_(CONTEXT);
+                dialogLayout.setBackgroundDrawable(backgroundGradient());
+                dialogLayout.setOrientation(LinearLayout_.VERTICAL);
+                dialogLayout.setPadding(10, 10, 10, 10);
+                dialogLayout.addView(dialogTitle);
+                dialogLayout.addView(dialogDesc);
+                dialogLayout.addView(btn);
+                dialogLayout.addView(btn1);
+                var dialog = new Dialog_(CONTEXT);
+                dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+                dialog.setContentView(dialogLayout);
+                dialog.setTitle("Buy");
+                dialog.show();
+                btn.setOnClickListener(new View_.OnClickListener() {
+                    onClick: function(view) {
+						if(mod.getPrice() <= VertexClientPE.getVertexCash()) {
+							editor.putInt("VertexClientPE.vertexCash", VertexClientPE.getVertexCash() - mod.getPrice());
+							editor.putBoolean("VertexClientPE.bought" + mod.name, true);
+							editor.commit();
+							if(modInfoButton != null) {
+								modInfoButton.setText("...");
+							}
+							dialog.dismiss();
+						} else {
+							VertexClientPE.toast("You need " + (mod.getPrice() - VertexClientPE.getVertexCash()).toString() + " more V€rt€xCash to buy this!");
+						}
                     }
                 });
                 btn1.setOnClickListener(new View_.OnClickListener() {
@@ -7546,7 +7620,10 @@ function modButton(mod, buttonOnly) {
     }
     
     var modButtonName = sharedPref.getString("VertexClientPE.mods." + mod.name + ".name", mod.name);
-    if(mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) modButtonName = "\uD83D\uDD12 " + modButtonName;
+	var modInfoButtonName = "...";
+    if((mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) || (mod.getPrice && !sharedPref.getBoolean("VertexClientPE.bought" + mod.name, false))) {
+		modInfoButtonName = "\uD83D\uDD12";
+	}
     
     if(mod.state) {
         if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
@@ -7621,6 +7698,10 @@ function modButton(mod, buttonOnly) {
                 VertexClientPE.showProDialog(mod.name);
                 return;
             }
+			if(mod.getPrice && !sharedPref.getBoolean("VertexClientPE.bought" + mod.name, false)) {
+				VertexClientPE.showModBuyDialog(mod, defaultClientButton, defaultInfoButton);
+				return;
+			}
             if(mod.name == "YesCheat+") {
                 mod.onToggle();
             } else {
@@ -7670,7 +7751,7 @@ function modButton(mod, buttonOnly) {
         modButtonLayoutLeft.addView(defaultClientButton);
     }
     
-    var defaultInfoButton = clientButton("...", mod.name + " settings", null, "right");
+    var defaultInfoButton = clientButton(modInfoButtonName, mod.name + " info and settings", null, "right");
     if(menuType == "halfscreen") {
         defaultInfoButton.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2.2 - display.widthPixels / 2.5, display.heightPixels / 10));
     } else if(menuType == "halfscreen_top") {
@@ -7681,6 +7762,14 @@ function modButton(mod, buttonOnly) {
     defaultInfoButton.setAlpha(0.54);
     defaultInfoButton.setOnClickListener(new View_.OnClickListener({
     onClick: function(viewarg){
+		if(mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) {
+			VertexClientPE.showProDialog(mod.name);
+			return;
+		}
+		if(mod.getPrice && !sharedPref.getBoolean("VertexClientPE.bought" + mod.name, false)) {
+			VertexClientPE.showModBuyDialog(mod, defaultClientButton, defaultInfoButton);
+			return;
+		}
         VertexClientPE.showModDialog(mod, defaultClientButton);
     }
     }));
