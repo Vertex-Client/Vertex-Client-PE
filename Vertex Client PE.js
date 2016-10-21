@@ -8038,6 +8038,7 @@ function tabGUICategoryButton(category, layout, layoutToBeOpened, layoutMain) {
 function accountButton(account, layout) {
     var accountManagerAccountLayout = new LinearLayout_(CONTEXT);
     accountManagerAccountLayout.setOrientation(LinearLayout_.HORIZONTAL);
+	accountManagerAccountLayout.setBackgroundDrawable();
     
     var accountManagerAccountLayoutLeft = new LinearLayout_(CONTEXT);
     accountManagerAccountLayoutLeft.setOrientation(1);
@@ -9022,13 +9023,11 @@ VertexClientPE.showStartScreenBar = function() {
                                 bNP.setFilterBitmap(false);
                                 bNP.setAntiAlias(false);
                                 youTubeButton.setBackgroundDrawable(bNP);
-                                youTubeButton.setPadding(0, 0, 0, 0);
                             } else {
                                 var bNP = splashYouTubeButtonClickedClientGUI;
                                 bNP.setFilterBitmap(false);
                                 bNP.setAntiAlias(false);
                                 youTubeButton.setBackgroundDrawable(bNP);
-                                youTubeButton.setPadding(0, Math.round(youTubeButton.getLineHeight() / 8), 0, 0);
                             }
                             return false;
                         }
@@ -9047,13 +9046,11 @@ VertexClientPE.showStartScreenBar = function() {
                                 bNP.setFilterBitmap(false);
                                 bNP.setAntiAlias(false);
                                 twitterButton.setBackgroundDrawable(bNP);
-                                twitterButton.setPadding(0, 0, 0, 0);
                             } else {
                                 var bNP = splashTwitterButtonClickedClientGUI;
                                 bNP.setFilterBitmap(false);
                                 bNP.setAntiAlias(false);
                                 twitterButton.setBackgroundDrawable(bNP);
-                                twitterButton.setPadding(0, Math.round(twitterButton.getLineHeight() / 8), 0, 0);
                             }
                             return false;
                         }
@@ -9072,13 +9069,11 @@ VertexClientPE.showStartScreenBar = function() {
                                 bNP.setFilterBitmap(false);
                                 bNP.setAntiAlias(false);
                                 gitHubButton.setBackgroundDrawable(bNP);
-                                gitHubButton.setPadding(0, 0, 0, 0);
                             } else {
                                 var bNP = splashGitHubButtonClickedClientGUI;
                                 bNP.setFilterBitmap(false);
                                 bNP.setAntiAlias(false);
                                 gitHubButton.setBackgroundDrawable(bNP);
-                                gitHubButton.setPadding(0, Math.round(gitHubButton.getLineHeight() / 8), 0, 0);
                             }
                             return false;
                         }
@@ -9461,11 +9456,17 @@ VertexClientPE.showAccountManager = function(showBackButton) {
                     accountManagerTitle.setGravity(Gravity_.CENTER);
                     accountManagerLayout1.addView(accountManagerTitle);
 					
-					var accountManagerTopLayout = new LinearLayout_(CONTEXT);
-					accountManagerTopLayout.setOrientation(LinearLayout_.HORIZONTAL);
-					accountManagerTopLayout.setGravity(Gravity_.CENTER);
-					accountManagerLayout1.addView(accountManagerTopLayout);
-                    
+					var accountManagerEnter = clientTextView("\n");
+					accountManagerLayout1.addView(accountManagerEnter);
+					
+					var accountManagerScrollViewHeight = (display.heightPixels / 3) * 2 - accountManagerTitle.getLineHeight() / 2 - accountManagerEnter.getLineHeight() / 2;
+					
+					var accountManagerBottomLayout = new LinearLayout_(CONTEXT);
+					accountManagerBottomLayout.setOrientation(LinearLayout_.HORIZONTAL);
+					accountManagerBottomLayout.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels, display.heightPixels - accountManagerScrollViewHeight));
+					accountManagerBottomLayout.setGravity(Gravity_.CENTER);
+					
+					
                     var addAccountButton = clientButton("Add account");
                     addAccountButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
                     addAccountButton.setOnClickListener(new View_.OnClickListener({
@@ -9474,24 +9475,26 @@ VertexClientPE.showAccountManager = function(showBackButton) {
                             VertexClientPE.showAddAccountDialog(showBackButton);
                         }
                     }));
-                    accountManagerTopLayout.addView(addAccountButton);
+                    accountManagerBottomLayout.addView(addAccountButton);
 					
-					var moreAccountButton = clientButton("...");
-                    moreAccountButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 16, display.heightPixels / 10));
-                    moreAccountButton.setOnClickListener(new View_.OnClickListener({
+					var importAccountButton = clientButton("Import");
+                    importAccountButton.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.WRAP_CONTENT, display.heightPixels / 10));
+                    importAccountButton.setOnClickListener(new View_.OnClickListener({
                         onClick: function(viewarg) {
                             VertexClientPE.toast("W.I.P.");
                         }
                     }));
-					accountManagerTopLayout.addView(moreAccountButton);
+					accountManagerBottomLayout.addView(importAccountButton);
                     
                     var accountManagerScrollView = new ScrollView(CONTEXT);
+					accountManagerScrollView.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels, accountManagerScrollViewHeight));
                     
                     var accountManagerLayout = new LinearLayout_(CONTEXT);
                     accountManagerLayout.setOrientation(1);
                     
                     accountManagerScrollView.addView(accountManagerLayout);
                     accountManagerLayout1.addView(accountManagerScrollView);
+					accountManagerLayout1.addView(accountManagerBottomLayout);
                     
                     var accountsLength = VertexClientPE.accounts.length();
                     if(VertexClientPE.accounts != null && accountsLength != -1) {
