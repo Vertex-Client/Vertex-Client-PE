@@ -5290,7 +5290,7 @@ VertexClientPE.showTeleportDialog = function() {
                         } else {
                             teleportName = "Unknown";
                         }
-                        teleportNameText.setText("Name: " + teleportName);
+                        teleportNameText.setText("Teleport location: " + teleportName);
                     }
                 });
                 
@@ -5301,7 +5301,7 @@ VertexClientPE.showTeleportDialog = function() {
                         } else {
                             teleportName = "Unknown";
                         }
-                        teleportNameText.setText("Name: " + teleportName);
+                        teleportNameText.setText("Teleport location: " + teleportName);
                     }
                 });
                 
@@ -5312,7 +5312,7 @@ VertexClientPE.showTeleportDialog = function() {
                         } else {
                             teleportName = "Unknown";
                         }
-                        teleportNameText.setText("Name: " + teleportName);
+                        teleportNameText.setText("Teleport location: " + teleportName);
                     }
                 });
                 
@@ -5392,7 +5392,7 @@ var accountClientIdInput;
 var accountName = "unknown";
 var accountClientId = "unknown";
 
-VertexClientPE.showAddAccountDialog = function() {
+VertexClientPE.showAddAccountDialog = function(showBackButton) {
     CONTEXT.runOnUiThread(new Runnable_() {
         run: function() {
             try {
@@ -5447,8 +5447,8 @@ VertexClientPE.showAddAccountDialog = function() {
 							backAccountManagerUI.dismiss();
 						}
                         exitAccountManagerUI.dismiss();
-                        VertexClientPE.showAccountManager();
-                        exitAccountManager();
+                        VertexClientPE.showAccountManager(showBackButton);
+                        exitAccountManager(showBackButton);
                     }
                 });
                 cancelButton.setOnClickListener(new View_.OnClickListener() {
@@ -7609,7 +7609,7 @@ function userBar() {
         onClick: function(viewArg) {
 			exitDashboardUI.dismiss();
             dashboardMenu.dismiss();
-			VertexClientPE.showAccountManager();
+			VertexClientPE.showAccountManager(true);
 			exitAccountManager(true);
         }
     });
@@ -9439,7 +9439,7 @@ VertexClientPE.removeAccount = function(str, layout, view) {
     VertexClientPE.saveAccounts();
 }
 
-VertexClientPE.showAccountManager = function() {
+VertexClientPE.showAccountManager = function(showBackButton) {
     VertexClientPE.loadAccounts();
     var display = new DisplayMetrics_();
     CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
@@ -9452,44 +9452,58 @@ VertexClientPE.showAccountManager = function() {
 						}
 					}
 					
-                    var accountManagerLayout = new LinearLayout_(CONTEXT);
-                    accountManagerLayout.setOrientation(1);
-                    accountManagerLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
+                    var accountManagerLayout1 = new LinearLayout_(CONTEXT);
+                    accountManagerLayout1.setOrientation(1);
+                    accountManagerLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
                     
                     var accountManagerTitle = clientTextView("Account Manager", true);
                     accountManagerTitle.setTextSize(25);
                     accountManagerTitle.setGravity(Gravity_.CENTER);
-                    accountManagerLayout.addView(accountManagerTitle);
+                    accountManagerLayout1.addView(accountManagerTitle);
+					
+					var accountManagerTopLayout = new LinearLayout_(CONTEXT);
+					accountManagerTopLayout.setOrientation(LinearLayout_.HORIZONTAL);
+					accountManagerTopLayout.setGravity(Gravity_.CENTER);
+					accountManagerLayout1.addView(accountManagerTopLayout);
                     
                     var addAccountButton = clientButton("Add account");
                     addAccountButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
                     addAccountButton.setOnClickListener(new View_.OnClickListener({
                         onClick: function(viewarg) {
                             //show add account dialog
-                            VertexClientPE.showAddAccountDialog();
+                            VertexClientPE.showAddAccountDialog(showBackButton);
                         }
                     }));
-                    accountManagerLayout.addView(addAccountButton);
+                    accountManagerTopLayout.addView(addAccountButton);
+					
+					var moreAccountButton = clientButton("...");
+                    moreAccountButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 16, display.heightPixels / 10));
+                    moreAccountButton.setOnClickListener(new View_.OnClickListener({
+                        onClick: function(viewarg) {
+                            VertexClientPE.toast("W.I.P.");
+                        }
+                    }));
+					accountManagerTopLayout.addView(moreAccountButton);
                     
                     var accountManagerScrollView = new ScrollView(CONTEXT);
                     
-                    var accountManagerLayout1 = new LinearLayout_(CONTEXT);
-                    accountManagerLayout1.setOrientation(1);
+                    var accountManagerLayout = new LinearLayout_(CONTEXT);
+                    accountManagerLayout.setOrientation(1);
                     
-                    accountManagerScrollView.addView(accountManagerLayout1);
-                    accountManagerLayout.addView(accountManagerScrollView);
+                    accountManagerScrollView.addView(accountManagerLayout);
+                    accountManagerLayout1.addView(accountManagerScrollView);
                     
                     var accountsLength = VertexClientPE.accounts.length();
                     if(VertexClientPE.accounts != null && accountsLength != -1) {
                         for(var i = 0; i < accountsLength; i++) {
                             //if(VertexClientPE.accounts[i].username != null && VertexClientPE.accounts[i].username != undefined && VertexClientPE.accounts[i].username != " ") {
-                                var usernameLayout = accountButton(VertexClientPE.accounts.get(i), accountManagerLayout1);
-                                accountManagerLayout1.addView(usernameLayout);
+                                var usernameLayout = accountButton(VertexClientPE.accounts.get(i), accountManagerLayout);
+                                accountManagerLayout.addView(usernameLayout);
                             //}
                         }
                     }
                     
-                    accountManager = new PopupWindow_(accountManagerLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+                    accountManager = new PopupWindow_(accountManagerLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
                     accountManager.setBackgroundDrawable(backgroundGradient());
                     accountManager.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
                 } catch(error) {
@@ -11872,6 +11886,7 @@ function dashboardScreen() {
 				var previewIconButton = tileButton("Preview", android.R.drawable.ic_menu_gallery, "violet", false);
                 var helpIconButton = tileButton("Help", android.R.drawable.ic_menu_help, "purple", false);
                 var addonsIconButton = tileButton("Addons", android.R.drawable.ic_menu_more, "blue");
+				var shareIconButton = tileButton("Share", android.R.drawable.ic_menu_share, "brown", false);
                 if(Launcher.isBlockLauncher()) {
                     var blockLauncherSettingsIconButton = tileButton("BlockLauncher Settings", net.zhuoweizhang.mcpelauncher.R.drawable.ic_menu_settings_holo_light, "black", false);
                 }
@@ -11946,6 +11961,16 @@ function dashboardScreen() {
                         exitAddon();
                     }
                 });
+				
+				shareIconButton.setOnClickListener(new View_.OnClickListener() {
+                    onClick: function(view) {
+                        var sendIntent = new Intent_();
+						sendIntent.setAction(Intent_.ACTION_SEND);
+						sendIntent.putExtra(Intent_.EXTRA_TEXT, "I use Vertex Client PE! Get it yourself at http://Vertex-Client.ml/. :D");
+						sendIntent.setType("text/plain");
+						CONTEXT.startActivity(sendIntent);
+                    }
+                });
                 
                 if(Launcher.isBlockLauncher()) {
                     blockLauncherSettingsIconButton.setOnClickListener(new View_.OnClickListener() {
@@ -11990,6 +12015,7 @@ function dashboardScreen() {
                 dashboardMenuLayout.addView(previewIconButton);
                 dashboardMenuLayout.addView(helpIconButton);
                 dashboardMenuLayout.addView(addonsIconButton);
+                dashboardMenuLayout.addView(shareIconButton);
                 if(Launcher.isBlockLauncher()) {
                     dashboardMenuLayout.addView(blockLauncherSettingsIconButton);
                 }
@@ -13148,7 +13174,7 @@ function showAccountManagerButton() {
 			}
 			GUI.dismiss();
 			accountManagerGUI.dismiss();
-			VertexClientPE.showAccountManager();
+			VertexClientPE.showAccountManager(false);
 			exitAccountManager(false);
 		}
     }));
