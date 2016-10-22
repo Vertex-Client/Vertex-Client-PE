@@ -4251,7 +4251,7 @@ ModPE.changeClientId = function(clientId) {
 };
 
 ModPE.getClientId = function() {
-    var file = new File_("/sdcard/games/com.mojang/minecraftpe/clientid.txt");
+    var file = new File_("/sdcard/games/com.mojang/minecraftpe/clientId.txt");
     var br = new BufferedReader_(new InputStreamReader_(new FileInputStream_(file)));
     var read, username;
     while((read = br.readLine()) != null) {
@@ -8042,9 +8042,15 @@ function tabGUICategoryButton(category, layout, layoutToBeOpened, layoutMain) {
 }
 
 function accountButton(account, layout) {
+	var playerName = account.toString();
+	
     var accountManagerAccountLayout = new LinearLayout_(CONTEXT);
     accountManagerAccountLayout.setOrientation(LinearLayout_.HORIZONTAL);
+	accountManagerAccountLayout.setPadding(dip2px(10), 0, dip2px(10), 0);
 	//accountManagerAccountLayout.setBackgroundDrawable();
+	if(playerName == ModPE.getPlayerName()) {
+		accountManagerAccountLayout.setBackgroundDrawable(backgroundSpecial(null, "green"));
+	}
     
     var accountManagerAccountLayoutLeft = new LinearLayout_(CONTEXT);
     accountManagerAccountLayoutLeft.setOrientation(1);
@@ -8066,10 +8072,9 @@ function accountButton(account, layout) {
     usernameText.setTextSize(15);
     accountManagerAccountLayoutLeft.addView(usernameText);
     var useButton = clientButton("Use");
-    useButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+    useButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4  - dip2px(10), display.heightPixels / 10));
     useButton.setOnClickListener(new View_.OnClickListener({
         onClick: function(viewarg) {
-            var playerName = account.toString();
             //var playerClientId = account.clientId.toString();
             var shouldRestart = false;
             if(playerName != ModPE.getPlayerName()) {
@@ -8090,7 +8095,7 @@ function accountButton(account, layout) {
     }));
     accountManagerAccountLayoutRight.addView(useButton);
     var deleteButton = clientButton("x");
-    deleteButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 3 - display.widthPixels / 4, display.heightPixels / 10));
+    deleteButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 3 - display.widthPixels / 4  - dip2px(10), display.heightPixels / 10));
     deleteButton.setOnClickListener(new View_.OnClickListener({
         onClick: function(viewarg) {
             VertexClientPE.removeAccount(account.toString(), layout, accountManagerAccountLayout);
@@ -9438,6 +9443,74 @@ VertexClientPE.removeAccount = function(str, layout, view) {
     VertexClientPE.saveAccounts();
 }
 
+VertexClientPE.showDirectUseAccountDialog = function() {
+	CONTEXT.runOnUiThread(new Runnable_() {
+        run: function() {
+            try {
+                VertexClientPE.loadMainSettings();
+                var accountTitle = clientTextView("Direct use account", true);
+                var accountNameInput = clientEditText();
+                accountNameInput.setTextColor(Color_.WHITE);
+                accountNameInput.setSingleLine(true);
+                accountNameInput.setHint("Enter an username");
+                var accountClientIdInput = clientEditText();
+                accountClientIdInput.setTextColor(Color_.WHITE);
+                accountClientIdInput.setHint("Enter a client id (leave blank for random)");
+                var okButton = clientButton("Ok");
+                var cancelButton = clientButton("Cancel");
+                var dialogLayout = new LinearLayout_(CONTEXT);
+                dialogLayout.setBackgroundDrawable(backgroundGradient());
+                dialogLayout.setOrientation(LinearLayout_.VERTICAL);
+                dialogLayout.setPadding(10, 10, 10, 10);
+                dialogLayout.addView(accountTitle);
+                dialogLayout.addView(accountNameInput);
+                dialogLayout.addView(accountClientIdInput);
+                dialogLayout.addView(okButton);
+                dialogLayout.addView(cancelButton);
+                var dialog = new Dialog_(CONTEXT);
+                dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+                dialog.setContentView(dialogLayout);
+                dialog.setTitle("Direct use account");
+                dialog.show();
+                okButton.setOnClickListener(new View_.OnClickListener() {
+                    onClick: function(view) {
+                        accountName = accountNameInput.getText().toString();
+                        clientId = accountClientIdInput.getText().toString();
+                        if(accountName == null || accountName == "" || accountName.replaceAll(" ", "") == "") {
+                            VertexClientPE.toast("Enter an username!");
+                            return;
+                        }
+						if(clientId == null || clientId == "" || clientId.replaceAll(" ", "") == "") {
+                            clientId = getRandomInt(100, 999999999).toString();
+                        }
+                        var shouldRestart = false;
+						if(accountName != ModPE.getPlayerName()) {
+							ModPE.setPlayerName(playerName);
+							shouldRestart = true;
+						}
+						if(clientId != ModPE.getClientId()) {
+							ModPE.changeClientId(clientId);
+							shouldRestart = true;
+						}
+						if(shouldRestart) {
+							ModPE.restart();
+						}
+                    }
+                });
+                cancelButton.setOnClickListener(new View_.OnClickListener() {
+                    onClick: function(view) {
+                        dialog.dismiss();
+                    }
+                });
+            } catch(e) {
+                print("Error: " + e);
+                VertexClientPE.showBugReportDialog(e);
+            }
+        }
+    });
+}
+
 VertexClientPE.showAccountManager = function(showBackButton) {
     VertexClientPE.loadAccounts();
     var display = new DisplayMetrics_();
@@ -9470,21 +9543,29 @@ VertexClientPE.showAccountManager = function(showBackButton) {
 					accountManagerBottomLayout.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels, display.heightPixels - accountManagerScrollViewHeight));
 					accountManagerBottomLayout.setGravity(Gravity_.CENTER);
 					
-					
                     var addAccountButton = clientButton("Add account");
                     addAccountButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
                     addAccountButton.setOnClickListener(new View_.OnClickListener({
-                        onClick: function(viewarg) {
+                        onClick: function(viewArg) {
                             //show add account dialog
                             VertexClientPE.showAddAccountDialog(showBackButton);
                         }
                     }));
                     accountManagerBottomLayout.addView(addAccountButton);
 					
+					var directUseAccountButton = clientButton("Direct use");
+                    directUseAccountButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+                    directUseAccountButton.setOnClickListener(new View_.OnClickListener({
+                        onClick: function(viewArg) {
+                            VertexClientPE.showDirectUseAccountDialog();
+                        }
+                    }));
+					accountManagerBottomLayout.addView(directUseAccountButton);
+					
 					var importAccountButton = clientButton("Import");
                     importAccountButton.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.WRAP_CONTENT, display.heightPixels / 10));
                     importAccountButton.setOnClickListener(new View_.OnClickListener({
-                        onClick: function(viewarg) {
+                        onClick: function(viewArg) {
                             VertexClientPE.toast("W.I.P.");
                         }
                     }));
