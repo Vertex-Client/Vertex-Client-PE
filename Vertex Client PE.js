@@ -4245,7 +4245,7 @@ ModPE.setPlayerName = function(username) {
 ModPE.changeClientId = function(clientId) {
     var fileOutputStream = new FileOutputStream_(new File_(Environment_.getExternalStorageDirectory() + "/games/com.mojang/minecraftpe/clientId.txt"));
     var outputStreamWriter = new OutputStreamWriter_(fileOutputStream);
-    outputStreamWriter.write(clientId);
+    outputStreamWriter.write(clientId.toString());
     outputStreamWriter.close();
     fileOutputStream.close();
 };
@@ -9475,8 +9475,8 @@ VertexClientPE.showDirectUseAccountDialog = function() {
                 dialog.show();
                 okButton.setOnClickListener(new View_.OnClickListener() {
                     onClick: function(view) {
-                        accountName = accountNameInput.getText().toString();
-                        clientId = accountClientIdInput.getText().toString();
+                        var accountName = accountNameInput.getText().toString();
+                        var clientId = accountClientIdInput.getText().toString();
                         if(accountName == null || accountName == "" || accountName.replaceAll(" ", "") == "") {
                             VertexClientPE.toast("Enter an username!");
                             return;
@@ -11331,7 +11331,7 @@ function addonScreen() {
 					addonDownloadTextView.setPaintFlags(addonDownloadTextView.getPaintFlags() | Paint_.UNDERLINE_TEXT_FLAG);
 					addonDownloadTextView.setOnClickListener(new View_.OnClickListener() {
 						onClick: function(v) {
-							ModPE.goToURL("http://Vertex-Client.ml/");
+							ModPE.goToURL("http://Vertex-Client.ml/#addons");
 						}
 					});
 					addonMenuLayout1.addView(addonDownloadTextView);
