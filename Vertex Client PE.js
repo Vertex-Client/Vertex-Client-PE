@@ -171,9 +171,9 @@ var modButtonColorBlockedSetting = "red";
 var modButtonColorEnabledSetting = "green";
 var modButtonColorDisabledSetting = "white";
 var arrowGunMode = "slow";
-//---------------------------
 var cmdPrefix = ".";
-//---------------------------
+var commandsSetting = "on";
+//------------------------------------
 var combatName = "Combat";
 var buildingName = "Building";
 var movementName = "Movement";
@@ -3799,7 +3799,7 @@ function textPacketReceiveHook(type, sender, message) {
 }
 
 function chatHook(text) {
-    if(text.startsWith(cmdPrefix)) {
+    if(text.startsWith(cmdPrefix) && commandsSetting == "on") {
         preventDefault();
         if(Launcher.isBlockLauncher()) {
             CONTEXT.nativeSetTextboxText("");
@@ -6768,7 +6768,8 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + modButtonColorEnabledSetting.toString());
     outWrite.append("," + modButtonColorDisabledSetting.toString());
     outWrite.append("," + arrowGunMode.toString());
-    //outWrite.append("," + cmdPrefix.toString());
+    outWrite.append("," + commandsSetting.toString());
+    outWrite.append("," + cmdPrefix.toString());
 
     outWrite.close();
     
@@ -6904,6 +6905,12 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[37] != null && arr[37] != undefined) {
             arrowGunMode = arr[37];
+        }
+		if (arr[38] != null && arr[38] != undefined) {
+            commandsSetting = arr[38];
+        }
+		if (arr[39] != null && arr[39] != undefined) {
+            cmdPrefix = arr[39];
         }
         fos.close();
         VertexClientPE.loadAutoSpammerSettings();
@@ -10842,6 +10849,54 @@ function settingsScreen() {
                         }
                     }
                     }));
+					
+					var commandsTitle = clientSectionTitle("Commands", "rainbow");
+					
+					var commandsSettingFunc = new settingButton("Commands", "Toggle commands off to login on servers like Mineplex PE.");
+                    var commandsSettingButton = commandsSettingFunc.getButton();
+                    if(commandsSetting == "on") {
+                        commandsSettingButton.setText("ON");
+                    } else if(commandsSetting == "off") {
+                        commandsSettingButton.setText("OFF");
+                    }
+                    commandsSettingButton.setOnClickListener(new View_.OnClickListener({
+                    onClick: function(viewarg){
+                        if(commandsSetting == "on") {
+                            commandsSetting = "off";
+                            commandsSettingButton.setText("OFF");
+                            VertexClientPE.saveMainSettings();
+                        } else if(commandsSetting == "off") {
+                            commandsSetting = "on";
+                            commandsSettingButton.setText("ON");
+                            VertexClientPE.saveMainSettings();
+                        }
+                    }
+                    }));
+					
+					var cmdPrefixFunc = new settingButton("Command prefix", "Change the first character of all Vertex Client PE commands.");
+                    var cmdPrefixButton = cmdPrefixFunc.getButton();
+                    cmdPrefixButton.setText(cmdPrefix);
+                    cmdPrefixButton.setOnClickListener(new View_.OnClickListener({
+                    onClick: function(viewarg){
+                        if(cmdPrefix == ".") {
+                            cmdPrefix = "#";
+                            cmdPrefixButton.setText("#");
+                            VertexClientPE.saveMainSettings();
+                        } else if(cmdPrefix == "#") {
+                            cmdPrefix = "$";
+                            cmdPrefixButton.setText("$");
+                            VertexClientPE.saveMainSettings();
+                        } else if(cmdPrefix == "$") {
+                            cmdPrefix = "@";
+                            cmdPrefixButton.setText("@");
+                            VertexClientPE.saveMainSettings();
+                        } else if(cmdPrefix == "@") {
+                            cmdPrefix = ".";
+                            cmdPrefixButton.setText(".");
+                            VertexClientPE.saveMainSettings();
+                        }
+                    }
+                    }));
                     
                     var otherTitle = clientSectionTitle("Other", "rainbow");
                     
@@ -10948,6 +11003,9 @@ function settingsScreen() {
 					VertexClientPE.addView(settingsMenuLayout, menuTypeSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, sizeSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, menuAnimationsSettingFunc);
+					settingsMenuLayout.addView(commandsTitle);
+					VertexClientPE.addView(settingsMenuLayout, commandsSettingFunc);
+					VertexClientPE.addView(settingsMenuLayout, cmdPrefixFunc);
                     settingsMenuLayout.addView(otherTitle);
 					VertexClientPE.addView(settingsMenuLayout, showNewsSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, showMoneyToastsSettingFunc);
