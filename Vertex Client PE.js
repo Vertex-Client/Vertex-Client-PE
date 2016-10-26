@@ -170,6 +170,7 @@ var backgroundStyleSetting = "normal";
 var modButtonColorBlockedSetting = "red";
 var modButtonColorEnabledSetting = "green";
 var modButtonColorDisabledSetting = "white";
+var arrowGunMode = "slow";
 //---------------------------
 var cmdPrefix = ".";
 //---------------------------
@@ -2483,14 +2484,60 @@ var arrowGun = {
     category: VertexClientPE.category.COMBAT,
     type: "Mod",
     state: false,
-    isStateMod: function() {
-        return true;
+	getSettingsLayout: function() {
+        var arrowGunSettingsLayout = new LinearLayout_(CONTEXT);
+        arrowGunSettingsLayout.setOrientation(1);
+		
+		var arrowGunModeLayout = new LinearLayout_(CONTEXT);
+		arrowGunModeLayout.setOrientation(LinearLayout_.HORIZONTAL);
+		
+        var arrowGunModeTitle = clientTextView("Mode:");
+        var arrowGunModeSlowButton = clientButton("Slow", "Slow mode which shoots an arrow every second.");
+        arrowGunModeSlowButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+        var arrowGunModeFastButton = clientButton("Fast", "Fast mode which shoots multiple arrows every second.");
+        arrowGunModeFastButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+        
+        var arrowGunModeLayoutLeft = new LinearLayout_(CONTEXT);
+        arrowGunModeLayoutLeft.setOrientation(1);
+        arrowGunModeLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2, display.heightPixels / 10));
+        arrowGunModeLayoutLeft.setGravity(Gravity_.CENTER_HORIZONTAL);
+        arrowGunModeLayout.addView(arrowGunModeLayoutLeft);
+        
+        var arrowGunModeLayoutRight = new LinearLayout_(CONTEXT);
+        arrowGunModeLayoutRight.setOrientation(1);
+        arrowGunModeLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2, display.heightPixels / 10));
+        arrowGunModeLayoutRight.setGravity(Gravity_.CENTER_HORIZONTAL);
+        arrowGunModeLayout.addView(arrowGunModeLayoutRight);
+        
+        arrowGunModeLayoutLeft.addView(arrowGunModeSlowButton);
+        arrowGunModeLayoutRight.addView(arrowGunModeFastButton);
+        if(arrowGunMode == "slow") {
+            arrowGunModeSlowButton.setTextColor(Color_.GREEN);
+        }if(arrowGunMode == "fast") {
+            arrowGunModeFastButton.setTextColor(Color_.GREEN);
+        }
+        arrowGunModeSlowButton.setOnClickListener(new View_.OnClickListener() {
+            onClick: function(view) {
+                arrowGunMode = "slow";
+                arrowGunModeSlowButton.setTextColor(Color_.GREEN);
+                arrowGunModeFastButton.setTextColor(Color_.WHITE);
+                VertexClientPE.saveMainSettings();
+            }
+        });
+        arrowGunModeFastButton.setOnClickListener(new View_.OnClickListener() {
+            onClick: function(view) {
+                arrowGunMode = "fast";
+                arrowGunModeSlowButton.setTextColor(Color_.WHITE);
+                arrowGunModeFastButton.setTextColor(Color_.GREEN);
+                VertexClientPE.saveMainSettings();
+            }
+        });
+        arrowGunSettingsLayout.addView(arrowGunModeTitle);
+        arrowGunSettingsLayout.addView(arrowGunModeLayout);
+        return arrowGunSettingsLayout;
     },
-    onToggle: function() {
-        this.state = !this.state;
-    },
-    onInterval: function() {
-        var p = ((Entity.getPitch(getPlayerEnt()) + 90) * Math.PI) / 180;
+	shootArrow: function() {
+		var p = ((Entity.getPitch(getPlayerEnt()) + 90) * Math.PI) / 180;
         var y = ((Entity.getYaw(getPlayerEnt()) + 90) * Math.PI) / 180;
         var xx = Math.sin(p) * Math.cos(y);
         var yy = Math.sin(p) * Math.sin(y);
@@ -2499,7 +2546,23 @@ var arrowGun = {
         setVelX(arrow, xx);
         setVelY(arrow, zz);
         setVelZ(arrow, yy);
-    }
+	},
+    isStateMod: function() {
+        return true;
+    },
+    onToggle: function() {
+        this.state = !this.state;
+    },
+    onInterval: function() {
+        if(arrowGunMode == "slow") {
+			this.shootArrow();
+		}
+    },
+	onTick: function() {
+		if(arrowGunMode == "fast") {
+			this.shootArrow();
+		}
+	}
 }
 
 var orderAPizza = {
@@ -3482,6 +3545,43 @@ var fullBright = {
     }
 }
 
+// Step is made by @imYannic
+var step = {
+	name: "Step",
+    desc: "Similar to MCPE's built-in Auto jump, except that it works on multiple heights.",
+    category: VertexClientPE.category.MOVEMENT,
+    type: "Mod",
+	state: false,
+	isExpMod: function() {
+		return true;
+	},
+    isStateMod: function() {
+        return true;
+    },
+	onToggle: function() {
+        this.state = !this.state;
+    },
+	onTick: function() {
+		if(Entity.getVelX(getPlayerEnt()) + Entity.getVelZ(getPlayerEnt()) == 0) return;
+
+		var vX = (Entity.getVelX(getPlayerEnt()) > 0) ? 1 : 0;
+		var vZ = (Entity.getVelZ(getPlayerEnt()) > 0) ? 1 : 0;
+
+		// idk the function name below
+		var y = false;
+		var i = getPlayerY();
+		while(getTile(Math.round(Player.getX()) + vX, i + 1, Math.round(Player.getZ()) + vZ != 0) && i <= 128) {
+			i++;
+			var bid = Level.getTile(Math.round(Player.getX()) + vX, i, Math.round(Player.getZ()) + vZ);
+			if(bid != 0) y = i;
+		}
+
+		if(y) {
+			Entity.setPosition(getPlayerEnt(), Math.round(Player.getX()) + vX, y, Math.round(Player.getZ()) + vZ);
+		}
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(antiKnockback);
 VertexClientPE.registerModule(antiBurn);
@@ -3516,6 +3616,7 @@ VertexClientPE.registerModule(noDownGlide);
 VertexClientPE.registerModule(randomTP);
 VertexClientPE.registerModule(ride);
 VertexClientPE.registerModule(speedHack);
+VertexClientPE.registerModule(step);
 VertexClientPE.registerModule(tapJumpRun);
 VertexClientPE.registerModule(tapPoint);
 VertexClientPE.registerModule(tapTeleporter);
@@ -6666,6 +6767,7 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + modButtonColorBlockedSetting.toString());
     outWrite.append("," + modButtonColorEnabledSetting.toString());
     outWrite.append("," + modButtonColorDisabledSetting.toString());
+    outWrite.append("," + arrowGunMode.toString());
     //outWrite.append("," + cmdPrefix.toString());
 
     outWrite.close();
@@ -6799,6 +6901,9 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[36] != null && arr[36] != undefined) {
             modButtonColorDisabledSetting = arr[36];
+        }
+		if (arr[37] != null && arr[37] != undefined) {
+            arrowGunMode = arr[37];
         }
         fos.close();
         VertexClientPE.loadAutoSpammerSettings();
@@ -11443,11 +11548,8 @@ function milestonesScreen() {
 							}
 						});
 						if(fontSetting == "default") {
-							if(themeSetting == "white") {
-								downloadMilestoneButton.setTextColor(Color_.BLACK);
-							} else {
-								downloadMilestoneButton.setTextColor(Color_.WHITE);
-							}
+							downloadMilestoneButton.setTextColor(Color_.WHITE);
+							downloadMilestoneButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
 						} else if(fontSetting == "minecraft") {
 							MinecraftButtonLibrary.addMinecraftStyleToTextView(downloadMilestoneButton);
 						}
@@ -11470,7 +11572,7 @@ function milestonesScreen() {
 					milestonesMenuLayoutScroll.addView(milestonesMenuLayout);
                     milestonesMenuLayout1.addView(milestonesMenuLayoutScroll);
 					
-					var supportTextView = clientTextView("\nThanks for your support!");
+					var supportTextView = clientTextView("\nThanks for your support!", true);
 					supportTextView.setGravity(Gravity_.CENTER);
 					milestonesMenuLayout1.addView(supportTextView);
 
