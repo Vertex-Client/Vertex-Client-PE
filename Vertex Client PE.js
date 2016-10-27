@@ -9598,7 +9598,7 @@ VertexClientPE.showDirectUseAccountDialog = function() {
                         }
                         var shouldRestart = false;
 						if(accountName != ModPE.getPlayerName()) {
-							ModPE.setPlayerName(playerName);
+							ModPE.setPlayerName(accountName);
 							shouldRestart = true;
 						}
 						if(clientId != ModPE.getClientId()) {
@@ -9648,11 +9648,11 @@ VertexClientPE.showAccountManager = function(showBackButton) {
 					var accountManagerEnter = clientTextView("\n");
 					accountManagerLayout1.addView(accountManagerEnter);
 					
-					var accountManagerScrollViewHeight = (display.heightPixels / 3) * 2 - accountManagerTitle.getLineHeight() / 2 - accountManagerEnter.getLineHeight() / 2;
+					var accountManagerScrollViewHeight = (display.heightPixels / 3) * 2;
 					
 					var accountManagerBottomLayout = new LinearLayout_(CONTEXT);
 					accountManagerBottomLayout.setOrientation(LinearLayout_.HORIZONTAL);
-					accountManagerBottomLayout.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels, display.heightPixels - accountManagerScrollViewHeight));
+					accountManagerBottomLayout.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels, display.heightPixels - accountManagerScrollViewHeight - accountManagerTitle.getLineHeight() / 2 - accountManagerEnter.getLineHeight() / 2));
 					accountManagerBottomLayout.setGravity(Gravity_.CENTER);
 					
                     var addAccountButton = clientButton("Add account");
@@ -9681,10 +9681,10 @@ VertexClientPE.showAccountManager = function(showBackButton) {
                             VertexClientPE.toast("W.I.P.");
                         }
                     }));
-					accountManagerBottomLayout.addView(importAccountButton);
+					//accountManagerBottomLayout.addView(importAccountButton);
                     
                     var accountManagerScrollView = new ScrollView(CONTEXT);
-					accountManagerScrollView.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels, accountManagerScrollViewHeight));
+					accountManagerScrollView.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels, accountManagerScrollViewHeight - accountManagerTitle.getLineHeight() / 2 - accountManagerEnter.getLineHeight() / 2));
                     
                     var accountManagerLayout = new LinearLayout_(CONTEXT);
                     accountManagerLayout.setOrientation(1);
