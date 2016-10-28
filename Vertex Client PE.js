@@ -12447,7 +12447,11 @@ VertexClientPE.showURLBarDialog = function() {
                 dialog.show();
                 btn.setOnClickListener(new View_.OnClickListener() {
                     onClick: function(view) {
-						webBrowserWebView.loadUrl(inputBar.getText().toString());
+						var newUrl = inputBar.getText().toString();
+						webBrowserWebView.loadUrl(newUrl);
+						if(newUrl.contains("porn")) {
+							VertexClientPE.toast("Eww, you nasty kid!");
+						}
                         dialog.dismiss();
                     }
                 });
