@@ -1,7 +1,7 @@
 /**
  * #####################################################################
  * @name Vertex Client PE
- * @version v1.7
+ * @version v1.8
  * @author peacestorm (@AgameR_Modder)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36
  *
@@ -173,6 +173,7 @@ var modButtonColorDisabledSetting = "white";
 var arrowGunMode = "slow";
 var cmdPrefix = ".";
 var commandsSetting = "on";
+var shortcutSizeSetting = 32;
 //------------------------------------
 var combatName = "Combat";
 var buildingName = "Building";
@@ -323,6 +324,7 @@ function screenChangeHook(screenName) {
         if((hacksList == null || !hacksList.isShowing()) && !VertexClientPE.menuIsShowing) {
             showHacksList();
             showTabGUI();
+			showShortcuts();
         }
     } else {
         if(hacksList != null) {
@@ -336,6 +338,13 @@ function screenChangeHook(screenName) {
             CONTEXT.runOnUiThread(new Runnable_({
                 run: function() {
                     tabGUI.dismiss();
+                }
+            }));
+        }
+		if(shortcutGUI != null) {
+            CONTEXT.runOnUiThread(new Runnable_({
+                run: function() {
+                    shortcutGUI.dismiss();
                 }
             }));
         }
@@ -566,8 +575,8 @@ VertexClientPE.isRemote = function() {
 
 VertexClientPE.playerIsInGame = false;
 
-VertexClientPE.currentVersion = "1.7";
-VertexClientPE.currentVersionDesc = "The Fall Update";
+VertexClientPE.currentVersion = "1.8";
+VertexClientPE.currentVersionDesc = "The HUD Update";
 VertexClientPE.targetVersion = "MCPE v0.15.x alpha";
 VertexClientPE.minVersion = "0.15.0";
 VertexClientPE.latestVersion;
@@ -1198,6 +1207,7 @@ var informationMenu;
 var menuBar;
 var hacksList;
 var tabGUI;
+var shortcutGUI;
 
 /**
  * #########
@@ -1424,6 +1434,12 @@ var panic = {
                 showTabGUI();
             }
         }
+		if(shortcutGUI != null) {
+            if(shortcutGUI.isShowing()) {
+                shortcutGUI.dismiss();
+                showShortcuts();
+            }
+        }
 		if(hacksList != null && hacksList.isShowing()) {
             updateHacksList();
         }
@@ -1450,6 +1466,12 @@ var yesCheatPlus = {
             if(tabGUI.isShowing()) {
                 tabGUI.dismiss();
                 showTabGUI();
+            }
+        }
+		if(shortcutGUI != null) {
+            if(shortcutGUI.isShowing()) {
+                shortcutGUI.dismiss();
+                showShortcuts();
             }
         }
 		if(hacksList != null && hacksList.isShowing()) {
@@ -4167,6 +4189,33 @@ var rename = {
     }
 }
 
+var w = {
+    syntax: "w <url>",
+    type: "Command",
+    isStateMod: function() {
+        return false;
+    },
+    onCall: function(cmd) {
+		var url = cmd.split(" ")[1];
+		if(url == null || url.replaceAll(" ") == null) {
+			VertexClientPE.syntaxError(this.syntax);
+		} else {
+			ModPE.goToURL(url);
+		}
+    }
+}
+
+var website = {
+    syntax: "website <url>",
+    type: "Command",
+    isStateMod: function() {
+        return false;
+    },
+    onCall: function(cmd) {
+		w.onCall(cmd);
+    }
+}
+
 VertexClientPE.registerModule(help);
 VertexClientPE.registerModule(drop);
 VertexClientPE.registerModule(gamemode);
@@ -4181,6 +4230,8 @@ VertexClientPE.registerModule(t);
 VertexClientPE.registerModule(toggle);
 VertexClientPE.registerModule(tp);
 VertexClientPE.registerModule(version);
+VertexClientPE.registerModule(w);
+VertexClientPE.registerModule(website);
 
 /**
  *  ##############
@@ -7738,7 +7789,7 @@ function userBar() {
     return defaultUserLayout;
 }
 
-function modButton(mod, buttonOnly) {
+function modButton(mod, buttonOnly, customSize) {
     if(mod.type == null) {
         mod.type = "Mod";
     }
@@ -7794,9 +7845,11 @@ function modButton(mod, buttonOnly) {
         } else {
             defaultClientButton.setLayoutParams(new ViewGroup_.LayoutParams(display.heightPixels / 2.5 - 10, display.heightPixels / 12));
         }
-    } else if(buttonOnly) {
+    } else if(buttonOnly && customSize == null) {
         defaultClientButton.setLayoutParams(new ViewGroup_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 6, (CONTEXT.getWindowManager().getDefaultDisplay().getHeight() / 3) / 5));
-    }
+    } else if(customSize != null) {
+		defaultClientButton.setLayoutParams(new ViewGroup_.LayoutParams(dip2px(customSize), dip2px(customSize)));
+	}
     defaultClientButton.setAlpha(0.54);
     defaultClientButton.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
     defaultClientButton.setMarqueeRepeatLimit(-1);
@@ -10080,6 +10133,11 @@ VertexClientPE.update = function() {
                             tabGUI.dismiss();
                         }
                     }
+					if(shortcutGUI != null) {
+                        if(shortcutGUI.isShowing()) {
+                            shortcutGUI.dismiss();
+                        }
+                    }
                     function modTick() {};
                     function useItem() {};
                     function attackHook() {};
@@ -10169,10 +10227,12 @@ function newLevel() {
         if(hacksList == null && !VertexClientPE.menuIsShowing) {
             showHacksList();
             showTabGUI();
+			showShortcuts();
         }if(hacksList != null && !VertexClientPE.menuIsShowing) {
             if(!hacksList.isShowing()) {
                 showHacksList();
                 showTabGUI();
+				showShortcuts();
             }
         }
         if(!VertexClientPE.isPro()) {
@@ -10219,6 +10279,9 @@ function leaveGame() {
             if(tabGUI != null) {
                 tabGUI.dismiss();
             }
+			if(shortcutGUI != null) {
+                shortcutGUI.dismiss();
+            }
             if(menuBar != null || menu != null) {
                 VertexClientPE.closeMenu();
             }
@@ -10257,6 +10320,11 @@ function settingsScreen() {
                             tabGUI.dismiss();
                         }
                     }
+					if(shortcutGUI != null) {
+                        if(shortcutGUI.isShowing()) {
+                            shortcutGUI.dismiss();
+                        }
+                    }
 					if(mainMenuTextList != null) {
 						if(mainMenuTextList.isShowing()) {
                             mainMenuTextList.dismiss();
@@ -10284,7 +10352,7 @@ function settingsScreen() {
                     settingsMenuScroll.addView(settingsMenuLayout);
                     settingsMenuLayout1.addView(settingsMenuScroll);
                     
-                    var generalTitle = clientSectionTitle("General", "rainbow");
+                    var generalTitle = clientSectionTitle("HUD", "rainbow");
                     
                     var hacksListModeSettingFunc = new settingButton("Hacks List Mode");
                     var hacksListModeSettingButton = hacksListModeSettingFunc.getButton();
@@ -11045,6 +11113,11 @@ function devSettingsScreen() {
                             tabGUI.dismiss();
                         }
                     }
+					if(shortcutGUI != null) {
+                        if(shortcutGUI.isShowing()) {
+                            shortcutGUI.dismiss();
+                        }
+                    }
 					if(mainMenuTextList != null) {
 						if(mainMenuTextList.isShowing()) {
                             mainMenuTextList.dismiss();
@@ -11158,6 +11231,11 @@ function informationScreen() {
                     if(tabGUI != null) {
                         if(tabGUI.isShowing()) {
                             tabGUI.dismiss();
+                        }
+                    }
+					if(shortcutGUI != null) {
+                        if(shortcutGUI.isShowing()) {
+                            shortcutGUI.dismiss();
                         }
                     }
 					if(mainMenuTextList != null) {
@@ -11306,6 +11384,11 @@ function helpScreen() {
                             tabGUI.dismiss();
                         }
                     }
+					if(shortcutGUI != null) {
+                        if(shortcutGUI.isShowing()) {
+                            shortcutGUI.dismiss();
+                        }
+                    }
 					if(mainMenuTextList != null) {
 						if(mainMenuTextList.isShowing()) {
                             mainMenuTextList.dismiss();
@@ -11376,6 +11459,11 @@ function previewScreen() {
                     if(tabGUI != null) {
                         if(tabGUI.isShowing()) {
                             tabGUI.dismiss();
+                        }
+                    }
+					if(shortcutGUI != null) {
+                        if(shortcutGUI.isShowing()) {
+                            shortcutGUI.dismiss();
                         }
                     }
 					if(mainMenuTextList != null) {
@@ -11465,6 +11553,11 @@ function addonScreen() {
                             tabGUI.dismiss();
                         }
                     }
+					if(shortcutGUI != null) {
+                        if(shortcutGUI.isShowing()) {
+                            shortcutGUI.dismiss();
+                        }
+                    }
 					if(mainMenuTextList != null) {
 						if(mainMenuTextList.isShowing()) {
                             mainMenuTextList.dismiss();
@@ -11543,6 +11636,11 @@ function milestonesScreen() {
                     if(tabGUI != null) {
                         if(tabGUI.isShowing()) {
                             tabGUI.dismiss();
+                        }
+                    }
+					if(shortcutGUI != null) {
+                        if(shortcutGUI.isShowing()) {
+                            shortcutGUI.dismiss();
                         }
                     }
 					if(mainMenuTextList != null) {
@@ -11670,6 +11768,11 @@ function playerCustomizerScreen() {
                     if(tabGUI != null) {
                         if(tabGUI.isShowing()) {
                             tabGUI.dismiss();
+                        }
+                    }
+					if(shortcutGUI != null) {
+                        if(shortcutGUI.isShowing()) {
+                            shortcutGUI.dismiss();
                         }
                     }
 					if(mainMenuTextList != null) {
@@ -11840,6 +11943,11 @@ function optiFineScreen() {
                             tabGUI.dismiss();
                         }
                     }
+					if(shortcutGUI != null) {
+                        if(shortcutGUI.isShowing()) {
+                            shortcutGUI.dismiss();
+                        }
+                    }
 					if(mainMenuTextList != null) {
 						if(mainMenuTextList.isShowing()) {
                             mainMenuTextList.dismiss();
@@ -11928,6 +12036,11 @@ function shopScreen() {
                             tabGUI.dismiss();
                         }
                     }
+					if(shortcutGUI != null) {
+                        if(shortcutGUI.isShowing()) {
+                            shortcutGUI.dismiss();
+                        }
+                    }
 					if(mainMenuTextList != null) {
 						if(mainMenuTextList.isShowing()) {
                             mainMenuTextList.dismiss();
@@ -12006,6 +12119,11 @@ function updateCenterScreen() {
                             tabGUI.dismiss();
                         }
                     }
+					if(shortcutGUI != null) {
+                        if(shortcutGUI.isShowing()) {
+                            shortcutGUI.dismiss();
+                        }
+                    }
 					if(mainMenuTextList != null) {
 						if(mainMenuTextList.isShowing()) {
                             mainMenuTextList.dismiss();
@@ -12076,6 +12194,11 @@ function musicPlayerScreen() {
                     if(tabGUI != null) {
                         if(tabGUI.isShowing()) {
                             tabGUI.dismiss();
+                        }
+                    }
+					if(shortcutGUI != null) {
+                        if(shortcutGUI.isShowing()) {
+                            shortcutGUI.dismiss();
                         }
                     }
 					if(mainMenuTextList != null) {
@@ -12195,6 +12318,11 @@ function dashboardScreen() {
                 if(tabGUI != null) {
                     if(tabGUI.isShowing()) {
                         tabGUI.dismiss();
+                    }
+                }
+				if(shortcutGUI != null) {
+                    if(shortcutGUI.isShowing()) {
+                        shortcutGUI.dismiss();
                     }
                 }
 				if(mainMenuTextList != null) {
@@ -12605,6 +12733,11 @@ function webBrowserScreen() {
                         tabGUI.dismiss();
                     }
                 }
+				if(shortcutGUI != null) {
+                    if(shortcutGUI.isShowing()) {
+                        shortcutGUI.dismiss();
+                    }
+                }
 				if(mainMenuTextList != null) {
 					if(mainMenuTextList.isShowing()) {
 						mainMenuTextList.dismiss();
@@ -12763,6 +12896,11 @@ VertexClientPE.showFullScreenMenu = function() {
                     if(tabGUI != null) {
                         if(tabGUI.isShowing()) {
                             tabGUI.dismiss();
+                        }
+                    }
+					if(shortcutGUI != null) {
+                        if(shortcutGUI.isShowing()) {
+                            shortcutGUI.dismiss();
                         }
                     }
 					if(mainMenuTextList != null) {
@@ -13475,6 +13613,9 @@ function showMenuButton() {
             if(tabGUI != null) {
                 tabGUI.dismiss();
             }
+			if(shortcutGUI != null) {
+                shortcutGUI.dismiss();
+            }
             VertexClientPE.showMenu();
         } else {
             if(!VertexClientPE.playerIsInGame) {
@@ -13482,9 +13623,10 @@ function showMenuButton() {
             } else {
                 VertexClientPE.closeMenu();
                 VertexClientPE.menuIsShowing = false;
-                if(!hacksList.isShowing() && !tabGUI.isShowing() && (currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud)) {
+                if(!hacksList.isShowing() && !tabGUI.isShowing() && !shortcutGUI.isShowing() && (currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud)) {
                     showHacksList();
                     showTabGUI();
+					showShortcuts();
                 }
             }
         }
@@ -13528,9 +13670,11 @@ function showMenuButton() {
 		if(hacksList == null) {
 			showHacksList();
 			showTabGUI();
+			showShortcuts();
 		} else if(!hacksList.isShowing()) {
 			showHacksList();
 			showTabGUI();
+			showShortcuts();
 		}
     }
 	if(currentScreen == ScreenType.start_screen) {
@@ -13765,6 +13909,55 @@ function showTabGUI() {
                     if(tabGUIModeSetting != "off") {
                         tabGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, dip2px(70));
                     }
+                } catch(error) {
+                    print('An error occurred: ' + error);
+                    VertexClientPE.showBugReportDialog(error);
+                }
+            }
+        }));
+    }
+}
+
+function showShortcuts() {
+    if(shortcutGUI == null || !shortcutGUI.isShowing()) {
+        CONTEXT.runOnUiThread(new Runnable_({
+            run: function() {
+                try {
+                    var display = new DisplayMetrics_();
+                    CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
+					
+					var shortcutGUILayout1 = new LinearLayout_(CONTEXT);
+                    shortcutGUILayout1.setOrientation(1);
+                    shortcutGUILayout1.setGravity(Gravity_.CENTER_VERTICAL);
+
+					var shortcutGUILayoutScroll = new ScrollView_(CONTEXT);
+					
+                    var shortcutGUILayout = new LinearLayout_(CONTEXT);
+                    shortcutGUILayout.setOrientation(1);
+                    shortcutGUILayout.setGravity(Gravity_.CENTER_VERTICAL);
+					
+					shortcutGUILayoutScroll.addView(shortcutGUILayout);
+					shortcutGUILayout1.addView(shortcutGUILayoutScroll);
+                    
+					var shortcutCount = 0;
+					
+                    VertexClientPE.modules.forEach(function (element, index, array) {
+						if(sharedPref.getString("VertexClientPE.mods." + element.name + ".isFavorite", "false") == "true") {
+							shortcutCount++;
+							shortcutGUILayout.addView(modButton(element, true, shortcutSizeSetting));
+						}
+                    });
+					
+					var shortcutLayoutHeight;
+					if(shortcutCount < 3) {
+						shortcutLayoutHeight = dip2px(shortcutSizeSetting * shortcutCount);
+					} else {
+						shortcutLayoutHeight = dip2px(shortcutSizeSetting * 3);
+					}
+                    
+                    shortcutGUI = new PopupWindow_(shortcutGUILayout1, LinearLayout_.LayoutParams.WRAP_CONTENT, shortcutLayoutHeight);
+                    shortcutGUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+                    shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.CENTER, 0, 0);
                 } catch(error) {
                     print('An error occurred: ' + error);
                     VertexClientPE.showBugReportDialog(error);
