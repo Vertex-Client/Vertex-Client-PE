@@ -4740,6 +4740,65 @@ VertexClientPE.showMoreDialog = function() {
     });
 }
 
+VertexClientPE.showShortcutManagerDialog = function() {
+    CONTEXT.runOnUiThread(new Runnable_() {
+        run: function() {
+            try {
+                VertexClientPE.loadMainSettings();
+				var settingsTitle = clientScreenTitle("Settings");
+                var shortcutManagerTitle = clientTextView("Shortcut Manager", true);
+				shortcutManagerTitle.setGravity(Gravity_.CENTER);
+                var shortcutManagerEnter = clientTextView("\n");
+                var closeButton = clientButton("Close");
+                closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
+                var dialogLayout = new LinearLayout_(CONTEXT);
+                dialogLayout.setBackgroundDrawable(backgroundGradient());
+                dialogLayout.setOrientation(LinearLayout_.VERTICAL);
+                dialogLayout.setPadding(10, 10, 10, 10);
+                dialogLayout.addView(settingsTitle);
+                dialogLayout.addView(shortcutManagerTitle);
+                dialogLayout.addView(shortcutManagerEnter);
+				
+				var shortcutSizeSettingTitle = clientTextView("Shortcut button size: | " + shortcutSizeSetting);
+				var shortcutSizeSettingSlider = new SeekBar(CONTEXT);
+				shortcutSizeSettingSlider.setProgress(shortcutSizeSetting);
+				shortcutSizeSettingSlider.setMax(64);
+				shortcutSizeSettingSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+					onProgressChanged: function() {
+						shortcutSizeSetting = shortcutSizeSettingSlider.getProgress();
+						shortcutSizeSettingTitle.setText("Shortcut button size: | " + shortcutSizeSetting);
+					}
+				});
+				
+				dialogLayout.addView(shortcutSizeSettingTitle);
+				dialogLayout.addView(shortcutSizeSettingSlider);
+				dialogLayout.addView(closeButton);
+				
+                var dialog = new Dialog_(CONTEXT);
+                dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
+                dialog.setContentView(dialogLayout);
+                dialog.setTitle("Shortcut Manager");
+				dialog.setOnDismissListener(new DialogInterface_.OnDismissListener() {
+                    onDismiss: function() {
+                        VertexClientPE.saveMainSettings();
+                    }
+                });
+                dialog.show();
+                var window = dialog.getWindow();
+                window.setLayout(display.widthPixels, display.heightPixels);
+                closeButton.setOnClickListener(new View_.OnClickListener() {
+                    onClick: function(view) {
+                        dialog.dismiss();
+                    }
+                });
+            } catch(e) {
+                print("Error: " + e);
+                VertexClientPE.showBugReportDialog(e);
+            }
+        }
+    });
+}
+
 VertexClientPE.showModEditorDialog = function(defaultName, modTitleView, modButtonView) {
     CONTEXT.runOnUiThread(new Runnable_() {
         run: function() {
@@ -6821,6 +6880,7 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + arrowGunMode.toString());
     outWrite.append("," + commandsSetting.toString());
     outWrite.append("," + cmdPrefix.toString());
+    outWrite.append("," + shortcutSizeSetting.toString());
 
     outWrite.close();
     
@@ -6962,6 +7022,9 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[39] != null && arr[39] != undefined) {
             cmdPrefix = arr[39];
+        }
+		if (arr[40] != null && arr[40] != undefined) {
+            shortcutSizeSetting = arr[40];
         }
         fos.close();
         VertexClientPE.loadAutoSpammerSettings();
@@ -10448,6 +10511,15 @@ function settingsScreen() {
 						VertexClientPE.saveMainSettings();
                     }
                     }));
+					
+					var shortcutManagerSettingFunc = new settingButton("Shortcuts", "Manage the shortcut buttons.");
+                    var shortcutManagerSettingButton = shortcutManagerSettingFunc.getButton();
+                    shortcutManagerSettingButton.setText("Manage");
+                    shortcutManagerSettingButton.setOnClickListener(new View_.OnClickListener({
+                    onClick: function(viewarg){
+                        VertexClientPE.showShortcutManagerDialog();
+                    }
+                    }));
                     
                     var themeTitle = clientSectionTitle("Theme", "rainbow");
                     
@@ -11056,6 +11128,7 @@ function settingsScreen() {
                     VertexClientPE.addView(settingsMenuLayout, tabGUIModeSettingFunc);
                     VertexClientPE.addView(settingsMenuLayout, mainButtonPositionSettingFunc);
                     VertexClientPE.addView(settingsMenuLayout, mainButtonStyleSettingFunc);
+                    VertexClientPE.addView(settingsMenuLayout, shortcutManagerSettingFunc);
                     settingsMenuLayout.addView(themeTitle);
 					VertexClientPE.addView(settingsMenuLayout, themeSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, useLightThemeSettingFunc);
