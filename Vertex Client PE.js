@@ -66,7 +66,6 @@ const AlarmManager_ = android.app.AlarmManager,
     Button_ = android.widget.Button,
     CheckBox_ = android.widget.CheckBox,
     CompoundButton_ = android.widget.CompoundButton,
-    FrameLayout_ = android.widget.FrameLayout,
     GridLayout_ = android.widget.GridLayout,
     ImageView_ = android.widget.ImageView,
     LinearLayout_ = android.widget.LinearLayout,
@@ -4762,11 +4761,12 @@ VertexClientPE.showShortcutManagerDialog = function() {
 				
 				var shortcutSizeSettingTitle = clientTextView("Shortcut button size: | " + shortcutSizeSetting);
 				var shortcutSizeSettingSlider = new SeekBar(CONTEXT);
-				shortcutSizeSettingSlider.setProgress(shortcutSizeSetting);
-				shortcutSizeSettingSlider.setMax(64);
+				var minShortcutSize = 16;
+				shortcutSizeSettingSlider.setProgress(shortcutSizeSetting - minShortcutSize);
+				shortcutSizeSettingSlider.setMax(64 - minShortcutSize);
 				shortcutSizeSettingSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 					onProgressChanged: function() {
-						shortcutSizeSetting = shortcutSizeSettingSlider.getProgress();
+						shortcutSizeSetting = shortcutSizeSettingSlider.getProgress() + minShortcutSize;
 						shortcutSizeSettingTitle.setText("Shortcut button size: | " + shortcutSizeSetting);
 					}
 				});
@@ -11694,122 +11694,126 @@ function milestonesScreen() {
     VertexClientPE.menuIsShowing = true;
     var display = new DisplayMetrics_();
     CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
-    CONTEXT.runOnUiThread(new Runnable_({
-        run: function () {
-            try {
-                if (GUI != null && GUI.isShowing()) {
-                    GUI.dismiss();
-                }
-                if (hacksList != null && hacksList.isShowing()) {
-                    hacksList.dismiss();
-                }
-                if (tabGUI != null && tabGUI.isShowing()) {
-                    tabGUI.dismiss();
-                }
-                if (shortcutGUI != null && shortcutGUI.isShowing()) {
-                    shortcutGUI.dismiss();
-                }
-                if (mainMenuTextList != null && mainMenuTextList.isShowing()) {
-                    mainMenuTextList.dismiss();
-                }
-                if (accountManagerGUI != null && accountManagerGUI.isShowing()) {
-                    accountManagerGUI.dismiss();
-                }
-
-                var milestones = [
-                    ["Release of v1.0 Alpha", "Released on 24th January 2016."],
-                    ["100 Twitter followers", "Reached in May 2016."],
-                    ["50k downloads", "Reached in July 2016."],
-                    ["300 Twitter followers", "Reached in September 2016."],
-                    ["100k downloads", "Reached in October 2016."]
-                ];
-
-                var scrollView = new android.widget.HorizontalScrollView(CONTEXT),
-                    layout = new LinearLayout_(CONTEXT),
-                    frameLayout = new FrameLayout_(CONTEXT),
-                    backgroundParams = new LinearLayout_.LayoutParams(-1, dip2px(2)),
-                    backgroundLayout = new LinearLayout_(CONTEXT),
-                    foregroundParams,
-                    foregroundLayout = new LinearLayout_(CONTEXT),
-                    line = new TextView_(CONTEXT),
-                    circleSize,
-                    circleButton,
-                    scaler;
-
-                backgroundParams.setMargins(dip2px(32), dip2px(48), dip2px(48), dip2px(48));
-                line.setBackgroundDrawable(new ColorDrawable_(Color_.WHITE));
-                line.setLayoutParams(backgroundParams);
-                
-                backgroundLayout.addView(line);
-                backgroundLayout.setLayoutParams(new LinearLayout_.LayoutParams(-1, dip2px(66)));
-
-                foregroundLayout.setGravity(Gravity_.CENTER | Gravity_.LEFT);
-
-                for (var i = 0, len = milestones.length; i < len; i++) {
-                    circleSize = i === (len - 1) ? dip2px(48) : dip2px(32);
-                    foregroundParams = new LinearLayout_.LayoutParams(dip2px(circleSize), dip2px(circleSize));
-                    foregroundParams.setMargins(i === 0 ? 0 : dip2px(32), 0, 0, 0);
-
-                    circleButton = new Button_(CONTEXT);
-                    circleButton.setBackgroundDrawable(drawCircle(Color_.rgb(Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256))));
-                    circleButton.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
-                    circleButton.setGravity(Gravity_.CENTER);
-                    circleButton.setHorizontallyScrolling(true);
-                    circleButton.setId(i);
-                    circleButton.setLayoutParams(foregroundParams);
-                    circleButton.setMarqueeRepeatLimit(-1);
-                    circleButton.setSelected(true);
-                    circleButton.setSingleLine();
-                    circleButton.setText(milestones[i][0]);
-                    circleButton.setTextColor(Color_.WHITE);
-                    circleButton.setTypeface(VertexClientPE.font);
-
-                    circleButton.setOnClickListener(new View_.OnClickListener({
-                        onClick(v) {
-                            var id = v.getId();
-                            VertexClientPE.showBasicDialog(milestones[id][0], clientTextView(milestones[id][1]));
+        CONTEXT.runOnUiThread(new Runnable_({
+            run: function() {
+                try {
+                    if(GUI != null) {
+                        if(GUI.isShowing()) {
+                            GUI.dismiss();
                         }
-                    }));
-                    circleButton.setOnLongClickListener(new View_.OnLongClickListener({
-                        onLongClick(v) {
-                            v.setBackgroundDrawable(drawCircle(Color_.rgb(Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256))));
-                            return true;
-                        }
-                    }));
-
-                    if (fontSetting == "default") {
-                        circleButton.setTextColor(Color_.WHITE);
-                        circleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
-                    } else if (fontSetting == "minecraft") {
-                        MinecraftButtonLibrary.addMinecraftStyleToTextView(circleButton);
                     }
+                    if(hacksList != null) {
+                        if(hacksList.isShowing()) {
+                            hacksList.dismiss();
+                        }
+                    }
+                    if(tabGUI != null) {
+                        if(tabGUI.isShowing()) {
+                            tabGUI.dismiss();
+                        }
+                    }
+					if(shortcutGUI != null) {
+                        if(shortcutGUI.isShowing()) {
+                            shortcutGUI.dismiss();
+                        }
+                    }
+					if(mainMenuTextList != null) {
+						if(mainMenuTextList.isShowing()) {
+                            mainMenuTextList.dismiss();
+                        }
+					}
+					if(accountManagerGUI != null) {
+						if(accountManagerGUI.isShowing()) {
+                            accountManagerGUI.dismiss();
+                        }
+					}
+					
+					var milestones = [["Release of v1.0 Alpha", "Released on 24th January 2016."], ["100 Twitter followers", "Reached in May 2016."], ["50k downloads", "Reached in July 2016."], ["300 Twitter followers", "Reached in September 2016."], ["100k downloads", "Reached in October 2016."]];
 
-                    scaler = new android.view.animation.ScaleAnimation(0.7, 1.0, 0.7, 1.0);
-                    scaler.setDuration(500);
+                    var milestonesMenuLayout = new LinearLayout_(CONTEXT);
+                    milestonesMenuLayout.setOrientation(LinearLayout_.HORIZONTAL);
+                    milestonesMenuLayout.setGravity(Gravity_.CENTER);
+                    
+                    var milestonesMenuLayoutScroll = new android.widget.HorizontalScrollView(CONTEXT);
+                    
+                    var milestonesMenuLayout1 = new LinearLayout_(CONTEXT);
+                    milestonesMenuLayout1.setOrientation(1);
+                    milestonesMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
+					
+					var milestonesTitle = clientScreenTitle("Milestones");
+                    milestonesMenuLayout1.addView(milestonesTitle);
+					milestonesMenuLayout1.addView(clientTextView("\n"));
+					
+					milestones.forEach(function(element, index, array) {
+						var color = new java.util.Random();
+						var p = new Paint_();
+						p.setARGB(255,color.nextInt(255),color.nextInt(255),color.nextInt(255));
+						
+						var size = (array[index + 1]==null||array[index + 1]==undefined)?128:64;
+						
+						var downloadMilestoneButton = new Button_(CONTEXT);
+						downloadMilestoneButton.setText(element[0]);
+						downloadMilestoneButton.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(size), dip2px(size)));
+						downloadMilestoneButton.setBackgroundDrawable(drawCircle(p.getColor()));
+						downloadMilestoneButton.setGravity(Gravity_.CENTER);
+						downloadMilestoneButton.setTypeface(VertexClientPE.font);
+						downloadMilestoneButton.setTextColor(Color_.WHITE);
+						downloadMilestoneButton.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
+						downloadMilestoneButton.setMarqueeRepeatLimit(-1);
+						downloadMilestoneButton.setSingleLine();
+						downloadMilestoneButton.setHorizontallyScrolling(true);
+						downloadMilestoneButton.setSelected(true);
+						downloadMilestoneButton.setOnClickListener(new View_.OnClickListener() {
+							onClick(viewArg) {
+								VertexClientPE.showBasicDialog(element[0], clientTextView(element[1]));
+							}
+						});
+						downloadMilestoneButton.setOnLongClickListener(new View_.OnLongClickListener() {
+							onLongClick(viewArg) {
+								var color = new java.util.Random();
+								var p = new Paint_();
+								p.setARGB(255,color.nextInt(255),color.nextInt(255),color.nextInt(255));
+								downloadMilestoneButton.setBackgroundDrawable(drawCircle(p.getColor()));
+								return true;
+							}
+						});
+						if(fontSetting == "default") {
+							downloadMilestoneButton.setTextColor(Color_.WHITE);
+							downloadMilestoneButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+						} else if(fontSetting == "minecraft") {
+							MinecraftButtonLibrary.addMinecraftStyleToTextView(downloadMilestoneButton);
+						}
+						
+						var scaler = new android.view.animation.ScaleAnimation(0.7, 1.0, 0.7, 1.0);
+						scaler.setDuration(1000);
+						
+						if(index != 0) {
+							var space1 = new TextView_(CONTEXT);
+							space1.setBackgroundDrawable(new ColorDrawable_(Color_.WHITE));
+					
+							milestonesMenuLayout.addView(space1, dip2px(32), dip2px(8));
+							space1.startAnimation(scaler);
+						}
+						
+						milestonesMenuLayout.addView(downloadMilestoneButton);
+						downloadMilestoneButton.startAnimation(scaler);
+					});
+					
+					milestonesMenuLayoutScroll.addView(milestonesMenuLayout);
+                    milestonesMenuLayout1.addView(milestonesMenuLayoutScroll);
+					
+					var supportTextView = clientTextView("\nThanks for your support!", true);
+					supportTextView.setGravity(Gravity_.CENTER);
+					milestonesMenuLayout1.addView(supportTextView);
 
-                    circleButton.startAnimation(scaler);
-                    foregroundLayout.addView(circleButton);
+                    milestonesMenu = new PopupWindow_(milestonesMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+                    milestonesMenu.setBackgroundDrawable(backgroundGradient());
+                    milestonesMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+                } catch(error) {
+                    print('An error occurred: ' + error);
                 }
-
-                frameLayout.addView(backgroundLayout);
-                frameLayout.addView(foregroundLayout);
-
-                layout.addView(clientScreenTitle("Milestones\n"));
-                layout.addView(frameLayout);
-                layout.addView(clientTextView("\nThanks for your support!", true));
-                layout.setOrientation(1);
-                layout.setPadding(dip2px(16), dip2px(16), dip2px(16), dip2px(16));
-
-                scrollView.addView(layout);
-
-                milestonesMenu = new PopupWindow_(scrollView, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
-                milestonesMenu.setBackgroundDrawable(backgroundGradient());
-                milestonesMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-            } catch (e) {
-                print("An error occurred: " + e + " #" + e.lineNumber);
             }
-        }
-    }));
+        }));
 }
 
 /**
