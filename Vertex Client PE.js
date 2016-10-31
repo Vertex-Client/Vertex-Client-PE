@@ -2887,11 +2887,25 @@ var aimbot = {
                 VertexClientPE.saveMainSettings();
             }
         });
-        
-        var space = clientTextView("\n");
-        aimbotSettingsLayout.addView(useKillauraRangeCheckBox);
-        aimbotSettingsLayout.addView(space);
+		
+        var aimbotRangeTitle = clientTextView("Range: | " + aimbotRangeSetting);
+        var aimbotRangeSlider = new SeekBar(CONTEXT);
+        aimbotRangeSlider.setProgress(aimbotRangeSetting);
+        aimbotRangeSlider.setMax(10);
+        aimbotRangeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            onProgressChanged: function() {
+                aimbotRangeSetting = aimbotRangeSlider.getProgress();
+                aimbotRangeTitle.setText("Range: | " + aimbotRangeSetting);
+            }
+        });
+		
+        aimbotSettingsLayout.addView(aimbotRangeTitle);
+        aimbotSettingsLayout.addView(aimbotRangeSlider);
+		
         return aimbotSettingsLayout;
+    },
+	onModDialogDismiss: function() {
+        VertexClientPE.saveMainSettings();
     },
     isStateMod: function() {
         return true;
