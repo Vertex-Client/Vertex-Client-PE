@@ -174,6 +174,7 @@ var arrowGunMode = "slow";
 var cmdPrefix = ".";
 var commandsSetting = "on";
 var shortcutSizeSetting = 32;
+var aimbotRangeSetting = 4;
 //------------------------------------
 var combatName = "Combat";
 var buildingName = "Building";
@@ -461,7 +462,7 @@ var VertexClientPE = {
 					} catch (e) {
 						// Several error may come out with file handling or OOM
 						//e.printStackTrace();
-						print(e);
+						print("@" + e.lineNumber + ": " + e);
 					} finally {
 						outputStream.close();
 					}
@@ -577,7 +578,7 @@ VertexClientPE.playerIsInGame = false;
 
 VertexClientPE.currentVersion = "1.8";
 VertexClientPE.currentVersionDesc = "The HUD Update";
-VertexClientPE.targetVersion = "MCPE v0.15.x alpha";
+VertexClientPE.targetVersion = "MCPE v0.16.x alpha";
 VertexClientPE.minVersion = "0.15.0";
 VertexClientPE.latestVersion;
 VertexClientPE.latestVersionDesc;
@@ -615,7 +616,7 @@ try {
 	VertexClientPE.font = fontSetting=="minecraft"?Typeface_.createFromFile(new File_(PATH, "minecraft.ttf")):VertexClientPE.defaultFont;
 	VertexClientPE.tileFont = Launcher.isBlockLauncher()?new Typeface_.createFromAsset(CONTEXT.getAssets(), "fonts/SegoeWP.ttf"):VertexClientPE.defaultFont;
 } catch(e) {
-	print(e);
+	print("@" + e.lineNumber + ": " + e);
 }
 
 VertexClientPE.getDeviceName = function() {
@@ -2900,11 +2901,16 @@ var aimbot = {
     },
     onTick: function() {
         var mobs = Entity.getAll();
+		mobs = mobs.concat(Server.getAllPlayers());
         for(var i = 0; i < mobs.length; i++) {
 			var x = Entity.getX(mobs[i]) - getPlayerX();
             var y = Entity.getY(mobs[i]) - getPlayerY();
             var z = Entity.getZ(mobs[i]) - getPlayerZ();
-			if(aimbotUseKillauraRange == "on" && x*x+y*y+z*z>killAuraRange*killAuraRange) continue;
+			if(aimbotUseKillauraRange == "on" && x*x+y*y+z*z>killAuraRange*killAuraRange) {
+				continue;
+			} else if(x*x+y*y+z*z>aimbotRangeSetting*aimbotRangeSetting) {
+				continue;
+			}
             var ent = mobs[i];
             if(Entity.getEntityTypeId(ent) != EntityType.ITEM && Entity.getEntityTypeId(ent) != EntityType.ARROW && ent != getPlayerEnt()) {
                 VertexClientPE.CombatUtils.aimAtEnt(ent);
@@ -3315,14 +3321,14 @@ var speedHack = {
     onToggle: function() {
         this.state = !this.state;
         if(this.state) {
-            for(var i = 0; i <= 256; i++) {
+            for(var i = 0; i <= 255; i++) {
                 if(this.frictionArray[i] == null || this.frictionArray[i] == undefined) {
                     this.frictionArray[i] = Block.getFriction(i);
                 }
                 Block.setFriction(i, 0.1);
             }
         } else {
-            for(var i = 0; i <= 256; i++) {
+            for(var i = 0; i <= 255; i++) {
                 if(this.frictionArray[i] != null && this.frictionArray[i] != undefined) {
                     Block.setFriction(i, this.frictionArray[i]);
                 }
@@ -5299,7 +5305,7 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 			}
 		});
 	} catch(e) {
-		print(e);
+		print("@" + e.lineNumber + ": " + e);
 	}
 }
 
@@ -6882,6 +6888,7 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + commandsSetting.toString());
     outWrite.append("," + cmdPrefix.toString());
     outWrite.append("," + shortcutSizeSetting.toString());
+    outWrite.append("," + aimbotRangeSetting.toString());
 
     outWrite.close();
     
@@ -7026,6 +7033,9 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[40] != null && arr[40] != undefined) {
             shortcutSizeSetting = arr[40];
+        }
+		if (arr[41] != null && arr[41] != undefined) {
+            aimbotRangeSetting = arr[41];
         }
         fos.close();
         VertexClientPE.loadAutoSpammerSettings();
@@ -9227,7 +9237,7 @@ VertexClientPE.showSplashScreen = function () {
                 splashScreenMenu = new PopupWindow_(splashScreenLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
                 splashScreenMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.CENTER, 0, 0);
             } catch (e) {
-                print(e)
+                print("@" + e.lineNumber + ": " + e)
             }
         }
     }));
@@ -9648,7 +9658,7 @@ ModPE.restart = function () {
             }
         }).start();
     } catch (e) {
-        print(e);
+        print("@" + e.lineNumber + ": " + e);
     }
 };
 
@@ -9909,7 +9919,7 @@ function downloadFile(path, url) {
         downloadManager.setDestinationInExternalPublicDir(file.getParent().replace("/sdcard", ""), filename);
         CONTEXT.getSystemService(Context_.DOWNLOAD_SERVICE).enqueue(downloadManager);
     } catch (e) {
-        print(e);
+        print("@" + e.lineNumber + ": " + e);
     }
 };
 
@@ -12768,7 +12778,7 @@ VertexClientPE.showF12Dialog = function() {
 								}
 							}).start();
 						} catch(e) {
-							print(e);
+							print("@" + e.lineNumber + ": " + e);
 						}
                     }
                 });
