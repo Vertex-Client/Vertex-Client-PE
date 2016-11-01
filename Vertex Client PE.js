@@ -2900,6 +2900,7 @@ var aimbot = {
             }
         });
 		
+        aimbotSettingsLayout.addView(useKillauraRangeCheckBox);
         aimbotSettingsLayout.addView(aimbotRangeTitle);
         aimbotSettingsLayout.addView(aimbotRangeSlider);
 		
