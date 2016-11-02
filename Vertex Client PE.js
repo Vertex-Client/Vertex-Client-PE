@@ -2349,10 +2349,10 @@ var follow = {
                         setVelZ(getPlayerEnt(), z * 0.05);
                         setVelY(getPlayerEnt(), y * 0.05);
                     }
-                    followStage = 0;
                     break;
                 }
             }
+			followStage = 0;
         }
     }
 }
@@ -2917,14 +2917,16 @@ var aimbot = {
     },
     onTick: function() {
         var mobs = Entity.getAll();
-		mobs = mobs.concat(Server.getAllPlayers());
+		/*if(Launcher.isToolbox()) {
+			mobs = mobs.concat(Server.getAllPlayers());
+		}*/
         for(var i = 0; i < mobs.length; i++) {
 			var x = Entity.getX(mobs[i]) - getPlayerX();
             var y = Entity.getY(mobs[i]) - getPlayerY();
             var z = Entity.getZ(mobs[i]) - getPlayerZ();
 			if(aimbotUseKillauraRange == "on" && x*x+y*y+z*z>killAuraRange*killAuraRange) {
 				continue;
-			} else if(x*x+y*y+z*z>aimbotRangeSetting*aimbotRangeSetting) {
+			} else if(aimbotUseKillauraRange == "off" && x*x+y*y+z*z>aimbotRangeSetting*aimbotRangeSetting) {
 				continue;
 			}
             var ent = mobs[i];
