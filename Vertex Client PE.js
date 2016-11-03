@@ -176,6 +176,7 @@ var cmdPrefix = ".";
 var commandsSetting = "on";
 var shortcutSizeSetting = 32;
 var aimbotRangeSetting = 4;
+var speedHackFriction = 0.1;
 //------------------------------------
 var combatName = "Combat";
 var buildingName = "Building";
@@ -605,6 +606,7 @@ var delaySpammerState = false;
 var autoSwordState = false;
 var yesCheatPlusState = false;
 var chestESPState = false;
+var speedHackState = false;
 
 var showingMenu = false;
 
@@ -1518,10 +1520,8 @@ var killAura = {
                 killAuraRangeTitle.setText("Range: | " + killAuraRange);
             }
         });
-        var space = clientTextView("\n");
         killAuraSettingsLayout.addView(killAuraRangeTitle);
         killAuraSettingsLayout.addView(killAuraRangeSlider);
-        killAuraSettingsLayout.addView(space);
         return killAuraSettingsLayout;
     },
     onModDialogDismiss: function() {
@@ -1682,10 +1682,8 @@ var timer = {
                 }
             }
         });
-        var space = clientTextView("\n");
         timerSettingsLayout.addView(timerSpeedTitle);
         timerSettingsLayout.addView(timerSpeedSlider);
-        timerSettingsLayout.addView(space);
         return timerSettingsLayout;
     },
     onModDialogDismiss: function() {
@@ -1793,12 +1791,10 @@ var nuker = {
                 VertexClientPE.loadMainSettings();
             }
         });
-        var space = clientTextView("\n");
         nukerSettingsLayout.addView(nukerRangeTitle);
         nukerSettingsLayout.addView(nukerRangeSlider);
         nukerSettingsLayout.addView(nukerModeTitle);
         nukerSettingsLayout.addView(nukerModeLayout);
-        nukerSettingsLayout.addView(space);
         return nukerSettingsLayout;
     },
     onModDialogDismiss: function() {
@@ -2045,7 +2041,6 @@ var autoSpammer = {
         autoSpammerMessageLayout.setOrientation(1);
         var autoSpammerMessageTitle = clientTextView("Message:");
         var spamMessageInput = clientEditText();
-        var autoSpammerMessageEnter = clientTextView("\n");
         spamMessageInput.setText(spamMessage);
         spamMessageInput.setTextColor(Color_.WHITE);
         spamMessageInput.setHint("Spam message");
@@ -2056,7 +2051,6 @@ var autoSpammer = {
         });
         autoSpammerMessageLayout.addView(autoSpammerMessageTitle);
         autoSpammerMessageLayout.addView(spamMessageInput);
-        autoSpammerMessageLayout.addView(autoSpammerMessageEnter);
         return autoSpammerMessageLayout;
     },
     isStateMod: function() {
@@ -2377,10 +2371,8 @@ var tapNuker = {
             }
         });
         
-        var space = clientTextView("\n");
         tapNukerSettingsLayout.addView(tapNukerRangeTitle);
         tapNukerSettingsLayout.addView(tapNukerRangeSlider);
-        tapNukerSettingsLayout.addView(space);
         return tapNukerSettingsLayout;
     },
     onModDialogDismiss: function() {
@@ -3052,14 +3044,12 @@ var chestTracers = {
         });
         
         var space = clientTextView("\n");
-        var space1 = clientTextView("\n");
         chestTracersSettingsLayout.addView(chestTracersRangeTitle);
         chestTracersSettingsLayout.addView(chestTracersRangeSlider);
         chestTracersSettingsLayout.addView(chestTracersParticleTitle);
         chestTracersSettingsLayout.addView(chestTracersParticleLayout);
         chestTracersSettingsLayout.addView(space);
         chestTracersSettingsLayout.addView(groundModeCheckBox);
-        chestTracersSettingsLayout.addView(space1);
         return chestTracersSettingsLayout;
     },
     onModDialogDismiss: function() {
@@ -3332,18 +3322,45 @@ var speedHack = {
     category: VertexClientPE.category.MOVEMENT,
     type: "Mod",
     state: false,
+	getSettingsLayout: function() {
+        var speedHackSettingsLayout = new LinearLayout_(CONTEXT);
+        speedHackSettingsLayout.setOrientation(1);
+        var speedHackFrictionTitle = clientTextView("Friction: | " + speedHackFriction);
+        var speedHackFrictionSlider = new SeekBar(CONTEXT);
+        speedHackFrictionSlider.setProgress(speedHackFriction * 10 - 1);
+        speedHackFrictionSlider.setMax(9);
+        speedHackFrictionSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            onProgressChanged: function() {
+                speedHackFriction = (speedHackFrictionSlider.getProgress() + 1) / 10;
+                speedHackFrictionTitle.setText("Friction: | " + speedHackFriction);
+				if(speedHackState) {
+					for(var i = 0; i <= 255; i++) {
+						Block.setFriction(i, speedHackFriction);
+					}
+				}
+            }
+        });
+        
+        speedHackSettingsLayout.addView(speedHackFrictionTitle);
+        speedHackSettingsLayout.addView(speedHackFrictionSlider);
+        return speedHackSettingsLayout;
+    },
+    onModDialogDismiss: function() {
+        VertexClientPE.saveMainSettings();
+    },
     frictionArray: [],
     isStateMod: function() {
         return true;
     },
     onToggle: function() {
         this.state = !this.state;
+		speedHackState = this.state;
         if(this.state) {
             for(var i = 0; i <= 255; i++) {
                 if(this.frictionArray[i] == null || this.frictionArray[i] == undefined) {
                     this.frictionArray[i] = Block.getFriction(i);
                 }
-                Block.setFriction(i, 0.1);
+                Block.setFriction(i, speedHackFriction);
             }
         } else {
             for(var i = 0; i <= 255; i++) {
@@ -6907,6 +6924,7 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + cmdPrefix.toString());
     outWrite.append("," + shortcutSizeSetting.toString());
     outWrite.append("," + aimbotRangeSetting.toString());
+    outWrite.append("," + speedHackFriction.toString());
 
     outWrite.close();
     
@@ -7054,6 +7072,9 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[41] != null && arr[41] != undefined) {
             aimbotRangeSetting = arr[41];
+        }
+		if (arr[42] != null && arr[42] != undefined) {
+            speedHackFriction = arr[42];
         }
         fos.close();
         VertexClientPE.loadAutoSpammerSettings();
