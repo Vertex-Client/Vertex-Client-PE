@@ -1,5 +1,5 @@
 /**
- * #####################################################################
+ * ##################################################################################################
  * @name Vertex Client PE
  * @version v1.8
  * @author peacestorm (@AgameR_Modder)
@@ -7,7 +7,10 @@
  *
  * Thanks to NoCopyrightSounds and all artists for the music!
  *
- * #####################################################################
+ * Warning! You're not allowed to copy ANY code without permission from the Vertex development team!
+ * Especially RJxModz is not allowed to copy anything!
+ *
+ * ##################################################################################################
  */
 
 // #############
@@ -177,6 +180,7 @@ var commandsSetting = "on";
 var shortcutSizeSetting = 32;
 var aimbotRangeSetting = 4;
 var speedHackFriction = 0.1;
+var remoteViewTeleportSetting = "off";
 //------------------------------------
 var combatName = "Combat";
 var buildingName = "Building";
@@ -3093,6 +3097,36 @@ var remoteView = {
     category: VertexClientPE.category.MISC,
     type: "Mod",
     state: false,
+	targetEntity: null,
+	getSettingsLayout: function() {
+        var remoteViewSettingsLayout = new LinearLayout_(CONTEXT);
+        remoteViewSettingsLayout.setOrientation(1);
+		
+		var teleportToLocationCheckBox = new CheckBox_(CONTEXT);
+        teleportToLocationCheckBox.setChecked(remoteViewTeleportSetting == "on");
+        teleportToLocationCheckBox.setText("Teleport to the target entity when you disable RemoteView");
+        if(themeSetting == "white") {
+            teleportToLocationCheckBox.setTextColor(Color_.BLACK);
+        } else {
+            teleportToLocationCheckBox.setTextColor(Color_.WHITE);
+        }
+        teleportToLocationCheckBox.setTypeface(VertexClientPE.font);
+		if(fontSetting == "minecraft") {
+			MinecraftButtonLibrary.addMinecraftStyleToTextView(teleportToLocationCheckBox);
+		}
+        teleportToLocationCheckBox.setOnClickListener(new View_.OnClickListener() {
+            onClick: function(v) {
+                remoteViewTeleportSetting = v.isChecked()?"on":"off";
+                VertexClientPE.saveMainSettings();
+            }
+        });
+		
+        remoteViewSettingsLayout.addView(teleportToLocationCheckBox);
+        return remoteViewSettingsLayout;
+    },
+    onModDialogDismiss: function() {
+        VertexClientPE.saveMainSettings();
+    },
     isStateMod: function() {
         return true;
     },
@@ -3100,11 +3134,19 @@ var remoteView = {
         this.state = !this.state;
         if(!this.state) {
             ModPE.setCamera(getPlayerEnt());
+			if(this.targetEntity != null && remoteViewTeleportSetting == "on") {
+				var tpX = Entity.getX(this.targetEntity);
+				var tpY = Entity.getY(this.targetEntity);
+				var tpZ = Entity.getZ(this.targetEntity);
+				Entity.setPosition(getPlayerEnt(), tpX, tpY + 2, tpZ);
+			}
+			this.targetEntity = null;
         }
     },
     onAttack: function(a, v) {
         if(a == getPlayerEnt()) {
             preventDefault();
+			this.targetEntity = v;
             ModPE.setCamera(v);
         }
     }
@@ -6934,6 +6976,7 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + shortcutSizeSetting.toString());
     outWrite.append("," + aimbotRangeSetting.toString());
     outWrite.append("," + speedHackFriction.toString());
+    outWrite.append("," + remoteViewTeleportSetting.toString());
 
     outWrite.close();
     
@@ -7084,6 +7127,9 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[42] != null && arr[42] != undefined) {
             speedHackFriction = arr[42];
+        }
+		if (arr[43] != null && arr[43] != undefined) {
+            remoteViewTeleportSetting = arr[43];
         }
         fos.close();
         VertexClientPE.loadAutoSpammerSettings();
@@ -11020,7 +11066,7 @@ function settingsScreen() {
                             VertexClientPE.saveMainSettings();
                         } else if(sizeSetting == "small") {
                             sizeSetting = "normal";
-                            customHeight = customHeight;
+                            customHeight = topBarHeight / 2;
                             sizeSettingButton.setText("Normal");
                             VertexClientPE.saveMainSettings();
                         }
