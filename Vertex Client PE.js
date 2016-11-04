@@ -10651,6 +10651,8 @@ function settingsScreen() {
                         mainButtonStyleSettingButton.setText("Normal");
                     } else if(mainButtonStyleSetting == "no_background") {
                         mainButtonStyleSettingButton.setText("Invisible background");
+                    } else if(mainButtonStyleSetting == "classic") {
+                        mainButtonStyleSettingButton.setText("Classic");
                     }
                     mainButtonStyleSettingButton.setOnClickListener(new View_.OnClickListener({
                     onClick: function(viewarg){
@@ -10658,6 +10660,9 @@ function settingsScreen() {
                             mainButtonStyleSetting = "no_background";
                             mainButtonStyleSettingButton.setText("Invisible background");
                         } else if(mainButtonStyleSetting == "no_background") {
+                            mainButtonStyleSetting = "classic";
+                            mainButtonStyleSettingButton.setText("Classic");
+                        } else if(mainButtonStyleSetting == "classic") {
                             mainButtonStyleSetting = "normal";
                             mainButtonStyleSettingButton.setText("Normal");
                         }
@@ -13876,14 +13881,24 @@ function showMenuButton() {
 		}
 	} else if(mainButtonStyleSetting == "no_background") {
 		background = new ColorDrawable_(Color_.TRANSPARENT);
+	} else if(mainButtonStyleSetting == "classic") {
+		background = new ColorDrawable_(Color_.parseColor("#1D1D1D"));
 	}
 	
     if(mainButtonPositionSetting == "top-right") {
-        layout.setPadding(10, 0, 0, 10);
+		if(mainButtonStyleSetting != "classic") {
+			layout.setPadding(10, 0, 0, 10);
+		} else {
+			layout.setGravity(Gravity_.CENTER);
+		}
         GUI.setBackgroundDrawable(background);
         GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
     } else {
-        layout.setPadding(0, 0, 10, 10);
+		if(mainButtonStyleSetting != "classic") {
+			layout.setPadding(0, 0, 10, 10);
+		} else {
+			layout.setGravity(Gravity_.CENTER);
+		}
         GUI.setBackgroundDrawable(background);
         GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
     }
