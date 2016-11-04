@@ -181,6 +181,7 @@ var shortcutSizeSetting = 32;
 var aimbotRangeSetting = 4;
 var speedHackFriction = 0.1;
 var remoteViewTeleportSetting = "off";
+var switchGamemodeSendCommandSetting = "off";
 //------------------------------------
 var combatName = "Combat";
 var buildingName = "Building";
@@ -1497,14 +1498,46 @@ var switchGamemode = {
     desc: "Switches your gamemode.",
     category: VertexClientPE.category.MISC,
     type: "Mod",
+	getSettingsLayout: function() {
+        var switchGamemodeSettingsLayout = new LinearLayout_(CONTEXT);
+        switchGamemodeSettingsLayout.setOrientation(1);
+		
+		var sendCommandCheckBox = new CheckBox_(CONTEXT);
+        sendCommandCheckBox.setChecked(switchGamemodeSendCommandSetting == "on");
+        sendCommandCheckBox.setText("Send gamemode command to server when switching gamemode");
+        if(themeSetting == "white") {
+            sendCommandCheckBox.setTextColor(Color_.BLACK);
+        } else {
+            sendCommandCheckBox.setTextColor(Color_.WHITE);
+        }
+        sendCommandCheckBox.setTypeface(VertexClientPE.font);
+		if(fontSetting == "minecraft") {
+			MinecraftButtonLibrary.addMinecraftStyleToTextView(sendCommandCheckBox);
+		}
+        sendCommandCheckBox.setOnClickListener(new View_.OnClickListener() {
+            onClick: function(v) {
+                switchGamemodeSendCommandSetting = v.isChecked()?"on":"off";
+                VertexClientPE.saveMainSettings();
+            }
+        });
+		
+        switchGamemodeSettingsLayout.addView(sendCommandCheckBox);
+        return switchGamemodeSettingsLayout;
+    },
     isStateMod: function() {
         return false;
     },
     onToggle: function() {
         if(Level.getGameMode() == 0) {
             Level.setGameMode(1);
+			if(switchGamemodeSendCommandSetting == "on") {
+				Server.sendChat("/gamemode 1");
+			}
         } else if(Level.getGameMode() == 1) {
             Level.setGameMode(0);
+			if(switchGamemodeSendCommandSetting == "on") {
+				Server.sendChat("/gamemode 0");
+			}
         }
     }
 };
@@ -3123,9 +3156,6 @@ var remoteView = {
 		
         remoteViewSettingsLayout.addView(teleportToLocationCheckBox);
         return remoteViewSettingsLayout;
-    },
-    onModDialogDismiss: function() {
-        VertexClientPE.saveMainSettings();
     },
     isStateMod: function() {
         return true;
@@ -6978,6 +7008,7 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + aimbotRangeSetting.toString());
     outWrite.append("," + speedHackFriction.toString());
     outWrite.append("," + remoteViewTeleportSetting.toString());
+    outWrite.append("," + switchGamemodeSendCommandSetting.toString());
 
     outWrite.close();
     
@@ -7131,6 +7162,9 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[43] != null && arr[43] != undefined) {
             remoteViewTeleportSetting = arr[43];
+        }
+		if (arr[44] != null && arr[44] != undefined) {
+            switchGamemodeSendCommandSetting = arr[44];
         }
         fos.close();
         VertexClientPE.loadAutoSpammerSettings();
@@ -14013,6 +14047,9 @@ function showHacksList() {
 						}
 					}
 					hacksList = new PopupWindow_(hacksListLayout, LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT);
+					if(menuAnimationsSetting == "on") {
+						hacksList.setAnimationStyle(android.R.style.Animation_Translucent);
+					}
 					hacksList.setBackgroundDrawable(backgroundGradient(true));
 					hacksList.setTouchable(false);
 					if(hacksListModeSetting != "off") {
@@ -14093,7 +14130,10 @@ function showTabGUI() {
                     });
                     
                     tabGUI = new PopupWindow_(tabGUILayout, LinearLayout_.LayoutParams.WRAP_CONTENT, CONTEXT.getWindowManager().getDefaultDisplay().getHeight() / 3);
-                    tabGUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+                    if(menuAnimationsSetting == "on") {
+						tabGUI.setAnimationStyle(android.R.style.Animation_Translucent);
+					}
+					tabGUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
                     if(tabGUIModeSetting != "off") {
                         tabGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, dip2px(70));
                     }
@@ -14144,6 +14184,9 @@ function showShortcuts() {
 					}
                     
                     shortcutGUI = new PopupWindow_(shortcutGUILayout1, LinearLayout_.LayoutParams.WRAP_CONTENT, shortcutLayoutHeight);
+					if(menuAnimationsSetting == "on") {
+						shortcutGUI.setAnimationStyle(android.R.style.Animation_Translucent);
+					}
                     shortcutGUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
                     shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.CENTER, 0, 0);
                 } catch(error) {
