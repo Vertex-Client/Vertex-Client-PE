@@ -509,7 +509,11 @@ var VertexClientPE = {
             var y = Entity.getEntityTypeId(ent) == EntityType.PLAYER ? Entity.getY(ent) : Entity.getY(ent) + 1;
             var z = Entity.getZ(ent);
             this.aimAt(x, y, z);
-        }
+        },
+		aimAtBlock: function(x, y, z) {
+			y += 1;
+			this.aimAt(x, y, z);
+		}
     }
 };
 
@@ -3560,7 +3564,12 @@ var tapPoint = {
         this.state = !this.state;
     },
 	onUseItem: function(x, y, z, itemId, blockId, side) {
-		VertexClientPE.CombatUtils.aimAt(x, y, z);
+		VertexClientPE.CombatUtils.aimAtBlock(x, y, z);
+	},
+	onAttack: function(a, v) {
+		if(a == getPlayerEnt()) {
+			VertexClientPE.CombatUtils.aimAtEnt(v);
+		}
 	}
 }
 
