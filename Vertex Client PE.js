@@ -3573,6 +3573,7 @@ var tapJumpRun = {
     },
 	onToggle: function() {
         this.state = !this.state;
+		this.destVector = null;
     },
 	onUseItem: function(x, y, z, itemId, blockId, side) {
 		while(getTile(x, y, z) != 0) {
@@ -3583,8 +3584,8 @@ var tapJumpRun = {
 	onTick: function() {
 		if(this.destVector != null) {
 			if(getPlayerX() != this.destVector.x && getPlayerZ() != this.destVector.z) {
+				Entity.setPosition(getPlayerEnt(), getPlayerX(), this.destVector.y + 2, getPlayerZ());
 				Entity.setVelX(getPlayerEnt(), (this.destVector.x - getPlayerX()) * playerWalkSpeed);
-				Entity.setVelY(getPlayerEnt(), (this.destVector.y - getPlayerY()) * playerWalkSpeed);
 				Entity.setVelZ(getPlayerEnt(), (this.destVector.z - getPlayerZ()) * playerWalkSpeed);
 			} else if(this.destVector.x == getPlayerX() && this.destVector.z == getPlayerZ()) {
 				this.destVector = null;
@@ -8089,6 +8090,19 @@ function modButton(mod, buttonOnly, customSize) {
                 }
             }
             updateHacksList();
+			if(buttonOnly) {
+				if(customSize == null) {
+					if(shortcutGUI != null && sharedPref.getString("VertexClientPE.mods." + mod.name + ".isFavorite", "false") == "true") {
+						shortcutGUI.dismiss();
+						showShortcuts();
+					}
+				} else {
+					if(tabGUI != null && currentTabGUICategory == mod.category) {
+						tabGUI.dismiss();
+						showTabGUI();
+					}
+				}
+			}
         }
     }));
     //var _0x9276=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\uD83D\uDD12\x20","\x73\x65\x74\x54\x65\x78\x74"];if(isProFeature&&VertexClientPE[_0x9276[0]]()!=_0x9276[1]){defaultClientButton[_0x9276[3]](_0x9276[2]+mod.name)}
