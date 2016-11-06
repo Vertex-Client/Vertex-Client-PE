@@ -182,6 +182,7 @@ var aimbotRangeSetting = 4;
 var speedHackFriction = 0.1;
 var remoteViewTeleportSetting = "off";
 var switchGamemodeSendCommandSetting = "off";
+var betterPauseSetting = "off";
 //------------------------------------
 var combatName = "Combat";
 var buildingName = "Building";
@@ -327,7 +328,7 @@ function VectorLib() {
 var currentScreen = ScreenType.start_screen;
 
 function screenChangeHook(screenName) {
-    currentScreen = screenName;
+	currentScreen = screenName;
     if(screenName == ScreenType.hud || screenName == ScreenType.ingame) {
         if((hacksList == null || !hacksList.isShowing()) && !VertexClientPE.menuIsShowing) {
             showHacksList();
@@ -370,6 +371,11 @@ function screenChangeHook(screenName) {
 					}));
 				}
 			}
+		}
+		if(screenName == ScreenType.pause_screen) {
+			VertexClientPE.isPaused = true;
+		} else {
+			VertexClientPE.isPaused = false;
 		}
     }
 }
@@ -523,6 +529,7 @@ var VertexClientPE = {
 };
 
 VertexClientPE.menuIsShowing = false;
+VertexClientPE.isPaused = false;
 
 VertexClientPE.trailsMode = "off";
 
@@ -3810,16 +3817,11 @@ VertexClientPE.registerModule(zoom);
 //var autoClick = true;
 function modTick() {
     VertexClientPE.playerIsInGame = true;
-    VertexClientPE.modules.forEach(function(element, index, array) {
-        if(element.isStateMod() && element.state && element.onTick) {
-            if(yesCheatPlusState && element.canBypassYesCheatPlus) {
-                if(!element.canBypassYesCheatPlus()) {
-                    return;
-                }
-            }
-            element.onTick();
-        }
-    });
+	if(betterPauseSetting == "on" && VertexClientPE.isPaused) {
+		Entity.setVelX(getPlayerEnt(), 0);
+		Entity.setVelY(getPlayerEnt(), 0);
+		Entity.setVelZ(getPlayerEnt(), 0);
+	}
 	if(VertexClientPE.trailsMode != "off") {
 		VertexClientPE.showTrails();
 	}
@@ -7009,6 +7011,7 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + speedHackFriction.toString());
     outWrite.append("," + remoteViewTeleportSetting.toString());
     outWrite.append("," + switchGamemodeSendCommandSetting.toString());
+    outWrite.append("," + betterPauseSetting.toString());
 
     outWrite.close();
     
@@ -7165,6 +7168,9 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[44] != null && arr[44] != undefined) {
             switchGamemodeSendCommandSetting = arr[44];
+        }
+		if (arr[45] != null && arr[45] != undefined) {
+            betterPauseSetting = arr[45];
         }
         fos.close();
         VertexClientPE.loadAutoSpammerSettings();
@@ -9242,6 +9248,16 @@ VertexClientPE.clientTick = function() {
                     }
                 }
             }));
+			VertexClientPE.modules.forEach(function(element, index, array) {
+				if(element.isStateMod() && element.state && element.onTick) {
+					if(yesCheatPlusState && element.canBypassYesCheatPlus) {
+						if(!element.canBypassYesCheatPlus()) {
+							return;
+						}
+					}
+					element.onTick();
+				}
+			});
             VertexClientPE.clientTick();
         }
     }).start();
@@ -12228,6 +12244,30 @@ function optiFineScreen() {
                         }
                     }));
                     optiFineLayout.addView(antiLagDropRemoverButton);
+					
+					var betterPauseButton = new Switch_(CONTEXT);
+                    betterPauseButton.setText("Better pause (don't move while paused on multiplayer)");
+                    if(themeSetting == "white") {
+                        betterPauseButton.setTextColor(Color_.BLACK);
+                    } else {
+                        betterPauseButton.setTextColor(Color_.WHITE);
+                    }
+					betterPauseButton.setTypeface(VertexClientPE.font);
+					if(fontSetting == "minecraft") {
+						MinecraftButtonLibrary.addMinecraftStyleToTextView(betterPauseButton);
+					}
+                    betterPauseButton.setChecked(betterPauseSetting == "on");
+                    betterPauseButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
+                        onCheckedChanged: function() {
+                            if(betterPauseSetting == "off") {
+                                betterPauseSetting = "on";
+                            } else if(betterPauseSetting == "on") {
+                                betterPauseSetting = "off";
+                            }
+                            VertexClientPE.saveMainSettings();
+                        }
+                    }));
+                    optiFineLayout.addView(betterPauseButton);
 
                     optiFineMenu = new PopupWindow_(optiFineLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
                     optiFineMenu.setBackgroundDrawable(backgroundGradient());
