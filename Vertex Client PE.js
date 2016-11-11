@@ -3824,6 +3824,16 @@ VertexClientPE.registerModule(zoom);
 //var autoClick = true;
 function modTick() {
     VertexClientPE.playerIsInGame = true;
+	VertexClientPE.modules.forEach(function(element, index, array) {
+		if(element.isStateMod() && element.state && element.onTick) {
+			if(yesCheatPlusState && element.canBypassYesCheatPlus) {
+				if(!element.canBypassYesCheatPlus()) {
+					return;
+				}
+			}
+			element.onTick();
+		}
+	});
 	if(betterPauseSetting == "on" && VertexClientPE.isPaused) {
 		Entity.setVelX(getPlayerEnt(), 0);
 		Entity.setVelY(getPlayerEnt(), 0);
@@ -9273,16 +9283,6 @@ VertexClientPE.clientTick = function() {
                     }
                 }
             }));
-			VertexClientPE.modules.forEach(function(element, index, array) {
-				if(element.isStateMod() && element.state && element.onTick) {
-					if(yesCheatPlusState && element.canBypassYesCheatPlus) {
-						if(!element.canBypassYesCheatPlus()) {
-							return;
-						}
-					}
-					element.onTick();
-				}
-			});
             VertexClientPE.clientTick();
         }
     }).start();
