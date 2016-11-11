@@ -129,6 +129,12 @@ var PopupWindow = android.widget.PopupWindow;
 var RelativeLayout = android.widget.RelativeLayout;
 var Gravity = android.view.Gravity;
 
+/* try {
+	CONTEXT.setTitle("Vertex Client PE");
+} catch(e) {
+	print(e);
+} */
+
 /**
  * ##########
  *  SETTINGS
@@ -183,6 +189,7 @@ var speedHackFriction = 0.1;
 var remoteViewTeleportSetting = "off";
 var switchGamemodeSendCommandSetting = "off";
 var betterPauseSetting = "off";
+var shortcutUIHeightSetting = 3;
 //------------------------------------
 var combatName = "Combat";
 var buildingName = "Building";
@@ -328,7 +335,6 @@ function VectorLib() {
 var currentScreen = ScreenType.start_screen;
 
 function screenChangeHook(screenName) {
-	currentScreen = screenName;
     if(screenName == ScreenType.hud || screenName == ScreenType.ingame) {
         if((hacksList == null || !hacksList.isShowing()) && !VertexClientPE.menuIsShowing) {
             showHacksList();
@@ -372,12 +378,13 @@ function screenChangeHook(screenName) {
 				}
 			}
 		}
-		if(screenName == ScreenType.pause_screen) {
-			VertexClientPE.isPaused = true;
-		} else {
-			VertexClientPE.isPaused = false;
-		}
     }
+	if(screenName == ScreenType.pause_screen) {
+		VertexClientPE.isPaused = true;
+	} else if(currentScreen == ScreenType.pause_screen && screenName != ScreenType.options_screen) {
+		VertexClientPE.isPaused = false;
+	}
+	currentScreen = screenName;
 }
 
 // ####################
@@ -4896,8 +4903,22 @@ VertexClientPE.showShortcutManagerDialog = function() {
 					}
 				});
 				
+				var shortcutUIHeightSettingTitle = clientTextView("Shortcut UI height: | " + shortcutUIHeightSetting + " * shortcut button size");
+				var shortcutUIHeightSettingSlider = new SeekBar(CONTEXT);
+				var minShortcutUIHeight = 1;
+				shortcutUIHeightSettingSlider.setProgress(shortcutUIHeightSetting - minShortcutUIHeight);
+				shortcutUIHeightSettingSlider.setMax(10 - minShortcutUIHeight);
+				shortcutUIHeightSettingSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+					onProgressChanged: function() {
+						shortcutUIHeightSetting = shortcutUIHeightSettingSlider.getProgress() + minShortcutUIHeight;
+						shortcutUIHeightSettingTitle.setText("Shortcut UI height: | " + shortcutUIHeightSetting + " * shortcut button size");
+					}
+				});
+				
 				dialogLayout.addView(shortcutSizeSettingTitle);
 				dialogLayout.addView(shortcutSizeSettingSlider);
+				dialogLayout.addView(shortcutUIHeightSettingTitle);
+				dialogLayout.addView(shortcutUIHeightSettingSlider);
 				dialogLayout.addView(closeButton);
 				
                 var dialog = new Dialog_(CONTEXT);
@@ -7012,6 +7033,7 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + remoteViewTeleportSetting.toString());
     outWrite.append("," + switchGamemodeSendCommandSetting.toString());
     outWrite.append("," + betterPauseSetting.toString());
+    outWrite.append("," + shortcutUIHeightSetting.toString());
 
     outWrite.close();
     
@@ -7171,6 +7193,9 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[45] != null && arr[45] != undefined) {
             betterPauseSetting = arr[45];
+        }
+		if (arr[46] != null && arr[46] != undefined) {
+            shortcutUIHeightSetting = arr[46];
         }
         fos.close();
         VertexClientPE.loadAutoSpammerSettings();
@@ -10528,6 +10553,7 @@ function leaveGame() {
 	if(mainMenuTextList == null || !mainMenuTextList.isShowing()) {
 		VertexClientPE.showStartScreenBar();
 	}
+	VertexClientPE.isPaused = false;
 }
 
 function settingsScreen() {
@@ -11607,7 +11633,7 @@ function informationScreen() {
         }));
 }
 
-var helpSections = [["Where do I report issues?", "You can report issues at http://bit.ly/VertexIssues."], ["How do I earn V€rt€xCash?", "Normal users earn 10 V€rt€xCash every minute, Pro users earn 20 every minute. In addition, Pro users get 500 V€rt€xCash as a gift."], ["Website", "Our website is http://Vertex-Client.ml/."], ["Twitter", "Our Twitter account is @VertexHX."]];
+var helpSections = [["Where do I report issues?", "You can report issues at http://bit.ly/VertexIssues."], ["How do I earn V€rt€xCash?", "Normal users earn 10 V€rt€xCash every minute, Pro users earn 20 every minute. In addition, Pro users get 500 V€rt€xCash as a gift."], ["How can I add shortcuts?", "Tap the star button in a mod's ... dialog to make it favorite. The mod will now have its own shortcut."], ["Website", "Our website is http://Vertex-Client.ml/."], ["Twitter", "Our Twitter account is @VertexHX."]];
 
 function helpScreen() {
     VertexClientPE.menuIsShowing = true;
@@ -14232,10 +14258,10 @@ function showShortcuts() {
                     });
 					
 					var shortcutLayoutHeight;
-					if(shortcutCount < 3) {
+					if(shortcutCount < shortcutUIHeightSetting) {
 						shortcutLayoutHeight = dip2px(shortcutSizeSetting * shortcutCount);
 					} else {
-						shortcutLayoutHeight = dip2px(shortcutSizeSetting * 3);
+						shortcutLayoutHeight = dip2px(shortcutSizeSetting * shortcutUIHeightSetting);
 					}
                     
                     shortcutGUI = new PopupWindow_(shortcutGUILayout1, LinearLayout_.LayoutParams.WRAP_CONTENT, shortcutLayoutHeight);
