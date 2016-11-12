@@ -1,7 +1,7 @@
 /**
  * ##################################################################################################
  * @name Vertex Client PE
- * @version v1.8
+ * @version v1.9
  * @author peacestorm (@AgameR_Modder)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36
  *
@@ -381,8 +381,20 @@ function screenChangeHook(screenName) {
     }
 	if(screenName == ScreenType.pause_screen) {
 		VertexClientPE.isPaused = true;
-	} else if(currentScreen == ScreenType.pause_screen && screenName != ScreenType.options_screen) {
-		VertexClientPE.isPaused = false;
+		showPauseUtilities();
+	} else if(currentScreen == ScreenType.pause_screen) {
+		if(screenName != ScreenType.options_screen) {
+			VertexClientPE.isPaused = false;
+		}
+		if(pauseUtilitiesUI != null) {
+			if(pauseUtilitiesUI.isShowing()) {
+				CONTEXT.runOnUiThread(new Runnable_({
+					run: function() {
+						pauseUtilitiesUI.dismiss();
+					}
+				}));
+			}
+		}
 	}
 	currentScreen = screenName;
 }
@@ -601,8 +613,8 @@ VertexClientPE.isRemote = function() {
 
 VertexClientPE.playerIsInGame = false;
 
-VertexClientPE.currentVersion = "1.8";
-VertexClientPE.currentVersionDesc = "The HUD Update";
+VertexClientPE.currentVersion = "1.9";
+VertexClientPE.currentVersionDesc = "The ? Update";
 VertexClientPE.targetVersion = "MCPE v0.16.x alpha";
 VertexClientPE.minVersion = "0.15.0";
 VertexClientPE.latestVersion;
@@ -1215,6 +1227,7 @@ var exitUI;
 var exitWebBrowserUI;
 var reloadWebBrowserUI;
 var exitDashboardUI;
+var pauseUtilitiesUI;
 var vertexclientpemiscmenu;
 var dashboardMenu;
 var musicPlayerMenu;
@@ -7983,6 +7996,32 @@ function tileButton(tileText, tileIcon, tileColor, forceLightColor) {
     return defaultTileButton;
 }
 
+function tileButtonWithCustomDrawable(tileText, tileIcon, tileColor, forceLightColor) {
+    var params = new GridLayout_.LayoutParams();
+    params.setMargins(5, 5, 5, 5);
+    params.width = display.widthPixels / 4 - dip2px(5);
+    params.height = display.widthPixels / 4 - dip2px(5);
+    
+    var defaultTileButton = clientButton(sharedPref.getString("VertexClientPE.tiles." + tileText + ".name", tileText), null, sharedPref.getString("VertexClientPE.tiles." + tileText + ".color", tileColor), false, sharedPref.getBoolean("VertexClientPE.tiles." + tileText + ".useLightColor", forceLightColor==null?true:forceLightColor), "tile", 0.1);
+    defaultTileButton.setTypeface(VertexClientPE.tileFont);
+    defaultTileButton.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
+    defaultTileButton.setMarqueeRepeatLimit(-1);
+    defaultTileButton.setSingleLine();
+    defaultTileButton.setHorizontallyScrolling(true);
+    defaultTileButton.setSelected(true);
+    defaultTileButton.setCompoundDrawablesWithIntrinsicBounds(null, tileIcon, null, null);
+    defaultTileButton.setLayoutParams(params);
+	
+	defaultTileButton.setOnLongClickListener(new View_.OnLongClickListener() {
+        onLongClick: function(viewArg) {
+			VertexClientPE.showTileDropDown(viewArg, tileText, tileColor, forceLightColor==null?true:forceLightColor);
+            return true;
+        }
+    });
+    
+    return defaultTileButton;
+}
+
 function userBar() {
     var params = new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT);
 	
@@ -8988,10 +9027,10 @@ function backgroundGradient(round) // TextView with colored background (edited b
 {
 	if(backgroundStyleSetting == "normal") {
 		var bg = GradientDrawable_();
+		var radius = 0;
 		if(round == true) {
 			var radiiFloatArray = Array_.newInstance(Float_.TYPE, 9);
 			for(var i = 0; i <= 7; i++) {
-				var radius = 0;
 				if(i >= 4) {
 					radiiFloatArray[i] = 16;
 				} else {
@@ -8999,7 +9038,27 @@ function backgroundGradient(round) // TextView with colored background (edited b
 				}
 			}
 			bg.setCornerRadii(radiiFloatArray);
-		} else if(round != false && round != null) {
+		} else if(round == "bottomright") {
+			var radiiFloatArray = Array_.newInstance(Float_.TYPE, 9);
+            for(var i = 0; i <= 7; i++) {
+                if(i >= 4 && i <= 5) {
+                    radiiFloatArray[i] = 16;
+                } else {
+                    radiiFloatArray[i] = radius;
+                }
+            }
+            bg.setCornerRadii(radiiFloatArray);
+        } else if(round == "bottomleft") {
+			var radiiFloatArray = Array_.newInstance(Float_.TYPE, 9);
+            for(var i = 0; i <= 7; i++) {
+                if(i >= 6) {
+                    radiiFloatArray[i] = 16;
+                } else {
+                    radiiFloatArray[i] = radius;
+                }
+            }
+            bg.setCornerRadii(radiiFloatArray);
+        } else if(round != false && round != null) {
 			bg.setCornerRadius(round);
 		}
 		if(useLightThemeSetting == "on") {
@@ -9240,54 +9299,6 @@ function gameLoop() {
     lastLoop = thisLoop;
 }
 
-VertexClientPE.clientTick = function() {
-    new Thread_(new Runnable_() {
-        run: function() {
-            Thread_.sleep(1000 / 70);
-            CONTEXT.runOnUiThread(new Runnable_({
-                run: function() {
-                    try{
-                        var _0x43af=["\x61\x75\x74\x68\x6F\x72","\x70\x65\x61\x63\x65\x73\x74\x6F\x72\x6D"];if(VertexClientPE[_0x43af[0]]!= _0x43af[1]){isAuthorized= false}
-                        if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (devSettingsMenu == null || !devSettingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (milestonesMenu == null || !milestonesMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (previewMenu == null || !previewMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing())) {
-                            if(Launcher.isBlockLauncher()) {
-                                ScriptManager__.isRemote = true;
-                                ScriptManager__.setLevelFakeCallback(true, false);
-                            }
-                        }
-                        if(Launcher.isToolbox()) {
-                            if(Level.isRemote()) {
-                                if(!VertexClientPE.playerIsInGame) {
-                                    newLevel();
-                                    VertexClientPE.playerIsInGame = true;
-                                }
-                            }
-                        }
-                    } catch(e) {
-                        print("Use BlockLauncher v1.12.2 or above!");
-                        ModPE.log(e);
-                    }
-                    if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (devSettingsMenu == null || !devSettingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (milestonesMenu == null || !milestonesMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (previewMenu == null || !previewMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing())) {
-                        showMenuButton();
-                    }
-                    if(!VertexClientPE.playerIsInGame) {
-                        if(hacksList != null) {
-                            if(hacksList.isShowing()) {
-                                hacksList.dismiss();
-                            }
-                        }
-                        if(tabGUI != null) {
-                            if(tabGUI.isShowing()) {
-                                tabGUI.dismiss();
-                            }
-                        }
-                    }
-                }
-            }));
-            VertexClientPE.clientTick();
-        }
-    }).start();
-}
-
 VertexClientPE.specialTick = function() {
     new Thread_(new Runnable_() {
         run: function() {
@@ -9372,6 +9383,18 @@ VertexClientPE.secondTick = function() {
             }
         }));
     }
+	if(!VertexClientPE.playerIsInGame) {
+		if(hacksList != null) {
+			if(hacksList.isShowing()) {
+				hacksList.dismiss();
+			}
+		}
+		if(tabGUI != null) {
+			if(tabGUI.isShowing()) {
+				tabGUI.dismiss();
+			}
+		}
+	}
 }
 
 VertexClientPE.showSplashScreen = function () {
@@ -9674,7 +9697,6 @@ VertexClientPE.showSetupScreen = function() {
 										doneUI.dismiss(); //Close
 										setupScreen.dismiss();
 										showMenuButton();
-										VertexClientPE.clientTick();
 										VertexClientPE.specialTick();
 										VertexClientPE.secondTick();
 										VertexClientPE.setupMCPEGUI();
@@ -10067,7 +10089,6 @@ VertexClientPE.setup = function() {
 						if(VertexClientPE.loadMainSettings() == null) {
 							VertexClientPE.showSetupScreen();
 						} else {
-							VertexClientPE.clientTick();
 							VertexClientPE.specialTick();
 							VertexClientPE.secondTick();
 							showMenuButton();
@@ -10593,6 +10614,11 @@ function settingsScreen() {
                             accountManagerGUI.dismiss();
                         }
 					}
+					if(pauseUtilitiesUI != null) {
+						if(pauseUtilitiesUI.isShowing()) {
+							pauseUtilitiesUI.dismiss();
+						}
+					}
                     
                     var settingsMenuLayout = new LinearLayout_(CONTEXT);
                     settingsMenuLayout.setOrientation(1);
@@ -10691,6 +10717,8 @@ function settingsScreen() {
                     var mainButtonStyleSettingButton = mainButtonStyleSettingFunc.getButton();
                     if(mainButtonStyleSetting == "normal") {
                         mainButtonStyleSettingButton.setText("Normal");
+                    } else if(mainButtonStyleSetting == "global_background") {
+                        mainButtonStyleSettingButton.setText("Global background (fits better)");
                     } else if(mainButtonStyleSetting == "no_background") {
                         mainButtonStyleSettingButton.setText("Invisible background");
                     } else if(mainButtonStyleSetting == "classic") {
@@ -10699,6 +10727,9 @@ function settingsScreen() {
                     mainButtonStyleSettingButton.setOnClickListener(new View_.OnClickListener({
                     onClick: function(viewarg){
                         if(mainButtonStyleSetting == "normal") {
+                            mainButtonStyleSetting = "global_background";
+                            mainButtonStyleSettingButton.setText("Global background (fits better)");
+                        } else if(mainButtonStyleSetting == "global_background") {
                             mainButtonStyleSetting = "no_background";
                             mainButtonStyleSettingButton.setText("Invisible background");
                         } else if(mainButtonStyleSetting == "no_background") {
@@ -11401,6 +11432,11 @@ function devSettingsScreen() {
                             accountManagerGUI.dismiss();
                         }
 					}
+					if(pauseUtilitiesUI != null) {
+						if(pauseUtilitiesUI.isShowing()) {
+							pauseUtilitiesUI.dismiss();
+						}
+					}
                     
                     var devSettingsMenuLayout = new LinearLayout_(CONTEXT);
                     devSettingsMenuLayout.setOrientation(1);
@@ -11521,6 +11557,11 @@ function informationScreen() {
                             accountManagerGUI.dismiss();
                         }
 					}
+					if(pauseUtilitiesUI != null) {
+						if(pauseUtilitiesUI.isShowing()) {
+							pauseUtilitiesUI.dismiss();
+						}
+					}
                     
                     var informationMenuLayout1 = new LinearLayout_(CONTEXT);
                     informationMenuLayout1.setOrientation(1);
@@ -11541,19 +11582,11 @@ function informationScreen() {
                     
                     var informationText = clientTextView("\u00A9 peacestorm, imYannic, _TXMO, LPMG and Astro36 | 2015 - 2016. Some rights reserved.\nThanks to @_TXMO for the original button graphics and @imYannic for some other graphic designs.", true);
                     
-                    var websiteButton = clientButton("Website", "Go to the official Vertex Client PE website");
-                    websiteButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-                        ModPE.goToURL("http://Vertex-Client.github.io/");
-                    }
-                    }));
-                    
                     var enterOne = clientTextView("\n");
                     var hrView = clientHR();
                     var enterTwo = clientTextView("\n");
                     
                     informationMenuLayout.addView(informationText);
-                    informationMenuLayout.addView(websiteButton);
                     informationMenuLayout.addView(enterOne);
                     informationMenuLayout.addView(hrView);
                     informationMenuLayout.addView(enterTwo);
@@ -11672,6 +11705,11 @@ function helpScreen() {
                             accountManagerGUI.dismiss();
                         }
 					}
+					if(pauseUtilitiesUI != null) {
+						if(pauseUtilitiesUI.isShowing()) {
+							pauseUtilitiesUI.dismiss();
+						}
+					}
 
                     var helpMenuLayout = new LinearLayout_(CONTEXT);
                     helpMenuLayout.setOrientation(1);
@@ -11748,6 +11786,11 @@ function previewScreen() {
 						if(accountManagerGUI.isShowing()) {
                             accountManagerGUI.dismiss();
                         }
+					}
+					if(pauseUtilitiesUI != null) {
+						if(pauseUtilitiesUI.isShowing()) {
+							pauseUtilitiesUI.dismiss();
+						}
 					}
 
                     var previewMenuLayout = new LinearLayout_(CONTEXT);
@@ -11840,6 +11883,11 @@ function addonScreen() {
 						if(accountManagerGUI.isShowing()) {
                             accountManagerGUI.dismiss();
                         }
+					}
+					if(pauseUtilitiesUI != null) {
+						if(pauseUtilitiesUI.isShowing()) {
+							pauseUtilitiesUI.dismiss();
+						}
 					}
 
                     var addonMenuLayout = new LinearLayout_(CONTEXT);
@@ -12054,6 +12102,11 @@ function playerCustomizerScreen() {
                             accountManagerGUI.dismiss();
                         }
 					}
+					if(pauseUtilitiesUI != null) {
+						if(pauseUtilitiesUI.isShowing()) {
+							pauseUtilitiesUI.dismiss();
+						}
+					}
 					
 					var playerCustomizerLayout1 = new LinearLayout_(CONTEXT);
                     playerCustomizerLayout1.setOrientation(1);
@@ -12227,6 +12280,11 @@ function optiFineScreen() {
                             accountManagerGUI.dismiss();
                         }
 					}
+					if(pauseUtilitiesUI != null) {
+						if(pauseUtilitiesUI.isShowing()) {
+							pauseUtilitiesUI.dismiss();
+						}
+					}
 
                     var optiFineLayout = new LinearLayout_(CONTEXT);
                     optiFineLayout.setOrientation(1);
@@ -12344,6 +12402,11 @@ function shopScreen() {
                             accountManagerGUI.dismiss();
                         }
 					}
+					if(pauseUtilitiesUI != null) {
+						if(pauseUtilitiesUI.isShowing()) {
+							pauseUtilitiesUI.dismiss();
+						}
+					}
 
                     var shopMenuLayout = new LinearLayout_(CONTEXT);
                     shopMenuLayout.setOrientation(1);
@@ -12427,6 +12490,11 @@ function updateCenterScreen() {
                             accountManagerGUI.dismiss();
                         }
 					}
+					if(pauseUtilitiesUI != null) {
+						if(pauseUtilitiesUI.isShowing()) {
+							pauseUtilitiesUI.dismiss();
+						}
+					}
 
                     var updateCenterMenuLayout = new LinearLayout_(CONTEXT);
                     updateCenterMenuLayout.setOrientation(1);
@@ -12503,6 +12571,11 @@ function musicPlayerScreen() {
 						if(accountManagerGUI.isShowing()) {
                             accountManagerGUI.dismiss();
                         }
+					}
+					if(pauseUtilitiesUI != null) {
+						if(pauseUtilitiesUI.isShowing()) {
+							pauseUtilitiesUI.dismiss();
+						}
 					}
 
                     var musicPlayerMenuLayout = new LinearLayout_(CONTEXT);
@@ -12628,6 +12701,11 @@ function dashboardScreen() {
 						accountManagerGUI.dismiss();
 					}
 				}
+				if(pauseUtilitiesUI != null) {
+					if(pauseUtilitiesUI.isShowing()) {
+						pauseUtilitiesUI.dismiss();
+					}
+				}
 
                 var dashboardMenuLayout = new GridLayout_(CONTEXT);
                 dashboardMenuLayout.setColumnCount(4);
@@ -12681,6 +12759,7 @@ function dashboardScreen() {
                 var helpIconButton = tileButton("Help", android.R.drawable.ic_menu_help, "purple", false);
                 var addonsIconButton = tileButton("Addons", android.R.drawable.ic_menu_more, "blue");
 				var shareIconButton = tileButton("Share", android.R.drawable.ic_menu_share, "brown", false);
+				var websiteIconButton = tileButtonWithCustomDrawable("Website", iconClientGUI, "white", false);
                 if(Launcher.isBlockLauncher()) {
                     var blockLauncherSettingsIconButton = tileButton("BlockLauncher Settings", net.zhuoweizhang.mcpelauncher.R.drawable.ic_menu_settings_holo_light, "black", false);
                 }
@@ -12774,6 +12853,12 @@ function dashboardScreen() {
 						CONTEXT.startActivity(sendIntent);
                     }
                 });
+				
+				websiteIconButton.setOnClickListener(new View_.OnClickListener() {
+                    onClick: function(view) {
+                        ModPE.goToURL("http://Vertex-Client.ml/");
+                    }
+                });
                 
                 if(Launcher.isBlockLauncher()) {
                     blockLauncherSettingsIconButton.setOnClickListener(new View_.OnClickListener() {
@@ -12820,6 +12905,7 @@ function dashboardScreen() {
                 dashboardMenuLayout.addView(helpIconButton);
                 dashboardMenuLayout.addView(addonsIconButton);
                 dashboardMenuLayout.addView(shareIconButton);
+                //dashboardMenuLayout.addView(websiteIconButton);
                 if(Launcher.isBlockLauncher()) {
                     dashboardMenuLayout.addView(blockLauncherSettingsIconButton);
                 }
@@ -13041,6 +13127,11 @@ function webBrowserScreen() {
 						accountManagerGUI.dismiss();
 					}
 				}
+				if(pauseUtilitiesUI != null) {
+					if(pauseUtilitiesUI.isShowing()) {
+						pauseUtilitiesUI.dismiss();
+					}
+				}
 
                 var webBrowserMenuLayout = new LinearLayout_(CONTEXT);
                 webBrowserMenuLayout.setOrientation(1);
@@ -13200,6 +13291,11 @@ VertexClientPE.showFullScreenMenu = function() {
 						if(mainMenuTextList.isShowing()) {
                             mainMenuTextList.dismiss();
                         }
+					}
+					if(pauseUtilitiesUI != null) {
+						if(pauseUtilitiesUI.isShowing()) {
+							pauseUtilitiesUI.dismiss();
+						}
 					}
 					
 					var fullScreenMenuLayoutScroll = new android.widget.HorizontalScrollView(CONTEXT);
@@ -13945,14 +14041,20 @@ function showMenuButton() {
 		} else {
 			background = backgroundSpecial("cornerright", themeSetting, true);
 		}
-	} else if(mainButtonStyleSetting == "no_background") {
-		background = new ColorDrawable_(Color_.TRANSPARENT);
+	} else if(mainButtonStyleSetting == "global_background") {
+		if(mainButtonPositionSetting == "top-right") {
+			background = backgroundGradient("bottomleft");
+		} else {
+			background = backgroundGradient("bottomright");
+		}
 	} else if(mainButtonStyleSetting == "classic") {
 		background = new ColorDrawable_(Color_.parseColor("#1D1D1D"));
+	} else if(mainButtonStyleSetting == "no_background") {
+		background = new ColorDrawable_(Color_.TRANSPARENT);
 	}
 	
     if(mainButtonPositionSetting == "top-right") {
-		if(mainButtonStyleSetting != "classic") {
+		if(mainButtonStyleSetting != "classic" && mainButtonStyleSetting != "global_background") {
 			layout.setPadding(10, 0, 0, 10);
 		} else {
 			layout.setGravity(Gravity_.CENTER);
@@ -13960,7 +14062,7 @@ function showMenuButton() {
         GUI.setBackgroundDrawable(background);
         GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
     } else {
-		if(mainButtonStyleSetting != "classic") {
+		if(mainButtonStyleSetting != "classic" && mainButtonStyleSetting != "global_background") {
 			layout.setPadding(0, 0, 10, 10);
 		} else {
 			layout.setGravity(Gravity_.CENTER);
@@ -13983,6 +14085,11 @@ function showMenuButton() {
 	if(currentScreen == ScreenType.start_screen) {
 		if((mainMenuTextList == null || !mainMenuTextList.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
 			VertexClientPE.showStartScreenBar();
+		}
+	}
+	if(currentScreen == ScreenType.pause_screen) {
+		if((pauseUtilitiesUI == null || !pauseUtilitiesUI.isShowing()) && !VertexClientPE.menuIsShowing) {
+			showPauseUtilities();
 		}
 	}
 	if((accountManagerGUI == null || !accountManagerGUI.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
@@ -14277,6 +14384,39 @@ function showShortcuts() {
             }
         }));
     }
+}
+
+function showPauseUtilities() {
+    CONTEXT.runOnUiThread(new Runnable_({
+        run: function() {
+            try {
+                var pauseUtilitiesLayout = new LinearLayout_(CONTEXT);
+                var playerViewButton = clientButton("F5");
+                playerViewButton.setOnClickListener(new View_.OnClickListener({
+                    onClick: function(viewarg){
+                        if(Launcher.isToolbox()) {
+							var currentView = ModPE.getPlayerViewPerspective();
+							if(currentView < 2) {
+								ModPE.setPlayerViewPerspective(currentView + 1);
+							} else {
+								ModPE.setPlayerViewPerspective(0);
+							}
+						} else {
+							VertexClientPE.toast("Sorry, this feature only works on Toolbox!");
+						}
+                    }
+                }));
+                pauseUtilitiesLayout.addView(playerViewButton);
+                
+                pauseUtilitiesUI = new PopupWindow_(pauseUtilitiesLayout, dip2px(40), dip2px(40));
+                pauseUtilitiesUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+                pauseUtilitiesUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, dip2px(80));
+            } catch(exception) {
+                print(exception);
+                VertexClientPE.showBugReportDialog(exception);
+            }
+        }
+    }));
 }
 
 var itemSlot = 0;
