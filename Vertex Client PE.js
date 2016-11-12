@@ -13197,7 +13197,7 @@ VertexClientPE.showMenuBar = function() {
                 menuBar = new PopupWindow_(menuBarLayout, menuBarWidth - dip2px(90), screenHeight / 20);
                 menuBar.setBackgroundDrawable(backgroundSpecial("bottom"));
                 menuBar.setTouchable(false);
-                menuBar.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 90, 0);
+                menuBar.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.TOP, 0, 0);
             } catch(error) {
                 print('An error occurred: ' + error);
             }
