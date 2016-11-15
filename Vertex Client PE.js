@@ -3756,6 +3756,31 @@ var step = {
 	}
 }
 
+var dropLocator = {
+	name: "DropLocator",
+    desc: "Locate dropped items.",
+    category: VertexClientPE.category.MISC,
+    type: "Mod",
+    isStateMod: function() {
+		return false;
+    },
+	onToggle: function() {
+		var items = Entity.getAll();
+		new Thread_(new Runnable_({
+			run: function() {
+				for(var i = 0; i < items.length; i++) {
+					if(Entity.getEntityTypeId(items[i]) == EntityType.ITEM) {
+						VertexClientPE.clientMessage("Located item at " + parseInt(Entity.getX(items[i])) + " " + parseInt(Entity.getY(items[i])) + " " + parseInt(Entity.getZ(items[i])));
+						Thread_.sleep(1000);
+					} else {
+						continue;
+					}
+				}
+			}
+		})).start();
+    }
+}
+
 //COMBAT
 VertexClientPE.registerModule(antiKnockback);
 VertexClientPE.registerModule(antiBurn);
@@ -3825,6 +3850,7 @@ VertexClientPE.registerModule(chestESP);
 VertexClientPE.registerModule(chestTracers);
 VertexClientPE.registerModule(coordsDisplay);
 VertexClientPE.registerModule(derp);
+VertexClientPE.registerModule(dropLocator);
 VertexClientPE.registerModule(fullBright);
 VertexClientPE.registerModule(itemGiver);
 VertexClientPE.registerModule(onlyDay);
