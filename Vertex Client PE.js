@@ -381,7 +381,9 @@ function screenChangeHook(screenName) {
     }
 	if(screenName == ScreenType.pause_screen) {
 		VertexClientPE.isPaused = true;
-		showPauseUtilities();
+		if(!VertexClientPE.menuIsShowing) {
+			showPauseUtilities();
+		}
 	} else if(currentScreen == ScreenType.pause_screen) {
 		if(screenName != ScreenType.options_screen) {
 			VertexClientPE.isPaused = false;
@@ -14005,6 +14007,9 @@ function showMenuButton() {
 			if(shortcutGUI != null) {
                 shortcutGUI.dismiss();
             }
+			if(pauseUtilitiesUI != null) {
+                pauseUtilitiesUI.dismiss();
+            }
             VertexClientPE.showMenu();
         } else {
             if(!VertexClientPE.playerIsInGame) {
@@ -14016,6 +14021,9 @@ function showMenuButton() {
                     showHacksList();
                     showTabGUI();
 					showShortcuts();
+                }
+				if(currentScreen == ScreenType.pause_screen && (pauseUtilitiesUI == null || !pauseUtilitiesUI.isShowing())) {
+                    showPauseUtilities();
                 }
             }
         }
