@@ -4815,10 +4815,20 @@ VertexClientPE.showBugReportDialog = function(exception) {
     });
 }
 
+var moreMenuIsOpen = false;
+
 VertexClientPE.showMoreDialog = function() {
     CONTEXT.runOnUiThread(new Runnable_() {
         run: function() {
             try {
+				if(moreMenuIsOpen) {
+					return;
+				}
+				moreMenuIsOpen = true;
+				menuBtn.startAnimation(fadeOut(500));
+				menuBtn.setBackgroundDrawable(new ColorDrawable_(android.graphics.Color.TRANSPARENT));
+				menuBtn.setText("...");
+				menuBtn.startAnimation(fadeIn(500));
                 var moreTitle = clientTextView("More", true);
                 var moreHR = clientHR();
                 var dashboardButton = clientButton("Dashboard");
@@ -4863,6 +4873,16 @@ VertexClientPE.showMoreDialog = function() {
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
                 dialog.setContentView(dialogLayout1);
                 dialog.setTitle("More");
+				dialog.setOnDismissListener(new DialogInterface_.OnDismissListener() {
+                    onDismiss: function() {
+						moreMenuIsOpen = false;
+						var icon = VertexClientPE.menuIsShowing?iconClickedClientGUI:iconClientGUI;
+                        menuBtn.startAnimation(fadeOut(500));
+						menuBtn.setBackgroundDrawable(icon);
+						menuBtn.setText("");
+						menuBtn.startAnimation(fadeIn(500));
+                    }
+                });
                 dialog.show();
                 dashboardButton.setOnClickListener(new View_.OnClickListener() {
                     onClick: function(view) {
@@ -10134,6 +10154,8 @@ VertexClientPE.setup = function() {
 						if(showNewsSetting == "on") {
 							VertexClientPE.toast(news);
 						}
+						
+						VertexClientPE.showTipBar();
 					}
 				}));
 			}
@@ -13233,6 +13255,55 @@ VertexClientPE.showMenuBar = function() {
     }));
 }
 
+VertexClientPE.showTipBar = function() {
+    var display = new DisplayMetrics_();
+    CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
+    CONTEXT.runOnUiThread(new Runnable_({
+        run: function() {
+            try {
+                var tipBarWidth = CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 3;
+                
+                var tipBarLayout = new LinearLayout_(CONTEXT);
+                tipBarLayout.setOrientation(1);
+                
+                var tipBarTextView = clientTextView("You can access the Dashboard and the Shop by long tapping the main button.", true);
+                tipBarTextView.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
+                tipBarTextView.setMarqueeRepeatLimit(-1);
+                tipBarTextView.setSingleLine();
+                tipBarTextView.setHorizontallyScrolling(true);
+                tipBarTextView.setSelected(true);
+                
+                tipBarLayout.addView(tipBarTextView);
+                
+                tipBar = new PopupWindow_(tipBarLayout, tipBarWidth, screenHeight / 20);
+                tipBar.setBackgroundDrawable(backgroundSpecial("bottom"));
+                tipBar.setTouchable(false);
+                tipBar.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.TOP, 0, 0);
+				
+				new Thread_({
+                    run: function () {
+                        Thread_.sleep(10000);
+                        CONTEXT.runOnUiThread({
+                            run: function () {
+                                tipBarLayout.startAnimation(fadeOut(500));
+                            }
+                        });
+                        Thread_.sleep(500);
+                        CONTEXT.runOnUiThread({
+                            run: function () {
+                                tipBar.dismiss();
+                                tipBarLayout = null;
+                            }
+                        });
+                    }
+                }).start();
+            } catch(error) {
+                print('An error occurred: ' + error);
+            }
+        }
+    }));
+}
+
 /**
  * function VertexClientPE.showMenu()
  * @author peacestorm
@@ -14014,13 +14085,30 @@ function showMenuButton() {
     VertexClientPE.menuIsShowing = false;
     var layout = new LinearLayout_(CONTEXT);
     layout.setOrientation(1);
-    layout.setGravity(Gravity_.CENTER);
+    layout.setGravity(Gravity_.TOP);
     var display = new DisplayMetrics_();
     CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
     menuBtn = new Button_(CONTEXT);
     menuBtn.setTextColor(Color_.WHITE); //Color
     menuBtn.setBackgroundDrawable(iconClientGUI);
     menuBtn.setAlpha(0.54);
+	menuBtn.setTextSize(16);
+	//menuBtn.setTextAlignment(View_.TEXT_ALIGNMENT_CENTER);
+	if(themeSetting == "white") {
+		menuBtn.setTextColor(Color_.BLACK);
+		if(fontSetting != "minecraft") {
+			menuBtn.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
+		}
+	} else {
+		menuBtn.setTextColor(Color_.WHITE);
+		if(fontSetting != "minecraft") {
+			menuBtn.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+		}
+	}
+	menuBtn.setTypeface(VertexClientPE.font);
+	if(fontSetting == "minecraft") {
+		MinecraftButtonLibrary.addMinecraftStyleToTextView(menuBtn);
+	}
     menuBtn.setOnClickListener(new View_.OnClickListener({
     onClick: function(viewarg){
         if(VertexClientPE.playerIsInGame && !VertexClientPE.menuIsShowing) {
