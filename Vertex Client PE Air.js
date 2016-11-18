@@ -1,6 +1,6 @@
 /**
  * ##################################################################################################
- * @name Vertex Client PE
+ * @name Vertex Client PE (Air)
  * @version v1.9
  * @author peacestorm (@AgameR_Modder)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36
@@ -194,17 +194,6 @@ var switchGamemodeSendCommandSetting = "off";
 var betterPauseSetting = "off";
 var shortcutUIHeightSetting = 3;
 var mainButtonTapSetting = "menu";
-//------------------------------------
-var combatName = "Combat";
-var buildingName = "Building";
-var movementName = "Movement";
-var chatName = "Chat";
-var miscName = "Misc";
-//End of settings
-
-var modButtonColorBlocked = Color_.RED;
-var modButtonColorEnabled = Color_.GREEN;
-var modButtonColorDisabled = Color_.WHITE;
 
 var display = new DisplayMetrics_();
 CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
@@ -549,42 +538,6 @@ VertexClientPE.setWebbrowserStartPage = function(url) {
 
 VertexClientPE.getWebbrowserStartPage = function() {
 	return sharedPref.getString("VertexClientPE.webBrowser.startPage", "https://google.com/");
-}
-
-VertexClientPE.Utils.loadChests = function() {
-    VertexClientPE.Utils.chests = [];
-    try {
-        var x = getPlayerX();
-        var y = getPlayerY();
-        var z = getPlayerZ();
-        var newX;
-        var newY;
-        var newZ;
-        for(var blockX = - chestESPRange; blockX <= chestESPRange; blockX++) {
-            for(var blockY = - chestESPRange; blockY <= chestESPRange; blockY++) {
-                for(var blockZ = - chestESPRange; blockZ <= chestESPRange; blockZ++) {
-                    newX = x + blockX;
-                    newY = y + blockY;
-                    newZ = z + blockZ;
-                    if(getTile(newX, newY, newZ) == 54) {
-                        VertexClientPE.Utils.chests.push({
-                            x: newX,
-                            y: newY,
-                            z: newZ
-                        });
-                    }
-                }
-            }
-        }
-    } catch(e) {
-        //an error occured
-    } finally {
-        VertexClientPE.toast("Successfully (re)loaded chests!");
-    }
-}
-
-VertexClientPE.Utils.getChests = function() {
-    return VertexClientPE.Utils.chests;
 }
 
 var _0x199a=["\x69\x73\x50\x72\x6F","\x67\x65\x74\x50\x72\x65\x66\x65\x72\x65\x6E\x63\x65\x73","\x56\x65\x72\x74\x65\x78\x43\x6C\x69\x65\x6E\x74\x50\x45\x2E\x69\x73\x50\x72\x6F","\x67\x65\x74\x53\x74\x72\x69\x6E\x67","\x73\x65\x74\x49\x73\x50\x72\x6F","\x54\x68\x69\x73\x49\x73\x53\x70\x61\x72\x74\x61"];VertexClientPE[_0x199a[0]]=function(){var _0xf36dx1=CONTEXT[_0x199a[1]](CONTEXT.MODE_PRIVATE);return _0xf36dx1[_0x199a[3]](_0x199a[2],null)};VertexClientPE[_0x199a[4]]=function(){var _0xf36dx2=_0x199a[5];return _0xf36dx2}
@@ -1249,19 +1202,6 @@ function chatHook(text) {
             CONTEXT.updateTextboxText("");
         }
         VertexClientPE.commandManager(text.substring(1, text.length));
-    } else {
-        if(text.charAt(0) != "/") {
-            VertexClientPE.modules.forEach(function(element, index, array) {
-                if(element.isStateMod() && element.state && element.onChat) {
-                    if(yesCheatPlusState && element.canBypassYesCheatPlus) {
-                        if(!element.canBypassYesCheatPlus()) {
-                            return;
-                        }
-                    }
-                    element.onChat(text);
-                }
-            });
-        }
     }
 }
 
@@ -4775,20 +4715,6 @@ function gameLoop() {
     lastLoop = thisLoop;
 }
 
-VertexClientPE.specialTick = function() {
-    new Thread_(new Runnable_() {
-        run: function() {
-            Thread_.sleep(1000 * spamDelayTime);
-            if(VertexClientPE.playerIsInGame) {
-                if(delaySpammerState) {
-                    VertexClientPE.delaySpammer();
-                }
-            }
-            VertexClientPE.specialTick();
-        }
-    }).start();
-}
-
 var secondTickTimer = 0;
 var lagTimer = 0;
 
@@ -4796,11 +4722,6 @@ VertexClientPE.secondTick = function() {
     new Thread_(new Runnable_() {
         run: function() {
             Thread_.sleep(1000);
-            VertexClientPE.modules.forEach(function(element, index, array) {
-                if(element.isStateMod() && element.state && element.onInterval) {
-                    element.onInterval();
-                }
-            });
             if(secondTickTimer == 60) {
                 var extraCash = VertexClientPE.isPro()?20:10;
                 VertexClientPE.setVertexCash(VertexClientPE.getVertexCash() + extraCash);
@@ -5905,12 +5826,6 @@ function newLevel() {
         lagTimer = 0;
         CONTEXT.runOnUiThread(new Runnable_() {
             run: function() {
-				if(Launcher.isBlockLauncher()) {
-					if(!removedBlButton) {
-						parentView.removeView(parentView.getChildAt(0));
-						removedBlButton = true;
-					}
-				}
                 if(accountManager != null) {
                     if(accountManager.isShowing()) {
                         accountManager.dismiss();
