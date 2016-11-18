@@ -481,48 +481,6 @@ var VertexClientPE = {
 				}
 			}
 		}
-    },
-    CombatUtils: {
-		aimAt: function(x, y, z) {
-            // Credits to Godsoft0329 aka the developer of DragOP
-            var velocity = 1;
-            var posX = x - Player.getX();
-            var posY = y - Player.getY();
-            var posZ = z - Player.getZ();
-            var realYaw = (Math.atan2(posZ, posX) * 180 / Math.PI) - 90;
-            var y2 = Math.sqrt(posX * posX + posZ * posZ);
-            var g = 0.007;
-            var tmp = (velocity * velocity * velocity * velocity - g * (g * (y2 * y2) + 2 * posY * (velocity * velocity)));
-            var pitch = -(180 / Math.PI) * (Math.atan((velocity * velocity - Math.sqrt(tmp)) / (g * y2)));
-			
-            if(pitch < 89 && pitch > -89) {
-
-                /* imYannic's code */
-
-                oldYaw = newYaw;
-                newYaw = realYaw;
-
-                var dist = Math.sqrt(Math.pow(posX, 2) + Math.pow(posY, 2) + Math.pow(posZ, 2));
-
-                yaw = realYaw+(newYaw - oldYaw) * (dist*dist/dist)/(120/45);
-
-                Entity.setRot(getPlayerEnt(), yaw, pitch);
-
-                /* ---- */
-            }
-        },
-        aimAtEnt: function(ent) {
-            // Credits to Godsoft0329 aka the developer of DragOP
-			if(Entity.getEntityTypeId(ent) == EntityType.PLAYER && Entity.getNameTag(ent) == "") return;
-            var x = Entity.getX(ent);
-            var y = Entity.getEntityTypeId(ent) == EntityType.PLAYER ? Entity.getY(ent) : Entity.getY(ent) + 1;
-            var z = Entity.getZ(ent);
-            this.aimAt(x, y, z);
-        },
-		aimAtBlock: function(x, y, z) {
-			y += 1;
-			this.aimAt(x, y, z);
-		}
     }
 };
 
@@ -5815,8 +5773,6 @@ VertexClientPE.update = function() {
         }
     }));
 }
-
-var removedBlButton = false;
 
 function newLevel() {
     try {
