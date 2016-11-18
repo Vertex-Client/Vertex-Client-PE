@@ -5715,65 +5715,6 @@ VertexClientPE.showTrails = function() {
 	Level.addParticle(trailsParticleType, getPlayerX(), getPlayerY(), getPlayerZ(), 0, 0, 0, 2);
 }
 
-var hasLoadedAddons = false;
-
-VertexClientPE.update = function() {
-    CONTEXT.runOnUiThread(new Runnable_({ run: function() {
-        var ru = new Runnable_({ run: function() {
-            try {
-                var updateVersion = VertexClientPE.latestVersion;
-                if(VertexClientPE.latestVersion.indexOf("Alpha") != -1 || VertexClientPE.latestVersion.indexOf("Beta") != -1) {
-                    updateVersion = VertexClientPE.latestVersion.split(" ")[0] + "-" + VertexClientPE.latestVersion.split(" ")[1];
-                }
-                var scriptUrl = new URL_("https://github.com/Vertex-Client/Vertex-Client-PE/releases/download/v" + updateVersion + "/Vertex_Client_PE.modpkg");
-                var connection = scriptUrl.openConnection();
-                connection.setRequestMethod("GET");
-                connection.setDoOutput(true);
-                connection.connect();
-                connection.getContentLength();
-                var input = connection.getInputStream();
-                var contents = Array_.newInstance(Byte_.TYPE, 1024);
-                var bytesRead = 0;
-                while((bytesRead = input.read(contents)) != -1) { 
-                    newScript += new String_(contents, 0, bytesRead);              
-                }
-                var patchesFolder = CONTEXT.getDir("modscripts", 0);
-                var scriptFile = new File_(patchesFolder, "Vertex_Client_PE.modpkg");
-                var printWriter = new PrintWriter_(scriptFile);
-                printWriter.write(newScript);
-                printWriter.flush();
-                printWriter.close();
-                try {
-                    if(GUI != null) {
-                        if(GUI.isShowing()) {
-                            GUI.dismiss();
-                        }
-                    }
-                    if(hacksList != null) {
-                        if(hacksList.isShowing()) {
-                            hacksList.dismiss();
-                        }
-                    }
-                    function modTick() {};
-                    function useItem() {};
-                    function attackHook() {};
-                    function explodeHook() {};
-                    function chatHook() {};
-                    ScriptManager__.setEnabled(scriptFile, false);
-                    ScriptManager__.setEnabled(scriptFile, true);
-                } catch(e) {
-                    //clientMessage("Error: Line 5489: " + e);
-                }
-            } catch(e) {
-                clientMessage("Error: Line 5492: " + e);
-            }
-        }});
-        var th = new Thread_(ru);
-        th.start();
-        }
-    }));
-}
-
 function newLevel() {
     try {
 		currentScreen = ScreenType.ingame;
