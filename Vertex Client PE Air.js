@@ -5089,7 +5089,6 @@ VertexClientPE.showSetupScreen = function() {
 										doneUI.dismiss(); //Close
 										setupScreen.dismiss();
 										showMenuButton();
-										VertexClientPE.specialTick();
 										VertexClientPE.secondTick();
 										VertexClientPE.setupMCPEGUI();
 									}
@@ -5481,7 +5480,6 @@ VertexClientPE.setup = function() {
 						if(VertexClientPE.loadMainSettings() == null) {
 							VertexClientPE.showSetupScreen();
 						} else {
-							VertexClientPE.specialTick();
 							VertexClientPE.secondTick();
 							showMenuButton();
 						}
