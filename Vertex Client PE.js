@@ -34,6 +34,7 @@ const AlarmManager_ = android.app.AlarmManager,
     BitmapDrawable_ = android.graphics.drawable.BitmapDrawable,
     ColorDrawable_ = android.graphics.drawable.ColorDrawable,
     GradientDrawable_ = android.graphics.drawable.GradientDrawable,
+    ScaleDrawable_ = android.graphics.drawable.ScaleDrawable,
     LightingColorFilter_ = android.graphics.LightingColorFilter,
     Paint_ = android.graphics.Paint,
     PixelFormat_ = android.graphics.PixelFormat,
@@ -621,7 +622,8 @@ VertexClientPE.playerIsInGame = false;
 VertexClientPE.currentVersion = "1.9";
 VertexClientPE.currentVersionDesc = "The ? Update";
 VertexClientPE.targetVersion = "MCPE v0.16.x alpha";
-VertexClientPE.minVersion = "0.15.0";
+VertexClientPE.minVersion = "0.16.0";
+VertexClientPE.edition = "Normal";
 VertexClientPE.latestVersion;
 VertexClientPE.latestVersionDesc;
 
@@ -8062,7 +8064,13 @@ function tileButtonWithCustomDrawable(tileText, tileIcon, tileColor, forceLightC
     defaultTileButton.setSingleLine();
     defaultTileButton.setHorizontallyScrolling(true);
     defaultTileButton.setSelected(true);
-    defaultTileButton.setCompoundDrawablesWithIntrinsicBounds(null, tileIcon, null, null);
+	
+	var drawable = tileIcon;
+	drawable.setBounds(0, 0, (drawable.getIntrinsicWidth()*0.5), (drawable.getIntrinsicHeight()*0.5));
+	var sd = new ScaleDrawable_(drawable, 0, dip2px(16), dip2px(16));
+	sd.setLevel(1);
+	
+    defaultTileButton.setCompoundDrawablesWithIntrinsicBounds(null, sd.getDrawable(), null, null);
     defaultTileButton.setLayoutParams(params);
 	
 	defaultTileButton.setOnLongClickListener(new View_.OnLongClickListener() {
@@ -11682,6 +11690,9 @@ function informationScreen() {
                     
                     var vertexVersion = VertexClientPE.currentVersion;
                     var vertexVersionTextView = clientTextView("Version: " + vertexVersion);
+					
+					var vertexEdition = VertexClientPE.edition;
+                    var vertexEditionTextView = clientTextView("Edition: " + vertexEdition);
                     
                     var statusType = "normal user";
                     if(VertexClientPE.isDevMode()) {
@@ -11725,6 +11736,7 @@ function informationScreen() {
                     //-------------------------------------------
                     informationMenuLayout.addView(vertexInfoTitle);
                     informationMenuLayout.addView(vertexVersionTextView);
+                    informationMenuLayout.addView(vertexEditionTextView);
                     informationMenuLayout.addView(statusTextView);
                     informationMenuLayout.addView(proTextView);
                     //-------------------------------------------
