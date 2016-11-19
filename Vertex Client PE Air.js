@@ -194,6 +194,7 @@ var switchGamemodeSendCommandSetting = "off";
 var betterPauseSetting = "off";
 var shortcutUIHeightSetting = 3;
 var mainButtonTapSetting = "menu";
+var autoWalkDirection = "forward";
 
 var display = new DisplayMetrics_();
 CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
@@ -328,6 +329,7 @@ function VectorLib() {
 var currentScreen = ScreenType.start_screen;
 
 function screenChangeHook(screenName) {
+	print(screenName);
     if(screenName == ScreenType.hud || screenName == ScreenType.ingame) {
         if((hacksList == null || !hacksList.isShowing()) && !VertexClientPE.menuIsShowing) {
             showHacksList();
@@ -488,15 +490,6 @@ VertexClientPE.menuIsShowing = false;
 VertexClientPE.isPaused = false;
 
 VertexClientPE.trailsMode = "off";
-
-VertexClientPE.setWebbrowserStartPage = function(url) {
-	editor.putString("VertexClientPE.webBrowser.startPage", url);
-	editor.commit();
-}
-
-VertexClientPE.getWebbrowserStartPage = function() {
-	return sharedPref.getString("VertexClientPE.webBrowser.startPage", "https://google.com/");
-}
 
 var _0x199a=["\x69\x73\x50\x72\x6F","\x67\x65\x74\x50\x72\x65\x66\x65\x72\x65\x6E\x63\x65\x73","\x56\x65\x72\x74\x65\x78\x43\x6C\x69\x65\x6E\x74\x50\x45\x2E\x69\x73\x50\x72\x6F","\x67\x65\x74\x53\x74\x72\x69\x6E\x67","\x73\x65\x74\x49\x73\x50\x72\x6F","\x54\x68\x69\x73\x49\x73\x53\x70\x61\x72\x74\x61"];VertexClientPE[_0x199a[0]]=function(){var _0xf36dx1=CONTEXT[_0x199a[1]](CONTEXT.MODE_PRIVATE);return _0xf36dx1[_0x199a[3]](_0x199a[2],null)};VertexClientPE[_0x199a[4]]=function(){var _0xf36dx2=_0x199a[5];return _0xf36dx2}
 
@@ -2912,8 +2905,12 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + betterPauseSetting.toString());
     outWrite.append("," + shortcutUIHeightSetting.toString());
     outWrite.append("," + mainButtonTapSetting.toString());
+    outWrite.append("," + autoWalkDirection.toString());
 
     outWrite.close();
+    
+    VertexClientPE.saveAutoSpammerMessage();
+    VertexClientPE.saveCategorySettings();
 }
 
 VertexClientPE.loadMainSettings = function () {
@@ -3075,9 +3072,15 @@ VertexClientPE.loadMainSettings = function () {
 		if (arr[47] != null && arr[47] != undefined) {
             mainButtonTapSetting = arr[47];
         }
+		if (arr[48] != null && arr[48] != undefined) {
+            mainButtonTapSetting = arr[48];
+        }
         fos.close();
+        VertexClientPE.loadAutoSpammerSettings();
+        VertexClientPE.loadCategorySettings();
 		VertexClientPE.font = fontSetting=="minecraft"?Typeface_.createFromFile(new File_(PATH, "minecraft.ttf")):VertexClientPE.defaultFont;
 		MinecraftButtonLibrary.ProcessedResources.font = VertexClientPE.font;
+		VertexClientPE.setupModButtonColors();
 		
         return true;
     }
@@ -5073,7 +5076,7 @@ VertexClientPE.showSetupScreen = function() {
                     
 					var setupStep1Text = "Thanks for choosing Vertex Client PE!\nGo to the next step to choose your favourite color. :)";
 					var setupStep2Text = "You can always change the color on the settings screen.\nEven more colors are available there.";
-					var setupStep3Text = "That's it! Your experience begins here.\nHere's some additional help to get started:\n- You can open the Dashboard and the Shop from the 'More' dialog,\nwhich can be opened by long tapping the menu button.";
+					var setupStep3Text = "That's it! Your experience begins here.\nHere's some additional help to get started:\n- You can open the Dashboard and the Shop from the 'More' dialog,\nwhich can be opened using the menu button.";
 					
 					setupTextView.setText(setupStep1Text);
 					
