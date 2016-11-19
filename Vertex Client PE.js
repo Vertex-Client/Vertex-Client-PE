@@ -194,6 +194,7 @@ var switchGamemodeSendCommandSetting = "off";
 var betterPauseSetting = "off";
 var shortcutUIHeightSetting = 3;
 var mainButtonTapSetting = "menu";
+var autoWalkDirection = "forward";
 //------------------------------------
 var combatName = "Combat";
 var buildingName = "Building";
@@ -557,15 +558,6 @@ VertexClientPE.menuIsShowing = false;
 VertexClientPE.isPaused = false;
 
 VertexClientPE.trailsMode = "off";
-
-VertexClientPE.setWebbrowserStartPage = function(url) {
-	editor.putString("VertexClientPE.webBrowser.startPage", url);
-	editor.commit();
-}
-
-VertexClientPE.getWebbrowserStartPage = function() {
-	return sharedPref.getString("VertexClientPE.webBrowser.startPage", "https://google.com/");
-}
 
 VertexClientPE.Utils.loadChests = function() {
     VertexClientPE.Utils.chests = [];
@@ -2774,6 +2766,58 @@ var autoWalk = {
     category: VertexClientPE.category.MOVEMENT,
     type: "Mod",
     state: false,
+	getSettingsLayout: function() {
+        var autoWalkSettingsLayout = new LinearLayout_(CONTEXT);
+        autoWalkSettingsLayout.setOrientation(1);
+		
+		var autoWalkDirectionLayout = new LinearLayout_(CONTEXT);
+		autoWalkDirectionLayout.setOrientation(LinearLayout_.HORIZONTAL);
+		
+        var autoWalkDirectionTitle = clientTextView("Direction:");
+        var autoWalkDirectionForwardButton = clientButton("Forward", "Makes the player move forward.");
+        autoWalkDirectionForwardButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+        var autoWalkDirectionBackwardsButton = clientButton("Backwards", "Makes the player move backwards.");
+        autoWalkDirectionBackwardsButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+        
+        var autoWalkDirectionLayoutLeft = new LinearLayout_(CONTEXT);
+        autoWalkDirectionLayoutLeft.setOrientation(1);
+        autoWalkDirectionLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2, display.heightPixels / 10));
+        autoWalkDirectionLayoutLeft.setGravity(Gravity_.CENTER_HORIZONTAL);
+        autoWalkDirectionLayout.addView(autoWalkDirectionLayoutLeft);
+        
+        var autoWalkDirectionLayoutRight = new LinearLayout_(CONTEXT);
+        autoWalkDirectionLayoutRight.setOrientation(1);
+        autoWalkDirectionLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2, display.heightPixels / 10));
+        autoWalkDirectionLayoutRight.setGravity(Gravity_.CENTER_HORIZONTAL);
+        autoWalkDirectionLayout.addView(autoWalkDirectionLayoutRight);
+        
+        autoWalkDirectionLayoutLeft.addView(autoWalkDirectionForwardButton);
+        autoWalkDirectionLayoutRight.addView(autoWalkDirectionBackwardsButton);
+        if(autoWalkDirection == "forward") {
+            autoWalkDirectionForwardButton.setTextColor(Color_.GREEN);
+        }if(autoWalkDirection == "backwards") {
+            autoWalkDirectionBackwardsButton.setTextColor(Color_.GREEN);
+        }
+        autoWalkDirectionForwardButton.setOnClickListener(new View_.OnClickListener() {
+            onClick: function(view) {
+                autoWalkDirection = "forward";
+                autoWalkDirectionForwardButton.setTextColor(Color_.GREEN);
+                autoWalkDirectionBackwardsButton.setTextColor(Color_.WHITE);
+                VertexClientPE.saveMainSettings();
+            }
+        });
+        autoWalkDirectionBackwardsButton.setOnClickListener(new View_.OnClickListener() {
+            onClick: function(view) {
+                autoWalkDirection = "backwards";
+                autoWalkDirectionForwardButton.setTextColor(Color_.WHITE);
+                autoWalkDirectionBackwardsButton.setTextColor(Color_.GREEN);
+                VertexClientPE.saveMainSettings();
+            }
+        });
+        autoWalkSettingsLayout.addView(autoWalkDirectionTitle);
+        autoWalkSettingsLayout.addView(autoWalkDirectionLayout);
+        return autoWalkSettingsLayout;
+    },
     isStateMod: function() {
         return true;
     },
@@ -2783,11 +2827,19 @@ var autoWalk = {
     onTick: function() {
         toDirectionalVector(playerDir, (getYaw() + 90) * DEG_TO_RAD, getPitch() * DEG_TO_RAD * -1);
         var player = getPlayerEnt();
-        setVelX(player, playerWalkSpeed * playerDir[0]);
+		var xVel = playerWalkSpeed * playerDir[0];
+		var yVel = playerWalkSpeed * playerDir[1];
+		var zVel = playerWalkSpeed * playerDir[2];
+		if(autoWalkDirection == "backwards") {
+			xVel *= -1;
+			yVel *= -1;
+			zVel *= -1;
+		}
+        setVelX(player, xVel);
         if(Player.isFlying()) {
-            setVelY(player, playerWalkSpeed * playerDir[1]);    
+            setVelY(player, yVel);
         }
-        setVelZ(player, playerWalkSpeed * playerDir[2]);
+        setVelZ(player, zVel);
     }
 }
 
@@ -7102,6 +7154,7 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + betterPauseSetting.toString());
     outWrite.append("," + shortcutUIHeightSetting.toString());
     outWrite.append("," + mainButtonTapSetting.toString());
+    outWrite.append("," + autoWalkDirection.toString());
 
     outWrite.close();
     
@@ -7267,6 +7320,9 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[47] != null && arr[47] != undefined) {
             mainButtonTapSetting = arr[47];
+        }
+		if (arr[48] != null && arr[48] != undefined) {
+            mainButtonTapSetting = arr[48];
         }
         fos.close();
         VertexClientPE.loadAutoSpammerSettings();
