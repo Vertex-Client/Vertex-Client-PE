@@ -10609,7 +10609,6 @@ function leaveGame() {
             VertexClientPE.saveMainSettings();
             VertexClientPE.editCopyrightText();
             VertexClientPE.Render.deinitViews();
-            musicText = "None";
             VertexClientPE.playerIsInGame = false;
         }
     }));
