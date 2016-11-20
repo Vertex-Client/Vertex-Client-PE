@@ -3073,7 +3073,7 @@ VertexClientPE.loadMainSettings = function () {
             mainButtonTapSetting = arr[47];
         }
 		if (arr[48] != null && arr[48] != undefined) {
-            mainButtonTapSetting = arr[48];
+            autoWalkDirection = arr[48];
         }
         fos.close();
         VertexClientPE.loadAutoSpammerSettings();
