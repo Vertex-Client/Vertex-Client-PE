@@ -3597,12 +3597,10 @@ var twerk = {
         this.timer = 0;
     },
     onTick: function() {
-        if(this.timer <= 20) {
-            Entity.setSneaking(getPlayerEnt(), true);
-            this.timer++;
-        } else if(this.timer <= 21) {
-            Entity.setSneaking(getPlayerEnt(), false);
-            this.timer = 0;
+		this.timer++;
+        if(this.timer >= 20) {
+            Entity.setSneaking(getPlayerEnt(), !Entity.getIsSneaking(getPlayerEnt()));
+			this.timer = 0;
         }
     }
 }
@@ -7322,7 +7320,7 @@ VertexClientPE.loadMainSettings = function () {
             mainButtonTapSetting = arr[47];
         }
 		if (arr[48] != null && arr[48] != undefined) {
-            mainButtonTapSetting = arr[48];
+            autoWalkDirection = arr[48];
         }
         fos.close();
         VertexClientPE.loadAutoSpammerSettings();
