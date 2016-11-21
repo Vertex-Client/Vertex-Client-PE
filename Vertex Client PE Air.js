@@ -2244,7 +2244,7 @@ function capitalizeColorString(string) {
 	}
 }
 
-VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, defaultUseLightColor) {
+VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, defaultUseLightColor, tile) {
 	try {
 		CONTEXT.runOnUiThread(new Runnable_() {
 			run: function() {
@@ -2266,26 +2266,6 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 						editor.commit();
                     }
                 });
-				
-				var tileFavButton = new clientButton("Favorite");
-				if(sharedPref.getString("VertexClientPE.tiles." + defaultName + ".isFavorite", "false") == "true") {
-					tileFavButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.btn_star_big_on, 0, 0, 0);
-				} else {
-					tileFavButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.btn_star_big_off, 0, 0, 0);
-				}
-				tileFavButton.setOnClickListener(new View_.OnClickListener() {
-					onClick: function(v) {
-						if(sharedPref.getString("VertexClientPE.tiles." + defaultName + ".isFavorite", "false") == "true") {
-							editor.putString("VertexClientPE.tiles." + defaultName + ".isFavorite", "false");
-							editor.commit();
-							tileFavButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.btn_star_big_off, 0, 0, 0);
-						} else {
-							editor.putString("VertexClientPE.tiles." + defaultName + ".isFavorite", "true");
-							editor.commit();
-							tileFavButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.btn_star_big_on, 0, 0, 0);
-						}
-					}
-				});
 				
 				var tileDropDownCurrentColorButton = clientButton(capitalizeColorString(currentColor));
 				tileDropDownCurrentColorButton.setOnClickListener(new android.view.View.OnClickListener({
@@ -2370,7 +2350,10 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 				});
 				
 				tileDropDownLayout.addView(tileDropDownEditText);
-				tileDropDownLayout.addView(tileFavButton);
+				if(tile.source) {
+					var tileSourceTextView = clientTextView("Source: " + tile.source);
+					tileDropDownLayout.addView(tileSourceTextView);
+				}
 				tileDropDownLayout.addView(tileDropDownCurrentColorButton);
 				tileDropDownLayout.addView(tileDropDownUseLightColorCheckBox);
 				tileDropDownLayout.addView(tileDropDownResetButton);
@@ -4094,7 +4077,7 @@ function tileButton(tile, fromDashboard) {
 		
 		defaultTileButton.setOnLongClickListener(new View_.OnLongClickListener() {
 			onLongClick: function(viewArg) {
-				VertexClientPE.showTileDropDown(viewArg, tileText, tileColor, forceLightColor==null?true:forceLightColor);
+				VertexClientPE.showTileDropDown(viewArg, tileText, tileColor, forceLightColor==null?true:forceLightColor, tile);
 				return true;
 			}
 		});
