@@ -5623,7 +5623,7 @@ function capitalizeColorString(string) {
 	}
 }
 
-VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, defaultUseLightColor) {
+VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, defaultUseLightColor, tile) {
 	try {
 		CONTEXT.runOnUiThread(new Runnable_() {
 			run: function() {
@@ -5729,6 +5729,10 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 				});
 				
 				tileDropDownLayout.addView(tileDropDownEditText);
+				if(tile.source) {
+					var tileSourceTextView = clientTextView("Source: " + tile.source);
+					tileDropDownLayout.addView(tileSourceTextView);
+				}
 				tileDropDownLayout.addView(tileDropDownCurrentColorButton);
 				tileDropDownLayout.addView(tileDropDownUseLightColorCheckBox);
 				tileDropDownLayout.addView(tileDropDownResetButton);
@@ -8289,7 +8293,7 @@ function tileButton(tile, fromDashboard) {
 		
 		defaultTileButton.setOnLongClickListener(new View_.OnLongClickListener() {
 			onLongClick: function(viewArg) {
-				VertexClientPE.showTileDropDown(viewArg, tileText, tileColor, forceLightColor==null?true:forceLightColor);
+				VertexClientPE.showTileDropDown(viewArg, tileText, tileColor, forceLightColor==null?true:forceLightColor, tile);
 				return true;
 			}
 		});
