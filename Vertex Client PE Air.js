@@ -4102,6 +4102,7 @@ function tileButton(tile, fromDashboard) {
 		var defaultTileButton = clientButton(sharedPref.getString("VertexClientPE.tiles." + tileText + ".name", tileText));
 		defaultTileButton.setTypeface(VertexClientPE.font);
 		defaultTileButton.setLayoutParams(new ViewGroup_.LayoutParams(dip2px(shortcutSizeSetting), dip2px(shortcutSizeSetting)));
+		defaultTileButton.setAlpha(0.54);
 	}
 	
 	defaultTileButton.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
