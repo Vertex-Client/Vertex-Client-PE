@@ -329,16 +329,23 @@ function VectorLib() {
 var currentScreen = ScreenType.start_screen;
 
 function screenChangeHook(screenName) {
-	print(screenName);
     if(screenName == ScreenType.hud || screenName == ScreenType.ingame) {
         if((hacksList == null || !hacksList.isShowing()) && !VertexClientPE.menuIsShowing) {
             showHacksList();
+			showShortcuts();
         }
     } else {
         if(hacksList != null) {
             CONTEXT.runOnUiThread(new Runnable_({
                 run: function() {
                     hacksList.dismiss();
+                }
+            }));
+        }
+		if(shortcutGUI != null) {
+            CONTEXT.runOnUiThread(new Runnable_({
+                run: function() {
+                    shortcutGUI.dismiss();
                 }
             }));
         }
@@ -972,10 +979,29 @@ VertexClientPE.addView = function(layout, modButtonView) {
     }
 };
 
+VertexClientPE.screenNames = [
+	"Addons",
+	"BlockLauncher Settings",
+	"Dashboard",
+	"Developer Settings",
+	"Help",
+	"Information",
+	"Milestones",
+	"Music Player",
+	"OptiFine",
+	"Player Customizer",
+	"Preview",
+	"Restart",
+	"Settings",
+	"Shop",
+	"Shutdown",
+	"Update Center",
+	"Webbrowser"
+];
+
 VertexClientPE.shopFeatures = [];
-
+VertexClientPE.tiles = [];
 VertexClientPE.modules = [];
-
 VertexClientPE.addons = [];
 
 VertexClientPE.loadAddons = function() {
@@ -991,6 +1017,10 @@ VertexClientPE.registerShopFeature = function(obj) {
     VertexClientPE.shopFeatures.push(obj);
 };
 
+VertexClientPE.registerTile = function(obj) {
+    VertexClientPE.tiles.push(obj);
+};
+
 VertexClientPE.initShopFeatures = function() {
     VertexClientPE.shopFeatures.forEach(function(element, index, array) {
         if(element.bought == "true") {
@@ -998,6 +1028,182 @@ VertexClientPE.initShopFeatures = function() {
         }
     });
 };
+
+var settingsTile = {
+	text: "Settings",
+	color: "green",
+	icon: android.R.drawable.ic_menu_preferences,
+	forceLightColor: true,
+	shouldDismissDashboard: true,
+	onClick: function(fromDashboard) {
+		settingsScreen();
+		exitSettings();
+	}
+}
+
+var informationTile = {
+	text: "Information",
+	color: "yellow",
+	icon: android.R.drawable.ic_menu_info_details,
+	forceLightColor: false,
+	shouldDismissDashboard: true,
+	onClick: function(fromDashboard) {
+		informationScreen();
+		exitInformation();
+	}
+}
+
+var updateCenterTile = {
+	text: "Update Center",
+	color: "white",
+	icon: android.R.drawable.ic_menu_compass,
+	forceLightColor: false,
+	shouldDismissDashboard: true,
+	onClick: function(fromDashboard) {
+		updateCenterScreen();
+		exitUpdateCenter();
+	}
+}
+
+var musicPlayerTile = {
+	text: "Music Player",
+	color: "blue",
+	icon: android.R.drawable.ic_media_play,
+	forceLightColor: false,
+	shouldDismissDashboard: true,
+	onClick: function(fromDashboard) {
+		musicPlayerScreen();
+		exitMusicPlayer();
+	}
+}
+
+var previewTile = {
+	text: "Preview",
+	color: "violet",
+	icon: android.R.drawable.ic_menu_gallery,
+	forceLightColor: false,
+	shouldDismissDashboard: true,
+	onClick: function(fromDashboard) {
+		previewScreen();
+		exitPreview();
+	}
+}
+
+var milestonesTile = {
+	text: "Milestones",
+	color: "grey",
+	icon: android.R.drawable.ic_menu_agenda,
+	forceLightColor: false,
+	shouldDismissDashboard: true,
+	onClick: function(fromDashboard) {
+		milestonesScreen();
+		exitMilestones();
+	}
+}
+
+var helpTile = {
+	text: "Help",
+	color: "purple",
+	icon: android.R.drawable.ic_menu_agenda,
+	forceLightColor: false,
+	shouldDismissDashboard: true,
+	onClick: function(fromDashboard) {
+		helpScreen();
+		exitHelp();
+	}
+}
+
+var addonsTile = {
+	text: "Addons",
+	color: "blue",
+	icon: android.R.drawable.ic_menu_more,
+	forceLightColor: true,
+	shouldDismissDashboard: true,
+	onClick: function(fromDashboard) {
+		addonScreen();
+		exitAddon();
+	}
+}
+
+var shareTile = {
+	text: "Share",
+	color: "brown",
+	icon: android.R.drawable.ic_menu_share,
+	forceLightColor: false,
+	shouldDismissDashboard: false,
+	onClick: function(fromDashboard) {
+		var sendIntent = new Intent_();
+		sendIntent.setAction(Intent_.ACTION_SEND);
+		sendIntent.putExtra(Intent_.EXTRA_TEXT, "I use Vertex Client PE! Get it yourself at http://Vertex-Client.ml/. :D");
+		sendIntent.setType("text/plain");
+		CONTEXT.startActivity(sendIntent);
+	}
+}
+var blockLauncherSettingsTile = {
+	text: "BlockLauncher Settings",
+	color: "black",
+	icon: net.zhuoweizhang.mcpelauncher.R.drawable.ic_menu_settings_holo_light,
+	forceLightColor: false,
+	shouldDismissDashboard: false,
+	checkBeforeAdding: function() {
+		return Launcher.isBlockLauncher();
+	},
+	onClick: function(fromDashboard) {
+		var blIntent = new Intent_(CONTEXT, MainMenuOptionsActivity_);
+		CONTEXT.startActivity(blIntent);
+	}
+}
+
+var devSettingsTile = {
+	text: "Developer Settings",
+	color: "orange",
+	icon: android.R.drawable.ic_menu_report_image,
+	forceLightColor: false,
+	shouldDismissDashboard: true,
+	checkBeforeAdding: function() {
+		return VertexClientPE.isDevMode();
+	},
+	onClick: function(fromDashboard) {
+		devSettingsScreen();
+		exitDevSettings();
+	}
+}
+
+var restartTile = {
+	text: "Restart",
+	color: "green",
+	icon: android.R.drawable.ic_menu_rotate,
+	forceLightColor: false,
+	shouldDismissDashboard: false,
+	onClick: function(fromDashboard) {
+		ModPE.restart();
+	}
+}
+
+var shutdownTile = {
+	text: "Shutdown",
+	color: "red",
+	icon: android.R.drawable.ic_lock_power_off,
+	forceLightColor: true,
+	shouldDismissDashboard: false,
+	onClick: function(fromDashboard) {
+		ModPE.restart();
+	}
+}
+
+VertexClientPE.registerTile(settingsTile);
+VertexClientPE.registerTile(informationTile);
+VertexClientPE.registerTile(updateCenterTile);
+VertexClientPE.registerTile(musicPlayerTile);
+VertexClientPE.registerTile(previewTile);
+VertexClientPE.registerTile(milestonesTile);
+VertexClientPE.registerTile(helpTile);
+VertexClientPE.registerTile(addonsTile);
+VertexClientPE.registerTile(shareTile);
+VertexClientPE.registerTile(blockLauncherSettingsTile);
+VertexClientPE.registerTile(devSettingsTile);
+VertexClientPE.registerTile(restartTile);
+VertexClientPE.registerTile(shutdownTile);
 
 var inventoryPlusPlus = {
     name: "Inventory++",
@@ -1050,7 +1256,7 @@ VertexClientPE.registerModule = function(obj) {
 
 var shownAddonProDialog = false;
 
-function registerAddon(name, desc, current_version, target_version, mods, songs) {
+function registerAddon(name, desc, current_version, target_version, mods, songs, tiles) {
     var shouldMessage = true;
     if(!VertexClientPE.isPro()) {
         if(!shownAddonProDialog) {
@@ -1067,6 +1273,7 @@ function registerAddon(name, desc, current_version, target_version, mods, songs)
             target_version: target_version
         });
         registerSongsFromAddon(songs);
+        registerTilesFromAddon(tiles);
     } catch(e) {
         shouldMessage = false;
         VertexClientPE.toast("An error occurred while loading addons: " + e);
@@ -1082,6 +1289,16 @@ function registerSongsFromAddon(songArray) {
 		songArray.forEach(function (element, index, array) {
 			if(element != null && element.source != null && element.source != undefined) {
 				VertexClientPE.MusicUtils.registerSong(element, true);
+			}
+		});
+	}
+}
+
+function registerTilesFromAddon(tileArray) {
+	if(tileArray != null) {
+		tileArray.forEach(function (element, index, array) {
+			if(element != null && element.source != null && element.source != undefined) {
+				VertexClientPE.registerTile(element);
 			}
 		});
 	}
@@ -1821,6 +2038,80 @@ VertexClientPE.showMoreDialog = function() {
     });
 }
 
+VertexClientPE.showShortcutManagerDialog = function() {
+    CONTEXT.runOnUiThread(new Runnable_() {
+        run: function() {
+            try {
+                VertexClientPE.loadMainSettings();
+				var settingsTitle = clientScreenTitle("Settings");
+                var shortcutManagerTitle = clientTextView("Shortcut Manager", true);
+				shortcutManagerTitle.setGravity(Gravity_.CENTER);
+                var shortcutManagerEnter = clientTextView("\n");
+                var closeButton = clientButton("Close");
+                closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
+                var dialogLayout = new LinearLayout_(CONTEXT);
+                dialogLayout.setBackgroundDrawable(backgroundGradient());
+                dialogLayout.setOrientation(LinearLayout_.VERTICAL);
+                dialogLayout.setPadding(10, 10, 10, 10);
+                dialogLayout.addView(settingsTitle);
+                dialogLayout.addView(shortcutManagerTitle);
+                dialogLayout.addView(shortcutManagerEnter);
+				
+				var shortcutSizeSettingTitle = clientTextView("Shortcut button size: | " + shortcutSizeSetting);
+				var shortcutSizeSettingSlider = new SeekBar(CONTEXT);
+				var minShortcutSize = 16;
+				shortcutSizeSettingSlider.setProgress(shortcutSizeSetting - minShortcutSize);
+				shortcutSizeSettingSlider.setMax(64 - minShortcutSize);
+				shortcutSizeSettingSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+					onProgressChanged: function() {
+						shortcutSizeSetting = shortcutSizeSettingSlider.getProgress() + minShortcutSize;
+						shortcutSizeSettingTitle.setText("Shortcut button size: | " + shortcutSizeSetting);
+					}
+				});
+				
+				var shortcutUIHeightSettingTitle = clientTextView("Shortcut UI height: | " + shortcutUIHeightSetting + " * shortcut button size");
+				var shortcutUIHeightSettingSlider = new SeekBar(CONTEXT);
+				var minShortcutUIHeight = 1;
+				shortcutUIHeightSettingSlider.setProgress(shortcutUIHeightSetting - minShortcutUIHeight);
+				shortcutUIHeightSettingSlider.setMax(10 - minShortcutUIHeight);
+				shortcutUIHeightSettingSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+					onProgressChanged: function() {
+						shortcutUIHeightSetting = shortcutUIHeightSettingSlider.getProgress() + minShortcutUIHeight;
+						shortcutUIHeightSettingTitle.setText("Shortcut UI height: | " + shortcutUIHeightSetting + " * shortcut button size");
+					}
+				});
+				
+				dialogLayout.addView(shortcutSizeSettingTitle);
+				dialogLayout.addView(shortcutSizeSettingSlider);
+				dialogLayout.addView(shortcutUIHeightSettingTitle);
+				dialogLayout.addView(shortcutUIHeightSettingSlider);
+				dialogLayout.addView(closeButton);
+				
+                var dialog = new Dialog_(CONTEXT);
+                dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
+                dialog.setContentView(dialogLayout);
+                dialog.setTitle("Shortcut Manager");
+				dialog.setOnDismissListener(new DialogInterface_.OnDismissListener() {
+                    onDismiss: function() {
+                        VertexClientPE.saveMainSettings();
+                    }
+                });
+                dialog.show();
+                var window = dialog.getWindow();
+                window.setLayout(display.widthPixels, display.heightPixels);
+                closeButton.setOnClickListener(new View_.OnClickListener() {
+                    onClick: function(view) {
+                        dialog.dismiss();
+                    }
+                });
+            } catch(e) {
+                print("Error: " + e);
+                VertexClientPE.showBugReportDialog(e);
+            }
+        }
+    });
+}
+
 VertexClientPE.showSongDialog = function(song, songBtn, playBar) { //todo; remove/add song buttons from music player song layout when switching favorite
     CONTEXT.runOnUiThread(new Runnable_() {
         run: function() {
@@ -1976,6 +2267,26 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
                     }
                 });
 				
+				var tileFavButton = new clientButton("Favorite");
+				if(sharedPref.getString("VertexClientPE.tiles." + defaultName + ".isFavorite", "false") == "true") {
+					tileFavButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.btn_star_big_on, 0, 0, 0);
+				} else {
+					tileFavButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.btn_star_big_off, 0, 0, 0);
+				}
+				tileFavButton.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(v) {
+						if(sharedPref.getString("VertexClientPE.tiles." + defaultName + ".isFavorite", "false") == "true") {
+							editor.putString("VertexClientPE.tiles." + defaultName + ".isFavorite", "false");
+							editor.commit();
+							tileFavButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.btn_star_big_off, 0, 0, 0);
+						} else {
+							editor.putString("VertexClientPE.tiles." + defaultName + ".isFavorite", "true");
+							editor.commit();
+							tileFavButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.btn_star_big_on, 0, 0, 0);
+						}
+					}
+				});
+				
 				var tileDropDownCurrentColorButton = clientButton(capitalizeColorString(currentColor));
 				tileDropDownCurrentColorButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(v) {
@@ -2059,6 +2370,7 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 				});
 				
 				tileDropDownLayout.addView(tileDropDownEditText);
+				tileDropDownLayout.addView(tileFavButton);
 				tileDropDownLayout.addView(tileDropDownCurrentColorButton);
 				tileDropDownLayout.addView(tileDropDownUseLightColorCheckBox);
 				tileDropDownLayout.addView(tileDropDownResetButton);
@@ -2908,9 +3220,6 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + autoWalkDirection.toString());
 
     outWrite.close();
-    
-    VertexClientPE.saveAutoSpammerMessage();
-    VertexClientPE.saveCategorySettings();
 }
 
 VertexClientPE.loadMainSettings = function () {
@@ -3076,11 +3385,8 @@ VertexClientPE.loadMainSettings = function () {
             autoWalkDirection = arr[48];
         }
         fos.close();
-        VertexClientPE.loadAutoSpammerSettings();
-        VertexClientPE.loadCategorySettings();
 		VertexClientPE.font = fontSetting=="minecraft"?Typeface_.createFromFile(new File_(PATH, "minecraft.ttf")):VertexClientPE.defaultFont;
 		MinecraftButtonLibrary.ProcessedResources.font = VertexClientPE.font;
-		VertexClientPE.setupModButtonColors();
 		
         return true;
     }
@@ -3769,26 +4075,48 @@ function helpSection(title, description) {
     return helpSectionLayout1;
 }
 
-function tileButton(tileText, tileIcon, tileColor, forceLightColor) {
-    var params = new GridLayout_.LayoutParams();
-    params.setMargins(5, 5, 5, 5);
-    params.width = display.widthPixels / 4 - dip2px(5);
-    params.height = display.widthPixels / 4 - dip2px(5);
-    
-    var defaultTileButton = clientButton(sharedPref.getString("VertexClientPE.tiles." + tileText + ".name", tileText), null, sharedPref.getString("VertexClientPE.tiles." + tileText + ".color", tileColor), false, sharedPref.getBoolean("VertexClientPE.tiles." + tileText + ".useLightColor", forceLightColor==null?true:forceLightColor), "tile", 0.1);
-    defaultTileButton.setTypeface(VertexClientPE.tileFont);
-    defaultTileButton.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
-    defaultTileButton.setMarqueeRepeatLimit(-1);
-    defaultTileButton.setSingleLine();
-    defaultTileButton.setHorizontallyScrolling(true);
-    defaultTileButton.setSelected(true);
-    defaultTileButton.setCompoundDrawablesWithIntrinsicBounds(0, tileIcon, 0, 0);
-    defaultTileButton.setLayoutParams(params);
+function tileButton(tile, fromDashboard) {
+	var tileText = tile.text;
+	var tileIcon = tile.icon;
+	var tileColor = tile.color;
+	var forceLightColor = tile.forceLightColor;
 	
-	defaultTileButton.setOnLongClickListener(new View_.OnLongClickListener() {
-        onLongClick: function(viewArg) {
-			VertexClientPE.showTileDropDown(viewArg, tileText, tileColor, forceLightColor==null?true:forceLightColor);
-            return true;
+	if(fromDashboard) {
+		var params = new GridLayout_.LayoutParams();
+		params.setMargins(5, 5, 5, 5);
+		params.width = display.widthPixels / 4 - dip2px(5);
+		params.height = display.widthPixels / 4 - dip2px(5);
+		
+		var defaultTileButton = clientButton(sharedPref.getString("VertexClientPE.tiles." + tileText + ".name", tileText), null, sharedPref.getString("VertexClientPE.tiles." + tileText + ".color", tileColor), false, sharedPref.getBoolean("VertexClientPE.tiles." + tileText + ".useLightColor", forceLightColor==null?true:forceLightColor), "tile", 0.1);
+		defaultTileButton.setTypeface(VertexClientPE.tileFont);
+		defaultTileButton.setCompoundDrawablesWithIntrinsicBounds(0, tileIcon, 0, 0);
+		defaultTileButton.setLayoutParams(params);
+		
+		defaultTileButton.setOnLongClickListener(new View_.OnLongClickListener() {
+			onLongClick: function(viewArg) {
+				VertexClientPE.showTileDropDown(viewArg, tileText, tileColor, forceLightColor==null?true:forceLightColor);
+				return true;
+			}
+		});
+	} else {
+		var defaultTileButton = clientButton(sharedPref.getString("VertexClientPE.tiles." + tileText + ".name", tileText));
+		defaultTileButton.setTypeface(VertexClientPE.font);
+		defaultTileButton.setLayoutParams(new ViewGroup_.LayoutParams(dip2px(shortcutSizeSetting), dip2px(shortcutSizeSetting)));
+	}
+	
+	defaultTileButton.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
+	defaultTileButton.setMarqueeRepeatLimit(-1);
+	defaultTileButton.setSingleLine();
+	defaultTileButton.setHorizontallyScrolling(true);
+	defaultTileButton.setSelected(true);
+	
+	defaultTileButton.setOnClickListener(new View_.OnClickListener() {
+        onClick: function(viewArg) {
+			if(tile.shouldDismissDashboard && fromDashboard) {
+				exitDashboardUI.dismiss();
+				dashboardMenu.dismiss();
+			}
+			tile.onClick(fromDashboard);
         }
     });
     
@@ -4121,7 +4449,7 @@ function clientSectionTitle(text, style) {
 }
 
 function clientScreenTitle(defaultText) {
-	defaultScreenTitle = clientTextView(sharedPref.getString("VertexClientPE.tiles." + defaultText + ".name", defaultText), true);
+	var defaultScreenTitle = clientTextView(sharedPref.getString("VertexClientPE.tiles." + defaultText + ".name", defaultText), true);
 	defaultScreenTitle.setTextSize(25);
 	defaultScreenTitle.setGravity(Gravity_.CENTER);
 	
@@ -5778,9 +6106,11 @@ function newLevel() {
         }).start();
         if(hacksList == null && !VertexClientPE.menuIsShowing) {
             showHacksList();
+			showShortcuts();
         }if(hacksList != null && !VertexClientPE.menuIsShowing) {
             if(!hacksList.isShowing()) {
                 showHacksList();
+				showShortcuts();
             }
         }
         if(!VertexClientPE.isPro()) {
@@ -5819,6 +6149,9 @@ function leaveGame() {
             if(GUI != null) {
                 GUI.dismiss();
             }
+			if(shortcutGUI != null) {
+                shortcutGUI.dismiss();
+            }
             if(menuBar != null || menu != null) {
                 VertexClientPE.closeMenu();
             }
@@ -5849,6 +6182,11 @@ function settingsScreen() {
                     if(hacksList != null) {
                         if(hacksList.isShowing()) {
                             hacksList.dismiss();
+                        }
+                    }
+					if(shortcutGUI != null) {
+                        if(shortcutGUI.isShowing()) {
+                            shortcutGUI.dismiss();
                         }
                     }
 					if(mainMenuTextList != null) {
@@ -5963,6 +6301,15 @@ function settingsScreen() {
                         }
 						VertexClientPE.saveMainSettings();
                     }
+                    }));
+					
+					var shortcutManagerSettingFunc = new settingButton("Shortcuts", "Manage the shortcut buttons.");
+                    var shortcutManagerSettingButton = shortcutManagerSettingFunc.getButton();
+                    shortcutManagerSettingButton.setText("Manage");
+                    shortcutManagerSettingButton.setOnClickListener(new View_.OnClickListener({
+						onClick: function(viewarg) {
+							VertexClientPE.showShortcutManagerDialog();
+						}
                     }));
 					
 					var themeTitle = clientSectionTitle("Theme", "rainbow");
@@ -6391,6 +6738,7 @@ function settingsScreen() {
                     VertexClientPE.addView(settingsMenuLayout, hacksListModeSettingFunc);
                     VertexClientPE.addView(settingsMenuLayout, mainButtonPositionSettingFunc);
                     VertexClientPE.addView(settingsMenuLayout, mainButtonStyleSettingFunc);
+                    VertexClientPE.addView(settingsMenuLayout, shortcutManagerSettingFunc);
                     settingsMenuLayout.addView(themeTitle);
 					VertexClientPE.addView(settingsMenuLayout, themeSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, useLightThemeSettingFunc);
@@ -6436,6 +6784,11 @@ function devSettingsScreen() {
                     if(hacksList != null) {
                         if(hacksList.isShowing()) {
                             hacksList.dismiss();
+                        }
+                    }
+					if(shortcutGUI != null) {
+                        if(shortcutGUI.isShowing()) {
+                            shortcutGUI.dismiss();
                         }
                     }
 					if(mainMenuTextList != null) {
@@ -6551,6 +6904,11 @@ function informationScreen() {
                     if(hacksList != null) {
                         if(hacksList.isShowing()) {
                             hacksList.dismiss();
+                        }
+                    }
+					if(shortcutGUI != null) {
+                        if(shortcutGUI.isShowing()) {
+                            shortcutGUI.dismiss();
                         }
                     }
 					if(mainMenuTextList != null) {
@@ -6695,6 +7053,11 @@ function helpScreen() {
                             hacksList.dismiss();
                         }
                     }
+					if(shortcutGUI != null) {
+                        if(shortcutGUI.isShowing()) {
+                            shortcutGUI.dismiss();
+                        }
+                    }
 					if(mainMenuTextList != null) {
 						if(mainMenuTextList.isShowing()) {
                             mainMenuTextList.dismiss();
@@ -6765,6 +7128,11 @@ function previewScreen() {
                     if(hacksList != null) {
                         if(hacksList.isShowing()) {
                             hacksList.dismiss();
+                        }
+                    }
+					if(shortcutGUI != null) {
+                        if(shortcutGUI.isShowing()) {
+                            shortcutGUI.dismiss();
                         }
                     }
 					if(mainMenuTextList != null) {
@@ -6852,6 +7220,11 @@ function addonScreen() {
                     if(hacksList != null) {
                         if(hacksList.isShowing()) {
                             hacksList.dismiss();
+                        }
+                    }
+					if(shortcutGUI != null) {
+                        if(shortcutGUI.isShowing()) {
+                            shortcutGUI.dismiss();
                         }
                     }
 					if(mainMenuTextList != null) {
@@ -7056,6 +7429,11 @@ function playerCustomizerScreen() {
                             hacksList.dismiss();
                         }
                     }
+					if(shortcutGUI != null) {
+                        if(shortcutGUI.isShowing()) {
+                            shortcutGUI.dismiss();
+                        }
+                    }
 					if(mainMenuTextList != null) {
 						if(mainMenuTextList.isShowing()) {
                             mainMenuTextList.dismiss();
@@ -7224,6 +7602,11 @@ function optiFineScreen() {
                             hacksList.dismiss();
                         }
                     }
+					if(shortcutGUI != null) {
+                        if(shortcutGUI.isShowing()) {
+                            shortcutGUI.dismiss();
+                        }
+                    }
 					if(mainMenuTextList != null) {
 						if(mainMenuTextList.isShowing()) {
                             mainMenuTextList.dismiss();
@@ -7336,6 +7719,11 @@ function shopScreen() {
                             hacksList.dismiss();
                         }
                     }
+					if(shortcutGUI != null) {
+                        if(shortcutGUI.isShowing()) {
+                            shortcutGUI.dismiss();
+                        }
+                    }
 					if(mainMenuTextList != null) {
 						if(mainMenuTextList.isShowing()) {
                             mainMenuTextList.dismiss();
@@ -7414,6 +7802,11 @@ function updateCenterScreen() {
                             hacksList.dismiss();
                         }
                     }
+					if(shortcutGUI != null) {
+                        if(shortcutGUI.isShowing()) {
+                            shortcutGUI.dismiss();
+                        }
+                    }
 					if(mainMenuTextList != null) {
 						if(mainMenuTextList.isShowing()) {
                             mainMenuTextList.dismiss();
@@ -7484,6 +7877,11 @@ function musicPlayerScreen() {
                     if(hacksList != null) {
                         if(hacksList.isShowing()) {
                             hacksList.dismiss();
+                        }
+                    }
+					if(shortcutGUI != null) {
+                        if(shortcutGUI.isShowing()) {
+                            shortcutGUI.dismiss();
                         }
                     }
 					if(mainMenuTextList != null) {
@@ -7610,6 +8008,11 @@ function dashboardScreen() {
 						mainMenuTextList.dismiss();
 					}
 				}
+				if(shortcutGUI != null) {
+					if(shortcutGUI.isShowing()) {
+						shortcutGUI.dismiss();
+					}
+				}
 				if(accountManagerGUI != null) {
 					if(accountManagerGUI.isShowing()) {
 						accountManagerGUI.dismiss();
@@ -7664,170 +8067,11 @@ function dashboardScreen() {
 				dashboardMenuLayout1.addView(dashboardTitleLayout);
                 dashboardMenuLayout1.addView(dashboardMenuLayoutScroll);
                 
-                var settingsIconButton = tileButton("Settings", android.R.drawable.ic_menu_preferences, "green");
-                var informationIconButton = tileButton("Information", android.R.drawable.ic_menu_info_details, "yellow", false);
-                var updateCenterIconButton = tileButton("Update Center", android.R.drawable.ic_menu_compass, "white", false);
-                var musicPlayerIconButton = tileButton("Music Player", android.R.drawable.ic_media_play, "blue", false);
-				var previewIconButton = tileButton("Preview", android.R.drawable.ic_menu_gallery, "violet", false);
-				var milestonesIconButton = tileButton("Milestones", android.R.drawable.ic_menu_agenda, "grey", false);
-                var helpIconButton = tileButton("Help", android.R.drawable.ic_menu_help, "purple", false);
-                var addonsIconButton = tileButton("Addons", android.R.drawable.ic_menu_more, "blue");
-				var shareIconButton = tileButton("Share", android.R.drawable.ic_menu_share, "brown", false);
-				var websiteIconButton = tileButtonWithCustomDrawable("Website", iconClientGUI, "white", false);
-                if(Launcher.isBlockLauncher()) {
-                    var blockLauncherSettingsIconButton = tileButton("BlockLauncher Settings", net.zhuoweizhang.mcpelauncher.R.drawable.ic_menu_settings_holo_light, "black", false);
-                }
-                var devSettingsIconButton = tileButton("Developer Settings", android.R.drawable.ic_menu_report_image, "orange", false);
-                var restartIconButton = tileButton("Restart", android.R.drawable.ic_menu_rotate, "green", false);
-                var shutDownIconButton = tileButton("Shutdown", android.R.drawable.ic_lock_power_off, "red");
-				
-				// var testIcons = [android.R.drawable.menu_frame, android.R.drawable.picture_frame, android.R.drawable.menu_full_frame, android.R.drawable.gallery_thumb, android.R.drawable.ic_menu_always_landscape_portrait, android.R.drawable.ic_notification_clear_all, android.R.drawable.ic_notification_overlay, android.R.drawable.stat_notify_more /*shop*/, android.R.drawable.title_bar_tall];
-				// testIcons.forEach(function(element, index, array) {
-					// dashboardMenuLayout.addView(tileButton("test_" + index, element, "red"));
-				// });
-                
-                settingsIconButton.setOnClickListener(new View_.OnClickListener() {
-                    onClick: function(view) {
-                        exitDashboardUI.dismiss();
-                        dashboardMenu.dismiss();
-                        settingsScreen();
-                        exitSettings();
-                    }
-                });
-                
-                informationIconButton.setOnClickListener(new View_.OnClickListener() {
-                    onClick: function(view) {
-                        exitDashboardUI.dismiss();
-                        dashboardMenu.dismiss();
-                        informationScreen();
-                        exitInformation();
-                    }
-                });
-                
-                updateCenterIconButton.setOnClickListener(new View_.OnClickListener() {
-                    onClick: function(view) {
-                        exitDashboardUI.dismiss();
-                        dashboardMenu.dismiss();
-                        updateCenterScreen();
-                        exitUpdateCenter();
-                    }
-                });
-                
-                musicPlayerIconButton.setOnClickListener(new View_.OnClickListener() {
-                    onClick: function(view) {
-                        exitDashboardUI.dismiss();
-                        dashboardMenu.dismiss();
-                        musicPlayerScreen();
-                        exitMusicPlayer();
-                    }
-                });
-				
-				previewIconButton.setOnClickListener(new View_.OnClickListener() {
-                    onClick: function(view) {
-                        exitDashboardUI.dismiss();
-                        dashboardMenu.dismiss();
-                        previewScreen();
-                        exitPreview();
-                    }
-                });
-				
-				milestonesIconButton.setOnClickListener(new View_.OnClickListener() {
-                    onClick: function(view) {
-                        exitDashboardUI.dismiss();
-                        dashboardMenu.dismiss();
-                        milestonesScreen();
-                        exitMilestones();
-                    }
-                });
-                
-                helpIconButton.setOnClickListener(new View_.OnClickListener() {
-                    onClick: function(view) {
-                        exitDashboardUI.dismiss();
-                        dashboardMenu.dismiss();
-                        helpScreen();
-                        exitHelp();
-                    }
-                });
-                
-                addonsIconButton.setOnClickListener(new View_.OnClickListener() {
-                    onClick: function(view) {
-                        exitDashboardUI.dismiss();
-                        dashboardMenu.dismiss();
-                        addonScreen();
-                        exitAddon();
-                    }
-                });
-				
-				shareIconButton.setOnClickListener(new View_.OnClickListener() {
-                    onClick: function(view) {
-                        var sendIntent = new Intent_();
-						sendIntent.setAction(Intent_.ACTION_SEND);
-						sendIntent.putExtra(Intent_.EXTRA_TEXT, "I use Vertex Client PE! Get it yourself at http://Vertex-Client.ml/. :D");
-						sendIntent.setType("text/plain");
-						CONTEXT.startActivity(sendIntent);
-                    }
-                });
-				
-				websiteIconButton.setOnClickListener(new View_.OnClickListener() {
-                    onClick: function(view) {
-                        ModPE.goToURL("http://Vertex-Client.ml/");
-                    }
-                });
-                
-                if(Launcher.isBlockLauncher()) {
-                    blockLauncherSettingsIconButton.setOnClickListener(new View_.OnClickListener() {
-                        onClick: function(view) {
-                            var blIntent = new Intent_(CONTEXT, MainMenuOptionsActivity_);
-                            CONTEXT.startActivity(blIntent);
-                        }
-                    });
-                }
-				
-				devSettingsIconButton.setOnClickListener(new View_.OnClickListener() {
-                    onClick: function(view) {
-                        exitDashboardUI.dismiss();
-                        dashboardMenu.dismiss();
-                        devSettingsScreen();
-                        exitDevSettings();
-                    }
-                });
-                
-                restartIconButton.setOnClickListener(new View_.OnClickListener() {
-                    onClick: function(view) {
-                        ModPE.restart();
-                    }
-                });
-                
-                shutDownIconButton.setOnClickListener(new View_.OnClickListener() {
-                    onClick: function(view) {
-                        VertexClientPE.toast("See you later!");
-                        new Thread_(new Runnable_() {
-                            run: function() {
-                                Thread_.sleep(1000);
-                                System_.exit(0);
-                            }
-                        }).start();
-                    }
-                });
-                
-                dashboardMenuLayout.addView(settingsIconButton);
-                dashboardMenuLayout.addView(informationIconButton);
-                dashboardMenuLayout.addView(updateCenterIconButton);
-                dashboardMenuLayout.addView(musicPlayerIconButton);
-                dashboardMenuLayout.addView(previewIconButton);
-                dashboardMenuLayout.addView(milestonesIconButton);
-                dashboardMenuLayout.addView(helpIconButton);
-                dashboardMenuLayout.addView(addonsIconButton);
-                dashboardMenuLayout.addView(shareIconButton);
-                //dashboardMenuLayout.addView(websiteIconButton);
-                if(Launcher.isBlockLauncher()) {
-                    dashboardMenuLayout.addView(blockLauncherSettingsIconButton);
-                }
-				if(VertexClientPE.isDevMode()) {
-					dashboardMenuLayout.addView(devSettingsIconButton);
-				}
-				dashboardMenuLayout.addView(restartIconButton);
-                dashboardMenuLayout.addView(shutDownIconButton);
+				VertexClientPE.tiles.forEach(function(element, index, array) {
+					if((element.checkBeforeAdding && element.checkBeforeAdding()) || !element.checkBeforeAdding) {
+						dashboardMenuLayout.addView(tileButton(element, true));
+					}
+				});
                 
                 dashboardMenu = new PopupWindow_(dashboardMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
                 dashboardMenu.setBackgroundDrawable(backgroundGradient());
@@ -8170,8 +8414,10 @@ function showMenuButton() {
     if((currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud) && VertexClientPE.playerIsInGame) {
 		if(hacksList == null) {
 			showHacksList();
+			showShortcuts();
 		} else if(!hacksList.isShowing()) {
 			showHacksList();
+			showShortcuts();
 		}
     }
 	if(currentScreen == ScreenType.start_screen) {
@@ -8321,6 +8567,58 @@ function updateHacksList() {
                 }
             }
         }));
+}
+
+function showShortcuts() {
+    if(shortcutGUI == null || !shortcutGUI.isShowing()) {
+        CONTEXT.runOnUiThread(new Runnable_({
+            run: function() {
+                try {
+                    var display = new DisplayMetrics_();
+                    CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
+					
+					var shortcutGUILayout1 = new LinearLayout_(CONTEXT);
+                    shortcutGUILayout1.setOrientation(1);
+                    shortcutGUILayout1.setGravity(Gravity_.CENTER_VERTICAL);
+
+					var shortcutGUILayoutScroll = new ScrollView_(CONTEXT);
+					
+                    var shortcutGUILayout = new LinearLayout_(CONTEXT);
+                    shortcutGUILayout.setOrientation(1);
+                    shortcutGUILayout.setGravity(Gravity_.CENTER_VERTICAL);
+					
+					shortcutGUILayoutScroll.addView(shortcutGUILayout);
+					shortcutGUILayout1.addView(shortcutGUILayoutScroll);
+                    
+					var shortcutCount = 0;
+					
+                    VertexClientPE.tiles.forEach(function (element, index, array) {
+						if(sharedPref.getString("VertexClientPE.tiles." + element.text + ".isFavorite", "false") == "true") {
+							shortcutCount++;
+							shortcutGUILayout.addView(tileButton(element, false));
+						}
+                    });
+					
+					var shortcutLayoutHeight;
+					if(shortcutCount < shortcutUIHeightSetting) {
+						shortcutLayoutHeight = dip2px(shortcutSizeSetting * shortcutCount);
+					} else {
+						shortcutLayoutHeight = dip2px(shortcutSizeSetting * shortcutUIHeightSetting);
+					}
+                    
+                    shortcutGUI = new PopupWindow_(shortcutGUILayout1, LinearLayout_.LayoutParams.WRAP_CONTENT, shortcutLayoutHeight);
+					if(menuAnimationsSetting == "on") {
+						shortcutGUI.setAnimationStyle(android.R.style.Animation_Translucent);
+					}
+                    shortcutGUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+                    shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.CENTER, 0, 0);
+                } catch(error) {
+                    print('An error occurred: ' + error);
+                    VertexClientPE.showBugReportDialog(error);
+                }
+            }
+        }));
+    }
 }
 
 function showPauseUtilities() {
