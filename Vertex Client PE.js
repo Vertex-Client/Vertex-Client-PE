@@ -488,22 +488,13 @@ var VertexClientPE = {
 				} default: {
 					try {
 						// create bitmap screen capture
-						var v1 = CONTEXT.getWindow().getDecorView();
-						v1.setDrawingCacheEnabled(true);
-						var bm = v1.getDrawingCache();
-						var imageFile = new File_(mPath + ".png");
-						var outputStream = new FileOutputStream_(imageFile);
-						var quality = 100;
-						var bitmapDrawable = new BitmapDrawable_(bm);
-						bm.compress(Bitmap_.CompressFormat.PNG, quality, outputStream);
-
-						outputStream.flush();
+						if(Launcher.isBlockLauncher()) {
+							net.zhuoweizhang.mcpelauncher.ScreenshotHelper.takeScreenshot(now);
+						}
 					} catch (e) {
 						// Several error may come out with file handling or OOM
 						//e.printStackTrace();
 						print("@" + e.lineNumber + ": " + e);
-					} finally {
-						outputStream.close();
 					}
 					break;
 				}
@@ -1300,9 +1291,8 @@ VertexClientPE.category = {
 };
 
 VertexClientPE.shopFeatures = [];
-
+VertexClientPE.tiles = [];
 VertexClientPE.modules = [];
-
 VertexClientPE.addons = [];
 
 VertexClientPE.loadAddons = function() {
@@ -3610,10 +3600,11 @@ var antiBurn = {
 
 var lifeSaver = {
     name: "LifeSaver",
-    desc: "Prevents you from getting in touch with dangerous blocks.",
+    desc: "Prevents you from falling and from getting in touch with dangerous blocks.",
     category: VertexClientPE.category.MOVEMENT,
     type: "Mod",
     state: false,
+	safeVector: null,
 	isExpMod: function() {
 		return true;
 	},
@@ -3624,24 +3615,11 @@ var lifeSaver = {
         this.state = !this.state;
     },
     onTick: function() {
-		var vectorLib = new VectorLib();
-		for(var bX = - 1; bX <= 1; bX++) {
-			for(var bY = - 1; bY <= 1; bY++) {
-				for(var bZ = - 1; bZ <= 1; bZ++) {
-					var vector = new Vector3(getPlayerX() + bX, getPlayerY() + bY, getPlayerZ() + bZ);
-					if(vectorLib.getTile(vector) == 10 || vectorLib.getTile(vector) == 11 || vectorLib.getTile(vector) == 51 || vectorLib.getTile(vector) == 81) {
-						//move player
-						toDirectionalVector(playerDir, (getYaw() + 90) * DEG_TO_RAD, getPitch() * DEG_TO_RAD * -1);
-						var player = getPlayerEnt();
-						setVelX(player, playerWalkSpeed * -playerDir[0]);
-						if(Player.isFlying()) {
-							setVelY(player, playerWalkSpeed * -playerDir[1]);    
-						}
-						setVelZ(player, playerWalkSpeed * -playerDir[2]);
-						//VertexClientPE.debugMessage("Now the player should move");
-					}
-				}
-			}
+		if(getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) != 0) {
+			this.safeVector = new Vector3(getPlayerX(), getPlayerY(), getPlayerZ());
+		} else if(getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) == 0 && getTile(getPlayerX(), getPlayerY() - 3, getPlayerZ()) == 0 && this.safeVector != null) {
+			Entity.setPosition(getPlayerEnt(), this.safeVector[0], this.safeVector[1], this.safeVector[2]);
+			this.saveVector = null;
 		}
 		/* if(vectorLib.getTileInFrontOfEnt(getPlayerEnt()) == 0) {
 			print("block faced is air");
@@ -14582,8 +14560,10 @@ function showShortcuts() {
 					
 					VertexClientPE.tiles.forEach(function (element, index, array) {
 						if(sharedPref.getString("VertexClientPE.tiles." + element.text + ".isFavorite", "false") == "true") {
-							shortcutCount++;
-							shortcutGUILayout.addView(tileButton(element, false));
+							if((element.checkBeforeAdding && element.checkBeforeAdding()) || !element.checkBeforeAdding) {
+								shortcutCount++;
+								shortcutGUILayout.addView(tileButton(element, false));
+							}
 						}
                     });
 					
