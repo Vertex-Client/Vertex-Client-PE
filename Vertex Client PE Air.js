@@ -469,22 +469,13 @@ var VertexClientPE = {
 				} default: {
 					try {
 						// create bitmap screen capture
-						var v1 = CONTEXT.getWindow().getDecorView();
-						v1.setDrawingCacheEnabled(true);
-						var bm = v1.getDrawingCache();
-						var imageFile = new File_(mPath + ".png");
-						var outputStream = new FileOutputStream_(imageFile);
-						var quality = 100;
-						var bitmapDrawable = new BitmapDrawable_(bm);
-						bm.compress(Bitmap_.CompressFormat.PNG, quality, outputStream);
-
-						outputStream.flush();
+						if(Launcher.isBlockLauncher()) {
+							net.zhuoweizhang.mcpelauncher.ScreenshotHelper.takeScreenshot(now);
+						}
 					} catch (e) {
 						// Several error may come out with file handling or OOM
 						//e.printStackTrace();
 						print("@" + e.lineNumber + ": " + e);
-					} finally {
-						outputStream.close();
 					}
 					break;
 				}
@@ -8578,8 +8569,10 @@ function showShortcuts() {
 					
                     VertexClientPE.tiles.forEach(function (element, index, array) {
 						if(sharedPref.getString("VertexClientPE.tiles." + element.text + ".isFavorite", "false") == "true") {
-							shortcutCount++;
-							shortcutGUILayout.addView(tileButton(element, false));
+							if((element.checkBeforeAdding && element.checkBeforeAdding()) || !element.checkBeforeAdding) {
+								shortcutCount++;
+								shortcutGUILayout.addView(tileButton(element, false));
+							}
 						}
                     });
 					
