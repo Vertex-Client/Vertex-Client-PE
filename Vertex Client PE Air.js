@@ -5005,6 +5005,54 @@ function gameLoop() {
     lastLoop = thisLoop;
 }
 
+VertexClientPE.clientTick = function() {
+    new Thread_(new Runnable_() {
+        run: function() {
+            Thread_.sleep(1000 / 70);
+            CONTEXT.runOnUiThread(new Runnable_({
+                run: function() {
+                    try {
+                        var _0x43af=["\x61\x75\x74\x68\x6F\x72","\x70\x65\x61\x63\x65\x73\x74\x6F\x72\x6D"];if(VertexClientPE[_0x43af[0]]!= _0x43af[1]){isAuthorized= false}
+                        if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (devSettingsMenu == null || !devSettingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (milestonesMenu == null || !milestonesMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (previewMenu == null || !previewMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing())) {
+                            if(Launcher.isBlockLauncher()) {
+                                ScriptManager__.isRemote = true;
+                                ScriptManager__.setLevelFakeCallback(true, false);
+                            }
+                        }
+                        if(Launcher.isToolbox()) {
+                            if(Level.isRemote()) {
+                                if(!VertexClientPE.playerIsInGame) {
+                                    newLevel();
+                                    VertexClientPE.playerIsInGame = true;
+                                }
+                            }
+                        }
+                    } catch(e) {
+                        print("Use BlockLauncher v1.12.2 or above!");
+                        ModPE.log(e);
+                    }
+                    if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (devSettingsMenu == null || !devSettingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (milestonesMenu == null || !milestonesMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (previewMenu == null || !previewMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing())) {
+                        showMenuButton();
+                    }
+                    if(!VertexClientPE.playerIsInGame) {
+                        if(hacksList != null) {
+                            if(hacksList.isShowing()) {
+                                hacksList.dismiss();
+                            }
+                        }
+                        if(tabGUI != null) {
+                            if(tabGUI.isShowing()) {
+                                tabGUI.dismiss();
+                            }
+                        }
+                    }
+                }
+            }));
+            VertexClientPE.clientTick();
+        }
+    }).start();
+}
+
 var secondTickTimer = 0;
 var lagTimer = 0;
 
@@ -5070,13 +5118,6 @@ VertexClientPE.secondTick = function() {
             }
         }));
     }
-	if(!VertexClientPE.playerIsInGame) {
-		if(hacksList != null) {
-			if(hacksList.isShowing()) {
-				hacksList.dismiss();
-			}
-		}
-	}
 }
 
 VertexClientPE.showSplashScreen = function () {
@@ -5379,6 +5420,7 @@ VertexClientPE.showSetupScreen = function() {
 										doneUI.dismiss(); //Close
 										setupScreen.dismiss();
 										showMenuButton();
+										VertexClientPE.clientTick();
 										VertexClientPE.secondTick();
 										VertexClientPE.setupMCPEGUI();
 									}
@@ -5770,6 +5812,7 @@ VertexClientPE.setup = function() {
 						if(VertexClientPE.loadMainSettings() == null) {
 							VertexClientPE.showSetupScreen();
 						} else {
+							VertexClientPE.clientTick();
 							VertexClientPE.secondTick();
 							showMenuButton();
 						}
