@@ -2581,12 +2581,26 @@ var follow = {
     onTick: function() {
         if(followStage == 0) {
             followStage = 1;
+			var players = Server.getAllPlayers();
             var mobs = Entity.getAll();
             for(var i = 0; i < mobs.length; i++) {
                 var x = Entity.getX(mobs[i]) - getPlayerX();
                 var y = Entity.getY(mobs[i]) - getPlayerY();
                 var z = Entity.getZ(mobs[i]) - getPlayerZ();
                 if(x*x+y*y+z*z<=10*10 && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION) {
+                    if(x*x+y*y+z*z>=2*2) {
+                        setVelX(getPlayerEnt(), x * 0.05);
+                        setVelZ(getPlayerEnt(), z * 0.05);
+                        setVelY(getPlayerEnt(), y * 0.05);
+                    }
+                    break;
+                }
+            }
+			for(var i = 0; i < players.length; i++) {
+                var x = Entity.getX(players[i]) - getPlayerX();
+                var y = Entity.getY(players[i]) - getPlayerY();
+                var z = Entity.getZ(players[i]) - getPlayerZ();
+                if(x*x+y*y+z*z<=10*10 && players[i] != getPlayerEnt() && Entity.getEntityTypeId(players[i]) != EntityType.ARROW && Entity.getEntityTypeId(players[i]) != EntityType.BOAT && Entity.getEntityTypeId(players[i]) != EntityType.EGG && Entity.getEntityTypeId(players[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(players[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(players[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(players[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(players[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(players[i]) != EntityType.ITEM && Entity.getEntityTypeId(players[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(players[i]) != EntityType.MINECART && Entity.getEntityTypeId(players[i]) != EntityType.PAINTING && Entity.getEntityTypeId(players[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(players[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(players[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(players[i]) != EntityType.THROWN_POTION) {
                     if(x*x+y*y+z*z>=2*2) {
                         setVelX(getPlayerEnt(), x * 0.05);
                         setVelZ(getPlayerEnt(), z * 0.05);
@@ -3217,6 +3231,7 @@ var aimbot = {
         this.state = !this.state;
     },
     onTick: function() {
+		var players = Server.getAllPlayers();
         var mobs = Entity.getAll();
 		/*if(Launcher.isToolbox()) {
 			mobs = mobs.concat(Server.getAllPlayers());
@@ -3231,6 +3246,21 @@ var aimbot = {
 				continue;
 			}
             var ent = mobs[i];
+            if(Entity.getEntityTypeId(ent) != EntityType.ITEM && Entity.getEntityTypeId(ent) != EntityType.ARROW && ent != getPlayerEnt()) {
+                VertexClientPE.CombatUtils.aimAtEnt(ent);
+				return;
+            }
+        }
+		for(var i = 0; i < players.length; i++) {
+			var x = Entity.getX(players[i]) - getPlayerX();
+            var y = Entity.getY(players[i]) - getPlayerY();
+            var z = Entity.getZ(players[i]) - getPlayerZ();
+			if(aimbotUseKillauraRange == "on" && x*x+y*y+z*z>killAuraRange*killAuraRange) {
+				continue;
+			} else if(aimbotUseKillauraRange == "off" && x*x+y*y+z*z>aimbotRangeSetting*aimbotRangeSetting) {
+				continue;
+			}
+            var ent = players[i];
             if(Entity.getEntityTypeId(ent) != EntityType.ITEM && Entity.getEntityTypeId(ent) != EntityType.ARROW && ent != getPlayerEnt()) {
                 VertexClientPE.CombatUtils.aimAtEnt(ent);
 				return;
@@ -9636,6 +9666,54 @@ function gameLoop() {
     lastLoop = thisLoop;
 }
 
+VertexClientPE.clientTick = function() {
+    new Thread_(new Runnable_() {
+        run: function() {
+            Thread_.sleep(1000 / 70);
+            CONTEXT.runOnUiThread(new Runnable_({
+                run: function() {
+                    try {
+                        var _0x43af=["\x61\x75\x74\x68\x6F\x72","\x70\x65\x61\x63\x65\x73\x74\x6F\x72\x6D"];if(VertexClientPE[_0x43af[0]]!= _0x43af[1]){isAuthorized= false}
+                        if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (devSettingsMenu == null || !devSettingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (milestonesMenu == null || !milestonesMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (previewMenu == null || !previewMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing())) {
+                            if(Launcher.isBlockLauncher()) {
+                                ScriptManager__.isRemote = true;
+                                ScriptManager__.setLevelFakeCallback(true, false);
+                            }
+                        }
+                        if(Launcher.isToolbox()) {
+                            if(Level.isRemote()) {
+                                if(!VertexClientPE.playerIsInGame) {
+                                    newLevel();
+                                    VertexClientPE.playerIsInGame = true;
+                                }
+                            }
+                        }
+                    } catch(e) {
+                        print("Use BlockLauncher v1.12.2 or above!");
+                        ModPE.log(e);
+                    }
+                    if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (devSettingsMenu == null || !devSettingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (milestonesMenu == null || !milestonesMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (previewMenu == null || !previewMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing())) {
+                        showMenuButton();
+                    }
+                    if(!VertexClientPE.playerIsInGame) {
+                        if(hacksList != null) {
+                            if(hacksList.isShowing()) {
+                                hacksList.dismiss();
+                            }
+                        }
+                        if(tabGUI != null) {
+                            if(tabGUI.isShowing()) {
+                                tabGUI.dismiss();
+                            }
+                        }
+                    }
+                }
+            }));
+            VertexClientPE.clientTick();
+        }
+    }).start();
+}
+
 VertexClientPE.specialTick = function() {
     new Thread_(new Runnable_() {
         run: function() {
@@ -9720,18 +9798,6 @@ VertexClientPE.secondTick = function() {
             }
         }));
     }
-	if(!VertexClientPE.playerIsInGame) {
-		if(hacksList != null) {
-			if(hacksList.isShowing()) {
-				hacksList.dismiss();
-			}
-		}
-		if(tabGUI != null) {
-			if(tabGUI.isShowing()) {
-				tabGUI.dismiss();
-			}
-		}
-	}
 }
 
 VertexClientPE.showSplashScreen = function () {
@@ -10034,6 +10100,7 @@ VertexClientPE.showSetupScreen = function() {
 										doneUI.dismiss(); //Close
 										setupScreen.dismiss();
 										showMenuButton();
+										VertexClientPE.clientTick();
 										VertexClientPE.specialTick();
 										VertexClientPE.secondTick();
 										VertexClientPE.setupMCPEGUI();
@@ -10426,6 +10493,7 @@ VertexClientPE.setup = function() {
 						if(VertexClientPE.loadMainSettings() == null) {
 							VertexClientPE.showSetupScreen();
 						} else {
+							VertexClientPE.clientTick();
 							VertexClientPE.specialTick();
 							VertexClientPE.secondTick();
 							showMenuButton();
