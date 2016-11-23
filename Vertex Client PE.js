@@ -1396,7 +1396,7 @@ var milestonesTile = {
 var helpTile = {
 	text: "Help",
 	color: "purple",
-	icon: android.R.drawable.ic_menu_agenda,
+	icon: android.R.drawable.ic_menu_help,
 	forceLightColor: false,
 	shouldDismissDashboard: true,
 	onClick: function(fromDashboard) {
