@@ -195,6 +195,7 @@ var betterPauseSetting = "off";
 var shortcutUIHeightSetting = 3;
 var mainButtonTapSetting = "menu";
 var autoWalkDirection = "forward";
+var dashboardTileSize = 5;
 //------------------------------------
 var combatName = "Combat";
 var buildingName = "Building";
@@ -7347,6 +7348,7 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + shortcutUIHeightSetting.toString());
     outWrite.append("," + mainButtonTapSetting.toString());
     outWrite.append("," + autoWalkDirection.toString());
+    outWrite.append("," + dashboardTileSize.toString());
 
     outWrite.close();
     
@@ -7515,6 +7517,9 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[48] != null && arr[48] != undefined) {
             autoWalkDirection = arr[48];
+        }
+		if (arr[49] != null && arr[49] != undefined) {
+            dashboardTileSize = arr[49];
         }
         fos.close();
         VertexClientPE.loadAutoSpammerSettings();
@@ -8282,8 +8287,8 @@ function tileButton(tile, fromDashboard) {
 	if(fromDashboard) {
 		var params = new GridLayout_.LayoutParams();
 		params.setMargins(5, 5, 5, 5);
-		params.width = display.widthPixels / 4 - dip2px(5);
-		params.height = display.widthPixels / 4 - dip2px(5);
+		params.width = display.widthPixels / dashboardTileSize - dip2px(5);
+		params.height = display.widthPixels / dashboardTileSize - dip2px(5);
 		
 		var defaultTileButton = clientButton(sharedPref.getString("VertexClientPE.tiles." + tileText + ".name", tileText), null, sharedPref.getString("VertexClientPE.tiles." + tileText + ".color", tileColor), false, sharedPref.getBoolean("VertexClientPE.tiles." + tileText + ".useLightColor", forceLightColor==null?true:forceLightColor), "tile", 0.1);
 		defaultTileButton.setTypeface(VertexClientPE.tileFont);
@@ -12967,11 +12972,6 @@ function dashboardScreen() {
 						mainMenuTextList.dismiss();
 					}
 				}
-				if(tabGUI != null) {
-					if(tabGUI.isShowing()) {
-						tabGUI.dismiss();
-					}
-				}
 				if(shortcutGUI != null) {
 					if(shortcutGUI.isShowing()) {
 						shortcutGUI.dismiss();
@@ -12988,9 +12988,12 @@ function dashboardScreen() {
 					}
 				}
 
+				var columnCount = dashboardTileSize;
+				var rowCount = Math.ceil(VertexClientPE.tiles.length / dashboardTileSize);
+				
                 var dashboardMenuLayout = new GridLayout_(CONTEXT);
-                dashboardMenuLayout.setColumnCount(4);
-                dashboardMenuLayout.setRowCount(3);
+                dashboardMenuLayout.setColumnCount(columnCount);
+                dashboardMenuLayout.setRowCount(rowCount);
                 
                 var dashboardMenuLayoutScroll = new ScrollView(CONTEXT);
                 
@@ -13026,7 +13029,6 @@ function dashboardScreen() {
                 dashboardTitleLayoutLeft.addView(userBar());
                 dashboardTitleLayoutCenter.addView(dashboardTitle);
                 
-                //dashboardMenuLayout1.addView(clientTextView("\n"));
                 dashboardMenuLayoutScroll.addView(dashboardMenuLayout);
 				dashboardMenuLayout1.addView(dashboardTitleLayout);
                 dashboardMenuLayout1.addView(dashboardMenuLayoutScroll);
