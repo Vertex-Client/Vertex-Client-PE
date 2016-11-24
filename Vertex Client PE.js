@@ -12020,7 +12020,7 @@ function informationScreen() {
         }));
 }
 
-var helpSections = [["Where do I report issues?", "You can report issues at http://bit.ly/VertexIssues."], ["How do I earn V€rt€xCash?", "Normal users earn 10 V€rt€xCash every minute, Pro users earn 20 every minute. In addition, Pro users get 500 V€rt€xCash as a gift."], ["How can I add shortcuts?", "Tap the star button in a mod's ... dialog to make it favorite. The mod will now have its own shortcut."], ["Website", "Our website is http://Vertex-Client.ml/."], ["Twitter", "Our Twitter account is @VertexHX."]];
+var helpSections = [["Where do I report issues?", "You can report issues at http://bit.ly/VertexIssues."], ["How do I earn V€rt€xCash?", "Normal users earn 10 V€rt€xCash every minute, Pro users earn 20 every minute. In addition, Pro users get 500 V€rt€xCash as a gift."], ["How can I add shortcuts?", "Tap the star button in a mod's ... dialog or long click on a tile and then tap on the favorite button to make it favorite. The mod will now have its own shortcut."], ["Website", "Our website is http://Vertex-Client.ml/."], ["Twitter", "Our Twitter account is @VertexHX."]];
 
 function helpScreen() {
     VertexClientPE.menuIsShowing = true;
