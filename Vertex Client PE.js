@@ -13035,6 +13035,11 @@ function dashboardScreen() {
                         hacksList.dismiss();
                     }
                 }
+				if(tabGUI != null) {
+                    if(tabGUI.isShowing()) {
+                        tabGUI.dismiss();
+                    }
+                }
 				if(mainMenuTextList != null) {
 					if(mainMenuTextList.isShowing()) {
 						mainMenuTextList.dismiss();
