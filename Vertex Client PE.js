@@ -14280,6 +14280,11 @@ function showMenuButton() {
 	} else if(mainButtonTapSetting == "moredialog") {
 		menuBtn.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 		menuBtn.setText("\u2022\u2022\u2022");
+		menuBtn.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
+		menuBtn.setMarqueeRepeatLimit(-1);
+		menuBtn.setSingleLine();
+		menuBtn.setHorizontallyScrolling(true);
+		menuBtn.setSelected(true);
 	}
     menuBtn.setAlpha(0.54);
 	menuBtn.setTextSize(16);
