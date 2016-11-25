@@ -5764,7 +5764,7 @@ VertexClientPE.showAccountManager = function(showBackButton) {
 }
 
 VertexClientPE.downloadPro = function() {
-    ModPE.goToURL("http://filecred.com/A8C1G574");
+    ModPE.goToURL("http://bit.ly/VertexProActivator");
 }
 
 VertexClientPE.getHasUsedCurrentVersion = function() {
@@ -8483,6 +8483,11 @@ function showAccountManagerButton() {
     var display = new DisplayMetrics_();
     CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
     var menuBtn = clientButton("AM");
+	menuBtn.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
+	menuBtn.setMarqueeRepeatLimit(-1);
+	menuBtn.setSingleLine();
+	menuBtn.setHorizontallyScrolling(true);
+	menuBtn.setSelected(true);
     menuBtn.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(40), dip2px(40)));
     menuBtn.setOnClickListener(new View_.OnClickListener({
 		onClick: function(viewarg ){
