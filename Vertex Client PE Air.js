@@ -8382,6 +8382,11 @@ function showMenuButton() {
 	menuBtn.setText("\u2022\u2022\u2022");
     menuBtn.setAlpha(0.54);
 	menuBtn.setTextSize(16);
+	menuBtn.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
+	menuBtn.setMarqueeRepeatLimit(-1);
+	menuBtn.setSingleLine();
+	menuBtn.setHorizontallyScrolling(true);
+	menuBtn.setSelected(true);
 	if(themeSetting == "white") {
 		menuBtn.setTextColor(Color_.BLACK);
 		if(fontSetting != "minecraft") {
@@ -8483,11 +8488,6 @@ function showAccountManagerButton() {
     var display = new DisplayMetrics_();
     CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
     var menuBtn = clientButton("AM");
-	menuBtn.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
-	menuBtn.setMarqueeRepeatLimit(-1);
-	menuBtn.setSingleLine();
-	menuBtn.setHorizontallyScrolling(true);
-	menuBtn.setSelected(true);
     menuBtn.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(40), dip2px(40)));
     menuBtn.setOnClickListener(new View_.OnClickListener({
 		onClick: function(viewarg ){
