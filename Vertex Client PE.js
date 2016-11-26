@@ -4828,6 +4828,7 @@ var imgYouTubeButtonClicked = new BitmapFactory_.decodeFile("mnt/sdcard/games/co
 var imgGitHubButton = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/github_button.png");
 var imgGitHubButtonClicked = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/github_button_clicked.png");
 var imgSteveHead = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/stevehead.png");
+var imgChristmasTree = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/christmas_tree.png");
 var iconClientGUI = new BitmapDrawable_(imgIcon);
 var iconClickedClientGUI = new BitmapDrawable_(imgIconClicked)
 var playButtonClientGUI = new BitmapDrawable_(imgPlayButton);
@@ -6738,6 +6739,27 @@ VertexClientPE.moneyToast = function() {
             toast = new Toast_(CONTEXT);
             toast.setView(layout);
             toast.setGravity(Gravity_.CENTER | Gravity_.TOP, 0, 0);
+            toast.show();
+        }
+    }));
+}
+
+VertexClientPE.showChristmasToast = function() {
+	CONTEXT.runOnUiThread(new Runnable_({
+        run: function() {
+            var layout = new LinearLayout_(CONTEXT);
+            layout.setBackground(backgroundSpecial(true));
+			var icon = new android.widget.ImageView(CONTEXT);
+			icon.setImageBitmap(imgChristmasTree);
+			icon.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(16), dip2px(16)));
+            var title = VertexClientPE.getName();
+            var _0xc62b=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x20\x50\x72\x6F"];if(VertexClientPE[_0xc62b[0]]()==_0xc62b[1]){title+=_0xc62b[2]}
+            var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + "Merry Christmas!"), 0);
+            layout.addView(icon);
+            layout.addView(text);
+            toast = new Toast_(CONTEXT);
+            toast.setView(layout);
+			toast.setGravity(Gravity_.CENTER | Gravity_.TOP, 0, 0);
             toast.show();
         }
     }));
@@ -10524,6 +10546,10 @@ VertexClientPE.setHasUsedCurrentVersion = function(opt) {
     editor.commit();
 }
 
+var cal = java.util.Calendar.getInstance();
+var day = cal.get(java.util.Calendar.DAY_OF_MONTH);
+var month = cal.get(java.util.Calendar.MONTH);
+
 VertexClientPE.setup = function() {
 	currentScreen = ScreenType.start_screen;
 	new Thread_(new Runnable_({
@@ -10562,6 +10588,10 @@ VertexClientPE.setup = function() {
 						
 						VertexClientPE.loadAddons();
 						
+						if(day == 25 && month == java.util.Calendar.DECEMBER) {
+							VertexClientPE.showChristmasToast();
+						}
+						
 						VertexClientPE.MusicUtils.initMusicPlayer();
 						VertexClientPE.MusicUtils.startMusicPlayer();
 						
@@ -10592,7 +10622,7 @@ function downloadFile(path, url) {
 };
 
 (function checkFiles() {
-    var res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png", "github_button.png", "github_button_clicked.png", "vertex_logo_new.png", "stevehead.png", "pro_logo.png", "minecraft.ttf"],
+    var res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png", "github_button.png", "github_button_clicked.png", "vertex_logo_new.png", "stevehead.png", "pro_logo.png", "minecraft.ttf", "christmas_tree.png"],
         isExisting = true;
     for (var i = res.length; i--;) {
         if (!new File_(PATH, res[i]).exists()) {
