@@ -1,7 +1,7 @@
 /**
  * ##################################################################################################
  * @name Vertex Client PE
- * @version v1.9
+ * @version v1.10
  * @author peacestorm (@AgameR_Modder)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36
  *
@@ -500,6 +500,60 @@ var VertexClientPE = {
 					break;
 				}
 			}
+		},
+		Block: { //thanks to GodSoft029
+			isLiquid: function (id) {
+				if(id >= 8 && id <= 11) return true;
+				return false;
+			}
+		},
+		Player: { //thanks to GodSoft029
+			isInWater: function () {
+				if(VertexClientPE.Utils.Block.isLiquid(getTile(getPlayerX() + 0.5, getPlayerY() - 1.5, getPlayerZ() + 0.5))) return true;
+				return false;
+			},
+			isInFire: function () {
+				if(getTile(getPlayerX() + 0.5, getPlayerY() - 1, getPlayerZ() + 0.5) == 51) return true;
+				return false;
+			},
+			isOnLadder: function () {
+				if(getTile(getPlayerX() + 0.5, getPlayerY() - 1.5, getPlayerZ() + 0.5) == 65 || getTile(getPlayerX() + 0.5, getPlayerY() - 1.5, getPlayerZ() + 0.5) == 106) return true;
+				return false;
+			},
+			onGround: function () {
+				let y = getPlayerY();
+				while(y > 1) y -= 1;
+
+				if((Math.round(y * 100) >= 61 && Math.round(y * 100) <= 63) && getTile(getPlayerX(), getPlayerY() - 1.65, getPlayerZ()) != 0 && !VertexClientPE.Utils.Block.isLiquid(getTile(getPlayerX(), getPlayerY() - 1.65, getPlayerZ()))) return true;
+				if((Math.round(y * 100) >= 11 && Math.round(y * 100) <= 13) && getTile(getPlayerX(), getPlayerY() - 1.65, getPlayerZ()) != 0 && !VertexClientPE.Utils.Block.isLiquid(getTile(getPlayerX(), getPlayerY() - 1.65, getPlayerZ()))) return true;
+				return false;
+			},
+			isCollidedHorizontally: function () {
+				let x = getPlayerX();
+				let z = getPlayerZ();
+				let blockX = Math.round(x - 0.5);
+				let blockZ = Math.round(z - 0.5);
+				while(x < 1) x += 1;
+				while(z < 1) z += 1;
+				while(x > 1) x -= 1;
+				while(z > 1) z -= 1;
+
+				if(Math.round(x * 100) == 31) x -= 0.01;
+				if(Math.round(z * 100) == 31) z -= 0.01;
+				if(Math.round(x * 100) == 69) x += 0.01;
+				if(Math.round(z * 100) == 69) z += 0.01;
+				if(Math.round(x * 100) == 30) blockX--;
+				if(Math.round(z * 100) == 30) blockZ--;
+				if(Math.round(x * 100) == 70) blockX++;
+				if(Math.round(z * 100) == 70) blockZ++;
+				if(getTile(blockX, getPlayerY(), blockZ) == 0 && getTile(blockX, getPlayerY() - 1, blockZ) == 0 && getTile(blockX, getPlayerY() - 0.5, blockZ) == 0 && getTile(blockX, getPlayerY() + 0.2, blockZ) == 0 && getTile(blockX, getPlayerY() - 1.6, blockZ) == 0) return false;
+
+				if(Block.getDestroyTime(getTile(blockX, getPlayerY() - 1, blockZ)) <= 0.1 && Block.getDestroyTime(getTile(blockX, getPlayerY(), blockZ)) <= 0.1) return false;
+
+				if(Math.round(x * 100) == 30 || Math.round(x * 100) == 70) return true;
+				if(Math.round(z * 100) == 30 || Math.round(z * 100) == 70) return true;
+				return false;
+			}
 		}
     },
     CombatUtils: {
@@ -603,8 +657,8 @@ VertexClientPE.isRemote = function() {
 
 VertexClientPE.playerIsInGame = false;
 
-VertexClientPE.currentVersion = "1.9";
-VertexClientPE.currentVersionDesc = "The Optimization Update";
+VertexClientPE.currentVersion = "1.10";
+VertexClientPE.currentVersionDesc = "The Christmas Update";
 VertexClientPE.targetVersion = "MCPE v0.16.x alpha";
 VertexClientPE.minVersion = "0.16.0";
 VertexClientPE.edition = "Normal";
@@ -3631,7 +3685,7 @@ var antiBurn = {
 
 var lifeSaver = {
     name: "LifeSaver",
-    desc: "Prevents you from falling and from getting in touch with dangerous blocks.",
+    desc: "Prevents you from getting in touch with dangerous blocks.",
     category: VertexClientPE.category.MOVEMENT,
     type: "Mod",
     state: false,
@@ -3646,15 +3700,12 @@ var lifeSaver = {
         this.state = !this.state;
     },
     onTick: function() {
-		if(getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) != 0) {
+		if(!VertexClientPE.Utils.Player.isInFire()) {
 			this.safeVector = new Vector3(getPlayerX(), getPlayerY(), getPlayerZ());
-		} else if(getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) == 0 && getTile(getPlayerX(), getPlayerY() - 3, getPlayerZ()) == 0 && this.safeVector != null) {
-			Entity.setPosition(getPlayerEnt(), this.safeVector[0], this.safeVector[1], this.safeVector[2]);
-			this.saveVector = null;
+		} else if(VertexClientPE.Utils.Player.isInFire() && this.safeVector != null) {
+			Entity.setPosition(getPlayerEnt(), this.safeVector.x, this.safeVector.y, this.safeVector.z);
+			this.safeVector = null;
 		}
-		/* if(vectorLib.getTileInFrontOfEnt(getPlayerEnt()) == 0) {
-			print("block faced is air");
-		} */
     }
 }
 
@@ -3974,16 +4025,12 @@ var fullBright = {
     }
 }
 
-// Step is made by @imYannic
 var step = {
 	name: "Step",
     desc: "Similar to MCPE's built-in Auto jump, except that it works on multiple heights.",
     category: VertexClientPE.category.MOVEMENT,
     type: "Mod",
 	state: false,
-	isExpMod: function() {
-		return true;
-	},
     isStateMod: function() {
         return true;
     },
@@ -3991,22 +4038,8 @@ var step = {
         this.state = !this.state;
     },
 	onTick: function() {
-		if(Entity.getVelX(getPlayerEnt()) + Entity.getVelZ(getPlayerEnt()) == 0) return;
-
-		var vX = (Entity.getVelX(getPlayerEnt()) > 0) ? 1 : 0;
-		var vZ = (Entity.getVelZ(getPlayerEnt()) > 0) ? 1 : 0;
-
-		// idk the function name below
-		var y = false;
-		var i = getPlayerY();
-		while(getTile(Math.round(Player.getX()) + vX, i + 1, Math.round(Player.getZ()) + vZ != 0) && i <= 128) {
-			i++;
-			var bid = Level.getTile(Math.round(Player.getX()) + vX, i, Math.round(Player.getZ()) + vZ);
-			if(bid != 0) y = i;
-		}
-
-		if(y) {
-			Entity.setPosition(getPlayerEnt(), Math.round(Player.getX()) + vX, y, Math.round(Player.getZ()) + vZ);
+		if(VertexClientPE.Utils.Player.isCollidedHorizontally() && (Entity.getVelX(getPlayerEnt()) + Entity.getVelZ(getPlayerEnt()) != 0)) {
+			Entity.setPositionRelative(getPlayerEnt(), 0, 1.6, 0);
 		}
 	}
 }
@@ -4033,6 +4066,29 @@ var dropLocator = {
 				}
 			}
 		})).start();
+    }
+}
+
+var stickyMove = {
+    name: "StickyMove",
+    desc: "Makes you stick to the ground so that you can't jump or fall (similar to SafeWalk).",
+    category: VertexClientPE.category.MOVEMENT,
+    type: "Mod",
+    state: false,
+	safeVector: null,
+    isStateMod: function() {
+        return true;
+    },
+    onToggle: function() {
+        this.state = !this.state;
+    },
+    onTick: function() {
+		if(VertexClientPE.Utils.Player.onGround()) {
+			this.safeVector = new Vector3(getPlayerX(), getPlayerY(), getPlayerZ());
+		} else if(!VertexClientPE.Utils.Player.onGround() && this.safeVector != null) {
+			Entity.setPosition(getPlayerEnt(), this.safeVector.x, this.safeVector.y, this.safeVector.z);
+			this.safeVector = null;
+		}
     }
 }
 
@@ -4071,6 +4127,7 @@ VertexClientPE.registerModule(randomTP);
 VertexClientPE.registerModule(ride);
 VertexClientPE.registerModule(speedHack);
 VertexClientPE.registerModule(step);
+VertexClientPE.registerModule(stickyMove);
 VertexClientPE.registerModule(tapJumpRun);
 VertexClientPE.registerModule(tapPoint);
 VertexClientPE.registerModule(tapTeleporter);
