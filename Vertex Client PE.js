@@ -303,8 +303,8 @@ function VectorMathMCPE() {
         return new Vector3((Math.sin(mathPitch) * Math.cos(mathYaw)), (Math.cos(mathPitch)), (Math.sin(mathPitch) * Math.sin(mathYaw)));
     }
     this.extendPlayerFacing = function (distance) {
-        var dirVector = this.getDirectionalVectorFromEntity(Player.getEntity());
-        var playerPos = new Vector3(Player.getX(), Player.getY(), Player.getZ());
+        var dirVector = this.getDirectionalVectorFromEntity(getPlayerEnt());
+        var playerPos = new Vector3(getPlayerX(), getPlayerY(), getPlayerZ());
         var newPosition = playerPos.moveAlongDirectionalVector(dirVector, distance);
         return newPosition;
     }
@@ -318,7 +318,7 @@ function VectorLib() {
         Level.setTile(vector.x, vector.y, vector.z, id, data);
     }
     this.setPlayerPos = function(position){
-        Entity.setPosition(Player.getEntity(), position.x, position.y, position.z);
+        Entity.setPosition(getPlayerEnt(), position.x, position.y, position.z);
     }
 	this.getCoordsInFrontOfEnt = function(ent) {
 		var yaw = Entity.getYaw(ent);
@@ -560,9 +560,9 @@ var VertexClientPE = {
 		aimAt: function(x, y, z) {
             // Credits to Godsoft0329 aka the developer of DragOP
             var velocity = 1;
-            var posX = x - Player.getX();
-            var posY = y - Player.getY();
-            var posZ = z - Player.getZ();
+            var posX = x - getPlayerX();
+            var posY = y - getPlayerY();
+            var posZ = z - getPlayerZ();
             var realYaw = (Math.atan2(posZ, posX) * 180 / Math.PI) - 90;
             var y2 = Math.sqrt(posX * posX + posZ * posZ);
             var g = 0.007;
@@ -599,6 +599,27 @@ var VertexClientPE = {
 		}
     }
 };
+
+VertexClientPE.days = [
+{
+	day: 5,
+	onUnlock: function() {
+		VertexClientPE.toast("Unlocked LetItSnow!");
+	},
+	getUnlocks: function() {
+		return "LetItSnow";
+	}
+},
+{
+	day: 10,
+	onUnlock: function() {
+		VertexClientPE.toast("Unlocked FrostWalk!");
+	},
+	getUnlocks: function() {
+		return "FrostWalk";
+	}
+}
+];
 
 VertexClientPE.menuIsShowing = false;
 VertexClientPE.isPaused = false;
@@ -893,7 +914,7 @@ MinecraftButtonLibrary.onTouch = function(v, motionEvent, enableSound, customTex
 
 			// play sound
 			if(enableSound)
-				Level.playSoundEnt(Player.getEntity(), "random.click", 100, 0);
+				Level.playSoundEnt(getPlayerEnt(), "random.click", 100, 0);
 		}
 	}
 	if(action == android.view.MotionEvent.ACTION_MOVE)
@@ -1289,6 +1310,7 @@ var webBrowserMenu;
 var playerCustomizerMenu;
 var optiFineMenu;
 var informationMenu;
+var christmasMenu;
 var menuBar;
 var hacksList;
 var tabGUI;
@@ -1423,6 +1445,24 @@ var musicPlayerTile = {
 	}
 }
 
+var christmasTile = {
+	text: "Christmas Calendar",
+	color: "red",
+	icon: android.R.drawable.ic_menu_agenda,
+	forceLightColor: false,
+	shouldDismissDashboard: true,
+	usesCustomDrawable: function() {
+		return false;
+	},
+	checkBeforeAdding: function() {
+		return (VertexClientPE.Utils.year == 2016 && VertexClientPE.Utils.month == java.util.Calendar.DECEMBER) || VertexClientPE.isDevMode();
+	},
+	onClick: function(fromDashboard) {
+		christmasScreen();
+		exitChristmas();
+	}
+}
+
 var previewTile = {
 	text: "Preview",
 	color: "violet",
@@ -1541,6 +1581,7 @@ VertexClientPE.registerTile(settingsTile);
 VertexClientPE.registerTile(informationTile);
 VertexClientPE.registerTile(updateCenterTile);
 VertexClientPE.registerTile(musicPlayerTile);
+VertexClientPE.registerTile(christmasTile);
 VertexClientPE.registerTile(previewTile);
 VertexClientPE.registerTile(milestonesTile);
 VertexClientPE.registerTile(helpTile);
@@ -2270,7 +2311,7 @@ var wallHack = {
     },
     onToggle: function() {
         this.state = !this.state;
-        Entity.setCollisionSize(Player.getEntity(), this.state?0:0.6, this.state?0:1.8);
+        Entity.setCollisionSize(getPlayerEnt(), this.state?0:0.6, this.state?0:1.8);
     }
 };
 
@@ -2442,7 +2483,7 @@ var tpAura = {
                     playerPos[2] += diffPos[2] * 2;
                     
                     if (getTile(playerPos[0], playerPos[1], playerPos[2]) == 0 && getTile(playerPos[0], playerPos[1] - 1, playerPos[2]) == 0 && getTile(playerPos[0], playerPos[1] - 2, playerPos[2]) == 0) {
-                        Entity.setPosition(Player.getEntity(), playerPos[0], playerPos[1], playerPos[2]);
+                        Entity.setPosition(getPlayerEnt(), playerPos[0], playerPos[1], playerPos[2]);
                     }
                     
                     VertexClientPE.CombatUtils.aimAtEnt(mobs[i]);
@@ -2464,7 +2505,7 @@ var tpAura = {
             playerPos[2] += diffPos[2] * 2;
             
             if(getTile(playerPos[0], playerPos[1], playerPos[2]) == 0 && getTile(playerPos[0], playerPos[1] - 1, playerPos[2]) == 0 && getTile(playerPos[0], playerPos[1] - 2, playerPos[2]) == 0) {
-                Entity.setPosition(Player.getEntity(), playerPos[0], playerPos[1], playerPos[2]);
+                Entity.setPosition(getPlayerEnt(), playerPos[0], playerPos[1], playerPos[2]);
             }
             
             VertexClientPE.CombatUtils.aimAtEnt(mobs[i]);
@@ -2591,7 +2632,7 @@ var glide = {
     },
     onTick: function() {
         if(Entity.getVelY(getPlayerEnt()) <= 0 && Player.isFlying() == false) {
-            setVelY(Player.getEntity(), - 0.07);
+            setVelY(getPlayerEnt(), - 0.07);
         }
     }
 }
@@ -2875,7 +2916,7 @@ var arrowGun = {
         var xx = Math.sin(p) * Math.cos(y);
         var yy = Math.sin(p) * Math.sin(y);
         var zz = Math.cos(p);
-        var arrow = Level.spawnMob(Player.getX() + xx, Player.getY() + zz, Player.getZ() + yy, 80);
+        var arrow = Level.spawnMob(getPlayerX() + xx, getPlayerY() + zz, getPlayerZ() + yy, 80);
         setVelX(arrow, xx);
         setVelY(arrow, zz);
         setVelZ(arrow, yy);
@@ -3141,10 +3182,13 @@ var liquidWalk = {
         this.state = !this.state;
     },
     onTick: function() {
-        if(Level.getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) == 8 || Level.getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) == 9 || Level.getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) == 10 || Level.getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) == 10) {
+		if(Level.getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) == 8 || Level.getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) == 9 || Level.getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) == 10 || Level.getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) == 10) {
             setVelY(Player.getEntity(), 0);
         }
-    }
+        if (getPlayerY() - parseInt(getPlayerY()) > 0.8 && VertexClientPE.Utils.Block.isLiquid(getTile(getPlayerX(), getPlayerY(), getPlayerZ()))) {
+			Entity.setPosition(getPlayerEnt(), getPlayerX(), parseInt(getPlayerY()) + 1, getPlayerZ());
+		}
+	}
 }
 
 var highJump = {
@@ -3162,30 +3206,30 @@ var highJump = {
     },
     onTick: function() {
         if(!Player.isFlying()) {
-            if(Entity.getVelY(Player.getEntity()) > 0.06) {
-                Entity.setVelY(Player.getEntity(), 0.54);
+            if(Entity.getVelY(getPlayerEnt()) > 0.06) {
+                Entity.setVelY(getPlayerEnt(), 0.54);
                 this.count++;
             }
             if(this.count == 1) {
-                Entity.setVelY(Player.getEntity(), 0.48);
+                Entity.setVelY(getPlayerEnt(), 0.48);
             }
             if(this.count == 2) {
-                Entity.setVelY(Player.getEntity(), 0.42);
+                Entity.setVelY(getPlayerEnt(), 0.42);
             }
             if(this.count == 3) {
-                Entity.setVelY(Player.getEntity(), 0.36);
+                Entity.setVelY(getPlayerEnt(), 0.36);
             }
             if(this.count == 4) {
-                Entity.setVelY(Player.getEntity(), 0.31);
+                Entity.setVelY(getPlayerEnt(), 0.31);
             }
             if(this.count == 5) {
-                Entity.setVelY(Player.getEntity(), 0.26);
+                Entity.setVelY(getPlayerEnt(), 0.26);
             }
             if(this.count == 6) {
-                Entity.setVelY(Player.getEntity(), 0.22);
+                Entity.setVelY(getPlayerEnt(), 0.22);
             }
             if(this.count == 7) {
-                Entity.setVelY(Player.getEntity(), -0.078);
+                Entity.setVelY(getPlayerEnt(), -0.078);
                 this.count = 0;
             }
         }
@@ -4092,6 +4136,65 @@ var stickyMove = {
     }
 }
 
+var letItSnow = {
+    name: "LetItSnow",
+    desc: "Makes snowballs spawn above you.",
+    category: VertexClientPE.category.MISC,
+    type: "Mod",
+    state: false,
+	checkBeforeAdding: function() {
+		return VertexClientPE.Utils.year > 2016 || (VertexClientPE.Utils.month == java.util.Calendar.DECEMBER && VertexClientPE.Utils.day >= 5) || VertexClientPE.isDevMode();
+	},
+    isStateMod: function() {
+        return true;
+    },
+    onToggle: function() {
+        this.state = !this.state;
+    },
+    onTick: function() {
+		for(var xI = -2; xI <= 2; xI++) {
+			for(var yI = 0; yI <= 2; yI++) {
+				for(var zI = -2; zI <= 2; zI++) {
+					Level.addParticle(ParticleType.snowballpoof, x + xI, y + yI, z + zI, 0, getPlayerY() - (y + yI), 0, 2);
+				}
+			}
+		}
+    }
+}
+
+var frostWalk = {
+    name: "FrostWalk",
+    desc: "Turns water blocks into ice blocks when you step on them.",
+    category: VertexClientPE.category.MOVEMENT,
+    type: "Mod",
+    state: false,
+	checkBeforeAdding: function() {
+		return VertexClientPE.Utils.year > 2016 || (VertexClientPE.Utils.month == java.util.Calendar.DECEMBER && VertexClientPE.Utils.day >= 10) || VertexClientPE.isDevMode();
+	},
+    isStateMod: function() {
+        return true;
+    },
+    onToggle: function() {
+        this.state = !this.state;
+    },
+    onTick: function() {
+		var tile = getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ());
+		var tileTwo = getTile(getPlayerX(), getPlayerY() - 1, getPlayerZ());
+		if(tile == 9 || tile == 10) {
+			setTile(getPlayerX(), getPlayerY() - 2, getPlayerZ(), 79);
+		} else if(tile == 10 || tile == 11) {
+			setTile(getPlayerX(), getPlayerY() - 2, getPlayerZ(), 4);
+		}
+		if(tileTwo == 9 || tileTwo == 10) {
+			setTile(getPlayerX(), getPlayerY() - 1, getPlayerZ(), 79);
+			Entity.setPosition(getPlayerEnt(), getPlayerX(), getPlayerY() + 1, getPlayerZ());
+		} else if(tileTwo == 10 || tileTwo == 11) {
+			setTile(getPlayerEnt(), getPlayerX(), getPlayerY() - 1, getPlayerZ(), 4);
+			Entity.setPosition(getPlayerEnt(), getPlayerX(), getPlayerY() + 1, getPlayerZ());
+		}
+    }
+}
+
 //COMBAT
 VertexClientPE.registerModule(antiKnockback);
 VertexClientPE.registerModule(antiBurn);
@@ -4117,6 +4220,7 @@ VertexClientPE.registerModule(enderProjectiles);
 VertexClientPE.registerModule(fastBridge);
 VertexClientPE.registerModule(fastWalk);
 VertexClientPE.registerModule(flight);
+VertexClientPE.registerModule(frostWalk);
 VertexClientPE.registerModule(glide);
 VertexClientPE.registerModule(highJump);
 VertexClientPE.registerModule(lifeSaver);
@@ -4165,6 +4269,7 @@ VertexClientPE.registerModule(derp);
 VertexClientPE.registerModule(dropLocator);
 VertexClientPE.registerModule(fullBright);
 VertexClientPE.registerModule(itemGiver);
+VertexClientPE.registerModule(letItSnow);
 VertexClientPE.registerModule(onlyDay);
 VertexClientPE.registerModule(orderAPizza);
 VertexClientPE.registerModule(remoteView);
@@ -4421,6 +4526,14 @@ var toggle = {
                                     VertexClientPE.showProDialog(element.name);
                                     return;
                                 }
+								if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
+									VertexClientPE.toast("Experimental features aren't enabled!");
+									return;
+								}
+								if(element.checkBeforeAdding && !element.checkBeforeAdding()) {
+									VertexClientPE.toast("You didn't unlock this feature yet!");
+									return;
+								}
                                 element.onToggle();
                                 if(hacksList != null && hacksList.isShowing()) {
                                     updateHacksList();
@@ -4493,7 +4606,7 @@ var drop = {
                     xx = Math.sin(p) * Math.cos(y);
                     yy = Math.sin(p) * Math.sin(y);
                     zz = Math.cos(p);
-                    Level.dropItem(Player.getX() + xx, Player.getY() + zz, Player.getZ() + yy, 1, i, 1);
+                    Level.dropItem(getPlayerX() + xx, getPlayerY() + zz, getPlayerZ() + yy, 1, i, 1);
                 }
             } else {
                 throw new SyntaxError();
@@ -4839,6 +4952,7 @@ var splashYouTubeButtonClientGUI = new BitmapDrawable_(imgYouTubeButton);
 var splashYouTubeButtonClickedClientGUI = new BitmapDrawable_(imgYouTubeButtonClicked);
 var splashGitHubButtonClientGUI = new BitmapDrawable_(imgGitHubButton);
 var splashGitHubButtonClickedClientGUI = new BitmapDrawable_(imgGitHubButtonClicked);
+var christmasTreeClientGUI = new BitmapDrawable_(imgChristmasTree);
 
 var getContext = function() {
     return CONTEXT;
@@ -6744,7 +6858,7 @@ VertexClientPE.moneyToast = function() {
     }));
 }
 
-VertexClientPE.showChristmasToast = function() {
+VertexClientPE.showChristmasToast = function(daysLeft) {
 	CONTEXT.runOnUiThread(new Runnable_({
         run: function() {
             var layout = new LinearLayout_(CONTEXT);
@@ -6754,13 +6868,29 @@ VertexClientPE.showChristmasToast = function() {
 			icon.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(16), dip2px(16)));
             var title = VertexClientPE.getName();
             var _0xc62b=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x20\x50\x72\x6F"];if(VertexClientPE[_0xc62b[0]]()==_0xc62b[1]){title+=_0xc62b[2]}
-            var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + "Merry Christmas!"), 0);
+			var cText = daysLeft == null ? "Merry Christmas!" : (daysLeft + " days left until Christmas!");
+            var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + cText), 0);
             layout.addView(icon);
             layout.addView(text);
             toast = new Toast_(CONTEXT);
             toast.setView(layout);
 			toast.setGravity(Gravity_.CENTER | Gravity_.TOP, 0, 0);
             toast.show();
+			if(VertexClientPE.Utils.year > 2016) {
+				return;
+			}
+			if(daysLeft == null) {
+				daysLeft = 0;
+			}
+			VertexClientPE.days.forEach(function(element, index, array) {
+				if(element.day <= (25 - daysLeft)) {
+					if(!sharedPref.getBoolean("VertexClientPE.days." + i.toString() + ".unlocked", false)) {
+						editor.putBoolean("VertexClientPE.days." + i.toString() + ".unlocked", true);
+						element.onUnlock();
+					}
+				}
+			});
+			editor.commit();
         }
     }));
 }
@@ -7225,7 +7355,7 @@ var freecamEntity;
 VertexClientPE.freecam = function(onOrOff) {
     switch(onOrOff) {
         case 0: {
-            ModPE.setCamera(Player.getEntity());
+            ModPE.setCamera(getPlayerEnt());
             if(freecamEntity != null) {
                 Entity.remove(freecamEntity);
             }
@@ -8151,6 +8281,37 @@ function clientButton(text, desc, color, round, forceLightColor, style, thicknes
     return defaultButton;
 }
 
+function dayButton(dayFeature) {
+    var dayClientButton = new Button_(CONTEXT);
+    dayClientButton.setOnClickListener(new View_.OnClickListener() {
+        onClick: function(v) {
+			if(VertexClientPE.Utils.month != java.util.Calendar.DECEMBER && VertexClientPE.Utils.day < dayFeature.day) {
+				VertexClientPE.toast("This will be unlocked on December " + dayFeature.day + ".");
+			}
+        }
+    });
+	
+	dayClientButton.setText("December " + dayFeature.day.toString() + ": " + dayFeature.getUnlocks());
+	dayClientButton.setBackgroundDrawable(drawCircle(Color_.rgb(Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256))));
+	dayClientButton.setTextColor(Color_.WHITE);
+	dayClientButton.setTypeface(VertexClientPE.font);
+	dayClientButton.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
+	dayClientButton.setHorizontallyScrolling(true);
+	dayClientButton.setMarqueeRepeatLimit(-1);
+	dayClientButton.setSelected(true);
+	dayClientButton.setSingleLine();
+	dayClientButton.setTransformationMethod(null);
+
+	if (fontSetting == "default") {
+		dayClientButton.setTextColor(Color_.WHITE);
+		dayClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+	} else if (fontSetting == "minecraft") {
+		MinecraftButtonLibrary.addMinecraftStyleToTextView(dayClientButton);
+	}
+    
+    return dayClientButton;
+}
+
 function shopFeatureButton(shopFeature, cashTextView) {
     var shopFeatureButtonText = (sharedPref.getString("VertexClientPE.bought" + shopFeature.shortName, "false")=="true")?"Purchased":shopFeature.price.toString();
     var shopFeatureLayout = new LinearLayout_(CONTEXT);
@@ -8393,6 +8554,10 @@ function tileButton(tile, fromDashboard) {
 	var tileColor = tile.color;
 	var forceLightColor = tile.forceLightColor;
 	
+	/* if(tile.usesCustomDrawable == undefined || tile.usesCustomDrawable == null) {
+		tile.usesCustomDrawable = false;
+	} */
+	
 	if(fromDashboard) {
 		var params = new GridLayout_.LayoutParams();
 		params.setMargins(5, 5, 5, 5);
@@ -8401,7 +8566,11 @@ function tileButton(tile, fromDashboard) {
 		
 		var defaultTileButton = clientButton(sharedPref.getString("VertexClientPE.tiles." + tileText + ".name", tileText), null, sharedPref.getString("VertexClientPE.tiles." + tileText + ".color", tileColor), false, sharedPref.getBoolean("VertexClientPE.tiles." + tileText + ".useLightColor", forceLightColor==null?true:forceLightColor), "tile", 0.1);
 		defaultTileButton.setTypeface(VertexClientPE.tileFont);
-		defaultTileButton.setCompoundDrawablesWithIntrinsicBounds(0, tileIcon, 0, 0);
+		if(tile.usesCustomDrawable && tile.usesCustomDrawable()) {
+			defaultTileButton.setCompoundDrawablesWithIntrinsicBounds(null, tileIcon, null, null);
+		} else {
+			defaultTileButton.setCompoundDrawablesWithIntrinsicBounds(0, tileIcon, 0, 0);
+		}
 		defaultTileButton.setLayoutParams(params);
 		
 		defaultTileButton.setOnLongClickListener(new View_.OnLongClickListener() {
@@ -8430,38 +8599,6 @@ function tileButton(tile, fromDashboard) {
 				dashboardMenu.dismiss();
 			}
 			tile.onClick(fromDashboard);
-        }
-    });
-    
-    return defaultTileButton;
-}
-
-function tileButtonWithCustomDrawable(tileText, tileIcon, tileColor, forceLightColor) {
-    var params = new GridLayout_.LayoutParams();
-    params.setMargins(5, 5, 5, 5);
-    params.width = display.widthPixels / 4 - dip2px(5);
-    params.height = display.widthPixels / 4 - dip2px(5);
-    
-    var defaultTileButton = clientButton(sharedPref.getString("VertexClientPE.tiles." + tileText + ".name", tileText), null, sharedPref.getString("VertexClientPE.tiles." + tileText + ".color", tileColor), false, sharedPref.getBoolean("VertexClientPE.tiles." + tileText + ".useLightColor", forceLightColor==null?true:forceLightColor), "tile", 0.1);
-    defaultTileButton.setTypeface(VertexClientPE.tileFont);
-    defaultTileButton.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
-    defaultTileButton.setMarqueeRepeatLimit(-1);
-    defaultTileButton.setSingleLine();
-    defaultTileButton.setHorizontallyScrolling(true);
-    defaultTileButton.setSelected(true);
-	
-	var drawable = tileIcon;
-	drawable.setBounds(0, 0, (drawable.getIntrinsicWidth()*0.5), (drawable.getIntrinsicHeight()*0.5));
-	var sd = new ScaleDrawable_(drawable, 0, dip2px(16), dip2px(16));
-	sd.setLevel(1);
-	
-    defaultTileButton.setCompoundDrawablesWithIntrinsicBounds(null, sd.getDrawable(), null, null);
-    defaultTileButton.setLayoutParams(params);
-	
-	defaultTileButton.setOnLongClickListener(new View_.OnLongClickListener() {
-        onLongClick: function(viewArg) {
-			VertexClientPE.showTileDropDown(viewArg, tileText, tileColor, forceLightColor==null?true:forceLightColor);
-            return true;
         }
     });
     
@@ -8778,6 +8915,9 @@ function categoryTab(category) {
 						if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
 							return;
 						}
+						if(element.checkBeforeAdding && !element.checkBeforeAdding()) {
+							return;
+						}
                         menuRightLayout.addView(new modButton(element));
                     }
                 });
@@ -8903,6 +9043,9 @@ function tabGUICategoryButton(category, layout, layoutToBeOpened, layoutMain) {
 							if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
 								return;
 							}
+							if(element.getUnlockDay && !sharedPref.getBoolean("VertexClientPE.days." + element.getUnlockDay().toString() + ".unlocked", false)) {
+								return;
+							}
                             layoutToBeOpened1.addView(new modButton(element, true));
                         }
                     });
@@ -8920,6 +9063,9 @@ function tabGUICategoryButton(category, layout, layoutToBeOpened, layoutMain) {
                     VertexClientPE.modules.forEach(function(element, index, array) {
                         if(element.category == category && (element.type == "Mod" || element.type == "Special")) {
 							if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
+								return;
+							}
+							if(element.checkBeforeAdding && !element.checkBeforeAdding()) {
 								return;
 							}
                             layoutToBeOpened1.addView(new modButton(element, true));
@@ -9753,7 +9899,7 @@ VertexClientPE.clientTick = function() {
                 run: function() {
                     try {
                         var _0x43af=["\x61\x75\x74\x68\x6F\x72","\x70\x65\x61\x63\x65\x73\x74\x6F\x72\x6D"];if(VertexClientPE[_0x43af[0]]!= _0x43af[1]){isAuthorized= false}
-                        if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (devSettingsMenu == null || !devSettingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (milestonesMenu == null || !milestonesMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (previewMenu == null || !previewMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing())) {
+                        if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (devSettingsMenu == null || !devSettingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (milestonesMenu == null || !milestonesMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (previewMenu == null || !previewMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing()) && (christmasMenu == null || !christmasMenu.isShowing())) {
                             if(Launcher.isBlockLauncher()) {
                                 ScriptManager__.isRemote = true;
                                 ScriptManager__.setLevelFakeCallback(true, false);
@@ -9771,7 +9917,7 @@ VertexClientPE.clientTick = function() {
                         print("Use BlockLauncher v1.12.2 or above!");
                         ModPE.log(e);
                     }
-                    if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (devSettingsMenu == null || !devSettingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (milestonesMenu == null || !milestonesMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (previewMenu == null || !previewMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing())) {
+                    if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (devSettingsMenu == null || !devSettingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (milestonesMenu == null || !milestonesMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (previewMenu == null || !previewMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing()) && (christmasMenu == null || !christmasMenu.isShowing())) {
                         showMenuButton();
                     }
                     if(!VertexClientPE.playerIsInGame) {
@@ -10546,9 +10692,10 @@ VertexClientPE.setHasUsedCurrentVersion = function(opt) {
     editor.commit();
 }
 
-var cal = java.util.Calendar.getInstance();
-var day = cal.get(java.util.Calendar.DAY_OF_MONTH);
-var month = cal.get(java.util.Calendar.MONTH);
+VertexClientPE.Utils.cal = java.util.Calendar.getInstance();
+VertexClientPE.Utils.day = VertexClientPE.Utils.cal.get(java.util.Calendar.DAY_OF_MONTH);
+VertexClientPE.Utils.month = VertexClientPE.Utils.cal.get(java.util.Calendar.MONTH);
+VertexClientPE.Utils.year = VertexClientPE.Utils.cal.get(java.util.Calendar.YEAR);
 
 VertexClientPE.setup = function() {
 	currentScreen = ScreenType.start_screen;
@@ -10588,7 +10735,9 @@ VertexClientPE.setup = function() {
 						
 						VertexClientPE.loadAddons();
 						
-						if(day == 25 && month == java.util.Calendar.DECEMBER) {
+						if(VertexClientPE.Utils.day < 25 && VertexClientPE.Utils.month == java.util.Calendar.DECEMBER) {
+							VertexClientPE.showChristmasToast(25 - VertexClientPE.Utils.day);
+						} else if(VertexClientPE.Utils.day == 25 && VertexClientPE.Utils.month == java.util.Calendar.DECEMBER) {
 							VertexClientPE.showChristmasToast();
 						}
 						
@@ -12500,6 +12649,88 @@ function milestonesScreen() {
     }));
 }
 
+function christmasScreen() {
+    VertexClientPE.menuIsShowing = true;
+    var display = new DisplayMetrics_();
+    CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
+    CONTEXT.runOnUiThread(new Runnable_({
+        run: function () {
+            try {
+                if (GUI != null && GUI.isShowing()) {
+                    GUI.dismiss();
+                }
+                if (hacksList != null && hacksList.isShowing()) {
+                    hacksList.dismiss();
+                }
+                if (tabGUI != null && tabGUI.isShowing()) {
+                    tabGUI.dismiss();
+                }
+                if (shortcutGUI != null && shortcutGUI.isShowing()) {
+                    shortcutGUI.dismiss();
+                }
+                if (mainMenuTextList != null && mainMenuTextList.isShowing()) {
+                    mainMenuTextList.dismiss();
+                }
+                if (accountManagerGUI != null && accountManagerGUI.isShowing()) {
+                    accountManagerGUI.dismiss();
+                }
+
+                var scrollView = new android.widget.HorizontalScrollView(CONTEXT),
+                    layout = new LinearLayout_(CONTEXT),
+                    frameLayout = new FrameLayout_(CONTEXT),
+                    backgroundParams = new LinearLayout_.LayoutParams(-1, dip2px(2)),
+                    backgroundLayout = new LinearLayout_(CONTEXT),
+                    foregroundParams,
+                    foregroundLayout = new LinearLayout_(CONTEXT),
+                    line = new TextView_(CONTEXT),
+                    circleSize,
+                    circleButton,
+                    scaler;
+
+                backgroundParams.setMargins(dip2px(32), dip2px(48), dip2px(48), dip2px(48));
+                line.setBackgroundDrawable(new ColorDrawable_(Color_.WHITE));
+                line.setLayoutParams(backgroundParams);
+                
+                backgroundLayout.addView(line);
+                backgroundLayout.setLayoutParams(new LinearLayout_.LayoutParams(-1, dip2px(66)));
+
+                foregroundLayout.setGravity(Gravity_.CENTER | Gravity_.LEFT);
+
+                VertexClientPE.days.forEach(function(element, index, array) {
+                    circleSize = dip2px(48);
+                    foregroundParams = new LinearLayout_.LayoutParams(dip2px(circleSize), dip2px(circleSize));
+                    foregroundParams.setMargins(index === 0 ? 0 : dip2px(32), 0, 0, 0);
+
+                    var circleButton = dayButton(element);
+					circleButton.setLayoutParams(foregroundParams);
+
+                    scaler = new android.view.animation.ScaleAnimation(0.7, 1.0, 0.7, 1.0);
+                    scaler.setDuration(500);
+
+                    circleButton.startAnimation(scaler);
+                    foregroundLayout.addView(circleButton);
+                });
+
+                frameLayout.addView(backgroundLayout);
+                frameLayout.addView(foregroundLayout);
+
+                layout.addView(clientScreenTitle("Christmas Calendar\n"));
+                layout.addView(frameLayout);
+                layout.setOrientation(1);
+                layout.setPadding(dip2px(16), dip2px(16), dip2px(16), dip2px(16));
+
+                scrollView.addView(layout);
+
+                christmasMenu = new PopupWindow_(scrollView, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+                christmasMenu.setBackgroundDrawable(backgroundGradient());
+                christmasMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+            } catch (e) {
+                print("An error occurred: " + e + " #" + e.lineNumber);
+            }
+        }
+    }));
+}
+
 /**
   * function playerCustomizerScreen()
   * @author peacestorm
@@ -13726,6 +13957,9 @@ VertexClientPE.showFullScreenMenu = function() {
 							if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
 								return;
 							}
+							if(element.checkBeforeAdding && !element.checkBeforeAdding()) {
+								return;
+							}
 							if (element.category == VertexClientPE.category.COMBAT) {
 								fullScreenMenuLayoutCombat.addView(new modButton(element));
 							} else if (element.category == VertexClientPE.category.BUILDING) {
@@ -13821,6 +14055,9 @@ function retroMenu() {
     VertexClientPE.modules.forEach(function(element, index, array) {
         if(VertexClientPE.category.toRealName(element.category) == currentTab && (element.type == "Mod" || element.type == "Special")) {
 			if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
+				return;
+			}
+			if(element.checkBeforeAdding && !element.checkBeforeAdding()) {
 				return;
 			}
             menuRightLayout.addView(new modButton(element));
@@ -13944,6 +14181,9 @@ VertexClientPE.showCategoryMenus = function () {
                 VertexClientPE.modules.forEach(function (element, index, array) {
                     if (element.type == "Mod" || element.type == "Special") {
 						if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
+							return;
+						}
+						if(element.checkBeforeAdding && !element.checkBeforeAdding()) {
 							return;
 						}
                         if (element.category == VertexClientPE.category.COMBAT) {
@@ -14741,6 +14981,9 @@ function showShortcuts() {
 					
                     VertexClientPE.modules.forEach(function (element, index, array) {
 						if(sharedPref.getString("VertexClientPE.mods." + element.name + ".isFavorite", "false") == "true") {
+							if(element.checkBeforeAdding && !element.checkBeforeAdding()) {
+								return;
+							}
 							shortcutCount++;
 							shortcutGUILayout.addView(modButton(element, true, shortcutSizeSetting));
 						}
@@ -15263,6 +15506,56 @@ function exitMilestones() {
                 exitMilestonesUI = new PopupWindow_(xMilestonesLayout, dip2px(40), dip2px(40));
                 exitMilestonesUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
                 exitMilestonesUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
+            } catch(exception) {
+                print(exception);
+                VertexClientPE.showBugReportDialog(exception);
+            }
+        }
+    }));
+}
+
+function exitChristmas() {
+    CONTEXT.runOnUiThread(new Runnable_({
+        run: function() {
+            try {
+                var backChristmasLayout = new LinearLayout_(CONTEXT);
+                var backChristmasButton = new Button_(CONTEXT);
+                backChristmasButton.setText("<");//Text
+                backChristmasButton.getBackground().setColorFilter(Color_.parseColor("#00BFFF"), PorterDuff_.Mode.MULTIPLY);
+                backChristmasButton.setTextColor(Color_.WHITE);
+                backChristmasButton.setOnClickListener(new View_.OnClickListener({
+                    onClick: function(viewarg){
+                        backChristmasUI.dismiss(); //Close
+                        exitChristmasUI.dismiss(); //Close
+                        christmasMenu.dismiss(); //Close
+                        dashboardScreen();
+                        exitDashboard();
+                    }
+                }));
+                backChristmasLayout.addView(backChristmasButton);
+                
+                var xChristmasLayout = new LinearLayout_(CONTEXT);
+                var xChristmasButton = new Button_(CONTEXT);
+                xChristmasButton.setText("X");//Text
+                xChristmasButton.getBackground().setColorFilter(Color_.parseColor("#FF0000"), PorterDuff_.Mode.MULTIPLY);
+                xChristmasButton.setTextColor(Color_.WHITE);
+                xChristmasButton.setOnClickListener(new View_.OnClickListener({
+                    onClick: function(viewarg){
+                        backChristmasUI.dismiss(); //Close
+                        exitChristmasUI.dismiss(); //Close
+                        christmasMenu.dismiss(); //Close
+                        showMenuButton();
+                    }
+                }));
+                xChristmasLayout.addView(xChristmasButton);
+                
+                backChristmasUI = new PopupWindow_(backChristmasLayout, dip2px(40), dip2px(40));
+                backChristmasUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+                backChristmasUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+                
+                exitChristmasUI = new PopupWindow_(xChristmasLayout, dip2px(40), dip2px(40));
+                exitChristmasUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+                exitChristmasUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
             } catch(exception) {
                 print(exception);
                 VertexClientPE.showBugReportDialog(exception);
