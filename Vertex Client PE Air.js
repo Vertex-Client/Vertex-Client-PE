@@ -292,8 +292,8 @@ function VectorMathMCPE() {
         return new Vector3((Math.sin(mathPitch) * Math.cos(mathYaw)), (Math.cos(mathPitch)), (Math.sin(mathPitch) * Math.sin(mathYaw)));
     }
     this.extendPlayerFacing = function (distance) {
-        var dirVector = this.getDirectionalVectorFromEntity(Player.getEntity());
-        var playerPos = new Vector3(Player.getX(), Player.getY(), Player.getZ());
+        var dirVector = this.getDirectionalVectorFromEntity(getPlayerEnt());
+        var playerPos = new Vector3(getPlayerX(), getPlayerY(), getPlayerZ());
         var newPosition = playerPos.moveAlongDirectionalVector(dirVector, distance);
         return newPosition;
     }
@@ -307,7 +307,7 @@ function VectorLib() {
         Level.setTile(vector.x, vector.y, vector.z, id, data);
     }
     this.setPlayerPos = function(position){
-        Entity.setPosition(Player.getEntity(), position.x, position.y, position.z);
+        Entity.setPosition(getPlayerEnt(), position.x, position.y, position.z);
     }
 	this.getCoordsInFrontOfEnt = function(ent) {
 		var yaw = Entity.getYaw(ent);
@@ -484,6 +484,18 @@ var VertexClientPE = {
 		}
     }
 };
+
+VertexClientPE.days = [
+{
+	day: 5,
+	onUnlock: function() {
+		VertexClientPE.toast("Unlocked LetItSnow!");
+	},
+	getUnlocks: function() {
+		return "LetItSnow";
+	}
+}
+];
 
 VertexClientPE.menuIsShowing = false;
 VertexClientPE.isPaused = false;
@@ -723,7 +735,7 @@ MinecraftButtonLibrary.onTouch = function(v, motionEvent, enableSound, customTex
 
 			// play sound
 			if(enableSound)
-				Level.playSoundEnt(Player.getEntity(), "random.click", 100, 0);
+				Level.playSoundEnt(getPlayerEnt(), "random.click", 100, 0);
 		}
 	}
 	if(action == android.view.MotionEvent.ACTION_MOVE)
@@ -1069,6 +1081,24 @@ var musicPlayerTile = {
 	}
 }
 
+var christmasTile = {
+	text: "Christmas Calendar",
+	color: "red",
+	icon: android.R.drawable.ic_menu_agenda,
+	forceLightColor: false,
+	shouldDismissDashboard: true,
+	usesCustomDrawable: function() {
+		return false;
+	},
+	checkBeforeAdding: function() {
+		return (VertexClientPE.Utils.year == 2016 && VertexClientPE.Utils.month == java.util.Calendar.DECEMBER) || VertexClientPE.isDevMode();
+	},
+	onClick: function(fromDashboard) {
+		christmasScreen();
+		exitChristmas();
+	}
+}
+
 var previewTile = {
 	text: "Preview",
 	color: "violet",
@@ -1187,6 +1217,7 @@ VertexClientPE.registerTile(settingsTile);
 VertexClientPE.registerTile(informationTile);
 VertexClientPE.registerTile(updateCenterTile);
 VertexClientPE.registerTile(musicPlayerTile);
+VertexClientPE.registerTile(christmasTile);
 VertexClientPE.registerTile(previewTile);
 VertexClientPE.registerTile(milestonesTile);
 VertexClientPE.registerTile(helpTile);
@@ -1456,7 +1487,7 @@ var drop = {
                     xx = Math.sin(p) * Math.cos(y);
                     yy = Math.sin(p) * Math.sin(y);
                     zz = Math.cos(p);
-                    Level.dropItem(Player.getX() + xx, Player.getY() + zz, Player.getZ() + yy, 1, i, 1);
+                    Level.dropItem(getPlayerX() + xx, getPlayerY() + zz, getPlayerZ() + yy, 1, i, 1);
                 }
             } else {
                 throw new SyntaxError();
@@ -2871,7 +2902,7 @@ VertexClientPE.moneyToast = function() {
     }));
 }
 
-VertexClientPE.showChristmasToast = function() {
+VertexClientPE.showChristmasToast = function(daysLeft) {
 	CONTEXT.runOnUiThread(new Runnable_({
         run: function() {
             var layout = new LinearLayout_(CONTEXT);
@@ -2881,13 +2912,29 @@ VertexClientPE.showChristmasToast = function() {
 			icon.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(16), dip2px(16)));
             var title = VertexClientPE.getName();
             var _0xc62b=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x20\x50\x72\x6F"];if(VertexClientPE[_0xc62b[0]]()==_0xc62b[1]){title+=_0xc62b[2]}
-            var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + "Merry Christmas!"), 0);
+			var cText = daysLeft == null ? "Merry Christmas!" : (daysLeft + " days left until Christmas!");
+            var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + cText), 0);
             layout.addView(icon);
             layout.addView(text);
             toast = new Toast_(CONTEXT);
             toast.setView(layout);
 			toast.setGravity(Gravity_.CENTER | Gravity_.TOP, 0, 0);
             toast.show();
+			if(VertexClientPE.Utils.year > 2016) {
+				return;
+			}
+			if(daysLeft == null) {
+				daysLeft = 0;
+			}
+			VertexClientPE.days.forEach(function(element, index, array) {
+				if(element.day <= (25 - daysLeft)) {
+					if(!sharedPref.getBoolean("VertexClientPE.days." + i.toString() + ".unlocked", false)) {
+						editor.putBoolean("VertexClientPE.days." + i.toString() + ".unlocked", true);
+						element.onUnlock();
+					}
+				}
+			});
+			editor.commit();
         }
     }));
 }
@@ -3861,6 +3908,37 @@ function clientButton(text, desc, color, round, forceLightColor, style, thicknes
     return defaultButton;
 }
 
+function dayButton(dayFeature) {
+    var dayClientButton = new Button_(CONTEXT);
+    dayClientButton.setOnClickListener(new View_.OnClickListener() {
+        onClick: function(v) {
+			if(VertexClientPE.Utils.month != java.util.Calendar.DECEMBER && VertexClientPE.Utils.day < dayFeature.day) {
+				VertexClientPE.toast("This will be unlocked on December " + dayFeature.day + ".");
+			}
+        }
+    });
+	
+	dayClientButton.setText("December " + dayFeature.day.toString() + ": " + dayFeature.getUnlocks());
+	dayClientButton.setBackgroundDrawable(drawCircle(Color_.rgb(Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256))));
+	dayClientButton.setTextColor(Color_.WHITE);
+	dayClientButton.setTypeface(VertexClientPE.font);
+	dayClientButton.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
+	dayClientButton.setHorizontallyScrolling(true);
+	dayClientButton.setMarqueeRepeatLimit(-1);
+	dayClientButton.setSelected(true);
+	dayClientButton.setSingleLine();
+	dayClientButton.setTransformationMethod(null);
+
+	if (fontSetting == "default") {
+		dayClientButton.setTextColor(Color_.WHITE);
+		dayClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+	} else if (fontSetting == "minecraft") {
+		MinecraftButtonLibrary.addMinecraftStyleToTextView(dayClientButton);
+	}
+    
+    return dayClientButton;
+}
+
 function shopFeatureButton(shopFeature, cashTextView) {
     var shopFeatureButtonText = (sharedPref.getString("VertexClientPE.bought" + shopFeature.shortName, "false")=="true")?"Purchased":shopFeature.price.toString();
     var shopFeatureLayout = new LinearLayout_(CONTEXT);
@@ -4103,6 +4181,10 @@ function tileButton(tile, fromDashboard) {
 	var tileColor = tile.color;
 	var forceLightColor = tile.forceLightColor;
 	
+	/* if(tile.usesCustomDrawable == undefined || tile.usesCustomDrawable == null) {
+		tile.usesCustomDrawable = false;
+	} */
+	
 	if(fromDashboard) {
 		var params = new GridLayout_.LayoutParams();
 		params.setMargins(5, 5, 5, 5);
@@ -4111,7 +4193,11 @@ function tileButton(tile, fromDashboard) {
 		
 		var defaultTileButton = clientButton(sharedPref.getString("VertexClientPE.tiles." + tileText + ".name", tileText), null, sharedPref.getString("VertexClientPE.tiles." + tileText + ".color", tileColor), false, sharedPref.getBoolean("VertexClientPE.tiles." + tileText + ".useLightColor", forceLightColor==null?true:forceLightColor), "tile", 0.1);
 		defaultTileButton.setTypeface(VertexClientPE.tileFont);
-		defaultTileButton.setCompoundDrawablesWithIntrinsicBounds(0, tileIcon, 0, 0);
+		if(tile.usesCustomDrawable && tile.usesCustomDrawable()) {
+			defaultTileButton.setCompoundDrawablesWithIntrinsicBounds(null, tileIcon, null, null);
+		} else {
+			defaultTileButton.setCompoundDrawablesWithIntrinsicBounds(0, tileIcon, 0, 0);
+		}
 		defaultTileButton.setLayoutParams(params);
 		
 		defaultTileButton.setOnLongClickListener(new View_.OnLongClickListener() {
@@ -4140,38 +4226,6 @@ function tileButton(tile, fromDashboard) {
 				dashboardMenu.dismiss();
 			}
 			tile.onClick(fromDashboard);
-        }
-    });
-    
-    return defaultTileButton;
-}
-
-function tileButtonWithCustomDrawable(tileText, tileIcon, tileColor, forceLightColor) {
-    var params = new GridLayout_.LayoutParams();
-    params.setMargins(5, 5, 5, 5);
-    params.width = display.widthPixels / 4 - dip2px(5);
-    params.height = display.widthPixels / 4 - dip2px(5);
-    
-    var defaultTileButton = clientButton(sharedPref.getString("VertexClientPE.tiles." + tileText + ".name", tileText), null, sharedPref.getString("VertexClientPE.tiles." + tileText + ".color", tileColor), false, sharedPref.getBoolean("VertexClientPE.tiles." + tileText + ".useLightColor", forceLightColor==null?true:forceLightColor), "tile", 0.1);
-    defaultTileButton.setTypeface(VertexClientPE.tileFont);
-    defaultTileButton.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
-    defaultTileButton.setMarqueeRepeatLimit(-1);
-    defaultTileButton.setSingleLine();
-    defaultTileButton.setHorizontallyScrolling(true);
-    defaultTileButton.setSelected(true);
-	
-	var drawable = tileIcon;
-	drawable.setBounds(0, 0, (drawable.getIntrinsicWidth()*0.5), (drawable.getIntrinsicHeight()*0.5));
-	var sd = new ScaleDrawable_(drawable, 0, dip2px(16), dip2px(16));
-	sd.setLevel(1);
-	
-    defaultTileButton.setCompoundDrawablesWithIntrinsicBounds(null, sd.getDrawable(), null, null);
-    defaultTileButton.setLayoutParams(params);
-	
-	defaultTileButton.setOnLongClickListener(new View_.OnLongClickListener() {
-        onLongClick: function(viewArg) {
-			VertexClientPE.showTileDropDown(viewArg, tileText, tileColor, forceLightColor==null?true:forceLightColor);
-            return true;
         }
     });
     
@@ -5035,7 +5089,7 @@ VertexClientPE.clientTick = function() {
                 run: function() {
                     try {
                         var _0x43af=["\x61\x75\x74\x68\x6F\x72","\x70\x65\x61\x63\x65\x73\x74\x6F\x72\x6D"];if(VertexClientPE[_0x43af[0]]!= _0x43af[1]){isAuthorized= false}
-                        if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (devSettingsMenu == null || !devSettingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (milestonesMenu == null || !milestonesMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (previewMenu == null || !previewMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing())) {
+                        if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (devSettingsMenu == null || !devSettingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (milestonesMenu == null || !milestonesMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (previewMenu == null || !previewMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing()) && (christmasMenu == null || !christmasMenu.isShowing())) {
                             if(Launcher.isBlockLauncher()) {
                                 ScriptManager__.isRemote = true;
                                 ScriptManager__.setLevelFakeCallback(true, false);
@@ -5053,7 +5107,7 @@ VertexClientPE.clientTick = function() {
                         print("Use BlockLauncher v1.12.2 or above!");
                         ModPE.log(e);
                     }
-                    if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (devSettingsMenu == null || !devSettingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (milestonesMenu == null || !milestonesMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (previewMenu == null || !previewMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing())) {
+                    if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (devSettingsMenu == null || !devSettingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (milestonesMenu == null || !milestonesMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (previewMenu == null || !previewMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing()) && (christmasMenu == null || !christmasMenu.isShowing())) {
                         showMenuButton();
                     }
                     if(!VertexClientPE.playerIsInGame) {
@@ -5803,9 +5857,10 @@ VertexClientPE.setHasUsedCurrentVersion = function(opt) {
     editor.commit();
 }
 
-var cal = java.util.Calendar.getInstance();
-var day = cal.get(java.util.Calendar.DAY_OF_MONTH);
-var month = cal.get(java.util.Calendar.MONTH);
+VertexClientPE.Utils.cal = java.util.Calendar.getInstance();
+VertexClientPE.Utils.day = VertexClientPE.Utils.cal.get(java.util.Calendar.DAY_OF_MONTH);
+VertexClientPE.Utils.month = VertexClientPE.Utils.cal.get(java.util.Calendar.MONTH);
+VertexClientPE.Utils.year = VertexClientPE.Utils.cal.get(java.util.Calendar.YEAR);
 
 VertexClientPE.setup = function() {
 	currentScreen = ScreenType.start_screen;
@@ -7475,6 +7530,88 @@ function milestonesScreen() {
     }));
 }
 
+function christmasScreen() {
+    VertexClientPE.menuIsShowing = true;
+    var display = new DisplayMetrics_();
+    CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
+    CONTEXT.runOnUiThread(new Runnable_({
+        run: function () {
+            try {
+                if (GUI != null && GUI.isShowing()) {
+                    GUI.dismiss();
+                }
+                if (hacksList != null && hacksList.isShowing()) {
+                    hacksList.dismiss();
+                }
+                if (tabGUI != null && tabGUI.isShowing()) {
+                    tabGUI.dismiss();
+                }
+                if (shortcutGUI != null && shortcutGUI.isShowing()) {
+                    shortcutGUI.dismiss();
+                }
+                if (mainMenuTextList != null && mainMenuTextList.isShowing()) {
+                    mainMenuTextList.dismiss();
+                }
+                if (accountManagerGUI != null && accountManagerGUI.isShowing()) {
+                    accountManagerGUI.dismiss();
+                }
+
+                var scrollView = new android.widget.HorizontalScrollView(CONTEXT),
+                    layout = new LinearLayout_(CONTEXT),
+                    frameLayout = new FrameLayout_(CONTEXT),
+                    backgroundParams = new LinearLayout_.LayoutParams(-1, dip2px(2)),
+                    backgroundLayout = new LinearLayout_(CONTEXT),
+                    foregroundParams,
+                    foregroundLayout = new LinearLayout_(CONTEXT),
+                    line = new TextView_(CONTEXT),
+                    circleSize,
+                    circleButton,
+                    scaler;
+
+                backgroundParams.setMargins(dip2px(32), dip2px(48), dip2px(48), dip2px(48));
+                line.setBackgroundDrawable(new ColorDrawable_(Color_.WHITE));
+                line.setLayoutParams(backgroundParams);
+                
+                backgroundLayout.addView(line);
+                backgroundLayout.setLayoutParams(new LinearLayout_.LayoutParams(-1, dip2px(66)));
+
+                foregroundLayout.setGravity(Gravity_.CENTER | Gravity_.LEFT);
+
+                VertexClientPE.days.forEach(function(element, index, array) {
+                    circleSize = dip2px(48);
+                    foregroundParams = new LinearLayout_.LayoutParams(dip2px(circleSize), dip2px(circleSize));
+                    foregroundParams.setMargins(index === 0 ? 0 : dip2px(32), 0, 0, 0);
+
+                    var circleButton = dayButton(element);
+					circleButton.setLayoutParams(foregroundParams);
+
+                    scaler = new android.view.animation.ScaleAnimation(0.7, 1.0, 0.7, 1.0);
+                    scaler.setDuration(500);
+
+                    circleButton.startAnimation(scaler);
+                    foregroundLayout.addView(circleButton);
+                });
+
+                frameLayout.addView(backgroundLayout);
+                frameLayout.addView(foregroundLayout);
+
+                layout.addView(clientScreenTitle("Christmas Calendar\n"));
+                layout.addView(frameLayout);
+                layout.setOrientation(1);
+                layout.setPadding(dip2px(16), dip2px(16), dip2px(16), dip2px(16));
+
+                scrollView.addView(layout);
+
+                christmasMenu = new PopupWindow_(scrollView, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+                christmasMenu.setBackgroundDrawable(backgroundGradient());
+                christmasMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+            } catch (e) {
+                print("An error occurred: " + e + " #" + e.lineNumber);
+            }
+        }
+    }));
+}
+
 /**
   * function playerCustomizerScreen()
   * @author peacestorm
@@ -9134,6 +9271,56 @@ function exitMilestones() {
                 exitMilestonesUI = new PopupWindow_(xMilestonesLayout, dip2px(40), dip2px(40));
                 exitMilestonesUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
                 exitMilestonesUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
+            } catch(exception) {
+                print(exception);
+                VertexClientPE.showBugReportDialog(exception);
+            }
+        }
+    }));
+}
+
+function exitChristmas() {
+    CONTEXT.runOnUiThread(new Runnable_({
+        run: function() {
+            try {
+                var backChristmasLayout = new LinearLayout_(CONTEXT);
+                var backChristmasButton = new Button_(CONTEXT);
+                backChristmasButton.setText("<");//Text
+                backChristmasButton.getBackground().setColorFilter(Color_.parseColor("#00BFFF"), PorterDuff_.Mode.MULTIPLY);
+                backChristmasButton.setTextColor(Color_.WHITE);
+                backChristmasButton.setOnClickListener(new View_.OnClickListener({
+                    onClick: function(viewarg){
+                        backChristmasUI.dismiss(); //Close
+                        exitChristmasUI.dismiss(); //Close
+                        christmasMenu.dismiss(); //Close
+                        dashboardScreen();
+                        exitDashboard();
+                    }
+                }));
+                backChristmasLayout.addView(backChristmasButton);
+                
+                var xChristmasLayout = new LinearLayout_(CONTEXT);
+                var xChristmasButton = new Button_(CONTEXT);
+                xChristmasButton.setText("X");//Text
+                xChristmasButton.getBackground().setColorFilter(Color_.parseColor("#FF0000"), PorterDuff_.Mode.MULTIPLY);
+                xChristmasButton.setTextColor(Color_.WHITE);
+                xChristmasButton.setOnClickListener(new View_.OnClickListener({
+                    onClick: function(viewarg){
+                        backChristmasUI.dismiss(); //Close
+                        exitChristmasUI.dismiss(); //Close
+                        christmasMenu.dismiss(); //Close
+                        showMenuButton();
+                    }
+                }));
+                xChristmasLayout.addView(xChristmasButton);
+                
+                backChristmasUI = new PopupWindow_(backChristmasLayout, dip2px(40), dip2px(40));
+                backChristmasUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+                backChristmasUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+                
+                exitChristmasUI = new PopupWindow_(xChristmasLayout, dip2px(40), dip2px(40));
+                exitChristmasUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+                exitChristmasUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
             } catch(exception) {
                 print(exception);
                 VertexClientPE.showBugReportDialog(exception);
