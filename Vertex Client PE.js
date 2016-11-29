@@ -600,27 +600,6 @@ var VertexClientPE = {
     }
 };
 
-VertexClientPE.days = [
-{
-	day: 5,
-	onUnlock: function() {
-		VertexClientPE.toast("Unlocked LetItSnow!");
-	},
-	getUnlocks: function() {
-		return "LetItSnow";
-	}
-},
-{
-	day: 10,
-	onUnlock: function() {
-		VertexClientPE.toast("Unlocked FrostWalk!");
-	},
-	getUnlocks: function() {
-		return "FrostWalk";
-	}
-}
-];
-
 VertexClientPE.menuIsShowing = false;
 VertexClientPE.isPaused = false;
 
@@ -1446,7 +1425,7 @@ var musicPlayerTile = {
 }
 
 var christmasTile = {
-	text: "Christmas Calendar",
+	text: "Christmas",
 	color: "red",
 	icon: android.R.drawable.ic_menu_agenda,
 	forceLightColor: false,
@@ -1455,7 +1434,7 @@ var christmasTile = {
 		return false;
 	},
 	checkBeforeAdding: function() {
-		return (VertexClientPE.Utils.year == 2016 && VertexClientPE.Utils.month == java.util.Calendar.DECEMBER) || VertexClientPE.isDevMode();
+		return VertexClientPE.Utils.month == java.util.Calendar.DECEMBER || VertexClientPE.isDevMode();
 	},
 	onClick: function(fromDashboard) {
 		christmasScreen();
@@ -4142,9 +4121,6 @@ var letItSnow = {
     category: VertexClientPE.category.MISC,
     type: "Mod",
     state: false,
-	checkBeforeAdding: function() {
-		return VertexClientPE.Utils.year > 2016 || (VertexClientPE.Utils.month == java.util.Calendar.DECEMBER && VertexClientPE.Utils.day >= 5) || VertexClientPE.isDevMode();
-	},
     isStateMod: function() {
         return true;
     },
@@ -4168,9 +4144,6 @@ var frostWalk = {
     category: VertexClientPE.category.MOVEMENT,
     type: "Mod",
     state: false,
-	checkBeforeAdding: function() {
-		return VertexClientPE.Utils.year > 2016 || (VertexClientPE.Utils.month == java.util.Calendar.DECEMBER && VertexClientPE.Utils.day >= 10) || VertexClientPE.isDevMode();
-	},
     isStateMod: function() {
         return true;
     },
@@ -6876,21 +6849,6 @@ VertexClientPE.showChristmasToast = function(daysLeft) {
             toast.setView(layout);
 			toast.setGravity(Gravity_.CENTER | Gravity_.TOP, 0, 0);
             toast.show();
-			if(VertexClientPE.Utils.year > 2016) {
-				return;
-			}
-			if(daysLeft == null) {
-				daysLeft = 0;
-			}
-			VertexClientPE.days.forEach(function(element, index, array) {
-				if(element.day <= (25 - daysLeft)) {
-					if(!sharedPref.getBoolean("VertexClientPE.days." + i.toString() + ".unlocked", false)) {
-						editor.putBoolean("VertexClientPE.days." + i.toString() + ".unlocked", true);
-						element.onUnlock();
-					}
-				}
-			});
-			editor.commit();
         }
     }));
 }
@@ -7279,58 +7237,51 @@ VertexClientPE.fancyChat = function(str) {
     Server.sendChat(newMsg);
 }
 
+VertexClientPE.getItemInSlot = function(newSlot) {
+	var oldSlot = Player.getSelectedSlotId();
+	Player.setSelectedSlotId(newSlot);
+	var itemId = Player.getCarriedItem();
+	Player.setSelectedSlotId(oldSlot);
+	
+	return itemId;
+}
+
 VertexClientPE.autoSword = function(a, v) {
     if(a == getPlayerEnt()) {
-        for(var i = 0; i <= 36; i++) {
-            var gCI = Player.getCarriedItem();
-            var gCID = Player.getCarriedItemData();
-            var gCIA = Player.getCarriedItemCount();
-            if(Player.getInventorySlot(i) == 268) {
-                Player.setInventorySlot(i, gCI, gCIA, gCID);
-                Entity.setCarriedItem(getPlayerEnt(), 268, Player.getInventorySlotCount(i), Player.getInventorySlotData(i));
-                break;
-            }
+		var swordIds = [];
+		var bestSlot = [null, null];
+        for(var i = 0; i <= 8; i++) {
+			var itemInSlot = VertexClientPE.getItemInSlot(i);
+			if(itemInSlot == 268 || itemInSlot == 283 || itemInSlot == 272 || itemInSlot == 267 || itemInSlot == 276) {
+				if(itemInSlot == 268) {
+					if(bestSlot[1] != 283 && bestSlot[1] != 272 && bestSlot[1] != 267 && bestSlot[1] != 276) {
+						bestSlot = [i, itemInSlot];
+					}
+				}
+				if(itemInSlot == 283) {
+					if(bestSlot[1] != 272 && bestSlot[1] != 267 && bestSlot[1] != 276) {
+						bestSlot = [i, itemInSlot];
+					}
+				}
+				if(itemInSlot == 272) {
+					if(bestSlot[1] != 267 && bestSlot[1] != 276) {
+						bestSlot = [i, itemInSlot];
+					}
+				}
+				if(itemInSlot == 267) {
+					if(bestSlot[1] != 276) {
+						bestSlot = [i, itemInSlot];
+					}
+				}
+				if(itemInSlot == 276) {
+					bestSlot = [i, itemInSlot];
+					break;
+				}
+			}
         }
-        for(var i = 0; i <= 36; i++) {
-            var gCI = Player.getCarriedItem();
-            var gCID = Player.getCarriedItemData();
-            var gCIA = Player.getCarriedItemCount();
-            if(Player.getInventorySlot(i) == 283) {
-                Player.setInventorySlot(i, gCI, gCIA, gCID);
-                Entity.setCarriedItem(getPlayerEnt(), 283, Player.getInventorySlotCount(i), Player.getInventorySlotData(i));
-                break;
-            }
-        }
-        for(var i = 0; i <= 36; i++) {
-            var gCI = Player.getCarriedItem();
-            var gCID = Player.getCarriedItemData();
-            var gCIA = Player.getCarriedItemCount();
-            if(Player.getInventorySlot(i) == 272) {
-                Player.setInventorySlot(i, gCI, gCIA, gCID);
-                Entity.setCarriedItem(getPlayerEnt(), 272, Player.getInventorySlotCount(i), Player.getInventorySlotData(i));
-                break;
-            }
-        }
-        for(var i = 0; i <= 36; i++) {
-            var gCI = Player.getCarriedItem();
-            var gCID = Player.getCarriedItemData();
-            var gCIA = Player.getCarriedItemCount();
-            if(Player.getInventorySlot(i) == 267) {
-                Player.setInventorySlot(i, gCI, gCIA, gCID);
-                Entity.setCarriedItem(getPlayerEnt(), 267, Player.getInventorySlotCount(i), Player.getInventorySlotData(i));
-                break;
-            }
-        }
-        for(var i = 0; i <= 36; i++) {
-            var gCI = Player.getCarriedItem();
-            var gCID = Player.getCarriedItemData();
-            var gCIA = Player.getCarriedItemCount();
-            if(Player.getInventorySlot(i) == 276) {
-                Player.setInventorySlot(i, gCI, gCIA, gCID);
-                Entity.setCarriedItem(getPlayerEnt(), 276, Player.getInventorySlotCount(i), Player.getInventorySlotData(i));
-                break;
-            }
-        }
+		if(bestSlot[0] != null) {	
+			Player.setSelectedSlotId(bestSlot[0]);
+		}
     }
 }
 
@@ -8279,37 +8230,6 @@ function clientButton(text, desc, color, round, forceLightColor, style, thicknes
 		MinecraftButtonLibrary.addMinecraftStyleToTextView(defaultButton);
 	}
     return defaultButton;
-}
-
-function dayButton(dayFeature) {
-    var dayClientButton = new Button_(CONTEXT);
-    dayClientButton.setOnClickListener(new View_.OnClickListener() {
-        onClick: function(v) {
-			if(VertexClientPE.Utils.month != java.util.Calendar.DECEMBER && VertexClientPE.Utils.day < dayFeature.day) {
-				VertexClientPE.toast("This will be unlocked on December " + dayFeature.day + ".");
-			}
-        }
-    });
-	
-	dayClientButton.setText("December " + dayFeature.day.toString() + ": " + dayFeature.getUnlocks());
-	dayClientButton.setBackgroundDrawable(drawCircle(Color_.rgb(Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256))));
-	dayClientButton.setTextColor(Color_.WHITE);
-	dayClientButton.setTypeface(VertexClientPE.font);
-	dayClientButton.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
-	dayClientButton.setHorizontallyScrolling(true);
-	dayClientButton.setMarqueeRepeatLimit(-1);
-	dayClientButton.setSelected(true);
-	dayClientButton.setSingleLine();
-	dayClientButton.setTransformationMethod(null);
-
-	if (fontSetting == "default") {
-		dayClientButton.setTextColor(Color_.WHITE);
-		dayClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
-	} else if (fontSetting == "minecraft") {
-		MinecraftButtonLibrary.addMinecraftStyleToTextView(dayClientButton);
-	}
-    
-    return dayClientButton;
 }
 
 function shopFeatureButton(shopFeature, cashTextView) {
@@ -10138,7 +10058,7 @@ VertexClientPE.showStartScreenBar = function() {
                         }
                     });
 					
-                    var gitHubButton = new Button_(CONTEXT);
+					var gitHubButton = new Button_(CONTEXT);
                     gitHubButton.setBackgroundDrawable(splashGitHubButtonClientGUI);
                     gitHubButton.setGravity(Gravity_.CENTER);
                     gitHubButton.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(42), dip2px(42)));
@@ -12696,26 +12616,63 @@ function christmasScreen() {
 
                 foregroundLayout.setGravity(Gravity_.CENTER | Gravity_.LEFT);
 
-                VertexClientPE.days.forEach(function(element, index, array) {
-                    circleSize = dip2px(48);
-                    foregroundParams = new LinearLayout_.LayoutParams(dip2px(circleSize), dip2px(circleSize));
-                    foregroundParams.setMargins(index === 0 ? 0 : dip2px(32), 0, 0, 0);
+				circleSize = dip2px(64);
+				foregroundParams = new LinearLayout_.LayoutParams(dip2px(circleSize), dip2px(circleSize));
+				foregroundParams.setMargins(0, 0, 0, 0);
 
-                    var circleButton = dayButton(element);
-					circleButton.setLayoutParams(foregroundParams);
+				circleButton = new Button_(CONTEXT);
+				circleButton.setBackgroundDrawable(drawCircle(Color_.rgb(Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256))));
+				circleButton.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
+				circleButton.setGravity(Gravity_.CENTER);
+				circleButton.setHorizontallyScrolling(true);
+				circleButton.setLayoutParams(foregroundParams);
+				circleButton.setMarqueeRepeatLimit(-1);
+				circleButton.setSelected(true);
+				circleButton.setSingleLine();
+				
+				var daysLeft;
+				if(VertexClientPE.day <= 25) {
+					daysLeft = 25 - VertexClientPE.day;
+				}
+				
+				var circleText;
+				if(daysLeft != null && daysLeft != 0) {
+					circleText = daysLeft.toString() + " days left until Christmas!";
+				} else if(daysLeft == 0) {
+					circleText = "Christmas Day";
+				} else {
+					circleText = "It's not Christmas Day yet or it has just been.";
+				}
+				circleButton.setText(circleText);
+				circleButton.setTextColor(Color_.WHITE);
+				circleButton.setTypeface(VertexClientPE.font);
 
-                    scaler = new android.view.animation.ScaleAnimation(0.7, 1.0, 0.7, 1.0);
-                    scaler.setDuration(500);
+				circleButton.setOnLongClickListener(new View_.OnLongClickListener({
+					onLongClick(v) {
+						v.setBackgroundDrawable(drawCircle(Color_.rgb(Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256))));
+						return true;
+					}
+				}));
 
-                    circleButton.startAnimation(scaler);
-                    foregroundLayout.addView(circleButton);
-                });
+				if (fontSetting == "default") {
+					circleButton.setTextColor(Color_.WHITE);
+					circleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+				} else if (fontSetting == "minecraft") {
+					MinecraftButtonLibrary.addMinecraftStyleToTextView(circleButton);
+				}
+
+				scaler = new android.view.animation.ScaleAnimation(0.7, 1.0, 0.7, 1.0);
+				scaler.setDuration(500);
+
+				circleButton.startAnimation(scaler);
+				foregroundLayout.addView(circleButton);
 
                 frameLayout.addView(backgroundLayout);
                 frameLayout.addView(foregroundLayout);
 
-                layout.addView(clientScreenTitle("Christmas Calendar\n"));
+                layout.addView(clientScreenTitle("Christmas\n"));
                 layout.addView(frameLayout);
+                layout.addView(clientTextView("\nMerry Christmas & Happy New Year! We wish you an amazing 2017!", true));
                 layout.setOrientation(1);
                 layout.setPadding(dip2px(16), dip2px(16), dip2px(16), dip2px(16));
 
@@ -16169,4 +16126,4 @@ function blockEventHook(x, y, z, e, d) {
     }
 }
 
-//What are you doing here? ;-)
+//What are you doing here? ;-
