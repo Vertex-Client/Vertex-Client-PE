@@ -6700,6 +6700,56 @@ VertexClientPE.showCategoryDialog = function(titleView, currentName, categoryId)
     });
 }
 
+VertexClientPE.showDashboardTileSizeDialog = function() {
+    CONTEXT.runOnUiThread(new Runnable_() {
+        run: function() {
+            try {
+                var dashboardTileSizeDialogTitle = clientTextView("Change Dashboard tile size", true);
+                var btn = clientButton("Close");
+				var dashboardTileSizeSettingTitle = clientTextView("Dashboard tile size: | Screen width / " + dashboardTileSize);
+				var dashboardTileSizeSettingSlider = new SeekBar(CONTEXT);
+				var minDashboardTileSize = 1;
+				dashboardTileSizeSettingSlider.setProgress(dashboardTileSize - minDashboardTileSize);
+				dashboardTileSizeSettingSlider.setMax(10 - minDashboardTileSize);
+				dashboardTileSizeSettingSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+					onProgressChanged: function() {
+						dashboardTileSize = dashboardTileSizeSettingSlider.getProgress() + minDashboardTileSize;
+						dashboardTileSizeSettingTitle.setText("Dashboard tile size: | Screen width / " + dashboardTileSize);
+					}
+				});
+                var dialogLayout = new LinearLayout_(CONTEXT);
+                dialogLayout.setBackgroundDrawable(backgroundGradient());
+                dialogLayout.setOrientation(LinearLayout_.VERTICAL);
+                dialogLayout.setPadding(10, 10, 10, 10);
+                dialogLayout.addView(dashboardTileSizeDialogTitle);
+                dialogLayout.addView(clientTextView("\n"));
+                dialogLayout.addView(dashboardTileSizeSettingTitle);
+                dialogLayout.addView(dashboardTileSizeSettingSlider);
+                dialogLayout.addView(btn);
+                var dialog = new Dialog_(CONTEXT);
+                dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+                dialog.setTitle("Change Dashboard tile size");
+                dialog.setContentView(dialogLayout);
+                dialog.show();
+                btn.setOnClickListener(new View_.OnClickListener() {
+                    onClick: function(view) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.setOnDismissListener(new DialogInterface_.OnDismissListener() {
+                    onDismiss: function() {
+                        VertexClientPE.saveMainSettings();
+                    }
+                });
+            } catch(e) {
+                print("Error: " + e);
+                VertexClientPE.showBugReportDialog(e);
+            }
+        }
+    });
+}
+
 VertexClientPE.showWebbrowserStartPageDialog = function() {
     CONTEXT.runOnUiThread(new Runnable_() {
         run: function() {
@@ -11715,17 +11765,28 @@ function settingsScreen() {
                         menuAnimationsSettingButton.setText("OFF");
                     }
                     menuAnimationsSettingButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-                        if(menuAnimationsSetting == "on") {
-                            menuAnimationsSetting = "off";
-                            menuAnimationsSettingButton.setText("OFF");
-                            VertexClientPE.saveMainSettings();
-                        } else if(menuAnimationsSetting == "off") {
-                            menuAnimationsSetting = "on";
-                            menuAnimationsSettingButton.setText("ON");
-                            VertexClientPE.saveMainSettings();
-                        }
-                    }
+						onClick: function(viewarg) {
+							if(menuAnimationsSetting == "on") {
+								menuAnimationsSetting = "off";
+								menuAnimationsSettingButton.setText("OFF");
+								VertexClientPE.saveMainSettings();
+							} else if(menuAnimationsSetting == "off") {
+								menuAnimationsSetting = "on";
+								menuAnimationsSettingButton.setText("ON");
+								VertexClientPE.saveMainSettings();
+							}
+						}
+                    }));
+					
+					var dashboardTitle = clientSectionTitle("Dashboard", "rainbow");
+                    
+					var dashboardTileSizeSettingFunc = new settingButton("Tile size", "Sets the Dashboard tile style.");
+                    var dashboardTileSizeSettingButton = dashboardTileSizeSettingFunc.getButton();
+                    dashboardTileSizeSettingButton.setText("Change");
+                    dashboardTileSizeSettingButton.setOnClickListener(new View_.OnClickListener({
+						onClick: function(viewarg) {
+							VertexClientPE.showDashboardTileSizeDialog();
+						}
                     }));
 					
 					var commandsTitle = clientSectionTitle("Commands", "rainbow");
@@ -11883,6 +11944,8 @@ function settingsScreen() {
 					VertexClientPE.addView(settingsMenuLayout, menuTypeSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, sizeSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, menuAnimationsSettingFunc);
+					settingsMenuLayout.addView(dashboardTitle);
+					VertexClientPE.addView(settingsMenuLayout, dashboardTileSizeSettingFunc);
 					settingsMenuLayout.addView(commandsTitle);
 					VertexClientPE.addView(settingsMenuLayout, commandsSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, cmdPrefixFunc);
