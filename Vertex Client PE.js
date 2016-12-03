@@ -3,7 +3,7 @@
  * @name Vertex Client PE
  * @version v1.10
  * @author peacestorm (@AgameR_Modder)
- * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36
+ * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36, AutoGrind
  *
  * Thanks to NoCopyrightSounds and all artists for the music!
  *
@@ -8968,9 +8968,6 @@ function tabGUICategoryButton(category, layout, layoutToBeOpened, layoutMain) {
 							if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
 								return;
 							}
-							if(element.getUnlockDay && !sharedPref.getBoolean("VertexClientPE.days." + element.getUnlockDay().toString() + ".unlocked", false)) {
-								return;
-							}
                             layoutToBeOpened1.addView(new modButton(element, true));
                         }
                     });
@@ -12636,8 +12633,8 @@ function christmasScreen() {
 				circleButton.setSingleLine();
 				
 				var daysLeft;
-				if(VertexClientPE.day <= 25) {
-					daysLeft = 25 - VertexClientPE.day;
+				if(VertexClientPE.Utils.day <= 25) {
+					daysLeft = 25 - VertexClientPE.Utils.day;
 				}
 				
 				var circleText;
