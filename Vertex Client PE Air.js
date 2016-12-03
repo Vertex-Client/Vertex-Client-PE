@@ -3,7 +3,7 @@
  * @name Vertex Client PE (Air)
  * @version v1.10
  * @author peacestorm (@AgameR_Modder)
- * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36
+ * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36, AutoGrind
  *
  * Thanks to NoCopyrightSounds and all artists for the music!
  *
@@ -7010,7 +7010,7 @@ function informationScreen() {
                     informationMenuScrollView.addView(informationMenuLayout);
                     informationMenuLayout1.addView(informationMenuScrollView);
                     
-                    var informationText = clientTextView("\u00A9 peacestorm, imYannic, _TXMO, LPMG and Astro36 | 2015 - 2016. Some rights reserved.\nThanks to @_TXMO for the original button graphics and @imYannic for some other graphic designs.", true);
+                    var informationText = clientTextView("\u00A9 peacestorm, imYannic, _TXMO, LPMG, Astro36 and AutoGrind | 2015 - 2016. Some rights reserved.\nThanks to @_TXMO for the original button graphics and @imYannic for some other graphic designs.", true);
                     
                     var enterOne = clientTextView("\n");
                     var hrView = clientHR();
@@ -7534,8 +7534,8 @@ function christmasScreen() {
 				circleButton.setSingleLine();
 				
 				var daysLeft;
-				if(VertexClientPE.day <= 25) {
-					daysLeft = 25 - VertexClientPE.day;
+				if(VertexClientPE.Utils.day <= 25) {
+					daysLeft = 25 - VertexClientPE.Utils.day;
 				}
 				
 				var circleText;
