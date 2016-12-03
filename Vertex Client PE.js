@@ -1954,7 +1954,7 @@ var fireAura = {
 
 var autoSword = {
     name: "AutoSword",
-    desc: "Automatically chooses the best sword for you when attacking entities if available.",
+    desc: "Automatically selects the best sword for you when attacking entities if available.",
     category: VertexClientPE.category.COMBAT,
     type: "Mod",
     state: false,
@@ -3161,12 +3161,14 @@ var liquidWalk = {
         this.state = !this.state;
     },
     onTick: function() {
-		if(Level.getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) == 8 || Level.getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) == 9 || Level.getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) == 10 || Level.getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) == 10) {
+		if (getPlayerY() - parseInt(getPlayerY()) > 0.8 && VertexClientPE.Utils.Block.isLiquid(getTile(getPlayerX(), getPlayerY(), getPlayerZ()))) {
+            Entity.setPosition(getPlayerEnt(), getPlayerX(),
+            parseInt(getPlayerY()) + 1, getPlayerZ());
+            VertexClientPE.debugMessage("Teleported player");
+        }
+        if (Level.getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) == 8 || Level.getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) == 9 || Level.getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) == 10 || Level.getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) == 10) {
             setVelY(Player.getEntity(), 0);
         }
-        if (getPlayerY() - parseInt(getPlayerY()) > 0.8 && VertexClientPE.Utils.Block.isLiquid(getTile(getPlayerX(), getPlayerY(), getPlayerZ()))) {
-			Entity.setPosition(getPlayerEnt(), getPlayerX(), parseInt(getPlayerY()) + 1, getPlayerZ());
-		}
 	}
 }
 
@@ -4128,6 +4130,9 @@ var letItSnow = {
         this.state = !this.state;
     },
     onTick: function() {
+		var x = getPlayerX();
+		var y = getPlayerY();
+		var z = getPlayerZ();
 		for(var xI = -2; xI <= 2; xI++) {
 			for(var yI = 0; yI <= 2; yI++) {
 				for(var zI = -2; zI <= 2; zI++) {
