@@ -12674,7 +12674,7 @@ function christmasScreen() {
 
                 layout.addView(clientScreenTitle("Christmas\n"));
                 layout.addView(frameLayout);
-                layout.addView(clientTextView("\nMerry Christmas & Happy New Year! We wish you an amazing 2017!", true));
+                layout.addView(clientTextView("\nMerry Christmas & Happy New Year! We wish you an amazing " + (VertexClientPE.Utils.year + 1).toString() + "!", true));
                 layout.setOrientation(1);
                 layout.setPadding(dip2px(16), dip2px(16), dip2px(16), dip2px(16));
 
