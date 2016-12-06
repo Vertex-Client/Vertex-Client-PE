@@ -196,6 +196,7 @@ var shortcutUIHeightSetting = 3;
 var mainButtonTapSetting = "menu";
 var autoWalkDirection = "forward";
 var dashboardTileSize = 5;
+var spamUseRandomMsgSetting = "off";
 //------------------------------------
 var combatName = "Combat";
 var buildingName = "Building";
@@ -682,7 +683,7 @@ var flightMsgShown = false;
 
 var stackDropState = false;
 var fancyChatState = false;
-var delaySpammerState = false;
+var autoSpammerState = false;
 var autoSwordState = false;
 var yesCheatPlusState = false;
 var chestESPState = false;
@@ -2360,9 +2361,29 @@ var autoSpammer = {
     type: "Mod",
     state: false,
     getSettingsLayout: function() {
+		var spamUseRandomMsgSettingCheckBox = new CheckBox_(CONTEXT);
+		spamUseRandomMsgSettingCheckBox.setChecked(spamUseRandomMsgSetting=="on");
+		spamUseRandomMsgSettingCheckBox.setText("Use random messages instead of the custom message");
+		if(themeSetting == "white") {
+			spamUseRandomMsgSettingCheckBox.setTextColor(Color_.BLACK);
+		} else {
+			spamUseRandomMsgSettingCheckBox.setTextColor(Color_.WHITE);
+		}
+		spamUseRandomMsgSettingCheckBox.setTypeface(VertexClientPE.font);
+		
+		if(fontSetting == "minecraft") {
+			MinecraftButtonLibrary.addMinecraftStyleToTextView(spamUseRandomMsgSettingCheckBox);
+		}
+		spamUseRandomMsgSettingCheckBox.setOnClickListener(new View_.OnClickListener() {
+			onClick: function(v) {
+				spamUseRandomMsgSetting = v.isChecked()?"on":"off";
+				VertexClientPE.saveMainSettings();
+			}
+		});
+		
         var autoSpammerMessageLayout = new LinearLayout_(CONTEXT);
         autoSpammerMessageLayout.setOrientation(1);
-        var autoSpammerMessageTitle = clientTextView("Message:");
+        var spamMessageTitle = clientTextView("Custom message:");
         var spamMessageInput = clientEditText();
         spamMessageInput.setText(spamMessage);
         spamMessageInput.setTextColor(Color_.WHITE);
@@ -2372,8 +2393,24 @@ var autoSpammer = {
                 spamMessage = spamMessageInput.getText();
             }
         });
-        autoSpammerMessageLayout.addView(autoSpammerMessageTitle);
+		
+		var spamDelayTimeTitle = clientTextView("Delay time: | " + spamDelayTime + " seconds");
+        var spamDelayTimeSlider = new SeekBar_(CONTEXT);
+        spamDelayTimeSlider.setProgress(spamDelayTime);
+        spamDelayTimeSlider.setMax(60);
+        spamDelayTimeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            onProgressChanged: function() {
+                spamDelayTime = spamDelayTimeSlider.getProgress();
+                spamDelayTimeTitle.setText("Delay time: | " + spamDelayTime + " seconds");
+            }
+        });
+		
+        autoSpammerMessageLayout.addView(spamUseRandomMsgSettingCheckBox);
+        autoSpammerMessageLayout.addView(spamMessageTitle);
         autoSpammerMessageLayout.addView(spamMessageInput);
+        autoSpammerMessageLayout.addView(spamDelayTimeTitle);
+        autoSpammerMessageLayout.addView(spamDelayTimeSlider);
+		
         return autoSpammerMessageLayout;
     },
     isStateMod: function() {
@@ -2384,51 +2421,10 @@ var autoSpammer = {
     },
     onToggle: function() {
         this.state = !this.state;
+		autoSpammerState = this.state;
     },
     onTick: function() {
-        if(fancyChatState) {
-            VertexClientPE.fancyChat(spamMessage);
-        } else {
-            Server.sendChat(spamMessage);
-        }
-        if(yesCheatPlusState) {
-            Server.sendChat(" ");
-        }
-    }
-}
-
-var delaySpammer = {
-    name: "DelaySpammer",
-    desc: "Automatically spams the chat with a delay and randomly generated messages.",
-    category: VertexClientPE.category.CHAT,
-    type: "Mod",
-    state: false,
-    getSettingsLayout: function() {
-        var delaySpammerDelayTimeLayout = new LinearLayout_(CONTEXT);
-        delaySpammerDelayTimeLayout.setOrientation(1);
-        var delaySpammerDelayTimeTitle = clientTextView("Delay time: | " + spamDelayTime + " seconds");
-        var delaySpammerDelayTimeSlider = new SeekBar_(CONTEXT);
-        delaySpammerDelayTimeSlider.setProgress(spamDelayTime);
-        delaySpammerDelayTimeSlider.setMax(60);
-        delaySpammerDelayTimeLayout.addView(delaySpammerDelayTimeTitle);
-        delaySpammerDelayTimeLayout.addView(delaySpammerDelayTimeSlider);
-        delaySpammerDelayTimeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            onProgressChanged: function() {
-                spamDelayTime = delaySpammerDelayTimeSlider.getProgress();
-                delaySpammerDelayTimeTitle.setText("Delay time: | " + spamDelayTime + " seconds");
-            }
-        });
-        return delaySpammerDelayTimeLayout;
-    },
-    isStateMod: function() {
-        return true;
-    },
-    onModDialogDismiss: function() {
-        VertexClientPE.saveMainSettings();
-    },
-    onToggle: function() {
-        this.state = !this.state;
-        delaySpammerState = this.state;
+        VertexClientPE.autoSpammer();
     }
 }
 
@@ -4232,7 +4228,6 @@ VertexClientPE.registerModule(autoSpammer);
 VertexClientPE.registerModule(chatLog);
 VertexClientPE.registerModule(chatRepeat);
 VertexClientPE.registerModule(chatSpeak);
-VertexClientPE.registerModule(delaySpammer);
 VertexClientPE.registerModule(fancyChat);
 VertexClientPE.registerModule(homeCommand);
 //MISC
@@ -5542,11 +5537,11 @@ VertexClientPE.showModDialog = function(mod, btn) {
                     dialogExtraLayoutLeft = new LinearLayout_(CONTEXT);
                     dialogExtraLayoutLeft.setOrientation(1);
                     dialogExtraLayoutLeft.setGravity(Gravity_.CENTER);
-                    dialogExtraLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2, display.heightPixels / 10));
+                    dialogExtraLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - 10, display.heightPixels / 10));
                     dialogExtraLayoutRight = new LinearLayout_(CONTEXT);
                     dialogExtraLayoutRight.setOrientation(1);
                     dialogExtraLayoutRight.setGravity(Gravity_.CENTER);
-                    dialogExtraLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2, display.heightPixels / 10));
+                    dialogExtraLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - 10, display.heightPixels / 10));
                     dialogExtraLayout.addView(dialogExtraLayoutLeft);
                     dialogExtraLayout.addView(dialogExtraLayoutRight);
                     closeButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 3, display.heightPixels / 10));
@@ -7344,14 +7339,19 @@ VertexClientPE.ride = function(entity) {
     rideAnimal(getPlayerEnt(), entity);
 }
 
-VertexClientPE.delaySpammer = function() {
-    var delaySpamMsg = Math.random().toString(36).replace(/[^a-z]+/g, '');
+VertexClientPE.autoSpammer = function() {
+    var runSpamMsg;
+	if(spamUseRandomMsgSetting == "on") {
+		runSpamMsg = Math.random().toString(36).replace(/[^a-z]+/g, '');
+	} else {
+		runSpamMsg = spamMessage;
+	}
     var username = Player.getName(getPlayerEnt());
     Entity.setNameTag(getPlayerEnt(), "");
     if(fancyChatState) {
-        VertexClientPE.fancyChat(delaySpamMsg);
+        VertexClientPE.fancyChat(runSpamMsg);
     } else {
-        Server.sendChat(delaySpamMsg);
+        Server.sendChat(runSpamMsg);
     }
     Entity.setNameTag(getPlayerEnt(), username);
 }
@@ -7594,6 +7594,7 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + mainButtonTapSetting.toString());
     outWrite.append("," + autoWalkDirection.toString());
     outWrite.append("," + dashboardTileSize.toString());
+    outWrite.append("," + spamUseRandomMsgSetting.toString());
 
     outWrite.close();
     
@@ -7765,6 +7766,9 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[49] != null && arr[49] != undefined) {
             dashboardTileSize = arr[49];
+        }
+		if (arr[50] != null && arr[50] != undefined) {
+            spamUseRandomMsgSetting = arr[50];
         }
         fos.close();
         VertexClientPE.loadAutoSpammerSettings();
@@ -9916,8 +9920,8 @@ VertexClientPE.specialTick = function() {
         run: function() {
             Thread_.sleep(1000 * spamDelayTime);
             if(VertexClientPE.playerIsInGame) {
-                if(delaySpammerState) {
-                    VertexClientPE.delaySpammer();
+                if(autoSpammerState) {
+                    VertexClientPE.autoSpammer();
                 }
             }
             VertexClientPE.specialTick();
