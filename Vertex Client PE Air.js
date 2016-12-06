@@ -196,6 +196,7 @@ var shortcutUIHeightSetting = 3;
 var mainButtonTapSetting = "menu";
 var autoWalkDirection = "forward";
 var dashboardTileSize = 5;
+var spamUseRandomMsgSetting = "off";
 
 var display = new DisplayMetrics_();
 CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
@@ -3307,6 +3308,7 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + mainButtonTapSetting.toString());
     outWrite.append("," + autoWalkDirection.toString());
 	outWrite.append("," + dashboardTileSize.toString());
+	outWrite.append("," + spamUseRandomMsgSetting.toString());
 
     outWrite.close();
 }
@@ -3475,6 +3477,9 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[49] != null && arr[49] != undefined) {
             dashboardTileSize = arr[49];
+        }
+		if (arr[50] != null && arr[50] != undefined) {
+            spamUseRandomMsgSetting = arr[50];
         }
         fos.close();
 		VertexClientPE.font = fontSetting=="minecraft"?Typeface_.createFromFile(new File_(PATH, "minecraft.ttf")):VertexClientPE.defaultFont;
