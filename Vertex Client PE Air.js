@@ -2683,6 +2683,16 @@ VertexClientPE.showWhatsNewDialog = function() {
     );
 }
 
+VertexClientPE.showTipDialog = function() {
+	var openText = "click on the main button";
+	
+    VertexClientPE.showBasicDialog("Shortcuts", clientTextView("Are there any mods you use regularly? Have you tried out Shortcuts yet? The Shortcuts allow you to toggle mods and tiles faster than ever! Please go to the Help screen (" + openText + " --> Dashboard --> Help) to find out how to add them."),
+        function() {
+            VertexClientPE.setHasShownTipDialog(true);
+        }
+    );
+}
+
 var consoleInput;
 
 VertexClientPE.showJavascriptConsoleDialog = function() {
@@ -5249,6 +5259,9 @@ VertexClientPE.showStartScreenBar = function() {
 					if(userIsNewToCurrentVersion == true) {
 						VertexClientPE.showWhatsNewDialog();
 					}
+					if(!VertexClientPE.getHasShownTipDialog()) {
+						VertexClientPE.showTipDialog();
+					}
 					
                     var mainMenuListLayout = new LinearLayout_(CONTEXT);
                     mainMenuListLayout.setOrientation(LinearLayout_.HORIZONTAL);
@@ -5851,6 +5864,18 @@ VertexClientPE.setHasUsedCurrentVersion = function(opt) {
     if(opt == false) {
         editor.putString("VertexClientPE.lastUsedVersion", null);
     }
+    editor.commit();
+}
+
+VertexClientPE.getHasShownTipDialog = function() {
+    return sharedPref.getBoolean("VertexClientPE.hasShownTipDialog", false);
+}
+
+VertexClientPE.setHasShownTipDialog = function(opt) {
+	if(opt != true && opt != false) {
+		return;
+	}
+    editor.putBoolean("VertexClientPE.hasShownTipDialog", opt);
     editor.commit();
 }
 
