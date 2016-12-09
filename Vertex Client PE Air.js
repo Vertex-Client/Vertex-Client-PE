@@ -5922,7 +5922,7 @@ VertexClientPE.setup = function() {
 						
 						VertexClientPE.loadAddons();
 						
-						if(day == 25 && month == java.util.Calendar.DECEMBER) {
+						if(VertexClientPE.Utils.day == 25 && VertexClientPE.Utils.month == java.util.Calendar.DECEMBER) {
 							VertexClientPE.showChristmasToast();
 						}
 						
