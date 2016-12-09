@@ -197,6 +197,7 @@ var mainButtonTapSetting = "menu";
 var autoWalkDirection = "forward";
 var dashboardTileSize = 5;
 var spamUseRandomMsgSetting = "off";
+var buttonStrokeThicknessSetting = 2;
 
 var display = new DisplayMetrics_();
 CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
@@ -2765,6 +2766,57 @@ VertexClientPE.showJavascriptConsoleDialog = function() {
     });
 }
 
+VertexClientPE.showButtonStrokeThicknessDialog = function() {
+    CONTEXT.runOnUiThread(new Runnable_() {
+        run: function() {
+            try {
+                var buttonStrokeThicknessDialogTitle = clientTextView("Change button stroke thickness", true);
+                var btn = clientButton("Close");
+				var buttonStrokeThicknessSettingDialogTitle = clientTextView("Button stroke thickness: | " + buttonStrokeThicknessSetting + " pixel(s)");
+				var buttonStrokeThicknessSettingDialogSlider = new SeekBar(CONTEXT);
+				var minButtonStrokeThickness = 1;
+				var maxButtonStrokeThickness = 10;
+				buttonStrokeThicknessSettingDialogSlider.setProgress(buttonStrokeThicknessSetting - minButtonStrokeThickness);
+				buttonStrokeThicknessSettingDialogSlider.setMax(maxButtonStrokeThickness - minButtonStrokeThickness);
+				buttonStrokeThicknessSettingDialogSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+					onProgressChanged: function() {
+						buttonStrokeThicknessSetting = buttonStrokeThicknessSettingDialogSlider.getProgress() + minButtonStrokeThickness;
+						buttonStrokeThicknessSettingDialogTitle.setText("Button stroke thickness: | " + buttonStrokeThicknessSetting + " pixel(s)");
+					}
+				});
+                var dialogLayout = new LinearLayout_(CONTEXT);
+                dialogLayout.setBackgroundDrawable(backgroundGradient());
+                dialogLayout.setOrientation(LinearLayout_.VERTICAL);
+                dialogLayout.setPadding(10, 10, 10, 10);
+                dialogLayout.addView(buttonStrokeThicknessDialogTitle);
+                dialogLayout.addView(clientTextView("\n"));
+                dialogLayout.addView(buttonStrokeThicknessSettingDialogTitle);
+                dialogLayout.addView(buttonStrokeThicknessSettingDialogSlider);
+                dialogLayout.addView(btn);
+                var dialog = new Dialog_(CONTEXT);
+                dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+                dialog.setTitle("Change button stroke thickness");
+                dialog.setContentView(dialogLayout);
+                dialog.show();
+                btn.setOnClickListener(new View_.OnClickListener() {
+                    onClick: function(view) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.setOnDismissListener(new DialogInterface_.OnDismissListener() {
+                    onDismiss: function() {
+                        VertexClientPE.saveMainSettings();
+                    }
+                });
+            } catch(e) {
+                print("Error: " + e);
+                VertexClientPE.showBugReportDialog(e);
+            }
+        }
+    });
+}
+
 VertexClientPE.showDashboardTileSizeDialog = function() {
     CONTEXT.runOnUiThread(new Runnable_() {
         run: function() {
@@ -3319,6 +3371,7 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + autoWalkDirection.toString());
 	outWrite.append("," + dashboardTileSize.toString());
 	outWrite.append("," + spamUseRandomMsgSetting.toString());
+	outWrite.append("," + buttonStrokeThicknessSetting.toString());
 
     outWrite.close();
 }
@@ -3490,6 +3543,9 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[50] != null && arr[50] != undefined) {
             spamUseRandomMsgSetting = arr[50];
+        }
+		if (arr[51] != null && arr[51] != undefined) {
+            buttonStrokeThicknessSetting = arr[51];
         }
         fos.close();
 		VertexClientPE.font = fontSetting=="minecraft"?Typeface_.createFromFile(new File_(PATH, "minecraft.ttf")):VertexClientPE.defaultFont;
@@ -6596,6 +6652,15 @@ function settingsScreen() {
                     }
                     }));
 					
+					var buttonStrokeThicknessSettingFunc = new settingButton("Button stroke thickness", "Change the button stroke thickness.");
+                    var buttonStrokeThicknessSettingButton = buttonStrokeThicknessSettingFunc.getButton();
+                    buttonStrokeThicknessSettingButton.setText("Change");
+                    buttonStrokeThicknessSettingButton.setOnClickListener(new View_.OnClickListener({
+						onClick: function(viewarg) {
+							VertexClientPE.showButtonStrokeThicknessDialog();
+						}
+                    }));
+					
 					var backgroundStyleSettingFunc = new settingButton("Background style", "Changes the background style.");
                     var backgroundStyleSettingButton = backgroundStyleSettingFunc.getButton();
                     if(backgroundStyleSetting == "normal") {
@@ -6895,6 +6960,7 @@ function settingsScreen() {
 					VertexClientPE.addView(settingsMenuLayout, themeSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, useLightThemeSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, buttonStyleSettingFunc);
+					VertexClientPE.addView(settingsMenuLayout, buttonStrokeThicknessSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, backgroundStyleSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, transparentBgSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, mcpeGUISettingFunc);
