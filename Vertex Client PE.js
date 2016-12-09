@@ -10579,6 +10579,7 @@ VertexClientPE.showDirectUseAccountDialog = function() {
 }
 
 VertexClientPE.showAccountManager = function(showBackButton) {
+	VertexClientPE.menuIsShowing = true;
     VertexClientPE.loadAccounts();
     var display = new DisplayMetrics_();
     CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
@@ -11022,12 +11023,6 @@ function newLevel() {
         lagTimer = 0;
         CONTEXT.runOnUiThread(new Runnable_() {
             run: function() {
-                if(accountManager != null) {
-                    if(accountManager.isShowing()) {
-                        accountManager.dismiss();
-                        exitAccountManagerUI.dismiss();
-                    }
-                }
                 if(accountManagerGUI != null) {
                     if(accountManagerGUI.isShowing()) {
                         accountManagerGUI.dismiss();
@@ -14781,9 +14776,9 @@ function showAccountManagerButton() {
     layout.setOrientation(1);
     var display = new DisplayMetrics_();
     CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
-    var menuBtn = clientButton("AM");
-    menuBtn.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(40), dip2px(40)));
-    menuBtn.setOnClickListener(new View_.OnClickListener({
+    var acBtn = clientButton("AM");
+    acBtn.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(40), dip2px(40)));
+    acBtn.setOnClickListener(new View_.OnClickListener({
 		onClick: function(viewarg ){
 			if(hacksList != null) {
 				hacksList.dismiss();
@@ -14797,7 +14792,7 @@ function showAccountManagerButton() {
 			exitAccountManager(false);
 		}
     }));
-    layout.addView(menuBtn);
+    layout.addView(acBtn);
      
     accountManagerGUI = new PopupWindow_(layout, dip2px(40), dip2px(40));
     if(menuAnimationsSetting == "on") {
