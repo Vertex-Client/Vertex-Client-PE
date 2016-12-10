@@ -5369,8 +5369,9 @@ VertexClientPE.showShortcutManagerDialog = function() {
 				var shortcutUIHeightSettingTitle = clientTextView("Shortcut UI height: | " + shortcutUIHeightSetting + " * shortcut button size");
 				var shortcutUIHeightSettingSlider = new SeekBar(CONTEXT);
 				var minShortcutUIHeight = 1;
+				var maxShortcutUIHeight = 20;
 				shortcutUIHeightSettingSlider.setProgress(shortcutUIHeightSetting - minShortcutUIHeight);
-				shortcutUIHeightSettingSlider.setMax(10 - minShortcutUIHeight);
+				shortcutUIHeightSettingSlider.setMax(maxShortcutUIHeight - minShortcutUIHeight);
 				shortcutUIHeightSettingSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 					onProgressChanged: function() {
 						shortcutUIHeightSetting = shortcutUIHeightSettingSlider.getProgress() + minShortcutUIHeight;
