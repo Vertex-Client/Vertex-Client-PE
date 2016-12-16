@@ -1,7 +1,7 @@
 /**
  * ##################################################################################################
  * @name Vertex Client PE (Air)
- * @version v1.10
+ * @version v2.0
  * @author peacestorm (@AgameR_Modder)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36, AutoGrind
  *
@@ -508,8 +508,8 @@ VertexClientPE.isRemote = function() {
 
 VertexClientPE.playerIsInGame = false;
 
-VertexClientPE.currentVersion = "1.10";
-VertexClientPE.currentVersionDesc = "The Christmas Update";
+VertexClientPE.currentVersion = "2.0";
+VertexClientPE.currentVersionDesc = "The Stability Update";
 VertexClientPE.targetVersion = "MCPE v0.16.x alpha";
 VertexClientPE.minVersion = "0.16.0";
 VertexClientPE.edition = "Air";
@@ -2127,6 +2127,73 @@ VertexClientPE.showShortcutManagerDialog = function() {
     });
 }
 
+VertexClientPE.showSettingSelectorDialog = function(sRightButton, dialogTitle, selectionArray, currentSelection, varToChange) {
+    CONTEXT.runOnUiThread(new Runnable_() {
+        run: function() {
+            try {
+                VertexClientPE.loadMainSettings();
+				var settingsTitle = clientScreenTitle("Settings");
+                var dTitle = clientTextView(dialogTitle, true);
+				dTitle.setGravity(Gravity_.CENTER);
+				var closeEnter = clientTextView("\n");
+                var closeButton = clientButton("Close");
+                closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
+				
+				var dScrollView = new ScrollView_(CONTEXT);
+				var dScrollInside = new LinearLayout_(CONTEXT);
+				dScrollInside.setOrientation(1);
+				dScrollView.addView(dScrollInside);
+				
+                var dialogLayout = new LinearLayout_(CONTEXT);
+                dialogLayout.setBackgroundDrawable(backgroundGradient());
+                dialogLayout.setOrientation(LinearLayout_.VERTICAL);
+                dialogLayout.setPadding(10, 10, 10, 10);
+                dialogLayout.addView(settingsTitle);
+                dialogLayout.addView(dTitle);
+				dialogLayout.addView(dScrollView);
+				
+				//add buttons
+				selectionArray.forEach(function(element, index, array) {
+					var sButton = clientButton(element);
+					sButton.setOnClickListener(new View_.OnClickListener() {
+						onClick: function(viewArg) {
+							eval(varToChange + " = '" + element.toLowerCase() + "'");
+							sRightButton.setText(element);
+							dialog.dismiss();
+						}
+					});
+					
+					dScrollInside.addView(sButton);
+				});
+				
+				//dialogLayout.addView(closeEnter);
+				//dialogLayout.addView(closeButton);
+				
+                var dialog = new Dialog_(CONTEXT);
+                dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
+                dialog.setContentView(dialogLayout);
+                dialog.setTitle(dialogTitle);
+				dialog.setOnDismissListener(new DialogInterface_.OnDismissListener() {
+                    onDismiss: function() {
+                        VertexClientPE.saveMainSettings();
+                    }
+                });
+                dialog.show();
+                var window = dialog.getWindow();
+                window.setLayout(display.widthPixels, display.heightPixels);
+                closeButton.setOnClickListener(new View_.OnClickListener() {
+                    onClick: function(view) {
+                        dialog.dismiss();
+                    }
+                });
+            } catch(e) {
+                print("Error: " + e);
+                VertexClientPE.showBugReportDialog(e);
+            }
+        }
+    });
+}
+
 VertexClientPE.showSongDialog = function(song, songBtn, playBar) { //todo; remove/add song buttons from music player song layout when switching favorite
     CONTEXT.runOnUiThread(new Runnable_() {
         run: function() {
@@ -2234,7 +2301,9 @@ VertexClientPE.showSongDialog = function(song, songBtn, playBar) { //todo; remov
 }
 
 function capitalizeColorString(string) {
-    if(string == "green") {
+    if(string == "custom rgb") {
+		return "Custom RGB";
+	} else if(string == "green") {
 		return "Green";
 	} else if(string == "red") {
 		return "Red";
@@ -4653,6 +4722,59 @@ function settingButton(text, desc) {
     }
 }
 
+function settingSelector(text, desc, dialogTitle, selectionArray, currentSelection, varToChange) {
+    var settingButtonLayout = new LinearLayout_(CONTEXT);
+    settingButtonLayout.setOrientation(LinearLayout_.HORIZONTAL);
+    
+    var settingButtonLayoutLeft = new LinearLayout_(CONTEXT);
+    settingButtonLayoutLeft.setOrientation(1);
+    settingButtonLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
+    settingButtonLayout.addView(settingButtonLayoutLeft);
+    
+    var settingButtonLayoutMiddle = new LinearLayout_(CONTEXT);
+    settingButtonLayoutMiddle.setOrientation(1);
+    settingButtonLayoutMiddle.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
+    settingButtonLayout.addView(settingButtonLayoutMiddle);
+    
+    var settingButtonLayoutRight = new LinearLayout_(CONTEXT);
+    settingButtonLayoutRight.setOrientation(1);
+    settingButtonLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
+    settingButtonLayout.addView(settingButtonLayoutRight);
+    
+    var defaultTitle = clientTextView(text, true);
+    defaultTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
+    defaultTitle.setGravity(Gravity_.CENTER_VERTICAL);
+	
+    settingButtonLayoutLeft.addView(defaultTitle);
+	var defaultSettingsButton = clientButton(currentSelection, desc);
+    defaultSettingsButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
+	//defaultSettingsButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, android.R.layout.simple_spinner_dropdown_item, 0);
+	
+    settingButtonLayoutRight.addView(defaultSettingsButton);
+	
+	defaultSettingsButton.setOnClickListener(new View_.OnClickListener({
+        onClick: function(viewarg) {
+			VertexClientPE.showSettingSelectorDialog(defaultSettingsButton, dialogTitle, selectionArray, currentSelection, varToChange);
+        }
+    }));
+    
+    this.getName = function() {
+        return text;
+    }
+    
+    this.getButton = function() {
+        return defaultSettingsButton;
+    }
+    
+    this.getTitle = function() {
+        return defaultTitle;
+    }
+    
+    this.getLayout = function() {
+        return settingButtonLayout;
+    }
+}
+
 function coloredSubTitle(subtitle) // TextView with colored background (edited by peacestorm)
 {
     var bg = GradientDrawable_();
@@ -6512,80 +6634,9 @@ function settingsScreen() {
 					
 					var themeTitle = clientSectionTitle("Theme", "rainbow");
                     
-					var themeSettingFunc = new settingButton("Color", "Sets the Client's theme.");
-                    var themeSettingButton = themeSettingFunc.getButton();
-                    if(themeSetting == "green") {
-                        themeSettingButton.setText("Green");
-                    } else if(themeSetting == "red") {
-                        themeSettingButton.setText("Red");
-                    } else if(themeSetting == "blue") {
-                        themeSettingButton.setText("Blue");
-                    } else if(themeSetting == "purple") {
-                        themeSettingButton.setText("Purple");
-                    } else if(themeSetting == "violet") {
-                        themeSettingButton.setText("Violet");
-                    } else if(themeSetting == "yellow") {
-                        themeSettingButton.setText("Yellow");
-                    } else if(themeSetting == "orange") {
-                        themeSettingButton.setText("Orange");
-                    } else if(themeSetting == "brown") {
-                        themeSettingButton.setText("Brown");
-                    } else if(themeSetting == "grey") {
-                        themeSettingButton.setText("Grey");
-                    } else if(themeSetting == "white") {
-                        themeSettingButton.setText("White");
-                    } else if(themeSetting == "black") {
-                        themeSettingButton.setText("Black");
-                    }
-                    themeSettingButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-                        if(themeSetting == "green") {
-                            themeSetting = "red";
-                            themeSettingButton.setText("Red");
-                            VertexClientPE.saveMainSettings();
-                        } else if(themeSetting == "red") {
-                            themeSetting = "blue";
-                            themeSettingButton.setText("Blue");
-                            VertexClientPE.saveMainSettings();
-                        } else if(themeSetting == "blue") {
-                            themeSetting = "purple";
-                            themeSettingButton.setText("Purple");
-                            VertexClientPE.saveMainSettings();
-                        } else if(themeSetting == "purple") {
-                            themeSetting = "violet";
-                            themeSettingButton.setText("Violet");
-                            VertexClientPE.saveMainSettings();
-                        } else if(themeSetting == "violet") {
-                            themeSetting = "yellow";
-                            themeSettingButton.setText("Yellow");
-                            VertexClientPE.saveMainSettings();
-                        } else if(themeSetting == "yellow") {
-                            themeSetting = "orange";
-                            themeSettingButton.setText("Orange");
-                            VertexClientPE.saveMainSettings();
-                        } else if(themeSetting == "orange") {
-                            themeSetting = "brown";
-                            themeSettingButton.setText("Brown");
-                            VertexClientPE.saveMainSettings();
-                        } else if(themeSetting == "brown") {
-                            themeSetting = "grey";
-                            themeSettingButton.setText("Grey");
-                            VertexClientPE.saveMainSettings();
-                        } else if(themeSetting == "grey") {
-                            themeSetting = "white";
-                            themeSettingButton.setText("White");
-                            VertexClientPE.saveMainSettings();
-                        } else if(themeSetting == "white") {
-                            themeSetting = "black";
-                            themeSettingButton.setText("Black");
-                            VertexClientPE.saveMainSettings();
-                        } else if(themeSetting == "black") {
-                            themeSetting = "green";
-                            themeSettingButton.setText("Green");
-                            VertexClientPE.saveMainSettings();
-                        }
-                    }
-                    }));
+					var themeArray = [/*"Custom RGB", */"Green", "Red", "Blue", "Purple", "Violet", "Yellow", "Orange", "Brown", "Grey", "White", "Black"];
+					var themeSettingFunc = new settingSelector("Color", "Choose a color.", "Color Selector", themeArray, capitalizeColorString(themeSetting), "themeSetting");
+					var themeSettingButton = themeSettingFunc.getButton();
                     
                     var useLightThemeSettingFunc = new settingButton("Lighter theme colors", "Use light theme colors if available.");
                     var useLightThemeSettingButton = useLightThemeSettingFunc.getButton();
