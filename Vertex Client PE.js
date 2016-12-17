@@ -5423,11 +5423,16 @@ VertexClientPE.showSettingSelectorDialog = function(sRightButton, dialogTitle, s
                 closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
 				
 				var dScrollView = new ScrollView_(CONTEXT);
+				dScrollView.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT));
+				dScrollView.setScrollBarStyle(View_.SCROLLBARS_OUTSIDE_OVERLAY);
+				dScrollView.setFillViewport(true);
 				var dScrollInside = new LinearLayout_(CONTEXT);
+				dScrollInside.setGravity(Gravity_.CENTER);
 				dScrollInside.setOrientation(1);
 				dScrollView.addView(dScrollInside);
 				
                 var dialogLayout = new LinearLayout_(CONTEXT);
+				dialogLayout.setGravity(Gravity_.CENTER);
                 dialogLayout.setBackgroundDrawable(backgroundGradient());
                 dialogLayout.setOrientation(LinearLayout_.VERTICAL);
                 dialogLayout.setPadding(10, 10, 10, 10);
@@ -5435,20 +5440,50 @@ VertexClientPE.showSettingSelectorDialog = function(sRightButton, dialogTitle, s
                 dialogLayout.addView(dTitle);
 				dialogLayout.addView(dScrollView);
 				
-				//add buttons
-				selectionArray.forEach(function(element, index, array) {
-					var sButton = clientButton(element);
-					sButton.setOnClickListener(new View_.OnClickListener() {
-						onClick: function(viewArg) {
-							eval(varToChange + " = '" + element.toLowerCase() + "'");
-							sRightButton.setText(element);
-							dialog.dismiss();
-						}
-					});
-					
-					dScrollInside.addView(sButton);
-				});
+				var dialogTableLayout = new TableLayout_(CONTEXT);
+                var dialogTableRow;
+                var tempButton;
 				
+                selectionArray.forEach(function(element, index, array) {
+                    if(index % 2 == 1) {
+                        if(!dialogTableRow) {
+                            dialogTableRow = new TableRow_(CONTEXT);
+                        }
+                        tempButton = clientButton(element);
+                        tempButton.setLayoutParams(new TableRow_.LayoutParams(display.widthPixels / 2.5, LinearLayout_.LayoutParams.WRAP_CONTENT));
+                        tempButton.setPadding(0, 0, 0, 0);
+                        tempButton.setOnClickListener(new View_.OnClickListener() {
+							onClick: function(viewArg) {
+								eval(varToChange + " = '" + element.toLowerCase() + "'");
+								sRightButton.setText(element);
+								dialog.dismiss();
+							}
+						});
+                        dialogTableRow.addView(tempButton);
+                        dialogTableLayout.addView(dialogTableRow);
+                        dialogTableRow = null;
+                        tempButton = null;
+                    } else {
+                        dialogTableRow = new TableRow_(CONTEXT);
+                        tempButton = clientButton(element);
+                        tempButton.setLayoutParams(new TableRow_.LayoutParams(display.widthPixels / 2.5, LinearLayout_.LayoutParams.WRAP_CONTENT));
+                        tempButton.setPadding(0, 0, 0, 0);
+                        tempButton.setOnClickListener(new View_.OnClickListener() {
+							onClick: function(viewArg) {
+								eval(varToChange + " = '" + element.toLowerCase() + "'");
+								sRightButton.setText(element);
+								dialog.dismiss();
+							}
+						});
+                        dialogTableRow.addView(tempButton);
+                        tempButton = null;
+                    }
+                });
+                if(dialogTableRow != null) {
+                    dialogTableLayout.addView(dialogTableRow);
+                }
+				
+				dScrollInside.addView(dialogTableLayout);
 				//dialogLayout.addView(closeEnter);
 				//dialogLayout.addView(closeButton);
 				
