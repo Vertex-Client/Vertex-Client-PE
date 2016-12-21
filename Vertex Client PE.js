@@ -198,6 +198,7 @@ var autoWalkDirection = "forward";
 var dashboardTileSize = 5;
 var spamUseRandomMsgSetting = "off";
 var buttonStrokeThicknessSetting = 2;
+var hacksListPosSetting = "top-center";
 //------------------------------------
 var combatName = "Combat";
 var buildingName = "Building";
@@ -482,6 +483,27 @@ function screenChangeHook(screenName) {
             showTabGUI();
 			showShortcuts();
         }
+		CONTEXT.runOnUiThread(new Runnable_({
+			run: function() {
+				if(mainButtonTapSetting == "menu") {
+					if(VertexClientPE.menuIsShowing) {
+						menuBtn.setBackgroundDrawable(iconClickedClientGUI);
+					} else {
+						menuBtn.setBackgroundDrawable(iconClientGUI);
+					}
+				} else if(mainButtonTapSetting == "moredialog") {
+					menuBtn.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+					menuBtn.setText("\u2022\u2022\u2022");
+					menuBtn.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
+					menuBtn.setMarqueeRepeatLimit(-1);
+					menuBtn.setSingleLine();
+					menuBtn.setHorizontallyScrolling(true);
+					menuBtn.setSelected(true);
+				}
+				GUI.setTouchable(true);
+				GUI.update();
+			}
+		}));
     } else {
         if(hacksList != null) {
             CONTEXT.runOnUiThread(new Runnable_({
@@ -518,6 +540,16 @@ function screenChangeHook(screenName) {
 					}));
 				}
 			}
+		}
+		if(!VertexClientPE.menuIsShowing) {
+			CONTEXT.runOnUiThread(new Runnable_({
+				run: function() {
+					menuBtn.setText("");
+					menuBtn.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+					GUI.setTouchable(false);
+					GUI.update();
+				}
+			}));
 		}
     }
 	if(screenName == ScreenType.pause_screen) {
@@ -1348,7 +1380,7 @@ VertexClientPE.Render.deinitViews = function() {
     });
 }
 
-VertexClientPE.drawCubeShapedBox = function(gl, x, y, z) {
+VertexClientPE.drawCubeShapedBox = function(gl, x, y, z) { //many thanks to GodSoft029, be sure to follow him on Twitter
     var vertex = [
         0, 0, 0,
         1.0, 0, 0,
@@ -1385,11 +1417,13 @@ VertexClientPE.drawCubeShapedBox = function(gl, x, y, z) {
     gl.glTranslatef(x, y, z);
     gl.glFrontFace(GL10.GL_CCW);
     gl.glEnable(GL10.GL_BLEND);
+	gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
     gl.glLineWidth(4); 
     gl.glColor4f(0.0, 1.0, 0.0, 0.0);
     gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
     gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
     gl.glDrawElements(GL10.GL_LINES, index.length, GL10.GL_UNSIGNED_SHORT, indexBuffer);
+	gl.glDisable(GL10.GL_LINE_SMOOTH);
     gl.glTranslatef(-x, -y, -z);
 }
 
@@ -4459,7 +4493,7 @@ function useItem(x, y, z, itemId, blockId, side, blockDamage) {
             element.onUseItem(x, y, z, itemId, blockId, side, blockDamage);
         }
     });
-    if(blockId == 54) {
+    if(itemId == 54) {
         if(chestESPState) {
             new Thread_(new Runnable_({
                 run: function() {
@@ -7901,6 +7935,7 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + dashboardTileSize.toString());
     outWrite.append("," + spamUseRandomMsgSetting.toString());
     outWrite.append("," + buttonStrokeThicknessSetting.toString());
+    outWrite.append("," + hacksListPosSetting.toString());
 
     outWrite.close();
     
@@ -8078,6 +8113,9 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[51] != null && arr[51] != undefined) {
             buttonStrokeThicknessSetting = arr[51];
+        }
+		if (arr[52] != null && arr[52] != undefined) {
+            hacksListPosSetting = arr[52];
         }
         fos.close();
         VertexClientPE.loadAutoSpammerSettings();
@@ -10421,9 +10459,9 @@ VertexClientPE.showStartScreenBar = function() {
         CONTEXT.runOnUiThread(new Runnable_({
             run: function() {
                 try {
-                    var snowEffect = new SnowEffect();
-                    snowEffect.start();
-
+					var snowEffect = new SnowEffect();
+					snowEffect.start();
+					
 					if(userIsNewToCurrentVersion == true) {
 						VertexClientPE.showWhatsNewDialog();
 					}
@@ -10530,12 +10568,12 @@ VertexClientPE.showStartScreenBar = function() {
 						mainMenuTextList.setBackgroundDrawable(backgroundSpecial("bottomright", "#212121|#ffffff"));
 						mainMenuTextList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
 					}
-
-                mainMenuTextList.setOnDismissListener(new PopupWindow_.OnDismissListener({
-                    onDismiss() {
-                        snowEffect.finish();
-                    }
-                }));
+					
+					mainMenuTextList.setOnDismissListener(new PopupWindow_.OnDismissListener({
+						onDismiss() {
+							snowEffect.finish();
+						}
+					}));
                 } catch(error) {
                     print('An error occurred: ' + error);
                 }
@@ -11541,33 +11579,6 @@ function settingsScreen() {
 							pauseUtilitiesUI.dismiss();
 						}
 					}
-					
-					/* var tabWidget = new android.widget.TabWidget(CONTEXT);
-					tabWidget.setId(android.R.id.tabs);
-
-					// Create the FrameLayout (the content area)
-					var frame = new FrameLayout_(CONTEXT);
-					frame.setId(android.R.id.tabcontent);
-					var frameLayoutParams = new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.MATCH_PARENT, LinearLayout_.LayoutParams.WRAP_CONTENT, 1);
-					frameLayoutParams.setMargins(4, 4, 4, 4);
-					frame.setLayoutParams(frameLayoutParams);
-
-					// Create the container for the above widgets
-					var tabHostLayout = new LinearLayout_(CONTEXT);
-					tabHostLayout.setOrientation(LinearLayout_.VERTICAL);
-					tabHostLayout.addView(tabWidget);
-					tabHostLayout.addView(frame);
-
-					// Create the TabHost and add the container to it.
-					var tabHost = new android.widget.TabHost(CONTEXT, null);
-					tabHost.addView(tabHostLayout);
-					tabHost.setup();
-					
-					var spec1 = tabHost.newTabSpec("tabs");
-					spec1.setContent(android.R.id.tabs);
-					spec1.setIndicator("Test", null);
-					
-					tabHost.addTab(spec1); */
                     
                     var settingsMenuLayout = new LinearLayout_(CONTEXT);
                     settingsMenuLayout.setOrientation(1);
@@ -11587,7 +11598,7 @@ function settingsScreen() {
                     
                     var generalTitle = clientSectionTitle("HUD", "rainbow");
                     
-                    var hacksListModeSettingFunc = new settingButton("Hacks List Mode");
+                    var hacksListModeSettingFunc = new settingButton("Hacks list mode");
                     var hacksListModeSettingButton = hacksListModeSettingFunc.getButton();
                     if(hacksListModeSetting == "on") {
                         hacksListModeSettingButton.setText("Normal");
@@ -11615,6 +11626,33 @@ function settingsScreen() {
                             } else if(hacksListModeSetting == "logo"){
                                 hacksListModeSetting = "off";
                                 hacksListModeSettingButton.setText("Hidden");
+                                VertexClientPE.saveMainSettings();
+                            }
+                        }
+                    }));
+					
+					var hacksListPosSettingFunc = new settingButton("Hacks list position");
+                    var hacksListPosSettingButton = hacksListPosSettingFunc.getButton();
+                    if(hacksListPosSetting == "top-left") {
+                        hacksListPosSettingButton.setText("Top-left");
+                    } else if(hacksListPosSetting == "top-center") {
+                        hacksListPosSettingButton.setText("Top-center");
+                    } else if(hacksListPosSetting == "top-right") {
+                        hacksListPosSettingButton.setText("Top-right");
+                    }
+                    hacksListPosSettingButton.setOnClickListener(new View_.OnClickListener({
+                        onClick: function(viewarg){
+                            if(hacksListPosSetting == "top-left") {
+                                hacksListPosSetting = "top-center";
+                                hacksListPosSettingButton.setText("Top-center");
+                                VertexClientPE.saveMainSettings();
+                            } else if(hacksListPosSetting == "top-center"){
+                                hacksListPosSetting = "top-right";
+                                hacksListPosSettingButton.setText("Top-right");
+                                VertexClientPE.saveMainSettings();
+                            } else if(hacksListPosSetting == "top-right"){
+                                hacksListPosSetting = "top-left";
+                                hacksListPosSettingButton.setText("Top-left");
                                 VertexClientPE.saveMainSettings();
                             }
                         }
@@ -12274,6 +12312,7 @@ function settingsScreen() {
                     
                     settingsMenuLayout.addView(generalTitle);
                     VertexClientPE.addView(settingsMenuLayout, hacksListModeSettingFunc);
+                    VertexClientPE.addView(settingsMenuLayout, hacksListPosSettingFunc);
                     VertexClientPE.addView(settingsMenuLayout, tabGUIModeSettingFunc);
                     VertexClientPE.addView(settingsMenuLayout, mainButtonPositionSettingFunc);
                     VertexClientPE.addView(settingsMenuLayout, mainButtonStyleSettingFunc);
@@ -14201,8 +14240,14 @@ VertexClientPE.closeMenu = function() {
 	}
     if(GUI != null) {
         if(GUI.isShowing()) {
-			if(mainButtonTapSetting == "menu") {
-				menuBtn.setBackgroundDrawable(iconClientGUI);
+			if(currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud) {
+				if(mainButtonTapSetting == "menu") {
+					menuBtn.setBackgroundDrawable(iconClientGUI);
+				}
+			} else {
+				menuBtn.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+				GUI.setTouchable(false);
+				GUI.update();
 			}
         }
     }
@@ -14975,17 +15020,7 @@ function showMenuButton() {
     var display = new DisplayMetrics_();
     CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
     menuBtn = new Button_(CONTEXT);
-	if(mainButtonTapSetting == "menu") {
-		menuBtn.setBackgroundDrawable(iconClientGUI);
-	} else if(mainButtonTapSetting == "moredialog") {
-		menuBtn.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-		menuBtn.setText("\u2022\u2022\u2022");
-		menuBtn.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
-		menuBtn.setMarqueeRepeatLimit(-1);
-		menuBtn.setSingleLine();
-		menuBtn.setHorizontallyScrolling(true);
-		menuBtn.setSelected(true);
-	}
+	menuBtn.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
     menuBtn.setAlpha(0.54);
 	menuBtn.setTextSize(16);
 	if(themeSetting == "white") {
@@ -15025,6 +15060,7 @@ function showMenuButton() {
     layout.addView(menuBtn);
      
     GUI = new PopupWindow_(layout, dip2px(40), dip2px(40));
+	GUI.setTouchable(false);
     if(menuAnimationsSetting == "on") {
         GUI.setAnimationStyle(android.R.style.Animation_Translucent);
     }
@@ -15076,6 +15112,23 @@ function showMenuButton() {
 			showTabGUI();
 			showShortcuts();
 		}
+		
+		if(mainButtonTapSetting == "menu") {
+			if(VertexClientPE.menuIsShowing) {
+				menuBtn.setBackgroundDrawable(iconClickedClientGUI);
+			} else {
+				menuBtn.setBackgroundDrawable(iconClientGUI);
+			}
+		} else if(mainButtonTapSetting == "moredialog") {
+			menuBtn.setText("\u2022\u2022\u2022");
+			menuBtn.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
+			menuBtn.setMarqueeRepeatLimit(-1);
+			menuBtn.setSingleLine();
+			menuBtn.setHorizontallyScrolling(true);
+			menuBtn.setSelected(true);
+		}
+		GUI.setTouchable(true);
+		GUI.update();
     }
 	if(currentScreen == ScreenType.start_screen) {
 		if((mainMenuTextList == null || !mainMenuTextList.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
@@ -15200,7 +15253,12 @@ function showHacksList() {
                     } else if(hacksListModeSetting == "counter") {
                         statesTextView.setText(enabledHacksCounter.toString() + " mods enabled");
                     }
-                    musicTextView = clientTextView("\u266B Currently playing: " + musicText, true);
+					
+                    if(VertexClientPE.MusicUtils.isPaused) {
+						musicTextView = clientTextView("\u266B Currently paused: " + musicText, true);
+					} else {
+						musicTextView = clientTextView("\u266B Currently playing: " + musicText, true);
+					}
                     
                     statesTextView.setTextSize(16);
 					statesTextView.setPadding(0, 0, dip2px(8), 0);
@@ -15233,10 +15291,18 @@ function showHacksList() {
 					if(menuAnimationsSetting == "on") {
 						hacksList.setAnimationStyle(android.R.style.Animation_Translucent);
 					}
-					hacksList.setBackgroundDrawable(backgroundGradient(true));
 					hacksList.setTouchable(false);
 					if(hacksListModeSetting != "off") {
-						hacksList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.TOP, 0, 0);
+						if(hacksListPosSetting == "top-left") {
+							hacksList.setBackgroundDrawable(backgroundGradient("bottomright"));
+							hacksList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+						} else if(hacksListPosSetting == "top-center") {
+							hacksList.setBackgroundDrawable(backgroundGradient(true));
+							hacksList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.TOP, 0, 0);
+						} else if(hacksListPosSetting == "top-right") {
+							hacksList.setBackgroundDrawable(backgroundGradient("bottomleft"));
+							hacksList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
+						}
 					}
                 } catch(error) {
                     print('An error occurred: ' + error);
@@ -15273,7 +15339,12 @@ function updateHacksList() {
                     } else if(hacksListModeSetting == "counter") {
                         statesTextView.setText(enabledHacksCounter.toString() + " mods enabled");
                     }
-                    musicTextView.setText("\u266B Currently playing: " + musicText);
+					
+					if(VertexClientPE.MusicUtils.isPaused) {
+						musicTextView.setText("\u266B Currently paused: " + musicText);
+					} else {
+						musicTextView.setText("\u266B Currently playing: " + musicText);
+					}
                 } catch(error) {
                     print('An error occurred: ' + error);
                     VertexClientPE.showBugReportDialog(error);
