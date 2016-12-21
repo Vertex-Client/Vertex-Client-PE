@@ -3,7 +3,7 @@
  * @name Vertex Client PE (Air)
  * @version v2.0
  * @author peacestorm (@AgameR_Modder)
- * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36, AutoGrind
+ * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36, AutoGrind, TimmyIsDa
  *
  * Thanks to NoCopyrightSounds and all artists for the music!
  *
@@ -466,24 +466,32 @@ function VectorLib() {
 var currentScreen = ScreenType.start_screen;
 
 function screenChangeHook(screenName) {
+	if(screenName == ScreenType.start_screen || screenName == ScreenType.hud || screenName == ScreenType.ingame) {
+		CONTEXT.runOnUiThread(new Runnable_({
+			run: function() {
+				if(GUI != null) {
+					GUI.setTouchable(true);
+					GUI.update();
+				}
+			}
+		}));
+	} else {
+		if(!VertexClientPE.menuIsShowing) {
+			CONTEXT.runOnUiThread(new Runnable_({
+				run: function() {
+					if(GUI != null) {
+						GUI.setTouchable(false);
+						GUI.update();
+					}
+				}
+			}));
+		}
+	}
     if(screenName == ScreenType.hud || screenName == ScreenType.ingame) {
         if((hacksList == null || !hacksList.isShowing()) && !VertexClientPE.menuIsShowing) {
             showHacksList();
 			showShortcuts();
         }
-		CONTEXT.runOnUiThread(new Runnable_({
-			run: function() {
-				menuBtn.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-				menuBtn.setText("\u2022\u2022\u2022");
-				menuBtn.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
-				menuBtn.setMarqueeRepeatLimit(-1);
-				menuBtn.setSingleLine();
-				menuBtn.setHorizontallyScrolling(true);
-				menuBtn.setSelected(true);
-				GUI.setTouchable(true);
-				GUI.update();
-			}
-		}));
     } else {
         if(hacksList != null) {
             CONTEXT.runOnUiThread(new Runnable_({
@@ -513,16 +521,6 @@ function screenChangeHook(screenName) {
 					}));
 				}
 			}
-		}
-		if(!VertexClientPE.menuIsShowing) {
-			CONTEXT.runOnUiThread(new Runnable_({
-				run: function() {
-					menuBtn.setText("");
-					menuBtn.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-					GUI.setTouchable(false);
-					GUI.update();
-				}
-			}));
 		}
     }
 	if(screenName == ScreenType.pause_screen) {
@@ -8964,6 +8962,12 @@ function showMenuButton() {
     CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
     menuBtn = new Button_(CONTEXT);
 	menuBtn.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+	menuBtn.setText("\u2022\u2022\u2022");
+	menuBtn.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
+	menuBtn.setMarqueeRepeatLimit(-1);
+	menuBtn.setSingleLine();
+	menuBtn.setHorizontallyScrolling(true);
+	menuBtn.setSelected(true);
 	if(themeSetting == "white") {
 		menuBtn.setTextColor(Color_.BLACK);
 		if(fontSetting != "minecraft") {
@@ -9043,15 +9047,8 @@ function showMenuButton() {
 			showHacksList();
 			showShortcuts();
 		}
-		
-		menuBtn.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-		menuBtn.setText("\u2022\u2022\u2022");
-		menuBtn.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
-		menuBtn.setMarqueeRepeatLimit(-1);
-		menuBtn.setSingleLine();
-		menuBtn.setHorizontallyScrolling(true);
-		menuBtn.setSelected(true);
-		
+	}
+	if(currentScreen == ScreenType.start_screen || currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud) {
 		GUI.setTouchable(true);
 		GUI.update();
     }
