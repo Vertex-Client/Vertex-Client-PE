@@ -3,7 +3,7 @@
  * @name Vertex Client PE
  * @version v2.0
  * @author peacestorm (@AgameR_Modder)
- * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36, AutoGrind
+ * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36, AutoGrind, TimmyIsDa
  *
  * Thanks to NoCopyrightSounds and all artists for the music!
  *
@@ -477,33 +477,33 @@ function VectorLib() {
 var currentScreen = ScreenType.start_screen;
 
 function screenChangeHook(screenName) {
+	if(screenName == ScreenType.start_screen || screenName == ScreenType.hud || screenName == ScreenType.ingame) {
+		CONTEXT.runOnUiThread(new Runnable_({
+			run: function() {
+				if(GUI != null) {
+					GUI.setTouchable(true);
+					GUI.update();
+				}
+			}
+		}));
+	} else {
+		if(!VertexClientPE.menuIsShowing) {
+			CONTEXT.runOnUiThread(new Runnable_({
+				run: function() {
+					if(GUI != null) {
+						GUI.setTouchable(false);
+						GUI.update();
+					}
+				}
+			}));
+		}
+	}
     if(screenName == ScreenType.hud || screenName == ScreenType.ingame) {
         if((hacksList == null || !hacksList.isShowing()) && !VertexClientPE.menuIsShowing) {
             showHacksList();
             showTabGUI();
 			showShortcuts();
         }
-		CONTEXT.runOnUiThread(new Runnable_({
-			run: function() {
-				if(mainButtonTapSetting == "menu") {
-					if(VertexClientPE.menuIsShowing) {
-						menuBtn.setBackgroundDrawable(iconClickedClientGUI);
-					} else {
-						menuBtn.setBackgroundDrawable(iconClientGUI);
-					}
-				} else if(mainButtonTapSetting == "moredialog") {
-					menuBtn.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-					menuBtn.setText("\u2022\u2022\u2022");
-					menuBtn.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
-					menuBtn.setMarqueeRepeatLimit(-1);
-					menuBtn.setSingleLine();
-					menuBtn.setHorizontallyScrolling(true);
-					menuBtn.setSelected(true);
-				}
-				GUI.setTouchable(true);
-				GUI.update();
-			}
-		}));
     } else {
         if(hacksList != null) {
             CONTEXT.runOnUiThread(new Runnable_({
@@ -540,16 +540,6 @@ function screenChangeHook(screenName) {
 					}));
 				}
 			}
-		}
-		if(!VertexClientPE.menuIsShowing) {
-			CONTEXT.runOnUiThread(new Runnable_({
-				run: function() {
-					menuBtn.setText("");
-					menuBtn.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-					GUI.setTouchable(false);
-					GUI.update();
-				}
-			}));
 		}
     }
 	if(screenName == ScreenType.pause_screen) {
@@ -719,6 +709,12 @@ var VertexClientPE = {
 
 				if(Math.round(x * 100) == 30 || Math.round(x * 100) == 70) return true;
 				if(Math.round(z * 100) == 30 || Math.round(z * 100) == 70) return true;
+				return false;
+			},
+			isAtEdge: function(){
+				if(getTile(getPlayerX() + 0.0001, getPlayerY() - 2, getPlayerZ() + 0.0001) == 0 || getTile(getPlayerX() - 0.0001, getPlayerY() - 2, getPlayerZ() - 0.0001) == 0 || getTile(getPlayerX() + 0.0001, getPlayerY() - 2, getPlayerZ() - 0.0001) == 0 || getTile(getPlayerX() - 0.0001, getPlayerY() - 2, getPlayerZ() + 0.0001) == 0) {
+					return true;
+				}
 				return false;
 			}
 		}
@@ -4258,9 +4254,9 @@ var dropLocator = {
     }
 }
 
-var stickyMove = {
-    name: "StickyMove",
-    desc: "Makes you stick to the ground so that you can't jump or fall (similar to SafeWalk).",
+var safeWalk = {
+    name: "SafeWalk",
+    desc: "Automatically sneaks when you're at the edge of a block so that you can still move with normal speed.",
     category: VertexClientPE.category.MOVEMENT,
     type: "Mod",
     state: false,
@@ -4272,11 +4268,8 @@ var stickyMove = {
         this.state = !this.state;
     },
     onTick: function() {
-		if(VertexClientPE.Utils.Player.onGround()) {
-			this.safeVector = new Vector3(getPlayerX(), getPlayerY(), getPlayerZ());
-		} else if(!VertexClientPE.Utils.Player.onGround() && this.safeVector != null) {
-			Entity.setPosition(getPlayerEnt(), this.safeVector.x, this.safeVector.y, this.safeVector.z);
-			this.safeVector = null;
+		if(VertexClientPE.Utils.Player.onGround() && VertexClientPE.Utils.Player.isAtEdge()) {
+			Entity.setSneaking(getPlayerEnt(), true);
 		}
     }
 }
@@ -4371,9 +4364,9 @@ VertexClientPE.registerModule(noDownGlide);
 //VertexClientPE.registerModule(noInvisBedrock);
 VertexClientPE.registerModule(randomTP);
 VertexClientPE.registerModule(ride);
+VertexClientPE.registerModule(safeWalk);
 VertexClientPE.registerModule(speedHack);
 VertexClientPE.registerModule(step);
-VertexClientPE.registerModule(stickyMove);
 VertexClientPE.registerModule(tapJumpRun);
 VertexClientPE.registerModule(tapPoint);
 VertexClientPE.registerModule(tapTeleporter);
@@ -14240,12 +14233,10 @@ VertexClientPE.closeMenu = function() {
 	}
     if(GUI != null) {
         if(GUI.isShowing()) {
-			if(currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud) {
-				if(mainButtonTapSetting == "menu") {
-					menuBtn.setBackgroundDrawable(iconClientGUI);
-				}
-			} else {
-				menuBtn.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+			if(mainButtonTapSetting == "menu") {
+				menuBtn.setBackgroundDrawable(iconClientGUI);
+			}
+			if(currentScreen != ScreenType.start_screen && currentScreen != ScreenType.ingame && currentScreen != ScreenType.hud) {
 				GUI.setTouchable(false);
 				GUI.update();
 			}
@@ -15020,7 +15011,20 @@ function showMenuButton() {
     var display = new DisplayMetrics_();
     CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
     menuBtn = new Button_(CONTEXT);
-	menuBtn.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+	if(mainButtonTapSetting == "menu") {
+		if(VertexClientPE.menuIsShowing) {
+			menuBtn.setBackgroundDrawable(iconClickedClientGUI);
+		} else {
+			menuBtn.setBackgroundDrawable(iconClientGUI);
+		}
+	} else if(mainButtonTapSetting == "moredialog") {
+		menuBtn.setText("\u2022\u2022\u2022");
+		menuBtn.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
+		menuBtn.setMarqueeRepeatLimit(-1);
+		menuBtn.setSingleLine();
+		menuBtn.setHorizontallyScrolling(true);
+		menuBtn.setSelected(true);
+	}
     menuBtn.setAlpha(0.54);
 	menuBtn.setTextSize(16);
 	if(themeSetting == "white") {
@@ -15112,21 +15116,8 @@ function showMenuButton() {
 			showTabGUI();
 			showShortcuts();
 		}
-		
-		if(mainButtonTapSetting == "menu") {
-			if(VertexClientPE.menuIsShowing) {
-				menuBtn.setBackgroundDrawable(iconClickedClientGUI);
-			} else {
-				menuBtn.setBackgroundDrawable(iconClientGUI);
-			}
-		} else if(mainButtonTapSetting == "moredialog") {
-			menuBtn.setText("\u2022\u2022\u2022");
-			menuBtn.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
-			menuBtn.setMarqueeRepeatLimit(-1);
-			menuBtn.setSingleLine();
-			menuBtn.setHorizontallyScrolling(true);
-			menuBtn.setSelected(true);
-		}
+	}
+	if(currentScreen == ScreenType.start_screen || currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud) {
 		GUI.setTouchable(true);
 		GUI.update();
     }
@@ -16613,4 +16604,4 @@ function blockEventHook(x, y, z, e, d) {
     }
 }
 
-//What are you doing here? ;-
+//What are you doing here? ;-)
