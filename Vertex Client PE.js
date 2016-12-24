@@ -199,6 +199,8 @@ var dashboardTileSize = 5;
 var spamUseRandomMsgSetting = "off";
 var buttonStrokeThicknessSetting = 2;
 var hacksListPosSetting = "top-center";
+var targetMobsSetting = "on";
+var targetPlayersSetting = "on";
 //------------------------------------
 var combatName = "Combat";
 var buildingName = "Building";
@@ -2609,27 +2611,53 @@ var tpAura = {
     onInterval: function() {
         if(tpAuraStage == 0) {
             tpAuraStage = 1;
-            var mobs = Entity.getAll();
-            for(var i = 0; i < mobs.length; i++) {
-                var x = Entity.getX(mobs[i]) - getPlayerX();
-                var y = Entity.getY(mobs[i]) - getPlayerY();
-                var z = Entity.getZ(mobs[i]) - getPlayerZ();
-                if(x*x+y*y+z*z<=4*4 && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION && Entity.getHealth(mobs[i]) != 0) {
-                    var playerPos = new Array(getPlayerX(), getPlayerY() + 0.5, getPlayerZ());
-                    var victimPos = new Array(Entity.getX(mobs[i]), Entity.getY(mobs[i]), Entity.getZ(mobs[i]));
-                    var diffPos = new Array(victimPos[0] - playerPos[0], null, victimPos[2] - playerPos[2]);
-                    playerPos[0] += diffPos[0] * 2;
-                    playerPos[2] += diffPos[2] * 2;
-                    
-                    if (getTile(playerPos[0], playerPos[1], playerPos[2]) == 0 && getTile(playerPos[0], playerPos[1] - 1, playerPos[2]) == 0 && getTile(playerPos[0], playerPos[1] - 2, playerPos[2]) == 0) {
-                        Entity.setPosition(getPlayerEnt(), playerPos[0], playerPos[1], playerPos[2]);
-                    }
-                    
-                    VertexClientPE.CombatUtils.aimAtEnt(mobs[i]);
-                    
-                    break;
-                }
-            }
+			if(targetMobsSetting == "on") {
+				var mobs = Entity.getAll();
+				for(var i = 0; i < mobs.length; i++) {
+					var x = Entity.getX(mobs[i]) - getPlayerX();
+					var y = Entity.getY(mobs[i]) - getPlayerY();
+					var z = Entity.getZ(mobs[i]) - getPlayerZ();
+					if(x*x+y*y+z*z<=4*4 && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION && Entity.getHealth(mobs[i]) != 0) {
+						var playerPos = new Array(getPlayerX(), getPlayerY() + 0.5, getPlayerZ());
+						var victimPos = new Array(Entity.getX(mobs[i]), Entity.getY(mobs[i]), Entity.getZ(mobs[i]));
+						var diffPos = new Array(victimPos[0] - playerPos[0], null, victimPos[2] - playerPos[2]);
+						playerPos[0] += diffPos[0] * 2;
+						playerPos[2] += diffPos[2] * 2;
+						
+						if (getTile(playerPos[0], playerPos[1], playerPos[2]) == 0 && getTile(playerPos[0], playerPos[1] - 1, playerPos[2]) == 0 && getTile(playerPos[0], playerPos[1] - 2, playerPos[2]) == 0) {
+							Entity.setPosition(getPlayerEnt(), playerPos[0], playerPos[1], playerPos[2]);
+						}
+						
+						VertexClientPE.CombatUtils.aimAtEnt(mobs[i]);
+						
+						break;
+					}
+				}
+			}
+			
+			if(targetPlayersSetting == "on") {
+				var players = Server.getAllPlayers();
+				for(var i = 0; i < players.length; i++) {
+					var x = Entity.getX(players[i]) - getPlayerX();
+					var y = Entity.getY(players[i]) - getPlayerY();
+					var z = Entity.getZ(players[i]) - getPlayerZ();
+					if(x*x+y*y+z*z<=4*4 && players[i] != getPlayerEnt() && Entity.getEntityTypeId(players[i]) != EntityType.ARROW && Entity.getEntityTypeId(players[i]) != EntityType.BOAT && Entity.getEntityTypeId(players[i]) != EntityType.EGG && Entity.getEntityTypeId(players[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(players[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(players[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(players[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(players[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(players[i]) != EntityType.ITEM && Entity.getEntityTypeId(players[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(players[i]) != EntityType.MINECART && Entity.getEntityTypeId(players[i]) != EntityType.PAINTING && Entity.getEntityTypeId(players[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(players[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(players[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(players[i]) != EntityType.THROWN_POTION && Entity.getHealth(players[i]) != 0) {
+						var playerPos = new Array(getPlayerX(), getPlayerY() + 0.5, getPlayerZ());
+						var victimPos = new Array(Entity.getX(players[i]), Entity.getY(players[i]), Entity.getZ(players[i]));
+						var diffPos = new Array(victimPos[0] - playerPos[0], null, victimPos[2] - playerPos[2]);
+						playerPos[0] += diffPos[0] * 2;
+						playerPos[2] += diffPos[2] * 2;
+						
+						if (getTile(playerPos[0], playerPos[1], playerPos[2]) == 0 && getTile(playerPos[0], playerPos[1] - 1, playerPos[2]) == 0 && getTile(playerPos[0], playerPos[1] - 2, playerPos[2]) == 0) {
+							Entity.setPosition(getPlayerEnt(), playerPos[0], playerPos[1], playerPos[2]);
+						}
+						
+						VertexClientPE.CombatUtils.aimAtEnt(players[i]);
+						
+						break;
+					}
+				}
+			}
             tpAuraStage = 0;
         }
     },
@@ -2647,7 +2675,7 @@ var tpAura = {
                 Entity.setPosition(getPlayerEnt(), playerPos[0], playerPos[1], playerPos[2]);
             }
             
-            VertexClientPE.CombatUtils.aimAtEnt(mobs[i]);
+            VertexClientPE.CombatUtils.aimAtEnt(v);
         }
     }
 }
@@ -2817,32 +2845,36 @@ var follow = {
             followStage = 1;
 			var players = Server.getAllPlayers();
             var mobs = Entity.getAll();
-            for(var i = 0; i < mobs.length; i++) {
-                var x = Entity.getX(mobs[i]) - getPlayerX();
-                var y = Entity.getY(mobs[i]) - getPlayerY();
-                var z = Entity.getZ(mobs[i]) - getPlayerZ();
-                if(x*x+y*y+z*z<=10*10 && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION) {
-                    if(x*x+y*y+z*z>=2*2) {
-                        setVelX(getPlayerEnt(), x * 0.05);
-                        setVelZ(getPlayerEnt(), z * 0.05);
-                        setVelY(getPlayerEnt(), y * 0.05);
-                    }
-                    break;
-                }
-            }
-			for(var i = 0; i < players.length; i++) {
-                var x = Entity.getX(players[i]) - getPlayerX();
-                var y = Entity.getY(players[i]) - getPlayerY();
-                var z = Entity.getZ(players[i]) - getPlayerZ();
-                if(x*x+y*y+z*z<=10*10 && players[i] != getPlayerEnt() && Entity.getEntityTypeId(players[i]) != EntityType.ARROW && Entity.getEntityTypeId(players[i]) != EntityType.BOAT && Entity.getEntityTypeId(players[i]) != EntityType.EGG && Entity.getEntityTypeId(players[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(players[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(players[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(players[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(players[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(players[i]) != EntityType.ITEM && Entity.getEntityTypeId(players[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(players[i]) != EntityType.MINECART && Entity.getEntityTypeId(players[i]) != EntityType.PAINTING && Entity.getEntityTypeId(players[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(players[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(players[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(players[i]) != EntityType.THROWN_POTION) {
-                    if(x*x+y*y+z*z>=2*2) {
-                        setVelX(getPlayerEnt(), x * 0.05);
-                        setVelZ(getPlayerEnt(), z * 0.05);
-                        setVelY(getPlayerEnt(), y * 0.05);
-                    }
-                    break;
-                }
-            }
+			if(targetMobsSetting == "on") {
+				for(var i = 0; i < mobs.length; i++) {
+					var x = Entity.getX(mobs[i]) - getPlayerX();
+					var y = Entity.getY(mobs[i]) - getPlayerY();
+					var z = Entity.getZ(mobs[i]) - getPlayerZ();
+					if(x*x+y*y+z*z<=10*10 && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION) {
+						if(x*x+y*y+z*z>=2*2) {
+							setVelX(getPlayerEnt(), x * 0.05);
+							setVelZ(getPlayerEnt(), z * 0.05);
+							setVelY(getPlayerEnt(), y * 0.05);
+						}
+						break;
+					}
+				}
+			}
+			if(targetPlayersSetting == "on") {
+				for(var i = 0; i < players.length; i++) {
+					var x = Entity.getX(players[i]) - getPlayerX();
+					var y = Entity.getY(players[i]) - getPlayerY();
+					var z = Entity.getZ(players[i]) - getPlayerZ();
+					if(x*x+y*y+z*z<=10*10 && players[i] != getPlayerEnt() && Entity.getEntityTypeId(players[i]) != EntityType.ARROW && Entity.getEntityTypeId(players[i]) != EntityType.BOAT && Entity.getEntityTypeId(players[i]) != EntityType.EGG && Entity.getEntityTypeId(players[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(players[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(players[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(players[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(players[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(players[i]) != EntityType.ITEM && Entity.getEntityTypeId(players[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(players[i]) != EntityType.MINECART && Entity.getEntityTypeId(players[i]) != EntityType.PAINTING && Entity.getEntityTypeId(players[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(players[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(players[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(players[i]) != EntityType.THROWN_POTION) {
+						if(x*x+y*y+z*z>=2*2) {
+							setVelX(getPlayerEnt(), x * 0.05);
+							setVelZ(getPlayerEnt(), z * 0.05);
+							setVelY(getPlayerEnt(), y * 0.05);
+						}
+						break;
+					}
+				}
+			}
 			followStage = 0;
         }
     }
@@ -3472,39 +3504,40 @@ var aimbot = {
     onTick: function() {
 		var players = Server.getAllPlayers();
         var mobs = Entity.getAll();
-		/*if(Launcher.isToolbox()) {
-			mobs = mobs.concat(Server.getAllPlayers());
-		}*/
-        for(var i = 0; i < mobs.length; i++) {
-			var x = Entity.getX(mobs[i]) - getPlayerX();
-            var y = Entity.getY(mobs[i]) - getPlayerY();
-            var z = Entity.getZ(mobs[i]) - getPlayerZ();
-			if(aimbotUseKillauraRange == "on" && x*x+y*y+z*z>killAuraRange*killAuraRange) {
-				continue;
-			} else if(aimbotUseKillauraRange == "off" && x*x+y*y+z*z>aimbotRangeSetting*aimbotRangeSetting) {
-				continue;
+		if(targetMobsSetting == "on") {
+			for(var i = 0; i < mobs.length; i++) {
+				var x = Entity.getX(mobs[i]) - getPlayerX();
+				var y = Entity.getY(mobs[i]) - getPlayerY();
+				var z = Entity.getZ(mobs[i]) - getPlayerZ();
+				if(aimbotUseKillauraRange == "on" && x*x+y*y+z*z>killAuraRange*killAuraRange) {
+					continue;
+				} else if(aimbotUseKillauraRange == "off" && x*x+y*y+z*z>aimbotRangeSetting*aimbotRangeSetting) {
+					continue;
+				}
+				var ent = mobs[i];
+				if(Entity.getEntityTypeId(ent) != EntityType.ITEM && Entity.getEntityTypeId(ent) != EntityType.ARROW && ent != getPlayerEnt()) {
+					VertexClientPE.CombatUtils.aimAtEnt(ent);
+					return;
+				}
 			}
-            var ent = mobs[i];
-            if(Entity.getEntityTypeId(ent) != EntityType.ITEM && Entity.getEntityTypeId(ent) != EntityType.ARROW && ent != getPlayerEnt()) {
-                VertexClientPE.CombatUtils.aimAtEnt(ent);
-				return;
-            }
-        }
-		for(var i = 0; i < players.length; i++) {
-			var x = Entity.getX(players[i]) - getPlayerX();
-            var y = Entity.getY(players[i]) - getPlayerY();
-            var z = Entity.getZ(players[i]) - getPlayerZ();
-			if(aimbotUseKillauraRange == "on" && x*x+y*y+z*z>killAuraRange*killAuraRange) {
-				continue;
-			} else if(aimbotUseKillauraRange == "off" && x*x+y*y+z*z>aimbotRangeSetting*aimbotRangeSetting) {
-				continue;
+		}
+		if(targetPlayersSetting == "on") {
+			for(var i = 0; i < players.length; i++) {
+				var x = Entity.getX(players[i]) - getPlayerX();
+				var y = Entity.getY(players[i]) - getPlayerY();
+				var z = Entity.getZ(players[i]) - getPlayerZ();
+				if(aimbotUseKillauraRange == "on" && x*x+y*y+z*z>killAuraRange*killAuraRange) {
+					continue;
+				} else if(aimbotUseKillauraRange == "off" && x*x+y*y+z*z>aimbotRangeSetting*aimbotRangeSetting) {
+					continue;
+				}
+				var ent = players[i];
+				if(Entity.getEntityTypeId(ent) != EntityType.ITEM && Entity.getEntityTypeId(ent) != EntityType.ARROW && ent != getPlayerEnt()) {
+					VertexClientPE.CombatUtils.aimAtEnt(ent);
+					return;
+				}
 			}
-            var ent = players[i];
-            if(Entity.getEntityTypeId(ent) != EntityType.ITEM && Entity.getEntityTypeId(ent) != EntityType.ARROW && ent != getPlayerEnt()) {
-                VertexClientPE.CombatUtils.aimAtEnt(ent);
-				return;
-            }
-        }
+		}
     }
 }
 
@@ -4035,7 +4068,7 @@ var twerk = {
     onTick: function() {
 		this.timer++;
         if(this.timer >= 20) {
-            Entity.setSneaking(getPlayerEnt(), !Entity.getIsSneaking(getPlayerEnt()));
+            Entity.setSneaking(getPlayerEnt(), !Entity.isSneaking(getPlayerEnt()));
 			this.timer = 0;
         }
     }
@@ -4183,8 +4216,23 @@ var randomTP = {
     },
 	onUseItem: function(x, y, z, itemId, blockId, side) {
 		preventDefault();
-		var randomEnt = Entity.getAll().getRandomElement();
-		Entity.setPosition(getPlayerEnt(), Entity.getX(randomEnt), Entity.getY(randomEnt) + 1.8, Entity.getZ(randomEnt));
+		var newEnt;
+		var randomEnt;
+		if(targetMobsSetting == "on") {
+			newEnt = Entity.getAll().getRandomElement();
+			if(newEnt != null && newEnt != null) {
+				randomEnt = newEnt;
+			}
+		} if(targetPlayersSetting == "on") {
+			newEnt = Server.getAllPlayers().getRandomElement();
+			if(newEnt != null && newEnt != null) {
+				randomEnt = newEnt;
+			}
+		}
+		
+		if(randomEnt != null && randomEnt != null) {
+			Entity.setPosition(getPlayerEnt(), Entity.getX(randomEnt), Entity.getY(randomEnt) + 1.8, Entity.getZ(randomEnt));
+		}
 	}
 }
 
@@ -4268,7 +4316,7 @@ var safeWalk = {
         this.state = !this.state;
     },
     onTick: function() {
-		if(VertexClientPE.Utils.Player.onGround() && VertexClientPE.Utils.Player.isAtEdge()) {
+		if(VertexClientPE.Utils.Player.isAtEdge()) {
 			Entity.setSneaking(getPlayerEnt(), true);
 		}
     }
@@ -4327,6 +4375,65 @@ var frostWalk = {
 			setTile(getPlayerEnt(), getPlayerX(), getPlayerY() - 1, getPlayerZ(), 4);
 			Entity.setPosition(getPlayerEnt(), getPlayerX(), getPlayerY() + 1, getPlayerZ());
 		}
+    }
+}
+
+var target = {
+    name: "Target",
+    desc: "Allows you to choose if you want to target mobs, players or both in modules like Aimbot.",
+    category: VertexClientPE.category.MISC,
+    type: "Special",
+	getSettingsLayout: function() {
+        var twerkSettingsLayout = new LinearLayout_(CONTEXT);
+        twerkSettingsLayout.setOrientation(1);
+		
+		var targetMobsCheckBox = new CheckBox_(CONTEXT);
+        targetMobsCheckBox.setChecked(targetMobsSetting == "on");
+        targetMobsCheckBox.setText("Mobs");
+        if(themeSetting == "white") {
+            targetMobsCheckBox.setTextColor(Color_.BLACK);
+        } else {
+            targetMobsCheckBox.setTextColor(Color_.WHITE);
+        }
+        targetMobsCheckBox.setTypeface(VertexClientPE.font);
+		if(fontSetting == "minecraft") {
+			MinecraftButtonLibrary.addMinecraftStyleToTextView(targetMobsCheckBox);
+		}
+        targetMobsCheckBox.setOnClickListener(new View_.OnClickListener() {
+            onClick: function(v) {
+                targetMobsSetting = v.isChecked()?"on":"off";
+                VertexClientPE.saveMainSettings();
+            }
+        });
+		
+		var targetPlayersCheckBox = new CheckBox_(CONTEXT);
+        targetPlayersCheckBox.setChecked(targetMobsSetting == "on");
+        targetPlayersCheckBox.setText("Players");
+        if(themeSetting == "white") {
+            targetPlayersCheckBox.setTextColor(Color_.BLACK);
+        } else {
+            targetPlayersCheckBox.setTextColor(Color_.WHITE);
+        }
+        targetPlayersCheckBox.setTypeface(VertexClientPE.font);
+		if(fontSetting == "minecraft") {
+			MinecraftButtonLibrary.addMinecraftStyleToTextView(targetPlayersCheckBox);
+		}
+        targetPlayersCheckBox.setOnClickListener(new View_.OnClickListener() {
+            onClick: function(v) {
+                targetPlayersSetting = v.isChecked()?"on":"off";
+                VertexClientPE.saveMainSettings();
+            }
+        });
+		
+        twerkSettingsLayout.addView(targetMobsCheckBox);
+        twerkSettingsLayout.addView(targetPlayersCheckBox);
+        return twerkSettingsLayout;
+    },
+    isStateMod: function() {
+        return false;
+    },
+    onToggle: function() {
+		VertexClientPE.showModDialog(this);
     }
 }
 
@@ -4407,6 +4514,7 @@ VertexClientPE.registerModule(letItSnow);
 VertexClientPE.registerModule(onlyDay);
 VertexClientPE.registerModule(orderAPizza);
 VertexClientPE.registerModule(remoteView);
+VertexClientPE.registerModule(target);
 VertexClientPE.registerModule(teleport);
 //VertexClientPE.registerModule(tracers);
 VertexClientPE.registerModule(twerk);
@@ -7929,6 +8037,8 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + spamUseRandomMsgSetting.toString());
     outWrite.append("," + buttonStrokeThicknessSetting.toString());
     outWrite.append("," + hacksListPosSetting.toString());
+    outWrite.append("," + targetMobsSetting.toString());
+    outWrite.append("," + targetPlayersSetting.toString());
 
     outWrite.close();
     
@@ -8109,6 +8219,12 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[52] != null && arr[52] != undefined) {
             hacksListPosSetting = arr[52];
+        }
+		if (arr[53] != null && arr[53] != undefined) {
+            targetMobsSetting = arr[53];
+        }
+		if (arr[54] != null && arr[54] != undefined) {
+            targetPlayersSetting = arr[54];
         }
         fos.close();
         VertexClientPE.loadAutoSpammerSettings();
