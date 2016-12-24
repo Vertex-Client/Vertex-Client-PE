@@ -3633,6 +3633,8 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + spamUseRandomMsgSetting.toString());
 	outWrite.append("," + buttonStrokeThicknessSetting.toString());
 	outWrite.append("," + hacksListPosSetting.toString());
+	outWrite.append("," + targetMobsSetting.toString());
+    outWrite.append("," + targetPlayersSetting.toString());
 
     outWrite.close();
 }
@@ -3810,6 +3812,12 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[52] != null && arr[52] != undefined) {
             hacksListPosSetting = arr[52];
+        }
+		if (arr[53] != null && arr[53] != undefined) {
+            targetMobsSetting = arr[53];
+        }
+		if (arr[54] != null && arr[54] != undefined) {
+            targetPlayersSetting = arr[54];
         }
         fos.close();
 		VertexClientPE.font = fontSetting=="minecraft"?Typeface_.createFromFile(new File_(PATH, "minecraft.ttf")):VertexClientPE.defaultFont;
