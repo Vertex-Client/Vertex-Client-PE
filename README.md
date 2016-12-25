@@ -3,8 +3,7 @@ Vertex Client PE - A Hacked Client for MCPE
 
 [![Github All Releases](https://img.shields.io/github/downloads/Vertex-Client/Vertex-Client-PE/total.svg)](https://github.com/Vertex-Client/Vertex-Client-PE/releases/) [![GitHub release](https://img.shields.io/github/release/Vertex-Client/Vertex-Client-PE.svg)](https://github.com/Vertex-Client/Vertex-Client-PE/releases/latest)
 
-##__ WARNING!
-
+## _WARNING!_
 ## 1. We normally don't allow redistribution of our products. Please contact us if you still want to.
 ## 2. Don't use adf.ly to link to our products.
 ## 3. Don't copy codes without our permission.
