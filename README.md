@@ -5,7 +5,7 @@ Vertex Client PE - A Hacked Client for MCPE
 
 ## _WARNING!_
 ## 1. We normally don't allow redistribution of our products. Please contact us if you still want to.
-## 2. Don't use adf.ly to link to our products.
+## 2. Don't use adf.ly or any other monetization service to link to our products.
 ## 3. Don't copy codes without our permission.
 ## 4. We don't approve edited editions of Vertex Client PE. Contact us for more info.
 ## 5. Always credit the original authors. Don't claim that you've made our products.
