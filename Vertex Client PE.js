@@ -4437,6 +4437,23 @@ var target = {
     }
 }
 
+var hitboxHack = {
+    name: "HitboxHack",
+    desc: "Increases collision sizes of other entities so that you can hit them easily.",
+    category: VertexClientPE.category.COMBAT,
+    type: "Mod",
+    state: false,
+    isStateMod: function() {
+        return true;
+    },
+    onToggle: function() {
+        this.state = !this.state;
+    },
+    onTick: function() {
+		//nothing
+    }
+}
+
 //COMBAT
 VertexClientPE.registerModule(antiKnockback);
 VertexClientPE.registerModule(antiBurn);
@@ -9750,7 +9767,7 @@ function categoryTitle(text) {
     categoryTitleLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.heightPixels / 3 - display.heightPixels / 4, display.heightPixels / 20));
     categoryTitleLayout.addView(categoryTitleLayoutRight);
     
-    var defaultSettingsButton = clientButton("\u270E", null, null, "left", null, true);
+    var defaultSettingsButton = clientButton("\u270E", null, null, "left", null, true, dip2px(2));
     defaultSettingsButton.setLayoutParams(new LinearLayout_.LayoutParams(display.heightPixels / 3 - display.heightPixels / 4, display.heightPixels / 20));
     defaultSettingsButton.setAlpha(0.54);
     categoryTitleLayoutLeft.addView(defaultSettingsButton);
@@ -9760,7 +9777,7 @@ function categoryTitle(text) {
     defaultTitle.setGravity(Gravity_.CENTER);
     categoryTitleLayoutMiddle.addView(defaultTitle);
     
-    var defaultArrowButton = clientButton("\u25BD", null, null, "right", null, true);
+    var defaultArrowButton = clientButton("\u25BD", null, null, "right", null, true, dip2px(2));
     defaultArrowButton.setLayoutParams(new LinearLayout_.LayoutParams(display.heightPixels / 3 - display.heightPixels / 4, display.heightPixels / 20));
     defaultArrowButton.setAlpha(0.54);
     categoryTitleLayoutRight.addView(defaultArrowButton);
