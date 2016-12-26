@@ -2589,9 +2589,7 @@ var autoSpammer = {
         this.state = !this.state;
 		autoSpammerState = this.state;
     },
-    onTick: function() {
-        VertexClientPE.autoSpammer();
-    }
+    onTick: function() {}
 }
 
 var tpAuraStage = 0;
@@ -10444,13 +10442,15 @@ VertexClientPE.clientTick = function() {
 VertexClientPE.specialTick = function() {
     new Thread_(new Runnable_() {
         run: function() {
-            Thread_.sleep(1000 * spamDelayTime);
-            if(VertexClientPE.playerIsInGame) {
-                if(autoSpammerState) {
-                    VertexClientPE.autoSpammer();
+        	for (;;) {
+                Thread_.sleep(1000 * spamDelayTime);
+                if(VertexClientPE.playerIsInGame) {
+                    if(autoSpammerState) {
+                        VertexClientPE.autoSpammer();
+                    }
                 }
+                //VertexClientPE.specialTick();
             }
-            VertexClientPE.specialTick();
         }
     }).start();
 }
