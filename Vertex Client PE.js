@@ -2589,9 +2589,6 @@ var autoSpammer = {
     onToggle: function() {
         this.state = !this.state;
 		autoSpammerState = this.state;
-    },
-    onTick: function() {
-        VertexClientPE.autoSpammer();
     }
 }
 
