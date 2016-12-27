@@ -2588,7 +2588,7 @@ var autoSpammer = {
     },
     onToggle: function() {
         this.state = !this.state;
-		autoSpammerState = this.state;
+		    autoSpammerState = this.state;
     }
 }
 
@@ -10472,13 +10472,15 @@ VertexClientPE.clientTick = function() {
 VertexClientPE.specialTick = function() {
     new Thread_(new Runnable_() {
         run: function() {
-            Thread_.sleep(1000 * spamDelayTime);
-            if(VertexClientPE.playerIsInGame) {
-                if(autoSpammerState) {
-                    VertexClientPE.autoSpammer();
+        	for (;;) {
+                Thread_.sleep(1000 * spamDelayTime);
+                if(VertexClientPE.playerIsInGame) {
+                    if(autoSpammerState) {
+                        VertexClientPE.autoSpammer();
+                    }
                 }
+                //VertexClientPE.specialTick();
             }
-            VertexClientPE.specialTick();
         }
     }).start();
 }
