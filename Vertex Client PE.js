@@ -201,6 +201,7 @@ var buttonStrokeThicknessSetting = 2;
 var hacksListPosSetting = "top-center";
 var targetMobsSetting = "on";
 var targetPlayersSetting = "on";
+var shortcutUIPosSetting = "left-center";
 //------------------------------------
 var combatName = "Combat";
 var buildingName = "Building";
@@ -1485,29 +1486,29 @@ VertexClientPE.category = {
     MISC: 4,
     toName: function(category) {
         switch(category) {
-            case VertexClientPE.category.COMBAT:
+            case this.COMBAT:
                 return combatName;
-            case VertexClientPE.category.BUILDING:
+            case this.BUILDING:
                 return buildingName;
-            case VertexClientPE.category.MOVEMENT:
+            case this.MOVEMENT:
                 return movementName;
-            case VertexClientPE.category.CHAT:
+            case this.CHAT:
                 return chatName;
-            case VertexClientPE.category.MISC:
+            case this.MISC:
                 return miscName;
         }
     },
     toRealName: function(category) {
         switch(category) {
-            case VertexClientPE.category.COMBAT:
+            case this.COMBAT:
                 return "Combat";
-            case VertexClientPE.category.BUILDING:
+            case this.BUILDING:
                 return "Building";
-            case VertexClientPE.category.MOVEMENT:
+            case this.MOVEMENT:
                 return "Movement";
-            case VertexClientPE.category.CHAT:
+            case this.CHAT:
                 return "Chat";
-            case VertexClientPE.category.MISC:
+            case this.MISC:
                 return "Miscellaneous";
         }
     }
@@ -2587,9 +2588,8 @@ var autoSpammer = {
     },
     onToggle: function() {
         this.state = !this.state;
-		autoSpammerState = this.state;
-    },
-    onTick: function() {}
+		    autoSpammerState = this.state;
+    }
 }
 
 var tpAuraStage = 0;
@@ -5637,7 +5637,7 @@ VertexClientPE.showShortcutManagerDialog = function() {
                 dialogLayout.addView(shortcutManagerTitle);
                 dialogLayout.addView(shortcutManagerEnter);
 				
-				var shortcutSizeSettingTitle = clientTextView("Shortcut button size: | " + shortcutSizeSetting);
+				var shortcutSizeSettingTitle = clientTextView("Shortcut button size: | " + shortcutSizeSetting, true);
 				var shortcutSizeSettingSlider = new SeekBar(CONTEXT);
 				var minShortcutSize = 16;
 				shortcutSizeSettingSlider.setProgress(shortcutSizeSetting - minShortcutSize);
@@ -5649,7 +5649,7 @@ VertexClientPE.showShortcutManagerDialog = function() {
 					}
 				});
 				
-				var shortcutUIHeightSettingTitle = clientTextView("Shortcut UI height: | " + shortcutUIHeightSetting + " * shortcut button size");
+				var shortcutUIHeightSettingTitle = clientTextView("Shortcut UI height: | " + shortcutUIHeightSetting + " * shortcut button size", true);
 				var shortcutUIHeightSettingSlider = new SeekBar(CONTEXT);
 				var minShortcutUIHeight = 1;
 				var maxShortcutUIHeight = 20;
@@ -5662,10 +5662,32 @@ VertexClientPE.showShortcutManagerDialog = function() {
 					}
 				});
 				
+				var shortcutUIPosSettingFunc = new settingButton("Shortcut UI position", null, dialogLayout.getWidth());
+				var shortcutUIPosSettingButton = shortcutUIPosSettingFunc.getButton();
+				if(shortcutUIPosSetting == "left-center") {
+					shortcutUIPosSettingButton.setText("Left-center");
+				} else if(shortcutUIPosSetting == "right-center") {
+					shortcutUIPosSettingButton.setText("Right-center");
+				}
+				shortcutUIPosSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewarg){
+						if(shortcutUIPosSetting == "left-center") {
+							shortcutUIPosSetting = "right-center";
+							shortcutUIPosSettingButton.setText("Right-center");
+							VertexClientPE.saveMainSettings();
+						} else if(shortcutUIPosSetting == "right-center"){
+							shortcutUIPosSetting = "left-center";
+							shortcutUIPosSettingButton.setText("Left-center");
+							VertexClientPE.saveMainSettings();
+						}
+					}
+				}));
+				
 				dialogLayout.addView(shortcutSizeSettingTitle);
 				dialogLayout.addView(shortcutSizeSettingSlider);
 				dialogLayout.addView(shortcutUIHeightSettingTitle);
 				dialogLayout.addView(shortcutUIHeightSettingSlider);
+				VertexClientPE.addView(dialogLayout, shortcutUIPosSettingFunc);
 				dialogLayout.addView(closeButton);
 				
                 var dialog = new Dialog_(CONTEXT);
@@ -8054,6 +8076,7 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + hacksListPosSetting.toString());
     outWrite.append("," + targetMobsSetting.toString());
     outWrite.append("," + targetPlayersSetting.toString());
+    outWrite.append("," + shortcutUIPosSetting.toString());
 
     outWrite.close();
     
@@ -8240,6 +8263,9 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[54] != null && arr[54] != undefined) {
             targetPlayersSetting = arr[54];
+        }
+		if (arr[55] != null && arr[55] != undefined) {
+            shortcutUIPosSetting = arr[55];
         }
         fos.close();
         VertexClientPE.loadAutoSpammerSettings();
@@ -9801,32 +9827,36 @@ function categoryTitle(text) {
     }
 }
 
-function settingButton(text, desc) {
+function settingButton(text, desc, parentWidth) {
+	if(parentWidth == null) {
+		parentWidth = display.widthPixels;
+	}
+	
     var settingButtonLayout = new LinearLayout_(CONTEXT);
     settingButtonLayout.setOrientation(LinearLayout_.HORIZONTAL);
     
     var settingButtonLayoutLeft = new LinearLayout_(CONTEXT);
     settingButtonLayoutLeft.setOrientation(1);
-    settingButtonLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
+    settingButtonLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(parentWidth / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
     settingButtonLayout.addView(settingButtonLayoutLeft);
     
     var settingButtonLayoutMiddle = new LinearLayout_(CONTEXT);
     settingButtonLayoutMiddle.setOrientation(1);
-    settingButtonLayoutMiddle.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
+    settingButtonLayoutMiddle.setLayoutParams(new ViewGroup_.LayoutParams(parentWidth / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
     settingButtonLayout.addView(settingButtonLayoutMiddle);
     
     var settingButtonLayoutRight = new LinearLayout_(CONTEXT);
     settingButtonLayoutRight.setOrientation(1);
-    settingButtonLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
+    settingButtonLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(parentWidth / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
     settingButtonLayout.addView(settingButtonLayoutRight);
     
     var defaultTitle = clientTextView(text, true);
-    defaultTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
+    defaultTitle.setLayoutParams(new LinearLayout_.LayoutParams(parentWidth / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
     defaultTitle.setGravity(Gravity_.CENTER_VERTICAL);
 	
     settingButtonLayoutLeft.addView(defaultTitle);
 	var defaultSettingsButton = clientButton("", desc);
-    defaultSettingsButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
+    defaultSettingsButton.setLayoutParams(new LinearLayout_.LayoutParams(parentWidth / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
     settingButtonLayoutRight.addView(defaultSettingsButton);
     
     this.getName = function() {
@@ -15198,6 +15228,7 @@ function showMenuButton() {
      
     GUI = new PopupWindow_(layout, dip2px(40), dip2px(40));
 	GUI.setTouchable(false);
+	GUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
     if(menuAnimationsSetting == "on") {
         GUI.setAnimationStyle(android.R.style.Animation_Translucent);
     }
@@ -15578,7 +15609,11 @@ function showShortcuts() {
 						shortcutGUI.setAnimationStyle(android.R.style.Animation_Translucent);
 					}
                     shortcutGUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                    shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.CENTER, 0, 0);
+					if(shortcutUIPosSetting == "left-center") {
+						shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.CENTER, 0, 0);
+					} else {
+						shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.CENTER, 0, 0);
+					}
                 } catch(error) {
                     print('An error occurred: ' + error);
                     VertexClientPE.showBugReportDialog(error);
