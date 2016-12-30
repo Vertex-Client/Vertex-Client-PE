@@ -201,7 +201,9 @@ var buttonStrokeThicknessSetting = 2;
 var hacksListPosSetting = "top-center";
 var targetMobsSetting = "on";
 var targetPlayersSetting = "on";
-var shortcutUIPosSetting = "left-center";
+var shortcutUIPosSetting = "right-center";
+var tapAuraHitboxWidthSetting = 10;
+var tapAuraHitboxHeightSetting = 10;
 //------------------------------------
 var combatName = "Combat";
 var buildingName = "Building";
@@ -4435,20 +4437,75 @@ var target = {
     }
 }
 
-var hitboxHack = {
-    name: "HitboxHack",
-    desc: "Increases collision sizes of other entities so that you can hit them easily.",
+var tapAura = {
+    name: "TapAura",
+    desc: "Increases collision sizes of other players so that you can hit them easily.",
     category: VertexClientPE.category.COMBAT,
     type: "Mod",
     state: false,
+	getSettingsLayout: function() {
+        var tapAuraSettingsLayout = new LinearLayout_(CONTEXT);
+        tapAuraSettingsLayout.setOrientation(1);
+		
+		var minTapAuraSize = 2;
+		var maxTapAuraSize = 100;
+		
+        var tapAuraHitboxWidthTitle = clientTextView("Hitbox width: | " + tapAuraHitboxWidthSetting);
+        var tapAuraHitboxWidthSlider = new SeekBar(CONTEXT);
+        tapAuraHitboxWidthSlider.setProgress(tapAuraHitboxWidthSetting - minTapAuraSize);
+		tapAuraHitboxWidthSlider.setMax(maxTapAuraSize - minTapAuraSize);
+        tapAuraHitboxWidthSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            onProgressChanged: function() {
+                tapAuraHitboxWidthSetting = tapAuraHitboxWidthSlider.getProgress() + minTapAuraSize;
+                tapAuraHitboxWidthTitle.setText("Hitbox width: | " + tapAuraHitboxWidthSetting);
+				if(this.state) {
+					var players = Server.getAllPlayers();
+					for(var i = 0; i < players.length; i++) {
+						this.updateHitboxesOnEnt(players[i]);
+					}
+				}
+            }
+        });
+		
+		var tapAuraHitboxHeightTitle = clientTextView("Hitbox height: | " + tapAuraHitboxHeightSetting);
+        var tapAuraHitboxHeightSlider = new SeekBar(CONTEXT);
+        tapAuraHitboxHeightSlider.setProgress(tapAuraHitboxHeightSetting - minTapAuraSize);
+		tapAuraHitboxHeightSlider.setMax(maxTapAuraSize - minTapAuraSize);
+        tapAuraHitboxHeightSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            onProgressChanged: function() {
+                tapAuraHitboxHeightSetting = tapAuraHitboxHeightSlider.getProgress() + minTapAuraSize;
+                tapAuraHitboxHeightTitle.setText("Hitbox height: | " + tapAuraHitboxHeightSetting);
+				if(this.state) {
+					var players = Server.getAllPlayers();
+					for(var i = 0; i < players.length; i++) {
+						this.updateHitboxesOnEnt(players[i]);
+					}
+				}
+            }
+        });
+        tapAuraSettingsLayout.addView(tapAuraHitboxWidthTitle);
+        tapAuraSettingsLayout.addView(tapAuraHitboxWidthSlider);
+        tapAuraSettingsLayout.addView(tapAuraHitboxHeightTitle);
+        tapAuraSettingsLayout.addView(tapAuraHitboxHeightSlider);
+        return tapAuraSettingsLayout;
+    },
+	updateHitboxesOnEnt: function(ent) {
+		if(ent != getPlayerEnt()) {
+			Entity.setCollisionSize(ent, this.state?tapAuraHitboxWidthSetting:0.6, this.state?tapAuraHitboxHeightSetting:1.8);
+		}
+	},
     isStateMod: function() {
         return true;
     },
     onToggle: function() {
         this.state = !this.state;
+		var players = Server.getAllPlayers();
+		for(var i = 0; i < players.length; i++) {
+			this.updateHitboxesOnEnt(players[i]);
+		}
     },
-    onTick: function() {
-		//nothing
+    onEntityAdded: function(entity) {
+		this.updateHitboxesOnEnt(entity);
     }
 }
 
@@ -4469,6 +4526,7 @@ VertexClientPE.registerModule(instaKill);
 VertexClientPE.registerModule(killAura);
 VertexClientPE.registerModule(noHurt);
 VertexClientPE.registerModule(regen);
+VertexClientPE.registerModule(tapAura);
 VertexClientPE.registerModule(tpAura);
 //MOVEMENT
 VertexClientPE.registerModule(autoTeleporter);
@@ -8077,6 +8135,8 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + targetMobsSetting.toString());
     outWrite.append("," + targetPlayersSetting.toString());
     outWrite.append("," + shortcutUIPosSetting.toString());
+    outWrite.append("," + tapAuraHitboxWidthSetting.toString());
+    outWrite.append("," + tapAuraHitboxHeightSetting.toString());
 
     outWrite.close();
     
@@ -8266,6 +8326,12 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[55] != null && arr[55] != undefined) {
             shortcutUIPosSetting = arr[55];
+        }
+		if (arr[56] != null && arr[56] != undefined) {
+            tapAuraHitboxWidthSetting = arr[56];
+        }
+		if (arr[57] != null && arr[57] != undefined) {
+            tapAuraHitboxHeightSetting = arr[57];
         }
         fos.close();
         VertexClientPE.loadAutoSpammerSettings();
