@@ -4489,6 +4489,9 @@ var tapAura = {
         tapAuraSettingsLayout.addView(tapAuraHitboxHeightSlider);
         return tapAuraSettingsLayout;
     },
+	onModDialogDismiss: function() {
+        VertexClientPE.saveMainSettings();
+    },
 	updateHitboxesOnEnt: function(ent) {
 		if(ent != getPlayerEnt()) {
 			Entity.setCollisionSize(ent, this.state?tapAuraHitboxWidthSetting:0.6, this.state?tapAuraHitboxHeightSetting:1.8);
@@ -5720,7 +5723,12 @@ VertexClientPE.showShortcutManagerDialog = function() {
 					}
 				});
 				
-				var shortcutUIPosSettingFunc = new settingButton("Shortcut UI position", null, dialogLayout.getWidth());
+				dialogLayout.addView(shortcutSizeSettingTitle);
+				dialogLayout.addView(shortcutSizeSettingSlider);
+				dialogLayout.addView(shortcutUIHeightSettingTitle);
+				dialogLayout.addView(shortcutUIHeightSettingSlider);
+				
+				var shortcutUIPosSettingFunc = new settingButton("Shortcut UI position ", null, dialogLayout.getWidth() - 20);
 				var shortcutUIPosSettingButton = shortcutUIPosSettingFunc.getButton();
 				if(shortcutUIPosSetting == "left-center") {
 					shortcutUIPosSettingButton.setText("Left-center");
@@ -5741,11 +5749,8 @@ VertexClientPE.showShortcutManagerDialog = function() {
 					}
 				}));
 				
-				dialogLayout.addView(shortcutSizeSettingTitle);
-				dialogLayout.addView(shortcutSizeSettingSlider);
-				dialogLayout.addView(shortcutUIHeightSettingTitle);
-				dialogLayout.addView(shortcutUIHeightSettingSlider);
 				VertexClientPE.addView(dialogLayout, shortcutUIPosSettingFunc);
+				dialogLayout.addView(clientTextView("\n"));
 				dialogLayout.addView(closeButton);
 				
                 var dialog = new Dialog_(CONTEXT);
