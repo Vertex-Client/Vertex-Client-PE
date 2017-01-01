@@ -1448,7 +1448,6 @@ var dashboardMenu;
 var musicPlayerMenu;
 var previewMenu;
 var updateCenterMenu;
-var shopMenu;
 var settingsMenu;
 var devSettingsMenu;
 var helpMenu;
@@ -5572,16 +5571,27 @@ VertexClientPE.showMoreDialog = function() {
 				moreMenuIsOpen = true;
                 var moreTitle = clientTextView("More", true);
                 var moreHR = clientHR();
+				
+				var webBrowserTitle = "";
+				var playerCustomizerTitle = "";
+				var optiFineTitle = "";
+				if(!VertexClientPE.isPro()) {
+					webBrowserTitle += "\uD83D\uDD12 ";
+					playerCustomizerTitle += "\uD83D\uDD12 ";
+					optiFineTitle += "\uD83D\uDD12 ";
+				}
+				webBrowserTitle += "Webbrowser";
+				playerCustomizerTitle += "Player Customizer";
+				optiFineTitle += "OptiFine";
+				
                 var dashboardButton = clientButton("Dashboard");
 				dashboardButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.ic_dialog_dialer, 0, 0);
-                var webBrowserButton = clientButton("Webbrowser");
+                var webBrowserButton = clientButton(webBrowserTitle);
 				webBrowserButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.ic_menu_mapmode, 0, 0);
-                var playerCustomizerButton = clientButton("Player Customizer");
+                var playerCustomizerButton = clientButton(playerCustomizerTitle);
 				playerCustomizerButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.presence_online, 0, 0);
-                var optiFineButton = clientButton("OptiFine");
+                var optiFineButton = clientButton(optiFineTitle);
 				optiFineButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.ic_menu_zoom, 0, 0);
-                var shopButton = clientButton("Shop");
-				shopButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.stat_notify_more, 0, 0);
                 var screenshotButton = clientButton("Take a screenshot");
                 var dialogLayout1 = new LinearLayout_(CONTEXT);
                 dialogLayout1.setBackgroundDrawable(backgroundGradient());
@@ -5596,16 +5606,9 @@ VertexClientPE.showMoreDialog = function() {
                 dialogLayout1.addView(moreHR);
                 dialogLayout1.addView(dialogScrollView);
                 dialogLayout.addView(dashboardButton);
-                if(sharedPref.getString("VertexClientPE.boughtOptiFine", "false") == "true") {
-                    dialogLayout.addView(optiFineButton);
-                }
-                if(sharedPref.getString("VertexClientPE.boughtPlayerCustomizer", "false") == "true") {
-                    dialogLayout.addView(playerCustomizerButton);
-                }
-                if(sharedPref.getString("VertexClientPE.boughtWebbrowser", "false") == "true") {
-                    dialogLayout.addView(webBrowserButton);
-                }
-                dialogLayout.addView(shopButton);
+                dialogLayout.addView(optiFineButton);
+                dialogLayout.addView(playerCustomizerButton);
+				dialogLayout.addView(webBrowserButton);
 				if(VertexClientPE.isExpMode()) {
 					dialogLayout.addView(screenshotButton);
 				}
@@ -5630,6 +5633,10 @@ VertexClientPE.showMoreDialog = function() {
                 });
                 webBrowserButton.setOnClickListener(new View_.OnClickListener() {
                     onClick: function(view) {
+						if(!VertexClientPE.isPro()) {
+							VertexClientPE.showProDialog("Webbrowser");
+							return;
+						}
                         dialog.dismiss();
                         VertexClientPE.closeMenu();
                         webBrowserScreen();
@@ -5638,6 +5645,10 @@ VertexClientPE.showMoreDialog = function() {
                 });
                 playerCustomizerButton.setOnClickListener(new View_.OnClickListener() {
                     onClick: function(view) {
+						if(!VertexClientPE.isPro()) {
+							VertexClientPE.showProDialog("Player Customizer");
+							return;
+						}
                         dialog.dismiss();
                         VertexClientPE.closeMenu();
                         playerCustomizerScreen();
@@ -5646,18 +5657,14 @@ VertexClientPE.showMoreDialog = function() {
                 });
                 optiFineButton.setOnClickListener(new View_.OnClickListener() {
                     onClick: function(view) {
+						if(!VertexClientPE.isPro()) {
+							VertexClientPE.showProDialog("OptiFine");
+							return;
+						}
                         dialog.dismiss();
                         VertexClientPE.closeMenu();
                         optiFineScreen();
                         exitOptiFine();
-                    }
-                });
-                shopButton.setOnClickListener(new View_.OnClickListener() {
-                    onClick: function(view) {
-                        dialog.dismiss();
-                        VertexClientPE.closeMenu();
-                        shopScreen();
-                        exitShop();
                     }
                 });
 				screenshotButton.setOnClickListener(new View_.OnClickListener() {
@@ -7403,24 +7410,6 @@ VertexClientPE.addonLoadToast = function(message) {
     }));
 }
 
-VertexClientPE.moneyToast = function() {
-    CONTEXT.runOnUiThread(new Runnable_({
-        run: function() {
-            var layout = new LinearLayout_(CONTEXT);
-            layout.setOrientation(1);
-            layout.setBackground(backgroundSpecial(16));
-            var text = clientTextView("\u26C1 " + VertexClientPE.getVertexCash());
-            text.setTextColor(Color_.parseColor("#FFD700"));
-            text.setPadding(10, 10, 10, 10);
-            layout.addView(text);
-            toast = new Toast_(CONTEXT);
-            toast.setView(layout);
-            toast.setGravity(Gravity_.CENTER | Gravity_.TOP, 0, 0);
-            toast.show();
-        }
-    }));
-}
-
 VertexClientPE.showChristmasToast = function(daysLeft) {
 	CONTEXT.runOnUiThread(new Runnable_({
         run: function() {
@@ -8857,45 +8846,6 @@ function clientButton(text, desc, color, round, forceLightColor, style, thicknes
 		MinecraftButtonLibrary.addMinecraftStyleToTextView(defaultButton);
 	}
     return defaultButton;
-}
-
-function shopFeatureButton(shopFeature, cashTextView) {
-    var shopFeatureButtonText = (sharedPref.getString("VertexClientPE.bought" + shopFeature.shortName, "false")=="true")?"Purchased":shopFeature.price.toString();
-    var shopFeatureLayout = new LinearLayout_(CONTEXT);
-    shopFeatureLayout.setOrientation(LinearLayout_.HORIZONTAL);
-    var shopFeatureLayoutLeft = new LinearLayout_(CONTEXT);
-    shopFeatureLayoutLeft.setOrientation(1);
-    shopFeatureLayoutLeft.setGravity(Gravity_.CENTER);
-    shopFeatureLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - dip2px(10), display.heightPixels / 8));
-    var shopFeatureLayoutRight = new LinearLayout_(CONTEXT);
-    shopFeatureLayoutRight.setOrientation(1);
-    shopFeatureLayoutRight.setGravity(Gravity_.CENTER);
-    shopFeatureLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - dip2px(10), display.heightPixels / 8));
-    shopFeatureLayout.addView(shopFeatureLayoutLeft);
-    shopFeatureLayout.addView(shopFeatureLayoutRight);
-    var shopFeatureText = clientTextView(shopFeature.name);
-    shopFeatureLayoutLeft.addView(shopFeatureText);
-    var shopFeatureClientButton = clientButton(shopFeatureButtonText);
-    shopFeatureClientButton.setOnClickListener(new View_.OnClickListener() {
-        onClick: function(v) {
-            if(sharedPref.getString("VertexClientPE.bought" + shopFeature.shortName, "false") != "true") {
-                if(shopFeature.price <= VertexClientPE.getVertexCash()) {
-                    editor.putInt("VertexClientPE.vertexCash", VertexClientPE.getVertexCash() - shopFeature.price);
-                    editor.commit();
-                    cashTextView.setText("\u26C1 " + VertexClientPE.getVertexCash());
-                    editor.putString("VertexClientPE.bought" + shopFeature.shortName, "true");
-                    editor.commit();
-                    shopFeatureClientButton.setText("Purchased");
-                    shopFeature.onUnlock();
-                } else {
-                    VertexClientPE.toast("You need " + (shopFeature.price - VertexClientPE.getVertexCash()).toString() + " more V€rt€xCash to buy this!");
-                }
-            }
-        }
-    });
-    
-    shopFeatureLayoutRight.addView(shopFeatureClientButton);
-    return shopFeatureLayout;
 }
 
 function songButton(song, barLayout) {
@@ -10500,7 +10450,7 @@ VertexClientPE.clientTick = function() {
                 run: function() {
                     try {
                         var _0x43af=["\x61\x75\x74\x68\x6F\x72","\x70\x65\x61\x63\x65\x73\x74\x6F\x72\x6D"];if(VertexClientPE[_0x43af[0]]!= _0x43af[1]){isAuthorized= false}
-                        if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (devSettingsMenu == null || !devSettingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (milestonesMenu == null || !milestonesMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (previewMenu == null || !previewMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing()) && (christmasMenu == null || !christmasMenu.isShowing())) {
+                        if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (devSettingsMenu == null || !devSettingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (milestonesMenu == null || !milestonesMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (previewMenu == null || !previewMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing()) && (christmasMenu == null || !christmasMenu.isShowing())) {
                             if(Launcher.isBlockLauncher()) {
                                 ScriptManager__.isRemote = true;
                                 ScriptManager__.setLevelFakeCallback(true, false);
@@ -10518,7 +10468,7 @@ VertexClientPE.clientTick = function() {
                         print("Use BlockLauncher v1.12.2 or above!");
                         ModPE.log(e);
                     }
-                    if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (devSettingsMenu == null || !devSettingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (milestonesMenu == null || !milestonesMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (previewMenu == null || !previewMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (shopMenu == null || !shopMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing()) && (christmasMenu == null || !christmasMenu.isShowing())) {
+                    if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (devSettingsMenu == null || !devSettingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (milestonesMenu == null || !milestonesMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (previewMenu == null || !previewMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing()) && (christmasMenu == null || !christmasMenu.isShowing())) {
                         showMenuButton();
                     }
                     if(!VertexClientPE.playerIsInGame) {
@@ -10568,23 +10518,6 @@ VertexClientPE.secondTick = function() {
                     element.onInterval();
                 }
             });
-            if(secondTickTimer == 60) {
-                var extraCash = VertexClientPE.isPro()?20:10;
-                VertexClientPE.setVertexCash(VertexClientPE.getVertexCash() + extraCash);
-                secondTickTimer = 0;
-				if(showMoneyToastsSetting == "on") {
-					VertexClientPE.moneyToast();
-				}
-                if(shopCashText != null) {
-                    CONTEXT.runOnUiThread(new Runnable_() {
-                        run: function() {
-                            shopCashText.setText("\u26C1 " + VertexClientPE.getVertexCash());
-                        }
-                    });
-                }
-            } else {
-                secondTickTimer += 1;
-            }
             
             if(antiLagDropRemoverSetting == "on" && VertexClientPE.playerIsInGame && !VertexClientPE.isRemote() && sharedPref.getString("VertexClientPE.boughtOptiFine", "false") == "true") {
                 if(lagTimer == 0) {
@@ -10687,7 +10620,9 @@ VertexClientPE.showStartScreenBar = function() {
             run: function() {
                 try {
 					var snowEffect = new SnowEffect();
-					snowEffect.start();
+					if(VertexClientPE.Utils.month == java.util.Calendar.DECEMBER || VertexClientPE.Utils.month == java.util.Calendar.JANUARY || (VertexClientPE.Utils.month == java.util.Calendar.FEBRUARY && VertexClientPE.Utils.day <= 28)) {
+						snowEffect.start();
+					}
 					
 					if(userIsNewToCurrentVersion == true) {
 						VertexClientPE.showWhatsNewDialog();
@@ -10968,7 +10903,7 @@ VertexClientPE.showSetupScreen = function() {
                     
 					var setupStep1Text = "Thanks for choosing Vertex Client PE!\nGo to the next step to choose your favourite color. :)";
 					var setupStep2Text = "You can always change the color on the settings screen.\nEven more colors are available there.";
-					var setupStep3Text = "That's it! Your experience begins here.\nHere's some additional help to get started:\n- You can open the Dashboard and the Shop from the 'More' dialog,\nwhich can be opened by long tapping the menu button.";
+					var setupStep3Text = "That's it! Your experience begins here.\nHere's some additional help to get started:\n- You can open the Dashboard and some other features the 'More' dialog,\nwhich can be opened by long tapping the menu button.";
 					
 					setupTextView.setText(setupStep1Text);
 					
@@ -11663,16 +11598,6 @@ function newLevel() {
             VertexClientPE.loadDeathCoords();
         }
         VertexClientPE.Utils.loadFov();
-        if(VertexClientPE.isPro()) {
-            if(!VertexClientPE.hasEarnedProVertexCash()) {
-				VertexClientPE.giveProVertexCash();
-                VertexClientPE.toast("You just earned 500 V€rt€xCash because you activated Pro successfully!");
-                VertexClientPE.moneyToast();
-                if(shopCashText != null) {
-                    shopCashText.setText("\u26C1 " + VertexClientPE.getVertexCash());
-                }
-            }
-        }
         new Thread_(new Runnable_() {
             run: function() {
                 VertexClientPE.checkForUpdates();
@@ -12474,26 +12399,6 @@ function settingsScreen() {
                         }
                     }
                     }));
-					
-					var showMoneyToastsSettingFunc = new settingButton("Show money updates", "Show a toast message when earning V€rt€xCash.");
-                    var showMoneyToastsSettingButton = showMoneyToastsSettingFunc.getButton();
-                    if(showMoneyToastsSetting == "on") {
-                        showMoneyToastsSettingButton.setText("ON");
-                    } else if(showMoneyToastsSetting == "off") {
-                        showMoneyToastsSettingButton.setText("OFF");
-                    }
-                    showMoneyToastsSettingButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-                        if(showMoneyToastsSetting == "on") {
-                            showMoneyToastsSetting = "off";
-                            showMoneyToastsSettingButton.setText("OFF");
-                        } else if(showMoneyToastsSetting == "off") {
-                            showMoneyToastsSetting = "on";
-                            showMoneyToastsSettingButton.setText("ON");
-                        }
-						VertexClientPE.saveMainSettings();
-                    }
-                    }));
                     
 					var playMusicSettingFunc = new settingButton("Automatically play music", "Automatically play music.");
                     var playMusicSettingButton = playMusicSettingFunc.getButton();
@@ -12568,7 +12473,6 @@ function settingsScreen() {
 					VertexClientPE.addView(settingsMenuLayout, cmdPrefixFunc);
                     settingsMenuLayout.addView(otherTitle);
 					VertexClientPE.addView(settingsMenuLayout, showNewsSettingFunc);
-					VertexClientPE.addView(settingsMenuLayout, showMoneyToastsSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, playMusicSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, webBrowserStartPageSettingFunc);
 
@@ -13667,96 +13571,6 @@ function optiFineScreen() {
                     optiFineMenu = new PopupWindow_(optiFineLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
                     optiFineMenu.setBackgroundDrawable(backgroundGradient());
                     optiFineMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-                } catch(error) {
-                    print('An error occurred: ' + error);
-                }
-            }
-        }));
-}
-
-var shopCashText;
-
-function shopScreen() {
-    VertexClientPE.menuIsShowing = true;
-    var display = new DisplayMetrics_();
-    CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
-        CONTEXT.runOnUiThread(new Runnable_({
-            run: function() {
-                try {
-                    if(GUI != null) {
-                        if(GUI.isShowing()) {
-                            GUI.dismiss();
-                        }
-                    }
-                    if(hacksList != null) {
-                        if(hacksList.isShowing()) {
-                            hacksList.dismiss();
-                        }
-                    }
-                    if(tabGUI != null) {
-                        if(tabGUI.isShowing()) {
-                            tabGUI.dismiss();
-                        }
-                    }
-					if(shortcutGUI != null) {
-                        if(shortcutGUI.isShowing()) {
-                            shortcutGUI.dismiss();
-                        }
-                    }
-					if(mainMenuTextList != null) {
-						if(mainMenuTextList.isShowing()) {
-                            mainMenuTextList.dismiss();
-                        }
-					}
-					if(accountManagerGUI != null) {
-						if(accountManagerGUI.isShowing()) {
-                            accountManagerGUI.dismiss();
-                        }
-					}
-					if(pauseUtilitiesUI != null) {
-						if(pauseUtilitiesUI.isShowing()) {
-							pauseUtilitiesUI.dismiss();
-						}
-					}
-
-                    var shopMenuLayout = new LinearLayout_(CONTEXT);
-                    shopMenuLayout.setOrientation(1);
-                    shopMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
-                    
-                    var shopMenuLayoutScroll = new ScrollView(CONTEXT);
-                    
-                    var shopMenuLayout1 = new LinearLayout_(CONTEXT);
-                    shopMenuLayout1.setOrientation(1);
-                    shopMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
-                    shopMenuLayout1.setPadding(10, 0, 10, 0);
-                    
-                    var shopTitle = clientTextView("Shop", true);
-                    shopTitle.setTextSize(25);
-                    shopTitle.setGravity(Gravity_.CENTER);
-                    shopMenuLayout1.addView(shopTitle);
-                    
-                    var shopCashLayout = new LinearLayout_(CONTEXT);
-                    shopCashLayout.setOrientation(1);
-                    shopCashLayout.setLayoutParams(new ViewGroup_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, ViewGroup_.LayoutParams.WRAP_CONTENT));
-                    shopCashLayout.setBackground(backgroundSpecial(16));
-                    shopCashText = clientTextView("\u26C1 " + VertexClientPE.getVertexCash());
-                    shopCashText.setTextColor(Color_.parseColor("#FFD700"));
-                    shopCashText.setGravity(Gravity_.CENTER);
-                    shopCashText.setPadding(10, 10, 10, 10);
-                    shopCashLayout.addView(shopCashText);
-                    
-                    shopMenuLayout1.addView(shopCashLayout);
-                    shopMenuLayout1.addView(clientTextView("\n"));
-                    shopMenuLayoutScroll.addView(shopMenuLayout);
-                    shopMenuLayout1.addView(shopMenuLayoutScroll);
-                    
-                    VertexClientPE.shopFeatures.forEach(function(element, index, array) {
-                        shopMenuLayout.addView(new shopFeatureButton(element, shopCashText));
-                    });
-
-                    shopMenu = new PopupWindow_(shopMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
-                    shopMenu.setBackgroundDrawable(backgroundGradient());
-                    shopMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
                 } catch(error) {
                     print('An error occurred: ' + error);
                 }
@@ -16520,35 +16334,6 @@ function exitPreview() {
                 exitPreviewUI = new PopupWindow_(xPreviewLayout, dip2px(40), dip2px(40));
                 exitPreviewUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
                 exitPreviewUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
-            } catch(exception) {
-                print(exception);
-                VertexClientPE.showBugReportDialog(exception);
-            }
-        }
-    }));
-}
-
-function exitShop() {
-    CONTEXT.runOnUiThread(new Runnable_({
-        run: function() {
-            try {
-                var xShopLayout = new LinearLayout_(CONTEXT);
-                var xShopButton = new Button_(CONTEXT);
-                xShopButton.setText('X');//Text
-                xShopButton.getBackground().setColorFilter(Color_.parseColor("#FF0000"), PorterDuff_.Mode.MULTIPLY);
-                xShopButton.setTextColor(Color_.WHITE);
-                xShopButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-                        exitShopUI.dismiss(); //Close
-                        shopMenu.dismiss(); //Close
-                        showMenuButton();
-                    }
-                }));
-                xShopLayout.addView(xShopButton);
-                
-                exitShopUI = new PopupWindow_(xShopLayout, dip2px(40), dip2px(40));
-                exitShopUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                exitShopUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
             } catch(exception) {
                 print(exception);
                 VertexClientPE.showBugReportDialog(exception);
