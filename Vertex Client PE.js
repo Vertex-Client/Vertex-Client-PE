@@ -202,8 +202,8 @@ var hacksListPosSetting = "top-center";
 var targetMobsSetting = "on";
 var targetPlayersSetting = "on";
 var shortcutUIPosSetting = "right-center";
-var tapAuraHitboxWidthSetting = 10;
-var tapAuraHitboxHeightSetting = 10;
+var hitboxesHitboxWidthSetting = 10;
+var hitboxesHitboxHeightSetting = 10;
 //------------------------------------
 var combatName = "Combat";
 var buildingName = "Building";
@@ -4437,27 +4437,27 @@ var target = {
     }
 }
 
-var tapAura = {
-    name: "TapAura",
+var hitboxes = {
+    name: "Hitboxes",
     desc: "Increases collision sizes of other players so that you can hit them easily.",
     category: VertexClientPE.category.COMBAT,
     type: "Mod",
     state: false,
 	getSettingsLayout: function() {
-        var tapAuraSettingsLayout = new LinearLayout_(CONTEXT);
-        tapAuraSettingsLayout.setOrientation(1);
+        var hitboxesSettingsLayout = new LinearLayout_(CONTEXT);
+        hitboxesSettingsLayout.setOrientation(1);
 		
-		var minTapAuraSize = 2;
-		var maxTapAuraSize = 100;
+		var minHitboxesSize = 2;
+		var maxHitboxesSize = 100;
 		
-        var tapAuraHitboxWidthTitle = clientTextView("Hitbox width: | " + tapAuraHitboxWidthSetting);
-        var tapAuraHitboxWidthSlider = new SeekBar(CONTEXT);
-        tapAuraHitboxWidthSlider.setProgress(tapAuraHitboxWidthSetting - minTapAuraSize);
-		tapAuraHitboxWidthSlider.setMax(maxTapAuraSize - minTapAuraSize);
-        tapAuraHitboxWidthSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        var hitboxesHitboxWidthTitle = clientTextView("Hitbox width: | " + hitboxesHitboxWidthSetting);
+        var hitboxesHitboxWidthSlider = new SeekBar(CONTEXT);
+        hitboxesHitboxWidthSlider.setProgress(hitboxesHitboxWidthSetting - minHitboxesSize);
+		hitboxesHitboxWidthSlider.setMax(maxHitboxesSize - minHitboxesSize);
+        hitboxesHitboxWidthSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             onProgressChanged: function() {
-                tapAuraHitboxWidthSetting = tapAuraHitboxWidthSlider.getProgress() + minTapAuraSize;
-                tapAuraHitboxWidthTitle.setText("Hitbox width: | " + tapAuraHitboxWidthSetting);
+                hitboxesHitboxWidthSetting = hitboxesHitboxWidthSlider.getProgress() + minHitboxesSize;
+                hitboxesHitboxWidthTitle.setText("Hitbox width: | " + hitboxesHitboxWidthSetting);
 				if(this.state) {
 					var players = Server.getAllPlayers();
 					for(var i = 0; i < players.length; i++) {
@@ -4467,14 +4467,14 @@ var tapAura = {
             }
         });
 		
-		var tapAuraHitboxHeightTitle = clientTextView("Hitbox height: | " + tapAuraHitboxHeightSetting);
-        var tapAuraHitboxHeightSlider = new SeekBar(CONTEXT);
-        tapAuraHitboxHeightSlider.setProgress(tapAuraHitboxHeightSetting - minTapAuraSize);
-		tapAuraHitboxHeightSlider.setMax(maxTapAuraSize - minTapAuraSize);
-        tapAuraHitboxHeightSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+		var hitboxesHitboxHeightTitle = clientTextView("Hitbox height: | " + hitboxesHitboxHeightSetting);
+        var hitboxesHitboxHeightSlider = new SeekBar(CONTEXT);
+        hitboxesHitboxHeightSlider.setProgress(hitboxesHitboxHeightSetting - minHitboxesSize);
+		hitboxesHitboxHeightSlider.setMax(maxHitboxesSize - minHitboxesSize);
+        hitboxesHitboxHeightSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             onProgressChanged: function() {
-                tapAuraHitboxHeightSetting = tapAuraHitboxHeightSlider.getProgress() + minTapAuraSize;
-                tapAuraHitboxHeightTitle.setText("Hitbox height: | " + tapAuraHitboxHeightSetting);
+                hitboxesHitboxHeightSetting = hitboxesHitboxHeightSlider.getProgress() + minHitboxesSize;
+                hitboxesHitboxHeightTitle.setText("Hitbox height: | " + hitboxesHitboxHeightSetting);
 				if(this.state) {
 					var players = Server.getAllPlayers();
 					for(var i = 0; i < players.length; i++) {
@@ -4483,18 +4483,18 @@ var tapAura = {
 				}
             }
         });
-        tapAuraSettingsLayout.addView(tapAuraHitboxWidthTitle);
-        tapAuraSettingsLayout.addView(tapAuraHitboxWidthSlider);
-        tapAuraSettingsLayout.addView(tapAuraHitboxHeightTitle);
-        tapAuraSettingsLayout.addView(tapAuraHitboxHeightSlider);
-        return tapAuraSettingsLayout;
+        hitboxesSettingsLayout.addView(hitboxesHitboxWidthTitle);
+        hitboxesSettingsLayout.addView(hitboxesHitboxWidthSlider);
+        hitboxesSettingsLayout.addView(hitboxesHitboxHeightTitle);
+        hitboxesSettingsLayout.addView(hitboxesHitboxHeightSlider);
+        return hitboxesSettingsLayout;
     },
 	onModDialogDismiss: function() {
         VertexClientPE.saveMainSettings();
     },
 	updateHitboxesOnEnt: function(ent) {
 		if(ent != getPlayerEnt()) {
-			Entity.setCollisionSize(ent, this.state?tapAuraHitboxWidthSetting:0.6, this.state?tapAuraHitboxHeightSetting:1.8);
+			Entity.setCollisionSize(ent, this.state?hitboxesHitboxWidthSetting:0.6, this.state?hitboxesHitboxHeightSetting:1.8);
 		}
 	},
     isStateMod: function() {
@@ -4529,7 +4529,7 @@ VertexClientPE.registerModule(instaKill);
 VertexClientPE.registerModule(killAura);
 VertexClientPE.registerModule(noHurt);
 VertexClientPE.registerModule(regen);
-VertexClientPE.registerModule(tapAura);
+VertexClientPE.registerModule(hitboxes);
 VertexClientPE.registerModule(tpAura);
 //MOVEMENT
 VertexClientPE.registerModule(autoTeleporter);
@@ -8140,8 +8140,8 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + targetMobsSetting.toString());
     outWrite.append("," + targetPlayersSetting.toString());
     outWrite.append("," + shortcutUIPosSetting.toString());
-    outWrite.append("," + tapAuraHitboxWidthSetting.toString());
-    outWrite.append("," + tapAuraHitboxHeightSetting.toString());
+    outWrite.append("," + hitboxesHitboxWidthSetting.toString());
+    outWrite.append("," + hitboxesHitboxHeightSetting.toString());
 
     outWrite.close();
     
@@ -8333,10 +8333,10 @@ VertexClientPE.loadMainSettings = function () {
             shortcutUIPosSetting = arr[55];
         }
 		if (arr[56] != null && arr[56] != undefined) {
-            tapAuraHitboxWidthSetting = arr[56];
+            hitboxesHitboxWidthSetting = arr[56];
         }
 		if (arr[57] != null && arr[57] != undefined) {
-            tapAuraHitboxHeightSetting = arr[57];
+            hitboxesHitboxHeightSetting = arr[57];
         }
         fos.close();
         VertexClientPE.loadAutoSpammerSettings();
