@@ -202,8 +202,8 @@ var hacksListPosSetting = "top-center";
 var targetMobsSetting = "on";
 var targetPlayersSetting = "on";
 var shortcutUIPosSetting = "right-center";
-var tapAuraHitboxWidthSetting = 10;
-var tapAuraHitboxHeightSetting = 10;
+var hitboxesHitboxWidthSetting = 10;
+var hitboxesHitboxHeightSetting = 10;
 
 var display = new DisplayMetrics_();
 CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
@@ -3665,8 +3665,8 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + targetMobsSetting.toString());
     outWrite.append("," + targetPlayersSetting.toString());
 	outWrite.append("," + shortcutUIPosSetting.toString());
-	outWrite.append("," + tapAuraHitboxWidthSetting.toString());
-    outWrite.append("," + tapAuraHitboxHeightSetting.toString());
+	outWrite.append("," + hitboxesHitboxWidthSetting.toString());
+    outWrite.append("," + hitboxesHitboxHeightSetting.toString());
 
     outWrite.close();
 }
@@ -3855,10 +3855,10 @@ VertexClientPE.loadMainSettings = function () {
             shortcutUIPosSetting = arr[55];
         }
 		if (arr[56] != null && arr[56] != undefined) {
-            tapAuraHitboxWidthSetting = arr[56];
+            hitboxesHitboxWidthSetting = arr[56];
         }
 		if (arr[57] != null && arr[57] != undefined) {
-            tapAuraHitboxHeightSetting = arr[57];
+            hitboxesHitboxHeightSetting = arr[57];
         }
         fos.close();
 		VertexClientPE.font = fontSetting=="minecraft"?Typeface_.createFromFile(new File_(PATH, "minecraft.ttf")):VertexClientPE.defaultFont;
