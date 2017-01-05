@@ -204,6 +204,13 @@ var targetPlayersSetting = "on";
 var shortcutUIPosSetting = "right-center";
 var hitboxesHitboxWidthSetting = 10;
 var hitboxesHitboxHeightSetting = 10;
+//------------------------------------
+var customRGBRed = 0;
+var customRGBGreen = 0;
+var customRGBBlue = 0;
+var customRGBRedStroke = 0;
+var customRGBGreenStroke = 0;
+var customRGBBlueStroke = 0;
 
 var display = new DisplayMetrics_();
 CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
@@ -2307,7 +2314,7 @@ VertexClientPE.showShortcutManagerDialog = function() {
     });
 }
 
-VertexClientPE.showSettingSelectorDialog = function(sRightButton, dialogTitle, selectionArray, currentSelection, varToChange) {
+VertexClientPE.showSettingSelectorDialog = function(sRightButton, dialogTitle, selectionArray, currentSelection, varToChange, customFirstOnClick) {
     CONTEXT.runOnUiThread(new Runnable_() {
         run: function() {
             try {
@@ -2320,7 +2327,7 @@ VertexClientPE.showSettingSelectorDialog = function(sRightButton, dialogTitle, s
                 closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
 				
 				var dScrollView = new ScrollView_(CONTEXT);
-				dScrollView.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT));
+				dScrollView.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.FILL_PARENT, screenHeight / 2.5));
 				dScrollView.setScrollBarStyle(View_.SCROLLBARS_OUTSIDE_OVERLAY);
 				dScrollView.setFillViewport(true);
 				var dScrollInside = new LinearLayout_(CONTEXT);
@@ -2365,13 +2372,22 @@ VertexClientPE.showSettingSelectorDialog = function(sRightButton, dialogTitle, s
                         tempButton = clientButton(element);
                         tempButton.setLayoutParams(new TableRow_.LayoutParams(display.widthPixels / 2.5, LinearLayout_.LayoutParams.WRAP_CONTENT));
                         tempButton.setPadding(0, 0, 0, 0);
-                        tempButton.setOnClickListener(new View_.OnClickListener() {
-							onClick: function(viewArg) {
-								eval(varToChange + " = '" + element.toLowerCase() + "'");
-								sRightButton.setText(element);
-								dialog.dismiss();
-							}
-						});
+						if(index == 0 && customFirstOnClick != null) {
+							tempButton.setOnClickListener(new View_.OnClickListener() {
+								onClick: function(viewArg) {
+									customFirstOnClick(sRightButton, dialogTitle);
+									dialog.dismiss();
+								}
+							});
+						} else {
+							tempButton.setOnClickListener(new View_.OnClickListener() {
+								onClick: function(viewArg) {
+									eval(varToChange + " = '" + element.toLowerCase() + "'");
+									sRightButton.setText(element);
+									dialog.dismiss();
+								}
+							});
+						}
                         dialogTableRow.addView(tempButton);
                         tempButton = null;
                     }
@@ -2409,7 +2425,168 @@ VertexClientPE.showSettingSelectorDialog = function(sRightButton, dialogTitle, s
     });
 }
 
-VertexClientPE.showSongDialog = function(song, songBtn, playBar) { //todo; remove/add song buttons from music player song layout when switching favorite
+VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
+    CONTEXT.runOnUiThread(new Runnable_() {
+        run: function() {
+            try {
+                VertexClientPE.loadMainSettings();
+				var settingsTitle = clientScreenTitle("Settings");
+                var dTitle = clientTextView(dialogTitle, true);
+				dTitle.setGravity(Gravity_.CENTER);
+				var cancelEnter = clientTextView("\n");
+				var doneButton = clientButton("Done");
+                doneButton.setPadding(0.5, doneButton.getPaddingTop(), 0.5, doneButton.getPaddingBottom());
+                var cancelButton = clientButton("Cancel");
+                cancelButton.setPadding(0.5, cancelButton.getPaddingTop(), 0.5, cancelButton.getPaddingBottom());
+				
+				var dScrollView = new ScrollView_(CONTEXT);
+				dScrollView.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.FILL_PARENT, screenHeight / 2));
+				dScrollView.setScrollBarStyle(View_.SCROLLBARS_OUTSIDE_OVERLAY);
+				dScrollView.setFillViewport(true);
+				var dScrollInside = new LinearLayout_(CONTEXT);
+				dScrollInside.setGravity(Gravity_.CENTER);
+				dScrollInside.setOrientation(1);
+				dScrollView.addView(dScrollInside);
+				
+				var newRed = customRGBRed;
+				var newGreen = customRGBGreen;
+				var newBlue = customRGBBlue;
+				var newRedStroke = customRGBRedStroke;
+				var newGreenStroke = customRGBGreenStroke;
+				var newBlueStroke = customRGBBlueStroke;
+				
+				var redTitle = clientTextView("Red (inner): | " + newRed, true);
+				var redSlider = new SeekBar(CONTEXT);
+				redSlider.setMax(255);
+				redSlider.setProgress(newRed);
+				redSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+					onProgressChanged: function() {
+						newRed = redSlider.getProgress();
+						redTitle.setText("Red (inner): | " + newRed);
+					}
+				});
+				
+				var greenTitle = clientTextView("Green (inner): | " + newGreen, true);
+				var greenSlider = new SeekBar(CONTEXT);
+				greenSlider.setMax(255);
+				greenSlider.setProgress(newGreen);
+				greenSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+					onProgressChanged: function() {
+						newGreen = greenSlider.getProgress();
+						greenTitle.setText("Green (inner): | " + newGreen);
+					}
+				});
+				
+				var blueTitle = clientTextView("Blue (inner): | " + newBlue, true);
+				var blueSlider = new SeekBar(CONTEXT);
+				blueSlider.setMax(255);
+				blueSlider.setProgress(newBlue);
+				blueSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+					onProgressChanged: function() {
+						newBlue = blueSlider.getProgress();
+						blueTitle.setText("Blue (inner): | " + newBlue);
+					}
+				});
+				
+				var redStrokeTitle = clientTextView("Red (stroke): | " + newRedStroke, true);
+				var redStrokeSlider = new SeekBar(CONTEXT);
+				redStrokeSlider.setMax(255);
+				redStrokeSlider.setProgress(newRedStroke);
+				redStrokeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+					onProgressChanged: function() {
+						newRedStroke = redStrokeSlider.getProgress();
+						redStrokeTitle.setText("Red (inner): | " + newRedStroke);
+					}
+				});
+				
+				var greenStrokeTitle = clientTextView("Green (stroke): | " + newGreenStroke, true);
+				var greenStrokeSlider = new SeekBar(CONTEXT);
+				greenStrokeSlider.setMax(255);
+				greenStrokeSlider.setProgress(newGreenStroke);
+				greenStrokeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+					onProgressChanged: function() {
+						newGreenStroke = greenStrokeSlider.getProgress();
+						greenStrokeTitle.setText("Green (stroke): | " + newGreenStroke);
+					}
+				});
+				
+				var blueStrokeTitle = clientTextView("Blue (stroke): | " + newBlueStroke, true);
+				var blueStrokeSlider = new SeekBar(CONTEXT);
+				blueStrokeSlider.setMax(255);
+				blueStrokeSlider.setProgress(newBlueStroke);
+				blueStrokeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+					onProgressChanged: function() {
+						newBlueStroke = blueStrokeSlider.getProgress();
+						blueStrokeTitle.setText("Blue (stroke): | " + newBlueStroke);
+					}
+				});
+				
+				dScrollInside.addView(redTitle);
+				dScrollInside.addView(redSlider);
+				dScrollInside.addView(greenTitle);
+				dScrollInside.addView(greenSlider);
+				dScrollInside.addView(blueTitle);
+				dScrollInside.addView(blueSlider);
+				dScrollInside.addView(redStrokeTitle);
+				dScrollInside.addView(redStrokeSlider);
+				dScrollInside.addView(greenStrokeTitle);
+				dScrollInside.addView(greenStrokeSlider);
+				dScrollInside.addView(blueStrokeTitle);
+				dScrollInside.addView(blueStrokeSlider);
+				
+                var dialogLayout = new LinearLayout_(CONTEXT);
+				dialogLayout.setGravity(Gravity_.CENTER);
+                dialogLayout.setBackgroundDrawable(backgroundGradient());
+                dialogLayout.setOrientation(LinearLayout_.VERTICAL);
+                dialogLayout.setPadding(10, 10, 10, 10);
+                dialogLayout.addView(settingsTitle);
+                dialogLayout.addView(dTitle);
+				dialogLayout.addView(dScrollView);
+				
+				dialogLayout.addView(cancelEnter);
+				dialogLayout.addView(doneButton);
+				dialogLayout.addView(cancelButton);
+				
+                var dialog = new Dialog_(CONTEXT);
+                dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
+                dialog.setContentView(dialogLayout);
+                dialog.setTitle(dialogTitle);
+				dialog.setOnDismissListener(new DialogInterface_.OnDismissListener() {
+                    onDismiss: function() {
+						VertexClientPE.saveMainSettings();
+                    }
+                });
+                dialog.show();
+                var window = dialog.getWindow();
+                window.setLayout(display.widthPixels, display.heightPixels);
+				doneButton.setOnClickListener(new View_.OnClickListener() {
+                    onClick: function(view) {
+						customRGBRed = newRed;
+						customRGBGreen = newGreen;
+						customRGBBlue = newBlue;
+						customRGBRedStroke = newRedStroke;
+						customRGBGreenStroke = newGreenStroke;
+						customRGBBlueStroke = newBlueStroke;
+						themeSetting = "custom rgb";
+						sRightButton.setText("Custom RGB");
+						VertexClientPE.saveCustomRGBSettings();
+                        dialog.dismiss();
+                    }
+                });
+                cancelButton.setOnClickListener(new View_.OnClickListener() {
+                    onClick: function(view) {
+                        dialog.dismiss();
+                    }
+                });
+            } catch(e) {
+                print("Error: " + e);
+                VertexClientPE.showBugReportDialog(e);
+            }
+        }
+    });
+}
+
+VertexClientPE.showSongDialog = function(song, songBtn, playBar) {
     CONTEXT.runOnUiThread(new Runnable_() {
         run: function() {
             try {
@@ -3582,6 +3759,55 @@ VertexClientPE.saveDeathCoords = function() {
     VertexClientPE.saveCategorySettings();
 }
 
+VertexClientPE.saveCustomRGBSettings = function() {
+    File_(settingsPath).mkdirs();
+    var newFile = new File_(settingsPath, "vertex_rgb.txt");
+    newFile.createNewFile();
+    var outWrite = new OutputStreamWriter_(new FileOutputStream_(newFile));
+    outWrite.append(customRGBRed.toString());
+    outWrite.append("," + customRGBGreen.toString());
+    outWrite.append("," + customRGBBlue.toString());
+    outWrite.append("," + customRGBRedStroke.toString());
+    outWrite.append("," + customRGBGreenStroke.toString());
+    outWrite.append("," + customRGBBlueStroke.toString());
+
+    outWrite.close();
+}
+
+VertexClientPE.loadCustomRGBSettings = function () {
+    var file = new File_(settingsPath + "vertex_rgb.txt");
+    if (file.exists()) {
+        var fos = new FileInputStream_(file),
+            str = new StringBuilder_(),
+            ch;
+        while ((ch = fos.read()) != -1) {
+            str.append(Character_(ch));
+        }
+        var arr = str.toString().split(",");
+        if (arr[0] != null && arr[0] != undefined) {
+            customRGBRed = arr[0]; //Here we split text by ","
+        }
+        if (arr[1] != null && arr[1] != undefined) {
+            customRGBGreen = arr[1];
+        }
+        if (arr[2] != null && arr[2] != undefined) {
+            customRGBBlue = arr[2];
+        }
+        if (arr[3] != null && arr[3] != undefined) {
+            customRGBRedStroke = arr[3];
+        }
+        if (arr[4] != null && arr[4] != undefined) {
+            customRGBGreenStroke = arr[4];
+        }
+        if (arr[5] != null && arr[5] != undefined) {
+            customRGBBlueStroke = arr[5];
+        }
+        fos.close();
+		
+        return true;
+    }
+}
+
 VertexClientPE.saveMainSettings = function() {
     File_(settingsPath).mkdirs();
     var newFile = new File_(settingsPath, "vertexclientpe.txt");
@@ -3839,6 +4065,7 @@ VertexClientPE.loadMainSettings = function () {
             hitboxesHitboxHeightSetting = arr[57];
         }
         fos.close();
+		VertexClientPE.loadCustomRGBSettings();
 		VertexClientPE.font = fontSetting=="minecraft"?Typeface_.createFromFile(new File_(PATH, "minecraft.ttf")):VertexClientPE.defaultFont;
 		MinecraftButtonLibrary.ProcessedResources.font = VertexClientPE.font;
 		
@@ -3954,6 +4181,8 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 	}
 	buttonView.setTransformationMethod(null);
 	
+	var rgbArray = [customRGBRed, customRGBGreen, customRGBBlue, customRGBRedStroke, customRGBGreenStroke, customRGBBlueStroke];
+	
 	if(style != "invisible") {
 		var bg = GradientDrawable_();
 		if(round == true) {
@@ -3992,6 +4221,12 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 			bg.setColor(Color_.parseColor("#0B5B25"));
 			if(style != "normal_nostrokes") {
 				bg.setStroke(thickness, Color_.parseColor("#0F8219"));
+			}
+		}
+		if(color == "custom rgb") {
+			bg.setColor(Color_.rgb(rgbArray[0], rgbArray[1], rgbArray[2]));
+			if(style != "normal_nostrokes") {
+				bg.setStroke(thickness, Color_.rgb(rgbArray[3], rgbArray[4], rgbArray[5]));
 			}
 		}
 		if(color == "red") {
@@ -4085,6 +4320,12 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 							bg.setStroke(thickness, Color_.parseColor("#0F8219"));
 						}
 					}
+					if(color == "custom rgb") {
+						bg.setColor(Color_.rgb(rgbArray[0], rgbArray[1], rgbArray[2]));
+						if(style != "normal_nostrokes") {
+							bg.setStroke(dip2px(2), Color_.rgb(rgbArray[3], rgbArray[4], rgbArray[5]));
+						}
+					}
 					if(color == "red") {
 						if(forceLightColor == true) {
 							bg.setColor(Color_.parseColor("#FF3333"));
@@ -4165,6 +4406,9 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 						bg.setColor(Color_.parseColor("#00CC66"));
 					} else {
 						bg.setColor(Color_.parseColor("#0F8219"));
+					}
+					if(color == "custom rgb") {
+						bg.setColor(Color_.rgb(rgbArray[3], rgbArray[4], rgbArray[5]));
 					}
 					if(color == "red") {
 						if(forceLightColor == true) {
@@ -4947,7 +5191,7 @@ function settingButton(text, desc, parentWidth) {
     }
 }
 
-function settingSelector(text, desc, dialogTitle, selectionArray, currentSelection, varToChange) {
+function settingSelector(text, desc, dialogTitle, selectionArray, currentSelection, varToChange, customFirstOnClick) {
     var settingButtonLayout = new LinearLayout_(CONTEXT);
     settingButtonLayout.setOrientation(LinearLayout_.HORIZONTAL);
     
@@ -4979,7 +5223,7 @@ function settingSelector(text, desc, dialogTitle, selectionArray, currentSelecti
 	
 	defaultSettingsButton.setOnClickListener(new View_.OnClickListener({
         onClick: function(viewarg) {
-			VertexClientPE.showSettingSelectorDialog(defaultSettingsButton, dialogTitle, selectionArray, currentSelection, varToChange);
+			VertexClientPE.showSettingSelectorDialog(defaultSettingsButton, dialogTitle, selectionArray, currentSelection, varToChange, customFirstOnClick);
         }
     }));
     
@@ -5206,14 +5450,24 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
     return bg;
 }
 
-VertexClientPE.setupGradient = function(gradientDrawable, color, strokeColor) {
+VertexClientPE.setupGradient = function(gradientDrawable, color, strokeColor, rgbArray) {
 	if(!(gradientDrawable instanceof GradientDrawable_)) {
 		throw new TypeError("The type of the first parameter is not GradientDrawable!");
 		return;
 	}
 	var preset = transparentBgSetting=="on"?"#70":"#";
-	gradientDrawable.setColor(Color_.parseColor(preset + color));
-	gradientDrawable.setStroke(dip2px(2), Color_.parseColor(preset + strokeColor));
+	if(rgbArray == null) {
+		gradientDrawable.setColor(Color_.parseColor(preset + color));
+		gradientDrawable.setStroke(dip2px(2), Color_.parseColor(preset + strokeColor));
+	} else {
+		if(transparentBgSetting == "on") {
+			gradientDrawable.setColor(Color_.argb(127, rgbArray[0], rgbArray[1], rgbArray[2]));
+			gradientDrawable.setStroke(dip2px(2), Color_.argb(127, rgbArray[3], rgbArray[4], rgbArray[5]));
+		} else {
+			gradientDrawable.setColor(Color_.rgb(rgbArray[0], rgbArray[1], rgbArray[2]));
+			gradientDrawable.setStroke(dip2px(2), Color_.rgb(rgbArray[3], rgbArray[4], rgbArray[5]));
+		}
+	}
 }
 
 function backgroundGradient(round) // TextView with colored background (edited by peacestorm)
@@ -5258,6 +5512,9 @@ function backgroundGradient(round) // TextView with colored background (edited b
 			VertexClientPE.setupGradient(bg, "00994C", "00CC66");
 		} else {
 			VertexClientPE.setupGradient(bg, "0B5B25", "0F8219");
+		}
+		if(themeSetting == "custom rgb") {
+			VertexClientPE.setupGradient(bg, null, null, [customRGBRed, customRGBGreen, customRGBBlue, customRGBRedStroke, customRGBGreenStroke, customRGBBlueStroke]);
 		}
 		if(themeSetting == "red") {
 			if(useLightThemeSetting == "on") {
@@ -6869,8 +7126,11 @@ function settingsScreen() {
 					
 					var themeTitle = clientSectionTitle("Theme", "rainbow");
                     
-					var themeArray = [/*"Custom RGB", */"Green", "Red", "Blue", "Purple", "Violet", "Yellow", "Orange", "Brown", "Grey", "White", "Black"];
-					var themeSettingFunc = new settingSelector("Color", "Choose a color.", "Color Selector", themeArray, capitalizeColorString(themeSetting), "themeSetting");
+					var themeArray = ["Custom RGB", "Green", "Red", "Blue", "Purple", "Violet", "Yellow", "Orange", "Brown", "Grey", "White", "Black"];
+					var themeSettingFunc = new settingSelector("Color", "Choose a color.", "Color Selector", themeArray, capitalizeColorString(themeSetting), "themeSetting",
+					function(sRightButton, dialogTitle) {
+						VertexClientPE.showCustomRGBDialog(sRightButton, dialogTitle);
+					});
 					var themeSettingButton = themeSettingFunc.getButton();
                     
                     var useLightThemeSettingFunc = new settingButton("Lighter theme colors", "Use light theme colors if available.");
@@ -7431,7 +7691,7 @@ function informationScreen() {
                     informationMenuScrollView.addView(informationMenuLayout);
                     informationMenuLayout1.addView(informationMenuScrollView);
                     
-                    var informationText = clientTextView("\u00A9 peacestorm, imYannic, _TXMO, LPMG, Astro36 and AutoGrind | 2015 - 2016. Some rights reserved.\nThanks to @_TXMO for the original button graphics and @imYannic for some other graphic designs.", true);
+                    var informationText = clientTextView("\u00A9 peacestorm, imYannic, _TXMO, LPMG, Astro36 and AutoGrind | 2015 - 2017. Some rights reserved.\nThanks to @_TXMO for the original button graphics and @imYannic for some other graphic designs.", true);
                     
                     var enterOne = clientTextView("\n");
                     var hrView = clientHR();
