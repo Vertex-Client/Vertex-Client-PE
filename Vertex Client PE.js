@@ -1039,6 +1039,7 @@ var autoSwordState = false;
 var yesCheatPlusState = false;
 var chestESPState = false;
 var speedHackState = false;
+var remoteViewState = false;
 
 var showingMenu = false;
 
@@ -3915,6 +3916,7 @@ var remoteView = {
     },
     onToggle: function() {
         this.state = !this.state;
+		remoteViewState = this.state;
         if(!this.state) {
             ModPE.setCamera(getPlayerEnt());
 			if(this.targetEntity != null && remoteViewTeleportSetting == "on") {
@@ -5743,6 +5745,66 @@ VertexClientPE.showBugReportDialog = function(exception) {
     });
 }
 
+VertexClientPE.showRemoteViewTargetDialog = function() {
+    CONTEXT.runOnUiThread(new Runnable_() {
+        run: function() {
+            try {
+                var rvTitle = clientTextView("RemoteView | Target player by username", true);
+                var btn = clientButton("Apply");
+                var btn1 = clientButton("Close");
+                var inputBar = clientEditText();
+                var dialogLayout = new LinearLayout_(CONTEXT);
+                dialogLayout.setBackgroundDrawable(backgroundGradient());
+                dialogLayout.setOrientation(LinearLayout_.VERTICAL);
+                dialogLayout.setPadding(10, 10, 10, 10);
+                dialogLayout.addView(rvTitle);
+                dialogLayout.addView(inputBar);
+                dialogLayout.addView(btn);
+                dialogLayout.addView(btn1);
+                var dialog = new Dialog_(CONTEXT);
+                dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+                dialog.setContentView(dialogLayout);
+                dialog.setTitle("RemoteView | Target by username");
+                inputBar.setHint("Username");
+                inputBar.setTextColor(Color_.WHITE);
+                dialog.show();
+                btn.setOnClickListener(new View_.OnClickListener() {
+                    onClick: function(view) {
+                        var username = inputBar.getText();
+						var players = Server.getAllPlayers();
+						var rvTargetDone = false;
+						players.forEach(function(element, index, array) {
+							if(Player.getName(element) == username || Entity.getNameTag(element) == username) {
+								VertexClientPE.mods.forEach(function(e, i, a) {
+									if(e.name == "RemoteView") {
+										e.targetEntity = element;
+										ModPE.setCamera(element);
+									}
+								});
+								rvTargetDone = true;
+								return;
+							}
+						});
+						if(rvTargetDone) {
+							VertexClientPE.toast("Your new RemoteView target is " + username + "!");
+						} else {
+							VertexClientPE.toast(username + " couldn't be found!");
+						}
+                    }
+                });
+                btn1.setOnClickListener(new View_.OnClickListener() {
+                    onClick: function(view) {
+                        dialog.dismiss();
+                    }
+                });
+            } catch(e) {
+                print("Error: " + e);
+            }
+        }
+    });
+}
+
 var moreMenuIsOpen = false;
 
 VertexClientPE.showMoreDialog = function() {
@@ -5777,6 +5839,7 @@ VertexClientPE.showMoreDialog = function() {
                 var optiFineButton = clientButton(optiFineTitle);
 				optiFineButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.ic_menu_zoom, 0, 0);
                 var screenshotButton = clientButton("Take a screenshot");
+				var rvTargetButton = clientButton("RemoteView | Target player by username");
                 var dialogLayout1 = new LinearLayout_(CONTEXT);
                 dialogLayout1.setBackgroundDrawable(backgroundGradient());
                 dialogLayout1.setOrientation(LinearLayout_.VERTICAL);
@@ -5795,6 +5858,9 @@ VertexClientPE.showMoreDialog = function() {
 				dialogLayout.addView(webBrowserButton);
 				if(VertexClientPE.isExpMode()) {
 					dialogLayout.addView(screenshotButton);
+				}
+				if(remoteViewState) {
+					dialogLayout.addView(rvTargetButton);
 				}
                 var dialog = new Dialog_(CONTEXT);
                 dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
@@ -5860,6 +5926,12 @@ VertexClientPE.showMoreDialog = function() {
 								VertexClientPE.Utils.takeScreenshot(screenshotModeSetting);
 							}
 						}).start();
+                    }
+                });
+				rvTargetButton.setOnClickListener(new View_.OnClickListener() {
+                    onClick: function(view) {
+						dialog.dismiss();
+						VertexClientPE.showRemoteViewTargetDialog();
                     }
                 });
             } catch(e) {
