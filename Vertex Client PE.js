@@ -485,13 +485,14 @@ function VectorLib() {
      * @param {Number} [b=0] Blue
      * @param {Function} [func=function(){}] Callback to be invoked when color was changed
      */
-    function ColorPickerWindow(r, g, b, func) {
+    function ColorPickerWindow(r, g, b, func, viewerFunc) {
         let viewer = this._viewer = new TextView_(CONTEXT);
         this._picker = new ColorPicker(r, g, b, color => {
             viewer.setBackgroundDrawable(new ColorDrawable_(color));
             func(color);
         });
         viewer.setBackgroundDrawable(new ColorDrawable_(Color_.rgb(r, g, b)));
+		this.viewerFunc = viewerFunc;
     }
 
     /**
@@ -510,6 +511,7 @@ function VectorLib() {
                             run() {
                                 window.dismiss();
                                 window = null;
+								thiz.viewerFunc();
                             }
                         })
                     }
@@ -6078,11 +6080,21 @@ VertexClientPE.showSettingSelectorDialog = function(sRightButton, dialogTitle, s
     });
 }
 
+var newRed, newGreen, newBlue, newRedStroke, newGreenStroke, newBlueStroke;
+
 VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
     CONTEXT.runOnUiThread(new Runnable_() {
         run: function() {
             try {
                 VertexClientPE.loadMainSettings();
+				
+				newRed = customRGBRed;
+				newGreen = customRGBGreen;
+				newBlue = customRGBBlue;
+				newRedStroke = customRGBRedStroke;
+				newGreenStroke = customRGBGreenStroke;
+				newBlueStroke = customRGBBlueStroke;
+				
 				var settingsTitle = clientScreenTitle("Settings");
                 var dTitle = clientTextView(dialogTitle, true);
 				dTitle.setGravity(Gravity_.CENTER);
@@ -6101,47 +6113,50 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 				dScrollInside.setGravity(Gravity_.CENTER);
 				dScrollInside.setOrientation(1);
 				dScrollView.addView(dScrollInside);
-				
-				var newRed = customRGBRed;
-				var newGreen = customRGBGreen;
-				var newBlue = customRGBBlue;
-				var newRedStroke = customRGBRedStroke;
-				var newGreenStroke = customRGBGreenStroke;
-				var newBlueStroke = customRGBBlueStroke;
 			 
-			 var pickerButton0 = clientButton("Color Picker");
-			 pickerButton0.setOnClickListener(new View_.OnClickListener() {
-			     onClick: function(view) {
-			         dialog.dismiss();
-			         var pickerWindow = new ColorPickerWindow(newRed, newGreen, newBlue, function (color) {
-			             customRGBRed = Color_.red(color);
-				            customRGBGreen = Color_.green(color);
-				            customRGBBlue = Color_.blue(color);
-				            themeSetting = "custom rgb";
-						sRightButton.setText("Custom RGB");
-						VertexClientPE.saveCustomRGBSettings();
-						VertexClientPE.saveMainSettings();
-			         });
-			         pickerWindow.show();
-			     }
-			 });
+				var pickerButton0 = clientButton("Color Picker");
+				pickerButton0.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+						var pickerWindow = new ColorPickerWindow(newRed, newGreen, newBlue, function (color) {
+							newRed = Color_.red(color);
+							newGreen = Color_.green(color);
+							newBlue = Color_.blue(color);
+							themeSetting = "custom rgb";
+							sRightButton.setText("Custom RGB");
+							VertexClientPE.saveCustomRGBSettings();
+							VertexClientPE.saveMainSettings();
+						}, function() {
+							dialog.show();
+							redSlider.setProgress(newRed);
+							greenSlider.setProgress(newGreen);
+							blueSlider.setProgress(newBlue);
+						});
+						pickerWindow.show();
+					}
+				});
 			 
-			 var pickerButton1 = clientButton("Color Picker");
-			 pickerButton1.setOnClickListener(new View_.OnClickListener() {
-			     onClick: function(view) {
-			         dialog.dismiss();
-			         var pickerWindow = new ColorPickerWindow(newRedStroke, newGreenStroke, newBlueStroke, function (color) {
-				            customRGBRedStroke = Color_.red(color);
-				            customRGBGreenStroke = Color_.green(color);
-				            customRGBBlueStroke = Color_.blue(color);
-				            themeSetting = "custom rgb";
-					         sRightButton.setText("Custom RGB");
-					        	VertexClientPE.saveCustomRGBSettings();
-						        VertexClientPE.saveMainSettings();
-			         });
-			         pickerWindow.show();
-			     }
-			 });
+				var pickerButton1 = clientButton("Color Picker");
+				pickerButton1.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+						var pickerWindow = new ColorPickerWindow(newRedStroke, newGreenStroke, newBlueStroke, function (color) {
+								newRedStroke = Color_.red(color);
+								newGreenStroke = Color_.green(color);
+								newBlueStroke = Color_.blue(color);
+								themeSetting = "custom rgb";
+								sRightButton.setText("Custom RGB");
+								VertexClientPE.saveCustomRGBSettings();
+								VertexClientPE.saveMainSettings();
+						}, function() {
+							dialog.show();
+							redStrokeSlider.setProgress(newRedStroke);
+							greenStrokeSlider.setProgress(newGreenStroke);
+							blueStrokeSlider.setProgress(newBlueStroke);
+						});
+						pickerWindow.show();
+					}
+				});
 			 
 				var redTitle = clientTextView("Red (inner): | " + newRed, true);
 				var redSlider = new SeekBar(CONTEXT);
