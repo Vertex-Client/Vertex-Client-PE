@@ -6183,7 +6183,7 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 				redStrokeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 					onProgressChanged: function() {
 						newRedStroke = redStrokeSlider.getProgress();
-						redStrokeTitle.setText("Red (inner): | " + newRedStroke);
+						redStrokeTitle.setText("Red (stroke): | " + newRedStroke);
 					}
 				});
 				
