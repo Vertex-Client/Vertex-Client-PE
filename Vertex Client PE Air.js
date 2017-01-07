@@ -414,7 +414,7 @@ function VectorLib() {
 
         controller.setBackgroundDrawable(new BitmapDrawable_(bitmapC));
         controller.setOnTouchListener(new View_.OnTouchListener({
-            onTouch: function(view, event) {
+            onTouch: function (view, event) {
                 let action = event.getAction();
                 if (action === MotionEvent_.ACTION_DOWN || action === MotionEvent_.ACTION_MOVE || action === MotionEvent_.ACTION_UP) {
                     let x = Math.floor(event.getX() / DP),
@@ -434,7 +434,7 @@ function VectorLib() {
 
         picker.setBackgroundDrawable(new BitmapDrawable_(bitmapP));
         picker.setOnTouchListener(new View_.OnTouchListener({
-            onTouch: function(view, event) {
+            onTouch: function (view, event) {
                 let action = event.getAction();
                 if (action === MotionEvent_.ACTION_DOWN || action === MotionEvent_.ACTION_MOVE || action === MotionEvent_.ACTION_UP) {
                     let x = Math.floor(event.getX() / DP),
@@ -455,7 +455,7 @@ function VectorLib() {
      * @since 2016-05-04
      * @returns {android.widget.LinearLayout} the widget of color picker
      */
-    ColorPicker.prototype.show = function() {
+    ColorPicker.prototype.show = function () {
         let layout = new LinearLayout_(CONTEXT);
         layout.addView(this._picker, DP * 240, DP * 240);
         layout.addView(this._controller, DP * 40, DP * 240);
@@ -475,20 +475,27 @@ function VectorLib() {
      * @param {Function} [func=function(){}] Callback to be invoked when color was changed
      */
     function ColorPickerWindow(r, g, b, func, viewerFunc) {
+        r = r || 255;
+        g = g || 0;
+        b = b || 0;
+        func = func || (() => {});
         let viewer = this._viewer = new TextView_(CONTEXT);
         this._picker = new ColorPicker(r, g, b, color => {
             viewer.setBackgroundDrawable(new ColorDrawable_(color));
             func(color);
         });
         viewer.setBackgroundDrawable(new ColorDrawable_(Color_.rgb(r, g, b)));
-		this.viewerFunc = viewerFunc;
+        viewer.setText("Click to close");
+        viewer.setTextColor(Color_.rgb(r, g, b));
+        viewer.setTextSize(1, 14);
+        this.viewerFunc = viewerFunc || (() => {});
     }
 
     /**
      * Display the window of color picker.
      * @since 2016-05-04
      */
-    ColorPickerWindow.prototype.show = function() {
+    ColorPickerWindow.prototype.show = function () {
         let thiz = this;
         CONTEXT.runOnUiThread({
             run() {
@@ -500,7 +507,7 @@ function VectorLib() {
                             run() {
                                 window.dismiss();
                                 window = null;
-								thiz.viewerFunc();
+                                thiz.viewerFunc();
                             }
                         })
                     }
@@ -1656,14 +1663,6 @@ VertexClientPE.getFeatureCount = function() {
 
 function modTick() {
     VertexClientPE.playerIsInGame = true;
-	if(betterPauseSetting == "on" && VertexClientPE.isPaused) {
-		Entity.setVelX(getPlayerEnt(), 0);
-		Entity.setVelY(getPlayerEnt(), 0);
-		Entity.setVelZ(getPlayerEnt(), 0);
-	}
-	if(VertexClientPE.trailsMode != "off") {
-		VertexClientPE.showTrails();
-	}
 }
 
 function attackHook(a, v) {
@@ -6020,6 +6019,25 @@ VertexClientPE.clientTick = function() {
     }).start();
 }
 
+VertexClientPE.inGameTick = function() {
+    new Thread_(new Runnable_() {
+        run: function() {
+            Thread_.sleep(1000 / ModPE.getGameSpeed());
+            if(VertexClientPE.playerIsInGame) {
+				if(betterPauseSetting == "on" && VertexClientPE.isPaused) {
+					Entity.setVelX(getPlayerEnt(), 0);
+					Entity.setVelY(getPlayerEnt(), 0);
+					Entity.setVelZ(getPlayerEnt(), 0);
+				}
+				if(VertexClientPE.trailsMode != "off") {
+					VertexClientPE.showTrails();
+				}
+			}
+            VertexClientPE.inGameTick();
+        }
+    }).start();
+}
+
 var secondTickTimer = 0;
 var lagTimer = 0;
 
@@ -6385,6 +6403,7 @@ VertexClientPE.showSetupScreen = function() {
 										setupScreen.dismiss();
 										showMenuButton();
 										VertexClientPE.clientTick();
+										VertexClientPE.inGameTick();
 										VertexClientPE.secondTick();
 										VertexClientPE.setupMCPEGUI();
 									}
