@@ -4400,9 +4400,9 @@ var randomTP = {
     isStateMod: function() {
         return true;
     },
-	getPrice: function() {
-		return 2000;
-	},
+	requiresPro: function() {
+        return true;
+    },
 	onToggle: function() {
         this.state = !this.state;
     },
@@ -4437,9 +4437,9 @@ var fullBright = {
     isStateMod: function() {
         return true;
     },
-	getPrice: function() {
-		return 1000;
-	},
+	requiresPro: function() {
+        return true;
+    },
 	onToggle: function() {
         this.state = !this.state;
 		if(this.state) {
@@ -4792,24 +4792,6 @@ VertexClientPE.registerModule(zoom);
 //var autoClick = true;
 function modTick() {
     VertexClientPE.playerIsInGame = true;
-	VertexClientPE.modules.forEach(function(element, index, array) {
-		if(element.isStateMod() && element.state && element.onTick) {
-			if(yesCheatPlusState && element.canBypassYesCheatPlus) {
-				if(!element.canBypassYesCheatPlus()) {
-					return;
-				}
-			}
-			element.onTick();
-		}
-	});
-	if(betterPauseSetting == "on" && VertexClientPE.isPaused) {
-		Entity.setVelX(getPlayerEnt(), 0);
-		Entity.setVelY(getPlayerEnt(), 0);
-		Entity.setVelZ(getPlayerEnt(), 0);
-	}
-	if(VertexClientPE.trailsMode != "off") {
-		VertexClientPE.showTrails();
-	}
 }
 
 function attackHook(a, v) {
@@ -7318,58 +7300,6 @@ VertexClientPE.showProDialog = function(featureName) {
     });
 }
 
-VertexClientPE.showModBuyDialog = function(mod, modButton, modInfoButton) {
-    CONTEXT.runOnUiThread(new Runnable_() {
-        run: function() {
-            try {
-                var dialogTitle = clientTextView("Buy");
-                dialogTitle.setTextSize(25);
-                var dialogDesc = clientTextView(new Html_.fromHtml(mod.name + " costs <font color=\"#ffd700\">\u26C1 " + mod.getPrice().toString() + "</font>!\n"), 0);
-                var btn = clientButton("Purchase");
-                var btn1 = clientButton("Close");
-                var inputBar = clientEditText();
-                var dialogLayout = new LinearLayout_(CONTEXT);
-                dialogLayout.setBackgroundDrawable(backgroundGradient());
-                dialogLayout.setOrientation(LinearLayout_.VERTICAL);
-                dialogLayout.setPadding(10, 10, 10, 10);
-                dialogLayout.addView(dialogTitle);
-                dialogLayout.addView(dialogDesc);
-                dialogLayout.addView(btn);
-                dialogLayout.addView(btn1);
-                var dialog = new Dialog_(CONTEXT);
-                dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                dialog.setContentView(dialogLayout);
-                dialog.setTitle("Buy");
-                dialog.show();
-                btn.setOnClickListener(new View_.OnClickListener() {
-                    onClick: function(view) {
-						if(mod.getPrice() <= VertexClientPE.getVertexCash()) {
-							editor.putInt("VertexClientPE.vertexCash", VertexClientPE.getVertexCash() - mod.getPrice());
-							editor.putBoolean("VertexClientPE.bought" + mod.name, true);
-							editor.commit();
-							if(modInfoButton != null) {
-								modInfoButton.setText("...");
-							}
-							dialog.dismiss();
-						} else {
-							VertexClientPE.toast("You need " + (mod.getPrice() - VertexClientPE.getVertexCash()).toString() + " more V€rt€xCash to buy this!");
-						}
-                    }
-                });
-                btn1.setOnClickListener(new View_.OnClickListener() {
-                    onClick: function(view) {
-                        dialog.dismiss();
-                    }
-                });
-            } catch(e) {
-                print("Error: " + e);
-                VertexClientPE.showBugReportDialog(e);
-            }
-        }
-    });
-}
-
 VertexClientPE.showUpgradeDialog = function(featureName) {
     CONTEXT.runOnUiThread(new Runnable_() {
         run: function() {
@@ -9710,7 +9640,7 @@ function modButton(mod, buttonOnly, customSize) {
     
     var modButtonName = sharedPref.getString("VertexClientPE.mods." + mod.name + ".name", mod.name);
 	var modInfoButtonName = "...";
-    if((mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) || (mod.getPrice && !sharedPref.getBoolean("VertexClientPE.bought" + mod.name, false))) {
+    if(mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) {
 		modInfoButtonName = "\uD83D\uDD12";
 	}
     
@@ -9789,10 +9719,6 @@ function modButton(mod, buttonOnly, customSize) {
                 VertexClientPE.showProDialog(mod.name);
                 return;
             }
-			if(mod.getPrice && !sharedPref.getBoolean("VertexClientPE.bought" + mod.name, false)) {
-				VertexClientPE.showModBuyDialog(mod, defaultClientButton, defaultInfoButton);
-				return;
-			}
             if(mod.name == "YesCheat+") {
                 mod.onToggle();
             } else {
@@ -9868,10 +9794,6 @@ function modButton(mod, buttonOnly, customSize) {
     onClick: function(viewarg){
 		if(mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) {
 			VertexClientPE.showProDialog(mod.name);
-			return;
-		}
-		if(mod.getPrice && !sharedPref.getBoolean("VertexClientPE.bought" + mod.name, false)) {
-			VertexClientPE.showModBuyDialog(mod, defaultClientButton, defaultInfoButton);
 			return;
 		}
         VertexClientPE.showModDialog(mod, defaultClientButton);
@@ -11059,6 +10981,35 @@ VertexClientPE.clientTick = function() {
     }).start();
 }
 
+VertexClientPE.inGameTick = function() {
+    new Thread_(new Runnable_() {
+        run: function() {
+            Thread_.sleep(1000 / ModPE.getGameSpeed());
+            if(VertexClientPE.playerIsInGame) {
+				VertexClientPE.modules.forEach(function(element, index, array) {
+					if(element.isStateMod() && element.state && element.onTick) {
+						if(yesCheatPlusState && element.canBypassYesCheatPlus) {
+							if(!element.canBypassYesCheatPlus()) {
+								return;
+							}
+						}
+						element.onTick();
+					}
+				});
+				if(betterPauseSetting == "on" && VertexClientPE.isPaused) {
+					Entity.setVelX(getPlayerEnt(), 0);
+					Entity.setVelY(getPlayerEnt(), 0);
+					Entity.setVelZ(getPlayerEnt(), 0);
+				}
+				if(VertexClientPE.trailsMode != "off") {
+					VertexClientPE.showTrails();
+				}
+			}
+            VertexClientPE.inGameTick();
+        }
+    }).start();
+}
+
 VertexClientPE.specialTick = function() {
     new Thread_(new Runnable_() {
         run: function() {
@@ -11445,6 +11396,7 @@ VertexClientPE.showSetupScreen = function() {
 										setupScreen.dismiss();
 										showMenuButton();
 										VertexClientPE.clientTick();
+										VertexClientPE.inGameTick();
 										VertexClientPE.specialTick();
 										VertexClientPE.secondTick();
 										VertexClientPE.setupMCPEGUI();
