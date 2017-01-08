@@ -761,6 +761,14 @@ function screenChangeHook(screenName) {
 	currentScreen = screenName;
 }
 
+/* function keyEvent(par1, par2) {
+	print(par1);
+	print(par2);
+	//if(screenName == ScreenType.start_screen || screenName == ScreenType.hud || screenName == ScreenType.ingame) {
+		
+	//}
+} */
+
 // ####################
 // # CLIENT FUNCTIONS #
 // ####################
@@ -10490,7 +10498,8 @@ function coloredSubTitle(subtitle) // TextView with colored background (edited b
 }
 
 function backgroundSpecial(round, color, showProLine, lightColor) {
-    var bg = GradientDrawable_();
+    var bg = GradientDrawable_();//todo
+	var rgbArray = [customRGBRed, customRGBGreen, customRGBBlue];
     if(round == true) {
         bg.setCornerRadius(8);
     } else if(round != false && round != null) {
@@ -10583,6 +10592,8 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
     }
     if(color == null) {
         bg.setColor(Color_.parseColor("#70151515"));
+	} else if(color == "custom rgb") {
+		bg.setColor(Color_.argb(127, rgbArray[0], rgbArray[1], rgbArray[2]));
     } else if(color == "green") {
         if(useLightThemeSetting == "on") {
             bg.setColor(Color_.parseColor("#7000994C"));
