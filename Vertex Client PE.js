@@ -5381,7 +5381,7 @@ VertexClientPE.GUI.registerFloatingMenu = function() {
     if(floatingPopupWindowShown == true) {
         floatingCategoryTitleArrow.setText("\u25B3");
         floatingPopupWindowLayout1.addView(floatingPopupWindowScrollView);
-    }else if(combatMenuShown == false) {
+    } else if(floatingPopupWindowShown == false) {
         floatingCategoryTitleArrow.setText("\u25BD");
     }
     VertexClientPE.GUI.floatingMenus.push(this);
@@ -14988,91 +14988,91 @@ function retroMenu() {
     CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
     CONTEXT.runOnUiThread(new Runnable_({ run: function(){
     try{
-    var menuLayout = new LinearLayout_(CONTEXT);
-    var menuMiddleScroll = new ScrollView_(CONTEXT);
-    var menuRightScroll = new ScrollView_(CONTEXT);
-    menuMiddleLayout = new LinearLayout_(CONTEXT);
-    menuRightLayout = new LinearLayout_(CONTEXT);
-    menuRightLayout.setGravity(Gravity_.CENTER);
-    menuRightLayout.setOrientation(1);
-    if(menuType == "halfscreen") {
-		menuMiddleLayout.setOrientation(1);
-		menuLayout.setOrientation(LinearLayout_.HORIZONTAL);
-		menuMiddleLayout.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 1.8 - display.widthPixels / 2.2, display.heightPixels / 1.23));
-		menuRightLayout.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2.2, display.heightPixels / 1.23));
-		if(mainButtonPositionSetting == "top-left") {
-			menuLayout.addView(menuMiddleScroll);
-			menuMiddleScroll.addView(menuMiddleLayout);
-			menuLayout.addView(menuRightScroll);
-			menuRightScroll.addView(menuRightLayout);
-		} else {
-			menuLayout.addView(menuRightScroll);
-			menuRightScroll.addView(menuRightLayout);
-			menuLayout.addView(menuMiddleScroll);
-			menuMiddleScroll.addView(menuMiddleLayout);
-		}
-	} else if(menuType == "halfscreen_top") {
-		menuMiddleLayout.setOrientation(LinearLayout_.HORIZONTAL);
-		menuLayout.setOrientation(1);
-		menuMiddleLayout.setGravity(Gravity_.CENTER);
+		var menuLayout = new LinearLayout_(CONTEXT);
+		var menuMiddleScroll = new ScrollView_(CONTEXT);
+		var menuRightScroll = new ScrollView_(CONTEXT);
+		menuMiddleLayout = new LinearLayout_(CONTEXT);
+		menuRightLayout = new LinearLayout_(CONTEXT);
 		menuRightLayout.setGravity(Gravity_.CENTER);
-		menuLayout.addView(menuMiddleScroll);
-		menuMiddleScroll.addView(menuMiddleLayout);
-		menuLayout.addView(menuRightScroll);
-		menuRightScroll.addView(menuRightLayout);
-	}
-    //--------Add Title--------//
-    var tabTitle = new TextView_(CONTEXT);
-    tabTitle.setText(currentTab);
-    tabTitle.setTextSize(20);
-    tabTitle.setGravity(Gravity_.CENTER);
-    //menuRightLayout.addView(tabTitle);
-    
-    var categories = [VertexClientPE.category.COMBAT, VertexClientPE.category.BUILDING, VertexClientPE.category.MOVEMENT, VertexClientPE.category.CHAT, VertexClientPE.category.MISC];
-    
-    categories.forEach(function(element, index, array) {
-        menuMiddleLayout.addView(new categoryTab(element));
-    });
-    
-    VertexClientPE.modules.forEach(function(element, index, array) {
-        if(VertexClientPE.category.toRealName(element.category) == currentTab && (element.type == "Mod" || element.type == "Special")) {
-			if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
-				return;
-			}
-			if(element.checkBeforeAdding && !element.checkBeforeAdding()) {
-				return;
-			}
-            menuRightLayout.addView(new modButton(element));
-        }
-    });
-     
-    //More buttons...
-	if(menuType == "halfscreen") {
-		menu = new PopupWindow_(menuLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 1.8, CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
-	} else if(menuType == "halfscreen_top") {
-		menu = new PopupWindow_(menuLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() / 2);
-	}
-    menu.setBackgroundDrawable(backgroundGradient());
-    menu.setAnimationStyle(android.R.style.Animation_Translucent);
-	if(menuType == "halfscreen") {
-		if(mainButtonPositionSetting == "top-left") {
-			menu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.BOTTOM, 0, 0);
-		} else {
-			menu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
-		}
-	} else if(menuType == "halfscreen_top") {
-		menu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.TOP, 0, 0);
-		if(GUI != null) {
-			GUI.dismiss();
-			if(mainButtonPositionSetting == "top-right") {
-				GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
+		menuRightLayout.setOrientation(1);
+		if(menuType == "halfscreen") {
+			menuMiddleLayout.setOrientation(1);
+			menuLayout.setOrientation(LinearLayout_.HORIZONTAL);
+			menuMiddleLayout.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 1.8 - display.widthPixels / 2.2, display.heightPixels / 1.23));
+			menuRightLayout.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2.2, display.heightPixels / 1.23));
+			if(mainButtonPositionSetting == "top-left") {
+				menuLayout.addView(menuMiddleScroll);
+				menuMiddleScroll.addView(menuMiddleLayout);
+				menuLayout.addView(menuRightScroll);
+				menuRightScroll.addView(menuRightLayout);
 			} else {
-				GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+				menuLayout.addView(menuRightScroll);
+				menuRightScroll.addView(menuRightLayout);
+				menuLayout.addView(menuMiddleScroll);
+				menuMiddleScroll.addView(menuMiddleLayout);
+			}
+		} else if(menuType == "halfscreen_top") {
+			menuMiddleLayout.setOrientation(LinearLayout_.HORIZONTAL);
+			menuLayout.setOrientation(1);
+			menuMiddleLayout.setGravity(Gravity_.CENTER);
+			menuRightLayout.setGravity(Gravity_.CENTER);
+			menuLayout.addView(menuMiddleScroll);
+			menuMiddleScroll.addView(menuMiddleLayout);
+			menuLayout.addView(menuRightScroll);
+			menuRightScroll.addView(menuRightLayout);
+		}
+		//--------Add Title--------//
+		var tabTitle = new TextView_(CONTEXT);
+		tabTitle.setText(currentTab);
+		tabTitle.setTextSize(20);
+		tabTitle.setGravity(Gravity_.CENTER);
+		//menuRightLayout.addView(tabTitle);
+		
+		var categories = [VertexClientPE.category.COMBAT, VertexClientPE.category.BUILDING, VertexClientPE.category.MOVEMENT, VertexClientPE.category.CHAT, VertexClientPE.category.MISC];
+		
+		categories.forEach(function(element, index, array) {
+			menuMiddleLayout.addView(new categoryTab(element));
+		});
+		
+		VertexClientPE.modules.forEach(function(element, index, array) {
+			if(VertexClientPE.category.toRealName(element.category) == currentTab && (element.type == "Mod" || element.type == "Special")) {
+				if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
+					return;
+				}
+				if(element.checkBeforeAdding && !element.checkBeforeAdding()) {
+					return;
+				}
+				menuRightLayout.addView(new modButton(element));
+			}
+		});
+		 
+		//More buttons...
+		if(menuType == "halfscreen") {
+			menu = new PopupWindow_(menuLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 1.8, CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+		} else if(menuType == "halfscreen_top") {
+			menu = new PopupWindow_(menuLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() / 2);
+		}
+		menu.setBackgroundDrawable(backgroundGradient());
+		menu.setAnimationStyle(android.R.style.Animation_Translucent);
+		if(menuType == "halfscreen") {
+			if(mainButtonPositionSetting == "top-left") {
+				menu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.BOTTOM, 0, 0);
+			} else {
+				menu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
+			}
+		} else if(menuType == "halfscreen_top") {
+			menu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.TOP, 0, 0);
+			if(GUI != null) {
+				GUI.dismiss();
+				if(mainButtonPositionSetting == "top-right") {
+					GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
+				} else {
+					GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+				}
 			}
 		}
-	}
-    }catch(error){
-    print('An error occured: ' + error);
+    } catch(error) {
+		print('An error occured: ' + error);
     }
     }}));
 }
@@ -15110,424 +15110,468 @@ var movementMenuShown = false;
 var chatMenuShown = false;
 var miscMenuShown = false;
 
+var vertexclientpecombatmenu, vertexclientpebuildingmenu, vertexclientpemovementmenu, vertexclientpechatmenu, vertexclientpemiscmenu;
+var combatMenuLayout1, buildingMenuLayout1, movementMenuLayout1, chatMenuLayout1, miscMenuLayout1;
+
 VertexClientPE.showCategoryMenus = function () {
     CONTEXT.runOnUiThread({
         run() {
             try {
-                var display = new DisplayMetrics_(),
-                    combatMenuLayout = new LinearLayout_(CONTEXT),
-                    combatMenuLayout1 = new LinearLayout_(CONTEXT),
-                    combatMenuScrollView = new ScrollView(CONTEXT),
-                    combat = new categoryTitle(combatName, true),
-                    combatSettings = combat.getLeftButton(),
-                    combatTitle = combat.getMiddleButton(),
-                    combatArrow = combat.getRightButton(),
-                    buildingMenuLayout = new LinearLayout_(CONTEXT),
-                    buildingMenuLayout1 = new LinearLayout_(CONTEXT),
-                    buildingMenuScrollView = new ScrollView(CONTEXT),
-                    building = new categoryTitle(buildingName, true);
-                    buildingSettings = building.getLeftButton(),
-                    buildingTitle = building.getMiddleButton(),
-                    buildingArrow = building.getRightButton(),
-                    movementMenuLayout = new LinearLayout_(CONTEXT),
-                    movementMenuLayout1 = new LinearLayout_(CONTEXT),
-                    movementMenuScrollView = new ScrollView(CONTEXT),
-                    movement = new categoryTitle(movementName, true),
-                    movementSettings = movement.getLeftButton(),
-                    movementTitle = movement.getMiddleButton(),
-                    movementArrow = movement.getRightButton(),
-                    chatMenuLayout = new LinearLayout_(CONTEXT),
-                    chatMenuLayout1 = new LinearLayout_(CONTEXT),
-                    chatMenuScrollView = new ScrollView(CONTEXT),
-                    chat = new categoryTitle(chatName, true),
-                    chatSettings = chat.getLeftButton(),
-                    chatTitle = chat.getMiddleButton(),
-                    chatArrow = chat.getRightButton(),
-                    miscMenuLayout = new LinearLayout_(CONTEXT),
-                    miscMenuLayout1 = new LinearLayout_(CONTEXT),
-                    miscMenuScrollView = new ScrollView(CONTEXT),
-                    misc = new categoryTitle(miscName, true),
-                    miscSettings = misc.getLeftButton(),
-                    miscTitle = misc.getMiddleButton(),
-                    miscArrow = misc.getRightButton();
+                var display = new DisplayMetrics_();
+				if(vertexclientpecombatmenu == null || vertexclientpebuildingmenu == null || vertexclientpemovementmenu == null || vertexclientpechatmenu == null || vertexclientpemiscmenu == null) {
+					var combatMenuLayout = new LinearLayout_(CONTEXT),
+						combatMenuScrollView = new ScrollView(CONTEXT),
+						combat = new categoryTitle(combatName, true),
+						combatSettings = combat.getLeftButton(),
+						combatTitle = combat.getMiddleButton(),
+						combatArrow = combat.getRightButton(),
+						buildingMenuLayout = new LinearLayout_(CONTEXT),
+						buildingMenuScrollView = new ScrollView(CONTEXT),
+						building = new categoryTitle(buildingName, true);
+						buildingSettings = building.getLeftButton(),
+						buildingTitle = building.getMiddleButton(),
+						buildingArrow = building.getRightButton(),
+						movementMenuLayout = new LinearLayout_(CONTEXT),
+						movementMenuScrollView = new ScrollView(CONTEXT),
+						movement = new categoryTitle(movementName, true),
+						movementSettings = movement.getLeftButton(),
+						movementTitle = movement.getMiddleButton(),
+						movementArrow = movement.getRightButton(),
+						chatMenuLayout = new LinearLayout_(CONTEXT),
+						chatMenuScrollView = new ScrollView(CONTEXT),
+						chat = new categoryTitle(chatName, true),
+						chatSettings = chat.getLeftButton(),
+						chatTitle = chat.getMiddleButton(),
+						chatArrow = chat.getRightButton(),
+						miscMenuLayout = new LinearLayout_(CONTEXT),
+						miscMenuScrollView = new ScrollView(CONTEXT),
+						misc = new categoryTitle(miscName, true),
+						miscSettings = misc.getLeftButton(),
+						miscTitle = misc.getMiddleButton(),
+						miscArrow = misc.getRightButton();
+						
+					combatMenuLayout1 = new LinearLayout_(CONTEXT);
+					buildingMenuLayout1 = new LinearLayout_(CONTEXT);
+					movementMenuLayout1 = new LinearLayout_(CONTEXT);
+					chatMenuLayout1 = new LinearLayout_(CONTEXT);
+					miscMenuLayout1 = new LinearLayout_(CONTEXT);
 
-                vertexclientpecombatmenu = new PopupWindow_(CONTEXT);
-                vertexclientpebuildingmenu = new PopupWindow_(CONTEXT),
-				vertexclientpemovementmenu = new PopupWindow_(CONTEXT),
-				vertexclientpechatmenu = new PopupWindow_(CONTEXT);
-                vertexclientpemiscmenu = new PopupWindow_(CONTEXT);
+					vertexclientpecombatmenu = new PopupWindow_(CONTEXT);
+					vertexclientpebuildingmenu = new PopupWindow_(CONTEXT);
+					vertexclientpemovementmenu = new PopupWindow_(CONTEXT);
+					vertexclientpechatmenu = new PopupWindow_(CONTEXT);
+					vertexclientpemiscmenu = new PopupWindow_(CONTEXT);
 
-                CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
-                VertexClientPE.loadMainSettings();
+					CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
+					VertexClientPE.loadMainSettings();
 
-                VertexClientPE.modules.forEach(function (element, index, array) {
-                    if (element.type == "Mod" || element.type == "Special") {
-						if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
-							return;
+					VertexClientPE.modules.forEach(function (element, index, array) {
+						if (element.type == "Mod" || element.type == "Special") {
+							if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
+								return;
+							}
+							if(element.checkBeforeAdding && !element.checkBeforeAdding()) {
+								return;
+							}
+							if (element.category == VertexClientPE.category.COMBAT) {
+								combatMenuLayout.addView(new modButton(element));
+							} else if (element.category == VertexClientPE.category.BUILDING) {
+								buildingMenuLayout.addView(new modButton(element));
+							} else if (element.category == VertexClientPE.category.MOVEMENT) {
+								movementMenuLayout.addView(new modButton(element));
+							} else if (element.category == VertexClientPE.category.CHAT) {
+								chatMenuLayout.addView(new modButton(element));
+							} else if (element.category == VertexClientPE.category.MISC) {
+								miscMenuLayout.addView(new modButton(element));
+							}
 						}
-						if(element.checkBeforeAdding && !element.checkBeforeAdding()) {
-							return;
+					});
+
+					// Combat
+					combatMenuLayout.setOrientation(1);
+					combatMenuLayout1.setOrientation(1);
+					combatMenuScrollView.addView(combatMenuLayout);
+					combatSettings.setOnClickListener(new View_.OnClickListener({
+						onClick() {
+							VertexClientPE.showCategoryDialog(combat, combatName, 0);
 						}
-                        if (element.category == VertexClientPE.category.COMBAT) {
-                            combatMenuLayout.addView(new modButton(element));
-                        } else if (element.category == VertexClientPE.category.BUILDING) {
-                            buildingMenuLayout.addView(new modButton(element));
-                        } else if (element.category == VertexClientPE.category.MOVEMENT) {
-                            movementMenuLayout.addView(new modButton(element));
-                        } else if (element.category == VertexClientPE.category.CHAT) {
-                            chatMenuLayout.addView(new modButton(element));
-                        } else if (element.category == VertexClientPE.category.MISC) {
-                            miscMenuLayout.addView(new modButton(element));
-                        }
-                    }
-                });
+					}));
+					VertexClientPE.addView(combatMenuLayout1, combat);
 
-                // Combat
-                combatMenuLayout.setOrientation(1);
-                combatMenuLayout1.setOrientation(1);
-                combatMenuScrollView.addView(combatMenuLayout);
-                combatSettings.setOnClickListener(new View_.OnClickListener({
-                    onClick() {
-                        VertexClientPE.showCategoryDialog(combat, combatName, 0);
-                    }
-                }));
-                VertexClientPE.addView(combatMenuLayout1, combat);
+					if (combatMenuShown == true) {
+						combatArrow.setText("\u25B3");
+						combatMenuLayout1.addView(combatMenuScrollView);
+					} else if (combatMenuShown == false) {
+						combatArrow.setText("\u25BD");
+					}
 
-                if (combatMenuShown == true) {
-                    combatArrow.setText("\u25B3");
-                    combatMenuLayout1.addView(combatMenuScrollView);
-                } else if (combatMenuShown == false) {
-                    combatArrow.setText("\u25BD");
-                }
+					combatArrow.setOnClickListener(new View_.OnClickListener() {
+						onClick(viewarg) {
+							if (combatMenuShown == true) {
+								combatMenuLayout1.removeView(combatMenuScrollView);
+								combatMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, ViewGroup_.LayoutParams.WRAP_CONTENT));
+								combatArrow.setText("\u25BD");
+								combatMenuShown = false;
+							} else if (combatMenuShown == false) {
+								combatMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
+								combatMenuLayout1.addView(combatMenuScrollView);
+								combatArrow.setText("\u25B3");
+								combatMenuShown = true;
+							}
+						}
+					});
+					combatTitle.setOnLongClickListener(new View_.OnLongClickListener() {
+						onLongClick(v, t) {
+							combatdown = true;
+							VertexClientPE.toast("Now you can move the menu!");
+							return true;
+						}
+					});
+					combatTitle.setOnTouchListener(new View_.OnTouchListener({
+						onTouch(v, e) {
+							if (!combatdown) {
+								combatmX = e.getX();
+								combatmY = e.getY();
+							}
+							if (combatdown) {
+								var a = e.getAction();
+								if (a == 2) {
+									var X = parseInt(e.getX() - combatmX) * -1 / 10;
+									var Y = parseInt(e.getY() - combatmY) * -1 / 10;
+									combattpopx = combattpopx + X;
+									combattpopy = combattpopy + Y;
+									vertexclientpecombatmenu.update(parseInt(combattpopx), parseInt(combattpopy), -1, -1);
+								}
+								if (a == 1) combatdown = false;
+							}
+							return false;
+						}
+					}));
 
-                combatArrow.setOnClickListener(new View_.OnClickListener() {
-                    onClick(viewarg) {
-                        if (combatMenuShown == true) {
-                            combatMenuLayout1.removeView(combatMenuScrollView);
-                            combatArrow.setText("\u25BD");
-                            combatMenuShown = false;
-                        } else if (combatMenuShown == false) {
-                            combatMenuLayout1.addView(combatMenuScrollView);
-                            combatArrow.setText("\u25B3");
-                            combatMenuShown = true;
-                        }
-                    }
-                });
-                combatTitle.setOnLongClickListener(new View_.OnLongClickListener() {
-                    onLongClick(v, t) {
-                        combatdown = true;
-                        VertexClientPE.toast("Now you can move the menu!");
-                        return true;
-                    }
-                });
-                combatTitle.setOnTouchListener(new View_.OnTouchListener({
-                    onTouch(v, e) {
-                        if (!combatdown) {
-                            combatmX = e.getX();
-                            combatmY = e.getY();
-                        }
-                        if (combatdown) {
-                            var a = e.getAction();
-                            if (a == 2) {
-                                var X = parseInt(e.getX() - combatmX) * -1 / 10;
-                                var Y = parseInt(e.getY() - combatmY) * -1 / 10;
-                                combattpopx = combattpopx + X;
-                                combattpopy = combattpopy + Y;
-                                vertexclientpecombatmenu.update(parseInt(combattpopx), parseInt(combattpopy), -1, -1);
-                            }
-                            if (a == 1) combatdown = false;
-                        }
-                        return false;
-                    }
-                }));
+					vertexclientpecombatmenu.setContentView(combatMenuLayout1);
+					vertexclientpecombatmenu.setBackgroundDrawable(backgroundSpecial(true, "#80212121"));
+					if (menuAnimationsSetting == "on") {
+						vertexclientpecombatmenu.setAnimationStyle(android.R.style.Animation_Dialog);
+					}
+					vertexclientpecombatmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, combattpopx, combattpopy);
+					if(combatMenuShown) {
+						combatMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
+						vertexclientpecombatmenu.update();
+					}
 
-                vertexclientpecombatmenu.setContentView(combatMenuLayout1);
-                vertexclientpecombatmenu.setBackgroundDrawable(backgroundSpecial(true, "#80212121"));
-                vertexclientpecombatmenu.setWidth(LinearLayout_.LayoutParams.WRAP_CONTENT);
-                vertexclientpecombatmenu.setHeight(screenHeight / 2 - customHeight);
-                if (menuAnimationsSetting == "on") {
-                    vertexclientpecombatmenu.setAnimationStyle(android.R.style.Animation_Dialog);
-                }
-                vertexclientpecombatmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, combattpopx, combattpopy);
+					// Building
+					buildingMenuLayout.setOrientation(1);
+					buildingMenuLayout1.setOrientation(1);
+					buildingMenuScrollView.addView(buildingMenuLayout);
 
-                // Building
-                buildingMenuLayout.setOrientation(1);
-                buildingMenuLayout1.setOrientation(1);
-                buildingMenuScrollView.addView(buildingMenuLayout);
+					buildingSettings.setOnClickListener(new View_.OnClickListener({
+						onClick: function () {
+							VertexClientPE.showCategoryDialog(building, buildingName, 1);
+						}
+					}));
 
-                buildingSettings.setOnClickListener(new View_.OnClickListener({
-                    onClick: function () {
-                        VertexClientPE.showCategoryDialog(building, buildingName, 1);
-                    }
-                }));
+					VertexClientPE.addView(buildingMenuLayout1, building);
 
-                VertexClientPE.addView(buildingMenuLayout1, building);
+					if (buildingMenuShown == true) {
+						buildingArrow.setText("\u25B3");
+						buildingMenuLayout1.addView(buildingMenuScrollView);
+					} else if (buildingMenuShown == false) {
+						buildingArrow.setText("\u25BD");
+					}
 
-                if (buildingMenuShown == true) {
-                    buildingArrow.setText("\u25B3");
-                    buildingMenuLayout1.addView(buildingMenuScrollView);
-                } else if (buildingMenuShown == false) {
-                    buildingArrow.setText("\u25BD");
-                }
+					buildingArrow.setOnClickListener(new View_.OnClickListener() {
+						onClick: function (viewarg) {
+							if (buildingMenuShown == true) {
+								buildingMenuLayout1.removeView(buildingMenuScrollView);
+								buildingMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, ViewGroup_.LayoutParams.WRAP_CONTENT));
+								buildingArrow.setText("\u25BD");
+								buildingMenuShown = false;
+							} else if (buildingMenuShown == false) {
+								buildingMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
+								buildingMenuLayout1.addView(buildingMenuScrollView);
+								buildingArrow.setText("\u25B3");
+								buildingMenuShown = true;
+							}
+						}
+					});
+					buildingTitle.setOnLongClickListener(new View_.OnLongClickListener() {
+						onLongClick: function (v, t) {
+							buildingdown = true;
+							VertexClientPE.toast("Now you can move the menu!");
+							return true;
+						}
+					});
+					buildingTitle.setOnTouchListener(new View_.OnTouchListener({
+						onTouch: function (v, e) {
+							if (!buildingdown) {
+								buildingmX = e.getX()
+								buildingmY = e.getY()
+							}
+							if (buildingdown) {
+								var a = e.getAction()
+								if (a == 2) {
+									var X = parseInt(e.getX() - buildingmX) * -1 / 10;
+									var Y = parseInt(e.getY() - buildingmY) * -1 / 10;
+									buildingtpopx = buildingtpopx + X;
+									buildingtpopy = buildingtpopy + Y;
+									vertexclientpebuildingmenu.update(parseInt(buildingtpopx), parseInt(buildingtpopy), -1, -1);
+								}
+								if (a == 1) buildingdown = false;
+							}
+							return false;
+						}
+					}));
 
-                buildingArrow.setOnClickListener(new View_.OnClickListener() {
-                    onClick: function (viewarg) {
-                        if (buildingMenuShown == true) {
-                            buildingMenuLayout1.removeView(buildingMenuScrollView);
-                            buildingArrow.setText("\u25BD");
-                            buildingMenuShown = false;
-                        } else if (buildingMenuShown == false) {
-                            buildingMenuLayout1.addView(buildingMenuScrollView);
-                            buildingArrow.setText("\u25B3");
-                            buildingMenuShown = true;
-                        }
-                    }
-                });
-                buildingTitle.setOnLongClickListener(new View_.OnLongClickListener() {
-                    onLongClick: function (v, t) {
-                        buildingdown = true;
-                        VertexClientPE.toast("Now you can move the menu!");
-                        return true;
-                    }
-                });
-                buildingTitle.setOnTouchListener(new View_.OnTouchListener({
-                    onTouch: function (v, e) {
-                        if (!buildingdown) {
-                            buildingmX = e.getX()
-                            buildingmY = e.getY()
-                        }
-                        if (buildingdown) {
-                            var a = e.getAction()
-                            if (a == 2) {
-                                var X = parseInt(e.getX() - buildingmX) * -1 / 10;
-                                var Y = parseInt(e.getY() - buildingmY) * -1 / 10;
-                                buildingtpopx = buildingtpopx + X;
-                                buildingtpopy = buildingtpopy + Y;
-                                vertexclientpebuildingmenu.update(parseInt(buildingtpopx), parseInt(buildingtpopy), -1, -1);
-                            }
-                            if (a == 1) buildingdown = false;
-                        }
-                        return false;
-                    }
-                }));
+					vertexclientpebuildingmenu.setContentView(buildingMenuLayout1);
+					vertexclientpebuildingmenu.setBackgroundDrawable(backgroundSpecial(true, "#80212121"));
+					if (menuAnimationsSetting == "on") {
+						vertexclientpebuildingmenu.setAnimationStyle(android.R.style.Animation_Dialog);
+					}
+					vertexclientpebuildingmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, buildingtpopx, buildingtpopy);
+					if(buildingMenuShown) {
+						buildingMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
+						vertexclientpecombatmenu.update();
+					}
 
-                vertexclientpebuildingmenu.setContentView(buildingMenuLayout1);
-                vertexclientpebuildingmenu.setBackgroundDrawable(backgroundSpecial(true, "#80212121"));
-                vertexclientpebuildingmenu.setWidth(LinearLayout_.LayoutParams.WRAP_CONTENT);
-                vertexclientpebuildingmenu.setHeight(screenHeight / 2 - customHeight);
-                if (menuAnimationsSetting == "on") {
-                    vertexclientpebuildingmenu.setAnimationStyle(android.R.style.Animation_Dialog);
-                }
-                vertexclientpebuildingmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, buildingtpopx, buildingtpopy);
+					// Movement
+					movementMenuLayout.setOrientation(1);
+					movementMenuLayout1.setOrientation(1);
+					movementMenuScrollView.addView(movementMenuLayout);
 
-                // Movement
-                movementMenuLayout.setOrientation(1);
-                movementMenuLayout1.setOrientation(1);
-                movementMenuScrollView.addView(movementMenuLayout);
+					movementSettings.setOnClickListener(new View_.OnClickListener({
+						onClick: function () {
+							VertexClientPE.showCategoryDialog(movement, movementName, 2);
+						}
+					}));
 
-                movementSettings.setOnClickListener(new View_.OnClickListener({
-                    onClick: function () {
-                        VertexClientPE.showCategoryDialog(movement, movementName, 2);
-                    }
-                }));
+					VertexClientPE.addView(movementMenuLayout1, movement);
 
-                VertexClientPE.addView(movementMenuLayout1, movement);
+					if (movementMenuShown == true) {
+						movementArrow.setText("\u25B3");
+						movementMenuLayout1.addView(movementMenuScrollView);
+					} else if (movementMenuShown == false) {
+						movementArrow.setText("\u25BD");
+					}
 
-                if (movementMenuShown == true) {
-                    movementArrow.setText("\u25B3");
-                    movementMenuLayout1.addView(movementMenuScrollView);
-                } else if (movementMenuShown == false) {
-                    movementArrow.setText("\u25BD");
-                }
+					movementArrow.setOnClickListener(new View_.OnClickListener() {
+						onClick: function (viewarg) {
+							if (movementMenuShown == true) {
+								movementMenuLayout1.removeView(movementMenuScrollView);
+								movementMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, ViewGroup_.LayoutParams.WRAP_CONTENT));
+								movementArrow.setText("\u25BD");
+								movementMenuShown = false;
+							} else if (movementMenuShown == false) {
+								movementMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
+								movementMenuLayout1.addView(movementMenuScrollView);
+								movementArrow.setText("\u25B3");
+								movementMenuShown = true;
+							}
+						}
+					});
+					movementTitle.setOnLongClickListener(new View_.OnLongClickListener() {
+						onLongClick: function (v, t) {
+							movementdown = true;
+							VertexClientPE.toast("Now you can move the menu!");
+							return true;
+						}
+					});
+					movementTitle.setOnTouchListener(new View_.OnTouchListener({
+						onTouch: function (v, e) {
+							if (!movementdown) {
+								movementmX = e.getX()
+								movementmY = e.getY()
+							}
+							if (movementdown) {
+								var a = e.getAction()
+								if (a == 2) {
+									var X = parseInt(e.getX() - movementmX) * -1 / 10;
+									var Y = parseInt(e.getY() - movementmY) * -1 / 10;
+									movementtpopx = movementtpopx + X;
+									movementtpopy = movementtpopy + Y;
+									vertexclientpemovementmenu.update(parseInt(movementtpopx), parseInt(movementtpopy), -1, -1);
+								}
+								if (a == 1) movementdown = false;
+							}
+							return false;
+						}
+					}));
 
-                movementArrow.setOnClickListener(new View_.OnClickListener() {
-                    onClick: function (viewarg) {
-                        if (movementMenuShown == true) {
-                            movementMenuLayout1.removeView(movementMenuScrollView);
-                            movementArrow.setText("\u25BD");
-                            movementMenuShown = false;
-                        } else if (movementMenuShown == false) {
-                            movementMenuLayout1.addView(movementMenuScrollView);
-                            movementArrow.setText("\u25B3");
-                            movementMenuShown = true;
-                        }
-                    }
-                });
-                movementTitle.setOnLongClickListener(new View_.OnLongClickListener() {
-                    onLongClick: function (v, t) {
-                        movementdown = true;
-                        VertexClientPE.toast("Now you can move the menu!");
-                        return true;
-                    }
-                });
-                movementTitle.setOnTouchListener(new View_.OnTouchListener({
-                    onTouch: function (v, e) {
-                        if (!movementdown) {
-                            movementmX = e.getX()
-                            movementmY = e.getY()
-                        }
-                        if (movementdown) {
-                            var a = e.getAction()
-                            if (a == 2) {
-                                var X = parseInt(e.getX() - movementmX) * -1 / 10;
-                                var Y = parseInt(e.getY() - movementmY) * -1 / 10;
-                                movementtpopx = movementtpopx + X;
-                                movementtpopy = movementtpopy + Y;
-                                vertexclientpemovementmenu.update(parseInt(movementtpopx), parseInt(movementtpopy), -1, -1);
-                            }
-                            if (a == 1) movementdown = false;
-                        }
-                        return false;
-                    }
-                }));
+					vertexclientpemovementmenu.setContentView(movementMenuLayout1);
+					vertexclientpemovementmenu.setBackgroundDrawable(backgroundSpecial(true, "#80212121"));
+					if (menuAnimationsSetting == "on") {
+						vertexclientpemovementmenu.setAnimationStyle(android.R.style.Animation_Dialog);
+					}
+					vertexclientpemovementmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, movementtpopx, movementtpopy);
+					if(movementMenuShown) {
+						movementMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
+						vertexclientpemovementmenu.update();
+					}
 
-                vertexclientpemovementmenu.setContentView(movementMenuLayout1);
-                vertexclientpemovementmenu.setBackgroundDrawable(backgroundSpecial(true, "#80212121"));
-                vertexclientpemovementmenu.setWidth(LinearLayout_.LayoutParams.WRAP_CONTENT);
-                vertexclientpemovementmenu.setHeight(screenHeight / 2 - customHeight);
-                if (menuAnimationsSetting == "on") {
-                    vertexclientpemovementmenu.setAnimationStyle(android.R.style.Animation_Dialog);
-                }
-                vertexclientpemovementmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, movementtpopx, movementtpopy);
+					// Chat
+					chatMenuLayout.setOrientation(1);
+					chatMenuLayout1.setOrientation(1);
+					chatMenuScrollView.addView(chatMenuLayout);
+					chatSettings.setOnClickListener(new View_.OnClickListener({
+						onClick: function () {
+							VertexClientPE.showCategoryDialog(chat, chatName, 3);
+						}
+					}));
 
-                // Chat
-                chatMenuLayout.setOrientation(1);
-                chatMenuLayout1.setOrientation(1);
-                chatMenuScrollView.addView(chatMenuLayout);
-                chatSettings.setOnClickListener(new View_.OnClickListener({
-                    onClick: function () {
-                        VertexClientPE.showCategoryDialog(chat, chatName, 3);
-                    }
-                }));
+					VertexClientPE.addView(chatMenuLayout1, chat);
 
-                VertexClientPE.addView(chatMenuLayout1, chat);
+					if (chatMenuShown == true) {
+						chatArrow.setText("\u25B3");
+						chatMenuLayout1.addView(chatMenuScrollView);
+					} else if (chatMenuShown == false) {
+						chatArrow.setText("\u25BD");
+					}
 
-                if (chatMenuShown == true) {
-                    chatArrow.setText("\u25B3");
-                    chatMenuLayout1.addView(chatMenuScrollView);
-                } else if (chatMenuShown == false) {
-                    chatArrow.setText("\u25BD");
-                }
+					chatArrow.setOnClickListener(new View_.OnClickListener() {
+						onClick: function (viewarg) {
+							if (chatMenuShown == true) {
+								chatMenuLayout1.removeView(chatMenuScrollView);
+								chatMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, ViewGroup_.LayoutParams.WRAP_CONTENT));
+								chatArrow.setText("\u25BD");
+								chatMenuShown = false;
+							} else if (chatMenuShown == false) {
+								chatMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
+								chatMenuLayout1.addView(chatMenuScrollView);
+								chatArrow.setText("\u25B3");
+								chatMenuShown = true;
+							}
+						}
+					});
+					chatTitle.setOnLongClickListener(new View_.OnLongClickListener() {
+						onLongClick: function (v, t) {
+							chatdown = true;
+							VertexClientPE.toast("Now you can move the menu!");
+							return true;
+						}
+					});
+					chatTitle.setOnTouchListener(new View_.OnTouchListener({
+						onTouch: function (v, e) {
+							if (!chatdown) {
+								chatmX = e.getX()
+								chatmY = e.getY()
+							}
+							if (chatdown) {
+								var a = e.getAction()
+								if (a == 2) {
+									var X = parseInt(e.getX() - chatmX) * -1 / 10;
+									var Y = parseInt(e.getY() - chatmY) * -1 / 10;
+									chattpopx = chattpopx + X;
+									chattpopy = chattpopy + Y;
+									vertexclientpechatmenu.update(parseInt(chattpopx), parseInt(chattpopy), -1, -1);
+								}
+								if (a == 1) chatdown = false;
+							}
+							return false;
+						}
+					}));
 
-                chatArrow.setOnClickListener(new View_.OnClickListener() {
-                    onClick: function (viewarg) {
-                        if (chatMenuShown == true) {
-                            chatMenuLayout1.removeView(chatMenuScrollView);
-                            chatArrow.setText("\u25BD");
-                            chatMenuShown = false;
-                        } else if (chatMenuShown == false) {
-                            chatMenuLayout1.addView(chatMenuScrollView);
-                            chatArrow.setText("\u25B3");
-                            chatMenuShown = true;
-                        }
-                    }
-                });
-                chatTitle.setOnLongClickListener(new View_.OnLongClickListener() {
-                    onLongClick: function (v, t) {
-                        chatdown = true;
-                        VertexClientPE.toast("Now you can move the menu!");
-                        return true;
-                    }
-                });
-                chatTitle.setOnTouchListener(new View_.OnTouchListener({
-                    onTouch: function (v, e) {
-                        if (!chatdown) {
-                            chatmX = e.getX()
-                            chatmY = e.getY()
-                        }
-                        if (chatdown) {
-                            var a = e.getAction()
-                            if (a == 2) {
-                                var X = parseInt(e.getX() - chatmX) * -1 / 10;
-                                var Y = parseInt(e.getY() - chatmY) * -1 / 10;
-                                chattpopx = chattpopx + X;
-                                chattpopy = chattpopy + Y;
-                                vertexclientpechatmenu.update(parseInt(chattpopx), parseInt(chattpopy), -1, -1);
-                            }
-                            if (a == 1) chatdown = false;
-                        }
-                        return false;
-                    }
-                }));
+					vertexclientpechatmenu.setContentView(chatMenuLayout1);
+					vertexclientpechatmenu.setBackgroundDrawable(backgroundSpecial(true, "#80212121"));
+					if (menuAnimationsSetting == "on") {
+						vertexclientpechatmenu.setAnimationStyle(android.R.style.Animation_Dialog);
+					}
+					vertexclientpechatmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, chattpopx, chattpopy);
 
-                vertexclientpechatmenu.setContentView(chatMenuLayout1);
-                vertexclientpechatmenu.setBackgroundDrawable(backgroundSpecial(true, "#80212121"));
-                vertexclientpechatmenu.setWidth(LinearLayout_.LayoutParams.WRAP_CONTENT);
-                vertexclientpechatmenu.setHeight(screenHeight / 2 - customHeight);
-                if (menuAnimationsSetting == "on") {
-                    vertexclientpechatmenu.setAnimationStyle(android.R.style.Animation_Dialog);
-                }
-                vertexclientpechatmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, chattpopx, chattpopy);
+					// Misc
+					miscMenuLayout.setOrientation(1);
+					miscMenuLayout1.setOrientation(1);
+					miscMenuScrollView.addView(miscMenuLayout);
 
-                // Misc
-                miscMenuLayout.setOrientation(1);
-                miscMenuLayout1.setOrientation(1);
-                miscMenuScrollView.addView(miscMenuLayout);
+					miscSettings.setOnClickListener(new View_.OnClickListener({
+						onClick: function () {
+							VertexClientPE.showCategoryDialog(misc, miscName, 4);
+						}
+					}));
 
-                miscSettings.setOnClickListener(new View_.OnClickListener({
-                    onClick: function () {
-                        VertexClientPE.showCategoryDialog(misc, miscName, 4);
-                    }
-                }));
+					VertexClientPE.addView(miscMenuLayout1, misc);
 
-                VertexClientPE.addView(miscMenuLayout1, misc);
+					if (miscMenuShown == true) {
+						miscArrow.setText("\u25B3");
+						miscMenuLayout1.addView(miscMenuScrollView);
+					} else if (miscMenuShown == false) {
+						miscArrow.setText("\u25BD");
+					}
 
-                if (miscMenuShown == true) {
-                    miscArrow.setText("\u25B3");
-                    miscMenuLayout1.addView(miscMenuScrollView);
-                } else if (miscMenuShown == false) {
-                    miscArrow.setText("\u25BD");
-                }
+					miscArrow.setOnClickListener(new View_.OnClickListener() {
+						onClick: function (viewarg) {
+							if (miscMenuShown == true) {
+								miscMenuLayout1.removeView(miscMenuScrollView);
+								miscMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, ViewGroup_.LayoutParams.WRAP_CONTENT));
+								miscArrow.setText("\u25BD");
+								miscMenuShown = false;
+							} else if (miscMenuShown == false) {
+								miscMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
+								miscMenuLayout1.addView(miscMenuScrollView);
+								miscArrow.setText("\u25B3");
+								miscMenuShown = true;
+							}
+						}
+					});
+					miscTitle.setOnLongClickListener(new View_.OnLongClickListener() {
+						onLongClick: function (v, t) {
+							miscdown = true;
+							VertexClientPE.toast("Now you can move the menu!");
+							return true;
+						}
+					});
+					miscTitle.setOnTouchListener(new View_.OnTouchListener({
+						onTouch: function (v, e) {
+							if (!miscdown) {
+								miscmX = e.getX()
+								miscmY = e.getY()
+							}
+							if (miscdown) {
+								var a = e.getAction()
+								if (a == 2) {
+									var X = parseInt(e.getX() - miscmX) * -1 / 10;
+									var Y = parseInt(e.getY() - miscmY) * -1 / 10;
+									misctpopx = misctpopx + X;
+									misctpopy = misctpopy + Y;
+									vertexclientpemiscmenu.update(parseInt(misctpopx), parseInt(misctpopy), -1, -1);
+								}
+								if (a == 1) miscdown = false;
+							}
+							return false;
+						}
+					}));
 
-                miscArrow.setOnClickListener(new View_.OnClickListener() {
-                    onClick: function (viewarg) {
-                        if (miscMenuShown == true) {
-                            miscMenuLayout1.removeView(miscMenuScrollView);
-                            miscArrow.setText("\u25BD");
-                            miscMenuShown = false;
-                        } else if (miscMenuShown == false) {
-                            miscMenuLayout1.addView(miscMenuScrollView);
-                            miscArrow.setText("\u25B3");
-                            miscMenuShown = true;
-                        }
-                    }
-                });
-                miscTitle.setOnLongClickListener(new View_.OnLongClickListener() {
-                    onLongClick: function (v, t) {
-                        miscdown = true;
-                        VertexClientPE.toast("Now you can move the menu!");
-                        return true;
-                    }
-                });
-                miscTitle.setOnTouchListener(new View_.OnTouchListener({
-                    onTouch: function (v, e) {
-                        if (!miscdown) {
-                            miscmX = e.getX()
-                            miscmY = e.getY()
-                        }
-                        if (miscdown) {
-                            var a = e.getAction()
-                            if (a == 2) {
-                                var X = parseInt(e.getX() - miscmX) * -1 / 10;
-                                var Y = parseInt(e.getY() - miscmY) * -1 / 10;
-                                misctpopx = misctpopx + X;
-                                misctpopy = misctpopy + Y;
-                                vertexclientpemiscmenu.update(parseInt(misctpopx), parseInt(misctpopy), -1, -1);
-                            }
-                            if (a == 1) miscdown = false;
-                        }
-                        return false;
-                    }
-                }));
-
-                vertexclientpemiscmenu.setContentView(miscMenuLayout1);
-                vertexclientpemiscmenu.setBackgroundDrawable(backgroundSpecial(true, "#80212121"));
-                vertexclientpemiscmenu.setWidth(LinearLayout_.LayoutParams.WRAP_CONTENT);
-                vertexclientpemiscmenu.setHeight(screenHeight / 2 - customHeight);
-                if (menuAnimationsSetting == "on") {
-                    vertexclientpemiscmenu.setAnimationStyle(android.R.style.Animation_Dialog);
-                }
-                vertexclientpemiscmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, misctpopx, misctpopy);
+					vertexclientpemiscmenu.setContentView(miscMenuLayout1);
+					vertexclientpemiscmenu.setBackgroundDrawable(backgroundSpecial(true, "#80212121"));
+					if (menuAnimationsSetting == "on") {
+						vertexclientpemiscmenu.setAnimationStyle(android.R.style.Animation_Dialog);
+					}
+				}
+				
+				//SHOW ALL MENUS *AFTER INITIALIZING*
+				vertexclientpecombatmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, combattpopx, combattpopy);
+				if(combatMenuShown) {
+					combatMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
+					vertexclientpecombatmenu.update();
+				}
+				vertexclientpebuildingmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, buildingtpopx, buildingtpopy);
+				if(buildingMenuShown) {
+					buildingMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
+					vertexclientpebuildingmenu.update();
+				}
+				vertexclientpemovementmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, movementtpopx, movementtpopy);
+				if(movementMenuShown) {
+					movementMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
+					vertexclientpemovementmenu.update();
+				}
+				vertexclientpechatmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, chattpopx, chattpopy);
+				if(chatMenuShown) {
+					chatMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
+					vertexclientpechatmenu.update();
+				}
+				vertexclientpemiscmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, misctpopx, misctpopy);
+				if(miscMenuShown) {
+					miscMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
+					vertexclientpemiscmenu.update();
+				}
             } catch (e) {
                 print("Error: " + e + e.lineNumber);
                 VertexClientPE.showBugReportDialog(e);
