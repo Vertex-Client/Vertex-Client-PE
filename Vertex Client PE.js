@@ -217,6 +217,12 @@ var customRGBBlue = 0;
 var customRGBRedStroke = 0;
 var customRGBGreenStroke = 0;
 var customRGBBlueStroke = 0;
+//------------------------------------
+var combatEnabled = "on";
+var buildingEnabled = "on";
+var movementEnabled = "on";
+var chatEnabled = "on";
+var miscEnabled = "on";
 //End of settings
 
 var modButtonColorBlocked = Color_.RED;
@@ -1660,7 +1666,6 @@ var playerCustomizerMenu;
 var optiFineMenu;
 var informationMenu;
 var christmasMenu;
-var menuBar;
 var hacksList;
 var tabGUI;
 var shortcutGUI;
@@ -1718,6 +1723,7 @@ VertexClientPE.category = {
 
 VertexClientPE.shopFeatures = [];
 VertexClientPE.tiles = [];
+VertexClientPE.preInitModules = [];
 VertexClientPE.modules = [];
 VertexClientPE.addons = [];
 
@@ -1986,8 +1992,23 @@ VertexClientPE.registerShopFeature(optiFine);
 VertexClientPE.registerShopFeature(playerCustomizer);
 VertexClientPE.registerShopFeature(webBrowser);
 
+VertexClientPE.initMods = function() {
+	try {
+		VertexClientPE.preInitModules.forEach(function(element, index, array) {
+			if((element.pack == "Combat" && combatEnabled == "on") || (element.pack == "Building" && buildingEnabled == "on") || (element.pack == "Movement" && movementEnabled == "on") || (element.pack == "Chat" && chatEnabled == "on") || (element.pack == "Miscellaneous" && miscEnabled == "on")) {
+				VertexClientPE.modules.push(element);
+			}
+		});
+	} finally {
+		delete VertexClientPE.preInitModules;
+	}
+}
+
 VertexClientPE.registerModule = function(obj) {
-    VertexClientPE.modules.push(obj);
+	if(obj.pack == undefined || obj.pack == null) {
+		obj.pack = VertexClientPE.category.toRealName(obj.category);
+	}
+	VertexClientPE.preInitModules.push(obj);
 };
 
 VertexClientPE.drawTracer = function(x, y, z, groundMode, particleName) {
@@ -10996,7 +11017,7 @@ VertexClientPE.clientTick = function() {
 VertexClientPE.inGameTick = function() {
     new Thread_(new Runnable_() {
         run: function() {
-            Thread_.sleep(1000 / ModPE.getGameSpeed());
+            Thread_.sleep(1000 / 20);
             if(VertexClientPE.playerIsInGame) {
 				VertexClientPE.modules.forEach(function(element, index, array) {
 					if(element.isStateMod() && element.state && element.onTick) {
@@ -11337,6 +11358,7 @@ VertexClientPE.showSetupScreen = function() {
 								step1Button.setTextColor(Color_.parseColor("#0080FF"));
 								step2Button.setTextColor(Color_.WHITE);
 								step3Button.setTextColor(Color_.WHITE);
+								step4Button.setTextColor(Color_.WHITE);
 								setupTextView.startAnimation(textAnim);
 								setupTextView.setText(setupStep1Text);
 								doneButton.setText("\u2794");
@@ -11364,6 +11386,7 @@ VertexClientPE.showSetupScreen = function() {
 								step1Button.setTextColor(Color_.WHITE);
 								step2Button.setTextColor(Color_.parseColor("#0080FF"));
 								step3Button.setTextColor(Color_.WHITE);
+								step4Button.setTextColor(Color_.WHITE);
 								setupTextView.startAnimation(textAnim);
 								setupTextView.setText(setupStep2Text);
 								setupScreenLayoutBottomLeft.addView(setupButtonGreen);
@@ -11395,8 +11418,41 @@ VertexClientPE.showSetupScreen = function() {
 								step1Button.setTextColor(Color_.WHITE);
 								step2Button.setTextColor(Color_.WHITE);
 								step3Button.setTextColor(Color_.parseColor("#0080FF"));
+								step4Button.setTextColor(Color_.WHITE);
 								setupTextView.startAnimation(textAnim);
 								setupTextView.setText(setupStep3Text);
+								/* setupScreenLayoutBottomLeft.addView(setupButtonGreen);
+								setupScreenLayoutBottomCenter.addView(setupButtonRed);
+								setupScreenLayoutBottomCenter1.addView(setupButtonBlue);
+								setupScreenLayoutBottomRight.addView(setupButtonPurple); */
+								doneButton.setText("\u2794");
+								doneButton.setOnClickListener(new View_.OnClickListener({
+									onClick: function(viewarg){
+										step4Button.performClick();
+									}
+								}));
+							}
+						}
+					});
+					var step4Button = new Button_(CONTEXT);
+					step4Button.setBackgroundDrawable(drawCircle(Color_.parseColor("#80ffffff")));
+					step4Button.setText("4");
+					step4Button.setTextColor(Color_.WHITE);
+					step4Button.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16));
+					step4Button.setOnClickListener(new android.view.View.OnClickListener() {
+						onClick: function(v) {
+							if(currentStep != 4) {
+								currentStep = 4;
+								setupScreenLayoutBottomLeft.removeAllViews();
+								setupScreenLayoutBottomCenter.removeAllViews();
+								setupScreenLayoutBottomCenter1.removeAllViews();
+								setupScreenLayoutBottomRight.removeAllViews();
+								step1Button.setTextColor(Color_.WHITE);
+								step2Button.setTextColor(Color_.WHITE);
+								step3Button.setTextColor(Color_.WHITE);
+								step4Button.setTextColor(Color_.parseColor("#0080FF"));
+								setupTextView.startAnimation(textAnim);
+								setupTextView.setText(setupStep4Text);
 								doneButton.setText("\u2713");
 								doneButton.setOnClickListener(new View_.OnClickListener({
 									onClick: function(viewarg){
@@ -11412,6 +11468,7 @@ VertexClientPE.showSetupScreen = function() {
 										VertexClientPE.specialTick();
 										VertexClientPE.secondTick();
 										VertexClientPE.setupMCPEGUI();
+										VertexClientPE.initMods();
 									}
 								}));
 							}
@@ -11424,11 +11481,16 @@ VertexClientPE.showSetupScreen = function() {
 					var space2 = new TextView_(CONTEXT);
 					space2.setBackgroundDrawable(new ColorDrawable_(Color_.WHITE));
 					
+					var space3 = new TextView_(CONTEXT);
+					space3.setBackgroundDrawable(new ColorDrawable_(Color_.WHITE));
+					
 					setupStepRow.addView(step1Button);
 					setupStepRow.addView(space1, dip2px(8), dip2px(1));
 					setupStepRow.addView(step2Button);
 					setupStepRow.addView(space2, dip2px(8), dip2px(1));
 					setupStepRow.addView(step3Button);
+					setupStepRow.addView(space3, dip2px(8), dip2px(1));
+					setupStepRow.addView(step4Button);
 					
 					var setupTextView = clientTextView("");
                     setupTextView.setGravity(Gravity_.CENTER);
@@ -11436,7 +11498,8 @@ VertexClientPE.showSetupScreen = function() {
                     
 					var setupStep1Text = "Thanks for choosing Vertex Client PE!\nGo to the next step to choose your favourite color. :)";
 					var setupStep2Text = "You can always change the color on the settings screen.\nEven more colors are available there.";
-					var setupStep3Text = "That's it! Your experience begins here.\nHere's some additional help to get started:\n- You can open the Dashboard and some other features from the 'More' dialog,\nwhich can be opened by long tapping the menu button.";
+					var setupStep3Text = "Now you can optimize your experience by choosing the mod categories you want to use. You'll be able to change this on the settings screen anytime.";
+					var setupStep4Text = "That's it! Your experience begins here.\nHere's some additional help to get started:\n- You can open the Dashboard and some other features from the 'More' dialog,\nwhich can be opened by long tapping the menu button.";
 					
 					setupTextView.setText(setupStep1Text);
 					
@@ -11820,8 +11883,10 @@ VertexClientPE.setup = function() {
 							VertexClientPE.showSetupScreen();
 						} else {
 							VertexClientPE.clientTick();
+							VertexClientPE.inGameTick();
 							VertexClientPE.specialTick();
 							VertexClientPE.secondTick();
+							VertexClientPE.initMods();
 							showMenuButton();
 						}
 						
@@ -12206,7 +12271,7 @@ function leaveGame() {
 			if(shortcutGUI != null) {
                 shortcutGUI.dismiss();
             }
-            if(menuBar != null || menu != null) {
+            if(menu != null) {
                 VertexClientPE.closeMenu();
             }
             showMenuButton();
@@ -14678,37 +14743,6 @@ function webBrowserScreen() {
     }));
 }
 
-VertexClientPE.showMenuBar = function() {
-    var display = new DisplayMetrics_();
-    CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
-    CONTEXT.runOnUiThread(new Runnable_({
-        run: function() {
-            try {
-                var menuBarWidth = menuType=="normal"?CONTEXT.getWindowManager().getDefaultDisplay().getWidth():CONTEXT.getWindowManager().getDefaultDisplay().getWidth()/1.8;
-                
-                var menuBarLayout = new LinearLayout_(CONTEXT);
-                menuBarLayout.setOrientation(1);
-                
-                var menuBarTextView = clientTextView(news, true);
-                menuBarTextView.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
-                menuBarTextView.setMarqueeRepeatLimit(-1);
-                menuBarTextView.setSingleLine();
-                menuBarTextView.setHorizontallyScrolling(true);
-                menuBarTextView.setSelected(true);
-                
-                menuBarLayout.addView(menuBarTextView);
-                
-                menuBar = new PopupWindow_(menuBarLayout, menuBarWidth - dip2px(90), screenHeight / 20);
-                menuBar.setBackgroundDrawable(backgroundSpecial("bottom"));
-                menuBar.setTouchable(false);
-                menuBar.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.TOP, 0, 0);
-            } catch(error) {
-                print('An error occurred: ' + error);
-            }
-        }
-    }));
-}
-
 VertexClientPE.showTipBar = function() {
     var display = new DisplayMetrics_();
     CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
@@ -14772,7 +14806,6 @@ VertexClientPE.showMenu = function() {
 	}
     if(menuType == "normal") {
         VertexClientPE.showCategoryMenus();
-		VertexClientPE.showMenuBar();
     } else if(menuType == "halfscreen" || menuType == "halfscreen_top") {
         retroMenu();
     } else if(menuType == "fullscreen") {
@@ -14788,12 +14821,28 @@ VertexClientPE.showMenu = function() {
 */
 VertexClientPE.closeMenu = function() {
     if(menuType == "normal") {
+		if(vertexclientpecombatmenu != null) {
+            if(vertexclientpecombatmenu.isShowing()) {
+                vertexclientpecombatmenu.dismiss();
+            }
+        }
+		if(vertexclientpebuildingmenu != null) {
+            if(vertexclientpebuildingmenu.isShowing()) {
+                vertexclientpebuildingmenu.dismiss();
+            }
+        }
+		if(vertexclientpemovementmenu != null) {
+            if(vertexclientpemovementmenu.isShowing()) {
+                vertexclientpemovementmenu.dismiss();
+            }
+        }
+		if(vertexclientpechatmenu != null) {
+            if(vertexclientpechatmenu.isShowing()) {
+                vertexclientpechatmenu.dismiss();
+            }
+        }
         if(vertexclientpemiscmenu != null) {
             if(vertexclientpemiscmenu.isShowing()) {
-                vertexclientpecombatmenu.dismiss();
-                vertexclientpebuildingmenu.dismiss();
-                vertexclientpemovementmenu.dismiss();
-                vertexclientpechatmenu.dismiss();
                 vertexclientpemiscmenu.dismiss();
             }
         }
@@ -14810,11 +14859,6 @@ VertexClientPE.closeMenu = function() {
             }
         }
     }
-	if(menuBar != null) {
-		if(menuBar.isShowing()) {
-			menuBar.dismiss();
-		}
-	}
     if(GUI != null) {
         if(GUI.isShowing()) {
 			if(mainButtonTapSetting == "menu") {
@@ -15264,11 +15308,6 @@ VertexClientPE.showCategoryMenus = function () {
 					if (menuAnimationsSetting == "on") {
 						vertexclientpecombatmenu.setAnimationStyle(android.R.style.Animation_Dialog);
 					}
-					vertexclientpecombatmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, combattpopx, combattpopy);
-					if(combatMenuShown) {
-						combatMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
-						vertexclientpecombatmenu.update();
-					}
 
 					// Building
 					buildingMenuLayout.setOrientation(1);
@@ -15337,11 +15376,6 @@ VertexClientPE.showCategoryMenus = function () {
 					vertexclientpebuildingmenu.setBackgroundDrawable(backgroundSpecial(true, "#80212121"));
 					if (menuAnimationsSetting == "on") {
 						vertexclientpebuildingmenu.setAnimationStyle(android.R.style.Animation_Dialog);
-					}
-					vertexclientpebuildingmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, buildingtpopx, buildingtpopy);
-					if(buildingMenuShown) {
-						buildingMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
-						vertexclientpecombatmenu.update();
 					}
 
 					// Movement
@@ -15412,11 +15446,6 @@ VertexClientPE.showCategoryMenus = function () {
 					if (menuAnimationsSetting == "on") {
 						vertexclientpemovementmenu.setAnimationStyle(android.R.style.Animation_Dialog);
 					}
-					vertexclientpemovementmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, movementtpopx, movementtpopy);
-					if(movementMenuShown) {
-						movementMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
-						vertexclientpemovementmenu.update();
-					}
 
 					// Chat
 					chatMenuLayout.setOrientation(1);
@@ -15485,7 +15514,6 @@ VertexClientPE.showCategoryMenus = function () {
 					if (menuAnimationsSetting == "on") {
 						vertexclientpechatmenu.setAnimationStyle(android.R.style.Animation_Dialog);
 					}
-					vertexclientpechatmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, chattpopx, chattpopy);
 
 					// Misc
 					miscMenuLayout.setOrientation(1);
@@ -15558,30 +15586,40 @@ VertexClientPE.showCategoryMenus = function () {
 				}
 				
 				//SHOW ALL MENUS *AFTER INITIALIZING*
-				vertexclientpecombatmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, combattpopx, combattpopy);
-				if(combatMenuShown) {
-					combatMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
-					vertexclientpecombatmenu.update();
+				if(combatEnabled == "on") {
+					vertexclientpecombatmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, combattpopx, combattpopy);
+					if(combatMenuShown) {
+						combatMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
+						vertexclientpecombatmenu.update();
+					}
 				}
-				vertexclientpebuildingmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, buildingtpopx, buildingtpopy);
-				if(buildingMenuShown) {
-					buildingMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
-					vertexclientpebuildingmenu.update();
+				if(buildingEnabled == "on") {
+					vertexclientpebuildingmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, buildingtpopx, buildingtpopy);
+					if(buildingMenuShown) {
+						buildingMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
+						vertexclientpebuildingmenu.update();
+					}
 				}
-				vertexclientpemovementmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, movementtpopx, movementtpopy);
-				if(movementMenuShown) {
-					movementMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
-					vertexclientpemovementmenu.update();
+				if(movementEnabled == "on") {
+					vertexclientpemovementmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, movementtpopx, movementtpopy);
+					if(movementMenuShown) {
+						movementMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
+						vertexclientpemovementmenu.update();
+					}
 				}
-				vertexclientpechatmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, chattpopx, chattpopy);
-				if(chatMenuShown) {
-					chatMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
-					vertexclientpechatmenu.update();
+				if(chatEnabled == "on") {
+					vertexclientpechatmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, chattpopx, chattpopy);
+					if(chatMenuShown) {
+						chatMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
+						vertexclientpechatmenu.update();
+					}
 				}
-				vertexclientpemiscmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, misctpopx, misctpopy);
-				if(miscMenuShown) {
-					miscMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
-					vertexclientpemiscmenu.update();
+				if(miscEnabled == "on") {
+					vertexclientpemiscmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, misctpopx, misctpopy);
+					if(miscMenuShown) {
+						miscMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
+						vertexclientpemiscmenu.update();
+					}
 				}
             } catch (e) {
                 print("Error: " + e + e.lineNumber);
@@ -16000,7 +16038,9 @@ function showTabGUI() {
                     var categories = [VertexClientPE.category.COMBAT, VertexClientPE.category.BUILDING, VertexClientPE.category.MOVEMENT, VertexClientPE.category.CHAT, VertexClientPE.category.MISC];
                     
                     categories.forEach(function (element, index, array) {
-                        tabGUILayoutLeft.addView(new tabGUICategoryButton(element, tabGUILayoutLeft, tabGUILayoutRight, tabGUILayout));
+						if((index == 0 && combatEnabled == "on") || (index == 1 && buildingEnabled == "on") || (index == 2 && movementEnabled == "on") || (index == 3 && chatEnabled == "on") || (index == 4 && miscEnabled == "on")) {
+							tabGUILayoutLeft.addView(new tabGUICategoryButton(element, tabGUILayoutLeft, tabGUILayoutRight, tabGUILayout));
+						}
                     });
                     
                     tabGUI = new PopupWindow_(tabGUILayout, LinearLayout_.LayoutParams.WRAP_CONTENT, CONTEXT.getWindowManager().getDefaultDisplay().getHeight() / 3);
