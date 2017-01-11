@@ -6026,7 +6026,7 @@ VertexClientPE.clientTick = function() {
 VertexClientPE.inGameTick = function() {
     new Thread_(new Runnable_() {
         run: function() {
-            Thread_.sleep(1000 / ModPE.getGameSpeed());
+            Thread_.sleep(1000 / 20);
             if(VertexClientPE.playerIsInGame) {
 				if(betterPauseSetting == "on" && VertexClientPE.isPaused) {
 					Entity.setVelX(getPlayerEnt(), 0);
@@ -6817,6 +6817,7 @@ VertexClientPE.setup = function() {
 							VertexClientPE.showSetupScreen();
 						} else {
 							VertexClientPE.clientTick();
+							VertexClientPE.inGameTick();
 							VertexClientPE.secondTick();
 							showMenuButton();
 						}
