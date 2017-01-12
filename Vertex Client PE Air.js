@@ -5313,6 +5313,31 @@ function clientTextView(text, shadow) //menu buttons
     return defaultTextView;
 }
 
+function clientSwitch() {
+	var defaultSwitch = new Switch_(CONTEXT);
+    if(themeSetting == "white") {
+        defaultSwitch.setTextColor(Color_.BLACK);
+    } else {
+        defaultSwitch.setTextColor(Color_.WHITE);
+    }
+    defaultSwitch.setTypeface(VertexClientPE.font);
+	
+	if(themeSetting == "white") {
+		if(fontSetting != "minecraft") {
+			defaultSwitch.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
+		}
+	} else {
+		if(fontSetting != "minecraft") {
+			defaultSwitch.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+		}
+	}
+	
+	if(fontSetting == "minecraft") {
+		MinecraftButtonLibrary.addMinecraftStyleToTextView(defaultSwitch);
+	}
+    return defaultSwitch;
+}
+
 function clientSectionTitle(text, style) {
     var defaultTextView = new TextView_(CONTEXT);
     defaultTextView.setText(text);
@@ -8635,7 +8660,7 @@ function playerCustomizerScreen() {
 					playerCustomizerLayoutBottom1.addView(playerCustomizerBottomTitle);
 					playerCustomizerLayoutBottom1.addView(playerCustomizerLayoutBottomScroll);
 					
-					var killToMorphSettingButton = new Switch_(CONTEXT);
+					var killToMorphSettingButton = clientSwitch();
                     killToMorphSettingButton.setText("Automatically morph when killing entities");
                     if(themeSetting == "white") {
                         killToMorphSettingButton.setTextColor(Color_.BLACK);
@@ -8759,7 +8784,7 @@ function optiFineScreen() {
                     optiFineLayoutScroll.addView(optiFineLayout);
                     optiFineLayout1.addView(optiFineLayoutScroll);
                     
-                    var antiLagDropRemoverButton = new Switch_(CONTEXT);
+                    var antiLagDropRemoverButton = clientSwitch();
                     antiLagDropRemoverButton.setText("Automatically remove dropped items to reduce lag");
                     if(themeSetting == "white") {
                         antiLagDropRemoverButton.setTextColor(Color_.BLACK);
@@ -8784,7 +8809,7 @@ function optiFineScreen() {
                     }));
                     optiFineLayout.addView(antiLagDropRemoverButton);
 					
-					var betterPauseButton = new Switch_(CONTEXT);
+					var betterPauseButton = clientSwitch();
                     betterPauseButton.setText("Better pause (don't move while paused on multiplayer)");
                     if(themeSetting == "white") {
                         betterPauseButton.setTextColor(Color_.BLACK);
