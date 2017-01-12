@@ -4185,11 +4185,11 @@ var speedHack = {
         speedHackSettingsLayout.setOrientation(1);
         var speedHackFrictionTitle = clientTextView("Friction: | " + speedHackFriction);
         var speedHackFrictionSlider = new SeekBar(CONTEXT);
-        speedHackFrictionSlider.setProgress(speedHackFriction * 10 - 1);
-        speedHackFrictionSlider.setMax(9);
+        speedHackFrictionSlider.setProgress(speedHackFriction * 100 - 1);
+        speedHackFrictionSlider.setMax(99);
         speedHackFrictionSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             onProgressChanged: function() {
-                speedHackFriction = (speedHackFrictionSlider.getProgress() + 1) / 10;
+                speedHackFriction = (speedHackFrictionSlider.getProgress() + 1) / 100;
                 speedHackFrictionTitle.setText("Friction: | " + speedHackFriction);
 				if(speedHackState) {
 					for(var i = 0; i <= 255; i++) {
