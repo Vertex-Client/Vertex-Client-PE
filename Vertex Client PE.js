@@ -2816,7 +2816,7 @@ var autoSpammer = {
     },
     onToggle: function() {
         this.state = !this.state;
-		    autoSpammerState = this.state;
+		autoSpammerState = this.state;
     }
 }
 
@@ -8342,7 +8342,7 @@ function nuke(x, y, z, range, mode) {
                 }
             }
         }
-    }if(mode == "flat") {
+    } if(mode == "flat") {
         for(var blockX = - range; blockX <= range; blockX++) {
             for(var blockY = - 1; blockY <= range; blockY++) {
                 for(var blockZ = - range; blockZ <= range; blockZ++) {
@@ -8352,7 +8352,7 @@ function nuke(x, y, z, range, mode) {
                 }
             }
         }
-    }if(mode == "smash") {
+    } if(mode == "smash") {
         for(var blockX = - range; blockX <= range; blockX++) {
             for(var blockY = - range; blockY <= range; blockY++) {
                 for(var blockZ = - range; blockZ <= range; blockZ++) {
