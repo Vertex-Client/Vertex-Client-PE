@@ -1324,7 +1324,6 @@ VertexClientPE.addView = function(layout, modButtonView) {
     }
 };
 
-VertexClientPE.shopFeatures = [];
 VertexClientPE.tiles = [];
 VertexClientPE.modules = [];
 VertexClientPE.addons = [];
@@ -1338,20 +1337,8 @@ VertexClientPE.loadAddons = function() {
     }
 };
 
-VertexClientPE.registerShopFeature = function(obj) {
-    VertexClientPE.shopFeatures.push(obj);
-};
-
 VertexClientPE.registerTile = function(obj) {
     VertexClientPE.tiles.push(obj);
-};
-
-VertexClientPE.initShopFeatures = function() {
-    VertexClientPE.shopFeatures.forEach(function(element, index, array) {
-        if(element.bought == "true") {
-            element.onUnlock();
-        }
-    });
 };
 
 var settingsTile = {
@@ -1548,51 +1535,6 @@ VertexClientPE.registerTile(blockLauncherSettingsTile);
 VertexClientPE.registerTile(devSettingsTile);
 VertexClientPE.registerTile(restartTile);
 VertexClientPE.registerTile(shutdownTile);
-
-var inventoryPlusPlus = {
-    name: "Inventory++",
-    shortName: "Inventory++",
-    desc: "None.",
-    price: 500,
-    onUnlock: function() {
-        VertexClientPE.toast("Not available yet!");
-    }
-};
-
-var optiFine = {
-    name: "OptiFine",
-    shortName: "OptiFine",
-    desc: "More (mostly) performance/lag related settings.",
-    price: 200,
-    onUnlock: function() {
-        //VertexClientPE.toast("Not available yet!");
-    }
-};
-
-var playerCustomizer = {
-    name: "Player Customizer",
-    shortName: "PlayerCustomizer",
-    desc: "A screen where you can customize your player.",
-    price: 1000,
-    onUnlock: function() {
-        //VertexClientPE.toast("Not available yet!");
-    }
-};
-
-var webBrowser = {
-    name: "Webbrowser",
-    shortName: "Webbrowser",
-    desc: "Browse the internet within Minecraft PE.",
-    price: 500,
-    onUnlock: function() {
-        //VertexClientPE.toast("Not available yet!");
-    }
-};
-
-//VertexClientPE.registerShopFeature(inventoryPlusPlus);
-VertexClientPE.registerShopFeature(optiFine);
-VertexClientPE.registerShopFeature(playerCustomizer);
-VertexClientPE.registerShopFeature(webBrowser);
 
 VertexClientPE.registerModule = function(obj) {
     VertexClientPE.modules.push(obj);
@@ -2311,7 +2253,6 @@ VertexClientPE.showMoreDialog = function() {
                 dialogLayout.addView(optiFineButton);
 				dialogLayout.addView(playerCustomizerButton);
 				dialogLayout.addView(webBrowserButton);
-                dialogLayout.addView(shopButton);
 				if(VertexClientPE.isExpMode()) {
 					dialogLayout.addView(screenshotButton);
 				}
@@ -2364,13 +2305,6 @@ VertexClientPE.showMoreDialog = function() {
                         dialog.dismiss();
                         optiFineScreen();
                         exitOptiFine();
-                    }
-                });
-                shopButton.setOnClickListener(new View_.OnClickListener() {
-                    onClick: function(view) {
-                        dialog.dismiss();
-                        shopScreen();
-                        exitShop();
                     }
                 });
 				screenshotButton.setOnClickListener(new View_.OnClickListener() {
@@ -4763,45 +4697,6 @@ function clientButton(text, desc, color, round, forceLightColor, style, thicknes
 		MinecraftButtonLibrary.addMinecraftStyleToTextView(defaultButton);
 	}
     return defaultButton;
-}
-
-function shopFeatureButton(shopFeature, cashTextView) {
-    var shopFeatureButtonText = (sharedPref.getString("VertexClientPE.bought" + shopFeature.shortName, "false")=="true")?"Purchased":shopFeature.price.toString();
-    var shopFeatureLayout = new LinearLayout_(CONTEXT);
-    shopFeatureLayout.setOrientation(LinearLayout_.HORIZONTAL);
-    var shopFeatureLayoutLeft = new LinearLayout_(CONTEXT);
-    shopFeatureLayoutLeft.setOrientation(1);
-    shopFeatureLayoutLeft.setGravity(Gravity_.CENTER);
-    shopFeatureLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - dip2px(10), display.heightPixels / 8));
-    var shopFeatureLayoutRight = new LinearLayout_(CONTEXT);
-    shopFeatureLayoutRight.setOrientation(1);
-    shopFeatureLayoutRight.setGravity(Gravity_.CENTER);
-    shopFeatureLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - dip2px(10), display.heightPixels / 8));
-    shopFeatureLayout.addView(shopFeatureLayoutLeft);
-    shopFeatureLayout.addView(shopFeatureLayoutRight);
-    var shopFeatureText = clientTextView(shopFeature.name);
-    shopFeatureLayoutLeft.addView(shopFeatureText);
-    var shopFeatureClientButton = clientButton(shopFeatureButtonText);
-    shopFeatureClientButton.setOnClickListener(new View_.OnClickListener() {
-        onClick: function(v) {
-            if(sharedPref.getString("VertexClientPE.bought" + shopFeature.shortName, "false") != "true") {
-                if(shopFeature.price <= VertexClientPE.getVertexCash()) {
-                    editor.putInt("VertexClientPE.vertexCash", VertexClientPE.getVertexCash() - shopFeature.price);
-                    editor.commit();
-                    cashTextView.setText("\u26C1 " + VertexClientPE.getVertexCash());
-                    editor.putString("VertexClientPE.bought" + shopFeature.shortName, "true");
-                    editor.commit();
-                    shopFeatureClientButton.setText("Purchased");
-                    shopFeature.onUnlock();
-                } else {
-                    VertexClientPE.toast("You need " + (shopFeature.price - VertexClientPE.getVertexCash()).toString() + " more V€rt€xCash to buy this!");
-                }
-            }
-        }
-    });
-    
-    shopFeatureLayoutRight.addView(shopFeatureClientButton);
-    return shopFeatureLayout;
 }
 
 function songButton(song, barLayout) {
