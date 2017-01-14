@@ -11685,6 +11685,7 @@ VertexClientPE.showSetupScreen = function() {
 										doneUI.dismiss(); //Close
 										setupScreen.dismiss();
 										showMenuButton();
+										VertexClientPE.loadAddons();
 										VertexClientPE.clientTick();
 										VertexClientPE.inGameTick();
 										VertexClientPE.specialTick();
@@ -12184,15 +12185,14 @@ VertexClientPE.setup = function() {
 							VertexClientPE.inGameTick();
 							VertexClientPE.specialTick();
 							VertexClientPE.secondTick();
-							VertexClientPE.initMods();
+							VertexClientPE.loadAddons();
 							showMenuButton();
+							VertexClientPE.initMods();
 						}
 						
 						if(ModPE.getMinecraftVersion() < VertexClientPE.minVersion) {
 							VertexClientPE.showBasicDialog("Compatibility", clientTextView("This version may not be compatible with MCPE v" + ModPE.getMinecraftVersion() + "!"));
 						}
-						
-						VertexClientPE.loadAddons();
 						
 						if(VertexClientPE.Utils.day < 25 && VertexClientPE.Utils.month == java.util.Calendar.DECEMBER) {
 							VertexClientPE.showChristmasToast(25 - VertexClientPE.Utils.day);
