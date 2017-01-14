@@ -685,7 +685,7 @@ function VectorLib() {
 var currentScreen = ScreenType.start_screen;
 
 function screenChangeHook(screenName) {
-	if(screenName == ScreenType.start_screen || screenName == ScreenType.hud || screenName == ScreenType.ingame) {
+	if(screenName == ScreenType.start_screen || screenName == ScreenType.hud || screenName == ScreenType.ingame || screenName == ScreenType.pause_screen) {
 		CONTEXT.runOnUiThread(new Runnable_({
 			run: function() {
 				if(GUI != null) {
@@ -15172,7 +15172,7 @@ VertexClientPE.closeMenu = function() {
 			if(mainButtonTapSetting == "menu") {
 				menuBtn.setBackgroundDrawable(iconClientGUI);
 			}
-			if(currentScreen != ScreenType.start_screen && currentScreen != ScreenType.ingame && currentScreen != ScreenType.hud) {
+			if(currentScreen != ScreenType.start_screen && currentScreen != ScreenType.ingame && currentScreen != ScreenType.hud && currentScreen != ScreenType.pause_screen) {
 				GUI.setTouchable(false);
 				GUI.update();
 			}
@@ -16109,7 +16109,7 @@ function showMenuButton() {
 			showShortcuts();
 		}
 	}
-	if(currentScreen == ScreenType.start_screen || currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud) {
+	if(currentScreen == ScreenType.start_screen || currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud || currentScreen == ScreenType.pause_screen) {
 		GUI.setTouchable(true);
 		GUI.update();
     }
