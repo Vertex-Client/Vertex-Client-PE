@@ -1,7 +1,7 @@
 /**
  * ##################################################################################################
  * @name Vertex Client PE
- * @version v2.0
+ * @version v2.1
  * @author peacestorm (@AgameR_Modder)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36, AutoGrind, TimmyIsDa
  *
@@ -1036,8 +1036,8 @@ VertexClientPE.isRemote = function() {
 
 VertexClientPE.playerIsInGame = false;
 
-VertexClientPE.currentVersion = "2.0";
-VertexClientPE.currentVersionDesc = "The Stability Update";
+VertexClientPE.currentVersion = "2.1";
+VertexClientPE.currentVersionDesc = "The ? Update";
 VertexClientPE.targetVersion = "MCPE v0.16.x alpha";
 VertexClientPE.minVersion = "0.16.0";
 VertexClientPE.edition = "Normal";
@@ -12756,6 +12756,8 @@ function settingsScreen() {
                         mainButtonStyleSettingButton.setText("Global background (fits better)");
                     } else if(mainButtonStyleSetting == "no_background") {
                         mainButtonStyleSettingButton.setText("Invisible background");
+                    } else if(mainButtonStyleSetting == "invisible_ghost") {
+                        mainButtonStyleSettingButton.setText("Invisible (ghost)");
                     } else if(mainButtonStyleSetting == "classic") {
                         mainButtonStyleSettingButton.setText("Classic");
                     }
@@ -12768,6 +12770,9 @@ function settingsScreen() {
                             mainButtonStyleSetting = "no_background";
                             mainButtonStyleSettingButton.setText("Invisible background");
                         } else if(mainButtonStyleSetting == "no_background") {
+                            mainButtonStyleSetting = "invisible_ghost";
+                            mainButtonStyleSettingButton.setText("Invisible (ghost)");
+                        } else if(mainButtonStyleSetting == "invisible_ghost") {
                             mainButtonStyleSetting = "classic";
                             mainButtonStyleSettingButton.setText("Classic");
                         } else if(mainButtonStyleSetting == "classic") {
@@ -15109,7 +15114,7 @@ VertexClientPE.showTipBar = function() {
 */
 VertexClientPE.showMenu = function() {
     var _0xff55=["\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x6F\x75\x74\x64\x61\x74\x65\x64\x2C\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C","\x74\x6F\x61\x73\x74","\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C"];if(!isAuthorized){if(!isSupported){VertexClientPE[_0xff55[1]](_0xff55[0])}else {VertexClientPE[_0xff55[1]](_0xff55[2])};return}
-    if(mainButtonTapSetting == "menu") {
+    if(mainButtonTapSetting == "menu" && mainButtonStyleSetting != "invisible_ghost") {
 		menuBtn.setBackgroundDrawable(iconClickedClientGUI);
 	}
     if(menuType == "normal") {
@@ -15169,7 +15174,7 @@ VertexClientPE.closeMenu = function() {
     }
     if(GUI != null) {
         if(GUI.isShowing()) {
-			if(mainButtonTapSetting == "menu") {
+			if(mainButtonTapSetting == "menu" && mainButtonStyleSetting != "invisible_ghost") {
 				menuBtn.setBackgroundDrawable(iconClientGUI);
 			}
 			if(currentScreen != ScreenType.start_screen && currentScreen != ScreenType.ingame && currentScreen != ScreenType.hud && currentScreen != ScreenType.pause_screen) {
@@ -16002,19 +16007,23 @@ function showMenuButton() {
     var display = new DisplayMetrics_();
     CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
     menuBtn = new Button_(CONTEXT);
-	if(mainButtonTapSetting == "menu") {
-		if(VertexClientPE.menuIsShowing) {
-			menuBtn.setBackgroundDrawable(iconClickedClientGUI);
-		} else {
-			menuBtn.setBackgroundDrawable(iconClientGUI);
+	if(mainButtonStyleSetting != "invisible_ghost") {
+		if(mainButtonTapSetting == "menu") {
+			if(VertexClientPE.menuIsShowing) {
+				menuBtn.setBackgroundDrawable(iconClickedClientGUI);
+			} else {
+				menuBtn.setBackgroundDrawable(iconClientGUI);
+			}
+		} else if(mainButtonTapSetting == "moredialog") {
+			menuBtn.setText("\u2022\u2022\u2022");
+			menuBtn.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
+			menuBtn.setMarqueeRepeatLimit(-1);
+			menuBtn.setSingleLine();
+			menuBtn.setHorizontallyScrolling(true);
+			menuBtn.setSelected(true);
 		}
-	} else if(mainButtonTapSetting == "moredialog") {
-		menuBtn.setText("\u2022\u2022\u2022");
-		menuBtn.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
-		menuBtn.setMarqueeRepeatLimit(-1);
-		menuBtn.setSingleLine();
-		menuBtn.setHorizontallyScrolling(true);
-		menuBtn.setSelected(true);
+	} else {
+		menuBtn.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 	}
     menuBtn.setAlpha(0.54);
 	menuBtn.setTextSize(16);
@@ -16076,7 +16085,7 @@ function showMenuButton() {
 		}
 	} else if(mainButtonStyleSetting == "classic") {
 		background = new ColorDrawable_(Color_.parseColor("#1D1D1D"));
-	} else if(mainButtonStyleSetting == "no_background") {
+	} else if(mainButtonStyleSetting == "no_background" || mainButtonStyleSetting == "invisible_ghost") {
 		background = new ColorDrawable_(Color_.TRANSPARENT);
 	}
 	
