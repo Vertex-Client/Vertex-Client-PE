@@ -1,7 +1,7 @@
 /**
  * ##################################################################################################
  * @name Vertex Client PE (Air)
- * @version v2.0
+ * @version v2.1
  * @author peacestorm (@AgameR_Modder)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36, AutoGrind, TimmyIsDa
  *
@@ -860,8 +860,8 @@ VertexClientPE.isRemote = function() {
 
 VertexClientPE.playerIsInGame = false;
 
-VertexClientPE.currentVersion = "2.0";
-VertexClientPE.currentVersionDesc = "The Stability Update";
+VertexClientPE.currentVersion = "2.1";
+VertexClientPE.currentVersionDesc = "The ? Update";
 VertexClientPE.targetVersion = "MCPE v0.16.x alpha";
 VertexClientPE.minVersion = "0.16.0";
 VertexClientPE.edition = "Air";
@@ -7265,6 +7265,8 @@ function settingsScreen() {
                         mainButtonStyleSettingButton.setText("Global background (fits better)");
                     } else if(mainButtonStyleSetting == "no_background") {
                         mainButtonStyleSettingButton.setText("Invisible background");
+                    } else if(mainButtonStyleSetting == "invisible_ghost") {
+                        mainButtonStyleSettingButton.setText("Invisible (ghost)");
                     } else if(mainButtonStyleSetting == "classic") {
                         mainButtonStyleSettingButton.setText("Classic");
                     }
@@ -7277,6 +7279,9 @@ function settingsScreen() {
                             mainButtonStyleSetting = "no_background";
                             mainButtonStyleSettingButton.setText("Invisible background");
                         } else if(mainButtonStyleSetting == "no_background") {
+                            mainButtonStyleSetting = "invisible_ghost";
+                            mainButtonStyleSettingButton.setText("Invisible (ghost)");
+                        } else if(mainButtonStyleSetting == "invisible_ghost") {
                             mainButtonStyleSetting = "classic";
                             mainButtonStyleSettingButton.setText("Classic");
                         } else if(mainButtonStyleSetting == "classic") {
@@ -9293,12 +9298,14 @@ function showMenuButton() {
     CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
     menuBtn = new Button_(CONTEXT);
 	menuBtn.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-	menuBtn.setText("\u2022\u2022\u2022");
-	menuBtn.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
-	menuBtn.setMarqueeRepeatLimit(-1);
-	menuBtn.setSingleLine();
-	menuBtn.setHorizontallyScrolling(true);
-	menuBtn.setSelected(true);
+	if(mainButtonStyleSetting != "invisible_ghost") {
+		menuBtn.setText("\u2022\u2022\u2022");
+		menuBtn.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
+		menuBtn.setMarqueeRepeatLimit(-1);
+		menuBtn.setSingleLine();
+		menuBtn.setHorizontallyScrolling(true);
+		menuBtn.setSelected(true);
+	}
 	if(themeSetting == "white") {
 		menuBtn.setTextColor(Color_.BLACK);
 		if(fontSetting != "minecraft") {
@@ -9348,7 +9355,7 @@ function showMenuButton() {
 		}
 	} else if(mainButtonStyleSetting == "classic") {
 		background = new ColorDrawable_(Color_.parseColor("#1D1D1D"));
-	} else if(mainButtonStyleSetting == "no_background") {
+	} else if(mainButtonStyleSetting == "no_background" || mainButtonStyleSetting == "invisible_ghost") {
 		background = new ColorDrawable_(Color_.TRANSPARENT);
 	}
 	
