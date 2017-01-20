@@ -1726,7 +1726,6 @@ VertexClientPE.category = {
     }
 };
 
-VertexClientPE.shopFeatures = [];
 VertexClientPE.tiles = [];
 VertexClientPE.preInitModules = [];
 VertexClientPE.modules = [];
@@ -1741,20 +1740,8 @@ VertexClientPE.loadAddons = function() {
     }
 };
 
-VertexClientPE.registerShopFeature = function(obj) {
-    VertexClientPE.shopFeatures.push(obj);
-};
-
 VertexClientPE.registerTile = function(obj) {
     VertexClientPE.tiles.push(obj);
-};
-
-VertexClientPE.initShopFeatures = function() {
-    VertexClientPE.shopFeatures.forEach(function(element, index, array) {
-        if(element.bought == "true") {
-            element.onUnlock();
-        }
-    });
 };
 
 var settingsTile = {
@@ -1952,55 +1939,10 @@ VertexClientPE.registerTile(devSettingsTile);
 VertexClientPE.registerTile(restartTile);
 VertexClientPE.registerTile(shutdownTile);
 
-var inventoryPlusPlus = {
-    name: "Inventory++",
-    shortName: "Inventory++",
-    desc: "None.",
-    price: 500,
-    onUnlock: function() {
-        VertexClientPE.toast("Not available yet!");
-    }
-};
-
-var optiFine = {
-    name: "OptiFine",
-    shortName: "OptiFine",
-    desc: "More (mostly) performance/lag related settings.",
-    price: 200,
-    onUnlock: function() {
-        //VertexClientPE.toast("Not available yet!");
-    }
-};
-
-var playerCustomizer = {
-    name: "Player Customizer",
-    shortName: "PlayerCustomizer",
-    desc: "A screen where you can customize your player.",
-    price: 1000,
-    onUnlock: function() {
-        //VertexClientPE.toast("Not available yet!");
-    }
-};
-
-var webBrowser = {
-    name: "Webbrowser",
-    shortName: "Webbrowser",
-    desc: "Browse the internet within Minecraft PE.",
-    price: 500,
-    onUnlock: function() {
-        //VertexClientPE.toast("Not available yet!");
-    }
-};
-
-//VertexClientPE.registerShopFeature(inventoryPlusPlus);
-VertexClientPE.registerShopFeature(optiFine);
-VertexClientPE.registerShopFeature(playerCustomizer);
-VertexClientPE.registerShopFeature(webBrowser);
-
 VertexClientPE.initMods = function() {
 	try {
 		VertexClientPE.preInitModules.forEach(function(element, index, array) {
-			if((element.pack == "Combat" && combatEnabled == "on") || (element.pack == "Building" && buildingEnabled == "on") || (element.pack == "Movement" && movementEnabled == "on") || (element.pack == "Chat" && chatEnabled == "on") || (element.pack == "Miscellaneous" && miscEnabled == "on")) {
+			if(element.type == "Command" || (element.pack == "Combat" && combatEnabled == "on") || (element.pack == "Building" && buildingEnabled == "on") || (element.pack == "Movement" && movementEnabled == "on") || (element.pack == "Chat" && chatEnabled == "on") || (element.pack == "Miscellaneous" && miscEnabled == "on")) {
 				VertexClientPE.modules.push(element);
 			}
 		});
@@ -2010,7 +1952,7 @@ VertexClientPE.initMods = function() {
 }
 
 VertexClientPE.registerModule = function(obj) {
-	if(obj.pack == undefined || obj.pack == null) {
+	if(obj.type != "Command" && (obj.pack == undefined || obj.pack == null)) {
 		obj.pack = VertexClientPE.category.toRealName(obj.category);
 	}
 	VertexClientPE.preInitModules.push(obj);
@@ -4739,6 +4681,26 @@ var hitboxes = {
     }
 }
 
+var elytraBoost = {
+    name: "ElytraBoost",
+    desc: "Boosts elytra (Toolbox only).",
+    category: VertexClientPE.category.MOVEMENT,
+    type: "Mod",
+    state: false,
+    isStateMod: function() {
+        return true;
+    },
+    onToggle: function() {
+        this.state = !this.state;
+    },
+    onTick: function(entity) {
+		if(Entity.isGliding(Player.getEntity())) {
+			setVelX(getPlayerEnt(), 0.45);
+			setVelZ(getPlayerEnt(), 0.45);
+		}
+    }
+}
+
 //COMBAT
 VertexClientPE.registerModule(antiKnockback);
 VertexClientPE.registerModule(antiBurn);
@@ -4761,6 +4723,9 @@ VertexClientPE.registerModule(tpAura);
 //MOVEMENT
 VertexClientPE.registerModule(autoTeleporter);
 VertexClientPE.registerModule(autoWalk);
+if(Launcher.isToolbox()) {
+	//VertexClientPE.registerModule(elytraBoost);
+}
 VertexClientPE.registerModule(enderProjectiles);
 VertexClientPE.registerModule(fastBridge);
 VertexClientPE.registerModule(fastWalk);
@@ -7973,6 +7938,26 @@ VertexClientPE.addonLoadToast = function(message) {
             layout.setBackground(backgroundSpecial(true));
 			var icon = new android.widget.ImageView(CONTEXT);
 			icon.setImageResource(android.R.drawable.ic_menu_more);
+            var title = VertexClientPE.getName();
+            var _0xc62b=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x20\x50\x72\x6F"];if(VertexClientPE[_0xc62b[0]]()==_0xc62b[1]){title+=_0xc62b[2]}
+            var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message), 0);
+            layout.addView(icon);
+            layout.addView(text);
+            toast = new Toast_(CONTEXT);
+            toast.setView(layout);
+			toast.setGravity(Gravity_.CENTER | Gravity_.TOP, 0, 0);
+            toast.show();
+        }
+    }));
+}
+
+VertexClientPE.updateToast = function(message) {
+    CONTEXT.runOnUiThread(new Runnable_({
+        run: function() {
+            var layout = new LinearLayout_(CONTEXT);
+            layout.setBackground(backgroundSpecial(true));
+			var icon = new android.widget.ImageView(CONTEXT);
+			icon.setImageResource(android.R.drawable.ic_menu_compass);
             var title = VertexClientPE.getName();
             var _0xc62b=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x20\x50\x72\x6F"];if(VertexClientPE[_0xc62b[0]]()==_0xc62b[1]){title+=_0xc62b[2]}
             var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message), 0);
@@ -11685,6 +11670,20 @@ VertexClientPE.showSetupScreen = function() {
 										doneUI.dismiss(); //Close
 										setupScreen.dismiss();
 										showMenuButton();
+										new Thread_(new Runnable_() {
+											run: function() {
+												VertexClientPE.checkForUpdates();
+												if(VertexClientPE.latestVersion != VertexClientPE.currentVersion && VertexClientPE.latestVersion != undefined) {
+													VertexClientPE.updateToast("There is a new version available (v" + VertexClientPE.latestVersion + " for Minecraft Pocket Edition v" + latestPocketEditionVersion + ")!");
+												} else {
+													CONTEXT.runOnUiThread(new Runnable_() {
+														run: function() {
+															VertexClientPE.updateToast("You have the latest version");
+														}
+													});
+												}
+											}
+										}).start();
 										VertexClientPE.loadAddons();
 										VertexClientPE.clientTick();
 										VertexClientPE.inGameTick();
@@ -12166,7 +12165,6 @@ VertexClientPE.setup = function() {
 				VertexClientPE.checkForUpdates();
 				VertexClientPE.loadUpdateDescription();
 				//VertexClientPE.loadDownloadCount();
-				VertexClientPE.initShopFeatures();
 				VertexClientPE.loadNews();
 				Thread_.sleep(3000);
 			} catch(e) {
@@ -12185,6 +12183,20 @@ VertexClientPE.setup = function() {
 							VertexClientPE.inGameTick();
 							VertexClientPE.specialTick();
 							VertexClientPE.secondTick();
+							new Thread_(new Runnable_() {
+								run: function() {
+									VertexClientPE.checkForUpdates();
+									if(VertexClientPE.latestVersion != VertexClientPE.currentVersion && VertexClientPE.latestVersion != undefined) {
+										VertexClientPE.updateToast("There is a new version available (v" + VertexClientPE.latestVersion + " for Minecraft Pocket Edition v" + latestPocketEditionVersion + ")!");
+									} else {
+										CONTEXT.runOnUiThread(new Runnable_() {
+											run: function() {
+												VertexClientPE.updateToast("You have the latest version");
+											}
+										});
+									}
+								}
+							}).start();
 							VertexClientPE.loadAddons();
 							showMenuButton();
 							VertexClientPE.initMods();
@@ -12494,23 +12506,9 @@ function newLevel() {
             VertexClientPE.loadDeathCoords();
         }
         VertexClientPE.Utils.loadFov();
-        new Thread_(new Runnable_() {
-            run: function() {
-                VertexClientPE.checkForUpdates();
-                if(VertexClientPE.latestVersion != VertexClientPE.currentVersion && VertexClientPE.latestVersion != undefined) {
-                    VertexClientPE.clientMessage("There is a new version available (v" + VertexClientPE.latestVersion + " for Minecraft Pocket Edition v" + latestPocketEditionVersion + ")!");
-                    if(!isSupported) {
-                        //VertexClientPE.update();
-                    }
-                } else {
-                    CONTEXT.runOnUiThread(new Runnable_() {
-                        run: function() {
-                            VertexClientPE.toast("You have the latest version");
-                        }
-                    });
-                }
-            }
-        }).start();
+		if(VertexClientPE.latestVersion != VertexClientPE.currentVersion && VertexClientPE.latestVersion != undefined) {
+			VertexClientPE.clientMessage("There is a new version available (v" + VertexClientPE.latestVersion + " for Minecraft Pocket Edition v" + latestPocketEditionVersion + ")!");
+		}
         if(hacksList == null && !VertexClientPE.menuIsShowing) {
             showHacksList();
             showTabGUI();
