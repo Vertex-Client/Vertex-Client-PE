@@ -3609,6 +3609,26 @@ VertexClientPE.addonLoadToast = function(message) {
     }));
 }
 
+VertexClientPE.updateToast = function(message) {
+    CONTEXT.runOnUiThread(new Runnable_({
+        run: function() {
+            var layout = new LinearLayout_(CONTEXT);
+            layout.setBackground(backgroundSpecial(true));
+			var icon = new android.widget.ImageView(CONTEXT);
+			icon.setImageResource(android.R.drawable.ic_menu_compass);
+            var title = VertexClientPE.getName();
+            var _0xc62b=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x20\x50\x72\x6F"];if(VertexClientPE[_0xc62b[0]]()==_0xc62b[1]){title+=_0xc62b[2]}
+            var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message), 0);
+            layout.addView(icon);
+            layout.addView(text);
+            toast = new Toast_(CONTEXT);
+            toast.setView(layout);
+			toast.setGravity(Gravity_.CENTER | Gravity_.TOP, 0, 0);
+            toast.show();
+        }
+    }));
+}
+
 VertexClientPE.showChristmasToast = function(daysLeft) {
 	CONTEXT.runOnUiThread(new Runnable_({
         run: function() {
@@ -6326,6 +6346,20 @@ VertexClientPE.showSetupScreen = function() {
 										doneUI.dismiss(); //Close
 										setupScreen.dismiss();
 										showMenuButton();
+										new Thread_(new Runnable_() {
+											run: function() {
+												VertexClientPE.checkForUpdates();
+												if(VertexClientPE.latestVersion != VertexClientPE.currentVersion && VertexClientPE.latestVersion != undefined) {
+													VertexClientPE.updateToast("There is a new version available (v" + VertexClientPE.latestVersion + " for Minecraft Pocket Edition v" + latestPocketEditionVersion + ")!");
+												} else {
+													CONTEXT.runOnUiThread(new Runnable_() {
+														run: function() {
+															VertexClientPE.updateToast("You have the latest version");
+														}
+													});
+												}
+											}
+										}).start();
 										VertexClientPE.loadAddons();
 										VertexClientPE.clientTick();
 										VertexClientPE.inGameTick();
@@ -6740,6 +6774,20 @@ VertexClientPE.setup = function() {
 							VertexClientPE.clientTick();
 							VertexClientPE.inGameTick();
 							VertexClientPE.secondTick();
+							new Thread_(new Runnable_() {
+								run: function() {
+									VertexClientPE.checkForUpdates();
+									if(VertexClientPE.latestVersion != VertexClientPE.currentVersion && VertexClientPE.latestVersion != undefined) {
+										VertexClientPE.updateToast("There is a new version available (v" + VertexClientPE.latestVersion + " for Minecraft Pocket Edition v" + latestPocketEditionVersion + ")!");
+									} else {
+										CONTEXT.runOnUiThread(new Runnable_() {
+											run: function() {
+												VertexClientPE.updateToast("You have the latest version");
+											}
+										});
+									}
+								}
+							}).start();
 							VertexClientPE.loadAddons();
 							showMenuButton();
 						}
@@ -7044,23 +7092,9 @@ function newLevel() {
             VertexClientPE.loadDeathCoords();
         }
         VertexClientPE.Utils.loadFov();
-        new Thread_(new Runnable_() {
-            run: function() {
-                VertexClientPE.checkForUpdates();
-                if(VertexClientPE.latestVersion != VertexClientPE.currentVersion && VertexClientPE.latestVersion != undefined) {
-                    VertexClientPE.clientMessage("There is a new version available (v" + VertexClientPE.latestVersion + " for Minecraft Pocket Edition v" + latestPocketEditionVersion + ")!");
-                    if(!isSupported) {
-                        //VertexClientPE.update();
-                    }
-                } else {
-                    CONTEXT.runOnUiThread(new Runnable_() {
-                        run: function() {
-                            VertexClientPE.toast("You have the latest version");
-                        }
-                    });
-                }
-            }
-        }).start();
+		if(VertexClientPE.latestVersion != VertexClientPE.currentVersion && VertexClientPE.latestVersion != undefined) {
+			VertexClientPE.clientMessage("There is a new version available (v" + VertexClientPE.latestVersion + " for Minecraft Pocket Edition v" + latestPocketEditionVersion + ")!");
+		}
         if(hacksList == null && !VertexClientPE.menuIsShowing) {
             showHacksList();
 			showShortcuts();
