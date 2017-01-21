@@ -3281,7 +3281,7 @@ var arrowGun = {
 
 var orderAPizza = {
     name: "Order a Pizza",
-    desc: "Order a pizza of Domino's.",
+    desc: "Order a pizza of Pizza Hut.",
     category: VertexClientPE.category.MISC,
     type: "Mod",
     isStateMod: function() {
@@ -5582,7 +5582,7 @@ VertexClientPE.Utils.getFov = function() {
     return VertexClientPE.Utils.fov;
 }
 
-var URL = "https://www.dominos.com/en/pages/order/";
+var URL = "https://www.pizzahut.co.uk/menu/pizza";
 
 function pizzaOrderDialog(){
 
