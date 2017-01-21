@@ -223,11 +223,13 @@ var buildingEnabled = "on";
 var movementEnabled = "on";
 var chatEnabled = "on";
 var miscEnabled = "on";
+var singleplayerEnabled = "on";
 var combatSaveEnabled = "on";
 var buildingSaveEnabled = "on";
 var movementSaveEnabled = "on";
 var chatSaveEnabled = "on";
 var miscSaveEnabled = "on";
+var singleplayerSaveEnabled = "on";
 //End of settings
 
 var modButtonColorBlocked = Color_.RED;
@@ -1942,7 +1944,7 @@ VertexClientPE.registerTile(shutdownTile);
 VertexClientPE.initMods = function() {
 	try {
 		VertexClientPE.preInitModules.forEach(function(element, index, array) {
-			if(element.type == "Command" || (element.pack == "Combat" && combatEnabled == "on") || (element.pack == "Building" && buildingEnabled == "on") || (element.pack == "Movement" && movementEnabled == "on") || (element.pack == "Chat" && chatEnabled == "on") || (element.pack == "Miscellaneous" && miscEnabled == "on")) {
+			if((element.type == "Command" || (element.pack == "Combat" && combatEnabled == "on") || (element.pack == "Building" && buildingEnabled == "on") || (element.pack == "Movement" && movementEnabled == "on") || (element.pack == "Chat" && chatEnabled == "on") || (element.pack == "Miscellaneous" && miscEnabled == "on")) && !(element.singleplayerOnly && singleplayerEnabled == "off")) {
 				VertexClientPE.modules.push(element);
 			}
 		});
@@ -2169,6 +2171,7 @@ var killAura = {
     category: VertexClientPE.category.COMBAT,
     type: "Mod",
     state: false,
+	singleplayerOnly: true,
     getSettingsLayout: function() {
         var killAuraSettingsLayout = new LinearLayout_(CONTEXT);
         killAuraSettingsLayout.setOrientation(1);
@@ -2241,6 +2244,7 @@ var freezeAura = {
     category: VertexClientPE.category.COMBAT,
     type: "Mod",
     state: false,
+	singleplayerOnly: true,
     isStateMod: function() {
         return true;
     },
@@ -2269,6 +2273,7 @@ var fireAura = {
     category: VertexClientPE.category.COMBAT,
     type: "Mod",
     state: false,
+	singleplayerOnly: true,
     isStateMod: function() {
         return true;
     },
@@ -2511,6 +2516,7 @@ var noHurt = {
     category: VertexClientPE.category.COMBAT,
     type: "Mod",
     state: false,
+	singleplayerOnly: true,
     isStateMod: function() {
         return true;
     },
@@ -2898,6 +2904,7 @@ var signEditor = {
     category: VertexClientPE.category.BUILDING,
     type: "Mod",
     state: false,
+	singleplayerOnly: true,
     isStateMod: function() {
         return true;
     },
@@ -2921,6 +2928,7 @@ var instaKill = {
     category: VertexClientPE.category.COMBAT,
     type: "Mod",
     state: false,
+	singleplayerOnly: true,
     isStateMod: function() {
         return true;
     },
@@ -3198,6 +3206,7 @@ var arrowGun = {
     category: VertexClientPE.category.COMBAT,
     type: "Mod",
     state: false,
+	singleplayerOnly: true,
 	getSettingsLayout: function() {
         var arrowGunSettingsLayout = new LinearLayout_(CONTEXT);
         arrowGunSettingsLayout.setOrientation(1);
@@ -5582,7 +5591,7 @@ VertexClientPE.Utils.getFov = function() {
     return VertexClientPE.Utils.fov;
 }
 
-var URL = "https://www.pizzahut.co.uk/menu/pizza";
+var URL = "https://www.dominos.com/en/pages/order/";
 
 function pizzaOrderDialog(){
 
@@ -6037,9 +6046,8 @@ VertexClientPE.showFeaturesDialog = function() {
             try {
                 VertexClientPE.loadMainSettings();
 				var settingsTitle = clientScreenTitle("Settings");
-                var featuresTitle = clientTextView("Opt in/out features", true);
+                var featuresTitle = clientTextView("Opt in/out features\n", true);
 				featuresTitle.setGravity(Gravity_.CENTER);
-                var featuresEnter = clientTextView("\n");
 				var featuresText = clientTextView("Changes on this dialog will only apply after restart", true);
 				featuresText.setTextSize(8);
 				featuresText.setTypeface(null, Typeface_.ITALIC);
@@ -6052,7 +6060,6 @@ VertexClientPE.showFeaturesDialog = function() {
                 dialogLayout.setPadding(10, 10, 10, 10);
                 dialogLayout.addView(settingsTitle);
                 dialogLayout.addView(featuresTitle);
-                dialogLayout.addView(featuresEnter);
                 dialogLayout.addView(featuresText);
 				
 				var combatEnabledSettingButton = clientSwitch();
@@ -6125,11 +6132,26 @@ VertexClientPE.showFeaturesDialog = function() {
 					}
 				}));
 				
+				var singleplayerEnabledSettingButton = clientSwitch();
+				singleplayerEnabledSettingButton.setText("Singleplayer Mods");
+				singleplayerEnabledSettingButton.setChecked(singleplayerSaveEnabled == "on");
+				singleplayerEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
+					onCheckedChanged: function() {
+						if(singleplayerSaveEnabled == "off") {
+							singleplayerSaveEnabled = "on";
+						} else if(singleplayerSaveEnabled == "on") {
+							singleplayerSaveEnabled = "off";
+						}
+						VertexClientPE.saveFeaturesSettings();
+					}
+				}));
+				
 				dialogLayout.addView(combatEnabledSettingButton);
 				dialogLayout.addView(buildingEnabledSettingButton);
 				dialogLayout.addView(movementEnabledSettingButton);
 				dialogLayout.addView(chatEnabledSettingButton);
 				dialogLayout.addView(miscEnabledSettingButton);
+				dialogLayout.addView(singleplayerEnabledSettingButton);
 				dialogLayout.addView(clientTextView("\n"));
 				dialogLayout.addView(closeButton);
 				
@@ -6574,7 +6596,12 @@ VertexClientPE.showModDialog = function(mod, btn) {
 				modTitleLayout.addView(modTitle);
 				modTitleLayout.addView(modEditButton);
                 modTitleLayout.addView(modFavButton);
-                var modTypeText = clientTextView("Type: " + mod.type + "\n");
+				var type = "Type: " + mod.type;
+				if(mod.singleplayerOnly) {
+					type += " (singleplayer only)";
+				}
+				type += "\n";
+                var modTypeText = clientTextView(type);
                 var modDescTitle = clientTextView("Description:");
                 var modDescText = clientTextView(mod.desc);
                 var modEnter = clientTextView("\n");
@@ -8515,6 +8542,7 @@ VertexClientPE.saveFeaturesSettings = function() {
     outWrite.append("," + movementSaveEnabled.toString());
     outWrite.append("," + chatSaveEnabled.toString());
     outWrite.append("," + miscSaveEnabled.toString());
+    outWrite.append("," + singleplayerSaveEnabled.toString());
 
     outWrite.close();
 }
@@ -8548,6 +8576,10 @@ VertexClientPE.loadFeaturesSettings = function() {
         if (arr[4] != null && arr[4] != undefined) {
             miscEnabled = arr[4];
 			miscSaveEnabled = miscEnabled;
+        }
+		if (arr[5] != null && arr[5] != undefined) {
+            singleplayerEnabled = arr[5];
+			singleplayerSaveEnabled = singleplayerEnabled;
         }
         fos.close();
 		
@@ -11635,6 +11667,7 @@ VertexClientPE.showSetupScreen = function() {
 								setupScreenLayoutBottomCenter.addView(movementEnabledSettingButton);
 								setupScreenLayoutBottomCenter.addView(chatEnabledSettingButton);
 								setupScreenLayoutBottomCenter.addView(miscEnabledSettingButton);
+								setupScreenLayoutBottomCenter.addView(singleplayerEnabledSettingButton);
 								doneButton.setText("\u2794");
 								doneButton.setOnClickListener(new View_.OnClickListener({
 									onClick: function(viewarg){
@@ -11855,6 +11888,21 @@ VertexClientPE.showSetupScreen = function() {
 								miscSaveEnabled = "off";
 							}
 							miscEnabled = miscSaveEnabled;
+							VertexClientPE.saveFeaturesSettings();
+						}
+					}));
+					
+					var singleplayerEnabledSettingButton = clientSwitch();
+					singleplayerEnabledSettingButton.setText("Singleplayer Mods");
+					singleplayerEnabledSettingButton.setChecked(singleplayerSaveEnabled == "on");
+					singleplayerEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
+						onCheckedChanged: function() {
+							if(singleplayerSaveEnabled == "off") {
+								singleplayerSaveEnabled = "on";
+							} else if(singleplayerSaveEnabled == "on") {
+								singleplayerSaveEnabled = "off";
+							}
+							singleplayerEnabled = singleplayerSaveEnabled;
 							VertexClientPE.saveFeaturesSettings();
 						}
 					}));
