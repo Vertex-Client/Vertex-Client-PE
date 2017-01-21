@@ -4356,10 +4356,10 @@ var tapJumpRun = {
 	}
 }
 
-var tapPoint = {
-	name: "TapPoint",
-    desc: "Makes you point/aim at blocks on tap.",
-    category: VertexClientPE.category.MOVEMENT,
+var tapAimbot = {
+	name: "TapAimbot",
+    desc: "Makes you aim at entities on tap.",
+    category: VertexClientPE.category.COMBAT,
     type: "Mod",
 	state: false,
     isStateMod: function() {
@@ -4368,9 +4368,6 @@ var tapPoint = {
 	onToggle: function() {
         this.state = !this.state;
     },
-	onUseItem: function(x, y, z, itemId, blockId, side) {
-		VertexClientPE.CombatUtils.aimAtBlock(x, y, z);
-	},
 	onAttack: function(a, v) {
 		if(a == getPlayerEnt()) {
 			VertexClientPE.CombatUtils.aimAtEnt(v);
@@ -4729,6 +4726,7 @@ VertexClientPE.registerModule(killAura);
 VertexClientPE.registerModule(noHurt);
 VertexClientPE.registerModule(regen);
 VertexClientPE.registerModule(hitboxes);
+VertexClientPE.registerModule(tapAimbot);
 VertexClientPE.registerModule(tpAura);
 //MOVEMENT
 VertexClientPE.registerModule(autoTeleporter);
@@ -4753,7 +4751,6 @@ VertexClientPE.registerModule(safeWalk);
 VertexClientPE.registerModule(speedHack);
 VertexClientPE.registerModule(step);
 VertexClientPE.registerModule(tapJumpRun);
-VertexClientPE.registerModule(tapPoint);
 VertexClientPE.registerModule(tapTeleporter);
 VertexClientPE.registerModule(timer);
 VertexClientPE.registerModule(wallHack);
@@ -13725,7 +13722,7 @@ function informationScreen() {
         }));
 }
 
-var helpSections = [["Where do I report issues?", "You can report issues at http://bit.ly/VertexIssues."], ["How do I earn V€rt€xCash?", "Normal users earn 10 V€rt€xCash every minute, Pro users earn 20 every minute. In addition, Pro users get 500 V€rt€xCash as a gift."], ["How can I add shortcuts?", "Tap the star button in a mod's ... dialog or long click on a tile and then tap on the favorite button to make it favorite. The mod will now have its own shortcut."], ["Website", "Our website is http://Vertex-Client.ml/."], ["Twitter", "Our Twitter account is @VertexHX."]];
+var helpSections = [["Where do I report issues?", "You can report issues at http://bit.ly/VertexIssues."], ["How can I add shortcuts?", "Tap the star button in a mod's ... dialog or long click on a tile and then tap on the favorite button to make it favorite. The mod will now have its own shortcut."], ["Website", "Our website is http://Vertex-Client.ml/."], ["Twitter", "Our Twitter account is @VertexHX."]];
 
 function helpScreen() {
     VertexClientPE.menuIsShowing = true;
