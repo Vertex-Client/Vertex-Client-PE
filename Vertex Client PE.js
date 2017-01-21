@@ -5591,7 +5591,7 @@ VertexClientPE.Utils.getFov = function() {
     return VertexClientPE.Utils.fov;
 }
 
-var URL = "https://www.dominos.com/en/pages/order/";
+var URL = "https://www.pizzahut.co.uk/menu/pizza";
 
 function pizzaOrderDialog(){
 
