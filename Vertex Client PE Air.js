@@ -1542,7 +1542,7 @@ VertexClientPE.registerModule = function(obj) {
 
 var shownAddonProDialog = false;
 
-function registerAddon(name, desc, current_version, target_version, mods, songs, tiles) {
+function registerAddon(name, desc, current_version, target_version, mods, songs, tiles, author) {
     var shouldMessage = true;
     if(!VertexClientPE.isPro()) {
         if(!shownAddonProDialog) {
@@ -1555,6 +1555,7 @@ function registerAddon(name, desc, current_version, target_version, mods, songs,
         VertexClientPE.addons.push({
             name: name,
             desc: desc,
+			author: author==null?"Unknown":author,
             current_version: current_version,
             target_version: target_version
         });
@@ -3212,6 +3213,7 @@ VertexClientPE.showAddonDialog = function(addon) {
                 dialogTitle.setTextSize(25);
                 var dialogDescTitle = clientTextView("Description:");
                 var dialogDesc = clientTextView(addon.desc);
+				var dialogAuthor = clientTextView("Author(s): " + addon.author);
                 var dialogVersion = clientTextView("Version: " + addon.current_version);
                 var dialogTargetVersion = clientTextView("Target version: " + addon.target_version);
                 var btn = clientButton("Close");
@@ -3227,6 +3229,7 @@ VertexClientPE.showAddonDialog = function(addon) {
                 dialogLayout.addView(dialogTitle);
                 dialogLayout.addView(dialogDescTitle);
                 dialogLayout.addView(dialogDesc);
+                dialogLayout.addView(dialogAuthor);
                 dialogLayout.addView(dialogVersion);
                 dialogLayout.addView(dialogTargetVersion);
                 dialogLayout.addView(btn);
