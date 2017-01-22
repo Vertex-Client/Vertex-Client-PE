@@ -8183,7 +8183,7 @@ function Song(songTitle, songArtist, songUrl, songGenre) {
     this.genre = songGenre || "Unknown";
     this.url = songUrl;
 }
-
+//TODO: Add Genre
 VertexClientPE.MusicUtils.registerSong(new Song("Adventure (feat. Alexa Lusader)", "William Ekh", "http://files-cdn.nocopyrightsounds.co.uk/William%20Ekh%20-%20Adventure%20%28feat.%20Alexa%20Lusader%29.mp3", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("Blank [NCS Release]", "Disfigure", "http://files-cdn.nocopyrightsounds.co.uk/Disfigure%20-%20Blank.mp3", "Dubstep"));
 VertexClientPE.MusicUtils.registerSong(new Song("Can't Wait (feat. Anna Yvette) [NCS Release]", "Jim Yosef", "https://www.dropbox.com/s/noz7mg1ar0n1un2/Jim%20Yosef%20-%20Can%27t%20Wait%20%28feat.%20Anna%20Yvette%29.mp3?dl=1", "House"));
@@ -8213,6 +8213,11 @@ VertexClientPE.MusicUtils.registerSong(new Song("Hollah! [NCS Release]", "Disfig
 VertexClientPE.MusicUtils.registerSong(new Song("Fly Away [NCS Release]", "Krys Talk", "http://files-cdn.nocopyrightsounds.co.uk/Krys%20Talk%20-%20Fly%20Away.mp3"));
 VertexClientPE.MusicUtils.registerSong(new Song("Gravity (feat. Liz Kretschmer) [NCS Release]", "Umpire", "http://files-cdn.nocopyrightsounds.co.uk/Umpire%20-%20Gravity%20%28feat.%20Liz%20Kretschmer%29.mp3"));
 VertexClientPE.MusicUtils.registerSong(new Song("Lights [NCS Release]", "Jim Yosef", "http://files-cdn.nocopyrightsounds.co.uk/Jim%20Yosef%20-%20Lights.mp3"));
+VertexClientPE.MusicUtils.registerSong(new Song("Elevate [NCS Release]", "Arcien", "http://files-cdn.nocopyrightsounds.co.uk/Arcien%20-%20Elevate.mp3"));
+VertexClientPE.MusicUtils.registerSong(new Song("Cast Away ft. Ayve [NCS Release]", "T & Sugah", "http://files-cdn.nocopyrightsounds.co.uk/T%20%26%20Sugah%20-%20Cast%20Away%20%28ft.%20Ayve%29.mp3"));
+VertexClientPE.MusicUtils.registerSong(new Song("Moments [NCS Release]", "Alex Skrindo & Stahl!", "http://files-cdn.nocopyrightsounds.co.uk/Alex%20Skrindo%20%26%20Stahl%21%20-%20Moments.mp3"));
+VertexClientPE.MusicUtils.registerSong(new Song("Time Leap [NCS Release]", "Aero Chord", "http://files-cdn.nocopyrightsounds.co.uk/Aero%20Chord%20-%20Time%20Leap.mp3"));
+VertexClientPE.MusicUtils.registerSong(new Song("Fall To Light [NCS Release]", "Laszlo", "http://files-cdn.nocopyrightsounds.co.uk/Laszlo%20-%20Fall%20to%20Light.mp3"));
 //VertexClientPE.MusicUtils.registerSong(new Song("", "", ""));
 
 VertexClientPE.healthTags = function() {
