@@ -8209,6 +8209,11 @@ VertexClientPE.MusicUtils.registerSong(new Song("Puzzle [NCS Release]", "RetroVi
 VertexClientPE.MusicUtils.registerSong(new Song("Roots [NCS Release]", "Tobu", "https://www.dropbox.com/s/a2m1fqjxaotszy5/Tobu%20-%20Roots.mp3?dl=1"));
 VertexClientPE.MusicUtils.registerSong(new Song("Savannah (feat. Philly K) [NCS Release]", "Diviners", "https://www.dropbox.com/s/2t5tsjib4ihwvaq/Diviners%20-%20Savannah%20%28ft.%20Philly%20K%29.mp3?dl=0"));
 VertexClientPE.MusicUtils.registerSong(new Song("Tropic Love [NCS Release]", "Diviners feat. Contacreast", "http://files-cdn.nocopyrightsounds.co.uk/Diviners%20ft.%20Contacreast%20-%20Tropic%20Love%20%28Original%20Mix%29.mp3"));
+VertexClientPE.MusicUtils.registerSong(new Song("Hollah! [NCS Release]", "Disfigure", "http://files-cdn.nocopyrightsounds.co.uk/Disfigure%20-%20Hollah%21.mp3"));
+VertexClientPE.MusicUtils.registerSong(new Song("Fly Away [NCS Release]", "Krys Talk", "http://files-cdn.nocopyrightsounds.co.uk/Krys%20Talk%20-%20Fly%20Away.mp3"));
+VertexClientPE.MusicUtils.registerSong(new Song("Gravity (feat. Liz Kretschmer) [NCS Release]", "Umpire", "http://files-cdn.nocopyrightsounds.co.uk/Umpire%20-%20Gravity%20%28feat.%20Liz%20Kretschmer%29.mp3"));
+VertexClientPE.MusicUtils.registerSong(new Song("Lights [NCS Release]", "Jim Yosef", "http://files-cdn.nocopyrightsounds.co.uk/Jim%20Yosef%20-%20Lights.mp3"));
+//VertexClientPE.MusicUtils.registerSong(new Song("", "", ""));
 
 VertexClientPE.healthTags = function() {
     var mobs = Entity.getAll();
