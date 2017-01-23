@@ -205,6 +205,7 @@ var shortcutUIPosSetting = "right-center";
 var hitboxesHitboxWidthSetting = 10;
 var hitboxesHitboxHeightSetting = 10;
 var showUpdateToastsSetting = "on";
+var showSnowInWinterSetting = "on";
 //------------------------------------
 var customRGBRed = 0;
 var customRGBGreen = 0;
@@ -4067,6 +4068,7 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + hitboxesHitboxWidthSetting.toString());
     outWrite.append("," + hitboxesHitboxHeightSetting.toString());
     outWrite.append("," + showUpdateToastsSetting.toString());
+    outWrite.append("," + showSnowInWinterSetting.toString());
 
     outWrite.close();
 }
@@ -4262,6 +4264,9 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[58] != null && arr[58] != undefined) {
             showUpdateToastsSetting = arr[58];
+        }
+		if (arr[59] != null && arr[59] != undefined) {
+            showSnowInWinterSetting = arr[59];
         }
         fos.close();
 		VertexClientPE.loadCustomRGBSettings();
@@ -6108,7 +6113,7 @@ VertexClientPE.showStartScreenBar = function() {
             run: function() {
                 try {
 					var snowEffect = new SnowEffect();
-					if(VertexClientPE.Utils.month == java.util.Calendar.DECEMBER || VertexClientPE.Utils.month == java.util.Calendar.JANUARY || (VertexClientPE.Utils.month == java.util.Calendar.FEBRUARY && VertexClientPE.Utils.day <= 28)) {
+					if(showSnowInWinterSetting == "on" && (VertexClientPE.Utils.month == java.util.Calendar.DECEMBER || VertexClientPE.Utils.month == java.util.Calendar.JANUARY || (VertexClientPE.Utils.month == java.util.Calendar.FEBRUARY && VertexClientPE.Utils.day <= 28))) {
 						snowEffect.start();
 					}
 					
@@ -7692,6 +7697,27 @@ function settingsScreen() {
                     }
                     }));
 					
+					var showSnowInWinterSettingFunc = new settingButton("Show snowflakes on the start screen in the winter");
+                    var showSnowInWinterSettingButton = showSnowInWinterSettingFunc.getButton();
+                    if(showSnowInWinterSetting == "on") {
+                        showSnowInWinterSettingButton.setText("ON");
+                    } else if(showSnowInWinterSetting == "off") {
+                        showSnowInWinterSettingButton.setText("OFF");
+                    }
+                    showSnowInWinterSettingButton.setOnClickListener(new View_.OnClickListener({
+						onClick: function(viewarg) {
+							if(showSnowInWinterSetting == "off") {
+								showSnowInWinterSetting = "on";
+								showSnowInWinterSettingButton.setText("ON");
+								VertexClientPE.saveMainSettings();
+							} else if(showSnowInWinterSetting == "on") {
+								showSnowInWinterSetting = "off";
+								showSnowInWinterSettingButton.setText("OFF");
+								VertexClientPE.saveMainSettings();
+							}
+						}
+                    }));
+					
 					var webBrowserStartPageSettingFunc = new settingButton("Webbrowser startpage", "Change the default webbrowser page.");
                     var webBrowserStartPageSettingButton = webBrowserStartPageSettingFunc.getButton();
                     webBrowserStartPageSettingButton.setText("Change");
@@ -7726,6 +7752,7 @@ function settingsScreen() {
                     settingsMenuLayout.addView(otherTitle);
 					VertexClientPE.addView(settingsMenuLayout, showNewsSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, playMusicSettingFunc);
+					VertexClientPE.addView(settingsMenuLayout, showSnowInWinterSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, webBrowserStartPageSettingFunc);
 
                     settingsMenu = new PopupWindow_(settingsMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
