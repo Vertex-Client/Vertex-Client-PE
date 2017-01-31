@@ -752,6 +752,7 @@ function screenChangeHook(screenName) {
 					}));
 				}
 			}
+			print(screenName);
 		}
     }
 	if(screenName == ScreenType.pause_screen) {
@@ -1067,7 +1068,7 @@ var stackDropState = false;
 var fancyChatState = false;
 var autoSpammerState = false;
 var autoSwordState = false;
-var yesCheatPlusState = false;
+var bypassState = false;
 var chestESPState = false;
 var speedHackState = false;
 var remoteViewState = false;
@@ -1095,12 +1096,6 @@ VertexClientPE.getDeviceName = function() {
         return manufacturer + " " + model;
     }
 }
-
-var tts = new TextToSpeech_(CONTEXT, new TextToSpeech_.OnInitListener({
-    onInit: function(status) {
-        tts.setLanguage(Locale_.US);
-    }
-}));
 
 //########################################################################################################################################################
 // Minecraft Button Library
@@ -2084,8 +2079,8 @@ var panic = {
     }
 };
 
-var yesCheatPlus = {
-    name: "YesCheat+",
+var bypass = {
+    name: "Bypass",
     desc: "Blocks mods that cannot bypass common anti cheat plugins.",
     category: VertexClientPE.category.MISC,
     type: "Mod",
@@ -2095,7 +2090,7 @@ var yesCheatPlus = {
     },
     onToggle: function() {
         this.state = !this.state;
-        yesCheatPlusState = this.state;
+        bypassState = this.state;
         if(VertexClientPE.menuIsShowing) {
 			VertexClientPE.closeMenu();
             VertexClientPE.showMenu();
@@ -2197,7 +2192,7 @@ var killAura = {
     isStateMod: function() {
         return true;
     },
-    canBypassYesCheatPlus: function() {
+    canBypassBypassMod: function() {
         return false;
     },
     onToggle: function() {
@@ -2250,7 +2245,7 @@ var freezeAura = {
     isStateMod: function() {
         return true;
     },
-    canBypassYesCheatPlus: function() {
+    canBypassBypassMod: function() {
         return false;
     },
     onToggle: function() {
@@ -2279,7 +2274,7 @@ var fireAura = {
     isStateMod: function() {
         return true;
     },
-    canBypassYesCheatPlus: function() {
+    canBypassBypassMod: function() {
         return false;
     },
     onToggle: function() {
@@ -2653,26 +2648,6 @@ var fastBreak = {
     onToggle: function() {
         this.state = !this.state;
         this.state?Block.setDestroyTimeAll(0):Block.setDestroyTimeDefaultAll();
-    }
-};
-
-var chatSpeak = {
-    name: "ChatSpeak",
-    desc: "Automatically says all the received chat messages out loud.",
-    category: VertexClientPE.category.CHAT,
-    type: "Mod",
-    state: false,
-    isStateMod: function() {
-        return true;
-    },
-    onToggle: function() {
-        this.state = !this.state;
-    },
-    onChatReceive: function(msg, sender) {
-        if(!this.state) return;
-        if(sender != Player.getName(getPlayerEnt())) {
-            tts.speak(msg, TextToSpeech_.QUEUE_FLUSH, null);
-        }
     }
 };
 
@@ -3103,6 +3078,7 @@ var tapRemover = {
     category: VertexClientPE.category.BUILDING,
     type: "Mod",
     state: false,
+	singleplayerOnly: true,
     isStateMod: function() {
         return true;
     },
@@ -3127,6 +3103,7 @@ var autoPlace = {
     category: VertexClientPE.category.BUILDING,
     type: "Mod",
     state: false,
+	singleplayerOnly: true,
     isStateMod: function() {
         return true;
     },
@@ -3224,13 +3201,13 @@ var arrowGun = {
         
         var arrowGunModeLayoutLeft = new LinearLayout_(CONTEXT);
         arrowGunModeLayoutLeft.setOrientation(1);
-        arrowGunModeLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2, display.heightPixels / 10));
+        arrowGunModeLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - 5, display.heightPixels / 10));
         arrowGunModeLayoutLeft.setGravity(Gravity_.CENTER_HORIZONTAL);
         arrowGunModeLayout.addView(arrowGunModeLayoutLeft);
         
         var arrowGunModeLayoutRight = new LinearLayout_(CONTEXT);
         arrowGunModeLayoutRight.setOrientation(1);
-        arrowGunModeLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2, display.heightPixels / 10));
+        arrowGunModeLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - 5, display.heightPixels / 10));
         arrowGunModeLayoutRight.setGravity(Gravity_.CENTER_HORIZONTAL);
         arrowGunModeLayout.addView(arrowGunModeLayoutRight);
         
@@ -3423,13 +3400,13 @@ var autoWalk = {
         
         var autoWalkDirectionLayoutLeft = new LinearLayout_(CONTEXT);
         autoWalkDirectionLayoutLeft.setOrientation(1);
-        autoWalkDirectionLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2, display.heightPixels / 10));
+        autoWalkDirectionLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - 5, display.heightPixels / 10));
         autoWalkDirectionLayoutLeft.setGravity(Gravity_.CENTER_HORIZONTAL);
         autoWalkDirectionLayout.addView(autoWalkDirectionLayoutLeft);
         
         var autoWalkDirectionLayoutRight = new LinearLayout_(CONTEXT);
         autoWalkDirectionLayoutRight.setOrientation(1);
-        autoWalkDirectionLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2, display.heightPixels / 10));
+        autoWalkDirectionLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - 5, display.heightPixels / 10));
         autoWalkDirectionLayoutRight.setGravity(Gravity_.CENTER_HORIZONTAL);
         autoWalkDirectionLayout.addView(autoWalkDirectionLayoutRight);
         
@@ -3746,30 +3723,30 @@ var chestTracers = {
         
         var chestTracersParticleTitle = clientTextView("\nParticle:");
         var chestTracersFlameButton = clientButton("Flame", "Flame particles.");
-        chestTracersFlameButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 6, display.heightPixels / 10));
+        chestTracersFlameButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 6 - 10/3, display.heightPixels / 10));
         var chestTracersRedstoneButton = clientButton("Redstone", "Redstone particles.");
-        chestTracersRedstoneButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 6, display.heightPixels / 10));
+        chestTracersRedstoneButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 6 - 10/3, display.heightPixels / 10));
         var chestTracersCriticalButton = clientButton("Critical", "Critical hit particles.");
-        chestTracersCriticalButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 6, display.heightPixels / 10));
+        chestTracersCriticalButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 6 - 10/3, display.heightPixels / 10));
         
         var chestTracersParticleLayout = new LinearLayout_(CONTEXT);
         chestTracersParticleLayout.setOrientation(LinearLayout_.HORIZONTAL);
         
         var chestTracersParticleLayoutLeft = new LinearLayout_(CONTEXT);
         chestTracersParticleLayoutLeft.setOrientation(1);
-        chestTracersParticleLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3, display.heightPixels / 10));
+        chestTracersParticleLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3 - 10/3, display.heightPixels / 10));
         chestTracersParticleLayoutLeft.setGravity(Gravity_.CENTER_HORIZONTAL);
         chestTracersParticleLayout.addView(chestTracersParticleLayoutLeft);
         
         var chestTracersParticleLayoutCenter = new LinearLayout_(CONTEXT);
         chestTracersParticleLayoutCenter.setOrientation(1);
-        chestTracersParticleLayoutCenter.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3, display.heightPixels / 10));
+        chestTracersParticleLayoutCenter.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3 - 10/3, display.heightPixels / 10));
         chestTracersParticleLayoutCenter.setGravity(Gravity_.CENTER_HORIZONTAL);
         chestTracersParticleLayout.addView(chestTracersParticleLayoutCenter);
         
         var chestTracersParticleLayoutRight = new LinearLayout_(CONTEXT);
         chestTracersParticleLayoutRight.setOrientation(1);
-        chestTracersParticleLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3, display.heightPixels / 10));
+        chestTracersParticleLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3 - 10/3, display.heightPixels / 10));
         chestTracersParticleLayoutRight.setGravity(Gravity_.CENTER_HORIZONTAL);
         chestTracersParticleLayout.addView(chestTracersParticleLayoutRight);
         
@@ -4710,6 +4687,40 @@ var elytraBoost = {
     }
 }
 
+/* var oakTextures = ["planks", 0];
+var spruceTextures = ["planks", 1];
+var birchTextures = ["planks", 2];
+var jungleTextures = ["planks", 3];
+var darkOakTextures = ["planks", 4];
+var acaciaTextures = ["planks", 5];
+var allFencesTextures = [
+	oakTextures, oakTextures, oakTextures, oakTextures, oakTextures, oakTextures,
+	spruceTextures, spruceTextures, spruceTextures, spruceTextures, spruceTextures, spruceTextures,
+	birchTextures, birchTextures, birchTextures, birchTextures, birchTextures, birchTextures,
+	jungleTextures, jungleTextures, jungleTextures, jungleTextures, jungleTextures, jungleTextures,
+	darkOakTextures, darkOakTextures, darkOakTextures, darkOakTextures, darkOakTextures, darkOakTextures,
+	acaciaTextures, acaciaTextures, acaciaTextures, acaciaTextures, acaciaTextures, acaciaTextures
+];
+
+var fenceJump = {
+    name: "FenceJump",
+    desc: "Allows you to jump on/over fences.",
+    category: VertexClientPE.category.MOVEMENT,
+    type: "Mod",
+    state: false,
+    isStateMod: function() {
+        return true;
+    },
+    onToggle: function() {
+        this.state = !this.state;
+		if(this.state) {
+			Block.defineBlock(85, "? Fence", allFencesTextures, 0, true, 0);
+		} else {
+			Block.defineBlock(85, "? Fence", allFencesTextures, 0, true, 11);
+		}
+    }
+} */
+
 //COMBAT
 VertexClientPE.registerModule(antiKnockback);
 VertexClientPE.registerModule(antiBurn);
@@ -4739,6 +4750,7 @@ if(Launcher.isToolbox()) {
 VertexClientPE.registerModule(enderProjectiles);
 VertexClientPE.registerModule(fastBridge);
 VertexClientPE.registerModule(fastWalk);
+//VertexClientPE.registerModule(fenceJump);
 VertexClientPE.registerModule(flight);
 VertexClientPE.registerModule(frostWalk);
 VertexClientPE.registerModule(glide);
@@ -4772,7 +4784,6 @@ VertexClientPE.registerModule(tapRemover);
 VertexClientPE.registerModule(autoSpammer);
 VertexClientPE.registerModule(chatLog);
 VertexClientPE.registerModule(chatRepeat);
-VertexClientPE.registerModule(chatSpeak);
 VertexClientPE.registerModule(fancyChat);
 VertexClientPE.registerModule(homeCommand);
 //MISC
@@ -4795,7 +4806,7 @@ VertexClientPE.registerModule(target);
 VertexClientPE.registerModule(teleport);
 //VertexClientPE.registerModule(tracers);
 VertexClientPE.registerModule(twerk);
-VertexClientPE.registerModule(yesCheatPlus);
+VertexClientPE.registerModule(bypass);
 VertexClientPE.registerModule(zoom);
 
 //var autoClick = true;
@@ -4806,8 +4817,8 @@ function modTick() {
 function attackHook(a, v) {
     VertexClientPE.modules.forEach(function(element, index, array) {
         if(element.isStateMod() && element.state && element.onAttack) {
-            if(yesCheatPlusState && element.canBypassYesCheatPlus) {
-                if(!element.canBypassYesCheatPlus()) {
+            if(bypassState && element.canBypassBypassMod) {
+                if(!element.canBypassBypassMod()) {
                     return;
                 }
             }
@@ -4819,8 +4830,8 @@ function attackHook(a, v) {
 function entityHurtHook(a, v) {
     VertexClientPE.modules.forEach(function(element, index, array) {
         if(element.isStateMod() && element.state && element.onHurt) {
-            if(yesCheatPlusState && element.canBypassYesCheatPlus) {
-                if(!element.canBypassYesCheatPlus()) {
+            if(bypassState && element.canBypassBypassMod) {
+                if(!element.canBypassBypassMod()) {
                     return;
                 }
             }
@@ -4832,8 +4843,8 @@ function entityHurtHook(a, v) {
 function entityAddedHook(entity) {
     VertexClientPE.modules.forEach(function(element, index, array) {
         if(element.isStateMod() && element.state && element.onEntityAdded) {
-            if(yesCheatPlusState && element.canBypassYesCheatPlus) {
-                if(!element.canBypassYesCheatPlus()) {
+            if(bypassState && element.canBypassBypassMod) {
+                if(!element.canBypassBypassMod()) {
                     return;
                 }
             }
@@ -4845,8 +4856,8 @@ function entityAddedHook(entity) {
 function useItem(x, y, z, itemId, blockId, side, blockDamage) {
     VertexClientPE.modules.forEach(function(element, index, array) {
         if(element.isStateMod() && element.state && element.onUseItem) {
-            if(yesCheatPlusState && element.canBypassYesCheatPlus) {
-                if(!element.canBypassYesCheatPlus()) {
+            if(bypassState && element.canBypassBypassMod) {
+                if(!element.canBypassBypassMod()) {
                     return;
                 }
             }
@@ -4869,8 +4880,8 @@ function useItem(x, y, z, itemId, blockId, side, blockDamage) {
 function explodeHook(entity, x, y, z, power, onFire) {
     VertexClientPE.modules.forEach(function(element, index, array) {
         if(element.isStateMod() && element.state && element.onExplode) {
-            if(yesCheatPlusState && element.canBypassYesCheatPlus) {
-                if(!element.canBypassYesCheatPlus()) {
+            if(bypassState && element.canBypassBypassMod) {
+                if(!element.canBypassBypassMod()) {
                     return;
                 }
             }
@@ -4882,8 +4893,8 @@ function explodeHook(entity, x, y, z, power, onFire) {
 function projectileHitBlockHook(projectile, blockX, blockY, blockZ, side) {
     VertexClientPE.modules.forEach(function(element, index, array) {
         if(element.isStateMod() && element.state && element.onProjectileHitBlock) {
-            if(yesCheatPlusState && element.canBypassYesCheatPlus) {
-                if(!element.canBypassYesCheatPlus()) {
+            if(bypassState && element.canBypassBypassMod) {
+                if(!element.canBypassBypassMod()) {
                     return;
                 }
             }
@@ -4895,8 +4906,8 @@ function projectileHitBlockHook(projectile, blockX, blockY, blockZ, side) {
 function chatReceiveHook(text, sender) {
     VertexClientPE.modules.forEach(function(element, index, array) {
         if(element.onChatReceive) {
-            if(yesCheatPlusState && element.canBypassYesCheatPlus) {
-                if(!element.canBypassYesCheatPlus()) {
+            if(bypassState && element.canBypassBypassMod) {
+                if(!element.canBypassBypassMod()) {
                     return;
                 }
             }
@@ -4910,8 +4921,8 @@ function textPacketReceiveHook(type, sender, message) {
     if(type != 0) {
         VertexClientPE.modules.forEach(function(element, index, array) {
             if(element.isStateMod() && element.state && element.onChatReceive) {
-                if(yesCheatPlusState && element.canBypassYesCheatPlus) {
-                    if(!element.canBypassYesCheatPlus()) {
+                if(bypassState && element.canBypassBypassMod) {
+                    if(!element.canBypassBypassMod()) {
                         return;
                     }
                 }
@@ -4933,8 +4944,8 @@ function chatHook(text) {
         if(text.charAt(0) != "/") {
             VertexClientPE.modules.forEach(function(element, index, array) {
                 if(element.isStateMod() && element.state && element.onChat) {
-                    if(yesCheatPlusState && element.canBypassYesCheatPlus) {
-                        if(!element.canBypassYesCheatPlus()) {
+                    if(bypassState && element.canBypassBypassMod) {
+                        if(!element.canBypassBypassMod()) {
                             return;
                         }
                     }
@@ -6649,7 +6660,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
                     toggleButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 3, display.heightPixels / 10));
                     if(mod.state) {
                         toggleButton.setText("Disable");
-                        if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
+                        if(bypassState && mod.canBypassBypassMod && !mod.canBypassBypassMod()) {
                             toggleButton.setTextColor(modButtonColorBlocked);
                         } else {
                             toggleButton.setTextColor(modButtonColorEnabled);
@@ -6665,11 +6676,11 @@ VertexClientPE.showModDialog = function(mod, btn) {
                             if(mod.name == "YesCheat+") {
                                 mod.onToggle();
                             } else {
-                                if(!yesCheatPlusState) {
+                                if(!bypassState) {
                                     mod.onToggle();
-                                } else if(yesCheatPlusState && mod.canBypassYesCheatPlus == undefined || mod.canBypassYesCheatPlus == null) {
+                                } else if(bypassState && mod.canBypassBypassMod == undefined || mod.canBypassBypassMod == null) {
                                     mod.onToggle();
-                                } else if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
+                                } else if(bypassState && mod.canBypassBypassMod && !mod.canBypassBypassMod()) {
                                     if(mod.isStateMod() && mod.state) {
                                         mod.onToggle();
                                     } else if(mod.isStateMod() && !mod.state) {
@@ -6682,7 +6693,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
                             if(mod.isStateMod()) {
                                 if(mod.state) {
                                     toggleButton.setText("Disable");
-                                    if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
+                                    if(bypassState && mod.canBypassBypassMod && !mod.canBypassBypassMod()) {
                                         toggleButton.setTextColor(modButtonColorBlocked);
                                         btn.setTextColor(modButtonColorBlocked);
                                     } else {
@@ -8353,8 +8364,8 @@ VertexClientPE.healthTags = function() {
 function nuke(x, y, z, range, mode) {
     mode = (mode==null)?"cube":mode;
     range = (range==null)?3:range;
-    var destroyFunction = yesCheatPlusState?Level.destroyBlock:setTile;
-    var destroyLastParam = yesCheatPlusState?false:0;
+    var destroyFunction = bypassState?Level.destroyBlock:setTile;
+    var destroyLastParam = bypassState?false:0;
     if(mode == "cube") {
         for(var blockX = - range; blockX <= range; blockX++) {
             for(var blockY = - range; blockY <= range; blockY++) {
@@ -9893,7 +9904,7 @@ function modButton(mod, buttonOnly, customSize) {
 	}
     
     if(mod.state) {
-        if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
+        if(bypassState && mod.canBypassBypassMod && !mod.canBypassBypassMod()) {
             mod.onToggle();
             mod.state = true;
         }
@@ -9949,7 +9960,7 @@ function modButton(mod, buttonOnly, customSize) {
     defaultClientButton.setHorizontallyScrolling(true);
     defaultClientButton.setSelected(true);
     if(mod.isStateMod() && mod.state) {
-        if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
+        if(bypassState && mod.canBypassBypassMod && !mod.canBypassBypassMod()) {
             defaultClientButton.setTextColor(modButtonColorBlocked);
         } else {
             defaultClientButton.setTextColor(modButtonColorEnabled);
@@ -9970,11 +9981,11 @@ function modButton(mod, buttonOnly, customSize) {
             if(mod.name == "YesCheat+") {
                 mod.onToggle();
             } else {
-                if(!yesCheatPlusState) {
+                if(!bypassState) {
                     mod.onToggle();
-                } else if(yesCheatPlusState && mod.canBypassYesCheatPlus == undefined || mod.canBypassYesCheatPlus == null) {
+                } else if(bypassState && mod.canBypassBypassMod == undefined || mod.canBypassBypassMod == null) {
                     mod.onToggle();
-                } else if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
+                } else if(bypassState && mod.canBypassBypassMod && !mod.canBypassBypassMod()) {
                     if(mod.isStateMod() && mod.state) {
                         mod.onToggle();
                     } else if(mod.isStateMod() && !mod.state) {
@@ -9986,7 +9997,7 @@ function modButton(mod, buttonOnly, customSize) {
             }
             if(mod.isStateMod()) {
                 if(mod.state) {
-                    if(yesCheatPlusState && mod.canBypassYesCheatPlus && !mod.canBypassYesCheatPlus()) {
+                    if(bypassState && mod.canBypassBypassMod && !mod.canBypassBypassMod()) {
                         defaultClientButton.setTextColor(modButtonColorBlocked);
                     } else {
                         defaultClientButton.setTextColor(modButtonColorEnabled);
@@ -11278,8 +11289,8 @@ VertexClientPE.inGameTick = function() {
             if(VertexClientPE.playerIsInGame) {
 				VertexClientPE.modules.forEach(function(element, index, array) {
 					if(element.isStateMod() && element.state && element.onTick) {
-						if(yesCheatPlusState && element.canBypassYesCheatPlus) {
-							if(!element.canBypassYesCheatPlus()) {
+						if(bypassState && element.canBypassBypassMod) {
+							if(!element.canBypassBypassMod()) {
 								return;
 							}
 						}
@@ -16325,7 +16336,7 @@ function showHacksList() {
                     var statesText = "";
                     VertexClientPE.modules.forEach(function (element, index, array) {
                         if(element.isStateMod() && element.state) {
-                            if(yesCheatPlusState && element.canBypassYesCheatPlus && !element.canBypassYesCheatPlus()) {
+                            if(bypassState && element.canBypassBypassMod && !element.canBypassBypassMod()) {
                                 return;
                             }
                             if(enabledHacksCounter != 0) {
@@ -16411,7 +16422,7 @@ function updateHacksList() {
                     var statesText = "";
                     VertexClientPE.modules.forEach(function (element, index, array) {
                         if(element.isStateMod() && element.state) {
-                            if(yesCheatPlusState && element.canBypassYesCheatPlus && !element.canBypassYesCheatPlus()) {
+                            if(bypassState && element.canBypassBypassMod && !element.canBypassBypassMod()) {
                                 return;
                             }
                             if(enabledHacksCounter != 0) {
