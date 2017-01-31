@@ -752,7 +752,7 @@ function screenChangeHook(screenName) {
 					}));
 				}
 			}
-			print(screenName);
+			//print(screenName);
 		}
     }
 	if(screenName == ScreenType.pause_screen) {
