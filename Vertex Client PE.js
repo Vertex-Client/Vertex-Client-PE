@@ -7629,6 +7629,14 @@ VertexClientPE.showTipDialog = function() {
     );
 }
 
+VertexClientPE.showWarningDialog = function() {
+	VertexClientPE.showBasicDialog("Warning", clientTextView("Thanks for using Vertex Client PE. If you didn't get this from our official website or MCPEDL.com, please redownload it. We can't guarantee safety if you don't use official download links."),
+        function() {
+            VertexClientPE.setHasShownWarningDialog(true);
+        }
+    );
+}
+
 var consoleInput;
 
 VertexClientPE.showJavascriptConsoleDialog = function() {
@@ -11434,6 +11442,8 @@ VertexClientPE.showSplashScreen = function () {
     }));
 };
 
+var hasShownDialog = false;
+
 VertexClientPE.showStartScreenBar = function() {
     var display = new DisplayMetrics_();
     CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
@@ -11445,11 +11455,17 @@ VertexClientPE.showStartScreenBar = function() {
 						snowEffect.start();
 					}
 					
-					if(userIsNewToCurrentVersion == true) {
-						VertexClientPE.showWhatsNewDialog();
-					}
-					if(!VertexClientPE.getHasShownTipDialog()) {
-						VertexClientPE.showTipDialog();
+					if(!hasShownDialog) {
+						if(userIsNewToCurrentVersion == true) {
+							VertexClientPE.showWhatsNewDialog();
+						} else {
+							if(!VertexClientPE.getHasShownWarningDialog()) {
+								VertexClientPE.showWarningDialog();
+							} else if(!VertexClientPE.getHasShownTipDialog()) {
+								VertexClientPE.showTipDialog();
+							}
+						}
+						hasShownDialog = true;
 					}
 					
                     var mainMenuListLayout = new LinearLayout_(CONTEXT);
@@ -12234,6 +12250,18 @@ VertexClientPE.setHasShownTipDialog = function(opt) {
     editor.commit();
 }
 
+VertexClientPE.getHasShownWarningDialog = function() {
+    return sharedPref.getBoolean("VertexClientPE.hasShownWarningDialog", false);
+}
+
+VertexClientPE.setHasShownWarningDialog = function(opt) {
+	if(opt != true && opt != false) {
+		return;
+	}
+    editor.putBoolean("VertexClientPE.hasShownWarningDialog", opt);
+    editor.commit();
+}
+
 VertexClientPE.Utils.cal = java.util.Calendar.getInstance();
 VertexClientPE.Utils.day = VertexClientPE.Utils.cal.get(java.util.Calendar.DAY_OF_MONTH);
 VertexClientPE.Utils.month = VertexClientPE.Utils.cal.get(java.util.Calendar.MONTH);
@@ -12817,6 +12845,15 @@ function settingsScreen() {
                             VertexClientPE.saveMainSettings();
                         }
                     }
+                    }));
+					
+					var mainButtonSizeSettingFunc = new settingButton("Main button size", "Sets the main menu's button size.");
+                    var mainButtonSizeSettingButton = mainButtonSizeSettingFunc.getButton();
+                    mainButtonSizeSettingButton.setText("Change");
+                    mainButtonSizeSettingButton.setOnClickListener(new View_.OnClickListener({
+						onClick: function(viewArg) {
+							VertexClientPE.showMainButtonSizeDialog();
+						}
                     }));
 					
 					var mainButtonStyleSettingFunc = new settingButton("Main button style", "Sets the main menu's button style.");
