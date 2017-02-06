@@ -206,6 +206,9 @@ var hitboxesHitboxWidthSetting = 10;
 var hitboxesHitboxHeightSetting = 10;
 var showUpdateToastsSetting = "on";
 var showSnowInWinterSetting = "on";
+var preventDiggingSetting = "off";
+var preventPlacingSetting = "off";
+var preventAttacksSetting = "off";
 //------------------------------------
 var customRGBRed = 0;
 var customRGBGreen = 0;
@@ -4071,6 +4074,9 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + hitboxesHitboxHeightSetting.toString());
     outWrite.append("," + showUpdateToastsSetting.toString());
     outWrite.append("," + showSnowInWinterSetting.toString());
+	outWrite.append("," + preventDiggingSetting.toString());
+	outWrite.append("," + preventPlacingSetting.toString());
+	outWrite.append("," + preventAttacksSetting.toString());
 
     outWrite.close();
 }
@@ -4269,6 +4275,15 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[59] != null && arr[59] != undefined) {
             showSnowInWinterSetting = arr[59];
+        }
+		if (arr[60] != null && arr[60] != undefined) {
+            preventDiggingSetting = arr[60];
+        }
+		if (arr[61] != null && arr[61] != undefined) {
+            preventPlacingSetting = arr[61];
+        }
+		if (arr[62] != null && arr[62] != undefined) {
+            preventAttacksSetting = arr[62];
         }
         fos.close();
 		VertexClientPE.loadCustomRGBSettings();
