@@ -206,6 +206,9 @@ var hitboxesHitboxWidthSetting = 10;
 var hitboxesHitboxHeightSetting = 10;
 var showUpdateToastsSetting = "on";
 var showSnowInWinterSetting = "on";
+var preventDiggingSetting = "off";
+var preventPlacingSetting = "off";
+var preventAttacksSetting = "off";
 //------------------------------------
 var combatName = "Combat";
 var buildingName = "Building";
@@ -4721,6 +4724,85 @@ var fenceJump = {
     }
 } */
 
+var prevent = {
+    name: "Prevent",
+    desc: "Prevent user interaction (you can't prevent incoming attacks though).",
+    category: VertexClientPE.category.MISC,
+    type: "Special",
+	getSettingsLayout: function() {
+        var twerkSettingsLayout = new LinearLayout_(CONTEXT);
+        twerkSettingsLayout.setOrientation(1);
+		
+		var preventDiggingCheckBox = new CheckBox_(CONTEXT);
+        preventDiggingCheckBox.setChecked(preventDiggingSetting == "on");
+        preventDiggingCheckBox.setText("Prevent block digging");
+        if(themeSetting == "white") {
+            preventDiggingCheckBox.setTextColor(Color_.BLACK);
+        } else {
+            preventDiggingCheckBox.setTextColor(Color_.WHITE);
+        }
+        preventDiggingCheckBox.setTypeface(VertexClientPE.font);
+		if(fontSetting == "minecraft") {
+			MinecraftButtonLibrary.addMinecraftStyleToTextView(preventDiggingCheckBox);
+		}
+        preventDiggingCheckBox.setOnClickListener(new View_.OnClickListener() {
+            onClick: function(v) {
+                preventDiggingSetting = v.isChecked()?"on":"off";
+                VertexClientPE.saveMainSettings();
+            }
+        });
+		
+		var preventPlacingCheckBox = new CheckBox_(CONTEXT);
+        preventPlacingCheckBox.setChecked(preventPlacingSetting == "on");
+        preventPlacingCheckBox.setText("Prevent block placing/tapping with items on blocks");
+        if(themeSetting == "white") {
+            preventPlacingCheckBox.setTextColor(Color_.BLACK);
+        } else {
+            preventPlacingCheckBox.setTextColor(Color_.WHITE);
+        }
+        preventPlacingCheckBox.setTypeface(VertexClientPE.font);
+		if(fontSetting == "minecraft") {
+			MinecraftButtonLibrary.addMinecraftStyleToTextView(preventPlacingCheckBox);
+		}
+        preventPlacingCheckBox.setOnClickListener(new View_.OnClickListener() {
+            onClick: function(v) {
+                preventPlacingSetting = v.isChecked()?"on":"off";
+                VertexClientPE.saveMainSettings();
+            }
+        });
+		
+		var preventAttacksCheckBox = new CheckBox_(CONTEXT);
+        preventAttacksCheckBox.setChecked(preventAttacksSetting == "on");
+        preventAttacksCheckBox.setText("Prevent hitting other entities");
+        if(themeSetting == "white") {
+            preventAttacksCheckBox.setTextColor(Color_.BLACK);
+        } else {
+            preventAttacksCheckBox.setTextColor(Color_.WHITE);
+        }
+        preventAttacksCheckBox.setTypeface(VertexClientPE.font);
+		if(fontSetting == "minecraft") {
+			MinecraftButtonLibrary.addMinecraftStyleToTextView(preventAttacksCheckBox);
+		}
+        preventAttacksCheckBox.setOnClickListener(new View_.OnClickListener() {
+            onClick: function(v) {
+                preventAttacksSetting = v.isChecked()?"on":"off";
+                VertexClientPE.saveMainSettings();
+            }
+        });
+		
+        twerkSettingsLayout.addView(preventDiggingCheckBox);
+        twerkSettingsLayout.addView(preventPlacingCheckBox);
+        twerkSettingsLayout.addView(preventAttacksCheckBox);
+        return twerkSettingsLayout;
+    },
+    isStateMod: function() {
+        return false;
+    },
+    onToggle: function() {
+		VertexClientPE.showModDialog(this);
+    }
+}
+
 //COMBAT
 VertexClientPE.registerModule(antiKnockback);
 VertexClientPE.registerModule(antiBurn);
@@ -4801,6 +4883,7 @@ VertexClientPE.registerModule(itemGiver);
 VertexClientPE.registerModule(letItSnow);
 VertexClientPE.registerModule(onlyDay);
 VertexClientPE.registerModule(orderAPizza);
+VertexClientPE.registerModule(prevent);
 VertexClientPE.registerModule(remoteView);
 VertexClientPE.registerModule(target);
 VertexClientPE.registerModule(teleport);
@@ -4815,6 +4898,9 @@ function modTick() {
 }
 
 function attackHook(a, v) {
+	if(preventAttacksSetting == "on") {
+		preventDefault();
+	}
     VertexClientPE.modules.forEach(function(element, index, array) {
         if(element.isStateMod() && element.state && element.onAttack) {
             if(bypassState && element.canBypassBypassMod) {
@@ -4854,6 +4940,9 @@ function entityAddedHook(entity) {
 }
 
 function useItem(x, y, z, itemId, blockId, side, blockDamage) {
+	if(preventPlacingSetting == "on") {
+		preventDefault();
+	}
     VertexClientPE.modules.forEach(function(element, index, array) {
         if(element.isStateMod() && element.state && element.onUseItem) {
             if(bypassState && element.canBypassBypassMod) {
@@ -8855,6 +8944,9 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + hitboxesHitboxHeightSetting.toString());
     outWrite.append("," + showUpdateToastsSetting.toString());
 	outWrite.append("," + showSnowInWinterSetting.toString());
+	outWrite.append("," + preventDiggingSetting.toString());
+	outWrite.append("," + preventPlacingSetting.toString());
+	outWrite.append("," + preventAttacksSetting.toString());
 
     outWrite.close();
     
@@ -9056,6 +9148,15 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[59] != null && arr[59] != undefined) {
             showSnowInWinterSetting = arr[59];
+        }
+		if (arr[60] != null && arr[60] != undefined) {
+            preventDiggingSetting = arr[60];
+        }
+		if (arr[61] != null && arr[61] != undefined) {
+            preventPlacingSetting = arr[61];
+        }
+		if (arr[62] != null && arr[62] != undefined) {
+            preventAttacksSetting = arr[62];
         }
         fos.close();
 		VertexClientPE.loadCustomRGBSettings();
@@ -17468,6 +17569,12 @@ function exitDashboard() {
             }
         }
     }));
+}
+
+function startDestroyBlock() {
+	if(preventDiggingSetting == "on") {
+		preventDefault();
+	}
 }
     
 function destroyBlock(x, y, z, side) {
