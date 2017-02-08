@@ -209,6 +209,7 @@ var showSnowInWinterSetting = "on";
 var preventDiggingSetting = "off";
 var preventPlacingSetting = "off";
 var preventAttacksSetting = "off";
+var fastBreakDestroyTime = 0;
 //------------------------------------
 var customRGBRed = 0;
 var customRGBGreen = 0;
@@ -4077,6 +4078,7 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + preventDiggingSetting.toString());
 	outWrite.append("," + preventPlacingSetting.toString());
 	outWrite.append("," + preventAttacksSetting.toString());
+	outWrite.append("," + fastBreakDestroyTime.toString());
 
     outWrite.close();
 }
@@ -4284,6 +4286,9 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[62] != null && arr[62] != undefined) {
             preventAttacksSetting = arr[62];
+        }
+		if (arr[63] != null && arr[63] != undefined) {
+            fastBreakDestroyTime = arr[63];
         }
         fos.close();
 		VertexClientPE.loadCustomRGBSettings();
