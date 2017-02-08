@@ -209,6 +209,7 @@ var showSnowInWinterSetting = "on";
 var preventDiggingSetting = "off";
 var preventPlacingSetting = "off";
 var preventAttacksSetting = "off";
+var fastBreakDestroyTime = 0;
 //------------------------------------
 var combatName = "Combat";
 var buildingName = "Building";
@@ -1067,14 +1068,15 @@ var menuRightLayout;
 
 var flightMsgShown = false;
 
-var stackDropState = false;
-var fancyChatState = false;
 var autoSpammerState = false;
 var autoSwordState = false;
 var bypassState = false;
 var chestESPState = false;
-var speedHackState = false;
+var fancyChatState = false;
+var fastBreakState = false;
 var remoteViewState = false;
+var speedHackState = false;
+var stackDropState = false;
 
 var showingMenu = false;
 
@@ -2641,16 +2643,52 @@ var phase = {
 
 var fastBreak = {
     name: "FastBreak",
-    desc: "Makes block destroy times as if you were in creative mode.",
+    desc: "Allows you to decrease block destroy times.",
     category: VertexClientPE.category.BUILDING,
     type: "Mod",
     state: false,
+	getSettingsLayout: function() {
+        var fastBreakSettingsLayout = new LinearLayout_(CONTEXT);
+        fastBreakSettingsLayout.setOrientation(1);
+		var fastBreakDestroyTimeTxt;
+		if(fastBreakDestroyTime == 0) {
+			fastBreakDestroyTimeTxt = "0 (instant)";
+		} else {
+			fastBreakDestroyTimeTxt = fastBreakDestroyTime;
+		}
+        var fastBreakDestroyTimeTitle = clientTextView("Destroy time: | " + fastBreakDestroyTimeTxt);
+        var fastBreakDestroyTimeSlider = new SeekBar(CONTEXT);
+        fastBreakDestroyTimeSlider.setProgress(fastBreakDestroyTime * 100);
+        fastBreakDestroyTimeSlider.setMax(100);
+        fastBreakDestroyTimeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            onProgressChanged: function() {
+                fastBreakDestroyTime = fastBreakDestroyTimeSlider.getProgress() / 100;
+				if(fastBreakDestroyTime == 0) {
+					fastBreakDestroyTimeTxt = "0 (instant)";
+				} else {
+					fastBreakDestroyTimeTxt = fastBreakDestroyTime;
+				}
+                fastBreakDestroyTimeTitle.setText("Destroy time: | " + fastBreakDestroyTimeTxt);
+				if(fastBreakState) {
+					Block.setDestroyTimeAll(fastBreakDestroyTime);
+				}
+            }
+        });
+        
+        fastBreakSettingsLayout.addView(fastBreakDestroyTimeTitle);
+        fastBreakSettingsLayout.addView(fastBreakDestroyTimeSlider);
+        return fastBreakSettingsLayout;
+    },
+    onModDialogDismiss: function() {
+        VertexClientPE.saveMainSettings();
+    },
     isStateMod: function() {
         return true;
     },
     onToggle: function() {
         this.state = !this.state;
-        this.state?Block.setDestroyTimeAll(0):Block.setDestroyTimeDefaultAll();
+		fastBreakState = this.state;
+        this.state?Block.setDestroyTimeAll(fastBreakDestroyTime):Block.setDestroyTimeDefaultAll();
     }
 };
 
@@ -4826,9 +4864,9 @@ VertexClientPE.registerModule(tpAura);
 //MOVEMENT
 VertexClientPE.registerModule(autoTeleporter);
 VertexClientPE.registerModule(autoWalk);
-if(Launcher.isToolbox()) {
+/* if(Launcher.isToolbox()) {
 	//VertexClientPE.registerModule(elytraBoost);
-}
+} */
 VertexClientPE.registerModule(enderProjectiles);
 VertexClientPE.registerModule(fastBridge);
 VertexClientPE.registerModule(fastWalk);
@@ -8947,6 +8985,7 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + preventDiggingSetting.toString());
 	outWrite.append("," + preventPlacingSetting.toString());
 	outWrite.append("," + preventAttacksSetting.toString());
+	outWrite.append("," + fastBreakDestroyTime.toString());
 
     outWrite.close();
     
@@ -9157,6 +9196,9 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[62] != null && arr[62] != undefined) {
             preventAttacksSetting = arr[62];
+        }
+		if (arr[63] != null && arr[63] != undefined) {
+            fastBreakDestroyTime = arr[63];
         }
         fos.close();
 		VertexClientPE.loadCustomRGBSettings();
