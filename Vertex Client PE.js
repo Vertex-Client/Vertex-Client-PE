@@ -4841,11 +4841,33 @@ var prevent = {
     }
 }
 
+var attackTeleport = {
+    name: "AttackTeleport",
+    desc: "Teleports you to an entity when hitting it.",
+    category: VertexClientPE.category.COMBAT,
+    type: "Mod",
+    state: false,
+    isStateMod: function() {
+        return true;
+    },
+    onToggle: function() {
+        this.state = !this.state;
+    },
+    onAttack: function(a, v) {
+		if(a == getPlayerEnt()) {
+			Entity.setPosition(getPlayerEnt(), Entity.getX(v), Entity.getY(v), Entity.getZ(v));
+		}
+    }
+}
+
+//todo: HealthDisplay...
+
 //COMBAT
 VertexClientPE.registerModule(antiKnockback);
 VertexClientPE.registerModule(antiBurn);
 VertexClientPE.registerModule(arrowGun);
 VertexClientPE.registerModule(aimbot);
+VertexClientPE.registerModule(attackTeleport);
 VertexClientPE.registerModule(autoLeave);
 VertexClientPE.registerModule(autoSword);
 VertexClientPE.registerModule(criticals);
@@ -8505,8 +8527,8 @@ function nuke(x, y, z, range, mode) {
         for(var blockX = - range; blockX <= range; blockX++) {
             for(var blockY = - range; blockY <= range; blockY++) {
                 for(var blockZ = - range; blockZ <= range; blockZ++) {
-                    if(getTile(x + blockX, y + blockY, z + blockZ) != 0) {
-                        destroyFunction(x + blockX, y + blockY, z + blockZ, destroyLastParam);
+                    if(getTile(Math.floor(x + blockX), Math.floor(y + blockY), Math.floor(z + blockZ)) != 0) {
+                        destroyFunction(Math.floor(x + blockX), Math.floor(y + blockY), Math.floor(z + blockZ), destroyLastParam);
                     }
                 }
             }
@@ -8515,8 +8537,8 @@ function nuke(x, y, z, range, mode) {
         for(var blockX = - range; blockX <= range; blockX++) {
             for(var blockY = - 1; blockY <= range; blockY++) {
                 for(var blockZ = - range; blockZ <= range; blockZ++) {
-                    if(getTile(x + blockX, y + blockY, z + blockZ) != 0) {
-                        destroyFunction(x + blockX, y + blockY, z + blockZ, destroyLastParam);
+                    if(getTile(Math.floor(x + blockX), Math.floor(y + blockY), Math.floor(z + blockZ)) != 0) {
+                        destroyFunction(Math.floor(x + blockX), Math.floor(y + blockY), Math.floor(z + blockZ), destroyLastParam);
                     }
                 }
             }
@@ -8525,10 +8547,9 @@ function nuke(x, y, z, range, mode) {
         for(var blockX = - range; blockX <= range; blockX++) {
             for(var blockY = - range; blockY <= range; blockY++) {
                 for(var blockZ = - range; blockZ <= range; blockZ++) {
-                    if(Block.getDestroyTime(getTile(x + blockX, y + blockY, z + blockZ)) == 0) {
-                        if(getTile(x + blockX, y + blockY, z + blockZ) != 0) {
-                            destroyFunction(x + blockX, y + blockY, z + blockZ, destroyLastParam);
-                        }
+					var tile = getTile(Math.floor(x + blockX), Math.floor(y + blockY), Math.floor(z + blockZ));
+                    if(Block.getDestroyTime(tile) == 0 && tile != 0) {
+                        destroyFunction(Math.floor(x + blockX), Math.floor(y + blockY), Math.floor(z + blockZ), destroyLastParam);
                     }
                 }
             }
