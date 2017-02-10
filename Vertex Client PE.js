@@ -163,7 +163,7 @@ var fancyChatMode = "default";
 var tapNukerRange = 3;
 var menuType = "normal";
 var chestTracersRange = 10;
-var tabGUIModeSetting = "on";
+var tabGUIModeSetting = "off";
 var chestTracersGroundMode = "on";
 var chestTracersParticle = "flame";
 var antiLagDropRemoverSetting = "off";
@@ -265,7 +265,10 @@ var Launcher = {
     },
     isMcpeMaster: function() {
         return CONTEXT.getPackageName() == "com.mcbox.pesdkb.mcpelauncher";
-    }
+    },
+	isBLFree: function() {
+		return CONTEXT.getPackageName() == "net.zhuoweizhang.mcpelauncher";
+	}
 };
 
 var ScreenType = {
@@ -719,6 +722,9 @@ function screenChangeHook(screenName) {
             showHacksList();
             showTabGUI();
 			showShortcuts();
+			if(healthDisplayState) {
+				showHealthDisplay();
+			}
         }
     } else {
         if(hacksList != null) {
@@ -739,6 +745,13 @@ function screenChangeHook(screenName) {
             CONTEXT.runOnUiThread(new Runnable_({
                 run: function() {
                     shortcutGUI.dismiss();
+                }
+            }));
+        }
+		if(healthDisplayUI != null) {
+            CONTEXT.runOnUiThread(new Runnable_({
+                run: function() {
+                    healthDisplayUI.dismiss();
                 }
             }));
         }
@@ -1074,6 +1087,7 @@ var bypassState = false;
 var chestESPState = false;
 var fancyChatState = false;
 var fastBreakState = false;
+var healthDisplayState = false;
 var remoteViewState = false;
 var speedHackState = false;
 var stackDropState = false;
@@ -1659,6 +1673,7 @@ var exitWebBrowserUI;
 var reloadWebBrowserUI;
 var exitDashboardUI;
 var pauseUtilitiesUI;
+var healthDisplayUI;
 var vertexclientpemiscmenu;
 var dashboardMenu;
 var musicPlayerMenu;
@@ -2078,6 +2093,12 @@ var panic = {
                 showShortcuts();
             }
         }
+		if(healthDisplayUI != null) {
+            if(healthDisplayUI.isShowing()) {
+                healthDisplayUI.dismiss();
+                showHealthDisplay();
+            }
+        }
 		if(hacksList != null && hacksList.isShowing()) {
             updateHacksList();
         }
@@ -2110,6 +2131,12 @@ var bypass = {
             if(shortcutGUI.isShowing()) {
                 shortcutGUI.dismiss();
                 showShortcuts();
+            }
+        }
+		if(healthDisplayUI != null) {
+            if(healthDisplayUI.isShowing()) {
+                healthDisplayUI.dismiss();
+                showHealthDisplay();
             }
         }
 		if(hacksList != null && hacksList.isShowing()) {
@@ -4860,6 +4887,32 @@ var attackTeleport = {
     }
 }
 
+var healthDisplay = {
+    name: "HealthDisplay",
+    desc: "Shows your health in the bottom left corner.",
+    category: VertexClientPE.category.MISC,
+    type: "Mod",
+    state: false,
+    isStateMod: function() {
+        return true;
+    },
+    onToggle: function() {
+        this.state = !this.state;
+		healthDisplayState = this.state;
+    },
+	onHurt: function(a, v) {
+		if(v == getPlayerEnt()) {
+			if(healthDisplayUI != null && healthDisplayUI.isShowing()) {
+				CONTEXT.runOnUiThread(new Runnable_({
+					run: function() {
+						healthDisplayView.setText(Entity.getHealth(getPlayerEnt()) + "/" + Entity.getMaxHealth(getPlayerEnt()) + " ❤");
+					}
+				}));
+			}
+		}
+	}
+}
+
 //todo: HealthDisplay...
 
 //COMBAT
@@ -4939,6 +4992,7 @@ VertexClientPE.registerModule(coordsDisplay);
 VertexClientPE.registerModule(derp);
 VertexClientPE.registerModule(dropLocator);
 VertexClientPE.registerModule(fullBright);
+VertexClientPE.registerModule(healthDisplay);
 VertexClientPE.registerModule(itemGiver);
 VertexClientPE.registerModule(letItSnow);
 VertexClientPE.registerModule(onlyDay);
@@ -8354,6 +8408,8 @@ function Song(songTitle, songArtist, songUrl, songGenre) {
     this.url = songUrl;
 }
 //TODO: Add Genre
+//VertexClientPE.MusicUtils.registerSong(new Song("Hello", "OMFG", "http://b1.ge.tt/gett/1a353nd2/OMFG+-+Hello.mp3?index=0&user=user-ixW6scU8M6%E2%80%A6TeP06a11F-&referrer=user-ixW6scU8M6tdtVBWuAeo7oA2hZquSTeP06a11F-&download=1"));
+//VertexClientPE.MusicUtils.registerSong(new Song("Neopolitan Dreams (Nilow Remix)", "Lisa Mitchell", "http://b1.ge.tt/gett/4WKD4nd2/Lisa+Mitchell+-+Neopolitan+Dreams+%28Nilow+Rmx?index=0&user=user-ixW6scU8M6%E2%80%A6TeP06a11F-&referrer=user-ixW6scU8M6tdtVBWuAeo7oA2hZquSTeP06a11F-&download=1"));
 VertexClientPE.MusicUtils.registerSong(new Song("Adventure (feat. Alexa Lusader)", "William Ekh", "http://files-cdn.nocopyrightsounds.co.uk/William%20Ekh%20-%20Adventure%20%28feat.%20Alexa%20Lusader%29.mp3", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("Blank [NCS Release]", "Disfigure", "http://files-cdn.nocopyrightsounds.co.uk/Disfigure%20-%20Blank.mp3", "Dubstep"));
 VertexClientPE.MusicUtils.registerSong(new Song("Can't Wait (feat. Anna Yvette) [NCS Release]", "Jim Yosef", "https://www.dropbox.com/s/noz7mg1ar0n1un2/Jim%20Yosef%20-%20Can%27t%20Wait%20%28feat.%20Anna%20Yvette%29.mp3?dl=1", "House"));
@@ -8373,14 +8429,13 @@ VertexClientPE.MusicUtils.registerSong(new Song("Fly Away [NCS Release]", "Krys 
 VertexClientPE.MusicUtils.registerSong(new Song("Get Up Again (feat. Axol) [NCS Release]", "Alex Skrindo", "https://www.dropbox.com/s/0b08kt0ezlno0vb/Alex%20Skrindo%20-%20Get%20Up%20Again%20%28Feat.%20Axol%29%20%255BNCS%20Release%255D.mp3?dl=1"));
 VertexClientPE.MusicUtils.registerSong(new Song("Gravity (feat. Liz Kretschmer) [NCS Release]", "Umpire", "http://files-cdn.nocopyrightsounds.co.uk/Umpire%20-%20Gravity%20%28feat.%20Liz%20Kretschmer%29.mp3", "Chillstep"));
 VertexClientPE.MusicUtils.registerSong(new Song("Halcyon [NCS Release]", "JJD", "https://www.dropbox.com/s/mx1on7w0dykslx6/JJD%20-%20Halcyon.mp3?dl=1"));
-//VertexClientPE.MusicUtils.registerSong(new Song("Hello", "OMFG", "http://b1.ge.tt/gett/1a353nd2/OMFG+-+Hello.mp3?index=0&user=user-ixW6scU8M6%E2%80%A6TeP06a11F-&referrer=user-ixW6scU8M6tdtVBWuAeo7oA2hZquSTeP06a11F-&download=1"));
+VertexClientPE.MusicUtils.registerSong(new Song("Happy Accidents [NCS Release]", "Inukshuk", "http://files-cdn.nocopyrightsounds.co.uk/Inukshuk%20-%20Happy%20Accidents.mp3", "Electronic"));
 VertexClientPE.MusicUtils.registerSong(new Song("Hollah! [NCS Release]", "Disfigure", "http://files-cdn.nocopyrightsounds.co.uk/Disfigure%20-%20Hollah%21.mp3", "Chillstep"));
 VertexClientPE.MusicUtils.registerSong(new Song("Invincible [NCS Release]", "DEAF KEV", "http://files-cdn.nocopyrightsounds.co.uk/DEAF%20KEV%20-%20Invincible.mp3", "Trap"));
 VertexClientPE.MusicUtils.registerSong(new Song("Lights [NCS Release]", "Jim Yosef", "http://files-cdn.nocopyrightsounds.co.uk/Jim%20Yosef%20-%20Lights.mp3", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("Moments [NCS Release]", "Alex Skrindo & Stahl!", "http://files-cdn.nocopyrightsounds.co.uk/Alex%20Skrindo%20%26%20Stahl%21%20-%20Moments.mp3", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("My Heart [NCS Release]", "Different Heaven & EH!DE", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20%26%20EH%21DE%20-%20My%20Heart.mp3", "Drumstep"));
 VertexClientPE.MusicUtils.registerSong(new Song("Nekozilla", "Different Heaven", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20-%20Nekozilla.mp3","Electronic"));
-//VertexClientPE.MusicUtils.registerSong(new Song("Neopolitan Dreams (Nilow Remix)", "Lisa Mitchell", "http://b1.ge.tt/gett/4WKD4nd2/Lisa+Mitchell+-+Neopolitan+Dreams+%28Nilow+Rmx?index=0&user=user-ixW6scU8M6%E2%80%A6TeP06a11F-&referrer=user-ixW6scU8M6tdtVBWuAeo7oA2hZquSTeP06a11F-&download=1"));
 VertexClientPE.MusicUtils.registerSong(new Song("Nova [NCS Release]", "Ahrix", "http://files-cdn.nocopyrightsounds.co.uk/Ahrix%20-%20Nova.mp3", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("Puzzle [NCS Release]", "RetroVision", "https://www.dropbox.com/s/qb5y2bo2npczawn/RetroVision%20-%20Puzzle.mp3?dl=1"));
 VertexClientPE.MusicUtils.registerSong(new Song("Roots [NCS Release]", "Tobu", "https://www.dropbox.com/s/a2m1fqjxaotszy5/Tobu%20-%20Roots.mp3?dl=1"));
@@ -11446,6 +11501,11 @@ VertexClientPE.clientTick = function() {
                                 tabGUI.dismiss();
                             }
                         }
+						if(healthDisplayUI != null) {
+							if(healthDisplayUI.isShowing()) {
+								healthDisplayUI.dismiss();
+							}
+						}
                     }
                 }
             }));
@@ -11537,21 +11597,31 @@ VertexClientPE.secondTick = function() {
                     }
                 }
             }
+			
+			if(mpCurrentPositionView != null && mpSeekBarView != null) {
+				CONTEXT.runOnUiThread(new Runnable_({
+					run: function() {
+						try{
+							mpCurrentPositionView.setText(VertexClientPE.MusicUtils.milliSecToMinString(VertexClientPE.MusicUtils.mp.getCurrentPosition()));
+							mpSeekBarView.setProgress(VertexClientPE.MusicUtils.mp.getCurrentPosition());
+						} catch(e) {
+							
+						}
+					}
+				}));
+			}
+			
+			if(healthDisplayUI != null && healthDisplayUI.isShowing()) {
+				CONTEXT.runOnUiThread(new Runnable_({
+					run: function() {
+						healthDisplayView.setText(Entity.getHealth(getPlayerEnt()) + "/" + Entity.getMaxHealth(getPlayerEnt()) + " ❤");
+					}
+				}));
+			}
+			
             VertexClientPE.secondTick();
         }
     }).start();
-    if(mpCurrentPositionView != null && mpSeekBarView != null) {
-        CONTEXT.runOnUiThread(new Runnable_({
-            run: function() {
-                try{
-                        mpCurrentPositionView.setText(VertexClientPE.MusicUtils.milliSecToMinString(VertexClientPE.MusicUtils.mp.getCurrentPosition()));
-                        mpSeekBarView.setProgress(VertexClientPE.MusicUtils.mp.getCurrentPosition());
-                } catch(e) {
-                    
-                }
-            }
-        }));
-    }
 }
 
 VertexClientPE.showSplashScreen = function () {
@@ -12778,11 +12848,17 @@ function newLevel() {
             showHacksList();
             showTabGUI();
 			showShortcuts();
+			if(healthDisplayState) {
+				showHealthDisplay();
+			}
         }if(hacksList != null && !VertexClientPE.menuIsShowing) {
             if(!hacksList.isShowing()) {
                 showHacksList();
                 showTabGUI();
 				showShortcuts();
+				if(healthDisplayState) {
+					showHealthDisplay();
+				}
             }
         }
         if(!VertexClientPE.isPro()) {
@@ -12832,6 +12908,9 @@ function leaveGame() {
 			if(shortcutGUI != null) {
                 shortcutGUI.dismiss();
             }
+			if(healthDisplayUI != null) {
+				healthDisplayUI.dismiss();
+			}
             if(menu != null) {
                 VertexClientPE.closeMenu();
             }
@@ -12875,6 +12954,11 @@ function settingsScreen() {
                             shortcutGUI.dismiss();
                         }
                     }
+					if(healthDisplayUI != null) {
+						if(healthDisplayUI.isShowing()) {
+							healthDisplayUI.dismiss();
+						}
+					}
 					if(mainMenuTextList != null) {
 						if(mainMenuTextList.isShowing()) {
                             mainMenuTextList.dismiss();
@@ -13722,6 +13806,11 @@ function devSettingsScreen() {
                             shortcutGUI.dismiss();
                         }
                     }
+					if(healthDisplayUI != null) {
+						if(healthDisplayUI.isShowing()) {
+							healthDisplayUI.dismiss();
+						}
+					}
 					if(mainMenuTextList != null) {
 						if(mainMenuTextList.isShowing()) {
                             mainMenuTextList.dismiss();
@@ -13847,6 +13936,11 @@ function informationScreen() {
                             shortcutGUI.dismiss();
                         }
                     }
+					if(healthDisplayUI != null) {
+						if(healthDisplayUI.isShowing()) {
+							healthDisplayUI.dismiss();
+						}
+					}
 					if(mainMenuTextList != null) {
 						if(mainMenuTextList.isShowing()) {
                             mainMenuTextList.dismiss();
@@ -13999,6 +14093,11 @@ function helpScreen() {
                             shortcutGUI.dismiss();
                         }
                     }
+					if(healthDisplayUI != null) {
+						if(healthDisplayUI.isShowing()) {
+							healthDisplayUI.dismiss();
+						}
+					}
 					if(mainMenuTextList != null) {
 						if(mainMenuTextList.isShowing()) {
                             mainMenuTextList.dismiss();
@@ -14081,6 +14180,11 @@ function previewScreen() {
                             shortcutGUI.dismiss();
                         }
                     }
+					if(healthDisplayUI != null) {
+						if(healthDisplayUI.isShowing()) {
+							healthDisplayUI.dismiss();
+						}
+					}
 					if(mainMenuTextList != null) {
 						if(mainMenuTextList.isShowing()) {
                             mainMenuTextList.dismiss();
@@ -14178,6 +14282,11 @@ function addonScreen() {
                             shortcutGUI.dismiss();
                         }
                     }
+					if(healthDisplayUI != null) {
+						if(healthDisplayUI.isShowing()) {
+							healthDisplayUI.dismiss();
+						}
+					}
 					if(mainMenuTextList != null) {
 						if(mainMenuTextList.isShowing()) {
                             mainMenuTextList.dismiss();
@@ -14260,6 +14369,9 @@ function milestonesScreen() {
                 if (shortcutGUI != null && shortcutGUI.isShowing()) {
                     shortcutGUI.dismiss();
                 }
+				if (healthDisplayUI != null && healthDisplayUI.isShowing()) {
+					healthDisplayUI.dismiss();
+				}
                 if (mainMenuTextList != null && mainMenuTextList.isShowing()) {
                     mainMenuTextList.dismiss();
                 }
@@ -14515,6 +14627,11 @@ function playerCustomizerScreen() {
                             shortcutGUI.dismiss();
                         }
                     }
+					if(healthDisplayUI != null) {
+						if(healthDisplayUI.isShowing()) {
+							healthDisplayUI.dismiss();
+						}
+					}
 					if(mainMenuTextList != null) {
 						if(mainMenuTextList.isShowing()) {
                             mainMenuTextList.dismiss();
@@ -14693,6 +14810,11 @@ function optiFineScreen() {
                             shortcutGUI.dismiss();
                         }
                     }
+					if(healthDisplayUI != null) {
+						if(healthDisplayUI.isShowing()) {
+							healthDisplayUI.dismiss();
+						}
+					}
 					if(mainMenuTextList != null) {
 						if(mainMenuTextList.isShowing()) {
                             mainMenuTextList.dismiss();
@@ -14813,6 +14935,11 @@ function updateCenterScreen() {
                             shortcutGUI.dismiss();
                         }
                     }
+					if(healthDisplayUI != null) {
+						if(healthDisplayUI.isShowing()) {
+							healthDisplayUI.dismiss();
+						}
+					}
 					if(mainMenuTextList != null) {
 						if(mainMenuTextList.isShowing()) {
                             mainMenuTextList.dismiss();
@@ -14910,6 +15037,11 @@ function musicPlayerScreen() {
                             shortcutGUI.dismiss();
                         }
                     }
+					if(healthDisplayUI != null) {
+						if(healthDisplayUI.isShowing()) {
+							healthDisplayUI.dismiss();
+						}
+					}
 					if(mainMenuTextList != null) {
 						if(mainMenuTextList.isShowing()) {
                             mainMenuTextList.dismiss();
@@ -15042,6 +15174,11 @@ function dashboardScreen() {
 				if(shortcutGUI != null) {
 					if(shortcutGUI.isShowing()) {
 						shortcutGUI.dismiss();
+					}
+				}
+				if(healthDisplayUI != null) {
+					if(healthDisplayUI.isShowing()) {
+						healthDisplayUI.dismiss();
 					}
 				}
 				if(accountManagerGUI != null) {
@@ -15308,6 +15445,11 @@ function webBrowserScreen() {
                         shortcutGUI.dismiss();
                     }
                 }
+				if(healthDisplayUI != null) {
+					if(healthDisplayUI.isShowing()) {
+						healthDisplayUI.dismiss();
+					}
+				}
 				if(mainMenuTextList != null) {
 					if(mainMenuTextList.isShowing()) {
 						mainMenuTextList.dismiss();
@@ -15516,6 +15658,11 @@ VertexClientPE.showFullScreenMenu = function() {
                             shortcutGUI.dismiss();
                         }
                     }
+					if(healthDisplayUI != null) {
+						if(healthDisplayUI.isShowing()) {
+							healthDisplayUI.dismiss();
+						}
+					}
 					if(mainMenuTextList != null) {
 						if(mainMenuTextList.isShowing()) {
                             mainMenuTextList.dismiss();
@@ -16285,6 +16432,9 @@ function openMenuFromMenuButton(viewArg) {
 		if(shortcutGUI != null) {
 			shortcutGUI.dismiss();
 		}
+		if(healthDisplayUI != null) {
+			healthDisplayUI.dismiss();
+		}
 		if(pauseUtilitiesUI != null) {
 			pauseUtilitiesUI.dismiss();
 		}
@@ -16299,6 +16449,9 @@ function openMenuFromMenuButton(viewArg) {
 				showHacksList();
 				showTabGUI();
 				showShortcuts();
+				if(healthDisplayState) {
+					showHealthDisplay();
+				}
 			}
 			if(currentScreen == ScreenType.pause_screen && (pauseUtilitiesUI == null || !pauseUtilitiesUI.isShowing())) {
 				showPauseUtilities();
@@ -16421,10 +16574,16 @@ function showMenuButton() {
 			showHacksList();
 			showTabGUI();
 			showShortcuts();
+			if(healthDisplayState) {
+				showHealthDisplay();
+			}
 		} else if(!hacksList.isShowing()) {
 			showHacksList();
 			showTabGUI();
 			showShortcuts();
+			if(healthDisplayState) {
+				showHealthDisplay();
+			}
 		}
 	}
 	if(currentScreen == ScreenType.start_screen || currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud || currentScreen == ScreenType.pause_screen) {
@@ -16769,6 +16928,28 @@ function showShortcuts() {
             }
         }));
     }
+}
+
+var healthDisplayView;
+
+function showHealthDisplay() {
+	CONTEXT.runOnUiThread(new Runnable_({
+        run: function() {
+            try {
+				var healthDisplayLayout = new LinearLayout_(CONTEXT);
+				healthDisplayView = clientTextView(Entity.getHealth(getPlayerEnt()) + "/" + Entity.getMaxHealth(getPlayerEnt()) + " ❤", true);
+				healthDisplayLayout.addView(healthDisplayView);
+				
+				healthDisplayUI = new PopupWindow_(healthDisplayLayout, dip2px(40), dip2px(40));
+				healthDisplayUI.setTouchable(false);
+                healthDisplayUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+                healthDisplayUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
+            } catch(exception) {
+                print(exception);
+                VertexClientPE.showBugReportDialog(exception);
+            }
+        }
+    }));
 }
 
 function showPauseUtilities() {
