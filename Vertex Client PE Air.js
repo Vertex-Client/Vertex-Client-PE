@@ -210,6 +210,7 @@ var preventDiggingSetting = "off";
 var preventPlacingSetting = "off";
 var preventAttacksSetting = "off";
 var fastBreakDestroyTime = 0;
+var antiAFKDistancePerTick = 0.25;
 //------------------------------------
 var customRGBRed = 0;
 var customRGBGreen = 0;
@@ -3322,7 +3323,7 @@ VertexClientPE.showTipDialog = function() {
 }
 
 VertexClientPE.showWarningDialog = function() {
-	VertexClientPE.showBasicDialog("Warning", clientTextView("Thanks for using Vertex Client PE. If you didn't get this from our official website or MCPEDL.com, please redownload it. We can't guarantee safety if you don't use official download links."),
+	VertexClientPE.showBasicDialog("Warning", clientTextView("Thanks for using Vertex Client PE. If you didn't get this from our official website (http://Vertex-Client.ml/), GitHub (http://github.com/Vertex-Client/Vertex-Client-PE/), MCPE Nest or MCPEDL.com, please redownload it. We can't guarantee safety if you don't use official download links."),
         function() {
             VertexClientPE.setHasShownWarningDialog(true);
         }
