@@ -210,6 +210,7 @@ var preventDiggingSetting = "off";
 var preventPlacingSetting = "off";
 var preventAttacksSetting = "off";
 var fastBreakDestroyTime = 0;
+var antiAFKDistancePerTick = 0.25;
 //------------------------------------
 var combatName = "Combat";
 var buildingName = "Building";
@@ -3980,7 +3981,7 @@ var remoteView = {
 
 var antiAFK = {
     name: "AntiAFK",
-    desc: "Makes the player shock, rotate and walk around to prevent you from getting disconnected.",
+    desc: "Makes the player walk around to prevent you from getting disconnected.",
     category: VertexClientPE.category.MISC,
     type: "Mod",
     state: false,
@@ -3992,20 +3993,22 @@ var antiAFK = {
         this.state = !this.state;
     },
     onTick: function() {
-        if(this.timer < 3) {
-            this.timer += 0.05;
-        } else if(this.timer >= 3 && this.timer < 6) {
-            toDirectionalVector(playerDir, (getYaw() + 90) * DEG_TO_RAD, getPitch() * DEG_TO_RAD * -1);
-            var player = getPlayerEnt();
-            var yaw = Math.floor(Entity.getYaw(player));
-            var pitch = Math.floor(Entity.getPitch(player));
-            Entity.setRot(player, yaw + 90, pitch);
-            setVelX(player, playerWalkSpeed * playerDir[0]);
-            setVelZ(player, playerWalkSpeed * playerDir[2]);
-            this.timer = 0;
-            setVelX(player, 0);
-            setVelZ(player, 0);
-        }
+		this.timer++;
+		if(this.timer == 1 || this.timer == 2 || this.timer == 3 || this.timer == 4) {
+			Entity.setPosition(getPlayerEnt(), getPlayerX() - antiAFKDistancePerTick, getPlayerY(), getPlayerZ());
+		};
+		if(this.timer == 3 || this.timer == 4 || this.timer == 5 || this.timer == 6) {
+			Entity.setPosition(getPlayerEnt(), getPlayerX(), getPlayerY(), getPlayerZ() - antiAFKDistancePerTick);
+		};
+		if(this.timer == 7 || this.timer == 8 || this.timer == 9 || this.timer == 10) {
+			Entity.setPosition(getPlayerEnt(), getPlayerX() + antiAFKDistancePerTick, getPlayerY(), getPlayerZ());
+		};
+		if(this.timer >= 11) {
+			Entity.setPosition(getPlayerEnt(), getPlayerX(), getPlayerY(), getPlayerZ() + antiAFKDistancePerTick);
+		};
+		if(this.timer >= 14) {
+			this.timer = 0;
+		};
     }
 }
 
@@ -4882,7 +4885,7 @@ var attackTeleport = {
     },
     onAttack: function(a, v) {
 		if(a == getPlayerEnt()) {
-			Entity.setPosition(getPlayerEnt(), Entity.getX(v), Entity.getY(v), Entity.getZ(v));
+			Entity.setPosition(getPlayerEnt(), Entity.getX(v), Entity.getY(v) + 2, Entity.getZ(v));
 		}
     }
 }
@@ -4899,6 +4902,15 @@ var healthDisplay = {
     onToggle: function() {
         this.state = !this.state;
 		healthDisplayState = this.state;
+		if(this.state && !VertexClientPE.menuIsShowing && (currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud)) {
+			showHealthDisplay();
+		} else {
+			if(healthDisplayUI != null) {
+				if(healthDisplayUI.isShowing()) {
+					healthDisplayUI.dismiss();
+				}
+			}
+		}
     },
 	onHurt: function(a, v) {
 		if(v == getPlayerEnt()) {
@@ -4913,13 +4925,31 @@ var healthDisplay = {
 	}
 }
 
-//todo: HealthDisplay...
+var attackShock = {
+    name: "AttackShock",
+    desc: "Makes your device vibrate when hitting an entity.",
+    category: VertexClientPE.category.COMBAT,
+    type: "Mod",
+    state: false,
+    isStateMod: function() {
+        return true;
+    },
+    onToggle: function() {
+        this.state = !this.state;
+    },
+    onAttack: function(a, v) {
+		if(a == getPlayerEnt()) {
+			CONTEXT.getSystemService(Context_.VIBRATOR_SERVICE).vibrate(99);
+		}
+    }
+}
 
 //COMBAT
 VertexClientPE.registerModule(antiKnockback);
 VertexClientPE.registerModule(antiBurn);
 VertexClientPE.registerModule(arrowGun);
 VertexClientPE.registerModule(aimbot);
+VertexClientPE.registerModule(attackShock);
 VertexClientPE.registerModule(attackTeleport);
 VertexClientPE.registerModule(autoLeave);
 VertexClientPE.registerModule(autoSword);
@@ -4986,6 +5016,7 @@ VertexClientPE.registerModule(panic);
 VertexClientPE.registerModule(switchGamemode);
 VertexClientPE.registerModule(antiAFK);
 VertexClientPE.registerModule(autoSwitch);
+VertexClientPE.registerModule(bypass);
 VertexClientPE.registerModule(chestESP);
 VertexClientPE.registerModule(chestTracers);
 VertexClientPE.registerModule(coordsDisplay);
@@ -5003,7 +5034,6 @@ VertexClientPE.registerModule(target);
 VertexClientPE.registerModule(teleport);
 //VertexClientPE.registerModule(tracers);
 VertexClientPE.registerModule(twerk);
-VertexClientPE.registerModule(bypass);
 VertexClientPE.registerModule(zoom);
 
 //var autoClick = true;
@@ -7833,7 +7863,7 @@ VertexClientPE.showTipDialog = function() {
 }
 
 VertexClientPE.showWarningDialog = function() {
-	VertexClientPE.showBasicDialog("Warning", clientTextView("Thanks for using Vertex Client PE. If you didn't get this from our official website or MCPEDL.com, please redownload it. We can't guarantee safety if you don't use official download links."),
+	VertexClientPE.showBasicDialog("Warning", clientTextView("Thanks for using Vertex Client PE. If you didn't get this from our official website (http://Vertex-Client.ml/), GitHub (http://github.com/Vertex-Client/Vertex-Client-PE/), MCPE Nest or MCPEDL.com, please redownload it. We can't guarantee safety if you don't use official download links."),
         function() {
             VertexClientPE.setHasShownWarningDialog(true);
         }
