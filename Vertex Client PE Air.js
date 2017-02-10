@@ -163,7 +163,7 @@ var fancyChatMode = "default";
 var tapNukerRange = 3;
 var menuType = "normal";
 var chestTracersRange = 10;
-var tabGUIModeSetting = "on";
+var tabGUIModeSetting = "off";
 var chestTracersGroundMode = "on";
 var chestTracersParticle = "flame";
 var antiLagDropRemoverSetting = "off";
@@ -6059,21 +6059,23 @@ VertexClientPE.secondTick = function() {
                     }
                 }
             }
+			
+			if(mpCurrentPositionView != null && mpSeekBarView != null) {
+				CONTEXT.runOnUiThread(new Runnable_({
+					run: function() {
+						try{
+							mpCurrentPositionView.setText(VertexClientPE.MusicUtils.milliSecToMinString(VertexClientPE.MusicUtils.mp.getCurrentPosition()));
+							mpSeekBarView.setProgress(VertexClientPE.MusicUtils.mp.getCurrentPosition());
+						} catch(e) {
+							
+						}
+					}
+				}));
+			}
+			
             VertexClientPE.secondTick();
         }
     }).start();
-    if(mpCurrentPositionView != null && mpSeekBarView != null) {
-        CONTEXT.runOnUiThread(new Runnable_({
-            run: function() {
-                try{
-                        mpCurrentPositionView.setText(VertexClientPE.MusicUtils.milliSecToMinString(VertexClientPE.MusicUtils.mp.getCurrentPosition()));
-                        mpSeekBarView.setProgress(VertexClientPE.MusicUtils.mp.getCurrentPosition());
-                } catch(e) {
-                    
-                }
-            }
-        }));
-    }
 }
 
 VertexClientPE.showSplashScreen = function () {
