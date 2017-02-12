@@ -243,6 +243,9 @@ var modButtonColorBlocked = Color_.RED;
 var modButtonColorEnabled = Color_.GREEN;
 var modButtonColorDisabled = Color_.WHITE;
 
+var panicModButtonView;
+var bypassModButtonView;
+
 var display = new DisplayMetrics_();
 CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
 var size = new Point_();
@@ -2507,7 +2510,7 @@ var nuker = {
         var x = getPlayerX();
         var y = getPlayerY();
         var z = getPlayerZ();
-        nuke(x, y, z, nukerRange);
+        nuke(x, y, z, nukerRange, nukerMode);
     }
 };
 
@@ -4348,7 +4351,11 @@ var fastBridge = {
 			var fastBridgeVector = new Vector3(x-(side==4?1:0)+(side==5?1:0)+0.5,y-(side==0?1:0)+(side==1?1:0)+2,z-(side==2?1:0)+(side==3?1:0)+0.5);
 			new Thread_(new Runnable_() {
 				run: function() {
-					Thread_.sleep(100);
+					if(fastBridgeVector.y <= getPlayerY()) {
+						Thread_.sleep(100);
+					} else {
+						fastBridgeVector.y += 2;
+					}
 					Entity.setPositionRelative(getPlayerEnt(), fastBridgeVector.x - getPlayerX(), fastBridgeVector.y - getPlayerY(), fastBridgeVector.z - getPlayerZ());
 				}
 			}).start();
@@ -6752,6 +6759,13 @@ VertexClientPE.showModEditorDialog = function(defaultName, modTitleView, modButt
             try {
 				var _0xf030=["\x69\x73\x50\x72\x6F","\x52\x65\x6E\x61\x6D\x69\x6E\x67\x20\x6D\x6F\x64\x73","\x73\x68\x6F\x77\x50\x72\x6F\x44\x69\x61\x6C\x6F\x67"];if(!VertexClientPE[_0xf030[0]]()){VertexClientPE[_0xf030[2]](_0xf030[1]);return}
 				
+				if(defaultName == "Panic") {
+					modButtonView = panicModButtonView;
+				}
+				if(defaultName == "Bypass") {
+					modButtonView = bypassModButtonView;
+				}
+				
                 var dialogLayout = new LinearLayout_(CONTEXT);
                 dialogLayout.setOrientation(1);
 				dialogLayout.setBackgroundDrawable(backgroundSpecial());
@@ -8620,7 +8634,7 @@ function nuke(x, y, z, range, mode) {
         }
     } if(mode == "flat") {
         for(var blockX = - range; blockX <= range; blockX++) {
-            for(var blockY = - 1; blockY <= range; blockY++) {
+            for(var blockY = -1; blockY <= range; blockY++) {
                 for(var blockZ = - range; blockZ <= range; blockZ++) {
                     if(getTile(Math.floor(x + blockX), Math.floor(y + blockY), Math.floor(z + blockZ)) != 0) {
                         destroyFunction(Math.floor(x + blockX), Math.floor(y + blockY), Math.floor(z + blockZ), destroyLastParam);
@@ -10197,6 +10211,12 @@ function modButton(mod, buttonOnly, customSize) {
     
     var corner = buttonOnly==true?null:"left";
     var defaultClientButton = clientButton(modButtonName, mod.desc, null, corner);
+	if(mod.name == "Panic") {
+		panicModButtonView = defaultClientButton;
+	}
+	if(mod.name == "Bypass") {
+		bypassModButtonView = defaultClientButton;
+	}
     if(buttonOnly == null || !buttonOnly) {
         if(menuType == "halfscreen") {
             defaultClientButton.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2.5, display.heightPixels / 10));
