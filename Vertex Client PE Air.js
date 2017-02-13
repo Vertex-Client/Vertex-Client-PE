@@ -204,7 +204,7 @@ var shortcutUIPosSetting = "right-center";
 var hitboxesHitboxWidthSetting = 10;
 var hitboxesHitboxHeightSetting = 10;
 var showUpdateToastsSetting = "on";
-var showSnowInWinterSetting = "on";
+var showSnowInWinterSetting = "off";
 var preventDiggingSetting = "off";
 var preventPlacingSetting = "off";
 var preventAttacksSetting = "off";
@@ -867,9 +867,9 @@ VertexClientPE.isRemote = function() {
 VertexClientPE.playerIsInGame = false;
 
 VertexClientPE.currentVersion = "2.1";
-VertexClientPE.currentVersionDesc = "The ? Update";
-VertexClientPE.targetVersion = "MCPE v0.16.x alpha";
-VertexClientPE.minVersion = "0.16.0";
+VertexClientPE.currentVersionDesc = "The Bypass Update";
+VertexClientPE.targetVersion = "MCPE v1.0.x alpha";
+VertexClientPE.minVersion = "1.0.0";
 VertexClientPE.edition = "Air";
 VertexClientPE.latestVersion;
 VertexClientPE.latestVersionDesc;
