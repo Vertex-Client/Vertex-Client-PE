@@ -204,7 +204,7 @@ var shortcutUIPosSetting = "right-center";
 var hitboxesHitboxWidthSetting = 10;
 var hitboxesHitboxHeightSetting = 10;
 var showUpdateToastsSetting = "on";
-var showSnowInWinterSetting = "on";
+var showSnowInWinterSetting = "off";
 var preventDiggingSetting = "off";
 var preventPlacingSetting = "off";
 var preventAttacksSetting = "off";
@@ -1136,9 +1136,9 @@ VertexClientPE.isRemote = function() {
 VertexClientPE.playerIsInGame = false;
 
 VertexClientPE.currentVersion = "2.1";
-VertexClientPE.currentVersionDesc = "The ? Update";
-VertexClientPE.targetVersion = "MCPE v0.16.x alpha";
-VertexClientPE.minVersion = "0.16.0";
+VertexClientPE.currentVersionDesc = "The Bypass Update";
+VertexClientPE.targetVersion = "MCPE v1.0.x alpha";
+VertexClientPE.minVersion = "1.0.0";
 VertexClientPE.edition = "Normal";
 VertexClientPE.latestVersion;
 VertexClientPE.latestVersionDesc;
@@ -5024,6 +5024,8 @@ var attackShock = {
     }
 }
 
+var serverInfoStage = 0;
+
 var serverInfo = {
     name: "ServerInfo",
     desc: "Shows information about the server you're on.",
@@ -5037,9 +5039,22 @@ var serverInfo = {
         return false;
     },
     onToggle: function() {
-		var serverInfo = myServerStatus.set(Server.getAddress(), parseInt(Server.getPort()));
-		var serverString = "Name: " + serverInfo.name;
-        VertexClientPE.showBasicDialog("ServerInfo - Display", clientTextView(serverString));
+		if(serverInfoStage == 0) {
+			serverInfoStage = 1;
+			new Thread_(new Runnable_({
+                run: function() {
+					VertexClientPE.toast("Loading...");
+					var serverInfo = myServerStatus.set(Server.getAddress(), parseInt(Server.getPort()));
+					Thread_.sleep(3000);
+					var serverString = "Name: " + serverInfo.name;
+					serverString += "\nAddress: " + serverInfo.address;
+					serverString += "\nSoftware: " + serverInfo.software;
+					serverString += "\nPlugins: " + serverInfo.plugins;
+					VertexClientPE.showBasicDialog("ServerInfo - Display", clientTextView(serverString));
+					serverInfoStage = 0;
+				}
+			})).start();
+		}
     }
 }
 
@@ -5129,7 +5144,7 @@ VertexClientPE.registerModule(onlyDay);
 VertexClientPE.registerModule(orderAPizza);
 VertexClientPE.registerModule(prevent);
 VertexClientPE.registerModule(remoteView);
-//VertexClientPE.registerModule(serverInfo);
+VertexClientPE.registerModule(serverInfo);
 VertexClientPE.registerModule(target);
 VertexClientPE.registerModule(teleport);
 //VertexClientPE.registerModule(tracers);
