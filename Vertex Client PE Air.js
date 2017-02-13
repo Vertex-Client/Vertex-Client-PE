@@ -176,7 +176,6 @@ var aimbotUseKillauraRange = "off";
 var screenshotModeSetting = "default";
 var killToMorphSetting = "off";
 var fontSetting = "default";
-var showMoneyToastsSetting = "on";
 var mainButtonStyleSetting = "normal";
 var webBrowserStartPageSetting = "https://google.com/";
 var backgroundStyleSetting = "normal";
@@ -4013,7 +4012,7 @@ VertexClientPE.loadCustomRGBSettings = function () {
 
 VertexClientPE.saveMainSettings = function() {
     File_(settingsPath).mkdirs();
-    var newFile = new File_(settingsPath, "vertexclientpe.txt");
+    var newFile = new File_(settingsPath, "vertexclientpenew.txt");
     newFile.createNewFile();
     var outWrite = new OutputStreamWriter_(new FileOutputStream_(newFile));
     outWrite.append(hacksListModeSetting.toString());
@@ -4046,7 +4045,6 @@ VertexClientPE.saveMainSettings = function() {
     outWrite.append("," + screenshotModeSetting.toString());
     outWrite.append("," + killToMorphSetting.toString());
     outWrite.append("," + fontSetting.toString());
-    outWrite.append("," + showMoneyToastsSetting.toString());
     outWrite.append("," + mainButtonStyleSetting.toString());
     outWrite.append("," + webBrowserStartPageSetting.toString());
     outWrite.append("," + backgroundStyleSetting.toString());
@@ -4085,7 +4083,7 @@ VertexClientPE.saveMainSettings = function() {
 }
 
 VertexClientPE.loadMainSettings = function () {
-    var file = new File_(settingsPath + "vertexclientpe.txt");
+    var file = new File_(settingsPath + "vertexclientpenew.txt");
     if (file.exists()) {
         var fos = new FileInputStream_(file),
             str = new StringBuilder_(),
@@ -4190,106 +4188,103 @@ VertexClientPE.loadMainSettings = function () {
             fontSetting = arr[29];
         }
 		if (arr[30] != null && arr[30] != undefined) {
-            showMoneyToastsSetting = arr[30];
+            mainButtonStyleSetting = arr[30];
         }
 		if (arr[31] != null && arr[31] != undefined) {
-            mainButtonStyleSetting = arr[31];
+            webbrowserStartPageSetting = arr[31];
         }
 		if (arr[32] != null && arr[32] != undefined) {
-            webbrowserStartPageSetting = arr[32];
+            backgroundStyleSetting = arr[32];
         }
 		if (arr[33] != null && arr[33] != undefined) {
-            backgroundStyleSetting = arr[33];
+            modButtonColorBlockedSetting = arr[33];
         }
 		if (arr[34] != null && arr[34] != undefined) {
-            modButtonColorBlockedSetting = arr[34];
+            modButtonColorEnabledSetting = arr[34];
         }
 		if (arr[35] != null && arr[35] != undefined) {
-            modButtonColorEnabledSetting = arr[35];
+            modButtonColorDisabledSetting = arr[35];
         }
 		if (arr[36] != null && arr[36] != undefined) {
-            modButtonColorDisabledSetting = arr[36];
+            arrowGunMode = arr[36];
         }
 		if (arr[37] != null && arr[37] != undefined) {
-            arrowGunMode = arr[37];
+            commandsSetting = arr[37];
         }
 		if (arr[38] != null && arr[38] != undefined) {
-            commandsSetting = arr[38];
+            cmdPrefix = arr[38];
         }
 		if (arr[39] != null && arr[39] != undefined) {
-            cmdPrefix = arr[39];
+            shortcutSizeSetting = arr[39];
         }
 		if (arr[40] != null && arr[40] != undefined) {
-            shortcutSizeSetting = arr[40];
+            aimbotRangeSetting = arr[40];
         }
 		if (arr[41] != null && arr[41] != undefined) {
-            aimbotRangeSetting = arr[41];
+            speedHackFriction = arr[41];
         }
 		if (arr[42] != null && arr[42] != undefined) {
-            speedHackFriction = arr[42];
+            remoteViewTeleportSetting = arr[42];
         }
 		if (arr[43] != null && arr[43] != undefined) {
-            remoteViewTeleportSetting = arr[43];
+            switchGamemodeSendCommandSetting = arr[43];
         }
 		if (arr[44] != null && arr[44] != undefined) {
-            switchGamemodeSendCommandSetting = arr[44];
+            betterPauseSetting = arr[44];
         }
 		if (arr[45] != null && arr[45] != undefined) {
-            betterPauseSetting = arr[45];
+            shortcutUIHeightSetting = arr[45];
         }
 		if (arr[46] != null && arr[46] != undefined) {
-            shortcutUIHeightSetting = arr[46];
+            mainButtonTapSetting = arr[46];
         }
 		if (arr[47] != null && arr[47] != undefined) {
-            mainButtonTapSetting = arr[47];
+            autoWalkDirection = arr[47];
         }
 		if (arr[48] != null && arr[48] != undefined) {
-            autoWalkDirection = arr[48];
+            dashboardTileSize = arr[48];
         }
 		if (arr[49] != null && arr[49] != undefined) {
-            dashboardTileSize = arr[49];
+            spamUseRandomMsgSetting = arr[49];
         }
 		if (arr[50] != null && arr[50] != undefined) {
-            spamUseRandomMsgSetting = arr[50];
+            buttonStrokeThicknessSetting = arr[50];
         }
 		if (arr[51] != null && arr[51] != undefined) {
-            buttonStrokeThicknessSetting = arr[51];
+            hacksListPosSetting = arr[51];
         }
 		if (arr[52] != null && arr[52] != undefined) {
-            hacksListPosSetting = arr[52];
+            targetMobsSetting = arr[52];
         }
 		if (arr[53] != null && arr[53] != undefined) {
-            targetMobsSetting = arr[53];
+            targetPlayersSetting = arr[53];
         }
 		if (arr[54] != null && arr[54] != undefined) {
-            targetPlayersSetting = arr[54];
+            shortcutUIPosSetting = arr[54];
         }
 		if (arr[55] != null && arr[55] != undefined) {
-            shortcutUIPosSetting = arr[55];
+            hitboxesHitboxWidthSetting = arr[55];
         }
 		if (arr[56] != null && arr[56] != undefined) {
-            hitboxesHitboxWidthSetting = arr[56];
+            hitboxesHitboxHeightSetting = arr[56];
         }
 		if (arr[57] != null && arr[57] != undefined) {
-            hitboxesHitboxHeightSetting = arr[57];
+            showUpdateToastsSetting = arr[57];
         }
 		if (arr[58] != null && arr[58] != undefined) {
-            showUpdateToastsSetting = arr[58];
+            showSnowInWinterSetting = arr[58];
         }
 		if (arr[59] != null && arr[59] != undefined) {
-            showSnowInWinterSetting = arr[59];
+            preventDiggingSetting = arr[59];
         }
 		if (arr[60] != null && arr[60] != undefined) {
-            preventDiggingSetting = arr[60];
+            preventPlacingSetting = arr[60];
         }
 		if (arr[61] != null && arr[61] != undefined) {
-            preventPlacingSetting = arr[61];
+            preventAttacksSetting = arr[61];
         }
 		if (arr[62] != null && arr[62] != undefined) {
-            preventAttacksSetting = arr[62];
-        }
-		if (arr[63] != null && arr[63] != undefined) {
-            fastBreakDestroyTime = arr[63];
+            fastBreakDestroyTime = arr[62];
         }
         fos.close();
 		VertexClientPE.loadCustomRGBSettings();
