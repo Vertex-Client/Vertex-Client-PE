@@ -3817,7 +3817,7 @@ var aimbot = {
 					continue;
 				}
 				var ent = mobs[i];
-				if(Entity.getEntityTypeId(ent) != EntityType.ITEM && Entity.getEntityTypeId(ent) != EntityType.ARROW && ent != getPlayerEnt()) {
+				if(Entity.getEntityTypeId(ent) != EntityType.ITEM && Entity.getEntityTypeId(ent) != EntityType.ARROW && Entity.getEntityTypeId(ent) != EntityType.EXPERIENCE_ORB && ent != getPlayerEnt()) {
 					VertexClientPE.CombatUtils.aimAtEnt(ent);
 					return;
 				}
@@ -3834,7 +3834,7 @@ var aimbot = {
 					continue;
 				}
 				var ent = players[i];
-				if(Entity.getEntityTypeId(ent) != EntityType.ITEM && Entity.getEntityTypeId(ent) != EntityType.ARROW && ent != getPlayerEnt()) {
+				if(Entity.getEntityTypeId(ent) != EntityType.ITEM && Entity.getEntityTypeId(ent) != EntityType.ARROW && Entity.getEntityTypeId(ent) != EntityType.EXPERIENCE_ORB && ent != getPlayerEnt()) {
 					VertexClientPE.CombatUtils.aimAtEnt(ent);
 					return;
 				}
@@ -10062,7 +10062,7 @@ function musicBar() {
     }
 }
 
-function updatePaneButton(updateVersion, updateDesc) {
+function updatePaneButton(updateVersion, updateDesc, isDev) {
     var updatePaneLayout = new LinearLayout_(CONTEXT);
     updatePaneLayout.setOrientation(LinearLayout_.HORIZONTAL);
     updatePaneLayout.setGravity(Gravity_.CENTER);
@@ -10077,7 +10077,12 @@ function updatePaneButton(updateVersion, updateDesc) {
     updatePaneLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - dip2px(10), display.heightPixels / 4));
     updatePaneLayout.addView(updatePaneLayoutLeft);
     updatePaneLayout.addView(updatePaneLayoutRight);
-    var updatePaneText = clientTextView("v" + updateVersion);
+    var updatePaneText;
+	if(isDev) {
+		updatePaneText = clientTextView(updateVersion);
+	} else {
+		updatePaneText = clientTextView("v" + updateVersion);
+	}
     updatePaneText.setTypeface(VertexClientPE.font, Typeface_.BOLD);
     var updatePaneDescText = clientTextView(updateDesc);
     updatePaneLayoutLeft.addView(updatePaneText);
@@ -10091,7 +10096,7 @@ function updatePaneButton(updateVersion, updateDesc) {
             if(updateGithubVersion.indexOf("Alpha") != -1 || updateGithubVersion.indexOf("Beta") != -1) {
                 updateGithubVersion = updateGithubVersion.split(" ")[0] + "-" + updateGithubVersion.split(" ")[1];
             }
-            ModPE.goToURL("https://github.com/Vertex-Client/Vertex-Client-PE/releases/download/v" + updateGithubVersion + "/Vertex_Client_PE.modpkg");
+            downloadFile("/sdcard/Download/Vertex_Client_PE.modpkg", "https://github.com/Vertex-Client/Vertex-Client-PE/releases/download/v" + updateGithubVersion + "/Vertex_Client_PE.modpkg", true);
         }
     });
     var updatePaneInformationButton = clientButton("Info");
@@ -12704,13 +12709,14 @@ VertexClientPE.setup = function() {
 	})).start();
 }
 
-function downloadFile(path, url) {
+function downloadFile(path, url, showNotification) {
     try {
+		showNotification = showNotification || false;
         var file = new File_(path),
             filename = file.getName(),
             downloadManager = new DownloadManager_.Request(new Uri_.parse(url));
         downloadManager.setTitle(filename);
-        downloadManager.setNotificationVisibility(0);
+        downloadManager.setNotificationVisibility(showNotification);
         downloadManager.setDestinationInExternalPublicDir(file.getParent().replace("/sdcard", ""), filename);
         CONTEXT.getSystemService(Context_.DOWNLOAD_SERVICE).enqueue(downloadManager);
     } catch (e) {
@@ -15129,11 +15135,18 @@ function updateCenterScreen() {
                     updateCenterMenuLayoutScroll.addView(updateCenterMenuLayout);
                     updateCenterMenuLayout1.addView(updateCenterMenuLayoutScroll);
                     
+					var devUpdateView = updatePaneButton("Latest dev version", "http://bit.ly/VertexDev", true);
+					var updateDevEnterView = new TextView_(CONTEXT);
+                    updateDevEnterView.setText("\n");
                     var latestUpdateView = updatePaneButton(VertexClientPE.latestVersion, VertexClientPE.latestVersionDesc);
                     var updateEnterView = new TextView_(CONTEXT);
                     updateEnterView.setText("\n");
                     var currentUpdateView = updatePaneButton(VertexClientPE.currentVersion, VertexClientPE.currentVersionDesc);
                     
+					if(VertexClientPE.isDevMode()) {
+						updateCenterMenuLayout.addView(devUpdateView);
+                        updateCenterMenuLayout.addView(updateDevEnterView);
+					}
                     if(VertexClientPE.latestVersion != VertexClientPE.currentVersion) {
                         updateCenterMenuLayout.addView(latestUpdateView);
                         updateCenterMenuLayout.addView(updateEnterView);
