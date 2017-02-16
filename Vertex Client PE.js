@@ -6492,7 +6492,7 @@ VertexClientPE.showFeaturesDialog = function() {
 				}));
 				
 				var singleplayerEnabledSettingButton = clientSwitch();
-				singleplayerEnabledSettingButton.setText("Singleplayer Mods");
+				singleplayerEnabledSettingButton.setText("Singleplayer Only Mods");
 				singleplayerEnabledSettingButton.setChecked(singleplayerSaveEnabled == "on");
 				singleplayerEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
 					onCheckedChanged: function() {
@@ -12325,7 +12325,7 @@ VertexClientPE.showSetupScreen = function() {
 					}));
 					
 					var singleplayerEnabledSettingButton = clientSwitch();
-					singleplayerEnabledSettingButton.setText("Singleplayer Mods");
+					singleplayerEnabledSettingButton.setText("Singleplayer Only Mods");
 					singleplayerEnabledSettingButton.setChecked(singleplayerSaveEnabled == "on");
 					singleplayerEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
 						onCheckedChanged: function() {
