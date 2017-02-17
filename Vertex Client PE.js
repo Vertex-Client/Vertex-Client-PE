@@ -4585,7 +4585,7 @@ var step = {
 
 var dropLocator = {
 	name: "DropLocator",
-    desc: "Locate dropped items.",
+    desc: "Locate dropped items and experience.",
     category: VertexClientPE.category.MISC,
     type: "Mod",
     isStateMod: function() {
@@ -4596,8 +4596,16 @@ var dropLocator = {
 		new Thread_(new Runnable_({
 			run: function() {
 				for(var i = 0; i < items.length; i++) {
-					if(Entity.getEntityTypeId(items[i]) == EntityType.ITEM) {
-						VertexClientPE.clientMessage("Located item at " + parseInt(Entity.getX(items[i])) + " " + parseInt(Entity.getY(items[i])) + " " + parseInt(Entity.getZ(items[i])));
+					var type = Entity.getEntityTypeId(items[i]);
+					var name;
+					if(type == EntityType.ITEM) {
+						name = "item"
+					}
+					if(type == EntityType.EXPERIENCE_ORB) {
+						name = "experience"
+					}
+					if(name != null) {
+						VertexClientPE.clientMessage("Located " + name + " at " + parseInt(Entity.getX(items[i])) + " " + parseInt(Entity.getY(items[i])) + " " + parseInt(Entity.getZ(items[i])));
 						Thread_.sleep(1000);
 					} else {
 						continue;
@@ -4713,7 +4721,7 @@ var target = {
         });
 		
 		var targetPlayersCheckBox = new CheckBox_(CONTEXT);
-        targetPlayersCheckBox.setChecked(targetMobsSetting == "on");
+        targetPlayersCheckBox.setChecked(targetPlayersSetting == "on");
         targetPlayersCheckBox.setText("Players");
         if(themeSetting == "white") {
             targetPlayersCheckBox.setTextColor(Color_.BLACK);
@@ -10063,6 +10071,8 @@ function musicBar() {
 }
 
 function updatePaneButton(updateVersion, updateDesc, isDev) {
+	isDev = isDev || false;
+	
     var updatePaneLayout = new LinearLayout_(CONTEXT);
     updatePaneLayout.setOrientation(LinearLayout_.HORIZONTAL);
     updatePaneLayout.setGravity(Gravity_.CENTER);
@@ -10096,7 +10106,12 @@ function updatePaneButton(updateVersion, updateDesc, isDev) {
             if(updateGithubVersion.indexOf("Alpha") != -1 || updateGithubVersion.indexOf("Beta") != -1) {
                 updateGithubVersion = updateGithubVersion.split(" ")[0] + "-" + updateGithubVersion.split(" ")[1];
             }
-            downloadFile("/sdcard/Download/Vertex_Client_PE.modpkg", "https://github.com/Vertex-Client/Vertex-Client-PE/releases/download/v" + updateGithubVersion + "/Vertex_Client_PE.modpkg", true);
+			VertexClientPE.toast("Started downloading...");
+			if(!isDev) {
+				downloadFile("/sdcard/Download/Vertex_Client_PE.modpkg", "https://github.com/Vertex-Client/Vertex-Client-PE/releases/download/v" + updateGithubVersion + "/Vertex_Client_PE.modpkg", true);
+			} else {
+				downloadFile("/sdcard/Download/Vertex_Client_PE_Dev.js", "https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/master/Vertex Client PE.js", true);
+			}
         }
     });
     var updatePaneInformationButton = clientButton("Info");
@@ -10121,7 +10136,9 @@ function updatePaneButton(updateVersion, updateDesc, isDev) {
         updatePaneLayoutRight.addView(updatePaneTypeText);
     }
     
-    updatePaneLayoutRight.addView(updatePaneInformationButton);
+	if(!isDev) {
+		updatePaneLayoutRight.addView(updatePaneInformationButton);
+	}
     
     return updatePaneLayout;
 }
@@ -12716,7 +12733,9 @@ function downloadFile(path, url, showNotification) {
             filename = file.getName(),
             downloadManager = new DownloadManager_.Request(new Uri_.parse(url));
         downloadManager.setTitle(filename);
-        downloadManager.setNotificationVisibility(showNotification);
+		if(!showNotification) {
+			downloadManager.setNotificationVisibility(0);
+		}
         downloadManager.setDestinationInExternalPublicDir(file.getParent().replace("/sdcard", ""), filename);
         CONTEXT.getSystemService(Context_.DOWNLOAD_SERVICE).enqueue(downloadManager);
     } catch (e) {
@@ -14120,7 +14139,7 @@ function informationScreen() {
                     informationMenuScrollView.addView(informationMenuLayout);
                     informationMenuLayout1.addView(informationMenuScrollView);
                     
-                    var informationText = clientTextView("\u00A9 peacestorm, imYannic, _TXMO, LPMG, Astro36 and AutoGrind | 2015 - 2017. Some rights reserved.\nThanks to @_TXMO for the original button graphics and @imYannic for some other graphic designs.", true);
+                    var informationText = clientTextView("\u00A9 peacestorm, imYannic, _TXMO, LPMG, Astro36, AutoGrind and TimmyIsDa | 2015 - 2017. Some rights reserved. Thanks to @_TXMO for making some graphic designs and helping with choosing a name and @imYannic for some other graphic designs.", true);
                     
                     var enterOne = clientTextView("\n");
                     var hrView = clientHR();
