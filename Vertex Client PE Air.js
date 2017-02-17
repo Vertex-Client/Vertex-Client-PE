@@ -6870,13 +6870,16 @@ VertexClientPE.setup = function() {
 	})).start();
 }
 
-function downloadFile(path, url) {
+function downloadFile(path, url, showNotification) {
     try {
+		showNotification = showNotification || false;
         var file = new File_(path),
             filename = file.getName(),
             downloadManager = new DownloadManager_.Request(new Uri_.parse(url));
         downloadManager.setTitle(filename);
-        downloadManager.setNotificationVisibility(0);
+		if(!showNotification) {
+			downloadManager.setNotificationVisibility(0);
+		}
         downloadManager.setDestinationInExternalPublicDir(file.getParent().replace("/sdcard", ""), filename);
         CONTEXT.getSystemService(Context_.DOWNLOAD_SERVICE).enqueue(downloadManager);
     } catch (e) {
@@ -7981,7 +7984,7 @@ function informationScreen() {
                     informationMenuScrollView.addView(informationMenuLayout);
                     informationMenuLayout1.addView(informationMenuScrollView);
                     
-                    var informationText = clientTextView("\u00A9 peacestorm, imYannic, _TXMO, LPMG, Astro36 and AutoGrind | 2015 - 2017. Some rights reserved.\nThanks to @_TXMO for the original button graphics and @imYannic for some other graphic designs.", true);
+                    var informationText = clientTextView("\u00A9 peacestorm, imYannic, _TXMO, LPMG, Astro36, AutoGrind and TimmyIsDa | 2015 - 2017. Some rights reserved. Thanks to @_TXMO for making some graphic designs and helping with choosing a name and @imYannic for some other graphic designs.", true);
                     
                     var enterOne = clientTextView("\n");
                     var hrView = clientHR();
