@@ -1304,6 +1304,7 @@ var webBrowserMenu;
 var playerCustomizerMenu;
 var optiFineMenu;
 var informationMenu;
+var christmasMenu;
 var menuBar;
 var hacksList;
 var tabGUI;
@@ -4867,7 +4868,9 @@ function musicBar() {
     }
 }
 
-function updatePaneButton(updateVersion, updateDesc) {
+function updatePaneButton(updateVersion, updateDesc, isDev) {
+	isDev = isDev || false;
+	
     var updatePaneLayout = new LinearLayout_(CONTEXT);
     updatePaneLayout.setOrientation(LinearLayout_.HORIZONTAL);
     updatePaneLayout.setGravity(Gravity_.CENTER);
@@ -4882,7 +4885,12 @@ function updatePaneButton(updateVersion, updateDesc) {
     updatePaneLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - dip2px(10), display.heightPixels / 4));
     updatePaneLayout.addView(updatePaneLayoutLeft);
     updatePaneLayout.addView(updatePaneLayoutRight);
-    var updatePaneText = clientTextView("v" + updateVersion);
+    var updatePaneText;
+	if(isDev) {
+		updatePaneText = clientTextView(updateVersion);
+	} else {
+		updatePaneText = clientTextView("v" + updateVersion);
+	}
     updatePaneText.setTypeface(VertexClientPE.font, Typeface_.BOLD);
     var updatePaneDescText = clientTextView(updateDesc);
     updatePaneLayoutLeft.addView(updatePaneText);
@@ -4896,7 +4904,12 @@ function updatePaneButton(updateVersion, updateDesc) {
             if(updateGithubVersion.indexOf("Alpha") != -1 || updateGithubVersion.indexOf("Beta") != -1) {
                 updateGithubVersion = updateGithubVersion.split(" ")[0] + "-" + updateGithubVersion.split(" ")[1];
             }
-            ModPE.goToURL("https://github.com/Vertex-Client/Vertex-Client-PE/releases/download/v" + updateGithubVersion + "/Vertex_Client_PE_Air.modpkg");
+			VertexClientPE.toast("Started downloading...");
+			if(!isDev) {
+				downloadFile("/sdcard/Download/Vertex_Client_PE_Air.modpkg", "https://github.com/Vertex-Client/Vertex-Client-PE/releases/download/v" + updateGithubVersion + "/Vertex_Client_PE_Air.modpkg", true);
+			} else {
+				downloadFile("/sdcard/Download/Vertex_Client_PE_Air_Dev.js", "https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/master/Vertex Client PE Air.js", true);
+			}
         }
     });
     var updatePaneInformationButton = clientButton("Info");
@@ -4921,7 +4934,9 @@ function updatePaneButton(updateVersion, updateDesc) {
         updatePaneLayoutRight.addView(updatePaneTypeText);
     }
     
-    updatePaneLayoutRight.addView(updatePaneInformationButton);
+	if(!isDev) {
+		updatePaneLayoutRight.addView(updatePaneInformationButton);
+	}
     
     return updatePaneLayout;
 }
@@ -8907,6 +8922,8 @@ function updateCenterScreen() {
                     updateCenterMenuLayout1.setOrientation(1);
                     updateCenterMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
                     updateCenterMenuLayout1.setPadding(10, 0, 10, 0);
+					
+					var updateCenterTitle = clientScreenTitle("Update Center");
                     
                     var showUpdateToastsSettingSwitch = clientSwitch();
 					showUpdateToastsSettingSwitch.setText("Show update toasts on start");
@@ -8928,13 +8945,14 @@ function updateCenterScreen() {
                     updateCenterMenuLayoutScroll.addView(updateCenterMenuLayout);
                     updateCenterMenuLayout1.addView(updateCenterMenuLayoutScroll);
                     
-                    var latestUpdateView = updatePaneButton(VertexClientPE.latestVersion, VertexClientPE.latestVersionDesc);
+                    //var latestUpdateView = updatePaneButton(VertexClientPE.latestVersion, VertexClientPE.latestVersionDesc);
+					var updateView = clientTextView("Sorry, we stopped working on the Air edition. Please switch to the Normal edition if you want to stay up-to-date.")
                     var updateEnterView = new TextView_(CONTEXT);
                     updateEnterView.setText("\n");
                     var currentUpdateView = updatePaneButton(VertexClientPE.currentVersion, VertexClientPE.currentVersionDesc);
                     
                     if(VertexClientPE.latestVersion != VertexClientPE.currentVersion) {
-                        updateCenterMenuLayout.addView(latestUpdateView);
+                        updateCenterMenuLayout.addView(updateView);
                         updateCenterMenuLayout.addView(updateEnterView);
                     }
                     updateCenterMenuLayout.addView(currentUpdateView);
