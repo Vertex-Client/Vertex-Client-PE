@@ -2440,7 +2440,7 @@ VertexClientPE.showSettingSelectorDialog = function(sRightButton, dialogTitle, s
                 closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
 				
 				var dScrollView = new ScrollView_(CONTEXT);
-				dScrollView.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.FILL_PARENT, screenHeight / 2.5));
+				dScrollView.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT));
 				dScrollView.setScrollBarStyle(View_.SCROLLBARS_OUTSIDE_OVERLAY);
 				dScrollView.setFillViewport(true);
 				var dScrollInside = new LinearLayout_(CONTEXT);
