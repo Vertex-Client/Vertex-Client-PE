@@ -12127,9 +12127,9 @@ VertexClientPE.showSetupScreen = function() {
 								setupScreenLayoutBottomCenter.addView(combatEnabledSettingButton);
 								setupScreenLayoutBottomCenter.addView(buildingEnabledSettingButton);
 								setupScreenLayoutBottomCenter.addView(movementEnabledSettingButton);
-								setupScreenLayoutBottomCenter.addView(chatEnabledSettingButton);
-								setupScreenLayoutBottomCenter.addView(miscEnabledSettingButton);
-								setupScreenLayoutBottomCenter.addView(singleplayerEnabledSettingButton);
+								setupScreenLayoutBottomCenter1.addView(chatEnabledSettingButton);
+								setupScreenLayoutBottomCenter1.addView(miscEnabledSettingButton);
+								setupScreenLayoutBottomCenter1.addView(singleplayerEnabledSettingButton);
 								doneButton.setText("\u2794");
 								doneButton.setOnClickListener(new View_.OnClickListener({
 									onClick: function(viewarg){
