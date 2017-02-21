@@ -1,7 +1,7 @@
 /**
  * ##################################################################################################
  * @name Vertex Client PE
- * @version v2.1
+ * @version v2.2
  * @author peacestorm (@AgameR_Modder)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36, AutoGrind, TimmyIsDa
  *
@@ -1135,8 +1135,8 @@ VertexClientPE.isRemote = function() {
 
 VertexClientPE.playerIsInGame = false;
 
-VertexClientPE.currentVersion = "2.1";
-VertexClientPE.currentVersionDesc = "The Bypass Update";
+VertexClientPE.currentVersion = "2.2";
+VertexClientPE.currentVersionDesc = "The GUI Update";
 VertexClientPE.targetVersion = "MCPE v1.0.x alpha";
 VertexClientPE.minVersion = "1.0.0";
 VertexClientPE.edition = "Normal";
@@ -4664,7 +4664,7 @@ var letItSnow = {
 
 var frostWalk = {
     name: "FrostWalk",
-    desc: "Turns water blocks into ice blocks when you step on them.",
+    desc: "Turns water blocks into ice blocks and lava blocks into cobblestone blocks when you step on them.",
     category: VertexClientPE.category.MOVEMENT,
     type: "Mod",
     state: false,
@@ -4677,12 +4677,12 @@ var frostWalk = {
     onTick: function() {
 		var tile = getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ());
 		var tileTwo = getTile(getPlayerX(), getPlayerY() - 1, getPlayerZ());
-		if(tile == 9 || tile == 10) {
+		if(tile == 8 || tile == 9) {
 			setTile(getPlayerX(), getPlayerY() - 2, getPlayerZ(), 79);
 		} else if(tile == 10 || tile == 11) {
 			setTile(getPlayerX(), getPlayerY() - 2, getPlayerZ(), 4);
 		}
-		if(tileTwo == 9 || tileTwo == 10) {
+		if(tileTwo == 8 || tileTwo == 9) {
 			setTile(getPlayerX(), getPlayerY() - 1, getPlayerZ(), 79);
 			Entity.setPosition(getPlayerEnt(), getPlayerX(), getPlayerY() + 1, getPlayerZ());
 		} else if(tileTwo == 10 || tileTwo == 11) {
@@ -6171,6 +6171,25 @@ VertexClientPE.showRemoteViewTargetDialog = function() {
     });
 }
 
+VertexClientPE.resetMenuPos = function() {
+	combattpopx = combattpopx_def;
+	combattpopy = combattpopy_def;
+	vertexclientpecombatmenu.update(parseInt(combattpopx), parseInt(combattpopy), -1, -1);
+	buildingtpopx = buildingtpopx_def;
+	buildingtpopy = buildingtpopy_def;
+	vertexclientpebuildingmenu.update(parseInt(buildingtpopx), parseInt(buildingtpopy), -1, -1);
+	movementtpopx = movementtpopx_def;
+	movementtpopy = movementtpopy_def;
+	vertexclientpemovementmenu.update(parseInt(movementtpopx), parseInt(movementtpopy), -1, -1);
+	chattpopx = chattpopx_def;
+	chattpopy = chattpopy_def;
+	vertexclientpechatmenu.update(parseInt(chattpopx), parseInt(chattpopy), -1, -1);
+	misctpopx = misctpopx_def;
+	misctpopy = misctpopy_def;
+	vertexclientpemiscmenu.update(parseInt(misctpopx), parseInt(misctpopy), -1, -1);
+	VertexClientPE.toast("Successfully reset all menu positions!");
+}
+
 var moreMenuIsOpen = false;
 
 VertexClientPE.showMoreDialog = function() {
@@ -6204,6 +6223,8 @@ VertexClientPE.showMoreDialog = function() {
 				playerCustomizerButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.presence_online, 0, 0);
                 var optiFineButton = clientButton(optiFineTitle);
 				optiFineButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.ic_menu_zoom, 0, 0);
+                var resetPosButton = clientButton("Reset moveable menu positions");
+				resetPosButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.stat_notify_sync, 0, 0);
                 var screenshotButton = clientButton("Take a screenshot");
 				var rvTargetButton = clientButton("RemoteView | Target player by username");
                 var dialogLayout1 = new LinearLayout_(CONTEXT);
@@ -6222,6 +6243,9 @@ VertexClientPE.showMoreDialog = function() {
                 dialogLayout.addView(optiFineButton);
                 dialogLayout.addView(playerCustomizerButton);
 				dialogLayout.addView(webBrowserButton);
+				if(VertexClientPE.menuIsShowing && menuType == "normal") {
+					dialogLayout.addView(resetPosButton);
+				}
 				if(VertexClientPE.isExpMode()) {
 					dialogLayout.addView(screenshotButton);
 				}
@@ -6281,6 +6305,12 @@ VertexClientPE.showMoreDialog = function() {
                         VertexClientPE.closeMenu();
                         optiFineScreen();
                         exitOptiFine();
+                    }
+                });
+				resetPosButton.setOnClickListener(new View_.OnClickListener() {
+                    onClick: function(view) {
+						VertexClientPE.resetMenuPos();
+						dialog.dismiss();
                     }
                 });
 				screenshotButton.setOnClickListener(new View_.OnClickListener() {
@@ -16094,29 +16124,30 @@ function retroMenu() {
 var vertexclientpemenu;
 var menuBtn;
 
-var combattpopx = screenWidth / 3, combattpopy = 0;
+const combattpopx_def = screenWidth / 3, combattpopy_def = 0;
+var combattpopx = combattpopx_def, combattpopy = combattpopy_def;
 var combatmX, combatmY;
 var combatdown = false;
 
-var buildingtpopx = Math.floor(screenWidth / 3 + screenWidth / 3), buildingtpopy = screenHeight / 2 - customHeight;
+const buildingtpopx_def = Math.floor(screenWidth / 3 + screenWidth / 3), buildingtpopy_def = screenHeight / 2 - customHeight;
+var buildingtpopx = buildingtpopx_def, buildingtpopy = buildingtpopy_def;
 var buildingmX, buildingmY;
 var buildingdown = false;
 
-var movementtpopx = screenWidth / 3, movementtpopy = screenHeight / 2 - customHeight;
+const movementtpopx_def = screenWidth / 3, movementtpopy_def = screenHeight / 2 - customHeight;
+var movementtpopx = movementtpopx_def, movementtpopy = movementtpopy_def;
 var movementmX, movementmY;
 var movementdown = false;
 
-var chattpopx = 0, chattpopy = 0;
+const chattpopx_def = 0, chattpopy_def = 0;
+var chattpopx = chattpopx_def, chattpopy = chattpopy_def;
 var chatmX, chatmY;
 var chatdown = false;
 
-var misctpopx = 0, misctpopy = screenHeight / 2 - customHeight;
+const misctpopx_def = 0, misctpopy_def = screenHeight / 2 - customHeight;
+var misctpopx = misctpopx_def, misctpopy = misctpopy_def;
 var miscmX, miscmY;
 var miscdown = false;
-
-var favtpopx = Math.floor(screenWidth / 3 + screenWidth / 3), favtpopy = 0;
-var favmX, favmY;
-var favdown = false;
 
 var combatMenuShown = false;
 var buildingMenuShown = false;
