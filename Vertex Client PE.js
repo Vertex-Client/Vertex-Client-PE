@@ -4193,7 +4193,7 @@ var antiBurn = {
         var x = getPlayerX();
         var y = getPlayerY();
         var z = getPlayerZ();
-        var blockOne = getTile(x, y, z);
+        /* var blockOne = getTile(x, y, z);
         var blockTwo = getTile(x, y - 1, z);
         var blockThree = getTile(x, y - 2, z);
         setTile(x, y, z, 9);
@@ -4201,8 +4201,8 @@ var antiBurn = {
         setTile(x, y - 2, z, 9);
         setTile(x, y, z, blockOne);
         setTile(x, y - 1, z, blockTwo);
-        setTile(x, y - 2, z, blockThree);
-        Entity.setFireTicks(getPlayerEnt(), 0);
+        setTile(x, y - 2, z, blockThree); */
+        Entity.setFireTicks(getPlayerEnt(), -1);
     }
 }
 
@@ -10338,7 +10338,7 @@ function modButton(mod, buttonOnly, customSize) {
     modButtonLayoutLeft.setOrientation(1);
     if(menuType == "halfscreen") {
         modButtonLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2.5, display.heightPixels / 10));
-    } else if(menuType == "halfscreen_top") {
+    } else if(menuType == "halfscreen_top" || menuType == "tabbed_fullscreen") {
 		modButtonLayoutLeft.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - (display.widthPixels / 2 - display.widthPixels / 2.5) - 10, display.heightPixels / 12));
 	} else {
         modButtonLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.heightPixels / 2.5 - 10, display.heightPixels / 12));
@@ -10349,7 +10349,7 @@ function modButton(mod, buttonOnly, customSize) {
     modButtonLayoutRight.setOrientation(1);
     if(menuType == "halfscreen") {
         modButtonLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2.2 - display.widthPixels / 2.5, display.heightPixels / 10));
-    } else if(menuType == "halfscreen_top") {
+    } else if(menuType == "halfscreen_top" || menuType == "tabbed_fullscreen") {
 		modButtonLayoutRight.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2 - display.widthPixels / 2.5 - 10, display.heightPixels / 12));
 	} else {
         modButtonLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.heightPixels / 2 - display.heightPixels / 2.5 - 10, display.heightPixels / 12));
@@ -10364,7 +10364,7 @@ function modButton(mod, buttonOnly, customSize) {
     if(buttonOnly == null || !buttonOnly) {
         if(menuType == "halfscreen") {
             defaultClientButton.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2.5, display.heightPixels / 10));
-        } else if(menuType == "halfscreen_top") {
+        } else if(menuType == "halfscreen_top" || menuType == "tabbed_fullscreen") {
             defaultClientButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - (display.widthPixels / 2 - display.widthPixels / 2.5) - 10, display.heightPixels / 12));
         } else {
             defaultClientButton.setLayoutParams(new ViewGroup_.LayoutParams(display.heightPixels / 2.5 - 10, display.heightPixels / 12));
@@ -10464,7 +10464,7 @@ function modButton(mod, buttonOnly, customSize) {
     var defaultInfoButton = clientButton(modInfoButtonName, mod.name + " info and settings", null, "right");
     if(menuType == "halfscreen") {
         defaultInfoButton.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2.2 - display.widthPixels / 2.5, display.heightPixels / 10));
-    } else if(menuType == "halfscreen_top") {
+    } else if(menuType == "halfscreen_top" || menuType == "tabbed_fullscreen") {
         defaultInfoButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2 - display.widthPixels / 2.5 - 10, display.heightPixels / 12));
     } else {
         defaultInfoButton.setLayoutParams(new ViewGroup_.LayoutParams(display.heightPixels / 2 - display.heightPixels / 2.5 - 10, display.heightPixels / 12));
@@ -13703,6 +13703,8 @@ function settingsScreen() {
                         menuTypeSettingButton.setText("Tabbed (side)");
                     } else if(menuType == "halfscreen_top") {
                         menuTypeSettingButton.setText("Tabbed (top)");
+                    } else if(menuType == "tabbed_fullscreen") {
+                        menuTypeSettingButton.setText("Tabbed (fullscreen)");
                     } else if(menuType == "fullscreen") {
                         menuTypeSettingButton.setText("Fullscreen");
                     }
@@ -13717,6 +13719,10 @@ function settingsScreen() {
                             menuTypeSettingButton.setText("Tabbed (top)");
                             VertexClientPE.saveMainSettings();
                         } else if(menuType == "halfscreen_top") {
+                            menuType = "tabbed_fullscreen";
+                            menuTypeSettingButton.setText("Tabbed (fullscreen)");
+                            VertexClientPE.saveMainSettings();
+                        } else if(menuType == "tabbed_fullscreen") {
                             menuType = "fullscreen";
                             menuTypeSettingButton.setText("Fullscreen");
                             VertexClientPE.saveMainSettings();
@@ -15772,7 +15778,7 @@ VertexClientPE.showMenu = function() {
 	}
     if(menuType == "normal") {
         VertexClientPE.showCategoryMenus();
-    } else if(menuType == "halfscreen" || menuType == "halfscreen_top") {
+    } else if(menuType == "halfscreen" || menuType == "halfscreen_top" || menuType == "tabbed_fullscreen") {
         retroMenu();
     } else if(menuType == "fullscreen") {
 		VertexClientPE.showFullScreenMenu();
@@ -15812,7 +15818,7 @@ VertexClientPE.closeMenu = function() {
                 vertexclientpemiscmenu.dismiss();
             }
         }
-    } else if(menuType == "halfscreen" || menuType == "halfscreen_top") {
+    } else if(menuType == "halfscreen" || menuType == "halfscreen_top" || menuType == "tabbed_fullscreen") {
         if(menu != null) {
             if(menu.isShowing()) {
                 menu.dismiss();
@@ -16053,7 +16059,7 @@ function retroMenu() {
 				menuLayout.addView(menuMiddleScroll);
 				menuMiddleScroll.addView(menuMiddleLayout);
 			}
-		} else if(menuType == "halfscreen_top") {
+		} else if(menuType == "halfscreen_top" || menuType == "tabbed_fullscreen") {
 			menuMiddleLayout.setOrientation(LinearLayout_.HORIZONTAL);
 			menuLayout.setOrientation(1);
 			menuMiddleLayout.setGravity(Gravity_.CENTER);
@@ -16095,6 +16101,8 @@ function retroMenu() {
 			menu = new PopupWindow_(menuLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 1.8, CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
 		} else if(menuType == "halfscreen_top") {
 			menu = new PopupWindow_(menuLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() / 2);
+		} else if(menuType == "tabbed_fullscreen") {
+			menu = new PopupWindow_(menuLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
 		}
 		menu.setBackgroundDrawable(backgroundGradient());
 		menu.setAnimationStyle(android.R.style.Animation_Translucent);
@@ -16104,7 +16112,7 @@ function retroMenu() {
 			} else {
 				menu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
 			}
-		} else if(menuType == "halfscreen_top") {
+		} else if(menuType == "halfscreen_top" || menuType == "tabbed_fullscreen") {
 			menu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.TOP, 0, 0);
 			if(GUI != null) {
 				GUI.dismiss();
