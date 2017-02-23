@@ -11251,6 +11251,24 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
                 }
             }
             bg.setCornerRadii(radiiFloatArray);
+        } else if(round == "cornerleft_") {
+            for(var i = 0; i <= 7; i++) {
+                if(i == 0 || i == 1) {
+                    radiiFloatArray[i] = 180;
+                } else {
+                    radiiFloatArray[i] = radius;
+                }
+            }
+            bg.setCornerRadii(radiiFloatArray);
+        } else if(round == "cornerright_") {
+            for(var i = 0; i <= 7; i++) {
+                if(i == 2 || i == 3) {
+                    radiiFloatArray[i] = 180;
+                } else {
+                    radiiFloatArray[i] = radius;
+                }
+            }
+            bg.setCornerRadii(radiiFloatArray);
         } else if(round == "bottom") {
             for(var i = 0; i <= 7; i++) {
                 if(i >= 4) {
@@ -13282,7 +13300,11 @@ function settingsScreen() {
                             mainButtonPositionSetting = "top-left";
                             mainButtonPositionSettingButton.setText("Top-left");
                             VertexClientPE.saveMainSettings();
-                        } else {
+                        } else if(mainButtonPositionSetting == "top-left") {
+                            mainButtonPositionSetting = "bottom-left";
+                            mainButtonPositionSettingButton.setText("Bottom-left");
+                            VertexClientPE.saveMainSettings();
+                        } else if(mainButtonPositionSetting == "bottom-left") {
                             mainButtonPositionSetting = "top-right";
                             mainButtonPositionSettingButton.setText("Top-right");
                             VertexClientPE.saveMainSettings();
@@ -15969,7 +15991,9 @@ VertexClientPE.showFullScreenMenu = function() {
                     fullScreenMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
                     fullScreenMenuLayout1.setPadding(10, 0, 10, 0);
                     
-                    fullScreenMenuLayout1.addView(clientTextView("\n"));
+					if(mainButtonPositionSetting == "top-left" || mainButtonPositionSetting == "top-right") {
+						fullScreenMenuLayout1.addView(clientTextView("\n"));
+					}
                     fullScreenMenuLayout1.addView(fullScreenMenuLayoutScroll);
                     
                     VertexClientPE.modules.forEach(function (element, index, array) {
@@ -16012,8 +16036,10 @@ VertexClientPE.showFullScreenMenu = function() {
 						GUI.dismiss();
 						if(mainButtonPositionSetting == "top-right") {
 							GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
-						} else {
+						} else if(mainButtonPositionSetting == "top-left") {
 							GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+						} else if(mainButtonPositionSetting == "bottom-left") {
+							GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
 						}
                     }
                 } catch(error) {
@@ -16048,7 +16074,7 @@ function retroMenu() {
 			menuLayout.setOrientation(LinearLayout_.HORIZONTAL);
 			menuMiddleLayout.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 1.8 - display.widthPixels / 2.2, display.heightPixels / 1.23));
 			menuRightLayout.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2.2, display.heightPixels / 1.23));
-			if(mainButtonPositionSetting == "top-left") {
+			if(mainButtonPositionSetting == "top-left" || mainButtonPositionSetting == "bottom-left") {
 				menuLayout.addView(menuMiddleScroll);
 				menuMiddleScroll.addView(menuMiddleLayout);
 				menuLayout.addView(menuRightScroll);
@@ -16107,7 +16133,7 @@ function retroMenu() {
 		menu.setBackgroundDrawable(backgroundGradient());
 		menu.setAnimationStyle(android.R.style.Animation_Translucent);
 		if(menuType == "halfscreen") {
-			if(mainButtonPositionSetting == "top-left") {
+			if(mainButtonPositionSetting == "top-left" || mainButtonPositionSetting == "bottom-left") {
 				menu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.BOTTOM, 0, 0);
 			} else {
 				menu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
@@ -16118,8 +16144,10 @@ function retroMenu() {
 				GUI.dismiss();
 				if(mainButtonPositionSetting == "top-right") {
 					GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
-				} else {
+				} else if(mainButtonPositionSetting == "top-left") {
 					GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+				} else if(mainButtonPositionSetting == "bottom-left") {
+					GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
 				}
 			}
 		}
@@ -16747,8 +16775,10 @@ function showMenuButton() {
 	if(mainButtonStyleSetting == "normal") {
 		if(mainButtonPositionSetting == "top-right") {
 			background = backgroundSpecial("cornerleft", themeSetting, true);
-		} else {
+		} else if(mainButtonPositionSetting == "top-left") {
 			background = backgroundSpecial("cornerright", themeSetting, true);
+		} else if(mainButtonPositionSetting == "bottom-left") {
+			background = backgroundSpecial("cornerright_", themeSetting, true);
 		}
 	} else if(mainButtonStyleSetting == "global_background") {
 		if(mainButtonPositionSetting == "top-right") {
@@ -16770,7 +16800,7 @@ function showMenuButton() {
 		}
         GUI.setBackgroundDrawable(background);
         GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
-    } else {
+    } else if(mainButtonPositionSetting == "top-left") {
 		if(mainButtonStyleSetting != "classic" && mainButtonStyleSetting != "global_background") {
 			layout.setPadding(0, 0, 10, 10);
 		} else {
@@ -16778,6 +16808,14 @@ function showMenuButton() {
 		}
         GUI.setBackgroundDrawable(background);
         GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+    } else if(mainButtonPositionSetting == "bottom-left") {
+		if(mainButtonStyleSetting != "classic" && mainButtonStyleSetting != "global_background") {
+			layout.setPadding(0, 10, 10, 0);
+		} else {
+			layout.setGravity(Gravity_.CENTER);
+		}
+        GUI.setBackgroundDrawable(background);
+        GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
     }
     
     if((currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud) && VertexClientPE.playerIsInGame) {
