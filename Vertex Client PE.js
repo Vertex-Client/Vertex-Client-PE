@@ -11379,24 +11379,39 @@ VertexClientPE.setupGradient = function(gradientDrawable, color, strokeColor, rg
 		throw new TypeError("The type of the first parameter is not GradientDrawable!");
 		return;
 	}
+	if(backgroundStyleSetting == "normal_noinner") {
+		gradientDrawable.setColor(Color_.TRANSPARENT);
+	}
 	var preset = transparentBgSetting=="on"?"#70":"#";
 	if(rgbArray == null) {
-		gradientDrawable.setColor(Color_.parseColor(preset + color));
-		gradientDrawable.setStroke(dip2px(2), Color_.parseColor(preset + strokeColor));
+		if(backgroundStyleSetting != "normal_noinner") {
+			gradientDrawable.setColor(Color_.parseColor(preset + color));
+		}
+		if(backgroundStyleSetting != "normal_nostrokes") {
+			gradientDrawable.setStroke(dip2px(2), Color_.parseColor(preset + strokeColor));
+		}
 	} else {
 		if(transparentBgSetting == "on") {
-			gradientDrawable.setColor(Color_.argb(127, rgbArray[0], rgbArray[1], rgbArray[2]));
-			gradientDrawable.setStroke(dip2px(2), Color_.argb(127, rgbArray[3], rgbArray[4], rgbArray[5]));
+			if(backgroundStyleSetting != "normal_noinner") {
+				gradientDrawable.setColor(Color_.argb(127, rgbArray[0], rgbArray[1], rgbArray[2]));
+			}
+			if(backgroundStyleSetting != "normal_nostrokes") {
+				gradientDrawable.setStroke(dip2px(2), Color_.argb(127, rgbArray[3], rgbArray[4], rgbArray[5]));
+			}
 		} else {
-			gradientDrawable.setColor(Color_.rgb(rgbArray[0], rgbArray[1], rgbArray[2]));
-			gradientDrawable.setStroke(dip2px(2), Color_.rgb(rgbArray[3], rgbArray[4], rgbArray[5]));
+			if(backgroundStyleSetting != "normal_noinner") {
+				gradientDrawable.setColor(Color_.rgb(rgbArray[0], rgbArray[1], rgbArray[2]));
+			}
+			if(backgroundStyleSetting != "normal_nostrokes") {
+				gradientDrawable.setStroke(dip2px(2), Color_.rgb(rgbArray[3], rgbArray[4], rgbArray[5]));
+			}
 		}
 	}
 }
 
 function backgroundGradient(round) // TextView with colored background (edited by peacestorm)
 {
-	if(backgroundStyleSetting == "normal") {
+	if(backgroundStyleSetting == "normal" || backgroundStyleSetting == "normal_nostrokes" || backgroundStyleSetting == "normal_noinner") {
 		var bg = GradientDrawable_();
 		var radius = 0;
 		if(round == true) {
@@ -11784,7 +11799,7 @@ VertexClientPE.secondTick = function() {
                 }
             });
             
-            if(antiLagDropRemoverSetting == "on" && VertexClientPE.playerIsInGame && !VertexClientPE.isRemote() && sharedPref.getString("VertexClientPE.boughtOptiFine", "false") == "true") {
+            if(antiLagDropRemoverSetting == "on" && VertexClientPE.playerIsInGame && !VertexClientPE.isRemote()) {
                 if(lagTimer == 0) {
                     VertexClientPE.clientMessage("Dropped items will be removed in " + ChatColor.RED + "two minutes" + ChatColor.WHITE + "!");
                     lagTimer++;
@@ -13421,14 +13436,14 @@ function settingsScreen() {
                         buttonStyleSettingButton.setText("Normal");
                     } else if(buttonStyleSetting == "normal_nostrokes") {
                         buttonStyleSettingButton.setText("Normal (no strokes)");
+                    } else if(buttonStyleSetting == "transparent") {
+                        buttonStyleSettingButton.setText("Normal (no inner)");
                     } else if(buttonStyleSetting == "legacy") {
                         buttonStyleSettingButton.setText("Legacy");
                     } else if(buttonStyleSetting == "legacy_inverted") {
                         buttonStyleSettingButton.setText("Legacy (inverted)");
-                    } else if(buttonStyleSetting == "transparent") {
-                        buttonStyleSettingButton.setText("Transparent");
                     } else if(buttonStyleSetting == "invisible") {
-                        buttonStyleSettingButton.setText("Invisible (less lagg)");
+                        buttonStyleSettingButton.setText("Text only (less lag)");
                     }
                     buttonStyleSettingButton.setOnClickListener(new View_.OnClickListener({
                     onClick: function(viewarg){
@@ -13437,6 +13452,10 @@ function settingsScreen() {
                             buttonStyleSettingButton.setText("Normal (no strokes)");
                             VertexClientPE.saveMainSettings();
                         } else if(buttonStyleSetting == "normal_nostrokes") {
+                            buttonStyleSetting = "transparent";
+                            buttonStyleSettingButton.setText("Normal (no inner)");
+                            VertexClientPE.saveMainSettings();
+                        } else if(buttonStyleSetting == "transparent") {
                             buttonStyleSetting = "legacy";
                             buttonStyleSettingButton.setText("Legacy");
                             VertexClientPE.saveMainSettings();
@@ -13445,12 +13464,8 @@ function settingsScreen() {
                             buttonStyleSettingButton.setText("Legacy (inverted)");
                             VertexClientPE.saveMainSettings();
                         } else if(buttonStyleSetting == "legacy_inverted") {
-                            buttonStyleSetting = "transparent";
-                            buttonStyleSettingButton.setText("Transparent");
-                            VertexClientPE.saveMainSettings();
-                        } else if(buttonStyleSetting == "transparent") {
                             buttonStyleSetting = "invisible";
-                            buttonStyleSettingButton.setText("Invisible (less lagg)");
+                            buttonStyleSettingButton.setText("Text only (less lag)");
                             VertexClientPE.saveMainSettings();
                         } else if(buttonStyleSetting == "invisible") {
                             buttonStyleSetting = "normal";
@@ -13473,21 +13488,33 @@ function settingsScreen() {
                     var backgroundStyleSettingButton = backgroundStyleSettingFunc.getButton();
                     if(backgroundStyleSetting == "normal") {
                         backgroundStyleSettingButton.setText("Normal");
+                    } else if(backgroundStyleSetting == "normal_nostrokes") {
+                        backgroundStyleSettingButton.setText("Normal (no strokes)");
+                    } else if(backgroundStyleSetting == "normal_noinner") {
+                        backgroundStyleSettingButton.setText("Normal (no inner)");
                     } else if(backgroundStyleSetting == "minecraft_dirt") {
                         backgroundStyleSettingButton.setText("Minecraft (dirt)");
                     }
                     backgroundStyleSettingButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-                        if(backgroundStyleSetting == "normal") {
-                            backgroundStyleSetting = "minecraft_dirt";
-                            backgroundStyleSettingButton.setText("Minecraft (dirt)");
-                            VertexClientPE.saveMainSettings();
-                        } else if(backgroundStyleSetting == "minecraft_dirt") {
-                            backgroundStyleSetting = "normal";
-                            backgroundStyleSettingButton.setText("Normal");
-                            VertexClientPE.saveMainSettings();
-                        }
-                    }
+						onClick: function(viewArg) {
+							if(backgroundStyleSetting == "normal") {
+								backgroundStyleSetting = "normal_nostrokes";
+								backgroundStyleSettingButton.setText("Normal (no strokes)");
+								VertexClientPE.saveMainSettings();
+							} else if(backgroundStyleSetting == "normal_nostrokes") {
+								backgroundStyleSetting = "normal_noinner";
+								backgroundStyleSettingButton.setText("Normal (no inner)");
+								VertexClientPE.saveMainSettings();
+							} else if(backgroundStyleSetting == "normal_noinner") {
+								backgroundStyleSetting = "minecraft_dirt";
+								backgroundStyleSettingButton.setText("Minecraft (dirt)");
+								VertexClientPE.saveMainSettings();
+							} else if(backgroundStyleSetting == "minecraft_dirt") {
+								backgroundStyleSetting = "normal";
+								backgroundStyleSettingButton.setText("Normal");
+								VertexClientPE.saveMainSettings();
+							}
+						}
                     }));
 					
 					var transparentBgSettingFunc = new settingButton("Transparent backgrounds", "Makes screens and dialogs transparent.");
