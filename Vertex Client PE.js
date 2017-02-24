@@ -132,6 +132,8 @@ var PopupWindow = android.widget.PopupWindow;
 var RelativeLayout = android.widget.RelativeLayout;
 var Gravity = android.view.Gravity;
 
+EntityType.ENDER_PEARL = 87;
+
 /* try {
 	CONTEXT.setTitle("Vertex Client PE");
 } catch(e) {
@@ -3817,7 +3819,7 @@ var aimbot = {
 					continue;
 				}
 				var ent = mobs[i];
-				if(Entity.getEntityTypeId(ent) != EntityType.ITEM && Entity.getEntityTypeId(ent) != EntityType.ARROW && Entity.getEntityTypeId(ent) != EntityType.EXPERIENCE_ORB && ent != getPlayerEnt()) {
+				if(Entity.getEntityTypeId(ent) != EntityType.ARROW && Entity.getEntityTypeId(ent) != EntityType.BOAT && Entity.getEntityTypeId(ent) != EntityType.EGG && Entity.getEntityTypeId(ent) != EntityType.ENDER_PEARL && Entity.getEntityTypeId(ent) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(ent) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(ent) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(ent) != EntityType.FIREBALL && Entity.getEntityTypeId(ent) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(ent) != EntityType.ITEM && Entity.getEntityTypeId(ent) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(ent) != EntityType.MINECART && Entity.getEntityTypeId(ent) != EntityType.PAINTING && Entity.getEntityTypeId(ent) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(ent) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(ent) != EntityType.SNOWBALL && Entity.getEntityTypeId(ent) != EntityType.THROWN_POTION && ent != getPlayerEnt()) {
 					VertexClientPE.CombatUtils.aimAtEnt(ent);
 					return;
 				}
@@ -3834,7 +3836,7 @@ var aimbot = {
 					continue;
 				}
 				var ent = players[i];
-				if(Entity.getEntityTypeId(ent) != EntityType.ITEM && Entity.getEntityTypeId(ent) != EntityType.ARROW && Entity.getEntityTypeId(ent) != EntityType.EXPERIENCE_ORB && ent != getPlayerEnt()) {
+				if(ent != getPlayerEnt()) {
 					VertexClientPE.CombatUtils.aimAtEnt(ent);
 					return;
 				}
@@ -18098,6 +18100,10 @@ function startDestroyBlock() {
 }
     
 function destroyBlock(x, y, z, side) {
+	if(preventDiggingSetting == "on") {
+		preventDefault();
+		return;
+	}
     var data = Level.getData(x, y, z);
     var tile = Level.getTile(x, y, z);
     var gamemode = Level.getGameMode();
