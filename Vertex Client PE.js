@@ -9482,10 +9482,10 @@ VertexClientPE.setupModButtonColors = function() {
 			modButtonColorBlocked = Color_.YELLOW;
 			break;
 		case "white":
-			modButtonColorEnabled = Color_.WHITE;
+			modButtonColorBlocked = Color_.WHITE;
 			break;
 		case "black":
-			modButtonColorEnabled = Color_.BLACK;
+			modButtonColorBlocked = Color_.BLACK;
 			break;
 	}
 	switch(modButtonColorEnabledSetting) {
@@ -13308,8 +13308,10 @@ function settingsScreen() {
                     var mainButtonPositionSettingButton = mainButtonPositionSettingFunc.getButton();
                     if(mainButtonPositionSetting == "top-right") {
                         mainButtonPositionSettingButton.setText("Top-right");
-                    } else {
-                        mainButtonPositionSettingButton.setText("Top-left");
+                    } else if(mainButtonPositionSetting == "top-left") {
+						mainButtonPositionSettingButton.setText("Top-left");
+					} else if(mainButtonPositionSetting == "bottom-left") {
+                        mainButtonPositionSettingButton.setText("Bottom-left");
                     }
                     mainButtonPositionSettingButton.setOnClickListener(new View_.OnClickListener({
                     onClick: function(viewarg){
