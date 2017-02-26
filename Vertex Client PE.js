@@ -2681,6 +2681,9 @@ var flight = {
     category: VertexClientPE.category.MOVEMENT,
     type: "Mod",
     state: false,
+	tick: 1,
+	firstY: null,
+	nextY: null,
     isStateMod: function() {
         return true;
     },
@@ -2691,11 +2694,25 @@ var flight = {
     },
     onTick: function() {
         Player.setFlying(1);
+		/* if(bypassState) {
+			if(this.tick == 1) {
+				this.firstY = getPlayerY();
+			}
+			if(this.tick == 10) {
+				this.nextY = getPlayerY();
+				if((this.nextY - this.firstY) >= 0.5) {
+					Entity.setPositionRelative(getPlayerEnt(), 0, 0.5, 0);
+					Entity.setVelY(getPlayerEnt(), 0);
+				}
+				this.tick = 1;
+			}
+			this.tick++;
+		} */
     }
 };
 
-var autoTeleporter = {
-    name: "AutoTeleporter",
+var pointTeleport = {
+    name: "PointTeleport",
     desc: "Teleports you to the block you're pointing at.",
     category: VertexClientPE.category.MOVEMENT,
     type: "Mod",
@@ -2713,8 +2730,8 @@ var autoTeleporter = {
     }
 };
 
-var tapTeleporter = {
-    name: "TapTeleporter",
+var tapTeleport = {
+    name: "TapTeleport",
     desc: "Teleports you wherever you tap.",
     category: VertexClientPE.category.MOVEMENT,
     type: "Mod",
@@ -5091,7 +5108,7 @@ VertexClientPE.registerModule(hitboxes);
 VertexClientPE.registerModule(tapAimbot);
 VertexClientPE.registerModule(tpAura);
 //MOVEMENT
-VertexClientPE.registerModule(autoTeleporter);
+VertexClientPE.registerModule(pointTeleport);
 VertexClientPE.registerModule(autoWalk);
 /* if(Launcher.isToolbox()) {
 	//VertexClientPE.registerModule(elytraBoost);
@@ -5115,7 +5132,7 @@ VertexClientPE.registerModule(safeWalk);
 VertexClientPE.registerModule(speedHack);
 VertexClientPE.registerModule(step);
 VertexClientPE.registerModule(tapJumpRun);
-VertexClientPE.registerModule(tapTeleporter);
+VertexClientPE.registerModule(tapTeleport);
 VertexClientPE.registerModule(timer);
 //BUILDING
 VertexClientPE.registerModule(autoBuild);
@@ -11042,8 +11059,8 @@ function categoryTitle(text) {
     }
 }
 
-function settingButton(text, desc, parentWidth) {
-	if(parentWidth == null) {
+function settingButton(text, desc, parentWidth, resetFunc) {
+	if(parentWidth == null || parentWidth == NaN) {
 		parentWidth = display.widthPixels;
 	}
 	
@@ -11057,6 +11074,7 @@ function settingButton(text, desc, parentWidth) {
     
     var settingButtonLayoutMiddle = new LinearLayout_(CONTEXT);
     settingButtonLayoutMiddle.setOrientation(1);
+	settingButtonLayoutMiddle.setGravity(Gravity_.RIGHT);
     settingButtonLayoutMiddle.setLayoutParams(new ViewGroup_.LayoutParams(parentWidth / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
     settingButtonLayout.addView(settingButtonLayoutMiddle);
     
@@ -11070,6 +11088,21 @@ function settingButton(text, desc, parentWidth) {
     defaultTitle.setGravity(Gravity_.CENTER_VERTICAL);
 	
     settingButtonLayoutLeft.addView(defaultTitle);
+	
+	var resetButton;
+	if(resetFunc) {
+		resetButton = clientButton("Reset");
+		resetButton.setOnClickListener(new View_.OnClickListener() {
+			onClick: function(viewArg) {
+				resetFunc(viewArg);
+				VertexClientPE.saveMainSettings();
+			}
+		});
+		resetButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.stat_notify_sync, 0, 0);
+		resetButton.setLayoutParams(new ViewGroup_.LayoutParams(parentWidth / 12, LinearLayout_.LayoutParams.WRAP_CONTENT));
+		settingButtonLayoutMiddle.addView(resetButton);
+	}
+	
 	var defaultSettingsButton = clientButton("", desc);
     defaultSettingsButton.setLayoutParams(new LinearLayout_.LayoutParams(parentWidth / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
     settingButtonLayoutRight.addView(defaultSettingsButton);
@@ -13223,7 +13256,12 @@ function settingsScreen() {
                     
                     var generalTitle = clientSectionTitle("HUD", "rainbow");
                     
-                    var hacksListModeSettingFunc = new settingButton("Hacks list mode");
+                    var hacksListModeSettingFunc = new settingButton("Hacks list mode", null, null,
+						function(viewArg) {
+							hacksListModeSetting = "on";
+							hacksListModeSettingButton.setText("Normal");
+                        }
+					);
                     var hacksListModeSettingButton = hacksListModeSettingFunc.getButton();
                     if(hacksListModeSetting == "on") {
                         hacksListModeSettingButton.setText("Normal");
@@ -13235,7 +13273,7 @@ function settingsScreen() {
                         hacksListModeSettingButton.setText("Hidden");
                     }
                     hacksListModeSettingButton.setOnClickListener(new View_.OnClickListener({
-                        onClick: function(viewarg){
+                        onClick: function(viewArg) {
                             if(hacksListModeSetting == "off") {
                                 hacksListModeSetting = "on";
                                 hacksListModeSettingButton.setText("Normal");
@@ -13256,7 +13294,12 @@ function settingsScreen() {
                         }
                     }));
 					
-					var hacksListPosSettingFunc = new settingButton("Hacks list position");
+					var hacksListPosSettingFunc = new settingButton("Hacks list position", null, null,
+						function(viewArg) {
+							hacksListPosSetting = "top-center";
+							hacksListPosSettingButton.setText("Top-center");
+						}
+					);
                     var hacksListPosSettingButton = hacksListPosSettingFunc.getButton();
                     if(hacksListPosSetting == "top-left") {
                         hacksListPosSettingButton.setText("Top-left");
@@ -13266,24 +13309,27 @@ function settingsScreen() {
                         hacksListPosSettingButton.setText("Top-right");
                     }
                     hacksListPosSettingButton.setOnClickListener(new View_.OnClickListener({
-                        onClick: function(viewarg){
+                        onClick: function(viewArg) {
                             if(hacksListPosSetting == "top-left") {
                                 hacksListPosSetting = "top-center";
                                 hacksListPosSettingButton.setText("Top-center");
-                                VertexClientPE.saveMainSettings();
                             } else if(hacksListPosSetting == "top-center"){
                                 hacksListPosSetting = "top-right";
                                 hacksListPosSettingButton.setText("Top-right");
-                                VertexClientPE.saveMainSettings();
                             } else if(hacksListPosSetting == "top-right"){
                                 hacksListPosSetting = "top-left";
                                 hacksListPosSettingButton.setText("Top-left");
-                                VertexClientPE.saveMainSettings();
                             }
+							VertexClientPE.saveMainSettings();
                         }
                     }));
                     
-                    var tabGUIModeSettingFunc = new settingButton("TabGUI Mode");
+                    var tabGUIModeSettingFunc = new settingButton("TabGUI Mode", null, null,
+						function(viewArg) {
+							tabGUIModeSetting = "off";
+							tabGUIModeSettingButton.setText("Hidden");
+						}
+					);
 					var tabGUIModeSettingButton = tabGUIModeSettingFunc.getButton();
                     if(tabGUIModeSetting == "on") {
                         tabGUIModeSettingButton.setText("Shown");
@@ -13295,16 +13341,20 @@ function settingsScreen() {
                             if(tabGUIModeSetting == "on") {
                                 tabGUIModeSetting = "off";
                                 tabGUIModeSettingButton.setText("Hidden");
-                                VertexClientPE.saveMainSettings();
                             } else if(tabGUIModeSetting == "off"){
                                 tabGUIModeSetting = "on";
                                 tabGUIModeSettingButton.setText("Shown");
-                                VertexClientPE.saveMainSettings();
                             }
+							VertexClientPE.saveMainSettings();
                         }
                     }));
                     
-					var mainButtonPositionSettingFunc = new settingButton("Main button position", "Sets the main menu's button position.");
+					var mainButtonPositionSettingFunc = new settingButton("Main button position", "Sets the main menu's button position.", null,
+						function(viewArg) {
+							mainButtonPositionSetting = "top-left";
+							mainButtonPositionSettingButton.setText("Top-left");
+						}
+					);
                     var mainButtonPositionSettingButton = mainButtonPositionSettingFunc.getButton();
                     if(mainButtonPositionSetting == "top-right") {
                         mainButtonPositionSettingButton.setText("Top-right");
@@ -13318,16 +13368,14 @@ function settingsScreen() {
                         if(mainButtonPositionSetting == "top-right") {
                             mainButtonPositionSetting = "top-left";
                             mainButtonPositionSettingButton.setText("Top-left");
-                            VertexClientPE.saveMainSettings();
                         } else if(mainButtonPositionSetting == "top-left") {
                             mainButtonPositionSetting = "bottom-left";
                             mainButtonPositionSettingButton.setText("Bottom-left");
-                            VertexClientPE.saveMainSettings();
                         } else if(mainButtonPositionSetting == "bottom-left") {
                             mainButtonPositionSetting = "top-right";
                             mainButtonPositionSettingButton.setText("Top-right");
-                            VertexClientPE.saveMainSettings();
                         }
+						VertexClientPE.saveMainSettings();
                     }
                     }));
 					
@@ -13340,7 +13388,12 @@ function settingsScreen() {
 						}
                     }));
 					
-					var mainButtonStyleSettingFunc = new settingButton("Main button style", "Sets the main menu's button style.");
+					var mainButtonStyleSettingFunc = new settingButton("Main button style", "Sets the main menu's button style.", null,
+						function(viewArg) {
+							mainButtonStyleSetting = "normal";
+							mainButtonStyleSettingButton.setText("Normal");
+						}
+					);
                     var mainButtonStyleSettingButton = mainButtonStyleSettingFunc.getButton();
                     if(mainButtonStyleSetting == "normal") {
                         mainButtonStyleSettingButton.setText("Normal");
@@ -13375,7 +13428,12 @@ function settingsScreen() {
                     }
                     }));
 					
-					var mainButtonTapSettingFunc = new settingButton("Main button action", "Sets the main menu's button action.");
+					var mainButtonTapSettingFunc = new settingButton("Main button action", "Sets the main menu's button action.", null,
+						function(viewArg) {
+							mainButtonTapSetting = "menu";
+							mainButtonTapSettingButton.setText("Menu (normal tap) | More dialog (long tap)");
+                        }
+					);
                     var mainButtonTapSettingButton = mainButtonTapSettingFunc.getButton();
                     if(mainButtonTapSetting == "menu") {
                         mainButtonTapSettingButton.setText("Menu (normal tap) | More dialog (long tap)");
@@ -13413,7 +13471,12 @@ function settingsScreen() {
 					});
 					var themeSettingButton = themeSettingFunc.getButton();
                     
-                    var useLightThemeSettingFunc = new settingButton("Lighter theme colors", "Use light theme colors if available.");
+                    var useLightThemeSettingFunc = new settingButton("Lighter theme colors", "Use light theme colors if available.", null,
+						function(viewArg) {
+							useLightThemeSetting = "off";
+                            useLightThemeSettingButton.setText("OFF");
+                        }
+					);
                     var useLightThemeSettingButton = useLightThemeSettingFunc.getButton();
                     if(useLightThemeSetting == "on") {
                         useLightThemeSettingButton.setText("ON");
@@ -13434,7 +13497,12 @@ function settingsScreen() {
                     }
                     }));
                     
-					var buttonStyleSettingFunc = new settingButton("Button style", "Change the button style.");
+					var buttonStyleSettingFunc = new settingButton("Button style", "Change the button style.", null,
+						function(viewArg) {
+							buttonStyleSetting = "normal";
+							buttonStyleSettingButton.setText("Normal");
+                        }
+					);
                     var buttonStyleSettingButton = buttonStyleSettingFunc.getButton();
                     if(buttonStyleSetting == "normal") {
                         buttonStyleSettingButton.setText("Normal");
@@ -13488,7 +13556,12 @@ function settingsScreen() {
 						}
                     }));
 					
-					var backgroundStyleSettingFunc = new settingButton("Background style", "Changes the background style.");
+					var backgroundStyleSettingFunc = new settingButton("Background style", "Changes the background style.", null,
+						function(viewArg) {
+							backgroundStyleSetting = "normal";
+							backgroundStyleSettingButton.setText("Normal");
+                        }
+					);
                     var backgroundStyleSettingButton = backgroundStyleSettingFunc.getButton();
                     if(backgroundStyleSetting == "normal") {
                         backgroundStyleSettingButton.setText("Normal");
@@ -13521,7 +13594,12 @@ function settingsScreen() {
 						}
                     }));
 					
-					var transparentBgSettingFunc = new settingButton("Transparent backgrounds", "Makes screens and dialogs transparent.");
+					var transparentBgSettingFunc = new settingButton("Transparent backgrounds", "Makes screens and dialogs transparent.", null,
+						function(viewArg) {
+							transparentBgSetting = "on";
+							transparentBgSettingButton.setText("ON");
+                        }
+					);
                     var transparentBgSettingButton = transparentBgSettingFunc.getButton();
                     if(transparentBgSetting == "on") {
                         transparentBgSettingButton.setText("ON");
@@ -13542,7 +13620,17 @@ function settingsScreen() {
                     }
                     }));
                     
-					var mcpeGUISettingFunc = new settingButton("MCPE GUI", "Change the MCPE GUI.");
+					var mcpeGUISettingFunc = new settingButton("MCPE GUI", "Change the MCPE GUI.", null,
+						function(viewArg) {
+							if(mcpeGUISetting != "default") {
+								mcpeGUISetting = "default";
+								mcpeGUISettingButton.setText("Default");
+								VertexClientPE.saveMainSettings();
+								VertexClientPE.setupMCPEGUI();
+								VertexClientPE.toast("Restart your MCPE launcher now!");
+							}
+                        }
+					);
                     var mcpeGUISettingButton = mcpeGUISettingFunc.getButton();
                     if(mcpeGUISetting == "default") {
                         mcpeGUISettingButton.setText("Default");
@@ -13601,7 +13689,12 @@ function settingsScreen() {
                     }
                     }));
 					
-					var fontSettingFunc = new settingButton("Font", "Change the font/typeface.");
+					var fontSettingFunc = new settingButton("Font", "Change the font/typeface.", null,
+						function(viewArg) {
+							fontSetting = "default";
+							fontSettingButton.setText("Default");
+                        }
+					);
                     var fontSettingButton = fontSettingFunc.getButton();
                     if(fontSetting == "default") {
                         fontSettingButton.setText("Default");
@@ -13623,7 +13716,13 @@ function settingsScreen() {
 						}
                     }));
 					
-					var modButtonColorBlockedSettingFunc = new settingButton("Mod button text color (blocked)", "Change the mod button blocked text color.");
+					var modButtonColorBlockedSettingFunc = new settingButton("Mod button text color (blocked)", "Change the mod button blocked text color.", null,
+						function(viewArg) {
+							modButtonColorBlockedSetting = "red";
+							modButtonColorBlockedSettingButton.setText("Red");
+							VertexClientPE.setupModButtonColors();
+                        }
+					);
                     var modButtonColorBlockedSettingButton = modButtonColorBlockedSettingFunc.getButton();
                     if(modButtonColorBlockedSetting == "red") {
                         modButtonColorBlockedSettingButton.setText("Red");
@@ -13664,7 +13763,13 @@ function settingsScreen() {
 						}
                     }));
 					
-					var modButtonColorEnabledSettingFunc = new settingButton("Mod button text color (enabled)", "Change the mod button enabled text color.");
+					var modButtonColorEnabledSettingFunc = new settingButton("Mod button text color (enabled)", "Change the mod button enabled text color.", null,
+						function(viewArg) {
+							modButtonColorEnabledSetting = "green";
+							modButtonColorEnabledSettingButton.setText("Green");
+							VertexClientPE.setupModButtonColors();
+                        }
+					);
                     var modButtonColorEnabledSettingButton = modButtonColorEnabledSettingFunc.getButton();
                     if(modButtonColorEnabledSetting == "red") {
                         modButtonColorEnabledSettingButton.setText("Red");
@@ -13705,7 +13810,13 @@ function settingsScreen() {
 						}
                     }));
 					
-					var modButtonColorDisabledSettingFunc = new settingButton("Mod button text color (disabled)", "Change the mod button disabled text color.");
+					var modButtonColorDisabledSettingFunc = new settingButton("Mod button text color (disabled)", "Change the mod button disabled text color.", null,
+						function(viewArg) {
+							modButtonColorDisabledSetting = "white";
+							modButtonColorDisabledSettingButton.setText("White");
+							VertexClientPE.setupModButtonColors();
+                        }
+					);
                     var modButtonColorDisabledSettingButton = modButtonColorDisabledSettingFunc.getButton();
                     if(modButtonColorDisabledSetting == "red") {
                         modButtonColorDisabledSettingButton.setText("Red");
@@ -13748,7 +13859,12 @@ function settingsScreen() {
                     
                     var menuTitle = clientSectionTitle("Menu", "rainbow");
                     
-					var menuTypeSettingFunc = new settingButton("Menu style", "Sets the Client's menu style.");
+					var menuTypeSettingFunc = new settingButton("Menu style", "Sets the Client's menu style.", null,
+						function(viewArg) {
+							menuType = "normal";
+                            menuTypeSettingButton.setText("Normal");
+                        }
+					);
                     var menuTypeSettingButton = menuTypeSettingFunc.getButton();
                     if(menuType == "normal") {
                         menuTypeSettingButton.setText("Normal");
@@ -13766,28 +13882,33 @@ function settingsScreen() {
                         if(menuType == "normal") {
                             menuType = "halfscreen";
                             menuTypeSettingButton.setText("Tabbed (side)");
-                            VertexClientPE.saveMainSettings();
                         } else if(menuType == "halfscreen") {
                             menuType = "halfscreen_top";
                             menuTypeSettingButton.setText("Tabbed (top)");
-                            VertexClientPE.saveMainSettings();
                         } else if(menuType == "halfscreen_top") {
                             menuType = "tabbed_fullscreen";
                             menuTypeSettingButton.setText("Tabbed (fullscreen)");
-                            VertexClientPE.saveMainSettings();
                         } else if(menuType == "tabbed_fullscreen") {
                             menuType = "fullscreen";
                             menuTypeSettingButton.setText("Fullscreen");
-                            VertexClientPE.saveMainSettings();
                         } else if(menuType == "fullscreen") {
                             menuType = "normal";
                             menuTypeSettingButton.setText("Normal");
-                            VertexClientPE.saveMainSettings();
                         }
+						VertexClientPE.saveMainSettings();
                     }
                     }));
                     
-					var sizeSettingFunc = new settingButton("Size setting", "Change menu size to fit your screen size better (this only works for the normal menu style).");
+					var sizeSettingFunc = new settingButton("Size setting", "Change menu size to fit your screen size better (this only works for the normal menu style).", null,
+						function(viewArg) {
+							if(sizeSetting != "normal") {
+								sizeSetting = "normal";
+								customHeight = topBarHeight / 2;
+								sizeSettingButton.setText("Normal");
+								VertexClientPE.toast("You may need to restart your launcher to make it work (this only works for the normal menu style)!");
+							}
+                        }
+					);
                     var sizeSettingButton = sizeSettingFunc.getButton();
                     if(sizeSetting == "normal") {
                         sizeSettingButton.setText("Normal");
@@ -13800,18 +13921,22 @@ function settingsScreen() {
                             sizeSetting = "small";
                             customHeight = topBarHeight;
                             sizeSettingButton.setText("Small");
-                            VertexClientPE.saveMainSettings();
                         } else if(sizeSetting == "small") {
                             sizeSetting = "normal";
                             customHeight = topBarHeight / 2;
                             sizeSettingButton.setText("Normal");
-                            VertexClientPE.saveMainSettings();
                         }
+						VertexClientPE.saveMainSettings();
                         VertexClientPE.toast("Now restart your launcher to make it work (this only works for the normal menu style)!");
                     }
                     }));
                     
-					var menuAnimationsSettingFunc = new settingButton("Menu animations", "Show menu animations.");
+					var menuAnimationsSettingFunc = new settingButton("Menu animations", "Show menu animations.", null,
+						function(viewArg) {
+							menuAnimationsSetting = "on";
+							menuAnimationsSettingButton.setText("ON");
+                        }
+					);
                     var menuAnimationsSettingButton = menuAnimationsSettingFunc.getButton();
                     if(menuAnimationsSetting == "on") {
                         menuAnimationsSettingButton.setText("ON");
@@ -13823,12 +13948,11 @@ function settingsScreen() {
 							if(menuAnimationsSetting == "on") {
 								menuAnimationsSetting = "off";
 								menuAnimationsSettingButton.setText("OFF");
-								VertexClientPE.saveMainSettings();
 							} else if(menuAnimationsSetting == "off") {
 								menuAnimationsSetting = "on";
 								menuAnimationsSettingButton.setText("ON");
-								VertexClientPE.saveMainSettings();
 							}
+							VertexClientPE.saveMainSettings();
 						}
                     }));
 					
@@ -13845,7 +13969,12 @@ function settingsScreen() {
 					
 					var commandsTitle = clientSectionTitle("Commands", "rainbow");
 					
-					var commandsSettingFunc = new settingButton("Commands", "Toggle commands off to login on servers like Mineplex PE.");
+					var commandsSettingFunc = new settingButton("Commands", "Toggle commands off to login on servers like Mineplex PE.", null,
+						function(viewArg) {
+							commandsSetting = "on";
+                            commandsSettingButton.setText("ON");
+                        }
+					);
                     var commandsSettingButton = commandsSettingFunc.getButton();
                     if(commandsSetting == "on") {
                         commandsSettingButton.setText("ON");
@@ -13866,7 +13995,12 @@ function settingsScreen() {
                     }
                     }));
 					
-					var cmdPrefixFunc = new settingButton("Command prefix", "Change the first character of all Vertex Client PE commands.");
+					var cmdPrefixFunc = new settingButton("Command prefix", "Change the first character of all Vertex Client PE commands.", null,
+						function(viewArg) {
+							cmdPrefix = ".";
+                            cmdPrefixButton.setText(".");
+                        }
+					);
                     var cmdPrefixButton = cmdPrefixFunc.getButton();
                     cmdPrefixButton.setText(cmdPrefix);
                     cmdPrefixButton.setOnClickListener(new View_.OnClickListener({
@@ -13902,7 +14036,12 @@ function settingsScreen() {
 						}
                     }));
                     
-					var showNewsSettingFunc = new settingButton("Show news", "Show news at start.");
+					var showNewsSettingFunc = new settingButton("Show news", "Show news at start.", null,
+						function(viewArg) {
+							showNewsSetting = "on";
+                            showNewsSettingButton.setText("ON");
+                        }
+					);
                     var showNewsSettingButton = showNewsSettingFunc.getButton();
                     if(showNewsSetting == "on") {
                         showNewsSettingButton.setText("ON");
@@ -13914,16 +14053,20 @@ function settingsScreen() {
                         if(showNewsSetting == "on") {
                             showNewsSetting = "off";
                             showNewsSettingButton.setText("OFF");
-                            VertexClientPE.saveMainSettings();
                         } else if(showNewsSetting == "off") {
                             showNewsSetting = "on";
                             showNewsSettingButton.setText("ON");
-                            VertexClientPE.saveMainSettings();
                         }
+						VertexClientPE.saveMainSettings();
                     }
                     }));
                     
-					var playMusicSettingFunc = new settingButton("Automatically play music", "Automatically play music.");
+					var playMusicSettingFunc = new settingButton("Automatically play music", "Automatically play music.", null,
+						function(viewArg) {
+							playMusicSetting = "off";
+                            playMusicSettingButton.setText("OFF");
+                        }
+					);
                     var playMusicSettingButton = playMusicSettingFunc.getButton();
                     if(playMusicSetting == "on") playMusicSetting = "off";
                     /*if(playMusicSetting == "on") {
@@ -13939,11 +14082,9 @@ function settingsScreen() {
                         if(playMusicSetting == "off") {
                             playMusicSetting = "shuffle";
                             playMusicSettingButton.setText("Shuffle");
-                            VertexClientPE.saveMainSettings();
                         } else if(playMusicSetting == "shuffle") {
                             playMusicSetting = "off";
                             playMusicSettingButton.setText("OFF");
-                            VertexClientPE.saveMainSettings();
                         }/* else if(playMusicSetting == "off") {
                             playMusicSetting = "on";
                             playMusicSettingButton.setText("Normal");
@@ -13953,10 +14094,16 @@ function settingsScreen() {
                             //VertexClientPE.playMusic();
                             print("This mode is not ready yet!");
                         }*/
+						VertexClientPE.saveMainSettings();
                     }
                     }));
 					
-					var showSnowInWinterSettingFunc = new settingButton("Show snowflakes on the start screen in the winter");
+					var showSnowInWinterSettingFunc = new settingButton("Show snowflakes on the start screen in the winter", null, null,
+						function(viewArg) {
+							showSnowInWinterSetting = "off";
+							showSnowInWinterSettingButton.setText("OFF");
+                        }
+					);
                     var showSnowInWinterSettingButton = showSnowInWinterSettingFunc.getButton();
                     if(showSnowInWinterSetting == "on") {
                         showSnowInWinterSettingButton.setText("ON");
@@ -13964,16 +14111,15 @@ function settingsScreen() {
                         showSnowInWinterSettingButton.setText("OFF");
                     }
                     showSnowInWinterSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewarg) {
+						onClick: function(viewArg) {
 							if(showSnowInWinterSetting == "off") {
 								showSnowInWinterSetting = "on";
 								showSnowInWinterSettingButton.setText("ON");
-								VertexClientPE.saveMainSettings();
 							} else if(showSnowInWinterSetting == "on") {
 								showSnowInWinterSetting = "off";
 								showSnowInWinterSettingButton.setText("OFF");
-								VertexClientPE.saveMainSettings();
 							}
+							VertexClientPE.saveMainSettings();
 						}
                     }));
 					
@@ -16747,6 +16893,7 @@ function showMenuButton() {
 				menuBtn.setBackgroundDrawable(iconClientGUI);
 			}
 		} else if(mainButtonTapSetting == "moredialog") {
+			menuBtn.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 			menuBtn.setText("\u2022\u2022\u2022");
 			menuBtn.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
 			menuBtn.setMarqueeRepeatLimit(-1);
