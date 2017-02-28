@@ -3146,7 +3146,7 @@ var followStage = 0;
 var follow = {
     name: "Follow",
     desc: "Automatically follow nearby entities.",
-    category: VertexClientPE.category.COMBAT,
+    category: VertexClientPE.category.MOVEMENT,
     type: "Mod",
     state: false,
     requiresPro: function() {
@@ -5151,7 +5151,6 @@ VertexClientPE.registerModule(autoLeave);
 VertexClientPE.registerModule(autoSword);
 VertexClientPE.registerModule(criticals);
 VertexClientPE.registerModule(fireAura);
-VertexClientPE.registerModule(follow);
 VertexClientPE.registerModule(freezeAura);
 VertexClientPE.registerModule(godMode);
 VertexClientPE.registerModule(healthTags);
@@ -5164,7 +5163,6 @@ VertexClientPE.registerModule(switchAimbot);
 VertexClientPE.registerModule(tapAimbot);
 VertexClientPE.registerModule(tpAura);
 //MOVEMENT
-VertexClientPE.registerModule(pointTeleport);
 VertexClientPE.registerModule(autoWalk);
 /* if(Launcher.isToolbox()) {
 	//VertexClientPE.registerModule(elytraBoost);
@@ -5174,6 +5172,7 @@ VertexClientPE.registerModule(fastBridge);
 VertexClientPE.registerModule(fastWalk);
 //VertexClientPE.registerModule(fenceJump);
 VertexClientPE.registerModule(flight);
+VertexClientPE.registerModule(follow);
 VertexClientPE.registerModule(frostWalk);
 VertexClientPE.registerModule(glide);
 VertexClientPE.registerModule(highJump);
@@ -5182,6 +5181,7 @@ VertexClientPE.registerModule(liquidWalk);
 VertexClientPE.registerModule(noDownGlide);
 //VertexClientPE.registerModule(noInvisBedrock);
 VertexClientPE.registerModule(phase);
+VertexClientPE.registerModule(pointTeleport);
 VertexClientPE.registerModule(randomTP);
 VertexClientPE.registerModule(ride);
 VertexClientPE.registerModule(safeWalk);
