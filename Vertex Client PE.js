@@ -5085,11 +5085,66 @@ var serverInfo = {
     }
 }
 
+var switchAimbot = {
+    name: "SwitchAimbot",
+    desc: "Makes you point at entities but changes target all the time.",
+    category: VertexClientPE.category.COMBAT,
+    type: "Mod",
+    state: false,
+	mobTargetNum: 0,
+	playerTargetNum: 0,
+    isStateMod: function() {
+        return true;
+    },
+    onToggle: function() {
+        this.state = !this.state;
+    },
+    onTick: function() {
+		var range = Level.getGameMode()==1?9:7;
+		var players = Server.getAllPlayers();
+        var mobs = Entity.getAll();
+		if(targetMobsSetting == "on") {
+			if(this.mobTargetNum >= mobs.length) {
+				this.mobTargetNum = 0;
+			}
+			var cMob = mobs[this.mobTargetNum];
+			if(cMob != null && cMob != undefined) {
+				var x = Entity.getX(cMob) - getPlayerX();
+				var y = Entity.getY(cMob) - getPlayerY();
+				var z = Entity.getZ(cMob) - getPlayerZ();
+				if(x*x+y*y+z*z>range*range) {
+					if(Entity.getEntityTypeId(cMob) != EntityType.ARROW && Entity.getEntityTypeId(cMob) != EntityType.BOAT && Entity.getEntityTypeId(cMob) != EntityType.EGG && Entity.getEntityTypeId(cMob) != EntityType.ENDER_PEARL && Entity.getEntityTypeId(cMob) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(cMob) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(cMob) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(cMob) != EntityType.FIREBALL && Entity.getEntityTypeId(cMob) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(cMob) != EntityType.ITEM && Entity.getEntityTypeId(cMob) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(cMob) != EntityType.MINECART && Entity.getEntityTypeId(cMob) != EntityType.PAINTING && Entity.getEntityTypeId(cMob) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(cMob) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(cMob) != EntityType.SNOWBALL && Entity.getEntityTypeId(cMob) != EntityType.THROWN_POTION && cMob != getPlayerEnt()) {
+						VertexClientPE.CombatUtils.aimAtEnt(cMob);
+					}
+				}
+			}
+			this.mobTargetNum++;
+		}
+		if(targetPlayersSetting == "on") {
+			if(this.playerTargetNum >= mobs.length) {
+				this.playerTargetNum = 0;
+			}
+			var cPlayer = players[this.playerTargetNum];
+			if(cPlayer != null && cPlayer != undefined) {
+				var x = Entity.getX(cPlayer) - getPlayerX();
+				var y = Entity.getY(cPlayer) - getPlayerY();
+				var z = Entity.getZ(cPlayer) - getPlayerZ();
+				if(x*x+y*y+z*z>range*range) {
+					if(cPlayer != getPlayerEnt()) {
+						VertexClientPE.CombatUtils.aimAtEnt(cPlayer);
+					}
+				}
+			}
+			this.playerTargetNum++;
+		}
+    }
+}
+
 //COMBAT
-VertexClientPE.registerModule(antiKnockback);
-VertexClientPE.registerModule(antiBurn);
-VertexClientPE.registerModule(arrowGun);
 VertexClientPE.registerModule(aimbot);
+VertexClientPE.registerModule(antiBurn);
+VertexClientPE.registerModule(antiKnockback);
+VertexClientPE.registerModule(arrowGun);
 VertexClientPE.registerModule(attackShock);
 VertexClientPE.registerModule(attackTeleport);
 VertexClientPE.registerModule(autoLeave);
@@ -5100,11 +5155,12 @@ VertexClientPE.registerModule(follow);
 VertexClientPE.registerModule(freezeAura);
 VertexClientPE.registerModule(godMode);
 VertexClientPE.registerModule(healthTags);
+VertexClientPE.registerModule(hitboxes);
 VertexClientPE.registerModule(instaKill);
 VertexClientPE.registerModule(killAura);
 VertexClientPE.registerModule(noHurt);
 VertexClientPE.registerModule(regen);
-VertexClientPE.registerModule(hitboxes);
+VertexClientPE.registerModule(switchAimbot);
 VertexClientPE.registerModule(tapAimbot);
 VertexClientPE.registerModule(tpAura);
 //MOVEMENT
