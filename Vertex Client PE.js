@@ -5112,7 +5112,7 @@ var switchAimbot = {
 				var x = Entity.getX(cMob) - getPlayerX();
 				var y = Entity.getY(cMob) - getPlayerY();
 				var z = Entity.getZ(cMob) - getPlayerZ();
-				if(x*x+y*y+z*z>range*range) {
+				if(x*x+y*y+z*z <= range*range) {
 					if(Entity.getEntityTypeId(cMob) != EntityType.ARROW && Entity.getEntityTypeId(cMob) != EntityType.BOAT && Entity.getEntityTypeId(cMob) != EntityType.EGG && Entity.getEntityTypeId(cMob) != EntityType.ENDER_PEARL && Entity.getEntityTypeId(cMob) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(cMob) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(cMob) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(cMob) != EntityType.FIREBALL && Entity.getEntityTypeId(cMob) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(cMob) != EntityType.ITEM && Entity.getEntityTypeId(cMob) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(cMob) != EntityType.MINECART && Entity.getEntityTypeId(cMob) != EntityType.PAINTING && Entity.getEntityTypeId(cMob) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(cMob) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(cMob) != EntityType.SNOWBALL && Entity.getEntityTypeId(cMob) != EntityType.THROWN_POTION && cMob != getPlayerEnt()) {
 						VertexClientPE.CombatUtils.aimAtEnt(cMob);
 					}
@@ -5129,7 +5129,7 @@ var switchAimbot = {
 				var x = Entity.getX(cPlayer) - getPlayerX();
 				var y = Entity.getY(cPlayer) - getPlayerY();
 				var z = Entity.getZ(cPlayer) - getPlayerZ();
-				if(x*x+y*y+z*z>range*range) {
+				if(x*x+y*y+z*z <= range*range) {
 					if(cPlayer != getPlayerEnt()) {
 						VertexClientPE.CombatUtils.aimAtEnt(cPlayer);
 					}
