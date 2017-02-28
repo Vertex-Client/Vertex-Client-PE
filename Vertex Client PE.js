@@ -4511,6 +4511,8 @@ var tapAimbot = {
     category: VertexClientPE.category.COMBAT,
     type: "Mod",
 	state: false,
+	timer: 0,
+	targetEnt: null,
     isStateMod: function() {
         return true;
     },
@@ -4519,7 +4521,17 @@ var tapAimbot = {
     },
 	onAttack: function(a, v) {
 		if(a == getPlayerEnt()) {
-			VertexClientPE.CombatUtils.aimAtEnt(v);
+			this.targetEnt = v;
+			this.timer = 0;
+		}
+	},
+	onTick: function() {
+		if(this.targetEnt != null && this.timer <= 40) {
+			VertexClientPE.CombatUtils.aimAtEnt(this.targetEnt);
+			this.timer++;
+		} else {
+			this.targetEnt = null;
+			this.timer = 0;
 		}
 	}
 }
