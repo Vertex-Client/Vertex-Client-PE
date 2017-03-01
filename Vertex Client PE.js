@@ -263,6 +263,39 @@ var customHeight = topBarHeight / 2;
 var sharedPref = CONTEXT.getPreferences(CONTEXT.MODE_PRIVATE);
 var editor = sharedPref.edit();
 
+//MENU START
+const combattpopx_def = screenWidth / 3, combattpopy_def = 0;
+var combattpopx = combattpopx_def, combattpopy = combattpopy_def;
+var combatmX, combatmY;
+var combatdown = false;
+
+const buildingtpopx_def = Math.floor(screenWidth / 3 + screenWidth / 3), buildingtpopy_def = screenHeight / 2 - customHeight;
+var buildingtpopx = buildingtpopx_def, buildingtpopy = buildingtpopy_def;
+var buildingmX, buildingmY;
+var buildingdown = false;
+
+const movementtpopx_def = screenWidth / 3, movementtpopy_def = screenHeight / 2 - customHeight;
+var movementtpopx = movementtpopx_def, movementtpopy = movementtpopy_def;
+var movementmX, movementmY;
+var movementdown = false;
+
+const chattpopx_def = 0, chattpopy_def = 0;
+var chattpopx = chattpopx_def, chattpopy = chattpopy_def;
+var chatmX, chatmY;
+var chatdown = false;
+
+const misctpopx_def = 0, misctpopy_def = screenHeight / 2 - customHeight;
+var misctpopx = misctpopx_def, misctpopy = misctpopy_def;
+var miscmX, miscmY;
+var miscdown = false;
+
+var combatMenuShown = false;
+var buildingMenuShown = false;
+var movementMenuShown = false;
+var chatMenuShown = false;
+var miscMenuShown = false;
+//MENU END
+
 var Launcher = {
     isBlockLauncher: function() {
         return (CONTEXT.getPackageName() == "net.zhuoweizhang.mcpelauncher" || CONTEXT.getPackageName() == "net.zhuoweizhang.mcpelauncher.pro");
@@ -6412,6 +6445,7 @@ VertexClientPE.resetMenuPos = function() {
 	misctpopx = misctpopx_def;
 	misctpopy = misctpopy_def;
 	vertexclientpemiscmenu.update(parseInt(misctpopx), parseInt(misctpopy), -1, -1);
+	VertexClientPE.saveFloatingMenus("all");
 	VertexClientPE.toast("Successfully reset all menu positions!");
 }
 
@@ -9404,69 +9438,125 @@ VertexClientPE.loadCustomRGBSettings = function () {
     }
 }
 
+VertexClientPE.saveFloatingMenus = function(category) {
+	if(category == "combat" || category == "all") {
+		editor.putFloat("VertexClientPE.combattpopx", parseInt(combattpopx));
+		editor.putFloat("VertexClientPE.combattpopy", parseInt(combattpopy));
+		editor.putBoolean("VertexClientPE.combatMenuShown", combatMenuShown);
+	}
+	//---
+	if(category == "building" || category == "all") {
+		editor.putFloat("VertexClientPE.buildingtpopx", parseInt(buildingtpopx));
+		editor.putFloat("VertexClientPE.buildingtpopy", parseInt(buildingtpopy));
+		editor.putBoolean("VertexClientPE.buildingMenuShown", buildingMenuShown);
+	}
+	//---
+	if(category == "movement" || category == "all") {
+		editor.putFloat("VertexClientPE.movementtpopx", parseInt(movementtpopx));
+		editor.putFloat("VertexClientPE.movementtpopy", parseInt(movementtpopy));
+		editor.putBoolean("VertexClientPE.movementMenuShown", movementMenuShown);
+	}
+	//---
+	if(category == "chat" || category == "all") {
+		editor.putFloat("VertexClientPE.chattpopx", parseInt(chattpopx));
+		editor.putFloat("VertexClientPE.chattpopy", parseInt(chattpopy));
+		editor.putBoolean("VertexClientPE.chatMenuShown", chatMenuShown);
+	}
+	//---
+	if(category == "misc" || category == "all") {
+		editor.putFloat("VertexClientPE.misctpopx", parseInt(misctpopx));
+		editor.putFloat("VertexClientPE.misctpopy", parseInt(misctpopy));
+		editor.putBoolean("VertexClientPE.miscMenuShown", miscMenuShown);
+	}
+	
+	editor.commit();
+}
+
+VertexClientPE.loadFloatingMenus = function () {
+	combattpopx = sharedPref.getFloat("VertexClientPE.combattpopx", combattpopx);
+	combattpopy = sharedPref.getFloat("VertexClientPE.combattpopy", combattpopy);
+	combatMenuShown = sharedPref.getBoolean("VertexClientPE.combatMenuShown", combatMenuShown);
+	//---
+	buildingtpopx = sharedPref.getFloat("VertexClientPE.buildingtpopx", buildingtpopx);
+	buildingtpopy = sharedPref.getFloat("VertexClientPE.buildingtpopy", buildingtpopy);
+	buildingMenuShown = sharedPref.getBoolean("VertexClientPE.buildingMenuShown", buildingMenuShown);
+	//---
+	movementtpopx = sharedPref.getFloat("VertexClientPE.movementtpopx", movementtpopx);
+	movementtpopy = sharedPref.getFloat("VertexClientPE.movementtpopy", movementtpopy);
+	movementMenuShown = sharedPref.getBoolean("VertexClientPE.movementMenuShown", movementMenuShown);
+	//---
+	chattpopx = sharedPref.getFloat("VertexClientPE.chattpopx", chattpopx);
+	chattpopy = sharedPref.getFloat("VertexClientPE.chattpopy", chattpopy);
+	chatMenuShown = sharedPref.getBoolean("VertexClientPE.chatMenuShown", chatMenuShown);
+	//---
+	misctpopx = sharedPref.getFloat("VertexClientPE.misctpopx", misctpopx);
+	misctpopy = sharedPref.getFloat("VertexClientPE.misctpopy", misctpopy);
+	miscMenuShown = sharedPref.getBoolean("VertexClientPE.miscMenuShown", miscMenuShown);
+}
+
 VertexClientPE.saveMainSettings = function() {
-    File_(settingsPath).mkdirs();
-    var newFile = new File_(settingsPath, "vertexclientpenew.txt");
-    newFile.createNewFile();
-    var outWrite = new OutputStreamWriter_(new FileOutputStream_(newFile));
-    outWrite.append(hacksListModeSetting.toString());
-    outWrite.append("," + mainButtonPositionSetting.toString());
-    outWrite.append("," + healthTagsSetting.toString());
-    outWrite.append("," + themeSetting.toString());
-    outWrite.append("," + playMusicSetting.toString());
-    outWrite.append("," + showNewsSetting.toString());
-    outWrite.append("," + menuAnimationsSetting.toString());
-    outWrite.append("," + nukerMode.toString());
-    outWrite.append("," + timerSpeed.toString());
-    outWrite.append("," + themeSetup.toString());
-    outWrite.append("," + nukerRange.toString());
-    outWrite.append("," + killAuraRange.toString());
-    outWrite.append("," + spamDelayTime.toString());
-    outWrite.append("," + sizeSetting.toString());
-    outWrite.append("," + tapNukerRange.toString());
-    outWrite.append("," + menuType.toString());
-    outWrite.append("," + chestTracersRange.toString());
-    outWrite.append("," + tabGUIModeSetting.toString());
-    outWrite.append("," + chestTracersGroundMode.toString());
-    outWrite.append("," + chestTracersParticle.toString());
-    outWrite.append("," + antiLagDropRemoverSetting.toString());
-    outWrite.append("," + useLightThemeSetting.toString());
-    outWrite.append("," + buttonStyleSetting.toString());
-    outWrite.append("," + mcpeGUISetting.toString());
-    outWrite.append("," + chestESPRange.toString());
-    outWrite.append("," + transparentBgSetting.toString());
-    outWrite.append("," + aimbotUseKillauraRange.toString());
-    outWrite.append("," + screenshotModeSetting.toString());
-    outWrite.append("," + killToMorphSetting.toString());
-    outWrite.append("," + fontSetting.toString());
-    outWrite.append("," + mainButtonStyleSetting.toString());
-    outWrite.append("," + webBrowserStartPageSetting.toString());
-    outWrite.append("," + backgroundStyleSetting.toString());
-    outWrite.append("," + modButtonColorBlockedSetting.toString());
-    outWrite.append("," + modButtonColorEnabledSetting.toString());
-    outWrite.append("," + modButtonColorDisabledSetting.toString());
-    outWrite.append("," + arrowGunMode.toString());
-    outWrite.append("," + commandsSetting.toString());
-    outWrite.append("," + cmdPrefix.toString());
-    outWrite.append("," + shortcutSizeSetting.toString());
-    outWrite.append("," + aimbotRangeSetting.toString());
-    outWrite.append("," + speedHackFriction.toString());
-    outWrite.append("," + remoteViewTeleportSetting.toString());
-    outWrite.append("," + switchGamemodeSendCommandSetting.toString());
-    outWrite.append("," + betterPauseSetting.toString());
-    outWrite.append("," + shortcutUIHeightSetting.toString());
-    outWrite.append("," + mainButtonTapSetting.toString());
-    outWrite.append("," + autoWalkDirection.toString());
-    outWrite.append("," + dashboardTileSize.toString());
-    outWrite.append("," + spamUseRandomMsgSetting.toString());
-    outWrite.append("," + buttonStrokeThicknessSetting.toString());
-    outWrite.append("," + hacksListPosSetting.toString());
-    outWrite.append("," + targetMobsSetting.toString());
-    outWrite.append("," + targetPlayersSetting.toString());
-    outWrite.append("," + shortcutUIPosSetting.toString());
-    outWrite.append("," + hitboxesHitboxWidthSetting.toString());
-    outWrite.append("," + hitboxesHitboxHeightSetting.toString());
-    outWrite.append("," + showUpdateToastsSetting.toString());
+	File_(settingsPath).mkdirs();
+	var newFile = new File_(settingsPath, "vertexclientpenew.txt");
+	newFile.createNewFile();
+	var outWrite = new OutputStreamWriter_(new FileOutputStream_(newFile));
+	outWrite.append(hacksListModeSetting.toString());
+	outWrite.append("," + mainButtonPositionSetting.toString());
+	outWrite.append("," + healthTagsSetting.toString());
+	outWrite.append("," + themeSetting.toString());
+	outWrite.append("," + playMusicSetting.toString());
+	outWrite.append("," + showNewsSetting.toString());
+	outWrite.append("," + menuAnimationsSetting.toString());
+	outWrite.append("," + nukerMode.toString());
+	outWrite.append("," + timerSpeed.toString());
+	outWrite.append("," + themeSetup.toString());
+	outWrite.append("," + nukerRange.toString());
+	outWrite.append("," + killAuraRange.toString());
+	outWrite.append("," + spamDelayTime.toString());
+	outWrite.append("," + sizeSetting.toString());
+	outWrite.append("," + tapNukerRange.toString());
+	outWrite.append("," + menuType.toString());
+	outWrite.append("," + chestTracersRange.toString());
+	outWrite.append("," + tabGUIModeSetting.toString());
+	outWrite.append("," + chestTracersGroundMode.toString());
+	outWrite.append("," + chestTracersParticle.toString());
+	outWrite.append("," + antiLagDropRemoverSetting.toString());
+	outWrite.append("," + useLightThemeSetting.toString());
+	outWrite.append("," + buttonStyleSetting.toString());
+	outWrite.append("," + mcpeGUISetting.toString());
+	outWrite.append("," + chestESPRange.toString());
+	outWrite.append("," + transparentBgSetting.toString());
+	outWrite.append("," + aimbotUseKillauraRange.toString());
+	outWrite.append("," + screenshotModeSetting.toString());
+	outWrite.append("," + killToMorphSetting.toString());
+	outWrite.append("," + fontSetting.toString());
+	outWrite.append("," + mainButtonStyleSetting.toString());
+	outWrite.append("," + webBrowserStartPageSetting.toString());
+	outWrite.append("," + backgroundStyleSetting.toString());
+	outWrite.append("," + modButtonColorBlockedSetting.toString());
+	outWrite.append("," + modButtonColorEnabledSetting.toString());
+	outWrite.append("," + modButtonColorDisabledSetting.toString());
+	outWrite.append("," + arrowGunMode.toString());
+	outWrite.append("," + commandsSetting.toString());
+	outWrite.append("," + cmdPrefix.toString());
+	outWrite.append("," + shortcutSizeSetting.toString());
+	outWrite.append("," + aimbotRangeSetting.toString());
+	outWrite.append("," + speedHackFriction.toString());
+	outWrite.append("," + remoteViewTeleportSetting.toString());
+	outWrite.append("," + switchGamemodeSendCommandSetting.toString());
+	outWrite.append("," + betterPauseSetting.toString());
+	outWrite.append("," + shortcutUIHeightSetting.toString());
+	outWrite.append("," + mainButtonTapSetting.toString());
+	outWrite.append("," + autoWalkDirection.toString());
+	outWrite.append("," + dashboardTileSize.toString());
+	outWrite.append("," + spamUseRandomMsgSetting.toString());
+	outWrite.append("," + buttonStrokeThicknessSetting.toString());
+	outWrite.append("," + hacksListPosSetting.toString());
+	outWrite.append("," + targetMobsSetting.toString());
+	outWrite.append("," + targetPlayersSetting.toString());
+	outWrite.append("," + shortcutUIPosSetting.toString());
+	outWrite.append("," + hitboxesHitboxWidthSetting.toString());
+	outWrite.append("," + hitboxesHitboxHeightSetting.toString());
+	outWrite.append("," + showUpdateToastsSetting.toString());
 	outWrite.append("," + showSnowInWinterSetting.toString());
 	outWrite.append("," + preventDiggingSetting.toString());
 	outWrite.append("," + preventPlacingSetting.toString());
@@ -9475,10 +9565,10 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + strafeAuraRangeSetting.toString());
 	outWrite.append("," + strafeAuraDirectionSetting.toString());
 
-    outWrite.close();
-    
-    VertexClientPE.saveAutoSpammerMessage();
-    VertexClientPE.saveCategorySettings();
+	outWrite.close();
+	
+	VertexClientPE.saveAutoSpammerMessage();
+	VertexClientPE.saveCategorySettings();
 }
 
 VertexClientPE.loadMainSettings = function () {
@@ -12487,6 +12577,7 @@ VertexClientPE.showSetupScreen = function() {
 										showMenuButton();
 										VertexClientPE.showUpdate();
 										VertexClientPE.loadAddons();
+										VertexClientPE.loadFloatingMenus();
 										VertexClientPE.clientTick();
 										VertexClientPE.inGameTick();
 										VertexClientPE.specialTick();
@@ -13014,6 +13105,7 @@ VertexClientPE.setup = function() {
 							VertexClientPE.secondTick();
 							VertexClientPE.showUpdate();
 							VertexClientPE.loadAddons();
+							VertexClientPE.loadFloatingMenus();
 							showMenuButton();
 							VertexClientPE.initMods();
 						}
@@ -16556,37 +16648,6 @@ function retroMenu() {
 var vertexclientpemenu;
 var menuBtn;
 
-const combattpopx_def = screenWidth / 3, combattpopy_def = 0;
-var combattpopx = combattpopx_def, combattpopy = combattpopy_def;
-var combatmX, combatmY;
-var combatdown = false;
-
-const buildingtpopx_def = Math.floor(screenWidth / 3 + screenWidth / 3), buildingtpopy_def = screenHeight / 2 - customHeight;
-var buildingtpopx = buildingtpopx_def, buildingtpopy = buildingtpopy_def;
-var buildingmX, buildingmY;
-var buildingdown = false;
-
-const movementtpopx_def = screenWidth / 3, movementtpopy_def = screenHeight / 2 - customHeight;
-var movementtpopx = movementtpopx_def, movementtpopy = movementtpopy_def;
-var movementmX, movementmY;
-var movementdown = false;
-
-const chattpopx_def = 0, chattpopy_def = 0;
-var chattpopx = chattpopx_def, chattpopy = chattpopy_def;
-var chatmX, chatmY;
-var chatdown = false;
-
-const misctpopx_def = 0, misctpopy_def = screenHeight / 2 - customHeight;
-var misctpopx = misctpopx_def, misctpopy = misctpopy_def;
-var miscmX, miscmY;
-var miscdown = false;
-
-var combatMenuShown = false;
-var buildingMenuShown = false;
-var movementMenuShown = false;
-var chatMenuShown = false;
-var miscMenuShown = false;
-
 var vertexclientpecombatmenu, vertexclientpebuildingmenu, vertexclientpemovementmenu, vertexclientpechatmenu, vertexclientpemiscmenu;
 
 VertexClientPE.showCategoryMenus = function () {
@@ -16695,6 +16756,7 @@ VertexClientPE.showCategoryMenus = function () {
 							combatArrow.setText("\u25B3");
 							combatMenuShown = true;
 						}
+						VertexClientPE.saveFloatingMenus("combat");
 					}
 				});
 				combatTitle.setOnLongClickListener(new View_.OnLongClickListener() {
@@ -16718,6 +16780,7 @@ VertexClientPE.showCategoryMenus = function () {
 								combattpopx = combattpopx + X;
 								combattpopy = combattpopy + Y;
 								vertexclientpecombatmenu.update(parseInt(combattpopx), parseInt(combattpopy), -1, -1);
+								VertexClientPE.saveFloatingMenus("combat");
 							}
 							if (a == 1) combatdown = false;
 						}
@@ -16764,6 +16827,7 @@ VertexClientPE.showCategoryMenus = function () {
 							buildingArrow.setText("\u25B3");
 							buildingMenuShown = true;
 						}
+						VertexClientPE.saveFloatingMenus("building");
 					}
 				});
 				buildingTitle.setOnLongClickListener(new View_.OnLongClickListener() {
@@ -16776,8 +16840,8 @@ VertexClientPE.showCategoryMenus = function () {
 				buildingTitle.setOnTouchListener(new View_.OnTouchListener({
 					onTouch: function (v, e) {
 						if (!buildingdown) {
-							buildingmX = e.getX()
-							buildingmY = e.getY()
+							buildingmX = e.getX();
+							buildingmY = e.getY();
 						}
 						if (buildingdown) {
 							var a = e.getAction()
@@ -16787,6 +16851,7 @@ VertexClientPE.showCategoryMenus = function () {
 								buildingtpopx = buildingtpopx + X;
 								buildingtpopy = buildingtpopy + Y;
 								vertexclientpebuildingmenu.update(parseInt(buildingtpopx), parseInt(buildingtpopy), -1, -1);
+								VertexClientPE.saveFloatingMenus("building");
 							}
 							if (a == 1) buildingdown = false;
 						}
@@ -16833,6 +16898,7 @@ VertexClientPE.showCategoryMenus = function () {
 							movementArrow.setText("\u25B3");
 							movementMenuShown = true;
 						}
+						VertexClientPE.saveFloatingMenus("movement");
 					}
 				});
 				movementTitle.setOnLongClickListener(new View_.OnLongClickListener() {
@@ -16845,8 +16911,8 @@ VertexClientPE.showCategoryMenus = function () {
 				movementTitle.setOnTouchListener(new View_.OnTouchListener({
 					onTouch: function (v, e) {
 						if (!movementdown) {
-							movementmX = e.getX()
-							movementmY = e.getY()
+							movementmX = e.getX();
+							movementmY = e.getY();
 						}
 						if (movementdown) {
 							var a = e.getAction()
@@ -16856,6 +16922,7 @@ VertexClientPE.showCategoryMenus = function () {
 								movementtpopx = movementtpopx + X;
 								movementtpopy = movementtpopy + Y;
 								vertexclientpemovementmenu.update(parseInt(movementtpopx), parseInt(movementtpopy), -1, -1);
+								VertexClientPE.saveFloatingMenus("movement");
 							}
 							if (a == 1) movementdown = false;
 						}
@@ -16901,6 +16968,7 @@ VertexClientPE.showCategoryMenus = function () {
 							chatArrow.setText("\u25B3");
 							chatMenuShown = true;
 						}
+						VertexClientPE.saveFloatingMenus("chat");
 					}
 				});
 				chatTitle.setOnLongClickListener(new View_.OnLongClickListener() {
@@ -16913,8 +16981,8 @@ VertexClientPE.showCategoryMenus = function () {
 				chatTitle.setOnTouchListener(new View_.OnTouchListener({
 					onTouch: function (v, e) {
 						if (!chatdown) {
-							chatmX = e.getX()
-							chatmY = e.getY()
+							chatmX = e.getX();
+							chatmY = e.getY();
 						}
 						if (chatdown) {
 							var a = e.getAction()
@@ -16924,6 +16992,7 @@ VertexClientPE.showCategoryMenus = function () {
 								chattpopx = chattpopx + X;
 								chattpopy = chattpopy + Y;
 								vertexclientpechatmenu.update(parseInt(chattpopx), parseInt(chattpopy), -1, -1);
+								VertexClientPE.saveFloatingMenus("chat");
 							}
 							if (a == 1) chatdown = false;
 						}
@@ -16970,6 +17039,7 @@ VertexClientPE.showCategoryMenus = function () {
 							miscArrow.setText("\u25B3");
 							miscMenuShown = true;
 						}
+						VertexClientPE.saveFloatingMenus("misc");
 					}
 				});
 				miscTitle.setOnLongClickListener(new View_.OnLongClickListener() {
@@ -16982,8 +17052,8 @@ VertexClientPE.showCategoryMenus = function () {
 				miscTitle.setOnTouchListener(new View_.OnTouchListener({
 					onTouch: function (v, e) {
 						if (!miscdown) {
-							miscmX = e.getX()
-							miscmY = e.getY()
+							miscmX = e.getX();
+							miscmY = e.getY();
 						}
 						if (miscdown) {
 							var a = e.getAction()
@@ -16993,6 +17063,7 @@ VertexClientPE.showCategoryMenus = function () {
 								misctpopx = misctpopx + X;
 								misctpopy = misctpopy + Y;
 								vertexclientpemiscmenu.update(parseInt(misctpopx), parseInt(misctpopy), -1, -1);
+								VertexClientPE.saveFloatingMenus("misc");
 							}
 							if (a == 1) miscdown = false;
 						}
