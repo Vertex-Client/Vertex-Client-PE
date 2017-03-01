@@ -2753,6 +2753,7 @@ var tapTeleport = {
     category: VertexClientPE.category.MOVEMENT,
     type: "Mod",
     state: false,
+	shouldPreventDefault: true,
     isStateMod: function() {
         return true;
     },
@@ -5438,6 +5439,9 @@ function useItem(x, y, z, itemId, blockId, side, blockDamage) {
                     return;
                 }
             }
+			if(element.shouldPreventDefault) {
+				preventDefault();
+			}
             element.onUseItem(x, y, z, itemId, blockId, side, blockDamage);
         }
     });
