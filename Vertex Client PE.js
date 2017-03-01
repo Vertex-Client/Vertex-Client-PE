@@ -211,6 +211,9 @@ var preventDiggingSetting = "off";
 var preventPlacingSetting = "off";
 var preventAttacksSetting = "off";
 var fastBreakDestroyTime = 0;
+var strafeAuraRangeSetting = 5;
+var strafeAuraDirectionSetting = "left";
+//------------------------------------
 var antiAFKDistancePerTick = 0.25;
 //------------------------------------
 var combatName = "Combat";
@@ -905,6 +908,8 @@ var isAuthorized = true;
 var oldYaw = 0;
 var newYaw = 0;
 
+const PI_CIRCLE = Math.PI / 180;
+
 var VertexClientPE = {
     name: "Vertex Client PE",
     getName: function() {
@@ -1076,6 +1081,18 @@ var VertexClientPE = {
 		aimAtBlock: function(x, y, z) {
 			y += 1;
 			this.aimAt(x, y, z);
+		},
+		strafeAroundEnt: function(ent, direction) {
+			direction = direction || "left";
+			this.aimAtEnt(ent);
+			var xVel = Math.cos(PI_CIRCLE * (getYaw() + 5)) * 0.2;
+			var zVel = Math.sin(PI_CIRCLE * (getYaw() + 5)) * 0.2;
+			if(direction == "right") {
+				xVel *= -1;
+				zVel *= -1;
+			}
+			setVelX(getPlayerEnt(), xVel);
+			setVelZ(getPlayerEnt(), zVel);
 		}
     }
 };
@@ -3827,15 +3844,15 @@ var aimbot = {
         var mobs = Entity.getAll();
 		if(targetMobsSetting == "on") {
 			for(var i = 0; i < mobs.length; i++) {
-				var x = Entity.getX(mobs[i]) - getPlayerX();
-				var y = Entity.getY(mobs[i]) - getPlayerY();
-				var z = Entity.getZ(mobs[i]) - getPlayerZ();
+				var ent = mobs[i];
+				var x = Entity.getX(ent) - getPlayerX();
+				var y = Entity.getY(ent) - getPlayerY();
+				var z = Entity.getZ(ent) - getPlayerZ();
 				if(aimbotUseKillauraRange == "on" && x*x+y*y+z*z>killAuraRange*killAuraRange) {
 					continue;
 				} else if(aimbotUseKillauraRange == "off" && x*x+y*y+z*z>aimbotRangeSetting*aimbotRangeSetting) {
 					continue;
 				}
-				var ent = mobs[i];
 				if(Entity.getEntityTypeId(ent) != EntityType.ARROW && Entity.getEntityTypeId(ent) != EntityType.BOAT && Entity.getEntityTypeId(ent) != EntityType.EGG && Entity.getEntityTypeId(ent) != EntityType.ENDER_PEARL && Entity.getEntityTypeId(ent) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(ent) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(ent) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(ent) != EntityType.FIREBALL && Entity.getEntityTypeId(ent) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(ent) != EntityType.ITEM && Entity.getEntityTypeId(ent) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(ent) != EntityType.MINECART && Entity.getEntityTypeId(ent) != EntityType.PAINTING && Entity.getEntityTypeId(ent) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(ent) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(ent) != EntityType.SNOWBALL && Entity.getEntityTypeId(ent) != EntityType.THROWN_POTION && ent != getPlayerEnt()) {
 					VertexClientPE.CombatUtils.aimAtEnt(ent);
 					return;
@@ -3844,15 +3861,15 @@ var aimbot = {
 		}
 		if(targetPlayersSetting == "on") {
 			for(var i = 0; i < players.length; i++) {
-				var x = Entity.getX(players[i]) - getPlayerX();
-				var y = Entity.getY(players[i]) - getPlayerY();
-				var z = Entity.getZ(players[i]) - getPlayerZ();
+				var ent = players[i];
+				var x = Entity.getX(ent) - getPlayerX();
+				var y = Entity.getY(ent) - getPlayerY();
+				var z = Entity.getZ(ent) - getPlayerZ();
 				if(aimbotUseKillauraRange == "on" && x*x+y*y+z*z>killAuraRange*killAuraRange) {
 					continue;
 				} else if(aimbotUseKillauraRange == "off" && x*x+y*y+z*z>aimbotRangeSetting*aimbotRangeSetting) {
 					continue;
 				}
-				var ent = players[i];
 				if(ent != getPlayerEnt()) {
 					VertexClientPE.CombatUtils.aimAtEnt(ent);
 					return;
@@ -5152,6 +5169,122 @@ var switchAimbot = {
     }
 }
 
+var strafeAura = {
+    name: "StrafeAura",
+    desc: "Makes you walk around entities.",
+    category: VertexClientPE.category.COMBAT,
+    type: "Mod",
+    state: false,
+	getSettingsLayout: function() {
+        var strafeAuraSettingsLayout = new LinearLayout_(CONTEXT);
+        strafeAuraSettingsLayout.setOrientation(1);
+		
+        var strafeAuraRangeTitle = clientTextView("Range: | " + strafeAuraRangeSetting);
+        var strafeAuraRangeSlider = new SeekBar(CONTEXT);
+        strafeAuraRangeSlider.setProgress(strafeAuraRangeSetting);
+        strafeAuraRangeSlider.setMax(10);
+        strafeAuraRangeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            onProgressChanged: function() {
+                strafeAuraRangeSetting = strafeAuraRangeSlider.getProgress();
+                strafeAuraRangeTitle.setText("Range: | " + strafeAuraRangeSetting);
+            }
+        });
+		
+		var strafeAuraDirectionLayout = new LinearLayout_(CONTEXT);
+		strafeAuraDirectionLayout.setOrientation(LinearLayout_.HORIZONTAL);
+		
+		var strafeAuraDirectionTitle = clientTextView("Direction:");
+        var strafeAuraDirectionLeftButton = clientButton("Left", "Makes the player strafe to the left.");
+        strafeAuraDirectionLeftButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+        var strafeAuraDirectionRightButton = clientButton("Right", "Makes the player strafe to the right.");
+        strafeAuraDirectionRightButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+        
+        var strafeAuraDirectionLayoutLeft = new LinearLayout_(CONTEXT);
+        strafeAuraDirectionLayoutLeft.setOrientation(1);
+        strafeAuraDirectionLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - 5, display.heightPixels / 10));
+        strafeAuraDirectionLayoutLeft.setGravity(Gravity_.CENTER_HORIZONTAL);
+        strafeAuraDirectionLayout.addView(strafeAuraDirectionLayoutLeft);
+        
+        var strafeAuraDirectionLayoutRight = new LinearLayout_(CONTEXT);
+        strafeAuraDirectionLayoutRight.setOrientation(1);
+        strafeAuraDirectionLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - 5, display.heightPixels / 10));
+        strafeAuraDirectionLayoutRight.setGravity(Gravity_.CENTER_HORIZONTAL);
+        strafeAuraDirectionLayout.addView(strafeAuraDirectionLayoutRight);
+        
+        strafeAuraDirectionLayoutLeft.addView(strafeAuraDirectionLeftButton);
+        strafeAuraDirectionLayoutRight.addView(strafeAuraDirectionRightButton);
+        if(strafeAuraDirectionSetting == "left") {
+            strafeAuraDirectionLeftButton.setTextColor(Color_.GREEN);
+        } if(strafeAuraDirectionSetting == "right") {
+            strafeAuraDirectionRightButton.setTextColor(Color_.GREEN);
+        }
+        strafeAuraDirectionLeftButton.setOnClickListener(new View_.OnClickListener() {
+            onClick: function(view) {
+                strafeAuraDirectionSetting = "left";
+                strafeAuraDirectionLeftButton.setTextColor(Color_.GREEN);
+                strafeAuraDirectionRightButton.setTextColor(Color_.WHITE);
+                VertexClientPE.saveMainSettings();
+            }
+        });
+        strafeAuraDirectionRightButton.setOnClickListener(new View_.OnClickListener() {
+            onClick: function(view) {
+                strafeAuraDirectionSetting = "right";
+                strafeAuraDirectionLeftButton.setTextColor(Color_.WHITE);
+                strafeAuraDirectionRightButton.setTextColor(Color_.GREEN);
+                VertexClientPE.saveMainSettings();
+            }
+        });
+		
+        strafeAuraSettingsLayout.addView(strafeAuraRangeTitle);
+        strafeAuraSettingsLayout.addView(strafeAuraRangeSlider);
+		strafeAuraSettingsLayout.addView(strafeAuraDirectionTitle);
+        strafeAuraSettingsLayout.addView(strafeAuraDirectionLayout);
+		
+        return strafeAuraSettingsLayout;
+    },
+	onModDialogDismiss: function() {
+        VertexClientPE.saveMainSettings();
+    },
+    isStateMod: function() {
+        return true;
+    },
+    onToggle: function() {
+        this.state = !this.state;
+    },
+    onTick: function() {
+		var players = Server.getAllPlayers();
+        var mobs = Entity.getAll();
+		if(targetMobsSetting == "on") {
+			for(var i = 0; i < mobs.length; i++) {
+				var ent = mobs[i];
+				var x = Entity.getX(ent) - getPlayerX();
+				var y = Entity.getY(ent) - getPlayerY();
+				var z = Entity.getZ(ent) - getPlayerZ();
+				if(x*x+y*y+z*z <= strafeAuraRangeSetting*strafeAuraRangeSetting) {
+					if(Entity.getEntityTypeId(ent) != EntityType.ARROW && Entity.getEntityTypeId(ent) != EntityType.BOAT && Entity.getEntityTypeId(ent) != EntityType.EGG && Entity.getEntityTypeId(ent) != EntityType.ENDER_PEARL && Entity.getEntityTypeId(ent) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(ent) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(ent) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(ent) != EntityType.FIREBALL && Entity.getEntityTypeId(ent) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(ent) != EntityType.ITEM && Entity.getEntityTypeId(ent) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(ent) != EntityType.MINECART && Entity.getEntityTypeId(ent) != EntityType.PAINTING && Entity.getEntityTypeId(ent) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(ent) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(ent) != EntityType.SNOWBALL && Entity.getEntityTypeId(ent) != EntityType.THROWN_POTION && ent != getPlayerEnt()) {
+						VertexClientPE.CombatUtils.strafeAroundEnt(ent, strafeAuraDirectionSetting);
+						return;
+					}
+				}
+			}
+		}
+		if(targetPlayersSetting == "on") {
+			for(var i = 0; i < players.length; i++) {
+				var ent = players[i];
+				var x = Entity.getX(ent) - getPlayerX();
+				var y = Entity.getY(ent) - getPlayerY();
+				var z = Entity.getZ(ent) - getPlayerZ();
+				if(x*x+y*y+z*z <= strafeAuraRangeSetting*strafeAuraRangeSetting) {
+					if(ent != getPlayerEnt()) {
+						VertexClientPE.CombatUtils.strafeAroundEnt(ent, strafeAuraDirectionSetting);
+						return;
+					}
+				}
+			}
+		}
+    }
+}
+
 //COMBAT
 VertexClientPE.registerModule(aimbot);
 VertexClientPE.registerModule(antiBurn);
@@ -5171,6 +5304,7 @@ VertexClientPE.registerModule(instaKill);
 VertexClientPE.registerModule(killAura);
 VertexClientPE.registerModule(noHurt);
 VertexClientPE.registerModule(regen);
+VertexClientPE.registerModule(strafeAura);
 VertexClientPE.registerModule(switchAimbot);
 VertexClientPE.registerModule(tapAimbot);
 VertexClientPE.registerModule(tpAura);
@@ -8437,6 +8571,8 @@ VertexClientPE.debugMessage = function(message) {
 	clientMessage(ChatColor.GRAY + "[DEBUG] " + ChatColor.WHITE + message);
 }
 
+var toast;
+
 VertexClientPE.toast = function(message, vibrate) {
     CONTEXT.runOnUiThread(new Runnable_({
         run: function() {
@@ -8449,6 +8585,9 @@ VertexClientPE.toast = function(message, vibrate) {
             var _0xc62b=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x20\x50\x72\x6F"];if(VertexClientPE[_0xc62b[0]]()==_0xc62b[1]){title+=_0xc62b[2]}
             var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message), 0);
             layout.addView(text);
+			if(toast != null) {
+				toast.cancel();
+			}
             toast = new Toast_(CONTEXT);
 			toast.setDuration(Toast_.LENGTH_LONG);
             toast.setView(layout);
@@ -9329,6 +9468,8 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + preventPlacingSetting.toString());
 	outWrite.append("," + preventAttacksSetting.toString());
 	outWrite.append("," + fastBreakDestroyTime.toString());
+	outWrite.append("," + strafeAuraRangeSetting.toString());
+	outWrite.append("," + strafeAuraDirectionSetting.toString());
 
     outWrite.close();
     
@@ -9539,6 +9680,12 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[62] != null && arr[62] != undefined) {
             fastBreakDestroyTime = arr[62];
+        }
+		if (arr[63] != null && arr[63] != undefined) {
+            strafeAuraRangeSetting = arr[63];
+        }
+		if (arr[64] != null && arr[64] != undefined) {
+            strafeAuraDirectionSetting = arr[64];
         }
         fos.close();
 		VertexClientPE.loadCustomRGBSettings();
