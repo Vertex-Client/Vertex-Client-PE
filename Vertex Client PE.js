@@ -1808,6 +1808,7 @@ var dashboardMenu;
 var musicPlayerMenu;
 var previewMenu;
 var updateCenterMenu;
+var modManagerMenu;
 var settingsMenu;
 var devSettingsMenu;
 var helpMenu;
@@ -1901,6 +1902,18 @@ var settingsTile = {
 	onClick: function(fromDashboard) {
 		settingsScreen();
 		exitSettings();
+	}
+}
+
+var modManagerTile = {
+	text: "Mod Manager",
+	color: "orange",
+	icon: android.R.drawable.ic_menu_manage,
+	forceLightColor: false,
+	shouldDismissDashboard: true,
+	onClick: function(fromDashboard) {
+		modManagerScreen();
+		exitModManager();
 	}
 }
 
@@ -2073,6 +2086,7 @@ var shutdownTile = {
 }
 
 VertexClientPE.registerTile(settingsTile);
+VertexClientPE.registerTile(modManagerTile);
 VertexClientPE.registerTile(informationTile);
 VertexClientPE.registerTile(updateCenterTile);
 VertexClientPE.registerTile(musicPlayerTile);
@@ -7177,7 +7191,7 @@ VertexClientPE.showModEditorDialog = function(defaultName, modTitleView, modButt
 				var modEditorTitleLayout = new LinearLayout_(CONTEXT);
                 modEditorTitleLayout.setOrientation(LinearLayout_.HORIZONTAL);
 				
-                var currentName = sharedPref.getString("VertexClientPE.mods." + defaultName + ".name", defaultName);
+                var currentName = VertexClientPE.getCustomModName(defaultName);
 				
 				var modEditorDialogEditText = clientEditText(currentName);
 				modEditorDialogEditText.setInputType(InputType_.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
@@ -7216,6 +7230,10 @@ VertexClientPE.showModEditorDialog = function(defaultName, modTitleView, modButt
     });
 }
 
+VertexClientPE.getCustomModName = function(defaultName) {
+	return sharedPref.getString("VertexClientPE.mods." + defaultName + ".name", defaultName);
+}
+
 VertexClientPE.showModDialog = function(mod, btn) {
     CONTEXT.runOnUiThread(new Runnable_() {
         run: function() {
@@ -7223,7 +7241,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
                 VertexClientPE.loadMainSettings();
                 var modTitleLayout = new LinearLayout_(CONTEXT);
                 modTitleLayout.setOrientation(LinearLayout_.HORIZONTAL);
-                var modTitle = clientTextView(sharedPref.getString("VertexClientPE.mods." + mod.name + ".name", mod.name), true);
+                var modTitle = clientTextView(VertexClientPE.getCustomModName(mod.name), true);
                 modTitle.setTextSize(20);
 				var modEditButton = new Button_(CONTEXT);
                 modEditButton.setLayoutParams(new LinearLayout_.LayoutParams(64, 64));
@@ -12040,7 +12058,7 @@ VertexClientPE.clientTick = function() {
                 run: function() {
                     try {
                         var _0x43af=["\x61\x75\x74\x68\x6F\x72","\x70\x65\x61\x63\x65\x73\x74\x6F\x72\x6D"];if(VertexClientPE[_0x43af[0]]!= _0x43af[1]){isAuthorized= false}
-                        if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (devSettingsMenu == null || !devSettingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (milestonesMenu == null || !milestonesMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (previewMenu == null || !previewMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing()) && (christmasMenu == null || !christmasMenu.isShowing())) {
+                        if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (devSettingsMenu == null || !devSettingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (milestonesMenu == null || !milestonesMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (previewMenu == null || !previewMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (modManagerMenu == null || !modManagerMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing()) && (christmasMenu == null || !christmasMenu.isShowing())) {
                             if(Launcher.isBlockLauncher()) {
                                 ScriptManager__.isRemote = true;
                                 ScriptManager__.setLevelFakeCallback(true, false);
@@ -12058,7 +12076,7 @@ VertexClientPE.clientTick = function() {
                         print("Use BlockLauncher v1.12.2 or above!");
                         ModPE.log(e);
                     }
-                    if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (devSettingsMenu == null || !devSettingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (milestonesMenu == null || !milestonesMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (previewMenu == null || !previewMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing()) && (christmasMenu == null || !christmasMenu.isShowing())) {
+                    if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (devSettingsMenu == null || !devSettingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (milestonesMenu == null || !milestonesMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (previewMenu == null || !previewMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (modManagerMenu == null || !modManagerMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing()) && (christmasMenu == null || !christmasMenu.isShowing())) {
                         showMenuButton();
                     }
                     if(!VertexClientPE.playerIsInGame) {
@@ -15864,6 +15882,90 @@ function musicPlayerScreen() {
         }));
 }
 
+function modManagerScreen() {
+    VertexClientPE.menuIsShowing = true;
+    var display = new DisplayMetrics_();
+    CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
+        CONTEXT.runOnUiThread(new Runnable_({
+            run: function() {
+                try {
+                    if(GUI != null) {
+                        if(GUI.isShowing()) {
+                            GUI.dismiss();
+                        }
+                    }
+                    if(hacksList != null) {
+                        if(hacksList.isShowing()) {
+                            hacksList.dismiss();
+                        }
+                    }
+                    if(tabGUI != null) {
+                        if(tabGUI.isShowing()) {
+                            tabGUI.dismiss();
+                        }
+                    }
+					if(shortcutGUI != null) {
+                        if(shortcutGUI.isShowing()) {
+                            shortcutGUI.dismiss();
+                        }
+                    }
+					if(healthDisplayUI != null) {
+						if(healthDisplayUI.isShowing()) {
+							healthDisplayUI.dismiss();
+						}
+					}
+					if(mainMenuTextList != null) {
+						if(mainMenuTextList.isShowing()) {
+                            mainMenuTextList.dismiss();
+                        }
+					}
+					if(accountManagerGUI != null) {
+						if(accountManagerGUI.isShowing()) {
+                            accountManagerGUI.dismiss();
+                        }
+					}
+					if(pauseUtilitiesUI != null) {
+						if(pauseUtilitiesUI.isShowing()) {
+							pauseUtilitiesUI.dismiss();
+						}
+					}
+
+                    var modManagerMenuLayout = new LinearLayout_(CONTEXT);
+                    modManagerMenuLayout.setOrientation(1);
+                    modManagerMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
+                    
+                    var modManagerMenuLayoutScroll = new ScrollView(CONTEXT);
+                    
+                    var modManagerMenuLayout1 = new LinearLayout_(CONTEXT);
+                    modManagerMenuLayout1.setOrientation(1);
+                    modManagerMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
+                    //modManagerMenuLayout1.setPadding(10, 0, 10, 0);
+                    
+                    var modManagerTitle = clientScreenTitle("Mod Manager");
+                    
+                    modManagerMenuLayout1.addView(modManagerTitle);
+                    modManagerMenuLayout1.addView(clientTextView("\n"));
+                    modManagerMenuLayoutScroll.addView(modManagerMenuLayout);
+                    modManagerMenuLayout1.addView(modManagerMenuLayoutScroll);
+                    
+					VertexClientPE.modules.forEach(function(element, index, array) {
+						if(element.getSettingsLayout) {
+							var modTitle = clientSectionTitle(VertexClientPE.getCustomModName(element.name));
+							modManagerMenuLayout.addView(modTitle);
+							modManagerMenuLayout.addView(element.getSettingsLayout());
+						}
+					});
+
+                    modManagerMenu = new PopupWindow_(modManagerMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+                    modManagerMenu.setBackgroundDrawable(backgroundGradient());
+                    modManagerMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+                } catch(error) {
+                    print('An error occurred: ' + error);
+                }
+            }
+        }));
+}
+
 function dashboardScreen() {
     VertexClientPE.menuIsShowing = true;
     CONTEXT.runOnUiThread(new Runnable_({
@@ -18255,6 +18357,58 @@ function exitUpdateCenter() {
                 exitUpdateCenterUI = new PopupWindow_(xUpdateCenterLayout, dip2px(40), dip2px(40));
                 exitUpdateCenterUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
                 exitUpdateCenterUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
+            } catch(exception) {
+                print(exception);
+                VertexClientPE.showBugReportDialog(exception);
+            }
+        }
+    }));
+}
+
+function exitModManager() {
+    CONTEXT.runOnUiThread(new Runnable_({
+        run: function() {
+            try {
+                var backModManagerLayout = new LinearLayout_(CONTEXT);
+                var backModManagerButton = new Button_(CONTEXT);
+                backModManagerButton.setText("<");//Text
+                backModManagerButton.getBackground().setColorFilter(Color_.parseColor("#00BFFF"), PorterDuff_.Mode.MULTIPLY);
+                backModManagerButton.setTextColor(Color_.WHITE);
+                backModManagerButton.setOnClickListener(new View_.OnClickListener({
+                    onClick: function(viewarg){
+						VertexClientPE.saveMainSettings();
+                        backModManagerUI.dismiss(); //Close
+                        exitModManagerUI.dismiss(); //Close
+                        modManagerMenu.dismiss(); //Close
+                        dashboardScreen();
+                        exitDashboard();
+                    }
+                }));
+                backModManagerLayout.addView(backModManagerButton);
+                
+                var xModManagerLayout = new LinearLayout_(CONTEXT);
+                var xModManagerButton = new Button_(CONTEXT);
+                xModManagerButton.setText("X");//Text
+                xModManagerButton.getBackground().setColorFilter(Color_.parseColor("#FF0000"), PorterDuff_.Mode.MULTIPLY);
+                xModManagerButton.setTextColor(Color_.WHITE);
+                xModManagerButton.setOnClickListener(new View_.OnClickListener({
+                    onClick: function(viewarg){
+						VertexClientPE.saveMainSettings();
+                        backModManagerUI.dismiss(); //Close
+                        exitModManagerUI.dismiss(); //Close
+                        modManagerMenu.dismiss(); //Close
+                        showMenuButton();
+                    }
+                }));
+                xModManagerLayout.addView(xModManagerButton);
+                
+                backModManagerUI = new PopupWindow_(backModManagerLayout, dip2px(40), dip2px(40));
+                backModManagerUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+                backModManagerUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+                
+                exitModManagerUI = new PopupWindow_(xModManagerLayout, dip2px(40), dip2px(40));
+                exitModManagerUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+                exitModManagerUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
             } catch(exception) {
                 print(exception);
                 VertexClientPE.showBugReportDialog(exception);
