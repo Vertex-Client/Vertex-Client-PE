@@ -213,6 +213,11 @@ var preventAttacksSetting = "off";
 var fastBreakDestroyTime = 0;
 var strafeAuraRangeSetting = 5;
 var strafeAuraDirectionSetting = "left";
+var panicCombatSetting = "on";
+var panicBuildingSetting = "on";
+var panicMovementSetting = "on";
+var panicChatSetting = "on";
+var panicMiscSetting = "on";
 //------------------------------------
 var antiAFKDistancePerTick = 0.25;
 //------------------------------------
@@ -2208,16 +2213,124 @@ VertexClientPE.getFeatureCount = function() {
 
 var panic = {
     name: "Panic",
-    desc: "Disables all modules at once.",
+    desc: "Disables all modules of the selected categories at once.",
     category: VertexClientPE.category.MISC,
     type: "Mod",
+	getSettingsLayout: function() {
+        var panicSettingsLayout = new LinearLayout_(CONTEXT);
+        panicSettingsLayout.setOrientation(1);
+		
+		var panicCombatCheckBox = new CheckBox_(CONTEXT);
+        panicCombatCheckBox.setChecked(panicCombatSetting == "on");
+        panicCombatCheckBox.setText("Combat");
+        if(themeSetting == "white") {
+            panicCombatCheckBox.setTextColor(Color_.BLACK);
+        } else {
+            panicCombatCheckBox.setTextColor(Color_.WHITE);
+        }
+        panicCombatCheckBox.setTypeface(VertexClientPE.font);
+		if(fontSetting == "minecraft") {
+			MinecraftButtonLibrary.addMinecraftStyleToTextView(panicCombatCheckBox);
+		}
+        panicCombatCheckBox.setOnClickListener(new View_.OnClickListener() {
+            onClick: function(v) {
+                panicCombatSetting = v.isChecked()?"on":"off";
+                VertexClientPE.saveMainSettings();
+            }
+        });
+		
+		var panicBuildingCheckBox = new CheckBox_(CONTEXT);
+        panicBuildingCheckBox.setChecked(panicBuildingSetting == "on");
+        panicBuildingCheckBox.setText("Building");
+        if(themeSetting == "white") {
+            panicBuildingCheckBox.setTextColor(Color_.BLACK);
+        } else {
+            panicBuildingCheckBox.setTextColor(Color_.WHITE);
+        }
+        panicBuildingCheckBox.setTypeface(VertexClientPE.font);
+		if(fontSetting == "minecraft") {
+			MinecraftButtonLibrary.addMinecraftStyleToTextView(panicBuildingCheckBox);
+		}
+        panicBuildingCheckBox.setOnClickListener(new View_.OnClickListener() {
+            onClick: function(v) {
+                panicBuildingSetting = v.isChecked()?"on":"off";
+                VertexClientPE.saveMainSettings();
+            }
+        });
+		
+		var panicMovementCheckBox = new CheckBox_(CONTEXT);
+        panicMovementCheckBox.setChecked(panicMovementSetting == "on");
+        panicMovementCheckBox.setText("Movement");
+        if(themeSetting == "white") {
+            panicMovementCheckBox.setTextColor(Color_.BLACK);
+        } else {
+            panicMovementCheckBox.setTextColor(Color_.WHITE);
+        }
+        panicMovementCheckBox.setTypeface(VertexClientPE.font);
+		if(fontSetting == "minecraft") {
+			MinecraftButtonLibrary.addMinecraftStyleToTextView(panicMovementCheckBox);
+		}
+        panicMovementCheckBox.setOnClickListener(new View_.OnClickListener() {
+            onClick: function(v) {
+                panicMovementSetting = v.isChecked()?"on":"off";
+                VertexClientPE.saveMainSettings();
+            }
+        });
+		
+		var panicChatCheckBox = new CheckBox_(CONTEXT);
+        panicChatCheckBox.setChecked(panicChatSetting == "on");
+        panicChatCheckBox.setText("Chat");
+        if(themeSetting == "white") {
+            panicChatCheckBox.setTextColor(Color_.BLACK);
+        } else {
+            panicChatCheckBox.setTextColor(Color_.WHITE);
+        }
+        panicChatCheckBox.setTypeface(VertexClientPE.font);
+		if(fontSetting == "minecraft") {
+			MinecraftButtonLibrary.addMinecraftStyleToTextView(panicChatCheckBox);
+		}
+        panicChatCheckBox.setOnClickListener(new View_.OnClickListener() {
+            onClick: function(v) {
+                panicChatSetting = v.isChecked()?"on":"off";
+                VertexClientPE.saveMainSettings();
+            }
+        });
+		
+		var panicMiscCheckBox = new CheckBox_(CONTEXT);
+        panicMiscCheckBox.setChecked(panicMiscSetting == "on");
+        panicMiscCheckBox.setText("Misc");
+        if(themeSetting == "white") {
+            panicMiscCheckBox.setTextColor(Color_.BLACK);
+        } else {
+            panicMiscCheckBox.setTextColor(Color_.WHITE);
+        }
+        panicMiscCheckBox.setTypeface(VertexClientPE.font);
+		if(fontSetting == "minecraft") {
+			MinecraftButtonLibrary.addMinecraftStyleToTextView(panicMiscCheckBox);
+		}
+        panicMiscCheckBox.setOnClickListener(new View_.OnClickListener() {
+            onClick: function(v) {
+                panicMiscSetting = v.isChecked()?"on":"off";
+                VertexClientPE.saveMainSettings();
+            }
+        });
+		
+        panicSettingsLayout.addView(panicCombatCheckBox);
+        panicSettingsLayout.addView(panicBuildingCheckBox);
+        panicSettingsLayout.addView(panicMovementCheckBox);
+        panicSettingsLayout.addView(panicChatCheckBox);
+        panicSettingsLayout.addView(panicMiscCheckBox);
+        return panicSettingsLayout;
+    },
     isStateMod: function() {
         return false;
     },
     onToggle: function() {
         VertexClientPE.modules.forEach(function (element, index, array) {
             if(element.isStateMod() && element.state) {
-                element.onToggle();
+				if((element.category == VertexClientPE.category.COMBAT && panicCombatSetting == "on") || (element.category == VertexClientPE.category.BUILDING && panicBuildingSetting == "on") || (element.category == VertexClientPE.category.MOVEMENT && panicMovementSetting == "on") || (element.category == VertexClientPE.category.CHAT && panicChatSetting == "on") || (element.category == VertexClientPE.category.MISC && panicMiscSetting == "on")) {
+					element.onToggle();
+				}
             }
         });
 		if(VertexClientPE.menuIsShowing) {
@@ -9582,6 +9695,11 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + fastBreakDestroyTime.toString());
 	outWrite.append("," + strafeAuraRangeSetting.toString());
 	outWrite.append("," + strafeAuraDirectionSetting.toString());
+	outWrite.append("," + panicCombatSetting.toString());
+	outWrite.append("," + panicBuildingSetting.toString());
+	outWrite.append("," + panicMovementSetting.toString());
+	outWrite.append("," + panicChatSetting.toString());
+	outWrite.append("," + panicMiscSetting.toString());
 
 	outWrite.close();
 	
@@ -9798,6 +9916,21 @@ VertexClientPE.loadMainSettings = function () {
         }
 		if (arr[64] != null && arr[64] != undefined) {
             strafeAuraDirectionSetting = arr[64];
+        }
+		if (arr[65] != null && arr[65] != undefined) {
+            panicCombatSetting = arr[65];
+        }
+		if (arr[66] != null && arr[66] != undefined) {
+            panicBuildingSetting = arr[66];
+        }
+		if (arr[67] != null && arr[67] != undefined) {
+            panicMovementSetting = arr[67];
+        }
+		if (arr[68] != null && arr[68] != undefined) {
+            panicChatSetting = arr[68];
+        }
+		if (arr[69] != null && arr[69] != undefined) {
+            panicMiscSetting = arr[69];
         }
         fos.close();
 		VertexClientPE.loadCustomRGBSettings();
