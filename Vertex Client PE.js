@@ -3303,7 +3303,7 @@ var glide = {
 var autoMine = {
     name: "AutoMine",
     desc: "Automatically mines the block you're looking at.",
-    category: VertexClientPE.category.PLAYER,
+    category: VertexClientPE.category.WORLD,
     type: "Mod",
     state: false,
     isStateMod: function() {
@@ -4794,7 +4794,7 @@ var step = {
 
 var dropLocator = {
 	name: "DropLocator",
-    desc: "Locate dropped items and experience.",
+    desc: "Locates dropped items and experience.",
     category: VertexClientPE.category.MISC,
     type: "Mod",
     isStateMod: function() {
@@ -4822,6 +4822,37 @@ var dropLocator = {
 				}
 			}
 		})).start();
+    }
+}
+
+var playerLocator = {
+	name: "PlayerLocator",
+    desc: "Locates players.",
+    category: VertexClientPE.category.MISC,
+    type: "Mod",
+    isStateMod: function() {
+		return false;
+    },
+	onToggle: function() {
+		var players = Server.getAllPlayers();
+		if(players != null && players != undefined && players.length != -1 && !(players.length == 1 && players[0] == getPlayerEnt())) {
+			new Thread_(new Runnable_({
+				run: function() {
+					for(var i = 0; i < players.length; i++) {
+						var player = players[i];
+						var name = "player " + Player.getName(player);
+						if(name != null && player[i] != getPlayerEnt()) {
+							VertexClientPE.clientMessage("Located " + name + " at " + parseInt(Entity.getX(player)) + " " + parseInt(Entity.getY(player)) + " " + parseInt(Entity.getZ(player)));
+							Thread_.sleep(1000);
+						} else {
+							continue;
+						}
+					}
+				}
+			})).start();
+		} else {
+			VertexClientPE.clientMessage("We couldn't locate any players.");
+		}
     }
 }
 
@@ -5533,6 +5564,7 @@ VertexClientPE.registerModule(healthDisplay);
 VertexClientPE.registerModule(letItSnow);
 VertexClientPE.registerModule(onlyDay);
 VertexClientPE.registerModule(orderAPizza);
+VertexClientPE.registerModule(playerLocator);
 VertexClientPE.registerModule(prevent);
 VertexClientPE.registerModule(remoteView);
 VertexClientPE.registerModule(serverInfo);
