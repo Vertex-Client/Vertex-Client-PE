@@ -214,17 +214,17 @@ var fastBreakDestroyTime = 0;
 var strafeAuraRangeSetting = 5;
 var strafeAuraDirectionSetting = "left";
 var panicCombatSetting = "on";
-var panicBuildingSetting = "on";
+var panicWorldSetting = "on";
 var panicMovementSetting = "on";
-var panicChatSetting = "on";
+var panicPlayerSetting = "on";
 var panicMiscSetting = "on";
 //------------------------------------
 var antiAFKDistancePerTick = 0.25;
 //------------------------------------
 var combatName = "Combat";
-var buildingName = "Building";
+var worldName = "World";
 var movementName = "Movement";
-var chatName = "Chat";
+var playerName = "Player";
 var miscName = "Misc";
 //------------------------------------
 var customRGBRed = 0;
@@ -235,15 +235,15 @@ var customRGBGreenStroke = 0;
 var customRGBBlueStroke = 0;
 //------------------------------------
 var combatEnabled = "on";
-var buildingEnabled = "on";
+var worldEnabled = "on";
 var movementEnabled = "on";
-var chatEnabled = "on";
+var playerEnabled = "on";
 var miscEnabled = "on";
 var singleplayerEnabled = "on";
 var combatSaveEnabled = "on";
-var buildingSaveEnabled = "on";
+var worldSaveEnabled = "on";
 var movementSaveEnabled = "on";
-var chatSaveEnabled = "on";
+var playerSaveEnabled = "on";
 var miscSaveEnabled = "on";
 var singleplayerSaveEnabled = "on";
 //End of settings
@@ -274,20 +274,20 @@ var combattpopx = combattpopx_def, combattpopy = combattpopy_def;
 var combatmX, combatmY;
 var combatdown = false;
 
-const buildingtpopx_def = Math.floor(screenWidth / 3 + screenWidth / 3), buildingtpopy_def = screenHeight / 2 - customHeight;
-var buildingtpopx = buildingtpopx_def, buildingtpopy = buildingtpopy_def;
-var buildingmX, buildingmY;
-var buildingdown = false;
+const worldtpopx_def = Math.floor(screenWidth / 3 + screenWidth / 3), worldtpopy_def = screenHeight / 2 - customHeight;
+var worldtpopx = worldtpopx_def, worldtpopy = worldtpopy_def;
+var worldmX, worldmY;
+var worlddown = false;
 
 const movementtpopx_def = screenWidth / 3, movementtpopy_def = screenHeight / 2 - customHeight;
 var movementtpopx = movementtpopx_def, movementtpopy = movementtpopy_def;
 var movementmX, movementmY;
 var movementdown = false;
 
-const chattpopx_def = 0, chattpopy_def = 0;
-var chattpopx = chattpopx_def, chattpopy = chattpopy_def;
-var chatmX, chatmY;
-var chatdown = false;
+const playertpopx_def = 0, playertpopy_def = 0;
+var playertpopx = playertpopx_def, playertpopy = playertpopy_def;
+var playermX, playermY;
+var playerdown = false;
 
 const misctpopx_def = 0, misctpopy_def = screenHeight / 2 - customHeight;
 var misctpopx = misctpopx_def, misctpopy = misctpopy_def;
@@ -295,9 +295,9 @@ var miscmX, miscmY;
 var miscdown = false;
 
 var combatMenuShown = false;
-var buildingMenuShown = false;
+var worldMenuShown = false;
 var movementMenuShown = false;
-var chatMenuShown = false;
+var playerMenuShown = false;
 var miscMenuShown = false;
 //MENU END
 
@@ -991,7 +991,7 @@ var VertexClientPE = {
         fov: 70,
         fps: 0,
         world: {
-            chatMessages: []
+			chatMessages: []
         },
 		takeScreenshot: function(mode) {
 			var now = new java.util.Date();
@@ -1846,20 +1846,20 @@ VertexClientPE.addView = function(layout, modButtonView) {
 
 VertexClientPE.category = {
     COMBAT: 0,
-    BUILDING: 1,
+    WORLD: 1,
     MOVEMENT: 2,
-    CHAT: 3,
+    PLAYER: 3,
     MISC: 4,
     toName: function(category) {
         switch(category) {
             case this.COMBAT:
                 return combatName;
-            case this.BUILDING:
-                return buildingName;
+            case this.WORLD:
+                return worldName;
             case this.MOVEMENT:
                 return movementName;
-            case this.CHAT:
-                return chatName;
+            case this.PLAYER:
+                return playerName;
             case this.MISC:
                 return miscName;
         }
@@ -1868,12 +1868,12 @@ VertexClientPE.category = {
         switch(category) {
             case this.COMBAT:
                 return "Combat";
-            case this.BUILDING:
-                return "Building";
+            case this.WORLD:
+                return "World";
             case this.MOVEMENT:
                 return "Movement";
-            case this.CHAT:
-                return "Chat";
+            case this.PLAYER:
+                return "Player";
             case this.MISC:
                 return "Miscellaneous";
         }
@@ -2109,7 +2109,7 @@ VertexClientPE.registerTile(shutdownTile);
 VertexClientPE.initMods = function() {
 	try {
 		VertexClientPE.preInitModules.forEach(function(element, index, array) {
-			if((element.type == "Command" || (element.pack == "Combat" && combatEnabled == "on") || (element.pack == "Building" && buildingEnabled == "on") || (element.pack == "Movement" && movementEnabled == "on") || (element.pack == "Chat" && chatEnabled == "on") || (element.pack == "Miscellaneous" && miscEnabled == "on")) && !(element.singleplayerOnly && singleplayerEnabled == "off")) {
+			if((element.type == "Command" || (element.pack == "Combat" && combatEnabled == "on") || (element.pack == "World" && worldEnabled == "on") || (element.pack == "Movement" && movementEnabled == "on") || (element.pack == "Player" && playerEnabled == "on") || (element.pack == "Miscellaneous" && miscEnabled == "on")) && !(element.singleplayerOnly && singleplayerEnabled == "off")) {
 				VertexClientPE.modules.push(element);
 			}
 		});
@@ -2239,21 +2239,21 @@ var panic = {
             }
         });
 		
-		var panicBuildingCheckBox = new CheckBox_(CONTEXT);
-        panicBuildingCheckBox.setChecked(panicBuildingSetting == "on");
-        panicBuildingCheckBox.setText("Building");
+		var panicWorldCheckBox = new CheckBox_(CONTEXT);
+        panicWorldCheckBox.setChecked(panicWorldSetting == "on");
+        panicWorldCheckBox.setText("World");
         if(themeSetting == "white") {
-            panicBuildingCheckBox.setTextColor(Color_.BLACK);
+            panicWorldCheckBox.setTextColor(Color_.BLACK);
         } else {
-            panicBuildingCheckBox.setTextColor(Color_.WHITE);
+            panicWorldCheckBox.setTextColor(Color_.WHITE);
         }
-        panicBuildingCheckBox.setTypeface(VertexClientPE.font);
+        panicWorldCheckBox.setTypeface(VertexClientPE.font);
 		if(fontSetting == "minecraft") {
-			MinecraftButtonLibrary.addMinecraftStyleToTextView(panicBuildingCheckBox);
+			MinecraftButtonLibrary.addMinecraftStyleToTextView(panicWorldCheckBox);
 		}
-        panicBuildingCheckBox.setOnClickListener(new View_.OnClickListener() {
+        panicWorldCheckBox.setOnClickListener(new View_.OnClickListener() {
             onClick: function(v) {
-                panicBuildingSetting = v.isChecked()?"on":"off";
+                panicWorldSetting = v.isChecked()?"on":"off";
                 VertexClientPE.saveMainSettings();
             }
         });
@@ -2277,21 +2277,21 @@ var panic = {
             }
         });
 		
-		var panicChatCheckBox = new CheckBox_(CONTEXT);
-        panicChatCheckBox.setChecked(panicChatSetting == "on");
-        panicChatCheckBox.setText("Chat");
+		var panicPlayerCheckBox = new CheckBox_(CONTEXT);
+        panicPlayerCheckBox.setChecked(panicPlayerSetting == "on");
+        panicPlayerCheckBox.setText("Player");
         if(themeSetting == "white") {
-            panicChatCheckBox.setTextColor(Color_.BLACK);
+            panicPlayerCheckBox.setTextColor(Color_.BLACK);
         } else {
-            panicChatCheckBox.setTextColor(Color_.WHITE);
+            panicPlayerCheckBox.setTextColor(Color_.WHITE);
         }
-        panicChatCheckBox.setTypeface(VertexClientPE.font);
+        panicPlayerCheckBox.setTypeface(VertexClientPE.font);
 		if(fontSetting == "minecraft") {
-			MinecraftButtonLibrary.addMinecraftStyleToTextView(panicChatCheckBox);
+			MinecraftButtonLibrary.addMinecraftStyleToTextView(panicPlayerCheckBox);
 		}
-        panicChatCheckBox.setOnClickListener(new View_.OnClickListener() {
+        panicPlayerCheckBox.setOnClickListener(new View_.OnClickListener() {
             onClick: function(v) {
-                panicChatSetting = v.isChecked()?"on":"off";
+                panicPlayerSetting = v.isChecked()?"on":"off";
                 VertexClientPE.saveMainSettings();
             }
         });
@@ -2316,9 +2316,9 @@ var panic = {
         });
 		
         panicSettingsLayout.addView(panicCombatCheckBox);
-        panicSettingsLayout.addView(panicBuildingCheckBox);
+        panicSettingsLayout.addView(panicWorldCheckBox);
         panicSettingsLayout.addView(panicMovementCheckBox);
-        panicSettingsLayout.addView(panicChatCheckBox);
+        panicSettingsLayout.addView(panicPlayerCheckBox);
         panicSettingsLayout.addView(panicMiscCheckBox);
         return panicSettingsLayout;
     },
@@ -2328,7 +2328,7 @@ var panic = {
     onToggle: function() {
         VertexClientPE.modules.forEach(function (element, index, array) {
             if(element.isStateMod() && element.state) {
-				if((element.category == VertexClientPE.category.COMBAT && panicCombatSetting == "on") || (element.category == VertexClientPE.category.BUILDING && panicBuildingSetting == "on") || (element.category == VertexClientPE.category.MOVEMENT && panicMovementSetting == "on") || (element.category == VertexClientPE.category.CHAT && panicChatSetting == "on") || (element.category == VertexClientPE.category.MISC && panicMiscSetting == "on")) {
+				if((element.category == VertexClientPE.category.COMBAT && panicCombatSetting == "on") || (element.category == VertexClientPE.category.WORLD && panicWorldSetting == "on") || (element.category == VertexClientPE.category.MOVEMENT && panicMovementSetting == "on") || (element.category == VertexClientPE.category.PLAYER && panicPlayerSetting == "on") || (element.category == VertexClientPE.category.MISC && panicMiscSetting == "on")) {
 					element.onToggle();
 				}
             }
@@ -2602,7 +2602,7 @@ var autoSword = {
 var homeCommand = {
     name: "/home",
     desc: "Runs the /home command if the server or world you're on has it.",
-    category: VertexClientPE.category.CHAT,
+    category: VertexClientPE.category.PLAYER,
     type: "Mod",
     state: false,
     isStateMod: function() {
@@ -2616,7 +2616,7 @@ var homeCommand = {
 var timer = {
     name: "Timer",
     desc: "Makes the speed of the game faster.",
-    category: VertexClientPE.category.MOVEMENT,
+    category: VertexClientPE.category.WORLD,
     type: "Mod",
     state: false,
     getSettingsLayout: function() {
@@ -2657,7 +2657,7 @@ var timer = {
 var nuker = {
     name: "Nuker",
     desc: "Automatically destroys blocks around you. Can be used on servers when YesCheat+ is enabled.",
-    category: VertexClientPE.category.BUILDING,
+    category: VertexClientPE.category.WORLD,
     type: "Mod",
     state: false,
     getSettingsLayout: function() {
@@ -2772,7 +2772,7 @@ var fancyChatEndChar;
 var fancyChat = {
     name: "FancyChat",
     desc: "Replaces characters in sent chat messages by fancy unicode characters. Can be used to bypass curse word filters on some servers.",
-    category: VertexClientPE.category.CHAT,
+    category: VertexClientPE.category.PLAYER,
     type: "Mod",
     state: false,
     settings: {
@@ -2930,7 +2930,7 @@ var tapTeleport = {
 var phase = {
     name: "Phase",
     desc: "Makes you able to walk through walls.",
-    category: VertexClientPE.category.MOVEMENT,
+    category: VertexClientPE.category.PLAYER,
     type: "Mod",
     state: false,
     isStateMod: function() {
@@ -2945,7 +2945,7 @@ var phase = {
 var fastBreak = {
     name: "FastBreak",
     desc: "Allows you to decrease block destroy times.",
-    category: VertexClientPE.category.BUILDING,
+    category: VertexClientPE.category.PLAYER,
     type: "Mod",
     state: false,
 	getSettingsLayout: function() {
@@ -2998,7 +2998,7 @@ var chatRepeatStage = 0;
 var chatRepeat = {
     name: "ChatRepeat",
     desc: "Automatically repeats all the received chat messages. Can be very annoying.",
-    category: VertexClientPE.category.CHAT,
+    category: VertexClientPE.category.PLAYER,
     type: "Mod",
     state: false,
     isStateMod: function() {
@@ -3019,8 +3019,8 @@ var chatRepeat = {
 
 var autoSpammer = {
     name: "AutoSpammer",
-    desc: "Automatically spams the chat.",
-    category: VertexClientPE.category.CHAT,
+    desc: "Automatically spams the player.",
+    category: VertexClientPE.category.PLAYER,
     type: "Mod",
     state: false,
     getSettingsLayout: function() {
@@ -3179,7 +3179,7 @@ var powerExplosionsStage = 0;
 var powerExplosions = {
     name: "PowerExplosions",
     desc: "Makes explosions more powerful.",
-    category: VertexClientPE.category.BUILDING,
+    category: VertexClientPE.category.WORLD,
     type: "Mod",
     state: false,
     isStateMod: function() {
@@ -3201,7 +3201,7 @@ var powerExplosions = {
 var tapExplosion = {
     name: "TapExplosion",
     desc: "Makes blocks explode wherever you tap.",
-    category: VertexClientPE.category.BUILDING,
+    category: VertexClientPE.category.WORLD,
     type: "Mod",
     state: false,
     isStateMod: function() {
@@ -3220,7 +3220,7 @@ var signX, signY, signZ;
 var signEditor = {
     name: "SignEditor",
     desc: "Allows you to edit signs.",
-    category: VertexClientPE.category.BUILDING,
+    category: VertexClientPE.category.WORLD,
     type: "Mod",
     state: false,
 	singleplayerOnly: true,
@@ -3264,7 +3264,7 @@ var instaKill = {
 var derp = {
     name: "Derp",
     desc: "Rotates the player all the time.",
-    category: VertexClientPE.category.MISC,
+    category: VertexClientPE.category.PLAYER,
     type: "Mod",
     state: false,
     isStateMod: function() {
@@ -3303,7 +3303,7 @@ var glide = {
 var autoMine = {
     name: "AutoMine",
     desc: "Automatically mines the block you're looking at.",
-    category: VertexClientPE.category.BUILDING,
+    category: VertexClientPE.category.PLAYER,
     type: "Mod",
     state: false,
     isStateMod: function() {
@@ -3379,7 +3379,7 @@ var follow = {
 var tapNuker = {
     name: "TapNuker",
     desc: "Destroys blocks wherever you tap.",
-    category: VertexClientPE.category.BUILDING,
+    category: VertexClientPE.category.WORLD,
     type: "Mod",
     state: false,
     getSettingsLayout: function() {
@@ -3417,7 +3417,7 @@ var tapNuker = {
 var tapRemover = {
     name: "TapRemover",
     desc: "Removes blocks and entities on tap.",
-    category: VertexClientPE.category.BUILDING,
+    category: VertexClientPE.category.WORLD,
     type: "Mod",
     state: false,
 	singleplayerOnly: true,
@@ -3442,7 +3442,7 @@ var tapRemover = {
 var autoPlace = {
     name: "AutoPlace",
     desc: "Automatically places the block you're holding wherever you look.",
-    category: VertexClientPE.category.BUILDING,
+    category: VertexClientPE.category.WORLD,
     type: "Mod",
     state: false,
 	singleplayerOnly: true,
@@ -3461,7 +3461,7 @@ var autoPlace = {
         var blockData = Player.getCarriedItemData();
         if(getTile(x, y, z) != 0) {
             if(blockId <= 256) {
-                setTile(x-(side==4?1:0)+(side==5?1:0),y-(side==0?1:0)+(side==1?1:0),z-(side==2?1:0)+(side==3?1:0), blockId, blockData);
+                setTile(x-(side==4?1:0)+(side==5?1:0)+0.5,y-(side==0?1:0)+(side==1?1:0)+0.5,z-(side==2?1:0)+(side==3?1:0)+0.5, blockId, blockData);
             }
         }
     }
@@ -3661,7 +3661,7 @@ var coordsDisplay = {
 var itemGiver = {
     name: "ItemGiver",
     desc: "Adds items to your inventory.",
-    category: VertexClientPE.category.MISC,
+    category: VertexClientPE.category.PLAYER,
     type: "Mod",
     state: false,
     isStateMod: function() {
@@ -3693,7 +3693,7 @@ var healthTags = {
 var autoSwitch = {
     name: "AutoSwitch",
     desc: "Switches the item in your hand all the time.",
-    category: VertexClientPE.category.MISC,
+    category: VertexClientPE.category.PLAYER,
     type: "Mod",
     state: false,
     isStateMod: function() {
@@ -3827,7 +3827,7 @@ var enderProjectiles = {
 var stackDrop = {
     name: "StackDrop",
     desc: "Makes every block drop itself 64 times.",
-    category: VertexClientPE.category.BUILDING,
+    category: VertexClientPE.category.WORLD,
     type: "Mod",
     state: false,
     isStateMod: function() {
@@ -4043,7 +4043,7 @@ var aimbot = {
 var chestTracers = {
     name: "ChestTracers",
     desc: "Allows you to find chests more easily by moving particles from the chest to underneath you.",
-    category: VertexClientPE.category.MISC,
+    category: VertexClientPE.category.WORLD,
     type: "Mod",
     state: false,
     requiresPro: function() {
@@ -4255,7 +4255,7 @@ var remoteView = {
 var antiAFK = {
     name: "AntiAFK",
     desc: "Makes the player walk around to prevent you from getting disconnected.",
-    category: VertexClientPE.category.MISC,
+    category: VertexClientPE.category.PLAYER,
     type: "Mod",
     state: false,
     timer: 0,
@@ -4288,7 +4288,7 @@ var antiAFK = {
 var autoLeave = {
     name: "AutoLeave",
     desc: "Automatically makes you leave the game when your health is (below) 8.",
-    category: VertexClientPE.category.COMBAT,
+    category: VertexClientPE.category.PLAYER,
     type: "Mod",
     state: false,
     isStateMod: function() {
@@ -4432,7 +4432,7 @@ var lifeSaver = {
 var autoBuild = {
     name: "AutoBuild",
     desc: "Automatically build structures.",
-    category: VertexClientPE.category.BUILDING,
+    category: VertexClientPE.category.WORLD,
     type: "Mod",
     state: false,
 	isExpMod: function() {
@@ -4508,7 +4508,7 @@ var speedHack = {
 var chestESP = {
     name: "ChestESP",
     desc: "Allows you to find chests easily by showing boxes around them.",
-    category: VertexClientPE.category.MISC,
+    category: VertexClientPE.category.WORLD,
     type: "Mod",
     state: false,
     requiresPro: function() {
@@ -4556,7 +4556,7 @@ var chestESP = {
 var twerk = {
     name: "Twerk",
     desc: "Automatically makes you twerk all the time.",
-    category: VertexClientPE.category.MISC,
+    category: VertexClientPE.category.PLAYER,
     type: "Mod",
     state: false,
     timer: 0,
@@ -4579,7 +4579,7 @@ var twerk = {
 var chatLog = {
     name: "ChatLog",
     desc: "Automatically logs all the chat messages and allows you to view them.",
-    category: VertexClientPE.category.CHAT,
+    category: VertexClientPE.category.PLAYER,
     type: "Special",
     isStateMod: function() {
         return false;
@@ -4735,17 +4735,17 @@ var randomTP = {
 		var randomEnt;
 		if(targetMobsSetting == "on") {
 			newEnt = Entity.getAll().getRandomElement();
-			if(newEnt != null && newEnt != null) {
+			if(newEnt != null && newEnt != undefined) {
 				randomEnt = newEnt;
 			}
 		} if(targetPlayersSetting == "on") {
 			newEnt = Server.getAllPlayers().getRandomElement();
-			if(newEnt != null && newEnt != null) {
+			if(newEnt != null && newEnt != undefined && newEnt != getPlayerEnt()) {
 				randomEnt = newEnt;
 			}
 		}
 		
-		if(randomEnt != null && randomEnt != null) {
+		if(randomEnt != null && randomEnt != undefined) {
 			Entity.setPosition(getPlayerEnt(), Entity.getX(randomEnt), Entity.getY(randomEnt) + 1.8, Entity.getZ(randomEnt));
 		}
 	}
@@ -4754,7 +4754,7 @@ var randomTP = {
 var fullBright = {
 	name: "Fullbright",
     desc: "Makes air light up.",
-    category: VertexClientPE.category.MISC,
+    category: VertexClientPE.category.WORLD,
     type: "Mod",
 	state: false,
     isStateMod: function() {
@@ -5453,7 +5453,6 @@ VertexClientPE.registerModule(antiKnockback);
 VertexClientPE.registerModule(arrowGun);
 VertexClientPE.registerModule(attackShock);
 VertexClientPE.registerModule(attackTeleport);
-VertexClientPE.registerModule(autoLeave);
 VertexClientPE.registerModule(autoSword);
 VertexClientPE.registerModule(criticals);
 VertexClientPE.registerModule(fireAura);
@@ -5487,7 +5486,6 @@ VertexClientPE.registerModule(lifeSaver);
 VertexClientPE.registerModule(liquidWalk);
 VertexClientPE.registerModule(noDownGlide);
 //VertexClientPE.registerModule(noInvisBedrock);
-VertexClientPE.registerModule(phase);
 VertexClientPE.registerModule(pointTeleport);
 VertexClientPE.registerModule(randomTP);
 VertexClientPE.registerModule(ride);
@@ -5496,12 +5494,13 @@ VertexClientPE.registerModule(speedHack);
 VertexClientPE.registerModule(step);
 VertexClientPE.registerModule(tapJumpRun);
 VertexClientPE.registerModule(tapTeleport);
-VertexClientPE.registerModule(timer);
-//BUILDING
+//WORLD
 VertexClientPE.registerModule(autoBuild);
 VertexClientPE.registerModule(autoMine);
 VertexClientPE.registerModule(autoPlace);
-VertexClientPE.registerModule(fastBreak);
+VertexClientPE.registerModule(chestESP);
+VertexClientPE.registerModule(chestTracers);
+VertexClientPE.registerModule(fullBright);
 VertexClientPE.registerModule(nuker);
 VertexClientPE.registerModule(powerExplosions);
 VertexClientPE.registerModule(signEditor);
@@ -5509,26 +5508,28 @@ VertexClientPE.registerModule(stackDrop);
 VertexClientPE.registerModule(tapExplosion);
 VertexClientPE.registerModule(tapNuker);
 VertexClientPE.registerModule(tapRemover);
-//CHAT
+VertexClientPE.registerModule(timer);
+//PLAYER
+VertexClientPE.registerModule(antiAFK);
+VertexClientPE.registerModule(autoLeave);
 VertexClientPE.registerModule(autoSpammer);
+VertexClientPE.registerModule(autoSwitch);
 VertexClientPE.registerModule(chatLog);
 VertexClientPE.registerModule(chatRepeat);
+VertexClientPE.registerModule(derp);
 VertexClientPE.registerModule(fancyChat);
+VertexClientPE.registerModule(fastBreak);
 VertexClientPE.registerModule(homeCommand);
+VertexClientPE.registerModule(itemGiver);
+VertexClientPE.registerModule(phase);
+VertexClientPE.registerModule(twerk);
 //MISC
 VertexClientPE.registerModule(panic);
 VertexClientPE.registerModule(switchGamemode);
-VertexClientPE.registerModule(antiAFK);
-VertexClientPE.registerModule(autoSwitch);
 VertexClientPE.registerModule(bypass);
-VertexClientPE.registerModule(chestESP);
-VertexClientPE.registerModule(chestTracers);
 VertexClientPE.registerModule(coordsDisplay);
-VertexClientPE.registerModule(derp);
 VertexClientPE.registerModule(dropLocator);
-VertexClientPE.registerModule(fullBright);
 VertexClientPE.registerModule(healthDisplay);
-VertexClientPE.registerModule(itemGiver);
 VertexClientPE.registerModule(letItSnow);
 VertexClientPE.registerModule(onlyDay);
 VertexClientPE.registerModule(orderAPizza);
@@ -5538,7 +5539,6 @@ VertexClientPE.registerModule(serverInfo);
 VertexClientPE.registerModule(target);
 VertexClientPE.registerModule(teleport);
 //VertexClientPE.registerModule(tracers);
-VertexClientPE.registerModule(twerk);
 VertexClientPE.registerModule(zoom);
 
 //var autoClick = true;
@@ -6560,15 +6560,15 @@ VertexClientPE.resetMenuPos = function() {
 	combattpopx = combattpopx_def;
 	combattpopy = combattpopy_def;
 	vertexclientpecombatmenu.update(parseInt(combattpopx), parseInt(combattpopy), -1, -1);
-	buildingtpopx = buildingtpopx_def;
-	buildingtpopy = buildingtpopy_def;
-	vertexclientpebuildingmenu.update(parseInt(buildingtpopx), parseInt(buildingtpopy), -1, -1);
+	worldtpopx = worldtpopx_def;
+	worldtpopy = worldtpopy_def;
+	vertexclientpeworldmenu.update(parseInt(worldtpopx), parseInt(worldtpopy), -1, -1);
 	movementtpopx = movementtpopx_def;
 	movementtpopy = movementtpopy_def;
 	vertexclientpemovementmenu.update(parseInt(movementtpopx), parseInt(movementtpopy), -1, -1);
-	chattpopx = chattpopx_def;
-	chattpopy = chattpopy_def;
-	vertexclientpechatmenu.update(parseInt(chattpopx), parseInt(chattpopy), -1, -1);
+	playertpopx = playertpopx_def;
+	playertpopy = playertpopy_def;
+	vertexclientpeplayermenu.update(parseInt(playertpopx), parseInt(playertpopy), -1, -1);
 	misctpopx = misctpopx_def;
 	misctpopy = misctpopy_def;
 	vertexclientpemiscmenu.update(parseInt(misctpopx), parseInt(misctpopy), -1, -1);
@@ -6859,15 +6859,15 @@ VertexClientPE.showFeaturesDialog = function() {
 					}
 				}));
 				
-				var buildingEnabledSettingButton = clientSwitch();
-				buildingEnabledSettingButton.setText("Building");
-				buildingEnabledSettingButton.setChecked(buildingSaveEnabled == "on");
-				buildingEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
+				var worldEnabledSettingButton = clientSwitch();
+				worldEnabledSettingButton.setText("World");
+				worldEnabledSettingButton.setChecked(worldSaveEnabled == "on");
+				worldEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
 					onCheckedChanged: function() {
-						if(buildingSaveEnabled == "off") {
-							buildingSaveEnabled = "on";
-						} else if(buildingSaveEnabled == "on") {
-							buildingSaveEnabled = "off";
+						if(worldSaveEnabled == "off") {
+							worldSaveEnabled = "on";
+						} else if(worldSaveEnabled == "on") {
+							worldSaveEnabled = "off";
 						}
 						VertexClientPE.saveFeaturesSettings();
 					}
@@ -6887,15 +6887,15 @@ VertexClientPE.showFeaturesDialog = function() {
 					}
 				}));
 				
-				var chatEnabledSettingButton = clientSwitch();
-				chatEnabledSettingButton.setText("Chat");
-				chatEnabledSettingButton.setChecked(chatSaveEnabled == "on");
-				chatEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
+				var playerEnabledSettingButton = clientSwitch();
+				playerEnabledSettingButton.setText("Player");
+				playerEnabledSettingButton.setChecked(playerSaveEnabled == "on");
+				playerEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
 					onCheckedChanged: function() {
-						if(chatSaveEnabled == "off") {
-							chatSaveEnabled = "on";
-						} else if(chatSaveEnabled == "on") {
-							chatSaveEnabled = "off";
+						if(playerSaveEnabled == "off") {
+							playerSaveEnabled = "on";
+						} else if(playerSaveEnabled == "on") {
+							playerSaveEnabled = "off";
 						}
 						VertexClientPE.saveFeaturesSettings();
 					}
@@ -6930,9 +6930,9 @@ VertexClientPE.showFeaturesDialog = function() {
 				}));
 				
 				dialogLayout.addView(combatEnabledSettingButton);
-				dialogLayout.addView(buildingEnabledSettingButton);
+				dialogLayout.addView(worldEnabledSettingButton);
 				dialogLayout.addView(movementEnabledSettingButton);
-				dialogLayout.addView(chatEnabledSettingButton);
+				dialogLayout.addView(playerEnabledSettingButton);
 				dialogLayout.addView(miscEnabledSettingButton);
 				dialogLayout.addView(singleplayerEnabledSettingButton);
 				dialogLayout.addView(clientTextView("\n"));
@@ -8534,13 +8534,13 @@ VertexClientPE.showCategoryDialog = function(titleView, currentName, categoryId)
                                 combatName = currentName;
                                 break;
                             case 1:
-                                buildingName = currentName;
+                                worldName = currentName;
                                 break;
                             case 2:
                                 movementName = currentName;
                                 break;
                             case 3:
-                                chatName = currentName;
+                                playerName = currentName;
                                 break;
                             case 4:
                                 miscName = currentName;
@@ -9344,9 +9344,9 @@ VertexClientPE.saveFeaturesSettings = function() {
     newFile.createNewFile();
     var outWrite = new OutputStreamWriter_(new FileOutputStream_(newFile));
     outWrite.append(combatSaveEnabled.toString());
-    outWrite.append("," + buildingSaveEnabled.toString());
+    outWrite.append("," + worldSaveEnabled.toString());
     outWrite.append("," + movementSaveEnabled.toString());
-    outWrite.append("," + chatSaveEnabled.toString());
+    outWrite.append("," + playerSaveEnabled.toString());
     outWrite.append("," + miscSaveEnabled.toString());
     outWrite.append("," + singleplayerSaveEnabled.toString());
 
@@ -9368,16 +9368,16 @@ VertexClientPE.loadFeaturesSettings = function() {
             combatSaveEnabled = combatEnabled;
         }
         if (arr[1] != null && arr[1] != undefined) {
-			buildingEnabled = arr[1];
-            buildingSaveEnabled = buildingEnabled;
+			worldEnabled = arr[1];
+            worldSaveEnabled = worldEnabled;
         }
         if (arr[2] != null && arr[2] != undefined) {
 			movementEnabled = arr[2];
             movementSaveEnabled = movementEnabled;
         }
         if (arr[3] != null && arr[3] != undefined) {
-            chatEnabled = arr[3];
-            chatSaveEnabled = chatEnabled;
+            playerEnabled = arr[3];
+            playerSaveEnabled = playerEnabled;
         }
         if (arr[4] != null && arr[4] != undefined) {
             miscEnabled = arr[4];
@@ -9395,29 +9395,29 @@ VertexClientPE.loadFeaturesSettings = function() {
 
 VertexClientPE.saveCategorySettings = function() {
     File_(settingsPath).mkdirs();
-    var newFile = new File_(settingsPath, "vertexclientpe_categories.txt");
+    var newFile = new File_(settingsPath, "vertexclientpe_categories_new.txt");
     newFile.createNewFile();
     var outWrite = new OutputStreamWriter_(new FileOutputStream_(newFile));
     outWrite.append(combatName.toString());
-    outWrite.append("," + buildingName.toString());
+    outWrite.append("," + worldName.toString());
     outWrite.append("," + movementName.toString());
-    outWrite.append("," + chatName.toString());
+    outWrite.append("," + playerName.toString());
     outWrite.append("," + miscName.toString());
 
     outWrite.close();
 }
 
 VertexClientPE.loadCategorySettings = function() {
-    if(!File_(settingsPath + "vertexclientpe_categories.txt").exists())
+    if(!File_(settingsPath + "vertexclientpe_categories_new.txt").exists())
         return;
-    var file = new File_(settingsPath + "vertexclientpe_categories.txt");
+    var file = new File_(settingsPath + "vertexclientpe_categories_new.txt");
     var fos = new FileInputStream_(file);
     var str = new StringBuilder_();
     var ch;
     while((ch = fos.read()) != -1)
         str.append(Character_(ch));
     if(str != null && str != undefined) {
-        var _0xbbeb=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x2C","\x73\x70\x6C\x69\x74"];if(VertexClientPE[_0xbbeb[0]]()==_0xbbeb[1]){combatName=str.toString()[_0xbbeb[3]](_0xbbeb[2])[0];buildingName=str.toString()[_0xbbeb[3]](_0xbbeb[2])[1];movementName=str.toString()[_0xbbeb[3]](_0xbbeb[2])[2];chatName=str.toString()[_0xbbeb[3]](_0xbbeb[2])[3];miscName=str.toString()[_0xbbeb[3]](_0xbbeb[2])[4]}
+        var _0xbbeb=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x2C","\x73\x70\x6C\x69\x74"];if(VertexClientPE[_0xbbeb[0]]()==_0xbbeb[1]){combatName=str.toString()[_0xbbeb[3]](_0xbbeb[2])[0];worldName=str.toString()[_0xbbeb[3]](_0xbbeb[2])[1];movementName=str.toString()[_0xbbeb[3]](_0xbbeb[2])[2];playerName=str.toString()[_0xbbeb[3]](_0xbbeb[2])[3];miscName=str.toString()[_0xbbeb[3]](_0xbbeb[2])[4]}
     }
     fos.close();
     return true;
@@ -9576,10 +9576,10 @@ VertexClientPE.saveFloatingMenus = function(category) {
 		editor.putBoolean("VertexClientPE.combatMenuShown", combatMenuShown);
 	}
 	//---
-	if(category == "building" || category == "all") {
-		editor.putFloat("VertexClientPE.buildingtpopx", parseInt(buildingtpopx));
-		editor.putFloat("VertexClientPE.buildingtpopy", parseInt(buildingtpopy));
-		editor.putBoolean("VertexClientPE.buildingMenuShown", buildingMenuShown);
+	if(category == "world" || category == "all") {
+		editor.putFloat("VertexClientPE.worldtpopx", parseInt(worldtpopx));
+		editor.putFloat("VertexClientPE.worldtpopy", parseInt(worldtpopy));
+		editor.putBoolean("VertexClientPE.worldMenuShown", worldMenuShown);
 	}
 	//---
 	if(category == "movement" || category == "all") {
@@ -9588,10 +9588,10 @@ VertexClientPE.saveFloatingMenus = function(category) {
 		editor.putBoolean("VertexClientPE.movementMenuShown", movementMenuShown);
 	}
 	//---
-	if(category == "chat" || category == "all") {
-		editor.putFloat("VertexClientPE.chattpopx", parseInt(chattpopx));
-		editor.putFloat("VertexClientPE.chattpopy", parseInt(chattpopy));
-		editor.putBoolean("VertexClientPE.chatMenuShown", chatMenuShown);
+	if(category == "player" || category == "all") {
+		editor.putFloat("VertexClientPE.playertpopx", parseInt(playertpopx));
+		editor.putFloat("VertexClientPE.playertpopy", parseInt(playertpopy));
+		editor.putBoolean("VertexClientPE.playerMenuShown", playerMenuShown);
 	}
 	//---
 	if(category == "misc" || category == "all") {
@@ -9608,17 +9608,17 @@ VertexClientPE.loadFloatingMenus = function () {
 	combattpopy = sharedPref.getFloat("VertexClientPE.combattpopy", combattpopy);
 	combatMenuShown = sharedPref.getBoolean("VertexClientPE.combatMenuShown", combatMenuShown);
 	//---
-	buildingtpopx = sharedPref.getFloat("VertexClientPE.buildingtpopx", buildingtpopx);
-	buildingtpopy = sharedPref.getFloat("VertexClientPE.buildingtpopy", buildingtpopy);
-	buildingMenuShown = sharedPref.getBoolean("VertexClientPE.buildingMenuShown", buildingMenuShown);
+	worldtpopx = sharedPref.getFloat("VertexClientPE.worldtpopx", worldtpopx);
+	worldtpopy = sharedPref.getFloat("VertexClientPE.worldtpopy", worldtpopy);
+	worldMenuShown = sharedPref.getBoolean("VertexClientPE.worldMenuShown", worldMenuShown);
 	//---
 	movementtpopx = sharedPref.getFloat("VertexClientPE.movementtpopx", movementtpopx);
 	movementtpopy = sharedPref.getFloat("VertexClientPE.movementtpopy", movementtpopy);
 	movementMenuShown = sharedPref.getBoolean("VertexClientPE.movementMenuShown", movementMenuShown);
 	//---
-	chattpopx = sharedPref.getFloat("VertexClientPE.chattpopx", chattpopx);
-	chattpopy = sharedPref.getFloat("VertexClientPE.chattpopy", chattpopy);
-	chatMenuShown = sharedPref.getBoolean("VertexClientPE.chatMenuShown", chatMenuShown);
+	playertpopx = sharedPref.getFloat("VertexClientPE.playertpopx", playertpopx);
+	playertpopy = sharedPref.getFloat("VertexClientPE.playertpopy", playertpopy);
+	playerMenuShown = sharedPref.getBoolean("VertexClientPE.playerMenuShown", playerMenuShown);
 	//---
 	misctpopx = sharedPref.getFloat("VertexClientPE.misctpopx", misctpopx);
 	misctpopy = sharedPref.getFloat("VertexClientPE.misctpopy", misctpopy);
@@ -9696,9 +9696,9 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + strafeAuraRangeSetting.toString());
 	outWrite.append("," + strafeAuraDirectionSetting.toString());
 	outWrite.append("," + panicCombatSetting.toString());
-	outWrite.append("," + panicBuildingSetting.toString());
+	outWrite.append("," + panicWorldSetting.toString());
 	outWrite.append("," + panicMovementSetting.toString());
-	outWrite.append("," + panicChatSetting.toString());
+	outWrite.append("," + panicPlayerSetting.toString());
 	outWrite.append("," + panicMiscSetting.toString());
 
 	outWrite.close();
@@ -9921,13 +9921,13 @@ VertexClientPE.loadMainSettings = function () {
             panicCombatSetting = arr[65];
         }
 		if (arr[66] != null && arr[66] != undefined) {
-            panicBuildingSetting = arr[66];
+            panicWorldSetting = arr[66];
         }
 		if (arr[67] != null && arr[67] != undefined) {
             panicMovementSetting = arr[67];
         }
 		if (arr[68] != null && arr[68] != undefined) {
-            panicChatSetting = arr[68];
+            panicPlayerSetting = arr[68];
         }
 		if (arr[69] != null && arr[69] != undefined) {
             panicMiscSetting = arr[69];
@@ -11005,15 +11005,15 @@ function categoryTab(category) {
     categoryTabLayout.setGravity(Gravity_.CENTER);
 	
 	if(currentTab == "Combat" && combatEnabled == "off") {
-		currentTab = "Building";
+		currentTab = "World";
 	}
-	if(currentTab == "Building" && buildingEnabled == "off") {
+	if(currentTab == "World" && worldEnabled == "off") {
 		currentTab = "Movement";
 	}
 	if(currentTab == "Movement" && movementEnabled == "off") {
-		currentTab = "Chat";
+		currentTab = "Player";
 	}
-	if(currentTab == "Chat" && chatEnabled == "off") {
+	if(currentTab == "Player" && playerEnabled == "off") {
 		currentTab = "Misc";
 	}
 
@@ -11045,10 +11045,10 @@ function categoryTab(category) {
                 tabTitle.setTextSize(20);
                 tabTitle.setGravity(Gravity_.CENTER);
                 
-                var categories = [VertexClientPE.category.COMBAT, VertexClientPE.category.BUILDING, VertexClientPE.category.MOVEMENT, VertexClientPE.category.CHAT, VertexClientPE.category.MISC];
+                var categories = [VertexClientPE.category.COMBAT, VertexClientPE.category.WORLD, VertexClientPE.category.MOVEMENT, VertexClientPE.category.PLAYER, VertexClientPE.category.MISC];
     
                 categories.forEach(function(element, index, array) {
-					if((index == 0 && combatEnabled == "on") || (index == 1 && buildingEnabled == "on") || (index == 2 && movementEnabled == "on") || (index == 3 && chatEnabled == "on") || (index == 4 && miscEnabled == "on")) {
+					if((index == 0 && combatEnabled == "on") || (index == 1 && worldEnabled == "on") || (index == 2 && movementEnabled == "on") || (index == 3 && playerEnabled == "on") || (index == 4 && miscEnabled == "on")) {
 						menuMiddleLayout.addView(new categoryTab(element));
 					}
                 });
@@ -12683,9 +12683,9 @@ VertexClientPE.showSetupScreen = function() {
 								setupTextView.startAnimation(textAnim);
 								setupTextView.setText(setupStep3Text);
 								setupScreenLayoutBottomCenter.addView(combatEnabledSettingButton);
-								setupScreenLayoutBottomCenter.addView(buildingEnabledSettingButton);
+								setupScreenLayoutBottomCenter.addView(worldEnabledSettingButton);
 								setupScreenLayoutBottomCenter.addView(movementEnabledSettingButton);
-								setupScreenLayoutBottomCenter1.addView(chatEnabledSettingButton);
+								setupScreenLayoutBottomCenter1.addView(playerEnabledSettingButton);
 								setupScreenLayoutBottomCenter1.addView(miscEnabledSettingButton);
 								setupScreenLayoutBottomCenter1.addView(singleplayerEnabledSettingButton);
 								doneButton.setText("\u2794");
@@ -12840,17 +12840,17 @@ VertexClientPE.showSetupScreen = function() {
 						}
 					}));
 					
-					var buildingEnabledSettingButton = clientSwitch();
-					buildingEnabledSettingButton.setText("Building");
-					buildingEnabledSettingButton.setChecked(buildingSaveEnabled == "on");
-					buildingEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
+					var worldEnabledSettingButton = clientSwitch();
+					worldEnabledSettingButton.setText("World");
+					worldEnabledSettingButton.setChecked(worldSaveEnabled == "on");
+					worldEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
 						onCheckedChanged: function() {
-							if(buildingSaveEnabled == "off") {
-								buildingSaveEnabled = "on";
-							} else if(buildingSaveEnabled == "on") {
-								buildingSaveEnabled = "off";
+							if(worldSaveEnabled == "off") {
+								worldSaveEnabled = "on";
+							} else if(worldSaveEnabled == "on") {
+								worldSaveEnabled = "off";
 							}
-							buildingEnabled = buildingSaveEnabled;
+							worldEnabled = worldSaveEnabled;
 							VertexClientPE.saveFeaturesSettings();
 						}
 					}));
@@ -12870,17 +12870,17 @@ VertexClientPE.showSetupScreen = function() {
 						}
 					}));
 					
-					var chatEnabledSettingButton = clientSwitch();
-					chatEnabledSettingButton.setText("Chat");
-					chatEnabledSettingButton.setChecked(chatSaveEnabled == "on");
-					chatEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
+					var playerEnabledSettingButton = clientSwitch();
+					playerEnabledSettingButton.setText("Player");
+					playerEnabledSettingButton.setChecked(playerSaveEnabled == "on");
+					playerEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
 						onCheckedChanged: function() {
-							if(chatSaveEnabled == "off") {
-								chatSaveEnabled = "on";
-							} else if(chatSaveEnabled == "on") {
-								chatSaveEnabled = "off";
+							if(playerSaveEnabled == "off") {
+								playerSaveEnabled = "on";
+							} else if(playerSaveEnabled == "on") {
+								playerSaveEnabled = "off";
 							}
-							chatEnabled = chatSaveEnabled;
+							playerEnabled = playerSaveEnabled;
 							VertexClientPE.saveFeaturesSettings();
 						}
 					}));
@@ -16543,9 +16543,9 @@ VertexClientPE.closeMenu = function() {
                 vertexclientpecombatmenu.dismiss();
             }
         }
-		if(vertexclientpebuildingmenu != null) {
-            if(vertexclientpebuildingmenu.isShowing()) {
-                vertexclientpebuildingmenu.dismiss();
+		if(vertexclientpeworldmenu != null) {
+            if(vertexclientpeworldmenu.isShowing()) {
+                vertexclientpeworldmenu.dismiss();
             }
         }
 		if(vertexclientpemovementmenu != null) {
@@ -16553,9 +16553,9 @@ VertexClientPE.closeMenu = function() {
                 vertexclientpemovementmenu.dismiss();
             }
         }
-		if(vertexclientpechatmenu != null) {
-            if(vertexclientpechatmenu.isShowing()) {
-                vertexclientpechatmenu.dismiss();
+		if(vertexclientpeplayermenu != null) {
+            if(vertexclientpeplayermenu.isShowing()) {
+                vertexclientpeplayermenu.dismiss();
             }
         }
         if(vertexclientpemiscmenu != null) {
@@ -16638,73 +16638,73 @@ VertexClientPE.showFullScreenMenu = function() {
 					var fullScreenMenuLayout1Combat = new LinearLayout_(CONTEXT);
 					fullScreenMenuLayout1Combat.setOrientation(1);
 					fullScreenMenuLayout1Combat.setGravity(Gravity_.CENTER_HORIZONTAL);
-                    var fullScreenMenuLayout1Building = new LinearLayout_(CONTEXT);
-					fullScreenMenuLayout1Building.setOrientation(1);
-					fullScreenMenuLayout1Building.setGravity(Gravity_.CENTER_HORIZONTAL);
+                    var fullScreenMenuLayout1World = new LinearLayout_(CONTEXT);
+					fullScreenMenuLayout1World.setOrientation(1);
+					fullScreenMenuLayout1World.setGravity(Gravity_.CENTER_HORIZONTAL);
                     var fullScreenMenuLayout1Movement = new LinearLayout_(CONTEXT);
 					fullScreenMenuLayout1Movement.setOrientation(1);
 					fullScreenMenuLayout1Movement.setGravity(Gravity_.CENTER_HORIZONTAL);
-                    var fullScreenMenuLayout1Chat = new LinearLayout_(CONTEXT);
-					fullScreenMenuLayout1Chat.setOrientation(1);
-					fullScreenMenuLayout1Chat.setGravity(Gravity_.CENTER_HORIZONTAL);
+                    var fullScreenMenuLayout1Player = new LinearLayout_(CONTEXT);
+					fullScreenMenuLayout1Player.setOrientation(1);
+					fullScreenMenuLayout1Player.setGravity(Gravity_.CENTER_HORIZONTAL);
                     var fullScreenMenuLayout1Misc = new LinearLayout_(CONTEXT);
 					fullScreenMenuLayout1Misc.setOrientation(1);
 					fullScreenMenuLayout1Misc.setGravity(Gravity_.CENTER_HORIZONTAL);
 					
 					var combatSectionTitle = coloredSubTitle(combatName);
 					combatSectionTitle.setGravity(Gravity_.CENTER);
-					var buildingSectionTitle = coloredSubTitle(buildingName);
-					buildingSectionTitle.setGravity(Gravity_.CENTER);
+					var worldSectionTitle = coloredSubTitle(worldName);
+					worldSectionTitle.setGravity(Gravity_.CENTER);
 					var movementSectionTitle = coloredSubTitle(movementName);
 					movementSectionTitle.setGravity(Gravity_.CENTER);
-					var chatSectionTitle = coloredSubTitle(chatName);
-					chatSectionTitle.setGravity(Gravity_.CENTER);
+					var playerSectionTitle = coloredSubTitle(playerName);
+					playerSectionTitle.setGravity(Gravity_.CENTER);
 					var miscSectionTitle = coloredSubTitle(miscName);
 					miscSectionTitle.setGravity(Gravity_.CENTER);
 					
 					fullScreenMenuLayout1Combat.addView(combatSectionTitle);
-					fullScreenMenuLayout1Building.addView(buildingSectionTitle);
+					fullScreenMenuLayout1World.addView(worldSectionTitle);
 					fullScreenMenuLayout1Movement.addView(movementSectionTitle);
-					fullScreenMenuLayout1Chat.addView(chatSectionTitle);
+					fullScreenMenuLayout1Player.addView(playerSectionTitle);
 					fullScreenMenuLayout1Misc.addView(miscSectionTitle);
 					
                     var fullScreenMenuLayoutScrollCombat = new ScrollView(CONTEXT);
-                    var fullScreenMenuLayoutScrollBuilding = new ScrollView(CONTEXT);
+                    var fullScreenMenuLayoutScrollWorld = new ScrollView(CONTEXT);
                     var fullScreenMenuLayoutScrollMovement = new ScrollView(CONTEXT);
-                    var fullScreenMenuLayoutScrollChat = new ScrollView(CONTEXT);
+                    var fullScreenMenuLayoutScrollPlayer = new ScrollView(CONTEXT);
                     var fullScreenMenuLayoutScrollMisc = new ScrollView(CONTEXT);
 					
 					var fullScreenMenuLayoutCombat = new LinearLayout_(CONTEXT);
 					fullScreenMenuLayoutCombat.setOrientation(1);
-                    var fullScreenMenuLayoutBuilding = new LinearLayout_(CONTEXT);
-					fullScreenMenuLayoutBuilding.setOrientation(1);
+                    var fullScreenMenuLayoutWorld = new LinearLayout_(CONTEXT);
+					fullScreenMenuLayoutWorld.setOrientation(1);
                     var fullScreenMenuLayoutMovement = new LinearLayout_(CONTEXT);
 					fullScreenMenuLayoutMovement.setOrientation(1);
-                    var fullScreenMenuLayoutChat = new LinearLayout_(CONTEXT);
-					fullScreenMenuLayoutChat.setOrientation(1);
+                    var fullScreenMenuLayoutPlayer = new LinearLayout_(CONTEXT);
+					fullScreenMenuLayoutPlayer.setOrientation(1);
                     var fullScreenMenuLayoutMisc = new LinearLayout_(CONTEXT);
 					fullScreenMenuLayoutMisc.setOrientation(1);
 					
 					fullScreenMenuLayoutScrollCombat.addView(fullScreenMenuLayoutCombat);
-					fullScreenMenuLayoutScrollBuilding.addView(fullScreenMenuLayoutBuilding);
+					fullScreenMenuLayoutScrollWorld.addView(fullScreenMenuLayoutWorld);
 					fullScreenMenuLayoutScrollMovement.addView(fullScreenMenuLayoutMovement);
-					fullScreenMenuLayoutScrollChat.addView(fullScreenMenuLayoutChat);
+					fullScreenMenuLayoutScrollPlayer.addView(fullScreenMenuLayoutPlayer);
 					fullScreenMenuLayoutScrollMisc.addView(fullScreenMenuLayoutMisc);
 					
 					fullScreenMenuLayout1Combat.addView(fullScreenMenuLayoutScrollCombat);
-					fullScreenMenuLayout1Building.addView(fullScreenMenuLayoutScrollBuilding);
+					fullScreenMenuLayout1World.addView(fullScreenMenuLayoutScrollWorld);
 					fullScreenMenuLayout1Movement.addView(fullScreenMenuLayoutScrollMovement);
-					fullScreenMenuLayout1Chat.addView(fullScreenMenuLayoutScrollChat);
+					fullScreenMenuLayout1Player.addView(fullScreenMenuLayoutScrollPlayer);
 					fullScreenMenuLayout1Misc.addView(fullScreenMenuLayoutScrollMisc);
 					
 					if(combatEnabled == "on") {
 						fullScreenMenuLayout.addView(fullScreenMenuLayout1Combat);
-					} if(buildingEnabled == "on") {
-						fullScreenMenuLayout.addView(fullScreenMenuLayout1Building);
+					} if(worldEnabled == "on") {
+						fullScreenMenuLayout.addView(fullScreenMenuLayout1World);
 					} if(movementEnabled == "on") {
 						fullScreenMenuLayout.addView(fullScreenMenuLayout1Movement);
-					} if(chatEnabled == "on") {
-						fullScreenMenuLayout.addView(fullScreenMenuLayout1Chat);
+					} if(playerEnabled == "on") {
+						fullScreenMenuLayout.addView(fullScreenMenuLayout1Player);
 					} if(miscEnabled == "on") {
 						fullScreenMenuLayout.addView(fullScreenMenuLayout1Misc);
 					}
@@ -16731,17 +16731,17 @@ VertexClientPE.showFullScreenMenu = function() {
 								if(combatEnabled == "on") {
 									fullScreenMenuLayoutCombat.addView(new modButton(element));
 								}
-							} else if (element.category == VertexClientPE.category.BUILDING) {
-								if(buildingEnabled == "on") {
-									fullScreenMenuLayoutBuilding.addView(new modButton(element));
+							} else if (element.category == VertexClientPE.category.WORLD) {
+								if(worldEnabled == "on") {
+									fullScreenMenuLayoutWorld.addView(new modButton(element));
 								}
 							} else if (element.category == VertexClientPE.category.MOVEMENT) {
 								if(movementEnabled == "on") {
 									fullScreenMenuLayoutMovement.addView(new modButton(element));
 								}
-							} else if (element.category == VertexClientPE.category.CHAT) {
-								if(chatEnabled == "on") {
-									fullScreenMenuLayoutChat.addView(new modButton(element));
+							} else if (element.category == VertexClientPE.category.PLAYER) {
+								if(playerEnabled == "on") {
+									fullScreenMenuLayoutPlayer.addView(new modButton(element));
 								}
 							} else if (element.category == VertexClientPE.category.MISC) {
 								if(miscEnabled == "on") {
@@ -16825,10 +16825,10 @@ function retroMenu() {
 		tabTitle.setGravity(Gravity_.CENTER);
 		//menuRightLayout.addView(tabTitle);
 		
-		var categories = [VertexClientPE.category.COMBAT, VertexClientPE.category.BUILDING, VertexClientPE.category.MOVEMENT, VertexClientPE.category.CHAT, VertexClientPE.category.MISC];
+		var categories = [VertexClientPE.category.COMBAT, VertexClientPE.category.WORLD, VertexClientPE.category.MOVEMENT, VertexClientPE.category.PLAYER, VertexClientPE.category.MISC];
 		
 		categories.forEach(function(element, index, array) {
-			if((index == 0 && combatEnabled == "on") || (index == 1 && buildingEnabled == "on") || (index == 2 && movementEnabled == "on") || (index == 3 && chatEnabled == "on") || (index == 4 && miscEnabled == "on")) {
+			if((index == 0 && combatEnabled == "on") || (index == 1 && worldEnabled == "on") || (index == 2 && movementEnabled == "on") || (index == 3 && playerEnabled == "on") || (index == 4 && miscEnabled == "on")) {
 				menuMiddleLayout.addView(new categoryTab(element));
 			}
 		});
@@ -16883,14 +16883,14 @@ function retroMenu() {
 var vertexclientpemenu;
 var menuBtn;
 
-var vertexclientpecombatmenu, vertexclientpebuildingmenu, vertexclientpemovementmenu, vertexclientpechatmenu, vertexclientpemiscmenu;
+var vertexclientpecombatmenu, vertexclientpeworldmenu, vertexclientpemovementmenu, vertexclientpeplayermenu, vertexclientpemiscmenu;
 
 VertexClientPE.showCategoryMenus = function () {
     CONTEXT.runOnUiThread({
         run() {
             try {
                 var display = new DisplayMetrics_();
-				var combatMenuLayout1, buildingMenuLayout1, movementMenuLayout1, chatMenuLayout1, miscMenuLayout1;
+				var combatMenuLayout1, worldMenuLayout1, movementMenuLayout1, playerMenuLayout1, miscMenuLayout1;
 				
 				var combatMenuLayout = new LinearLayout_(CONTEXT),
 					combatMenuScrollView = new ScrollView(CONTEXT),
@@ -16898,24 +16898,24 @@ VertexClientPE.showCategoryMenus = function () {
 					combatSettings = combat.getLeftButton(),
 					combatTitle = combat.getMiddleButton(),
 					combatArrow = combat.getRightButton(),
-					buildingMenuLayout = new LinearLayout_(CONTEXT),
-					buildingMenuScrollView = new ScrollView(CONTEXT),
-					building = new categoryTitle(buildingName, true);
-					buildingSettings = building.getLeftButton(),
-					buildingTitle = building.getMiddleButton(),
-					buildingArrow = building.getRightButton(),
+					worldMenuLayout = new LinearLayout_(CONTEXT),
+					worldMenuScrollView = new ScrollView(CONTEXT),
+					world = new categoryTitle(worldName, true);
+					worldSettings = world.getLeftButton(),
+					worldTitle = world.getMiddleButton(),
+					worldArrow = world.getRightButton(),
 					movementMenuLayout = new LinearLayout_(CONTEXT),
 					movementMenuScrollView = new ScrollView(CONTEXT),
 					movement = new categoryTitle(movementName, true),
 					movementSettings = movement.getLeftButton(),
 					movementTitle = movement.getMiddleButton(),
 					movementArrow = movement.getRightButton(),
-					chatMenuLayout = new LinearLayout_(CONTEXT),
-					chatMenuScrollView = new ScrollView(CONTEXT),
-					chat = new categoryTitle(chatName, true),
-					chatSettings = chat.getLeftButton(),
-					chatTitle = chat.getMiddleButton(),
-					chatArrow = chat.getRightButton(),
+					playerMenuLayout = new LinearLayout_(CONTEXT),
+					playerMenuScrollView = new ScrollView(CONTEXT),
+					player = new categoryTitle(playerName, true),
+					playerSettings = player.getLeftButton(),
+					playerTitle = player.getMiddleButton(),
+					playerArrow = player.getRightButton(),
 					miscMenuLayout = new LinearLayout_(CONTEXT),
 					miscMenuScrollView = new ScrollView(CONTEXT),
 					misc = new categoryTitle(miscName, true),
@@ -16924,15 +16924,15 @@ VertexClientPE.showCategoryMenus = function () {
 					miscArrow = misc.getRightButton();
 					
 				combatMenuLayout1 = new LinearLayout_(CONTEXT);
-				buildingMenuLayout1 = new LinearLayout_(CONTEXT);
+				worldMenuLayout1 = new LinearLayout_(CONTEXT);
 				movementMenuLayout1 = new LinearLayout_(CONTEXT);
-				chatMenuLayout1 = new LinearLayout_(CONTEXT);
+				playerMenuLayout1 = new LinearLayout_(CONTEXT);
 				miscMenuLayout1 = new LinearLayout_(CONTEXT);
 
 				vertexclientpecombatmenu = new PopupWindow_(CONTEXT);
-				vertexclientpebuildingmenu = new PopupWindow_(CONTEXT);
+				vertexclientpeworldmenu = new PopupWindow_(CONTEXT);
 				vertexclientpemovementmenu = new PopupWindow_(CONTEXT);
-				vertexclientpechatmenu = new PopupWindow_(CONTEXT);
+				vertexclientpeplayermenu = new PopupWindow_(CONTEXT);
 				vertexclientpemiscmenu = new PopupWindow_(CONTEXT);
 
 				CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
@@ -16948,12 +16948,12 @@ VertexClientPE.showCategoryMenus = function () {
 						}
 						if (element.category == VertexClientPE.category.COMBAT) {
 							combatMenuLayout.addView(new modButton(element));
-						} else if (element.category == VertexClientPE.category.BUILDING) {
-							buildingMenuLayout.addView(new modButton(element));
+						} else if (element.category == VertexClientPE.category.WORLD) {
+							worldMenuLayout.addView(new modButton(element));
 						} else if (element.category == VertexClientPE.category.MOVEMENT) {
 							movementMenuLayout.addView(new modButton(element));
-						} else if (element.category == VertexClientPE.category.CHAT) {
-							chatMenuLayout.addView(new modButton(element));
+						} else if (element.category == VertexClientPE.category.PLAYER) {
+							playerMenuLayout.addView(new modButton(element));
 						} else if (element.category == VertexClientPE.category.MISC) {
 							miscMenuLayout.addView(new modButton(element));
 						}
@@ -17029,75 +17029,75 @@ VertexClientPE.showCategoryMenus = function () {
 					vertexclientpecombatmenu.setAnimationStyle(android.R.style.Animation_Dialog);
 				}
 
-				// Building
-				buildingMenuLayout.setOrientation(1);
-				buildingMenuLayout1.setOrientation(1);
-				buildingMenuScrollView.addView(buildingMenuLayout);
+				// World
+				worldMenuLayout.setOrientation(1);
+				worldMenuLayout1.setOrientation(1);
+				worldMenuScrollView.addView(worldMenuLayout);
 
-				buildingSettings.setOnClickListener(new View_.OnClickListener({
+				worldSettings.setOnClickListener(new View_.OnClickListener({
 					onClick: function () {
-						VertexClientPE.showCategoryDialog(building, buildingName, 1);
+						VertexClientPE.showCategoryDialog(world, worldName, 1);
 					}
 				}));
 
-				VertexClientPE.addView(buildingMenuLayout1, building);
+				VertexClientPE.addView(worldMenuLayout1, world);
 
-				if (buildingMenuShown == true) {
-					buildingArrow.setText("\u25B3");
-					buildingMenuLayout1.addView(buildingMenuScrollView);
-				} else if (buildingMenuShown == false) {
-					buildingArrow.setText("\u25BD");
+				if (worldMenuShown == true) {
+					worldArrow.setText("\u25B3");
+					worldMenuLayout1.addView(worldMenuScrollView);
+				} else if (worldMenuShown == false) {
+					worldArrow.setText("\u25BD");
 				}
 
-				buildingArrow.setOnClickListener(new View_.OnClickListener() {
+				worldArrow.setOnClickListener(new View_.OnClickListener() {
 					onClick: function (viewarg) {
-						if (buildingMenuShown == true) {
-							buildingMenuLayout1.removeView(buildingMenuScrollView);
-							buildingMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, ViewGroup_.LayoutParams.WRAP_CONTENT));
-							buildingArrow.setText("\u25BD");
-							buildingMenuShown = false;
-						} else if (buildingMenuShown == false) {
-							buildingMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
-							buildingMenuLayout1.addView(buildingMenuScrollView);
-							buildingArrow.setText("\u25B3");
-							buildingMenuShown = true;
+						if (worldMenuShown == true) {
+							worldMenuLayout1.removeView(worldMenuScrollView);
+							worldMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, ViewGroup_.LayoutParams.WRAP_CONTENT));
+							worldArrow.setText("\u25BD");
+							worldMenuShown = false;
+						} else if (worldMenuShown == false) {
+							worldMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
+							worldMenuLayout1.addView(worldMenuScrollView);
+							worldArrow.setText("\u25B3");
+							worldMenuShown = true;
 						}
-						VertexClientPE.saveFloatingMenus("building");
+						VertexClientPE.saveFloatingMenus("world");
 					}
 				});
-				buildingTitle.setOnLongClickListener(new View_.OnLongClickListener() {
+				worldTitle.setOnLongClickListener(new View_.OnLongClickListener() {
 					onLongClick: function (v, t) {
-						buildingdown = true;
+						worlddown = true;
 						VertexClientPE.toast("Now you can move the menu!");
 						return true;
 					}
 				});
-				buildingTitle.setOnTouchListener(new View_.OnTouchListener({
+				worldTitle.setOnTouchListener(new View_.OnTouchListener({
 					onTouch: function (v, e) {
-						if (!buildingdown) {
-							buildingmX = e.getX();
-							buildingmY = e.getY();
+						if (!worlddown) {
+							worldmX = e.getX();
+							worldmY = e.getY();
 						}
-						if (buildingdown) {
+						if (worlddown) {
 							var a = e.getAction()
 							if (a == 2) {
-								var X = parseInt(e.getX() - buildingmX) * -1 / 10;
-								var Y = parseInt(e.getY() - buildingmY) * -1 / 10;
-								buildingtpopx = buildingtpopx + X;
-								buildingtpopy = buildingtpopy + Y;
-								vertexclientpebuildingmenu.update(parseInt(buildingtpopx), parseInt(buildingtpopy), -1, -1);
-								VertexClientPE.saveFloatingMenus("building");
+								var X = parseInt(e.getX() - worldmX) * -1 / 10;
+								var Y = parseInt(e.getY() - worldmY) * -1 / 10;
+								worldtpopx = worldtpopx + X;
+								worldtpopy = worldtpopy + Y;
+								vertexclientpeworldmenu.update(parseInt(worldtpopx), parseInt(worldtpopy), -1, -1);
+								VertexClientPE.saveFloatingMenus("world");
 							}
-							if (a == 1) buildingdown = false;
+							if (a == 1) worlddown = false;
 						}
 						return false;
 					}
 				}));
 
-				vertexclientpebuildingmenu.setContentView(buildingMenuLayout1);
-				vertexclientpebuildingmenu.setBackgroundDrawable(backgroundSpecial(true, "#80212121"));
+				vertexclientpeworldmenu.setContentView(worldMenuLayout1);
+				vertexclientpeworldmenu.setBackgroundDrawable(backgroundSpecial(true, "#80212121"));
 				if (menuAnimationsSetting == "on") {
-					vertexclientpebuildingmenu.setAnimationStyle(android.R.style.Animation_Dialog);
+					vertexclientpeworldmenu.setAnimationStyle(android.R.style.Animation_Dialog);
 				}
 
 				// Movement
@@ -17171,74 +17171,74 @@ VertexClientPE.showCategoryMenus = function () {
 					vertexclientpemovementmenu.setAnimationStyle(android.R.style.Animation_Dialog);
 				}
 
-				// Chat
-				chatMenuLayout.setOrientation(1);
-				chatMenuLayout1.setOrientation(1);
-				chatMenuScrollView.addView(chatMenuLayout);
-				chatSettings.setOnClickListener(new View_.OnClickListener({
+				// Player
+				playerMenuLayout.setOrientation(1);
+				playerMenuLayout1.setOrientation(1);
+				playerMenuScrollView.addView(playerMenuLayout);
+				playerSettings.setOnClickListener(new View_.OnClickListener({
 					onClick: function () {
-						VertexClientPE.showCategoryDialog(chat, chatName, 3);
+						VertexClientPE.showCategoryDialog(player, playerName, 3);
 					}
 				}));
 
-				VertexClientPE.addView(chatMenuLayout1, chat);
+				VertexClientPE.addView(playerMenuLayout1, player);
 
-				if (chatMenuShown == true) {
-					chatArrow.setText("\u25B3");
-					chatMenuLayout1.addView(chatMenuScrollView);
-				} else if (chatMenuShown == false) {
-					chatArrow.setText("\u25BD");
+				if (playerMenuShown == true) {
+					playerArrow.setText("\u25B3");
+					playerMenuLayout1.addView(playerMenuScrollView);
+				} else if (playerMenuShown == false) {
+					playerArrow.setText("\u25BD");
 				}
 
-				chatArrow.setOnClickListener(new View_.OnClickListener() {
+				playerArrow.setOnClickListener(new View_.OnClickListener() {
 					onClick: function (viewarg) {
-						if (chatMenuShown == true) {
-							chatMenuLayout1.removeView(chatMenuScrollView);
-							chatMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, ViewGroup_.LayoutParams.WRAP_CONTENT));
-							chatArrow.setText("\u25BD");
-							chatMenuShown = false;
-						} else if (chatMenuShown == false) {
-							chatMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
-							chatMenuLayout1.addView(chatMenuScrollView);
-							chatArrow.setText("\u25B3");
-							chatMenuShown = true;
+						if (playerMenuShown == true) {
+							playerMenuLayout1.removeView(playerMenuScrollView);
+							playerMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, ViewGroup_.LayoutParams.WRAP_CONTENT));
+							playerArrow.setText("\u25BD");
+							playerMenuShown = false;
+						} else if (playerMenuShown == false) {
+							playerMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
+							playerMenuLayout1.addView(playerMenuScrollView);
+							playerArrow.setText("\u25B3");
+							playerMenuShown = true;
 						}
-						VertexClientPE.saveFloatingMenus("chat");
+						VertexClientPE.saveFloatingMenus("player");
 					}
 				});
-				chatTitle.setOnLongClickListener(new View_.OnLongClickListener() {
+				playerTitle.setOnLongClickListener(new View_.OnLongClickListener() {
 					onLongClick: function (v, t) {
-						chatdown = true;
+						playerdown = true;
 						VertexClientPE.toast("Now you can move the menu!");
 						return true;
 					}
 				});
-				chatTitle.setOnTouchListener(new View_.OnTouchListener({
+				playerTitle.setOnTouchListener(new View_.OnTouchListener({
 					onTouch: function (v, e) {
-						if (!chatdown) {
-							chatmX = e.getX();
-							chatmY = e.getY();
+						if (!playerdown) {
+							playermX = e.getX();
+							playermY = e.getY();
 						}
-						if (chatdown) {
+						if (playerdown) {
 							var a = e.getAction()
 							if (a == 2) {
-								var X = parseInt(e.getX() - chatmX) * -1 / 10;
-								var Y = parseInt(e.getY() - chatmY) * -1 / 10;
-								chattpopx = chattpopx + X;
-								chattpopy = chattpopy + Y;
-								vertexclientpechatmenu.update(parseInt(chattpopx), parseInt(chattpopy), -1, -1);
-								VertexClientPE.saveFloatingMenus("chat");
+								var X = parseInt(e.getX() - playermX) * -1 / 10;
+								var Y = parseInt(e.getY() - playermY) * -1 / 10;
+								playertpopx = playertpopx + X;
+								playertpopy = playertpopy + Y;
+								vertexclientpeplayermenu.update(parseInt(playertpopx), parseInt(playertpopy), -1, -1);
+								VertexClientPE.saveFloatingMenus("player");
 							}
-							if (a == 1) chatdown = false;
+							if (a == 1) playerdown = false;
 						}
 						return false;
 					}
 				}));
 
-				vertexclientpechatmenu.setContentView(chatMenuLayout1);
-				vertexclientpechatmenu.setBackgroundDrawable(backgroundSpecial(true, "#80212121"));
+				vertexclientpeplayermenu.setContentView(playerMenuLayout1);
+				vertexclientpeplayermenu.setBackgroundDrawable(backgroundSpecial(true, "#80212121"));
 				if (menuAnimationsSetting == "on") {
-					vertexclientpechatmenu.setAnimationStyle(android.R.style.Animation_Dialog);
+					vertexclientpeplayermenu.setAnimationStyle(android.R.style.Animation_Dialog);
 				}
 
 				// Misc
@@ -17320,11 +17320,11 @@ VertexClientPE.showCategoryMenus = function () {
 						vertexclientpecombatmenu.update();
 					}
 				}
-				if(buildingEnabled == "on") {
-					vertexclientpebuildingmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, buildingtpopx, buildingtpopy);
-					if(buildingMenuShown) {
-						buildingMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
-						vertexclientpebuildingmenu.update();
+				if(worldEnabled == "on") {
+					vertexclientpeworldmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, worldtpopx, worldtpopy);
+					if(worldMenuShown) {
+						worldMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
+						vertexclientpeworldmenu.update();
 					}
 				}
 				if(movementEnabled == "on") {
@@ -17334,11 +17334,11 @@ VertexClientPE.showCategoryMenus = function () {
 						vertexclientpemovementmenu.update();
 					}
 				}
-				if(chatEnabled == "on") {
-					vertexclientpechatmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, chattpopx, chattpopy);
-					if(chatMenuShown) {
-						chatMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
-						vertexclientpechatmenu.update();
+				if(playerEnabled == "on") {
+					vertexclientpeplayermenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, playertpopx, playertpopy);
+					if(playerMenuShown) {
+						playerMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
+						vertexclientpeplayermenu.update();
 					}
 				}
 				if(miscEnabled == "on") {
@@ -17789,10 +17789,10 @@ function showTabGUI() {
                         tabGUILayout.addView(tabGUILayoutRight);
                     }
 
-                    var categories = [VertexClientPE.category.COMBAT, VertexClientPE.category.BUILDING, VertexClientPE.category.MOVEMENT, VertexClientPE.category.CHAT, VertexClientPE.category.MISC];
+                    var categories = [VertexClientPE.category.COMBAT, VertexClientPE.category.WORLD, VertexClientPE.category.MOVEMENT, VertexClientPE.category.PLAYER, VertexClientPE.category.MISC];
                     
                     categories.forEach(function (element, index, array) {
-						if((index == 0 && combatEnabled == "on") || (index == 1 && buildingEnabled == "on") || (index == 2 && movementEnabled == "on") || (index == 3 && chatEnabled == "on") || (index == 4 && miscEnabled == "on")) {
+						if((index == 0 && combatEnabled == "on") || (index == 1 && worldEnabled == "on") || (index == 2 && movementEnabled == "on") || (index == 3 && playerEnabled == "on") || (index == 4 && miscEnabled == "on")) {
 							tabGUILayoutLeft.addView(new tabGUICategoryButton(element, tabGUILayoutLeft, tabGUILayoutRight, tabGUILayout));
 						}
                     });
