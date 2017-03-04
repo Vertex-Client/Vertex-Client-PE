@@ -2656,7 +2656,7 @@ var timer = {
 
 var nuker = {
     name: "Nuker",
-    desc: "Automatically destroys blocks around you. Can be used on servers when YesCheat+ is enabled.",
+    desc: "Automatically destroys blocks around you. Can be used on servers when Bypass is enabled.",
     category: VertexClientPE.category.WORLD,
     type: "Mod",
     state: false,
@@ -4802,27 +4802,31 @@ var dropLocator = {
     },
 	onToggle: function() {
 		var items = Entity.getAll();
-		new Thread_(new Runnable_({
-			run: function() {
-				for(var i = 0; i < items.length; i++) {
-					var type = Entity.getEntityTypeId(items[i]);
-					var name;
-					if(type == EntityType.ITEM) {
-						name = "item"
-					}
-					if(type == EntityType.EXPERIENCE_ORB) {
-						name = "experience"
-					}
-					if(name != null) {
-						VertexClientPE.clientMessage("Located " + name + " at " + parseInt(Entity.getX(items[i])) + " " + parseInt(Entity.getY(items[i])) + " " + parseInt(Entity.getZ(items[i])));
-						Thread_.sleep(1000);
-					} else {
-						continue;
+		if(items != null && items != undefined && items.length != -1) {
+			new Thread_(new Runnable_({
+				run: function() {
+					for(var i = 0; i < items.length; i++) {
+						var type = Entity.getEntityTypeId(items[i]);
+						var name;
+						if(type == EntityType.ITEM) {
+							name = "item"
+						}
+						if(type == EntityType.EXPERIENCE_ORB) {
+							name = "experience"
+						}
+						if(name != null) {
+							VertexClientPE.clientMessage("Located " + name + " at " + parseInt(Entity.getX(items[i])) + " " + parseInt(Entity.getY(items[i])) + " " + parseInt(Entity.getZ(items[i])));
+							Thread_.sleep(1000);
+						} else {
+							continue;
+						}
 					}
 				}
-			}
-		})).start();
-    }
+			})).start();
+		} else {
+			VertexClientPE.clientMessage("We couldn't locate any drops.");
+		}
+	}
 }
 
 var playerLocator = {
@@ -7486,7 +7490,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
                     }
                     toggleButton.setOnClickListener(new View_.OnClickListener() {
                         onClick: function(view) {
-                            if(mod.name == "YesCheat+") {
+                            if(mod.name == "Bypass") {
                                 mod.onToggle();
                             } else {
                                 if(!bypassState) {
@@ -7499,7 +7503,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
                                     } else if(mod.isStateMod() && !mod.state) {
                                         mod.state = true;
                                     } else if(!mod.isStateMod()) {
-                                        VertexClientPE.toast("This mod is blocked by YesCheat+!");
+                                        VertexClientPE.toast("This mod is blocked by Bypass!");
                                     }
                                 }
                             }
@@ -10910,7 +10914,7 @@ function modButton(mod, buttonOnly, customSize) {
                 VertexClientPE.showProDialog(mod.name);
                 return;
             }
-            if(mod.name == "YesCheat+") {
+            if(mod.name == "Bypass") {
                 mod.onToggle();
             } else {
                 if(!bypassState) {
@@ -10923,7 +10927,7 @@ function modButton(mod, buttonOnly, customSize) {
                     } else if(mod.isStateMod() && !mod.state) {
                         mod.state = true;
                     } else if(!mod.isStateMod()) {
-                        VertexClientPE.toast("This mod is blocked by YesCheat+!");
+                        VertexClientPE.toast("This mod is blocked by Bypass!");
                     }
                 }
             }
