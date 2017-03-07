@@ -4775,6 +4775,8 @@ var step = {
 	}
 }
 
+var foundItems = false;
+
 var dropLocator = {
 	name: "DropLocator",
     desc: "Locates dropped items and experience.",
@@ -4799,6 +4801,7 @@ var dropLocator = {
 						}
 						if(name != null) {
 							VertexClientPE.clientMessage("Located " + name + " at " + parseInt(Entity.getX(items[i])) + " " + parseInt(Entity.getY(items[i])) + " " + parseInt(Entity.getZ(items[i])));
+							foundItems = true;
 							Thread_.sleep(1000);
 						} else {
 							continue;
@@ -4806,7 +4809,8 @@ var dropLocator = {
 					}
 				}
 			})).start();
-		} else {
+		}
+		if(!foundItems) {
 			VertexClientPE.clientMessage("We couldn't locate any drops.");
 		}
 	}
@@ -7449,86 +7453,92 @@ VertexClientPE.showModDialog = function(mod, btn) {
                 var dialogExtraLayout = new LinearLayout_(CONTEXT);
                 dialogExtraLayout.setOrientation(LinearLayout_.HORIZONTAL);
                 dialogLayout.addView(dialogExtraLayout);
-				dialogExtraLayoutLeft = new LinearLayout_(CONTEXT);
-				dialogExtraLayoutLeft.setOrientation(1);
-				dialogExtraLayoutLeft.setGravity(Gravity_.CENTER);
-				dialogExtraLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - 10, display.heightPixels / 10));
-				dialogExtraLayoutRight = new LinearLayout_(CONTEXT);
-				dialogExtraLayoutRight.setOrientation(1);
-				dialogExtraLayoutRight.setGravity(Gravity_.CENTER);
-				dialogExtraLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - 10, display.heightPixels / 10));
-				dialogExtraLayout.addView(dialogExtraLayoutLeft);
-				dialogExtraLayout.addView(dialogExtraLayoutRight);
-				closeButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 3, display.heightPixels / 10));
-				dialogExtraLayoutLeft.addView(closeButton);
-				var toggleButton = clientButton("Toggle");
-				toggleButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 3, display.heightPixels / 10));
-				if(mod.isStateMod()) {
-					if(mod.state) {
-						toggleButton.setText("Disable");
-						if(bypassState && mod.canBypassBypassMod && !mod.canBypassBypassMod()) {
-							toggleButton.setTextColor(modButtonColorBlocked);
+				if(mod.name != "Prevent" && mod.name != "Target") {
+					dialogExtraLayoutLeft = new LinearLayout_(CONTEXT);
+					dialogExtraLayoutLeft.setOrientation(1);
+					dialogExtraLayoutLeft.setGravity(Gravity_.CENTER);
+					dialogExtraLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - 10, display.heightPixels / 10));
+					dialogExtraLayoutRight = new LinearLayout_(CONTEXT);
+					dialogExtraLayoutRight.setOrientation(1);
+					dialogExtraLayoutRight.setGravity(Gravity_.CENTER);
+					dialogExtraLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - 10, display.heightPixels / 10));
+					dialogExtraLayout.addView(dialogExtraLayoutLeft);
+					dialogExtraLayout.addView(dialogExtraLayoutRight);
+					closeButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 3, display.heightPixels / 10));
+					dialogExtraLayoutLeft.addView(closeButton);
+					var toggleButton = clientButton("Toggle");
+					toggleButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 3, display.heightPixels / 10));
+					if(mod.isStateMod()) {
+						if(mod.state) {
+							toggleButton.setText("Disable");
+							if(bypassState && mod.canBypassBypassMod && !mod.canBypassBypassMod()) {
+								toggleButton.setTextColor(modButtonColorBlocked);
+							} else {
+								toggleButton.setTextColor(modButtonColorEnabled);
+							}
+							if(fontSetting != "minecraft") {
+								toggleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+							}
 						} else {
-							toggleButton.setTextColor(modButtonColorEnabled);
+							toggleButton.setText("Enable");
 						}
-						if(fontSetting != "minecraft") {
-							toggleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
-						}
-					} else {
-						toggleButton.setText("Enable");
 					}
-				}
-				toggleButton.setOnClickListener(new View_.OnClickListener() {
-					onClick: function(view) {
-						if(mod.name == "Bypass") {
-							mod.onToggle();
-						} else {
-							if(!bypassState) {
+					toggleButton.setOnClickListener(new View_.OnClickListener() {
+						onClick: function(view) {
+							if(mod.name == "Bypass") {
 								mod.onToggle();
-							} else if(bypassState && mod.canBypassBypassMod == undefined || mod.canBypassBypassMod == null) {
-								mod.onToggle();
-							} else if(bypassState && mod.canBypassBypassMod && !mod.canBypassBypassMod()) {
-								if(mod.isStateMod() && mod.state) {
+							} else {
+								if(!bypassState) {
 									mod.onToggle();
-								} else if(mod.isStateMod() && !mod.state) {
-									mod.state = true;
-								} else if(!mod.isStateMod()) {
-									VertexClientPE.toast("This mod is blocked by Bypass!");
-								}
-							}
-						}
-						if(mod.isStateMod()) {
-							if(mod.state) {
-								toggleButton.setText("Disable");
-								if(bypassState && mod.canBypassBypassMod && !mod.canBypassBypassMod()) {
-									toggleButton.setTextColor(modButtonColorBlocked);
-									btn.setTextColor(modButtonColorBlocked);
-								} else {
-									toggleButton.setTextColor(modButtonColorEnabled);
-									btn.setTextColor(modButtonColorEnabled);
-								}
-								if(fontSetting != "minecraft") {
-									toggleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
-								}
-								btn.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
-							} else if(!mod.state) {
-								toggleButton.setText("Enable");
-								if(themeSetting == "white" && modButtonColorDisabledSetting == "black") {
-									toggleButton.setTextColor(Color_.BLACK);
-									btn.setTextColor(Color_.BLACK);
-									if(fontSetting != "minecraft") {
-										toggleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
-										btn.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
+								} else if(bypassState && mod.canBypassBypassMod == undefined || mod.canBypassBypassMod == null) {
+									mod.onToggle();
+								} else if(bypassState && mod.canBypassBypassMod && !mod.canBypassBypassMod()) {
+									if(mod.isStateMod() && mod.state) {
+										mod.onToggle();
+									} else if(mod.isStateMod() && !mod.state) {
+										mod.state = true;
+									} else if(!mod.isStateMod()) {
+										VertexClientPE.toast("This mod is blocked by Bypass!");
 									}
-								} else {
-									toggleButton.setTextColor(modButtonColorDisabled);
-									btn.setTextColor(modButtonColorDisabled);
+								}
+							}
+							if(mod.isStateMod()) {
+								if(mod.state) {
+									toggleButton.setText("Disable");
+									if(bypassState && mod.canBypassBypassMod && !mod.canBypassBypassMod()) {
+										toggleButton.setTextColor(modButtonColorBlocked);
+										btn.setTextColor(modButtonColorBlocked);
+									} else {
+										toggleButton.setTextColor(modButtonColorEnabled);
+										btn.setTextColor(modButtonColorEnabled);
+									}
+									if(fontSetting != "minecraft") {
+										toggleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+									}
+									btn.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+								} else if(!mod.state) {
+									toggleButton.setText("Enable");
+									if(themeSetting == "white" && modButtonColorDisabledSetting == "black") {
+										toggleButton.setTextColor(Color_.BLACK);
+										btn.setTextColor(Color_.BLACK);
+										if(fontSetting != "minecraft") {
+											toggleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
+											btn.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
+										}
+									} else {
+										toggleButton.setTextColor(modButtonColorDisabled);
+										btn.setTextColor(modButtonColorDisabled);
+									}
 								}
 							}
 						}
-					}
-				});
-				dialogExtraLayoutRight.addView(toggleButton);
+					});
+					dialogExtraLayoutRight.addView(toggleButton);
+				} else {
+					dialogExtraLayout.setGravity(Gravity_.CENTER);
+					closeButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2, display.heightPixels / 10));
+					dialogExtraLayout.addView(closeButton);
+				}
                 var dialog = new Dialog_(CONTEXT);
                 dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
@@ -10814,7 +10824,7 @@ function modButton(mod, buttonOnly, customSize) {
         mod.type = "Mod";
     }
     
-    var modButtonName = sharedPref.getString("VertexClientPE.mods." + mod.name + ".name", mod.name);
+    var modButtonName = VertexClientPE.getCustomModName(mod.name);
 	var modInfoButtonName = "...";
     if(mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) {
 		modInfoButtonName = "\uD83D\uDD12";
