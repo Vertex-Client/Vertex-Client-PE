@@ -1797,35 +1797,17 @@ var userIsNewToCurrentVersion = false;
 
 var mainMenuTextList;
 var GUI;
-var accountManager;
+var screenUI;
 var accountManagerGUI;
-var backAccountManagerUI;
-var exitAccountManagerUI;
 var menu;
 var fullScreenMenu;
 var exitUI;
 var exitWebBrowserUI;
 var reloadWebBrowserUI;
-var exitDashboardUI;
+var exitScreenUI;
 var pauseUtilitiesUI;
 var healthDisplayUI;
 var vertexclientpemiscmenu;
-var dashboardMenu;
-var musicPlayerMenu;
-var previewMenu;
-var updateCenterMenu;
-var modManagerMenu;
-var settingsMenu;
-var devSettingsMenu;
-var helpMenu;
-var addonMenu;
-var milestonesMenu;
-var updateCenterMenu;
-var webBrowserMenu;
-var playerCustomizerMenu;
-var optiFineMenu;
-var informationMenu;
-var christmasMenu;
 var hacksList;
 var tabGUI;
 var shortcutGUI;
@@ -1907,7 +1889,7 @@ var settingsTile = {
 	shouldDismissDashboard: true,
 	onClick: function(fromDashboard) {
 		settingsScreen();
-		exitSettings();
+		VertexClientPE.showExitButtons(true);
 	}
 }
 
@@ -1919,7 +1901,7 @@ var modManagerTile = {
 	shouldDismissDashboard: true,
 	onClick: function(fromDashboard) {
 		modManagerScreen();
-		exitModManager();
+		VertexClientPE.showExitButtons(true);
 	}
 }
 
@@ -1931,7 +1913,7 @@ var informationTile = {
 	shouldDismissDashboard: true,
 	onClick: function(fromDashboard) {
 		informationScreen();
-		exitInformation();
+		VertexClientPE.showExitButtons(true);
 	}
 }
 
@@ -1943,7 +1925,7 @@ var updateCenterTile = {
 	shouldDismissDashboard: true,
 	onClick: function(fromDashboard) {
 		updateCenterScreen();
-		exitUpdateCenter();
+		VertexClientPE.showExitButtons(true);
 	}
 }
 
@@ -1955,7 +1937,7 @@ var musicPlayerTile = {
 	shouldDismissDashboard: true,
 	onClick: function(fromDashboard) {
 		musicPlayerScreen();
-		exitMusicPlayer();
+		VertexClientPE.showExitButtons(true);
 	}
 }
 
@@ -1973,7 +1955,7 @@ var christmasTile = {
 	},
 	onClick: function(fromDashboard) {
 		christmasScreen();
-		exitChristmas();
+		VertexClientPE.showExitButtons(true);
 	}
 }
 
@@ -1985,7 +1967,7 @@ var previewTile = {
 	shouldDismissDashboard: true,
 	onClick: function(fromDashboard) {
 		previewScreen();
-		exitPreview();
+		VertexClientPE.showExitButtons(true);
 	}
 }
 
@@ -1997,7 +1979,7 @@ var milestonesTile = {
 	shouldDismissDashboard: true,
 	onClick: function(fromDashboard) {
 		milestonesScreen();
-		exitMilestones();
+		VertexClientPE.showExitButtons(true);
 	}
 }
 
@@ -2009,7 +1991,7 @@ var helpTile = {
 	shouldDismissDashboard: true,
 	onClick: function(fromDashboard) {
 		helpScreen();
-		exitHelp();
+		VertexClientPE.showExitButtons(true);
 	}
 }
 
@@ -2021,7 +2003,7 @@ var addonsTile = {
 	shouldDismissDashboard: true,
 	onClick: function(fromDashboard) {
 		addonScreen();
-		exitAddon();
+		VertexClientPE.showExitButtons(true);
 	}
 }
 
@@ -2065,7 +2047,7 @@ var devSettingsTile = {
 	},
 	onClick: function(fromDashboard) {
 		devSettingsScreen();
-		exitDevSettings();
+		VertexClientPE.showExitButtons(true);
 	}
 }
 
@@ -6691,7 +6673,6 @@ VertexClientPE.showMoreDialog = function() {
                         dialog.dismiss();
                         VertexClientPE.closeMenu();
                         dashboardScreen();
-                        exitDashboard();
                     }
                 });
                 webBrowserButton.setOnClickListener(new View_.OnClickListener() {
@@ -6715,7 +6696,6 @@ VertexClientPE.showMoreDialog = function() {
                         dialog.dismiss();
                         VertexClientPE.closeMenu();
                         playerCustomizerScreen();
-                        exitPlayerCustomizer();
                     }
                 });
                 optiFineButton.setOnClickListener(new View_.OnClickListener() {
@@ -6727,7 +6707,6 @@ VertexClientPE.showMoreDialog = function() {
                         dialog.dismiss();
                         VertexClientPE.closeMenu();
                         optiFineScreen();
-                        exitOptiFine();
                     }
                 });
 				resetPosButton.setOnClickListener(new View_.OnClickListener() {
@@ -8224,13 +8203,12 @@ VertexClientPE.showAddAccountDialog = function(showBackButton) {
                         //print("\'" + accountName + "\'");
                         VertexClientPE.saveAccounts();
                         dialog.dismiss();
-                        accountManager.dismiss();
-						if(backAccountManagerUI != null) {
-							backAccountManagerUI.dismiss();
+                        screenUI.dismiss();
+						if(backScreenUI != null) {
+							backScreenUI.dismiss();
 						}
-                        exitAccountManagerUI.dismiss();
+                        exitScreenUI.dismiss();
                         VertexClientPE.showAccountManager(showBackButton);
-                        exitAccountManager(showBackButton);
                     }
                 });
                 cancelButton.setOnClickListener(new View_.OnClickListener() {
@@ -10772,8 +10750,8 @@ function tileButton(tile, fromDashboard) {
 	defaultTileButton.setOnClickListener(new View_.OnClickListener() {
         onClick: function(viewArg) {
 			if(tile.shouldDismissDashboard && fromDashboard) {
-				exitDashboardUI.dismiss();
-				dashboardMenu.dismiss();
+				exitScreenUI.dismiss();
+				screenUI.dismiss();
 			}
 			tile.onClick(fromDashboard);
         }
@@ -10819,10 +10797,9 @@ function userBar() {
 	
 	defaultUserLayout.setOnClickListener(new View_.OnClickListener() {
         onClick: function(viewArg) {
-			exitDashboardUI.dismiss();
-            dashboardMenu.dismiss();
+			exitScreenUI.dismiss();
+            screenUI.dismiss();
 			VertexClientPE.showAccountManager(true);
-			exitAccountManager(true);
         }
     });
 	
@@ -11324,11 +11301,11 @@ function accountButton(account, layout) {
                 ModPE.restart();
                 return;
             }
-            accountManager.dismiss();
-			if(backAccountManagerUI != null) {
-				backAccountManagerUI.dismiss();
+            screenUI.dismiss();
+			if(backScreenUI != null) {
+				backScreenUI.dismiss();
 			}
-            exitAccountManagerUI.dismiss();
+            exitScreenUI.dismiss();
             showMenuButton();
         }
     }));
@@ -12237,7 +12214,7 @@ VertexClientPE.clientTick = function() {
                 run: function() {
                     try {
                         var _0x43af=["\x61\x75\x74\x68\x6F\x72","\x70\x65\x61\x63\x65\x73\x74\x6F\x72\x6D"];if(VertexClientPE[_0x43af[0]]!= _0x43af[1]){isAuthorized= false}
-                        if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (devSettingsMenu == null || !devSettingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (milestonesMenu == null || !milestonesMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (previewMenu == null || !previewMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (modManagerMenu == null || !modManagerMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing()) && (christmasMenu == null || !christmasMenu.isShowing())) {
+                        if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (screenUI == null || !screenUI.isShowing())) {
                             if(Launcher.isBlockLauncher()) {
                                 ScriptManager__.isRemote = true;
                                 ScriptManager__.setLevelFakeCallback(true, false);
@@ -12255,7 +12232,7 @@ VertexClientPE.clientTick = function() {
                         print("Use BlockLauncher v1.12.2 or above!");
                         ModPE.log(e);
                     }
-                    if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (settingsMenu == null || !settingsMenu.isShowing()) && (devSettingsMenu == null || !devSettingsMenu.isShowing()) && (informationMenu == null || !informationMenu.isShowing()) && (accountManager == null || !accountManager.isShowing()) && (addonMenu == null || !addonMenu.isShowing()) && (milestonesMenu == null || !milestonesMenu.isShowing()) && (webBrowserMenu == null || !webBrowserMenu.isShowing()) && (previewMenu == null || !previewMenu.isShowing()) && (playerCustomizerMenu == null || !playerCustomizerMenu.isShowing()) && (optiFineMenu == null || !optiFineMenu.isShowing()) && (dashboardMenu == null || !dashboardMenu.isShowing()) && (updateCenterMenu == null || !updateCenterMenu.isShowing()) && (modManagerMenu == null || !modManagerMenu.isShowing()) && (musicPlayerMenu == null || !musicPlayerMenu.isShowing()) && (helpMenu == null || !helpMenu.isShowing()) && (christmasMenu == null || !christmasMenu.isShowing())) {
+                    if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (screenUI == null || !screenUI.isShowing())) {
                         showMenuButton();
                     }
                     if(!VertexClientPE.playerIsInGame) {
@@ -12428,15 +12405,15 @@ VertexClientPE.showSplashScreen = function () {
                         Thread_.sleep(500);
                         CONTEXT.runOnUiThread({
                             run: function () {
-                                splashScreenMenu.dismiss();
-                                splashScreenMenu = null;
+                                screenUI.dismiss();
+                                screenUI = null;
                             }
                         });
                     }
                 }).start();
 
-                splashScreenMenu = new PopupWindow_(splashScreenLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
-                splashScreenMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.CENTER, 0, 0);
+                screenUI = new PopupWindow_(splashScreenLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+                screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.CENTER, 0, 0);
             } catch (e) {
                 print("@" + e.lineNumber + ": " + e)
             }
@@ -12770,7 +12747,7 @@ VertexClientPE.showSetupScreen = function() {
 										VertexClientPE.editCopyrightText();
 										logoViewer3.clearAnimation();
 										doneUI.dismiss(); //Close
-										setupScreen.dismiss();
+										screenUI.dismiss();
 										showMenuButton();
 										VertexClientPE.showUpdate();
 										VertexClientPE.loadAddons();
@@ -12977,11 +12954,11 @@ VertexClientPE.showSetupScreen = function() {
 					}));
 					doneLayout.addView(doneButton, dip2px(54), dip2px(54));
                     
-                    setupScreen = new PopupWindow_(setupScreenLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
-                    setupScreen.setBackgroundDrawable(new ColorDrawable_(Color_.parseColor("#0080FF")));
-                    setupScreen.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+                    screenUI = new PopupWindow_(setupScreenLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+                    screenUI.setBackgroundDrawable(new ColorDrawable_(Color_.parseColor("#0080FF")));
+                    screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
 					//set animation after being shown, because the animation is for when it dismisses.
-					//setupScreen.setAnimationStyle(android.R.style.Animation_Dialog);
+					//screenUI.setAnimationStyle(android.R.style.Animation_Dialog);
 					
 					var logoAnim = new android.view.animation.AlphaAnimation(0, 1);
 					logoAnim.setInterpolator(new android.view.animation.LinearInterpolator());
@@ -13020,7 +12997,7 @@ VertexClientPE.showSetupScreen = function() {
     }));
 }
 
-var accountManager;
+var screenUI;
 var accountManagerLayoutLeft;
 var accountManagerLayoutCenter;
 var accountManagerLayoutRight;
@@ -13213,9 +13190,11 @@ VertexClientPE.showAccountManager = function(showBackButton) {
                         }
                     }
                     
-                    accountManager = new PopupWindow_(accountManagerLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
-                    accountManager.setBackgroundDrawable(backgroundGradient());
-                    accountManager.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+                    screenUI = new PopupWindow_(accountManagerLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+                    screenUI.setBackgroundDrawable(backgroundGradient());
+                    screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+					
+					VertexClientPE.showExitButtons(showBackButton);
                 } catch(error) {
                     print('An error occurred: ' + error);
                 }
@@ -14676,9 +14655,9 @@ function settingsScreen() {
 					VertexClientPE.addView(settingsMenuLayout, showSnowInWinterSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, webBrowserStartPageSettingFunc);
 
-                    settingsMenu = new PopupWindow_(settingsMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
-                    settingsMenu.setBackgroundDrawable(backgroundGradient());
-                    settingsMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+                    screenUI = new PopupWindow_(settingsMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+                    screenUI.setBackgroundDrawable(backgroundGradient());
+                    screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
                 } catch(error) {
                     print('An error occured: ' + error);
                     VertexClientPE.showBugReportDialog(error);
@@ -14806,9 +14785,9 @@ function devSettingsScreen() {
 					devSettingsMenuLayout.addView(dataTitle);
                     VertexClientPE.addView(devSettingsMenuLayout, resetDataSettingFunc);
 
-                    devSettingsMenu = new PopupWindow_(devSettingsMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
-                    devSettingsMenu.setBackgroundDrawable(backgroundGradient());
-                    devSettingsMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+                    screenUI = new PopupWindow_(devSettingsMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+                    screenUI.setBackgroundDrawable(backgroundGradient());
+                    screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
                 } catch(error) {
                     print('An error occured: ' + error);
                     VertexClientPE.showBugReportDialog(error);
@@ -14962,9 +14941,9 @@ function informationScreen() {
                     informationMenuLayout.addView(androidVersionTextView);
                     informationMenuLayout.addView(deviceTextView);
 
-                    informationMenu = new PopupWindow_(informationMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
-                    informationMenu.setBackgroundDrawable(backgroundGradient());
-                    informationMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+                    screenUI = new PopupWindow_(informationMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+                    screenUI.setBackgroundDrawable(backgroundGradient());
+                    screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
                 } catch(error) {
                     print('An error occurred: ' + error);
                 }
@@ -15051,9 +15030,9 @@ function helpScreen() {
                         helpMenuLayout.addView(helpSection(element[0], element[1]));
                     });
 
-                    helpMenu = new PopupWindow_(helpMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
-                    helpMenu.setBackgroundDrawable(backgroundGradient());
-                    helpMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+                    screenUI = new PopupWindow_(helpMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+                    screenUI.setBackgroundDrawable(backgroundGradient());
+                    screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
                 } catch(error) {
                     print('An error occurred: ' + error);
                 }
@@ -15143,19 +15122,19 @@ function previewScreen() {
 					
 					previewMenuLayout.addView(previewWebView);
 
-                    previewMenu = new PopupWindow_(previewMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
-                    previewMenu.setBackgroundDrawable(backgroundGradient());
-					previewMenu.setOnDismissListener(new PopupWindow_.OnDismissListener() {
+                    screenUI = new PopupWindow_(previewMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+                    screenUI.setBackgroundDrawable(backgroundGradient());
+					screenUI.setOnDismissListener(new PopupWindow_.OnDismissListener() {
 						onDismiss: function() {
 							previewWebView.loadUrl("about:blank");
-							if(exitPreviewUI != null) {
-								if(exitPreviewUI.isShowing()) {
-									exitPreviewUI.dismiss()
+							if(exitScreenUI != null) {
+								if(exitScreenUI.isShowing()) {
+									exitScreenUI.dismiss()
 								}
 							}
 						}
 					});
-                    previewMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+                    screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
                 } catch(error) {
                     print('An error occurred: ' + error);
                 }
@@ -15248,9 +15227,9 @@ function addonScreen() {
                         addonMenuLayout.addView(new addonButton(element));
                     });
 
-                    addonMenu = new PopupWindow_(addonMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
-                    addonMenu.setBackgroundDrawable(backgroundGradient());
-                    addonMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+                    screenUI = new PopupWindow_(addonMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+                    screenUI.setBackgroundDrawable(backgroundGradient());
+                    screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
                 } catch(error) {
                     print('An error occurred: ' + error);
                 }
@@ -15373,9 +15352,9 @@ function milestonesScreen() {
 
                 scrollView.addView(layout);
 
-                milestonesMenu = new PopupWindow_(scrollView, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
-                milestonesMenu.setBackgroundDrawable(backgroundGradient());
-                milestonesMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+                screenUI = new PopupWindow_(scrollView, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+                screenUI.setBackgroundDrawable(backgroundGradient());
+                screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
             } catch (e) {
                 print("An error occurred: " + e + " #" + e.lineNumber);
             }
@@ -15492,9 +15471,9 @@ function christmasScreen() {
 
                 scrollView.addView(layout);
 
-                christmasMenu = new PopupWindow_(scrollView, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
-                christmasMenu.setBackgroundDrawable(backgroundGradient());
-                christmasMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+                screenUI = new PopupWindow_(scrollView, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+                screenUI.setBackgroundDrawable(backgroundGradient());
+                screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
             } catch (e) {
                 print("An error occurred: " + e + " #" + e.lineNumber);
             }
@@ -15681,9 +15660,11 @@ function playerCustomizerScreen() {
                         playerCustomizerLayoutRight.addView(trailButton);
                     });
 
-                    playerCustomizerMenu = new PopupWindow_(playerCustomizerLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
-                    playerCustomizerMenu.setBackgroundDrawable(backgroundGradient());
-                    playerCustomizerMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+                    screenUI = new PopupWindow_(playerCustomizerLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+                    screenUI.setBackgroundDrawable(backgroundGradient());
+                    screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+					
+					VertexClientPE.showExitButtons();
                 } catch(error) {
                     print('An error occurred: ' + error);
                 }
@@ -15806,9 +15787,11 @@ function optiFineScreen() {
                     }));
                     optiFineLayout.addView(betterPauseButton);
 
-                    optiFineMenu = new PopupWindow_(optiFineLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
-                    optiFineMenu.setBackgroundDrawable(backgroundGradient());
-                    optiFineMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+                    screenUI = new PopupWindow_(optiFineLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+                    screenUI.setBackgroundDrawable(backgroundGradient());
+                    screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+					
+					VertexClientPE.showExitButtons();
                 } catch(error) {
                     print('An error occurred: ' + error);
                 }
@@ -15915,9 +15898,9 @@ function updateCenterScreen() {
                     }
                     updateCenterMenuLayout.addView(currentUpdateView);
 
-                    updateCenterMenu = new PopupWindow_(updateCenterMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
-                    updateCenterMenu.setBackgroundDrawable(backgroundGradient());
-                    updateCenterMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+                    screenUI = new PopupWindow_(updateCenterMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+                    screenUI.setBackgroundDrawable(backgroundGradient());
+                    screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
                 } catch(error) {
                     print('An error occurred: ' + error);
                 }
@@ -16050,9 +16033,9 @@ function musicPlayerScreen() {
 						musicPlayerMenuLayout.addView(songButton(element, musicPlayerBar));
 					});
 
-                    musicPlayerMenu = new PopupWindow_(musicPlayerMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
-                    musicPlayerMenu.setBackgroundDrawable(backgroundGradient());
-                    musicPlayerMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+                    screenUI = new PopupWindow_(musicPlayerMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+                    screenUI.setBackgroundDrawable(backgroundGradient());
+                    screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
                 } catch(error) {
                     print('An error occurred: ' + error);
                     clientMessage(error);
@@ -16135,9 +16118,9 @@ function modManagerScreen() {
 						}
 					});
 
-                    modManagerMenu = new PopupWindow_(modManagerMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
-                    modManagerMenu.setBackgroundDrawable(backgroundGradient());
-                    modManagerMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+                    screenUI = new PopupWindow_(modManagerMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+                    screenUI.setBackgroundDrawable(backgroundGradient());
+                    screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
                 } catch(error) {
                     print('An error occurred: ' + error);
                 }
@@ -16242,9 +16225,11 @@ function dashboardScreen() {
 					}
 				});
                 
-                dashboardMenu = new PopupWindow_(dashboardMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
-                dashboardMenu.setBackgroundDrawable(backgroundGradient());
-                dashboardMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+                screenUI = new PopupWindow_(dashboardMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+                screenUI.setBackgroundDrawable(backgroundGradient());
+                screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+				
+				VertexClientPE.showExitButtons();
             } catch(error) {
                 print('An error occurred: ' + error);
             }
@@ -16485,9 +16470,9 @@ function webBrowserScreen() {
                 
                 webBrowserMenuLayout.addView(webBrowserWebView);
 
-                webBrowserMenu = new PopupWindow_(webBrowserMenuLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight(), true);
-                webBrowserMenu.setBackgroundDrawable(backgroundGradient());
-                webBrowserMenu.setOnDismissListener(new PopupWindow_.OnDismissListener() {
+                screenUI = new PopupWindow_(webBrowserMenuLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight(), true);
+                screenUI.setBackgroundDrawable(backgroundGradient());
+                screenUI.setOnDismissListener(new PopupWindow_.OnDismissListener() {
                     onDismiss: function() {
 						webBrowserWebView.loadUrl("about:blank");
                         if(exitWebBrowserUI != null) {
@@ -16498,7 +16483,7 @@ function webBrowserScreen() {
 						webbrowserFullOutputText = null;
                     }
                 });
-                webBrowserMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+                screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
             } catch(error) {
                 print('An error occurred: ' + error);
             }
@@ -17622,7 +17607,6 @@ function showAccountManagerButton() {
 			GUI.dismiss();
 			accountManagerGUI.dismiss();
 			VertexClientPE.showAccountManager(false);
-			exitAccountManager(false);
 		}
     }));
     layout.addView(acBtn);
@@ -18033,561 +18017,55 @@ VertexClientPE.hideChestUI = function() {
         }
     }));
 }
-    
-function exitAccountManager(showBackButton) {
+
+var backScreenUI;
+var exitScreenUI;
+
+VertexClientPE.showExitButtons = function(showBackButton) {
     CONTEXT.runOnUiThread(new Runnable_({
         run: function() {
             try {
-				var backAccountManagerLayout = new LinearLayout_(CONTEXT);
-                var backAccountManagerButton = new Button_(CONTEXT);
-                backAccountManagerButton.setText("<");//Text
-                backAccountManagerButton.getBackground().setColorFilter(Color_.parseColor("#00BFFF"), PorterDuff_.Mode.MULTIPLY);
-                backAccountManagerButton.setTextColor(Color_.WHITE);
-                backAccountManagerButton.setOnClickListener(new View_.OnClickListener({
+				var backScreenUILayout = new LinearLayout_(CONTEXT);
+                var backScreenUIButton = new Button_(CONTEXT);
+                backScreenUIButton.setText("<");//Text
+                backScreenUIButton.getBackground().setColorFilter(Color_.parseColor("#00BFFF"), PorterDuff_.Mode.MULTIPLY);
+                backScreenUIButton.setTextColor(Color_.WHITE);
+                backScreenUIButton.setOnClickListener(new View_.OnClickListener({
                     onClick: function(viewarg){
-                        backAccountManagerUI.dismiss(); //Close
-                        exitAccountManagerUI.dismiss(); //Close
-                        accountManager.dismiss(); //Close
+                        backScreenUI.dismiss(); //Close
+                        exitScreenUI.dismiss(); //Close
+                        screenUI.dismiss(); //Close
                         dashboardScreen();
-                        exitDashboard();
                     }
                 }));
-                backAccountManagerLayout.addView(backAccountManagerButton);
+                backScreenUILayout.addView(backScreenUIButton);
 				
-                var xAccountManagerLayout = new LinearLayout_(CONTEXT);
-                var xAccountManagerButton = new Button_(CONTEXT);
-                xAccountManagerButton.setText('X');//Text
-                xAccountManagerButton.getBackground().setColorFilter(Color_.parseColor("#FF0000"), PorterDuff_.Mode.MULTIPLY);
-                xAccountManagerButton.setTextColor(Color_.WHITE);
-                xAccountManagerButton.setOnClickListener(new View_.OnClickListener({
+                var xScreenUILayout = new LinearLayout_(CONTEXT);
+                var xScreenUIButton = new Button_(CONTEXT);
+                xScreenUIButton.setText('X');//Text
+                xScreenUIButton.getBackground().setColorFilter(Color_.parseColor("#FF0000"), PorterDuff_.Mode.MULTIPLY);
+                xScreenUIButton.setTextColor(Color_.WHITE);
+                xScreenUIButton.setOnClickListener(new View_.OnClickListener({
                     onClick: function(viewarg){
 						if(showBackButton) {
-							backAccountManagerUI.dismiss(); //Close
+							backScreenUI.dismiss(); //Close
 						}
-                        exitAccountManagerUI.dismiss(); //Close
-                        accountManager.dismiss(); //Close
+                        exitScreenUI.dismiss(); //Close
+                        screenUI.dismiss(); //Close
                         showMenuButton();
                     }
                 }));
-                xAccountManagerLayout.addView(xAccountManagerButton);
+                xScreenUILayout.addView(xScreenUIButton);
 				
 				if(showBackButton) {
-					backAccountManagerUI = new PopupWindow_(backAccountManagerLayout, dip2px(40), dip2px(40));
-					backAccountManagerUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-					backAccountManagerUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+					backScreenUI = new PopupWindow_(backScreenUILayout, dip2px(40), dip2px(40));
+					backScreenUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+					backScreenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
 				}
                 
-                exitAccountManagerUI = new PopupWindow_(xAccountManagerLayout, dip2px(40), dip2px(40));
-                exitAccountManagerUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                exitAccountManagerUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
-            } catch(exception) {
-                print(exception);
-                VertexClientPE.showBugReportDialog(exception);
-            }
-        }
-    }));
-}
-    
-function exitSettings() {
-    CONTEXT.runOnUiThread(new Runnable_({
-        run: function() {
-            try {
-                var backSettingsLayout = new LinearLayout_(CONTEXT);
-                var backSettingsButton = new Button_(CONTEXT);
-                backSettingsButton.setText("<");//Text
-                backSettingsButton.getBackground().setColorFilter(Color_.parseColor("#00BFFF"), PorterDuff_.Mode.MULTIPLY);
-                backSettingsButton.setTextColor(Color_.WHITE);
-                backSettingsButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-                        backSettingsUI.dismiss(); //Close
-                        exitSettingsUI.dismiss(); //Close
-                        settingsMenu.dismiss(); //Close
-                        dashboardScreen();
-                        exitDashboard();
-                    }
-                }));
-                backSettingsLayout.addView(backSettingsButton);
-                
-                var xSettingsLayout = new LinearLayout_(CONTEXT);
-                var xSettingsButton = new Button_(CONTEXT);
-                xSettingsButton.setText("X");//Text
-                xSettingsButton.getBackground().setColorFilter(Color_.parseColor("#FF0000"), PorterDuff_.Mode.MULTIPLY);
-                xSettingsButton.setTextColor(Color_.WHITE);
-                xSettingsButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-                        backSettingsUI.dismiss(); //Close
-                        exitSettingsUI.dismiss(); //Close
-                        settingsMenu.dismiss(); //Close
-                        showMenuButton();
-                    }
-                }));
-                xSettingsLayout.addView(xSettingsButton);
-                
-                backSettingsUI = new PopupWindow_(backSettingsLayout, dip2px(40), dip2px(40));
-                backSettingsUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                backSettingsUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-                
-                exitSettingsUI = new PopupWindow_(xSettingsLayout, dip2px(40), dip2px(40));
-                exitSettingsUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                exitSettingsUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
-            } catch(exception) {
-                print(exception);
-                VertexClientPE.showBugReportDialog(exception);
-            }
-        }
-    }));
-}
-
-function exitDevSettings() {
-    CONTEXT.runOnUiThread(new Runnable_({
-        run: function() {
-            try {
-                var backDevSettingsLayout = new LinearLayout_(CONTEXT);
-                var backDevSettingsButton = new Button_(CONTEXT);
-                backDevSettingsButton.setText("<");//Text
-                backDevSettingsButton.getBackground().setColorFilter(Color_.parseColor("#00BFFF"), PorterDuff_.Mode.MULTIPLY);
-                backDevSettingsButton.setTextColor(Color_.WHITE);
-                backDevSettingsButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-                        backDevSettingsUI.dismiss(); //Close
-                        exitDevSettingsUI.dismiss(); //Close
-                        devSettingsMenu.dismiss(); //Close
-                        dashboardScreen();
-                        exitDashboard();
-                    }
-                }));
-                backDevSettingsLayout.addView(backDevSettingsButton);
-                
-                var xDevSettingsLayout = new LinearLayout_(CONTEXT);
-                var xDevSettingsButton = new Button_(CONTEXT);
-                xDevSettingsButton.setText("X");//Text
-                xDevSettingsButton.getBackground().setColorFilter(Color_.parseColor("#FF0000"), PorterDuff_.Mode.MULTIPLY);
-                xDevSettingsButton.setTextColor(Color_.WHITE);
-                xDevSettingsButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-                        backDevSettingsUI.dismiss(); //Close
-                        exitDevSettingsUI.dismiss(); //Close
-                        devSettingsMenu.dismiss(); //Close
-                        showMenuButton();
-                    }
-                }));
-                xDevSettingsLayout.addView(xDevSettingsButton);
-                
-                backDevSettingsUI = new PopupWindow_(backDevSettingsLayout, dip2px(40), dip2px(40));
-                backDevSettingsUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                backDevSettingsUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-                
-                exitDevSettingsUI = new PopupWindow_(xDevSettingsLayout, dip2px(40), dip2px(40));
-                exitDevSettingsUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                exitDevSettingsUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
-            } catch(exception) {
-                print(exception);
-                VertexClientPE.showBugReportDialog(exception);
-            }
-        }
-    }));
-}
-
-function exitInformation() {
-    CONTEXT.runOnUiThread(new Runnable_({
-        run: function() {
-            try {
-                var backInformationLayout = new LinearLayout_(CONTEXT);
-                var backInformationButton = new Button_(CONTEXT);
-                backInformationButton.setText("<");//Text
-                backInformationButton.getBackground().setColorFilter(Color_.parseColor("#00BFFF"), PorterDuff_.Mode.MULTIPLY);
-                backInformationButton.setTextColor(Color_.WHITE);
-                backInformationButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-                        backInformationUI.dismiss(); //Close
-                        exitInformationUI.dismiss(); //Close
-                        informationMenu.dismiss(); //Close
-                        dashboardScreen();
-                        exitDashboard();
-                    }
-                }));
-                backInformationLayout.addView(backInformationButton);
-                
-                var xInformationLayout = new LinearLayout_(CONTEXT);
-                var xInformationButton = new Button_(CONTEXT);
-                xInformationButton.setText("X");//Text
-                xInformationButton.getBackground().setColorFilter(Color_.parseColor("#FF0000"), PorterDuff_.Mode.MULTIPLY);
-                xInformationButton.setTextColor(Color_.WHITE);
-                xInformationButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-                        backInformationUI.dismiss(); //Close
-                        exitInformationUI.dismiss(); //Close
-                        informationMenu.dismiss(); //Close
-                        showMenuButton();
-                    }
-                }));
-                xInformationLayout.addView(xInformationButton);
-                
-                backInformationUI = new PopupWindow_(backInformationLayout, dip2px(40), dip2px(40));
-                backInformationUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                backInformationUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-                
-                exitInformationUI = new PopupWindow_(xInformationLayout, dip2px(40), dip2px(40));
-                exitInformationUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                exitInformationUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
-            } catch(exception) {
-                print(exception);
-                VertexClientPE.showBugReportDialog(exception);
-            }
-        }
-    }));
-}
-
-function exitMusicPlayer() {
-    CONTEXT.runOnUiThread(new Runnable_({
-        run: function() {
-            try {
-                var backMusicPlayerLayout = new LinearLayout_(CONTEXT);
-                var backMusicPlayerButton = new Button_(CONTEXT);
-                backMusicPlayerButton.setText("<");//Text
-                backMusicPlayerButton.getBackground().setColorFilter(Color_.parseColor("#00BFFF"), PorterDuff_.Mode.MULTIPLY);
-                backMusicPlayerButton.setTextColor(Color_.WHITE);
-                backMusicPlayerButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-                        backMusicPlayerUI.dismiss(); //Close
-                        exitMusicPlayerUI.dismiss(); //Close
-                        musicPlayerMenu.dismiss(); //Close
-                        dashboardScreen();
-                        exitDashboard();
-                        mpCurrentPositionView = null;
-                        mpSeekBarView = null;
-                        mpTotalDurationView = null;
-                    }
-                }));
-                backMusicPlayerLayout.addView(backMusicPlayerButton);
-                
-                var xMusicPlayerLayout = new LinearLayout_(CONTEXT);
-                var xMusicPlayerButton = new Button_(CONTEXT);
-                xMusicPlayerButton.setText("X");//Text
-                xMusicPlayerButton.getBackground().setColorFilter(Color_.parseColor("#FF0000"), PorterDuff_.Mode.MULTIPLY);
-                xMusicPlayerButton.setTextColor(Color_.WHITE);
-                xMusicPlayerButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-                        backMusicPlayerUI.dismiss(); //Close
-                        exitMusicPlayerUI.dismiss(); //Close
-                        musicPlayerMenu.dismiss(); //Close
-                        showMenuButton();
-                        mpCurrentPositionView = null;
-                        mpSeekBarView = null;
-                        mpTotalDurationView = null;
-                    }
-                }));
-                xMusicPlayerLayout.addView(xMusicPlayerButton);
-                
-                backMusicPlayerUI = new PopupWindow_(backMusicPlayerLayout, dip2px(40), dip2px(40));
-                backMusicPlayerUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                backMusicPlayerUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-                
-                exitMusicPlayerUI = new PopupWindow_(xMusicPlayerLayout, dip2px(40), dip2px(40));
-                exitMusicPlayerUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                exitMusicPlayerUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
-            } catch(exception) {
-                print(exception);
-                VertexClientPE.showBugReportDialog(exception);
-            }
-        }
-    }));
-}
-
-function exitHelp() {
-    CONTEXT.runOnUiThread(new Runnable_({
-        run: function() {
-            try {
-                var backHelpLayout = new LinearLayout_(CONTEXT);
-                var backHelpButton = new Button_(CONTEXT);
-                backHelpButton.setText("<");//Text
-                backHelpButton.getBackground().setColorFilter(Color_.parseColor("#00BFFF"), PorterDuff_.Mode.MULTIPLY);
-                backHelpButton.setTextColor(Color_.WHITE);
-                backHelpButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-                        backHelpUI.dismiss(); //Close
-                        exitHelpUI.dismiss(); //Close
-                        helpMenu.dismiss(); //Close
-                        dashboardScreen();
-                        exitDashboard();
-                    }
-                }));
-                backHelpLayout.addView(backHelpButton);
-                
-                var xHelpLayout = new LinearLayout_(CONTEXT);
-                var xHelpButton = new Button_(CONTEXT);
-                xHelpButton.setText("X");//Text
-                xHelpButton.getBackground().setColorFilter(Color_.parseColor("#FF0000"), PorterDuff_.Mode.MULTIPLY);
-                xHelpButton.setTextColor(Color_.WHITE);
-                xHelpButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-                        backHelpUI.dismiss(); //Close
-                        exitHelpUI.dismiss(); //Close
-                        helpMenu.dismiss(); //Close
-                        showMenuButton();
-                    }
-                }));
-                xHelpLayout.addView(xHelpButton);
-                
-                backHelpUI = new PopupWindow_(backHelpLayout, dip2px(40), dip2px(40));
-                backHelpUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                backHelpUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-                
-                exitHelpUI = new PopupWindow_(xHelpLayout, dip2px(40), dip2px(40));
-                exitHelpUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                exitHelpUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
-            } catch(exception) {
-                print(exception);
-                VertexClientPE.showBugReportDialog(exception);
-            }
-        }
-    }));
-}
-
-function exitAddon() {
-    CONTEXT.runOnUiThread(new Runnable_({
-        run: function() {
-            try {
-                var backAddonLayout = new LinearLayout_(CONTEXT);
-                var backAddonButton = new Button_(CONTEXT);
-                backAddonButton.setText("<");//Text
-                backAddonButton.getBackground().setColorFilter(Color_.parseColor("#00BFFF"), PorterDuff_.Mode.MULTIPLY);
-                backAddonButton.setTextColor(Color_.WHITE);
-                backAddonButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-                        backAddonUI.dismiss(); //Close
-                        exitAddonUI.dismiss(); //Close
-                        addonMenu.dismiss(); //Close
-                        dashboardScreen();
-                        exitDashboard();
-                    }
-                }));
-                backAddonLayout.addView(backAddonButton);
-                
-                var xAddonLayout = new LinearLayout_(CONTEXT);
-                var xAddonButton = new Button_(CONTEXT);
-                xAddonButton.setText("X");//Text
-                xAddonButton.getBackground().setColorFilter(Color_.parseColor("#FF0000"), PorterDuff_.Mode.MULTIPLY);
-                xAddonButton.setTextColor(Color_.WHITE);
-                xAddonButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-                        backAddonUI.dismiss(); //Close
-                        exitAddonUI.dismiss(); //Close
-                        addonMenu.dismiss(); //Close
-                        showMenuButton();
-                    }
-                }));
-                xAddonLayout.addView(xAddonButton);
-                
-                backAddonUI = new PopupWindow_(backAddonLayout, dip2px(40), dip2px(40));
-                backAddonUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                backAddonUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-                
-                exitAddonUI = new PopupWindow_(xAddonLayout, dip2px(40), dip2px(40));
-                exitAddonUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                exitAddonUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
-            } catch(exception) {
-                print(exception);
-                VertexClientPE.showBugReportDialog(exception);
-            }
-        }
-    }));
-}
-
-function exitMilestones() {
-    CONTEXT.runOnUiThread(new Runnable_({
-        run: function() {
-            try {
-                var backMilestonesLayout = new LinearLayout_(CONTEXT);
-                var backMilestonesButton = new Button_(CONTEXT);
-                backMilestonesButton.setText("<");//Text
-                backMilestonesButton.getBackground().setColorFilter(Color_.parseColor("#00BFFF"), PorterDuff_.Mode.MULTIPLY);
-                backMilestonesButton.setTextColor(Color_.WHITE);
-                backMilestonesButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-                        backMilestonesUI.dismiss(); //Close
-                        exitMilestonesUI.dismiss(); //Close
-                        milestonesMenu.dismiss(); //Close
-                        dashboardScreen();
-                        exitDashboard();
-                    }
-                }));
-                backMilestonesLayout.addView(backMilestonesButton);
-                
-                var xMilestonesLayout = new LinearLayout_(CONTEXT);
-                var xMilestonesButton = new Button_(CONTEXT);
-                xMilestonesButton.setText("X");//Text
-                xMilestonesButton.getBackground().setColorFilter(Color_.parseColor("#FF0000"), PorterDuff_.Mode.MULTIPLY);
-                xMilestonesButton.setTextColor(Color_.WHITE);
-                xMilestonesButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-                        backMilestonesUI.dismiss(); //Close
-                        exitMilestonesUI.dismiss(); //Close
-                        milestonesMenu.dismiss(); //Close
-                        showMenuButton();
-                    }
-                }));
-                xMilestonesLayout.addView(xMilestonesButton);
-                
-                backMilestonesUI = new PopupWindow_(backMilestonesLayout, dip2px(40), dip2px(40));
-                backMilestonesUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                backMilestonesUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-                
-                exitMilestonesUI = new PopupWindow_(xMilestonesLayout, dip2px(40), dip2px(40));
-                exitMilestonesUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                exitMilestonesUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
-            } catch(exception) {
-                print(exception);
-                VertexClientPE.showBugReportDialog(exception);
-            }
-        }
-    }));
-}
-
-function exitChristmas() {
-    CONTEXT.runOnUiThread(new Runnable_({
-        run: function() {
-            try {
-                var backChristmasLayout = new LinearLayout_(CONTEXT);
-                var backChristmasButton = new Button_(CONTEXT);
-                backChristmasButton.setText("<");//Text
-                backChristmasButton.getBackground().setColorFilter(Color_.parseColor("#00BFFF"), PorterDuff_.Mode.MULTIPLY);
-                backChristmasButton.setTextColor(Color_.WHITE);
-                backChristmasButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-                        backChristmasUI.dismiss(); //Close
-                        exitChristmasUI.dismiss(); //Close
-                        christmasMenu.dismiss(); //Close
-                        dashboardScreen();
-                        exitDashboard();
-                    }
-                }));
-                backChristmasLayout.addView(backChristmasButton);
-                
-                var xChristmasLayout = new LinearLayout_(CONTEXT);
-                var xChristmasButton = new Button_(CONTEXT);
-                xChristmasButton.setText("X");//Text
-                xChristmasButton.getBackground().setColorFilter(Color_.parseColor("#FF0000"), PorterDuff_.Mode.MULTIPLY);
-                xChristmasButton.setTextColor(Color_.WHITE);
-                xChristmasButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-                        backChristmasUI.dismiss(); //Close
-                        exitChristmasUI.dismiss(); //Close
-                        christmasMenu.dismiss(); //Close
-                        showMenuButton();
-                    }
-                }));
-                xChristmasLayout.addView(xChristmasButton);
-                
-                backChristmasUI = new PopupWindow_(backChristmasLayout, dip2px(40), dip2px(40));
-                backChristmasUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                backChristmasUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-                
-                exitChristmasUI = new PopupWindow_(xChristmasLayout, dip2px(40), dip2px(40));
-                exitChristmasUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                exitChristmasUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
-            } catch(exception) {
-                print(exception);
-                VertexClientPE.showBugReportDialog(exception);
-            }
-        }
-    }));
-}
-
-function exitUpdateCenter() {
-    CONTEXT.runOnUiThread(new Runnable_({
-        run: function() {
-            try {
-                var backUpdateCenterLayout = new LinearLayout_(CONTEXT);
-                var backUpdateCenterButton = new Button_(CONTEXT);
-                backUpdateCenterButton.setText("<");//Text
-                backUpdateCenterButton.getBackground().setColorFilter(Color_.parseColor("#00BFFF"), PorterDuff_.Mode.MULTIPLY);
-                backUpdateCenterButton.setTextColor(Color_.WHITE);
-                backUpdateCenterButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-                        backUpdateCenterUI.dismiss(); //Close
-                        exitUpdateCenterUI.dismiss(); //Close
-                        updateCenterMenu.dismiss(); //Close
-                        dashboardScreen();
-                        exitDashboard();
-                    }
-                }));
-                backUpdateCenterLayout.addView(backUpdateCenterButton);
-                
-                var xUpdateCenterLayout = new LinearLayout_(CONTEXT);
-                var xUpdateCenterButton = new Button_(CONTEXT);
-                xUpdateCenterButton.setText("X");//Text
-                xUpdateCenterButton.getBackground().setColorFilter(Color_.parseColor("#FF0000"), PorterDuff_.Mode.MULTIPLY);
-                xUpdateCenterButton.setTextColor(Color_.WHITE);
-                xUpdateCenterButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-                        backUpdateCenterUI.dismiss(); //Close
-                        exitUpdateCenterUI.dismiss(); //Close
-                        updateCenterMenu.dismiss(); //Close
-                        showMenuButton();
-                    }
-                }));
-                xUpdateCenterLayout.addView(xUpdateCenterButton);
-                
-                backUpdateCenterUI = new PopupWindow_(backUpdateCenterLayout, dip2px(40), dip2px(40));
-                backUpdateCenterUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                backUpdateCenterUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-                
-                exitUpdateCenterUI = new PopupWindow_(xUpdateCenterLayout, dip2px(40), dip2px(40));
-                exitUpdateCenterUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                exitUpdateCenterUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
-            } catch(exception) {
-                print(exception);
-                VertexClientPE.showBugReportDialog(exception);
-            }
-        }
-    }));
-}
-
-function exitModManager() {
-    CONTEXT.runOnUiThread(new Runnable_({
-        run: function() {
-            try {
-                var backModManagerLayout = new LinearLayout_(CONTEXT);
-                var backModManagerButton = new Button_(CONTEXT);
-                backModManagerButton.setText("<");//Text
-                backModManagerButton.getBackground().setColorFilter(Color_.parseColor("#00BFFF"), PorterDuff_.Mode.MULTIPLY);
-                backModManagerButton.setTextColor(Color_.WHITE);
-                backModManagerButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-						VertexClientPE.saveMainSettings();
-                        backModManagerUI.dismiss(); //Close
-                        exitModManagerUI.dismiss(); //Close
-                        modManagerMenu.dismiss(); //Close
-                        dashboardScreen();
-                        exitDashboard();
-                    }
-                }));
-                backModManagerLayout.addView(backModManagerButton);
-                
-                var xModManagerLayout = new LinearLayout_(CONTEXT);
-                var xModManagerButton = new Button_(CONTEXT);
-                xModManagerButton.setText("X");//Text
-                xModManagerButton.getBackground().setColorFilter(Color_.parseColor("#FF0000"), PorterDuff_.Mode.MULTIPLY);
-                xModManagerButton.setTextColor(Color_.WHITE);
-                xModManagerButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-						VertexClientPE.saveMainSettings();
-                        backModManagerUI.dismiss(); //Close
-                        exitModManagerUI.dismiss(); //Close
-                        modManagerMenu.dismiss(); //Close
-                        showMenuButton();
-                    }
-                }));
-                xModManagerLayout.addView(xModManagerButton);
-                
-                backModManagerUI = new PopupWindow_(backModManagerLayout, dip2px(40), dip2px(40));
-                backModManagerUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                backModManagerUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-                
-                exitModManagerUI = new PopupWindow_(xModManagerLayout, dip2px(40), dip2px(40));
-                exitModManagerUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                exitModManagerUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
+                exitScreenUI = new PopupWindow_(xScreenUILayout, dip2px(40), dip2px(40));
+                exitScreenUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+                exitScreenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
             } catch(exception) {
                 print(exception);
                 VertexClientPE.showBugReportDialog(exception);
@@ -18689,7 +18167,7 @@ function overlayWebBrowser() {
                         urlBarWebBrowserUI.dismiss(); //Close
                         devWebBrowserUI.dismiss(); //Close
                         exitWebBrowserUI.dismiss(); //Close
-                        webBrowserMenu.dismiss(); //Close
+                        screenUI.dismiss(); //Close
                         showMenuButton();
                     }
                 }));
@@ -18720,143 +18198,6 @@ function overlayWebBrowser() {
                 exitWebBrowserUI = new PopupWindow_(xWebBrowserLayout, dip2px(40), dip2px(40));
                 exitWebBrowserUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
                 exitWebBrowserUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
-            } catch(exception) {
-                print(exception);
-                VertexClientPE.showBugReportDialog(exception);
-            }
-        }
-    }));
-}
-
-function exitPlayerCustomizer() {
-    CONTEXT.runOnUiThread(new Runnable_({
-        run: function() {
-            try {
-                var xPlayerCustomizerLayout = new LinearLayout_(CONTEXT);
-                var xPlayerCustomizerButton = new Button_(CONTEXT);
-                xPlayerCustomizerButton.setText('X');//Text
-                xPlayerCustomizerButton.getBackground().setColorFilter(Color_.parseColor("#FF0000"), PorterDuff_.Mode.MULTIPLY);
-                xPlayerCustomizerButton.setTextColor(Color_.WHITE);
-                xPlayerCustomizerButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-                        exitPlayerCustomizerUI.dismiss(); //Close
-                        playerCustomizerMenu.dismiss(); //Close
-                        showMenuButton();
-                    }
-                }));
-                xPlayerCustomizerLayout.addView(xPlayerCustomizerButton);
-                
-                exitPlayerCustomizerUI = new PopupWindow_(xPlayerCustomizerLayout, dip2px(40), dip2px(40));
-                exitPlayerCustomizerUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                exitPlayerCustomizerUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
-            } catch(exception) {
-                print(exception);
-                VertexClientPE.showBugReportDialog(exception);
-            }
-        }
-    }));
-}
-
-function exitOptiFine() {
-    CONTEXT.runOnUiThread(new Runnable_({
-        run: function() {
-            try {
-                var xOptiFineLayout = new LinearLayout_(CONTEXT);
-                var xOptiFineButton = new Button_(CONTEXT);
-                xOptiFineButton.setText('X');//Text
-                xOptiFineButton.getBackground().setColorFilter(Color_.parseColor("#FF0000"), PorterDuff_.Mode.MULTIPLY);
-                xOptiFineButton.setTextColor(Color_.WHITE);
-                xOptiFineButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-                        exitOptiFineUI.dismiss(); //Close
-                        optiFineMenu.dismiss(); //Close
-                        showMenuButton();
-                    }
-                }));
-                xOptiFineLayout.addView(xOptiFineButton);
-                
-                exitOptiFineUI = new PopupWindow_(xOptiFineLayout, dip2px(40), dip2px(40));
-                exitOptiFineUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                exitOptiFineUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
-            } catch(exception) {
-                print(exception);
-                VertexClientPE.showBugReportDialog(exception);
-            }
-        }
-    }));
-}
-
-function exitPreview() {
-    CONTEXT.runOnUiThread(new Runnable_({
-        run: function() {
-            try {				
-				var backPreviewLayout = new LinearLayout_(CONTEXT);
-                var backPreviewButton = new Button_(CONTEXT);
-                backPreviewButton.setText("<");//Text
-                backPreviewButton.getBackground().setColorFilter(Color_.parseColor("#00BFFF"), PorterDuff_.Mode.MULTIPLY);
-                backPreviewButton.setTextColor(Color_.WHITE);
-                backPreviewButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-                        backPreviewUI.dismiss(); //Close
-                        exitPreviewUI.dismiss(); //Close
-                        previewMenu.dismiss(); //Close
-                        dashboardScreen();
-                        exitDashboard();
-                    }
-                }));
-                backPreviewLayout.addView(backPreviewButton);
-                
-                var xPreviewLayout = new LinearLayout_(CONTEXT);
-                var xPreviewButton = new Button_(CONTEXT);
-                xPreviewButton.setText('X');//Text
-                xPreviewButton.getBackground().setColorFilter(Color_.parseColor("#FF0000"), PorterDuff_.Mode.MULTIPLY);
-                xPreviewButton.setTextColor(Color_.WHITE);
-                xPreviewButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg){
-						backPreviewUI.dismiss(); //Close
-                        exitPreviewUI.dismiss(); //Close
-                        previewMenu.dismiss(); //Close
-                        showMenuButton();
-                    }
-                }));
-                xPreviewLayout.addView(xPreviewButton);
-                
-                backPreviewUI = new PopupWindow_(backPreviewLayout, dip2px(40), dip2px(40));
-                backPreviewUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                backPreviewUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-                
-                exitPreviewUI = new PopupWindow_(xPreviewLayout, dip2px(40), dip2px(40));
-                exitPreviewUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                exitPreviewUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
-            } catch(exception) {
-                print(exception);
-                VertexClientPE.showBugReportDialog(exception);
-            }
-        }
-    }));
-}
-
-function exitDashboard() {
-    CONTEXT.runOnUiThread(new Runnable_({
-        run: function() {
-            try {
-                var xDashboardLayout = new LinearLayout_(CONTEXT);
-                var xDashboardButton = new Button_(CONTEXT);
-                xDashboardButton.setText('X');//Text
-                xDashboardButton.getBackground().setColorFilter(Color_.parseColor("#FF0000"), PorterDuff_.Mode.MULTIPLY);
-                xDashboardButton.setTextColor(Color_.WHITE);
-                xDashboardButton.setOnClickListener(new View_.OnClickListener({
-                    onClick: function(viewarg) {
-                        exitDashboardUI.dismiss(); //Close
-                        dashboardMenu.dismiss(); //Close
-                        showMenuButton();
-                    }
-                }));
-                xDashboardLayout.addView(xDashboardButton);
-                
-                exitDashboardUI = new PopupWindow_(xDashboardLayout, dip2px(40), dip2px(40));
-                exitDashboardUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                exitDashboardUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
             } catch(exception) {
                 print(exception);
                 VertexClientPE.showBugReportDialog(exception);
