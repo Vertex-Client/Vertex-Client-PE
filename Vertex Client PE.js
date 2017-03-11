@@ -1077,6 +1077,42 @@ var VertexClientPE = {
 					return true;
 				}
 				return false;
+			},
+			getNearestMob: function(range) {
+				var mobs = Entity.getAll();
+				if(targetMobsSetting == "on") {
+					for(var i = 0; i < mobs.length; i++) {
+						var ent = mobs[i];
+						var x = Entity.getX(ent) - getPlayerX();
+						var y = Entity.getY(ent) - getPlayerY();
+						var z = Entity.getZ(ent) - getPlayerZ();
+						if(x*x+y*y+z*z>range*range) {
+							continue;
+						}
+						if(Entity.getEntityTypeId(ent) != EntityType.ARROW && Entity.getEntityTypeId(ent) != EntityType.BOAT && Entity.getEntityTypeId(ent) != EntityType.EGG && Entity.getEntityTypeId(ent) != EntityType.ENDER_PEARL && Entity.getEntityTypeId(ent) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(ent) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(ent) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(ent) != EntityType.FIREBALL && Entity.getEntityTypeId(ent) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(ent) != EntityType.ITEM && Entity.getEntityTypeId(ent) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(ent) != EntityType.MINECART && Entity.getEntityTypeId(ent) != EntityType.PAINTING && Entity.getEntityTypeId(ent) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(ent) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(ent) != EntityType.SNOWBALL && Entity.getEntityTypeId(ent) != EntityType.THROWN_POTION && ent != getPlayerEnt()) {
+							return ent;
+						}
+					}
+				}
+				return null;
+			},
+			getNearestPlayer: function(range) {
+				var players = Server.getAllPlayers();
+				if(targetPlayersSetting == "on") {
+					for(var i = 0; i < players.length; i++) {
+						var ent = players[i];
+						var x = Entity.getX(ent) - getPlayerX();
+						var y = Entity.getY(ent) - getPlayerY();
+						var z = Entity.getZ(ent) - getPlayerZ();
+						if(x*x+y*y+z*z>range*range) {
+							continue;
+						}
+						if(ent != getPlayerEnt()) {
+							return ent;
+						}
+					}
+				}
+				return null;
 			}
 		}
     },
@@ -3984,41 +4020,19 @@ var aimbot = {
         this.state = !this.state;
     },
     onTick: function() {
-		var players = Server.getAllPlayers();
-        var mobs = Entity.getAll();
-		if(targetMobsSetting == "on") {
-			for(var i = 0; i < mobs.length; i++) {
-				var ent = mobs[i];
-				var x = Entity.getX(ent) - getPlayerX();
-				var y = Entity.getY(ent) - getPlayerY();
-				var z = Entity.getZ(ent) - getPlayerZ();
-				if(aimbotUseKillauraRange == "on" && x*x+y*y+z*z>killAuraRange*killAuraRange) {
-					continue;
-				} else if(aimbotUseKillauraRange == "off" && x*x+y*y+z*z>aimbotRangeSetting*aimbotRangeSetting) {
-					continue;
-				}
-				if(Entity.getEntityTypeId(ent) != EntityType.ARROW && Entity.getEntityTypeId(ent) != EntityType.BOAT && Entity.getEntityTypeId(ent) != EntityType.EGG && Entity.getEntityTypeId(ent) != EntityType.ENDER_PEARL && Entity.getEntityTypeId(ent) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(ent) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(ent) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(ent) != EntityType.FIREBALL && Entity.getEntityTypeId(ent) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(ent) != EntityType.ITEM && Entity.getEntityTypeId(ent) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(ent) != EntityType.MINECART && Entity.getEntityTypeId(ent) != EntityType.PAINTING && Entity.getEntityTypeId(ent) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(ent) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(ent) != EntityType.SNOWBALL && Entity.getEntityTypeId(ent) != EntityType.THROWN_POTION && ent != getPlayerEnt()) {
-					VertexClientPE.CombatUtils.aimAtEnt(ent);
-					return;
-				}
-			}
+		var range;
+		if(aimbotUseKillauraRange == "off") {
+			range = aimbotRangeSetting;
+		} else if(aimbotUseKillauraRange == "on") {
+			range = killAuraRange;
 		}
-		if(targetPlayersSetting == "on") {
-			for(var i = 0; i < players.length; i++) {
-				var ent = players[i];
-				var x = Entity.getX(ent) - getPlayerX();
-				var y = Entity.getY(ent) - getPlayerY();
-				var z = Entity.getZ(ent) - getPlayerZ();
-				if(aimbotUseKillauraRange == "on" && x*x+y*y+z*z>killAuraRange*killAuraRange) {
-					continue;
-				} else if(aimbotUseKillauraRange == "off" && x*x+y*y+z*z>aimbotRangeSetting*aimbotRangeSetting) {
-					continue;
-				}
-				if(ent != getPlayerEnt()) {
-					VertexClientPE.CombatUtils.aimAtEnt(ent);
-					return;
-				}
-			}
+		var mob = VertexClientPE.Utils.Player.getNearestMob(range);
+		var player = VertexClientPE.Utils.Player.getNearestPlayer(range);
+		if(mob != null) {
+			VertexClientPE.CombatUtils.aimAtEnt(mob);
+		}
+		if(player != null) {
+			VertexClientPE.CombatUtils.aimAtEnt(player);
 		}
     }
 }
@@ -6219,6 +6233,7 @@ var imgGitHubButton = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang
 var imgGitHubButtonClicked = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/github_button_clicked.png");
 var imgSteveHead = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/stevehead.png");
 var imgChristmasTree = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/christmas_tree.png");
+var imgDirtBackground = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/dirt_background.png");
 var iconClientGUI = new BitmapDrawable_(imgIcon);
 var iconClickedClientGUI = new BitmapDrawable_(imgIconClicked)
 var playButtonClientGUI = new BitmapDrawable_(imgPlayButton);
@@ -6230,6 +6245,12 @@ var splashYouTubeButtonClickedClientGUI = new BitmapDrawable_(imgYouTubeButtonCl
 var splashGitHubButtonClientGUI = new BitmapDrawable_(imgGitHubButton);
 var splashGitHubButtonClickedClientGUI = new BitmapDrawable_(imgGitHubButtonClicked);
 var christmasTreeClientGUI = new BitmapDrawable_(imgChristmasTree);
+//*******************
+var fileDirt = new File_("mnt/sdcard/games/com.mojang/dirt_background.png");
+var inputStreamDirt = new FileInputStream_(fileDirt);
+var dirtBackgroundClientGUI = new BitmapDrawable_(android.graphics.Bitmap.createScaledBitmap(BitmapFactory_.decodeStream(inputStreamDirt), dip2px(64), dip2px(64), false));
+dirtBackgroundClientGUI.setColorFilter(android.graphics.Color.rgb(70, 70, 70), android.graphics.PorterDuff.Mode.MULTIPLY);
+dirtBackgroundClientGUI.setTileModeXY(android.graphics.Shader.TileMode.REPEAT, android.graphics.Shader.TileMode.REPEAT);
 
 var getContext = function() {
     return CONTEXT;
@@ -12016,13 +12037,12 @@ function backgroundGradient(round) // TextView with colored background (edited b
 
 		return bg;
 	} else if(backgroundStyleSetting == "minecraft_dirt") {
-		var dirt = new android.graphics.drawable.BitmapDrawable(android.graphics.Bitmap.createScaledBitmap(android.graphics.BitmapFactory.decodeStream(ModPE.openInputStreamFromTexturePack("images/gui/background.png")), dip2px(64), dip2px(64), false));
-		/* if(transparentBgSetting == "on") {
-			dirt.setColorFilter(android.graphics.Color.argb(7, 70, 70, 70), android.graphics.PorterDuff.Mode.MULTIPLY);
-		} else if(transparentBgSetting == "off") { */
-			dirt.setColorFilter(android.graphics.Color.rgb(70, 70, 70), android.graphics.PorterDuff.Mode.MULTIPLY);
-		//}
-		dirt.setTileModeXY(android.graphics.Shader.TileMode.REPEAT, android.graphics.Shader.TileMode.REPEAT);
+		var dirt = dirtBackgroundClientGUI;
+		if(transparentBgSetting == "on") {
+			dirt.setAlpha(127);
+		} else if(transparentBgSetting == "off") {
+			dirt.setAlpha(255);
+		}
 		
 		return dirt;
 	}
@@ -13339,7 +13359,7 @@ function downloadFile(path, url, showNotification) {
 };
 
 (function checkFiles() {
-    var res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png", "github_button.png", "github_button_clicked.png", "vertex_logo_new.png", "stevehead.png", "pro_logo.png", "minecraft.ttf", "christmas_tree.png"],
+    var res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png", "github_button.png", "github_button_clicked.png", "vertex_logo_new.png", "stevehead.png", "pro_logo.png", "minecraft.ttf", "christmas_tree.png", "dirt_background.png"],
         isExisting = true;
     for (var i = res.length; i--;) {
         if (!new File_(PATH, res[i]).exists()) {
