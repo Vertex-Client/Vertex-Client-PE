@@ -6246,7 +6246,7 @@ var splashGitHubButtonClientGUI = new BitmapDrawable_(imgGitHubButton);
 var splashGitHubButtonClickedClientGUI = new BitmapDrawable_(imgGitHubButtonClicked);
 var christmasTreeClientGUI = new BitmapDrawable_(imgChristmasTree);
 //*******************
-var fileDirt = new File_("mnt/sdcard/games/com.mojang/dirt_background.png");
+var fileDirt = new File_("/sdcard/games/com.mojang/dirt_background.png");
 var inputStreamDirt = new FileInputStream_(fileDirt);
 var dirtBackgroundClientGUI = new BitmapDrawable_(android.graphics.Bitmap.createScaledBitmap(BitmapFactory_.decodeStream(inputStreamDirt), dip2px(64), dip2px(64), false));
 dirtBackgroundClientGUI.setColorFilter(android.graphics.Color.rgb(70, 70, 70), android.graphics.PorterDuff.Mode.MULTIPLY);
@@ -16143,6 +16143,7 @@ function modManagerScreen() {
 					VertexClientPE.modules.forEach(function(element, index, array) {
 						if(element.getSettingsLayout) {
 							var modTitle = clientSectionTitle(VertexClientPE.getCustomModName(element.name));
+							modTitle.setTypeface(VertexClientPE.font, Typeface_.BOLD);
 							modManagerMenuLayout.addView(modTitle);
 							modManagerMenuLayout.addView(element.getSettingsLayout());
 						}
