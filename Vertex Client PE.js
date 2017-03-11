@@ -6233,7 +6233,6 @@ var imgGitHubButton = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang
 var imgGitHubButtonClicked = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/github_button_clicked.png");
 var imgSteveHead = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/stevehead.png");
 var imgChristmasTree = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/christmas_tree.png");
-var imgDirtBackground = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/dirt_background.png");
 var iconClientGUI = new BitmapDrawable_(imgIcon);
 var iconClickedClientGUI = new BitmapDrawable_(imgIconClicked)
 var playButtonClientGUI = new BitmapDrawable_(imgPlayButton);
@@ -6246,11 +6245,9 @@ var splashGitHubButtonClientGUI = new BitmapDrawable_(imgGitHubButton);
 var splashGitHubButtonClickedClientGUI = new BitmapDrawable_(imgGitHubButtonClicked);
 var christmasTreeClientGUI = new BitmapDrawable_(imgChristmasTree);
 //*******************
-var fileDirt = new File_("/sdcard/games/com.mojang/dirt_background.png");
-var inputStreamDirt = new FileInputStream_(fileDirt);
-var dirtBackgroundClientGUI = new BitmapDrawable_(android.graphics.Bitmap.createScaledBitmap(BitmapFactory_.decodeStream(inputStreamDirt), dip2px(64), dip2px(64), false));
-dirtBackgroundClientGUI.setColorFilter(android.graphics.Color.rgb(70, 70, 70), android.graphics.PorterDuff.Mode.MULTIPLY);
-dirtBackgroundClientGUI.setTileModeXY(android.graphics.Shader.TileMode.REPEAT, android.graphics.Shader.TileMode.REPEAT);
+var fileDirt;
+var inputStreamDirt;
+var dirtBackgroundClientGUI;
 
 var getContext = function() {
     return CONTEXT;
@@ -11958,9 +11955,10 @@ VertexClientPE.setupGradient = function(gradientDrawable, color, strokeColor, rg
 	}
 }
 
-function backgroundGradient(round) // TextView with colored background (edited by peacestorm)
+function backgroundGradient(round, style) // TextView with colored background (edited by peacestorm)
 {
-	if(backgroundStyleSetting == "normal" || backgroundStyleSetting == "normal_nostrokes" || backgroundStyleSetting == "normal_noinner") {
+	style = style || backgroundStyleSetting;
+	if(style == "normal" || style == "normal_nostrokes" || style == "normal_noinner") {
 		var bg = GradientDrawable_();
 		var radius = 0;
 		if(round == true) {
@@ -12036,7 +12034,15 @@ function backgroundGradient(round) // TextView with colored background (edited b
 		bg.setShape(GradientDrawable_.RECTANGLE);
 
 		return bg;
-	} else if(backgroundStyleSetting == "minecraft_dirt") {
+	} else if(style == "minecraft_dirt") {
+		if(fileDirt == null) {
+			fileDirt = new File_("/sdcard/games/com.mojang/dirt_background.png");
+			inputStreamDirt = new FileInputStream_(fileDirt);
+			dirtBackgroundClientGUI = new BitmapDrawable_(android.graphics.Bitmap.createScaledBitmap(BitmapFactory_.decodeStream(inputStreamDirt), dip2px(64), dip2px(64), false));
+			dirtBackgroundClientGUI.setColorFilter(android.graphics.Color.rgb(70, 70, 70), android.graphics.PorterDuff.Mode.MULTIPLY);
+			dirtBackgroundClientGUI.setTileModeXY(android.graphics.Shader.TileMode.REPEAT, android.graphics.Shader.TileMode.REPEAT);
+		}
+		
 		var dirt = dirtBackgroundClientGUI;
 		if(transparentBgSetting == "on") {
 			dirt.setAlpha(127);
