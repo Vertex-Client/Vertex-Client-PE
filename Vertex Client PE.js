@@ -13626,22 +13626,13 @@ function newLevel() {
 		if(VertexClientPE.latestVersion != VertexClientPE.currentVersion && VertexClientPE.latestVersion != undefined) {
 			VertexClientPE.clientMessage("There is a new version available (v" + VertexClientPE.latestVersion + " for Minecraft Pocket Edition v" + latestPocketEditionVersion + ")!");
 		}
-        if(hacksList == null && !VertexClientPE.menuIsShowing) {
+        if((hacksList == null || !hacksList.isShowing()) && !VertexClientPE.menuIsShowing) {
             showHacksList();
             showTabGUI();
 			showShortcuts();
 			if(healthDisplayState) {
 				showHealthDisplay();
 			}
-        }if(hacksList != null && !VertexClientPE.menuIsShowing) {
-            if(!hacksList.isShowing()) {
-                showHacksList();
-                showTabGUI();
-				showShortcuts();
-				if(healthDisplayState) {
-					showHealthDisplay();
-				}
-            }
         }
         if(!VertexClientPE.isPro()) {
             if(getRandomInt(0, 20) == 10) {
@@ -17584,14 +17575,7 @@ function showMenuButton() {
     }
     
     if((currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud) && VertexClientPE.playerIsInGame) {
-		if(hacksList == null) {
-			showHacksList();
-			showTabGUI();
-			showShortcuts();
-			if(healthDisplayState) {
-				showHealthDisplay();
-			}
-		} else if(!hacksList.isShowing()) {
+		if(hacksList == null || !hacksList.isShowing()) {
 			showHacksList();
 			showTabGUI();
 			showShortcuts();
@@ -17665,6 +17649,9 @@ function showHacksList() {
     var display = CONTEXT.getWindowManager().getDefaultDisplay(),
         width = display.getWidth(),
         height = display.getHeight();
+	if(hacksList != null) {
+		hacksList.dismiss();
+	}
     if(hacksList == null || !hacksList.isShowing()) {
         CONTEXT.runOnUiThread(new Runnable_({
             run: function() {
@@ -17760,21 +17747,23 @@ function showHacksList() {
 							hacksListLayoutRight.addView(proText);
 						}
 					}
-					hacksList = new PopupWindow_(hacksListLayout, LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT);
-					if(menuAnimationsSetting == "on") {
-						hacksList.setAnimationStyle(android.R.style.Animation_Translucent);
-					}
-					hacksList.setTouchable(false);
-					if(hacksListModeSetting != "off") {
-						if(hacksListPosSetting == "top-left") {
-							hacksList.setBackgroundDrawable(backgroundGradient("bottomright"));
-							hacksList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-						} else if(hacksListPosSetting == "top-center") {
-							hacksList.setBackgroundDrawable(backgroundGradient(true));
-							hacksList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.TOP, 0, 0);
-						} else if(hacksListPosSetting == "top-right") {
-							hacksList.setBackgroundDrawable(backgroundGradient("bottomleft"));
-							hacksList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
+					if(hacksList == null || !hacksList.isShowing()) {
+						hacksList = new PopupWindow_(hacksListLayout, LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT);
+						if(menuAnimationsSetting == "on") {
+							hacksList.setAnimationStyle(android.R.style.Animation_Translucent);
+						}
+						hacksList.setTouchable(false);
+						if(hacksListModeSetting != "off") {
+							if(hacksListPosSetting == "top-left") {
+								hacksList.setBackgroundDrawable(backgroundGradient("bottomright"));
+								hacksList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+							} else if(hacksListPosSetting == "top-center") {
+								hacksList.setBackgroundDrawable(backgroundGradient(true));
+								hacksList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.TOP, 0, 0);
+							} else if(hacksListPosSetting == "top-right") {
+								hacksList.setBackgroundDrawable(backgroundGradient("bottomleft"));
+								hacksList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
+							}
 						}
 					}
                 } catch(error) {
@@ -17827,6 +17816,9 @@ function updateHacksList() {
 }
 
 function showTabGUI() {
+	if(tabGUI != null) {
+		tabGUI.dismiss();
+	}
     if(tabGUI == null || !tabGUI.isShowing()) {
         CONTEXT.runOnUiThread(new Runnable_({
             run: function() {
@@ -17858,14 +17850,16 @@ function showTabGUI() {
 						}
                     });
                     
-                    tabGUI = new PopupWindow_(tabGUILayout, LinearLayout_.LayoutParams.WRAP_CONTENT, CONTEXT.getWindowManager().getDefaultDisplay().getHeight() / 3);
-                    if(menuAnimationsSetting == "on") {
-						tabGUI.setAnimationStyle(android.R.style.Animation_Translucent);
+					if(tabGUI == null || !tabGUI.isShowing()) {
+						tabGUI = new PopupWindow_(tabGUILayout, LinearLayout_.LayoutParams.WRAP_CONTENT, CONTEXT.getWindowManager().getDefaultDisplay().getHeight() / 3);
+						if(menuAnimationsSetting == "on") {
+							tabGUI.setAnimationStyle(android.R.style.Animation_Translucent);
+						}
+						tabGUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+						if(tabGUIModeSetting != "off") {
+							tabGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, dip2px(70));
+						}
 					}
-					tabGUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-                    if(tabGUIModeSetting != "off") {
-                        tabGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, dip2px(70));
-                    }
                 } catch(error) {
                     print('An error occurred: ' + error);
                     VertexClientPE.showBugReportDialog(error);
@@ -17876,6 +17870,9 @@ function showTabGUI() {
 }
 
 function showShortcuts() {
+	if(shortcutGUI != null) {
+		shortcutGUI.dismiss();
+	}
     if(shortcutGUI == null || !shortcutGUI.isShowing()) {
         CONTEXT.runOnUiThread(new Runnable_({
             run: function() {
@@ -17924,15 +17921,17 @@ function showShortcuts() {
 						shortcutLayoutHeight = dip2px(shortcutSizeSetting * shortcutUIHeightSetting);
 					}
                     
-                    shortcutGUI = new PopupWindow_(shortcutGUILayout1, LinearLayout_.LayoutParams.WRAP_CONTENT, shortcutLayoutHeight);
-					if(menuAnimationsSetting == "on") {
-						shortcutGUI.setAnimationStyle(android.R.style.Animation_Translucent);
-					}
-                    shortcutGUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-					if(shortcutUIPosSetting == "left-center") {
-						shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.CENTER, 0, 0);
-					} else {
-						shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.CENTER, 0, 0);
+					if(shortcutGUI == null || !shortcutGUI.isShowing()) {
+						shortcutGUI = new PopupWindow_(shortcutGUILayout1, LinearLayout_.LayoutParams.WRAP_CONTENT, shortcutLayoutHeight);
+						if(menuAnimationsSetting == "on") {
+							shortcutGUI.setAnimationStyle(android.R.style.Animation_Translucent);
+						}
+						shortcutGUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+						if(shortcutUIPosSetting == "left-center") {
+							shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.CENTER, 0, 0);
+						} else {
+							shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.CENTER, 0, 0);
+						}
 					}
                 } catch(error) {
                     print('An error occurred: ' + error);
