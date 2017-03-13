@@ -11603,6 +11603,11 @@ function settingButton(text, desc, parentWidth, resetFunc) {
 	var resetButton;
 	if(resetFunc) {
 		resetButton = clientButton("Reset");
+		resetButton.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
+		resetButton.setMarqueeRepeatLimit(-1);
+		resetButton.setSingleLine();
+		resetButton.setHorizontallyScrolling(true);
+		resetButton.setSelected(true);
 		resetButton.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(viewArg) {
 				resetFunc(viewArg);
@@ -14207,6 +14212,8 @@ function settingsScreen() {
 						function(viewArg) {
 							fontSetting = "default";
 							fontSettingButton.setText("Default");
+							VertexClientPE.font = fontSetting=="minecraft"?Typeface_.createFromFile(new File_(PATH, "minecraft.ttf")):VertexClientPE.defaultFont;
+							MinecraftButtonLibrary.ProcessedResources.font = VertexClientPE.font;
                         }
 					);
                     var fontSettingButton = fontSettingFunc.getButton();
