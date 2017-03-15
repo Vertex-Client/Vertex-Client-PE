@@ -1,7 +1,7 @@
 /**
  * ##################################################################################################
  * @name Vertex Client PE
- * @version v2.2
+ * @version v2.2.1
  * @author peacestorm (@AgameR_Modder)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36, AutoGrind, TimmyIsDa
  *
@@ -1183,15 +1183,12 @@ VertexClientPE.Utils.loadChests = function() {
         var x = getPlayerX();
         var y = getPlayerY();
         var z = getPlayerZ();
-        var newX;
-        var newY;
-        var newZ;
         for(var blockX = - chestESPRange; blockX <= chestESPRange; blockX++) {
             for(var blockY = - chestESPRange; blockY <= chestESPRange; blockY++) {
                 for(var blockZ = - chestESPRange; blockZ <= chestESPRange; blockZ++) {
-                    newX = x + blockX;
-                    newY = y + blockY;
-                    newZ = z + blockZ;
+                    let newX = Math.floor(x + blockX);
+                    let newY = Math.floor(y + blockY);
+                    let newZ = Math.floor(z + blockZ);
                     if(getTile(newX, newY, newZ) == 54) {
                         VertexClientPE.Utils.chests.push({
                             x: newX,
@@ -1229,7 +1226,7 @@ VertexClientPE.isRemote = function() {
 
 VertexClientPE.playerIsInGame = false;
 
-VertexClientPE.currentVersion = "2.2";
+VertexClientPE.currentVersion = "2.2.1";
 VertexClientPE.currentVersionDesc = "The GUI Update";
 VertexClientPE.targetVersion = "MCPE v1.0.x alpha";
 VertexClientPE.minVersion = "1.0.0";
@@ -1819,13 +1816,11 @@ VertexClientPE.drawCubeShapedBox = function(gl, x, y, z) { //many thanks to GodS
     gl.glTranslatef(x, y, z);
     gl.glFrontFace(GL10.GL_CCW);
     gl.glEnable(GL10.GL_BLEND);
-	gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
     gl.glLineWidth(4); 
     gl.glColor4f(0.0, 1.0, 0.0, 0.0);
     gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
     gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
     gl.glDrawElements(GL10.GL_LINES, index.length, GL10.GL_UNSIGNED_SHORT, indexBuffer);
-	gl.glDisable(GL10.GL_LINE_SMOOTH);
     gl.glTranslatef(-x, -y, -z);
 }
 
@@ -4172,15 +4167,12 @@ var chestTracers = {
         var x = getPlayerX();
         var y = getPlayerY();
         var z = getPlayerZ();
-        var newX;
-        var newY;
-        var newZ;
         for(var blockX = - chestTracersRange; blockX <= chestTracersRange; blockX++) {
             for(var blockY = - chestTracersRange; blockY <= chestTracersRange; blockY++) {
                 for(var blockZ = - chestTracersRange; blockZ <= chestTracersRange; blockZ++) {
-                    newX = x + blockX;
-                    newY = y + blockY;
-                    newZ = z + blockZ;
+                    let newX = Math.floor(x + blockX);
+                    let newY = Math.floor(y + blockY);
+                    let newZ = Math.floor(z + blockZ);
                     if(getTile(newX, newY, newZ) == 54) {
                         VertexClientPE.drawTracer(newX, newY, newZ, chestTracersGroundMode=="on"?true:false, chestTracersParticle);
                     }
@@ -9207,8 +9199,11 @@ function nuke(x, y, z, range, mode) {
         for(var blockX = - range; blockX <= range; blockX++) {
             for(var blockY = - range; blockY <= range; blockY++) {
                 for(var blockZ = - range; blockZ <= range; blockZ++) {
-                    if(getTile(Math.floor(x + blockX), Math.floor(y + blockY), Math.floor(z + blockZ)) != 0) {
-                        destroyFunction(Math.floor(x + blockX), Math.floor(y + blockY), Math.floor(z + blockZ), destroyLastParam);
+					let tileX = Math.floor(x + blockX);
+					let tileY = Math.floor(y + blockY);
+					let tileZ = Math.floor(z + blockZ);
+                    if(getTile(tileX, tileY, tileZ) != 0) {
+                        destroyFunction(tileX, tileY, tileZ, destroyLastParam);
                     }
                 }
             }
@@ -9217,8 +9212,11 @@ function nuke(x, y, z, range, mode) {
         for(var blockX = - range; blockX <= range; blockX++) {
             for(var blockY = -1; blockY <= range; blockY++) {
                 for(var blockZ = - range; blockZ <= range; blockZ++) {
-                    if(getTile(Math.floor(x + blockX), Math.floor(y + blockY), Math.floor(z + blockZ)) != 0) {
-                        destroyFunction(Math.floor(x + blockX), Math.floor(y + blockY), Math.floor(z + blockZ), destroyLastParam);
+					let tileX = Math.floor(x + blockX);
+					let tileY = Math.floor(y + blockY);
+					let tileZ = Math.floor(z + blockZ);
+                    if(getTile(tileX, tileY, tileZ) != 0) {
+                        destroyFunction(tileX, tileY, tileZ, destroyLastParam);
                     }
                 }
             }
@@ -9227,9 +9225,12 @@ function nuke(x, y, z, range, mode) {
         for(var blockX = - range; blockX <= range; blockX++) {
             for(var blockY = - range; blockY <= range; blockY++) {
                 for(var blockZ = - range; blockZ <= range; blockZ++) {
-					var tile = getTile(Math.floor(x + blockX), Math.floor(y + blockY), Math.floor(z + blockZ));
+					let tileX = Math.floor(x + blockX);
+					let tileY = Math.floor(y + blockY);
+					let tileZ = Math.floor(z + blockZ);
+					let tile = getTile(tileX, tileY, tileZ);
                     if(Block.getDestroyTime(tile) == 0 && tile != 0) {
-                        destroyFunction(Math.floor(x + blockX), Math.floor(y + blockY), Math.floor(z + blockZ), destroyLastParam);
+                        destroyFunction(tileX, tileY, tileZ, destroyLastParam);
                     }
                 }
             }
@@ -13158,6 +13159,16 @@ VertexClientPE.showAccountManager = function(showBackButton) {
         CONTEXT.runOnUiThread(new Runnable_({
             run: function() {
                 try {
+					if(GUI != null) {
+                        if(GUI.isShowing()) {
+                            GUI.dismiss();
+                        }
+                    }
+					if(accountManagerGUI != null) {
+						if(accountManagerGUI.isShowing()) {
+                            accountManagerGUI.dismiss();
+                        }
+					}
 					if(mainMenuTextList != null) {
 						if(mainMenuTextList.isShowing()) {
 							mainMenuTextList.dismiss();
