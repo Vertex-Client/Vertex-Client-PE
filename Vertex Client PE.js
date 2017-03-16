@@ -1180,15 +1180,15 @@ VertexClientPE.trailsMode = "off";
 VertexClientPE.Utils.loadChests = function() {
     VertexClientPE.Utils.chests = [];
     try {
-        var x = getPlayerX();
-        var y = getPlayerY();
-        var z = getPlayerZ();
-        for(var blockX = - chestESPRange; blockX <= chestESPRange; blockX++) {
-            for(var blockY = - chestESPRange; blockY <= chestESPRange; blockY++) {
-                for(var blockZ = - chestESPRange; blockZ <= chestESPRange; blockZ++) {
-                    let newX = Math.floor(x + blockX);
-                    let newY = Math.floor(y + blockY);
-                    let newZ = Math.floor(z + blockZ);
+        let x = Math.round(getPlayerX());
+        let y = Math.round(getPlayerY());
+        let z = Math.round(getPlayerZ());
+        for(let blockX = - chestESPRange; blockX <= chestESPRange; blockX++) {
+            for(let blockY = - chestESPRange; blockY <= chestESPRange; blockY++) {
+                for(let blockZ = - chestESPRange; blockZ <= chestESPRange; blockZ++) {
+                    let newX = Math.round(x + blockX);
+                    let newY = Math.round(y + blockY);
+                    let newZ = Math.round(z + blockZ);
                     if(getTile(newX, newY, newZ) == 54) {
                         VertexClientPE.Utils.chests.push({
                             x: newX,
@@ -4537,7 +4537,7 @@ var chestESP = {
     },
     onRender: function(gl) {
         VertexClientPE.Utils.getChests().forEach(function(element, index, array) {
-            VertexClientPE.drawCubeShapedBox(gl, element.x, element.y, element.z);
+            VertexClientPE.drawCubeShapedBox(gl, element.x + 1 / 16, element.y + 1, element.z + 1 / 16);
         });
     }
 }
@@ -5634,13 +5634,18 @@ function useItem(x, y, z, itemId, blockId, side, blockDamage) {
             element.onUseItem(x, y, z, itemId, blockId, side, blockDamage);
         }
     });
-    if(itemId == 54) {
+    if(itemId == 54 && ((blockId != 54 && blockId != 58) || Entity.isSneaking(getPlayerEnt()))) {
         if(chestESPState) {
             new Thread_(new Runnable_({
                 run: function() {
-                    VertexClientPE.toast("Reloading chests...");
+                    VertexClientPE.toast("Adding chest to chest list...");
                     Thread_.sleep(1200);
-                    VertexClientPE.Utils.loadChests();
+					let chestESPVector = new Vector3(x-(side==4?1:0)+(side==5?1:0),y-(side==0?1:0)+(side==1?1:0),z-(side==2?1:0)+(side==3?1:0));
+                    VertexClientPE.Utils.chests.push({
+						x: chestESPVector.x,
+						y: chestESPVector.y,
+						z: chestESPVector.z
+					});
                 }
             })).start();
         }
@@ -18495,17 +18500,24 @@ function destroyBlock(x, y, z, side) {
             if(tile == 250) {
                 Level.dropItem(x, y, z, 0, 247, 64);
             }
-            if(tile == 54) {
-                new Thread_(new Runnable_({
-                    run: function() {
-                        VertexClientPE.toast("Reloading chests...");
-                        Thread_.sleep(1200);
-                        VertexClientPE.Utils.loadChests();
-                    }
-                })).start();
-            }
         }
     }
+	if(tile == 54) {
+		if(chestESPState) {
+			new Thread_(new Runnable_({
+				run: function() {
+					VertexClientPE.toast("Removing chest from chest list...");
+					Thread_.sleep(1200);
+					VertexClientPE.Utils.chests.forEach(function(element, index, array) {
+						if(element.x == x && element.y == y && element.z == z) {
+							array.splice(index, 1);
+							return;
+						}
+					});
+				}
+			})).start();
+		}
+	}
 }
 
 function blockEventHook(x, y, z, e, d) {
