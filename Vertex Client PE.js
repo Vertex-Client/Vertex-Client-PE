@@ -2690,6 +2690,9 @@ var nuker = {
     category: VertexClientPE.category.WORLD,
     type: "Mod",
     state: false,
+	getExtraInfo: function() {
+		return capitalizeFirstLetter(nukerMode);
+	},
     getSettingsLayout: function() {
         var nukerSettingsLayout = new LinearLayout_(CONTEXT);
         nukerSettingsLayout.setOrientation(1);
@@ -2705,11 +2708,11 @@ var nuker = {
         });
         var nukerModeTitle = clientTextView("\nMode:");
         var nukerModeCubeButton = clientButton("Cube", "Normal mode which destroys blocks in the shape of a cube");
-        nukerModeCubeButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 6, display.heightPixels / 10));
+        nukerModeCubeButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 6 - 20 / 3, display.heightPixels / 10));
         var nukerModeFlatButton = clientButton("Flat", "Flat mode which flats the ground");
-        nukerModeFlatButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 6, display.heightPixels / 10));
+        nukerModeFlatButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 6 - 20 / 3, display.heightPixels / 10));
         var nukerModeSmashButton = clientButton("Smash", "Smash mode which only breaks blocks with a destroy time of 0");
-        nukerModeSmashButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 6, display.heightPixels / 10));
+        nukerModeSmashButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 6 - 20 / 3, display.heightPixels / 10));
         
         var nukerRangeTitle = clientTextView("Range: | " + nukerRange);
         var nukerModeLayout = new LinearLayout_(CONTEXT);
@@ -2717,19 +2720,19 @@ var nuker = {
         
         var nukerModeLayoutLeft = new LinearLayout_(CONTEXT);
         nukerModeLayoutLeft.setOrientation(1);
-        nukerModeLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3, display.heightPixels / 10));
+        nukerModeLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3 - 20 / 3, display.heightPixels / 10));
         nukerModeLayoutLeft.setGravity(Gravity_.CENTER_HORIZONTAL);
         nukerModeLayout.addView(nukerModeLayoutLeft);
         
         var nukerModeLayoutCenter = new LinearLayout_(CONTEXT);
         nukerModeLayoutCenter.setOrientation(1);
-        nukerModeLayoutCenter.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3, display.heightPixels / 10));
+        nukerModeLayoutCenter.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3 - 20 / 3, display.heightPixels / 10));
         nukerModeLayoutCenter.setGravity(Gravity_.CENTER_HORIZONTAL);
         nukerModeLayout.addView(nukerModeLayoutCenter);
         
         var nukerModeLayoutRight = new LinearLayout_(CONTEXT);
         nukerModeLayoutRight.setOrientation(1);
-        nukerModeLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3, display.heightPixels / 10));
+        nukerModeLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3 - 20 / 3, display.heightPixels / 10));
         nukerModeLayoutRight.setGravity(Gravity_.CENTER_HORIZONTAL);
         nukerModeLayout.addView(nukerModeLayoutRight);
         
@@ -4073,30 +4076,30 @@ var chestTracers = {
         
         var chestTracersParticleTitle = clientTextView("\nParticle:");
         var chestTracersFlameButton = clientButton("Flame", "Flame particles.");
-        chestTracersFlameButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 6 - 10/3, display.heightPixels / 10));
+        chestTracersFlameButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 6 - 20 / 3, display.heightPixels / 10));
         var chestTracersRedstoneButton = clientButton("Redstone", "Redstone particles.");
-        chestTracersRedstoneButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 6 - 10/3, display.heightPixels / 10));
+        chestTracersRedstoneButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 6 - 20 / 3, display.heightPixels / 10));
         var chestTracersCriticalButton = clientButton("Critical", "Critical hit particles.");
-        chestTracersCriticalButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 6 - 10/3, display.heightPixels / 10));
+        chestTracersCriticalButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 6 - 20 / 3, display.heightPixels / 10));
         
         var chestTracersParticleLayout = new LinearLayout_(CONTEXT);
         chestTracersParticleLayout.setOrientation(LinearLayout_.HORIZONTAL);
         
         var chestTracersParticleLayoutLeft = new LinearLayout_(CONTEXT);
         chestTracersParticleLayoutLeft.setOrientation(1);
-        chestTracersParticleLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3 - 10/3, display.heightPixels / 10));
+        chestTracersParticleLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3 - 20 / 3, display.heightPixels / 10));
         chestTracersParticleLayoutLeft.setGravity(Gravity_.CENTER_HORIZONTAL);
         chestTracersParticleLayout.addView(chestTracersParticleLayoutLeft);
         
         var chestTracersParticleLayoutCenter = new LinearLayout_(CONTEXT);
         chestTracersParticleLayoutCenter.setOrientation(1);
-        chestTracersParticleLayoutCenter.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3 - 10/3, display.heightPixels / 10));
+        chestTracersParticleLayoutCenter.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3 - 20 / 3, display.heightPixels / 10));
         chestTracersParticleLayoutCenter.setGravity(Gravity_.CENTER_HORIZONTAL);
         chestTracersParticleLayout.addView(chestTracersParticleLayoutCenter);
         
         var chestTracersParticleLayoutRight = new LinearLayout_(CONTEXT);
         chestTracersParticleLayoutRight.setOrientation(1);
-        chestTracersParticleLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3 - 10/3, display.heightPixels / 10));
+        chestTracersParticleLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3 - 20 / 3, display.heightPixels / 10));
         chestTracersParticleLayoutRight.setGravity(Gravity_.CENTER_HORIZONTAL);
         chestTracersParticleLayout.addView(chestTracersParticleLayoutRight);
         
@@ -7495,10 +7498,10 @@ VertexClientPE.showModDialog = function(mod, btn) {
 					dialogExtraLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - 10, display.heightPixels / 10));
 					dialogExtraLayout.addView(dialogExtraLayoutLeft);
 					dialogExtraLayout.addView(dialogExtraLayoutRight);
-					closeButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 3, display.heightPixels / 10));
+					closeButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 3 - 10, display.heightPixels / 10));
 					dialogExtraLayoutLeft.addView(closeButton);
 					var toggleButton = clientButton("Toggle");
-					toggleButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 3, display.heightPixels / 10));
+					toggleButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 3 - 10, display.heightPixels / 10));
 					if(mod.isStateMod()) {
 						if(mod.state) {
 							toggleButton.setText("Disable");
@@ -7705,31 +7708,15 @@ VertexClientPE.showSongDialog = function(song, songBtn, playBar) {
     });
 }
 
+function capitalizeFirstLetter(string) {
+	return string.substring(0, 1).toUpperCase() + string.substring(1, string.length());
+}
+
 function capitalizeColorString(string) {
     if(string == "custom rgb") {
 		return "Custom RGB";
-	} else if(string == "green") {
-		return "Green";
-	} else if(string == "red") {
-		return "Red";
-	} else if(string == "blue") {
-		return "Blue";
-	} else if(string == "purple") {
-		return "Purple";
-	} else if(string == "violet") {
-		return "Violet";
-	} else if(string == "yellow") {
-		return "Yellow";
-	} else if(string == "orange") {
-		return "Orange";
-	} else if(string == "brown") {
-		return "Brown";
-	} else if(string == "grey") {
-		return "Grey";
-	} else if(string == "white") {
-		return "White";
-	} else if(string == "black") {
-		return "Black";
+	} else {
+		return capitalizeFirstLetter(string);
 	}
 }
 
@@ -17747,6 +17734,9 @@ function showHacksList() {
                                 statesText += " - "
                             }
                             statesText += VertexClientPE.getCustomModName(element.name);
+							if(element.getExtraInfo) {
+								statesText += " [" + element.getExtraInfo() + "]";
+							}
                             enabledHacksCounter++;
                         }
                     });
@@ -17835,6 +17825,9 @@ function updateHacksList() {
                                 statesText += " - "
                             }
                             statesText += VertexClientPE.getCustomModName(element.name);
+							if(element.getExtraInfo) {
+								statesText += " [" + element.getExtraInfo() + "]";
+							}
                             enabledHacksCounter++;
                         }
                     });
