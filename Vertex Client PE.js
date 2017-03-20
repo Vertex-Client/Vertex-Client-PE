@@ -805,12 +805,28 @@ function screenChangeHook(screenName) {
 			if((mainMenuTextList == null || !mainMenuTextList.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
 				VertexClientPE.showStartScreenBar();
 			}
+			if((accountManagerGUI == null || !accountManagerGUI.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
+				CONTEXT.runOnUiThread(new Runnable_({
+					run: function() {
+						showAccountManagerButton();
+					}
+				}));
+			}
 		} else {
 			if(mainMenuTextList != null) {
 				if(mainMenuTextList.isShowing()) {
 					CONTEXT.runOnUiThread(new Runnable_({
 						run: function() {
 							mainMenuTextList.dismiss();
+						}
+					}));
+				}
+			}
+			if(accountManagerGUI != null) {
+				if(accountManagerGUI.isShowing()) {
+					CONTEXT.runOnUiThread(new Runnable_({
+						run: function() {
+							accountManagerGUI.dismiss();
 						}
 					}));
 				}
@@ -8887,7 +8903,7 @@ VertexClientPE.getVersion = function(type) {
         case "target":
             return "Target version: " + VertexClientPE.targetVersion;
         case "latest":
-            if(VertexClientPE.latestVersion != undefined) {
+            if(VertexClientPE.latestVersion != undefined && VertexClientPE.latestVersion != null) {
                 return "Latest version: v" + VertexClientPE.latestVersion;
             } else {
                 return "Latest version: No internet connection.";
@@ -17621,14 +17637,14 @@ function showMenuButton() {
 		if((mainMenuTextList == null || !mainMenuTextList.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
 			VertexClientPE.showStartScreenBar();
 		}
+		if((accountManagerGUI == null || !accountManagerGUI.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
+			showAccountManagerButton();
+		}
 	}
 	if(currentScreen == ScreenType.pause_screen) {
 		if((pauseUtilitiesUI == null || !pauseUtilitiesUI.isShowing()) && !VertexClientPE.menuIsShowing) {
 			showPauseUtilities();
 		}
-	}
-	if((accountManagerGUI == null || !accountManagerGUI.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
-		showAccountManagerButton();
 	}
 }
 
@@ -17721,7 +17737,6 @@ function showHacksList() {
 					proText.setGravity(android.view.Gravity.CENTER);
 					proText.setTextColor(Color_.parseColor("#DAA520"));
 
-                    var VertexClientPEHacksListText = "Vertex Client PE " + VertexClientPE.getVersion("current");
                     var statesText = "";
                     VertexClientPE.modules.forEach(function (element, index, array) {
                         if(element.isStateMod() && element.state) {
@@ -17731,7 +17746,7 @@ function showHacksList() {
                             if(enabledHacksCounter != 0) {
                                 statesText += " - "
                             }
-                            statesText += sharedPref.getString("VertexClientPE.mods." + element.name + ".name", element.name);
+                            statesText += VertexClientPE.getCustomModName(element.name);
                             enabledHacksCounter++;
                         }
                     });
@@ -17819,7 +17834,7 @@ function updateHacksList() {
                             if(enabledHacksCounter != 0) {
                                 statesText += " - "
                             }
-                            statesText += sharedPref.getString("VertexClientPE.mods." + element.name + ".name", element.name);
+                            statesText += VertexClientPE.getCustomModName(element.name);
                             enabledHacksCounter++;
                         }
                     });
