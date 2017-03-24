@@ -1188,6 +1188,29 @@ var VertexClientPE = {
 	}
 };
 
+function getEditedFunction(func, newBegin, newEnd) {
+	if(newBegin == null) {
+		newBegin = "";
+	}
+	if(newEnd == null) {
+		newEnd = "";
+	}
+	var temp = func.toString();
+	temp = newBegin + temp + newEnd;
+
+	// now replace the original function
+	func = new Function(temp.substring(temp.indexOf('{')+1,temp.lastIndexOf('}')));
+
+	return func; // alerts "This ok function alerts your message!"
+}
+
+VertexClientPE.clickListener = function(obj) {
+	if(buttonSoundSetting == "minecraft click") {
+		obj.onClick = getEditedFunction(obj.onClick, 'Level.playSound(Player.getX(), Player.getY(), Player.getZ(), "random.click", 100, 0);');
+	}
+	return new View_.OnClickListener(obj);
+}
+
 VertexClientPE.menuIsShowing = false;
 VertexClientPE.isPaused = false;
 
@@ -6835,7 +6858,7 @@ VertexClientPE.showShortcutManagerDialog = function() {
 					shortcutUIPosSettingButton.setText("Right-center");
 				}
 				shortcutUIPosSettingButton.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewarg){
+					onClick: function(viewArg) {
 						if(shortcutUIPosSetting == "left-center") {
 							shortcutUIPosSetting = "right-center";
 							shortcutUIPosSettingButton.setText("Right-center");
@@ -7714,10 +7737,17 @@ VertexClientPE.showSongDialog = function(song, songBtn, playBar) {
 }
 
 function capitalizeFirstLetter(string) {
-	return string.substring(0, 1).toUpperCase() + string.substring(1, string.length());
+	let length;
+	if(typeof string.length === "function") {
+		length = string.length();
+	} else {
+		length = string.length;
+	}
+	return string.substring(0, 1).toUpperCase() + string.substring(1, length);
 }
 
 function capitalizeColorString(string) {
+	string = string.toString();
 	if(string == "custom rgb") {
 		return "Custom RGB";
 	} else {
@@ -7834,6 +7864,7 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 				});
 				
 				var tileDropDownResetButton = clientButton("Reset");
+				tileDropDownResetButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.stat_notify_sync, 0  , 0, 0);
 				tileDropDownResetButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(v) {
 						currentName = defaultName;
@@ -11016,7 +11047,7 @@ function modButton(mod, buttonOnly, customSize) {
 	}
 	defaultInfoButton.setAlpha(0.54);
 	defaultInfoButton.setOnClickListener(new View_.OnClickListener({
-	onClick: function(viewarg){
+	onClick: function(viewarg) {
 		if(mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) {
 			VertexClientPE.showProDialog(mod.name);
 			return;
@@ -12703,7 +12734,7 @@ VertexClientPE.showSetupScreen = function() {
 								setupTextView.setText(setupStep1Text);
 								doneButton.setText("\u2794");
 								doneButton.setOnClickListener(new View_.OnClickListener({
-									onClick: function(viewarg){
+									onClick: function(viewarg) {
 										step2Button.performClick();
 									}
 								}));
@@ -12735,7 +12766,7 @@ VertexClientPE.showSetupScreen = function() {
 								setupScreenLayoutBottomRight.addView(setupButtonPurple);
 								doneButton.setText("\u2794");
 								doneButton.setOnClickListener(new View_.OnClickListener({
-									onClick: function(viewarg){
+									onClick: function(viewarg) {
 										step3Button.performClick();
 									}
 								}));
@@ -12769,7 +12800,7 @@ VertexClientPE.showSetupScreen = function() {
 								setupScreenLayoutBottomCenter1.addView(singleplayerEnabledSettingButton);
 								doneButton.setText("\u2794");
 								doneButton.setOnClickListener(new View_.OnClickListener({
-									onClick: function(viewarg){
+									onClick: function(viewArg) {
 										step4Button.performClick();
 									}
 								}));
@@ -12797,7 +12828,7 @@ VertexClientPE.showSetupScreen = function() {
 								setupTextView.setText(setupStep4Text);
 								doneButton.setText("\u2713");
 								doneButton.setOnClickListener(new View_.OnClickListener({
-									onClick: function(viewarg){
+									onClick: function(viewArg) {
 										themeSetting = setupColor;
 										VertexClientPE.saveMainSettings();
 										VertexClientPE.editCopyrightText();
@@ -13004,7 +13035,7 @@ VertexClientPE.showSetupScreen = function() {
 					//doneButton.getBackground().setColorFilter(Color_.parseColor("#008000"), PorterDuff_.Mode.MULTIPLY);
 					doneButton.setTextColor(Color_.WHITE);
 					doneButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewarg){
+						onClick: function(viewArg) {
 							step2Button.performClick();
 						}
 					}));
@@ -13634,8 +13665,19 @@ VertexClientPE.showTrails = function() {
 	Level.addParticle(trailsParticleType, getPlayerX(), getPlayerY(), getPlayerZ(), 0, 0, 0, 2);
 }
 
+VertexClientPE.getMyScriptName = function() {
+	var scripts = net.zhuoweizhang.mcpelauncher.ScriptManager.scripts;
+    for(var i = 0; i < scripts.size(); i++) {
+        var script = scripts.get(i);
+        var scope = script.scope;
+        if(org.mozilla.javascript.ScriptableObject.hasProperty(scope, "VertexClientPE"))
+            return script.name;
+	}
+}
+
 function newLevel() {
 	try {
+		//print(VertexClientPE.getMyScriptName());
 		currentScreen = ScreenType.ingame;
 		lagTimer = 0;
 		CONTEXT.runOnUiThread(new Runnable_() {
@@ -13881,7 +13923,7 @@ function settingsScreen() {
 						tabGUIModeSettingButton.setText("Hidden");
 					}
 					tabGUIModeSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewarg){
+						onClick: function(viewArg) {
 							if(tabGUIModeSetting == "on") {
 								tabGUIModeSetting = "off";
 								tabGUIModeSettingButton.setText("Hidden");
@@ -13908,7 +13950,7 @@ function settingsScreen() {
 						mainButtonPositionSettingButton.setText("Bottom-left");
 					}
 					mainButtonPositionSettingButton.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewarg){
+					onClick: function(viewArg) {
 						if(mainButtonPositionSetting == "top-right") {
 							mainButtonPositionSetting = "top-left";
 							mainButtonPositionSettingButton.setText("Top-left");
@@ -13951,7 +13993,7 @@ function settingsScreen() {
 						mainButtonStyleSettingButton.setText("Classic");
 					}
 					mainButtonStyleSettingButton.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewarg){
+					onClick: function(viewArg) {
 						if(mainButtonStyleSetting == "normal") {
 							mainButtonStyleSetting = "global_background";
 							mainButtonStyleSettingButton.setText("Global background (fits better)");
@@ -13985,7 +14027,7 @@ function settingsScreen() {
 						mainButtonTapSettingButton.setText("More dialog (normal tap) | Menu (long tap)");
 					}
 					mainButtonTapSettingButton.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewarg){
+					onClick: function(viewArg) {
 						if(mainButtonTapSetting == "menu") {
 							mainButtonTapSetting = "moredialog";
 							mainButtonTapSettingButton.setText("More dialog (normal tap) | Menu (long tap)");
@@ -14031,7 +14073,7 @@ function settingsScreen() {
 						useLightThemeSettingButton.setText("OFF");
 					}
 					useLightThemeSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg){
+						onClick: function(viewArg) {
 							if(useLightThemeSetting == "on") {
 								useLightThemeSetting = "off";
 								useLightThemeSettingButton.setText("OFF");
@@ -14069,7 +14111,7 @@ function settingsScreen() {
 						buttonStyleSettingButton.setText("Text only (less lag)");
 					}
 					buttonStyleSettingButton.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewArg){
+					onClick: function(viewArg) {
 						if(buttonStyleSetting == "normal") {
 							buttonStyleSetting = "normal_nostrokes";
 							buttonStyleSettingButton.setText("Normal (no strokes)");
@@ -14158,7 +14200,7 @@ function settingsScreen() {
 						transparentBgSettingButton.setText("OFF");
 					}
 					transparentBgSettingButton.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewarg){
+					onClick: function(viewArg) {
 						if(transparentBgSetting == "on") {
 							transparentBgSetting = "off";
 							transparentBgSettingButton.setText("OFF");
@@ -14201,7 +14243,7 @@ function settingsScreen() {
 						mcpeGUISettingButton.setText("Black");
 					}
 					mcpeGUISettingButton.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewarg){
+					onClick: function(viewArg) {
 						if(mcpeGUISetting == "default") {
 							mcpeGUISetting = "green";
 							mcpeGUISettingButton.setText("Green");
@@ -14447,7 +14489,7 @@ function settingsScreen() {
 						menuTypeSettingButton.setText("Fullscreen");
 					}
 					menuTypeSettingButton.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewarg){
+					onClick: function(viewArg) {
 						if(menuType == "normal") {
 							menuType = "halfscreen";
 							menuTypeSettingButton.setText("Tabbed (side)");
@@ -14828,7 +14870,7 @@ function devSettingsScreen() {
 						debugModeSettingButton.setText("OFF");
 					}
 					debugModeSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewarg){
+						onClick: function(viewArg) {
 							VertexClientPE.setIsDebugMode(!VertexClientPE.isDebugMode());
 							if(VertexClientPE.isDebugMode()) {
 								debugModeSettingButton.setText("ON");
@@ -14846,7 +14888,7 @@ function devSettingsScreen() {
 						expModeSettingButton.setText("OFF");
 					}
 					expModeSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewarg){
+						onClick: function(viewArg) {
 							VertexClientPE.setIsExpMode(!VertexClientPE.isExpMode());
 							if(VertexClientPE.isExpMode()) {
 								expModeSettingButton.setText("ON");
@@ -14862,7 +14904,7 @@ function devSettingsScreen() {
 					var resetDataSettingButton = resetDataSettingFunc.getButton();
 					resetDataSettingButton.setText("Reset");
 					resetDataSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewarg){
+						onClick: function(viewArg) {
 							VertexClientPE.resetData();
 						}
 					}));
@@ -17581,7 +17623,7 @@ function showMenuButton() {
 		MinecraftButtonLibrary.addMinecraftStyleToTextView(menuBtn);
 	}
 	menuBtn.setOnClickListener(new View_.OnClickListener({
-		onClick: function(viewArg){
+		onClick: function(viewArg) {
 			if(mainButtonTapSetting == "menu") {
 				openMenuFromMenuButton(viewArg);
 			} else if(mainButtonTapSetting == "moredialog") {
@@ -18057,7 +18099,7 @@ function showPauseUtilities() {
 				var pauseUtilitiesLayout = new LinearLayout_(CONTEXT);
 				var playerViewButton = clientButton("F5");
 				playerViewButton.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewarg){
+					onClick: function(viewArg) {
 						if(Launcher.isToolbox()) {
 							var currentView = ModPE.getPlayerViewPerspective();
 							if(currentView < 2) {
@@ -18147,7 +18189,7 @@ VertexClientPE.showExitButtons = function(showBackButton) {
 				backScreenUIButton.getBackground().setColorFilter(Color_.parseColor("#00BFFF"), PorterDuff_.Mode.MULTIPLY);
 				backScreenUIButton.setTextColor(Color_.WHITE);
 				backScreenUIButton.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewarg){
+					onClick: function(viewArg) {
 						backScreenUI.dismiss(); //Close
 						exitScreenUI.dismiss(); //Close
 						screenUI.dismiss(); //Close
@@ -18162,7 +18204,7 @@ VertexClientPE.showExitButtons = function(showBackButton) {
 				xScreenUIButton.getBackground().setColorFilter(Color_.parseColor("#FF0000"), PorterDuff_.Mode.MULTIPLY);
 				xScreenUIButton.setTextColor(Color_.WHITE);
 				xScreenUIButton.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewarg){
+					onClick: function(viewArg) {
 						if(showBackButton) {
 							backScreenUI.dismiss(); //Close
 						}
