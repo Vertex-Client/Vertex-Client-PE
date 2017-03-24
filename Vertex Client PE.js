@@ -7760,6 +7760,7 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 		CONTEXT.runOnUiThread(new Runnable_() {
 			run: function() {
 				var tileDropDownLayout = new LinearLayout_(CONTEXT);
+				tileDropDownLayout.setPadding(10, 10, 10, 10);
 				tileDropDownLayout.setOrientation(1);
 				tileDropDownLayout.setGravity(android.view.Gravity.CENTER);
 				
@@ -7894,7 +7895,7 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 				var tileDropDown = new PopupWindow_(tileDropDownLayout, LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT, true);
 				tileDropDown.setWidth(LinearLayout_.LayoutParams.WRAP_CONTENT);
 				tileDropDown.setHeight(LinearLayout_.LayoutParams.WRAP_CONTENT);
-				tileDropDown.setBackgroundDrawable(new ColorDrawable_(Color_.BLACK));
+				tileDropDown.setBackgroundDrawable(backgroundSpecial("bottomleft", "#212121|#ffffff"));
 				tileDropDown.setTouchInterceptor(new android.view.View.OnTouchListener() {
 					onTouch: function(v, event) {
 						if(event.getAction() == android.view.ACTION_OUTSIDE) {
