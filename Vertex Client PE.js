@@ -218,7 +218,7 @@ var panicWorldSetting = "on";
 var panicMovementSetting = "on";
 var panicPlayerSetting = "on";
 var panicMiscSetting = "on";
-var buttonSoundSetting = "default";
+var buttonSoundSetting = "system";
 //------------------------------------
 var antiAFKDistancePerTick = 0.25;
 //------------------------------------
@@ -1206,7 +1206,7 @@ function getEditedFunction(func, newBegin, newEnd) {
 }
 
 VertexClientPE.clickListener = function(obj) {
-	if(buttonSoundSetting == "minecraft click") {
+	if(buttonSoundSetting == "minecraft") {
 		obj.onClick = getEditedFunction(obj.onClick, 'Level.playSound(Player.getX(), Player.getY(), Player.getZ(), "random.click", 100, 0);');
 	}
 	return new View_.OnClickListener(obj);
@@ -8866,7 +8866,7 @@ VertexClientPE.MusicUtils = {
 		}
 		this.tempSongList = this.songList;
 	},
-	startMusicPlayer: function(song) {
+	startMusicPlayer: function(song, fromButton) {
 		this.randomMusic = song==null?this.tempSongList[Math.floor(Math.random() * this.tempSongList.length)]:song;
 		this.mp.reset();
 		this.mp.setDataSource(this.randomMusic.url);
@@ -8893,7 +8893,6 @@ VertexClientPE.MusicUtils = {
 					mp.pause();
 					VertexClientPE.MusicUtils.isPaused = true;
 				}
-				VertexClientPE.MusicUtils.playingFirstTime = false;
 			}
 		});
 		this.mp.setOnBufferingUpdateListener(new MediaPlayer_.OnBufferingUpdateListener() {
@@ -9656,6 +9655,7 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + panicMovementSetting.toString());
 	outWrite.append("," + panicPlayerSetting.toString());
 	outWrite.append("," + panicMiscSetting.toString());
+	outWrite.append("," + buttonSoundSetting.toString());
 
 	outWrite.close();
 	
@@ -9887,6 +9887,9 @@ VertexClientPE.loadMainSettings = function () {
 		}
 		if (arr[69] != null && arr[69] != undefined) {
 			panicMiscSetting = arr[69];
+		}
+		if (arr[70] != null && arr[70] != undefined) {
+			buttonSoundSetting = arr[70];
 		}
 		fos.close();
 		VertexClientPE.loadCustomRGBSettings();
@@ -10313,7 +10316,7 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 						// onClick will run soon
 
 						// play sounds
-						if(buttonSoundSetting == "minecraft click") {
+						if(buttonSoundSetting == "minecraft") {
 							//Level.playSoundEnt(getPlayerEnt(), "random.click", 100, 0);
 							Level.playSound(Player.getX(), Player.getY(), Player.getZ(), "random.click", 100, 0);
 						}
@@ -10452,7 +10455,7 @@ function clientButton(text, desc, color, round, forceLightColor, style, thicknes
 		if(fontSetting == "minecraft") {
 			MinecraftButtonLibrary.addMinecraftStyleToTextView(defaultButton);
 		}
-		if(buttonSoundSetting != "default") {
+		if(buttonSoundSetting != "system") {
 			defaultButton.setSoundEffectsEnabled(false);
 		}
 	}
@@ -10474,6 +10477,7 @@ function songButton(song, barLayout) {
 				mpPlayButton.setBackgroundResource(android.R.drawable.ic_media_pause);
 			}
 			VertexClientPE.MusicUtils.startMusicPlayer(song);
+			VertexClientPE.MusicUtils.playingFirstTime = false;
 		}
 	});
 	
@@ -14482,6 +14486,79 @@ function settingsScreen() {
 						}
 					}));
 					
+					var soundsAndMusicTitle = clientSectionTitle("Sounds & music", "rainbow");
+					
+					var buttonSoundSettingFunc = new settingButton("Button sound", "The sound that you hear when tapping a button.", null,
+						function(viewArg) {
+							if(buttonSoundSetting != "system") {
+								buttonSoundSetting = "system";
+								buttonSoundSettingButton.setText("System");
+								VertexClientPE.setShouldUpdateGUI("CLICKGUI_NORMAL", true);
+							}
+						}
+					);
+					var buttonSoundSettingButton = buttonSoundSettingFunc.getButton();
+					if(buttonSoundSetting == "system") {
+						buttonSoundSettingButton.setText("System");
+					} else if(buttonSoundSetting == "minecraft") {
+						buttonSoundSettingButton.setText("Minecraft");
+					} else if(buttonSoundSetting == "off") {
+						buttonSoundSettingButton.setText("OFF");
+					}
+					buttonSoundSettingButton.setOnClickListener(new View_.OnClickListener({
+						onClick: function(viewArg) {
+							if(buttonSoundSetting == "off") {
+								buttonSoundSetting = "system";
+								buttonSoundSettingButton.setText("System");
+							} else if(buttonSoundSetting == "system") {
+								buttonSoundSetting = "minecraft";
+								buttonSoundSettingButton.setText("Minecraft");
+							} else if(buttonSoundSetting == "minecraft") {
+								buttonSoundSetting = "off";
+								buttonSoundSettingButton.setText("OFF");
+							}
+							VertexClientPE.saveMainSettings();
+							VertexClientPE.setShouldUpdateGUI("CLICKGUI_NORMAL", true);
+						}
+					}));
+					
+					var playMusicSettingFunc = new settingButton("Automatically play music", "Automatically play music.", null,
+						function(viewArg) {
+							playMusicSetting = "off";
+							playMusicSettingButton.setText("OFF");
+						}
+					);
+					var playMusicSettingButton = playMusicSettingFunc.getButton();
+					if(playMusicSetting == "on") playMusicSetting = "off";
+					/*if(playMusicSetting == "on") {
+						playMusicSettingButton.setText("Normal");
+					} else */if(playMusicSetting == "shuffle") {
+						playMusicSettingButton.setText("Shuffle");
+					} else if(playMusicSetting == "off") {
+						playMusicSettingButton.setText("OFF");
+					}
+					playMusicSettingButton.setOnClickListener(new View_.OnClickListener({
+						onClick: function(viewArg) {
+							//if(playMusicSetting == "on") {
+							if(playMusicSetting == "off") {
+								playMusicSetting = "shuffle";
+								playMusicSettingButton.setText("Shuffle");
+							} else if(playMusicSetting == "shuffle") {
+								playMusicSetting = "off";
+								playMusicSettingButton.setText("OFF");
+							}/* else if(playMusicSetting == "off") {
+								playMusicSetting = "on";
+								playMusicSettingButton.setText("Normal");
+								VertexClientPE.saveMainSettings();
+								VertexClientPE.loadMainSettings();
+								VertexClientPE.resetMusic();
+								//VertexClientPE.playMusic();
+								print("This mode is not ready yet!");
+							}*/
+							VertexClientPE.saveMainSettings();
+						}
+					}));
+					
 					var dashboardTitle = clientSectionTitle("Dashboard", "rainbow");
 					
 					var dashboardTileSizeSettingFunc = new settingButton("Tile size", "Sets the Dashboard tile style.");
@@ -14587,43 +14664,6 @@ function settingsScreen() {
 						}
 					}));
 					
-					var playMusicSettingFunc = new settingButton("Automatically play music", "Automatically play music.", null,
-						function(viewArg) {
-							playMusicSetting = "off";
-							playMusicSettingButton.setText("OFF");
-						}
-					);
-					var playMusicSettingButton = playMusicSettingFunc.getButton();
-					if(playMusicSetting == "on") playMusicSetting = "off";
-					/*if(playMusicSetting == "on") {
-						playMusicSettingButton.setText("Normal");
-					} else */if(playMusicSetting == "shuffle") {
-						playMusicSettingButton.setText("Shuffle");
-					} else if(playMusicSetting == "off") {
-						playMusicSettingButton.setText("OFF");
-					}
-					playMusicSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							//if(playMusicSetting == "on") {
-							if(playMusicSetting == "off") {
-								playMusicSetting = "shuffle";
-								playMusicSettingButton.setText("Shuffle");
-							} else if(playMusicSetting == "shuffle") {
-								playMusicSetting = "off";
-								playMusicSettingButton.setText("OFF");
-							}/* else if(playMusicSetting == "off") {
-								playMusicSetting = "on";
-								playMusicSettingButton.setText("Normal");
-								VertexClientPE.saveMainSettings();
-								VertexClientPE.loadMainSettings();
-								VertexClientPE.resetMusic();
-								//VertexClientPE.playMusic();
-								print("This mode is not ready yet!");
-							}*/
-							VertexClientPE.saveMainSettings();
-						}
-					}));
-					
 					var showSnowInWinterSettingFunc = new settingButton("Show snowflakes on the start screen in the winter", null, null,
 						function(viewArg) {
 							showSnowInWinterSetting = "off";
@@ -14682,6 +14722,9 @@ function settingsScreen() {
 					VertexClientPE.addView(settingsMenuLayout, menuTypeSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, normalMenuTypeSizeFunc);
 					VertexClientPE.addView(settingsMenuLayout, menuAnimationsSettingFunc);
+					settingsMenuLayout.addView(soundsAndMusicTitle);
+					VertexClientPE.addView(settingsMenuLayout, buttonSoundSettingFunc);
+					VertexClientPE.addView(settingsMenuLayout, playMusicSettingFunc);
 					settingsMenuLayout.addView(dashboardTitle);
 					VertexClientPE.addView(settingsMenuLayout, dashboardTileSizeSettingFunc);
 					settingsMenuLayout.addView(commandsTitle);
@@ -14690,7 +14733,6 @@ function settingsScreen() {
 					settingsMenuLayout.addView(otherTitle);
 					VertexClientPE.addView(settingsMenuLayout, featuresSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, showNewsSettingFunc);
-					VertexClientPE.addView(settingsMenuLayout, playMusicSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, showSnowInWinterSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, webBrowserStartPageSettingFunc);
 
@@ -16043,6 +16085,7 @@ function musicPlayerScreen() {
 								VertexClientPE.MusicUtils.isPaused = false;
 								mpPlayButton.setBackgroundResource(android.R.drawable.ic_media_pause);
 							}
+							VertexClientPE.MusicUtils.playingFirstTime = false;
 						}
 					});
 					mpSeekBarView.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
