@@ -7895,7 +7895,7 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 				var tileDropDown = new PopupWindow_(tileDropDownLayout, LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT, true);
 				tileDropDown.setWidth(LinearLayout_.LayoutParams.WRAP_CONTENT);
 				tileDropDown.setHeight(LinearLayout_.LayoutParams.WRAP_CONTENT);
-				tileDropDown.setBackgroundDrawable(backgroundSpecial("bottomleft", "#212121|#ffffff"));
+				tileDropDown.setBackgroundDrawable(backgroundSpecial(null, "#212121|#ffffff"));
 				tileDropDown.setTouchInterceptor(new android.view.View.OnTouchListener() {
 					onTouch: function(v, event) {
 						if(event.getAction() == android.view.ACTION_OUTSIDE) {
@@ -7913,16 +7913,6 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 		});
 	} catch(e) {
 		print("@" + e.lineNumber + ": " + e);
-	}
-}
-
-var itemGiverItems = [];
-
-for(var i = 0; i <= 4096; i++) {
-	if(Item.isValidItem(i)) {
-		itemGiverItems.push({
-			itemId: i
-		});
 	}
 }
 
@@ -12476,10 +12466,14 @@ VertexClientPE.showSplashScreen = function () {
 				proViewer.setImageBitmap(imgProLogo);
 				proViewer.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 4, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16 + dip2px(32)));
 				
+				var splashProg = new android.widget.ProgressBar(CONTEXT);
+				splashProg.setIndeterminate(true);
+				
 				splashScreenLayout.addView(logoViewer5);
 				if(VertexClientPE.isPro()) {
 					splashScreenLayout.addView(proViewer);
 				}
+				splashScreenLayout.addView(splashProg);
 				splashScreenLayout.startAnimation(fadeIn(500));
 
 				new Thread_({
@@ -13347,19 +13341,31 @@ VertexClientPE.Utils.day = VertexClientPE.Utils.cal.get(java.util.Calendar.DAY_O
 VertexClientPE.Utils.month = VertexClientPE.Utils.cal.get(java.util.Calendar.MONTH);
 VertexClientPE.Utils.year = VertexClientPE.Utils.cal.get(java.util.Calendar.YEAR);
 
+var itemGiverItems = [];
+
+VertexClientPE.loadItemGiverItems = function() {
+	for(var i = 0; i <= 4096; i++) {
+		if(Item.isValidItem(i)) {
+			itemGiverItems.push({
+				itemId: i
+			});
+		}
+	}
+}
+
 VertexClientPE.setup = function() {
 	currentScreen = ScreenType.start_screen;
 	new Thread_(new Runnable_({
 		run: function() {
 			try {
+				VertexClientPE.showSplashScreen();
 				VertexClientPE.loadMainSettings();
 				VertexClientPE.loadFeaturesSettings();
-				VertexClientPE.showSplashScreen();
 				VertexClientPE.loadSupport();
 				VertexClientPE.checkForUpdates();
 				VertexClientPE.loadUpdateDescription();
-				//VertexClientPE.loadDownloadCount();
 				VertexClientPE.loadNews();
+				VertexClientPE.loadItemGiverItems();
 				Thread_.sleep(3000);
 			} catch(e) {
 				
