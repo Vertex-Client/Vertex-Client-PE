@@ -218,6 +218,7 @@ var panicWorldSetting = "on";
 var panicMovementSetting = "on";
 var panicPlayerSetting = "on";
 var panicMiscSetting = "on";
+var buttonSoundSetting = "default";
 //------------------------------------
 var antiAFKDistancePerTick = 0.25;
 //------------------------------------
@@ -1527,118 +1528,7 @@ MinecraftButtonLibrary.onTouch = function(v, motionEvent, enableSound, customTex
 		}
 	}
 }
-
-MinecraftButtonLibrary.changeToNormalState = function(button, customTextColor)
-{
-	MinecraftButtonLibrary.setButtonBackground(button, MinecraftButtonLibrary.ProcessedResources.mcNormalNineDrawable);
-	button.setTextColor(android.graphics.Color.parseColor(customTextColor));
-	MinecraftButtonLibrary.setShadowToMinecraftFont(button, MinecraftButtonLibrary.defaultButtonTextShadowColor, MinecraftButtonLibrary.defaultButtonTextLineSpacing);
-
-	// reset pressed padding
-	if(MinecraftButtonLibrary.shouldDisplayPaddingAnimationWhenPressed)
-		button.setPadding(MinecraftButtonLibrary.convertDpToPixel(MinecraftButtonLibrary.defaultButtonPadding), MinecraftButtonLibrary.convertDpToPixel(MinecraftButtonLibrary.defaultButtonPadding), MinecraftButtonLibrary.convertDpToPixel(MinecraftButtonLibrary.defaultButtonPadding), MinecraftButtonLibrary.convertDpToPixel(MinecraftButtonLibrary.defaultButtonPadding));
-}
-
-MinecraftButtonLibrary.changeToPressedState = function(button)
-{
-	MinecraftButtonLibrary.setButtonBackground(button, MinecraftButtonLibrary.ProcessedResources.mcPressedNineDrawable);
-	button.setTextColor(android.graphics.Color.parseColor(MinecraftButtonLibrary.defaultButtonTextPressedColor));
-	MinecraftButtonLibrary.setShadowToMinecraftFont(button, MinecraftButtonLibrary.defaultButtonTextPressedShadowColor, MinecraftButtonLibrary.defaultButtonTextLineSpacing);
-
-	// make the effect of a pressed button with padding
-	if(MinecraftButtonLibrary.shouldDisplayPaddingAnimationWhenPressed)
-		button.setPadding(MinecraftButtonLibrary.convertDpToPixel(MinecraftButtonLibrary.defaultButtonPadding), MinecraftButtonLibrary.convertDpToPixel(MinecraftButtonLibrary.defaultButtonPadding) + MinecraftButtonLibrary.convertDpToPixel(2), MinecraftButtonLibrary.convertDpToPixel(MinecraftButtonLibrary.defaultButtonPadding), MinecraftButtonLibrary.convertDpToPixel(MinecraftButtonLibrary.defaultButtonPadding) - MinecraftButtonLibrary.convertDpToPixel(2));
-}
 // ######### END - BUTTON UTILS functions #########
-
-
-// ######### CREATE NINE PATCH functions #########
-MinecraftButtonLibrary.createNinePatchFromRaw = function(bitmap, top, left, bottom, right)
-{
-	var buffer = MinecraftButtonLibrary.createNinePatchBuffer(top, left, bottom, right);
-	return new android.graphics.drawable.NinePatchDrawable(MinecraftButtonLibrary.context.getResources(), bitmap, buffer.array(), new android.graphics.Rect(), "");
-}
-
-MinecraftButtonLibrary.createNinePatchBuffer = function(top, left, bottom, right)
-{
-	// source https://gist.github.com/briangriffey/4391807
-
-	var NO_COLOR = 0x00000001;
-	var buffer = java.nio.ByteBuffer.allocate(84).order(java.nio.ByteOrder.nativeOrder());
-
-	//was translated
-	buffer.put(0x01);
-
-	//divx size
-	buffer.put(0x02);
-
-	//divy size
-	buffer.put(0x02);
-
-	//color size
-	buffer.put(0x09);
-
-	//skip
-	buffer.putInt(0);
-	buffer.putInt(0);
-	
-	//padding
-	buffer.putInt(0);
-	buffer.putInt(0);
-	buffer.putInt(0);
-	buffer.putInt(0);
-
-	//skip 4 bytes
-	buffer.putInt(0);
-
-	buffer.putInt(left);
-	buffer.putInt(right);
-	buffer.putInt(top);
-	buffer.putInt(bottom);
-	buffer.putInt(NO_COLOR);
-	buffer.putInt(NO_COLOR);
-	buffer.putInt(NO_COLOR);
-	buffer.putInt(NO_COLOR);
-	buffer.putInt(NO_COLOR);
-	buffer.putInt(NO_COLOR);
-	buffer.putInt(NO_COLOR);
-	buffer.putInt(NO_COLOR);
-	buffer.putInt(NO_COLOR);
-
-	return buffer;
-}
-
-MinecraftButtonLibrary.createButtonNormalNinePatch = function()
-{
-	var bitmap = android.graphics.Bitmap.createBitmap(MinecraftButtonLibrary.getImageFromTexturePack("images/gui/spritesheet.png"), 8, 32, 8, 8); // get only the correct image from the spritesheet
-	var scaledBitmap = MinecraftButtonLibrary.scaleBitmapToSize(bitmap, MinecraftButtonLibrary.convertDpToPixel(16), MinecraftButtonLibrary.convertDpToPixel(16)); // scale image to a bigger size and based on density
-
-	MinecraftButtonLibrary.ProcessedResources.mcNormalNineDrawable = MinecraftButtonLibrary.createNinePatchFromRaw(scaledBitmap, MinecraftButtonLibrary.convertDpToPixel(4), MinecraftButtonLibrary.convertDpToPixel(4), MinecraftButtonLibrary.convertDpToPixel(12), MinecraftButtonLibrary.convertDpToPixel(14)); // convert to NinePatch
-}
-
-MinecraftButtonLibrary.createButtonPressedNinePatch = function()
-{
-	var bitmap = android.graphics.Bitmap.createBitmap(MinecraftButtonLibrary.getImageFromTexturePack("images/gui/spritesheet.png"), 0, 32, 8, 8); // get only the correct image from the spritesheet
-	var scaledBitmap = MinecraftButtonLibrary.scaleBitmapToSize(bitmap, MinecraftButtonLibrary.convertDpToPixel(16), MinecraftButtonLibrary.convertDpToPixel(16)); // scale image to a bigger size and based on density
-
-	MinecraftButtonLibrary.ProcessedResources.mcPressedNineDrawable = MinecraftButtonLibrary.createNinePatchFromRaw(scaledBitmap, MinecraftButtonLibrary.convertDpToPixel(4), MinecraftButtonLibrary.convertDpToPixel(4), MinecraftButtonLibrary.convertDpToPixel(12), MinecraftButtonLibrary.convertDpToPixel(14)); // convert to NinePatch
-}
-// ######### END - CREATE NINE PATCH functions #########
-
-
-
-MinecraftButtonLibrary.writeFileFromByteArray = function(byteArray, path)
-{
-	var file = new java.io.File(path);
-	if(file.exists())
-		file['delete']();
-	file.createNewFile();
-	var stream = new java.io.FileOutputStream(file);
-	stream.write(byteArray);
-	stream.close();
-	byteArray = null;
-}
-// ######### END - CREATE TYPEFACE functions #########
 
 
 // ######### UTILS functions #########
@@ -1674,26 +1564,6 @@ MinecraftButtonLibrary.deleteFile = function(path)
 		file['delete']();
 }
 // ######### END - UTILS functions #########
-
-
-//########################################################################################################################################################
-// START CREATION OF RESOURCES
-//########################################################################################################################################################
-
-new java.lang.Thread(new java.lang.Runnable()
-{
-	run: function()
-	{
-		try
-		{
-			MinecraftButtonLibrary.createButtonNormalNinePatch();
-			MinecraftButtonLibrary.createButtonPressedNinePatch();
-		} catch(e)
-		{
-			print("Error " + e);
-		}
-	}
-}).start();
 
 /**
  * ########
@@ -10226,6 +10096,22 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 						radiiFloatArray[i] = radius;
 					}
 				}
+			} if(round == "left_half") {
+				for(var i = 0; i <= 7; i++) {
+					if(i == 0 || i == 1 || i == 6 || i == 7) {
+						radiiFloatArray[i] = 90;
+					} else {
+						radiiFloatArray[i] = radius;
+					}
+				}
+			} if(round == "right_half") {
+				for(var i = 0; i <= 7; i++) {
+					if(i == 2 || i == 3 || i == 4 || i == 5) {
+						radiiFloatArray[i] = 90;
+					} else {
+						radiiFloatArray[i] = radius;
+					}
+				}
 			}
 			bg.setCornerRadii(radiiFloatArray);
 		}
@@ -10421,6 +10307,17 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 					if(style == "transparent") {
 						bg.setColor(Color_.TRANSPARENT);
 					}
+					
+					var rect = new android.graphics.Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+					if(rect.contains(v.getLeft() + event.getX(), v.getTop() + event.getY())) { // detect if the event happens inside the view
+						// onClick will run soon
+
+						// play sounds
+						if(buttonSoundSetting == "minecraft click") {
+							//Level.playSoundEnt(getPlayerEnt(), "random.click", 100, 0);
+							Level.playSound(Player.getX(), Player.getY(), Player.getZ(), "random.click", 100, 0);
+						}
+					}
 				} else {
 					if(forceLightColor == true) {
 						bg.setColor(Color_.parseColor("#00CC66"));
@@ -10551,8 +10448,13 @@ function clientButton(text, desc, color, round, forceLightColor, style, thicknes
 	defaultButton.setPadding(0, 0, 0, 0);
 	defaultButton.setLineSpacing(0, 1.15);
 	
-	if(fontSetting == "minecraft" && style != "tile") {
-		MinecraftButtonLibrary.addMinecraftStyleToTextView(defaultButton);
+	if(style != "tile") {
+		if(fontSetting == "minecraft") {
+			MinecraftButtonLibrary.addMinecraftStyleToTextView(defaultButton);
+		}
+		if(buttonSoundSetting != "default") {
+			defaultButton.setSoundEffectsEnabled(false);
+		}
 	}
 	return defaultButton;
 }
@@ -17739,7 +17641,7 @@ function showAccountManagerButton() {
 	layout.setOrientation(1);
 	var display = new DisplayMetrics_();
 	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
-	var acBtn = clientButton("AM");
+	var acBtn = clientButton("AM", null, null, "right_half");
 	acBtn.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(40), dip2px(40)));
 	acBtn.setOnClickListener(new View_.OnClickListener({
 		onClick: function(viewarg ){
@@ -17761,7 +17663,7 @@ function showAccountManagerButton() {
 		accountManagerGUI.setAnimationStyle(android.R.style.Animation_Translucent);
 	}
 	accountManagerGUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-	accountManagerGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.BOTTOM, 0, 0);
+	accountManagerGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.LEFT, 0, 0);
 }
  
 function dip2px(dips){
