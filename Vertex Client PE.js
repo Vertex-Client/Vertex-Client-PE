@@ -10311,14 +10311,16 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 						bg.setColor(Color_.TRANSPARENT);
 					}
 					
-					var rect = new android.graphics.Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
-					if(rect.contains(v.getLeft() + event.getX(), v.getTop() + event.getY())) { // detect if the event happens inside the view
-						// onClick will run soon
+					if(style != "tile") {
+						var rect = new android.graphics.Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+						if(rect.contains(v.getLeft() + event.getX(), v.getTop() + event.getY())) { // detect if the event happens inside the view
+							// onClick will run soon
 
-						// play sounds
-						if(buttonSoundSetting == "minecraft") {
-							//Level.playSoundEnt(getPlayerEnt(), "random.click", 100, 0);
-							Level.playSound(Player.getX(), Player.getY(), Player.getZ(), "random.click", 100, 0);
+							// play sounds
+							if(buttonSoundSetting == "minecraft") {
+								//Level.playSoundEnt(getPlayerEnt(), "random.click", 100, 0);
+								Level.playSound(Player.getX(), Player.getY(), Player.getZ(), "random.click", 100, 0);
+							}
 						}
 					}
 				} else {
@@ -11868,44 +11870,46 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
 	return bg;
 }
 
-VertexClientPE.setupGradient = function(gradientDrawable, color, strokeColor, rgbArray) {
+VertexClientPE.setupGradient = function(gradientDrawable, color, strokeColor, rgbArray, style, transparent) {
 	if(!(gradientDrawable instanceof GradientDrawable_)) {
 		throw new TypeError("The type of the first parameter is not GradientDrawable!");
 		return;
 	}
-	if(backgroundStyleSetting == "normal_noinner") {
+	if(style == "normal_noinner") {
 		gradientDrawable.setColor(Color_.TRANSPARENT);
 	}
-	var preset = transparentBgSetting=="on"?"#70":"#";
+	var preset = transparent?"#70":"#";
 	if(rgbArray == null) {
-		if(backgroundStyleSetting != "normal_noinner") {
+		if(style != "normal_noinner") {
 			gradientDrawable.setColor(Color_.parseColor(preset + color));
 		}
-		if(backgroundStyleSetting != "normal_nostrokes") {
+		if(style != "normal_nostrokes") {
 			gradientDrawable.setStroke(dip2px(2), Color_.parseColor(preset + strokeColor));
 		}
 	} else {
 		if(transparentBgSetting == "on") {
-			if(backgroundStyleSetting != "normal_noinner") {
+			if(style != "normal_noinner") {
 				gradientDrawable.setColor(Color_.argb(127, rgbArray[0], rgbArray[1], rgbArray[2]));
 			}
-			if(backgroundStyleSetting != "normal_nostrokes") {
+			if(style != "normal_nostrokes") {
 				gradientDrawable.setStroke(dip2px(2), Color_.argb(127, rgbArray[3], rgbArray[4], rgbArray[5]));
 			}
 		} else {
-			if(backgroundStyleSetting != "normal_noinner") {
+			if(style != "normal_noinner") {
 				gradientDrawable.setColor(Color_.rgb(rgbArray[0], rgbArray[1], rgbArray[2]));
 			}
-			if(backgroundStyleSetting != "normal_nostrokes") {
+			if(style != "normal_nostrokes") {
 				gradientDrawable.setStroke(dip2px(2), Color_.rgb(rgbArray[3], rgbArray[4], rgbArray[5]));
 			}
 		}
 	}
 }
 
-function backgroundGradient(round, style) // TextView with colored background (edited by peacestorm)
+function backgroundGradient(round, style, transparent) // TextView with colored background (edited by peacestorm)
 {
 	style = style || backgroundStyleSetting;
+	transparent = transparent || transparentBgSetting;
+	transparent = transparent=="on";
 	if(style == "normal" || style == "normal_nostrokes" || style == "normal_noinner") {
 		var bg = GradientDrawable_();
 		var radius = 0;
@@ -11943,41 +11947,41 @@ function backgroundGradient(round, style) // TextView with colored background (e
 			bg.setCornerRadius(round);
 		}
 		if(useLightThemeSetting == "on") {
-			VertexClientPE.setupGradient(bg, "00994C", "00CC66");
+			VertexClientPE.setupGradient(bg, "00994C", "00CC66", null, style, transparent);
 		} else {
-			VertexClientPE.setupGradient(bg, "0B5B25", "0F8219");
+			VertexClientPE.setupGradient(bg, "0B5B25", "0F8219", null, style, transparent);
 		}
 		if(themeSetting == "custom rgb") {
-			VertexClientPE.setupGradient(bg, null, null, [customRGBRed, customRGBGreen, customRGBBlue, customRGBRedStroke, customRGBGreenStroke, customRGBBlueStroke]);
+			VertexClientPE.setupGradient(bg, null, null, [customRGBRed, customRGBGreen, customRGBBlue, customRGBRedStroke, customRGBGreenStroke, customRGBBlueStroke], transparent);
 		}
 		if(themeSetting == "red") {
 			if(useLightThemeSetting == "on") {
-				VertexClientPE.setupGradient(bg, "FF3333", "FF6666");
+				VertexClientPE.setupGradient(bg, "FF3333", "FF6666", null, style, transparent);
 			} else {
-				VertexClientPE.setupGradient(bg, "5B0C0C", "821010");
+				VertexClientPE.setupGradient(bg, "5B0C0C", "821010", null, style, transparent);
 			}
 		} if(themeSetting == "blue") {
 			if(useLightThemeSetting == "on") {
-				VertexClientPE.setupGradient(bg, "0080FF", "3399FF");
+				VertexClientPE.setupGradient(bg, "0080FF", "3399FF", null, style, transparent);
 			} else {
-				VertexClientPE.setupGradient(bg, "0A175B", "0E3882");
+				VertexClientPE.setupGradient(bg, "0A175B", "0E3882", null, style, transparent);
 			}
 		} if(themeSetting == "purple") {
-			VertexClientPE.setupGradient(bg, "9F018C", "BC21AB");
+			VertexClientPE.setupGradient(bg, "9F018C", "BC21AB", null, style, transparent);
 		} if(themeSetting == "violet") {
-			VertexClientPE.setupGradient(bg, "842DCE", "8D38C9");
+			VertexClientPE.setupGradient(bg, "842DCE", "8D38C9", null, style, transparent);
 		} if(themeSetting == "yellow") {
-			VertexClientPE.setupGradient(bg, "CCCC00", "FFFF00");
+			VertexClientPE.setupGradient(bg, "CCCC00", "FFFF00", null, style, transparent);
 		} if(themeSetting == "orange") {
-			VertexClientPE.setupGradient(bg, "FF8C00", "FFA500");
+			VertexClientPE.setupGradient(bg, "FF8C00", "FFA500", null, style, transparent);
 		} if(themeSetting == "brown") {
-			VertexClientPE.setupGradient(bg, "8B4513", "CD853F");
+			VertexClientPE.setupGradient(bg, "8B4513", "CD853F", null, style, transparent);
 		} if(themeSetting == "grey") {
-			VertexClientPE.setupGradient(bg, "808080", "A9A9A9");
+			VertexClientPE.setupGradient(bg, "808080", "A9A9A9", null, style, transparent);
 		} if(themeSetting == "white") {
-			VertexClientPE.setupGradient(bg, "E1E1E1", "FFFFFF");
+			VertexClientPE.setupGradient(bg, "E1E1E1", "FFFFFF", null, style, transparent);
 		} if(themeSetting == "black") {
-			VertexClientPE.setupGradient(bg, "141414", "1E1E1E");
+			VertexClientPE.setupGradient(bg, "141414", "1E1E1E", null, style, transparent);
 		}
 		bg.setShape(GradientDrawable_.RECTANGLE);
 
@@ -12360,7 +12364,7 @@ VertexClientPE.showSplashScreen = function () {
 				var splashScreenLayout = new LinearLayout_(CONTEXT);
 				splashScreenLayout.setOrientation(1);
 				splashScreenLayout.setGravity(Gravity_.CENTER);
-				splashScreenLayout.setBackgroundDrawable(new ColorDrawable_(Color_.rgb(0, 128, 255)));
+				splashScreenLayout.setBackgroundDrawable(backgroundGradient(null, "normal_nostrokes", "off"));
 
 				var logoViewer5 = new ImageView_(CONTEXT);
 				logoViewer5.setPadding(0, dip2px(16), 0, dip2px(16));
@@ -13264,8 +13268,8 @@ VertexClientPE.setup = function() {
 	new Thread_(new Runnable_({
 		run: function() {
 			try {
-				VertexClientPE.showSplashScreen();
 				VertexClientPE.loadMainSettings();
+				VertexClientPE.showSplashScreen();
 				VertexClientPE.loadFeaturesSettings();
 				VertexClientPE.loadSupport();
 				VertexClientPE.checkForUpdates();
