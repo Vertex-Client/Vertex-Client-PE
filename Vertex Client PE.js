@@ -219,6 +219,7 @@ var panicMovementSetting = "on";
 var panicPlayerSetting = "on";
 var panicMiscSetting = "on";
 var buttonSoundSetting = "system";
+var transparentSplashScreenSetting = "off";
 //------------------------------------
 var antiAFKDistancePerTick = 0.25;
 //------------------------------------
@@ -9670,6 +9671,7 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + panicPlayerSetting.toString());
 	outWrite.append("," + panicMiscSetting.toString());
 	outWrite.append("," + buttonSoundSetting.toString());
+	outWrite.append("," + transparentSplashScreenSetting.toString());
 
 	outWrite.close();
 	
@@ -9904,6 +9906,9 @@ VertexClientPE.loadMainSettings = function () {
 		}
 		if (arr[70] != null && arr[70] != undefined) {
 			buttonSoundSetting = arr[70];
+		}
+		if (arr[71] != null && arr[71] != undefined) {
+			transparentSplashScreenSetting = arr[71];
 		}
 		fos.close();
 		VertexClientPE.loadCustomRGBSettings();
@@ -12378,7 +12383,7 @@ VertexClientPE.showSplashScreen = function () {
 				var splashScreenLayout = new LinearLayout_(CONTEXT);
 				splashScreenLayout.setOrientation(1);
 				splashScreenLayout.setGravity(Gravity_.CENTER);
-				splashScreenLayout.setBackgroundDrawable(backgroundGradient(null, "normal_nostrokes", "off"));
+				splashScreenLayout.setBackgroundDrawable(backgroundGradient(null, "normal_nostrokes", transparentSplashScreenSetting));
 
 				var logoViewer5 = new ImageView_(CONTEXT);
 				logoViewer5.setPadding(0, dip2px(16), 0, dip2px(16));
@@ -14583,8 +14588,36 @@ function settingsScreen() {
 					var dashboardTileSizeSettingButton = dashboardTileSizeSettingFunc.getButton();
 					dashboardTileSizeSettingButton.setText("Change");
 					dashboardTileSizeSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewarg) {
+						onClick: function(viewArg) {
 							VertexClientPE.showDashboardTileSizeDialog();
+						}
+					}));
+					
+					var splashScreenTitle = clientSectionTitle("Splash Screen", "rainbow");
+					
+					var transparentSplashScreenSettingFunc = new settingButton("Transparent splash screen", "Makes the splash screen partly transparent.", null,
+						function(viewArg) {
+							transparentSplashScreenSetting = "off";
+							transparentSplashScreenSettingButton.setText("OFF");
+						}
+					);
+					var transparentSplashScreenSettingButton = transparentSplashScreenSettingFunc.getButton();
+					if(transparentSplashScreenSetting == "on") {
+						transparentSplashScreenSettingButton.setText("ON");
+					} else if(transparentSplashScreenSetting == "off") {
+						transparentSplashScreenSettingButton.setText("OFF");
+					}
+					transparentSplashScreenSettingButton.setOnClickListener(new View_.OnClickListener({
+						onClick: function(viewarg) {
+							if(transparentSplashScreenSetting == "on") {
+								transparentSplashScreenSetting = "off";
+								transparentSplashScreenSettingButton.setText("OFF");
+								VertexClientPE.saveMainSettings();
+							} else if(transparentSplashScreenSetting == "off") {
+								transparentSplashScreenSetting = "on";
+								transparentSplashScreenSettingButton.setText("ON");
+								VertexClientPE.saveMainSettings();
+							}
 						}
 					}));
 					
@@ -14745,6 +14778,8 @@ function settingsScreen() {
 					VertexClientPE.addView(settingsMenuLayout, playMusicSettingFunc);
 					settingsMenuLayout.addView(dashboardTitle);
 					VertexClientPE.addView(settingsMenuLayout, dashboardTileSizeSettingFunc);
+					settingsMenuLayout.addView(splashScreenTitle);
+					VertexClientPE.addView(settingsMenuLayout, transparentSplashScreenSettingFunc);
 					settingsMenuLayout.addView(commandsTitle);
 					VertexClientPE.addView(settingsMenuLayout, commandsSettingFunc);
 					VertexClientPE.addView(settingsMenuLayout, cmdPrefixFunc);
