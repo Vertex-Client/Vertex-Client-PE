@@ -1267,7 +1267,7 @@ VertexClientPE.isRemote = function() {
 VertexClientPE.playerIsInGame = false;
 
 VertexClientPE.currentVersion = "2.3";
-VertexClientPE.currentVersionDesc = "The GUI Update 2";
+VertexClientPE.currentVersionDesc = "The Visual Update";
 VertexClientPE.targetVersion = "MCPE v1.0.x alpha";
 VertexClientPE.minVersion = "1.0.0";
 VertexClientPE.edition = "Normal";
@@ -1829,7 +1829,7 @@ var settingsTile = {
 	shouldDismissDashboard: true,
 	onClick: function(fromDashboard) {
 		settingsScreen();
-		VertexClientPE.showExitButtons(true);
+		VertexClientPE.showExitButtons(fromDashboard);
 	}
 }
 
@@ -1841,7 +1841,7 @@ var modManagerTile = {
 	shouldDismissDashboard: true,
 	onClick: function(fromDashboard) {
 		modManagerScreen();
-		VertexClientPE.showExitButtons(true);
+		VertexClientPE.showExitButtons(fromDashboard);
 	}
 }
 
@@ -1853,7 +1853,7 @@ var informationTile = {
 	shouldDismissDashboard: true,
 	onClick: function(fromDashboard) {
 		informationScreen();
-		VertexClientPE.showExitButtons(true);
+		VertexClientPE.showExitButtons(fromDashboard);
 	}
 }
 
@@ -1865,7 +1865,7 @@ var updateCenterTile = {
 	shouldDismissDashboard: true,
 	onClick: function(fromDashboard) {
 		updateCenterScreen();
-		VertexClientPE.showExitButtons(true);
+		VertexClientPE.showExitButtons(fromDashboard);
 	}
 }
 
@@ -1877,7 +1877,7 @@ var musicPlayerTile = {
 	shouldDismissDashboard: true,
 	onClick: function(fromDashboard) {
 		musicPlayerScreen();
-		VertexClientPE.showExitButtons(true);
+		VertexClientPE.showExitButtons(fromDashboard);
 	}
 }
 
@@ -1895,7 +1895,7 @@ var christmasTile = {
 	},
 	onClick: function(fromDashboard) {
 		christmasScreen();
-		VertexClientPE.showExitButtons(true);
+		VertexClientPE.showExitButtons(fromDashboard);
 	}
 }
 
@@ -1907,7 +1907,7 @@ var previewTile = {
 	shouldDismissDashboard: true,
 	onClick: function(fromDashboard) {
 		previewScreen();
-		VertexClientPE.showExitButtons(true);
+		VertexClientPE.showExitButtons(fromDashboard);
 	}
 }
 
@@ -1919,7 +1919,7 @@ var milestonesTile = {
 	shouldDismissDashboard: true,
 	onClick: function(fromDashboard) {
 		milestonesScreen();
-		VertexClientPE.showExitButtons(true);
+		VertexClientPE.showExitButtons(fromDashboard);
 	}
 }
 
@@ -1931,7 +1931,7 @@ var helpTile = {
 	shouldDismissDashboard: true,
 	onClick: function(fromDashboard) {
 		helpScreen();
-		VertexClientPE.showExitButtons(true);
+		VertexClientPE.showExitButtons(fromDashboard);
 	}
 }
 
@@ -1943,7 +1943,7 @@ var addonsTile = {
 	shouldDismissDashboard: true,
 	onClick: function(fromDashboard) {
 		addonScreen();
-		VertexClientPE.showExitButtons(true);
+		VertexClientPE.showExitButtons(fromDashboard);
 	}
 }
 
@@ -1987,7 +1987,7 @@ var devSettingsTile = {
 	},
 	onClick: function(fromDashboard) {
 		devSettingsScreen();
-		VertexClientPE.showExitButtons(true);
+		VertexClientPE.showExitButtons(fromDashboard);
 	}
 }
 
@@ -2257,6 +2257,7 @@ var panic = {
 			}
 		});
 		if(VertexClientPE.menuIsShowing) {
+			VertexClientPE.setShouldUpdateGUI("CLICKGUI_NORMAL", true);
 			VertexClientPE.closeMenu();
 			VertexClientPE.showMenu();
 		}
@@ -2297,6 +2298,7 @@ var bypass = {
 		this.state = !this.state;
 		bypassState = this.state;
 		if(VertexClientPE.menuIsShowing) {
+			VertexClientPE.setShouldUpdateGUI("CLICKGUI_NORMAL", true);
 			VertexClientPE.closeMenu();
 			VertexClientPE.showMenu();
 		}
@@ -3454,6 +3456,9 @@ var arrowGun = {
 	type: "Mod",
 	state: false,
 	singleplayerOnly: true,
+	getExtraInfo: function() {
+		return capitalizeFirstLetter(arrowGunMode);
+	},
 	getSettingsLayout: function() {
 		var arrowGunSettingsLayout = new LinearLayout_(CONTEXT);
 		arrowGunSettingsLayout.setOrientation(1);
@@ -3653,6 +3658,9 @@ var autoWalk = {
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
+	getExtraInfo: function() {
+		return capitalizeFirstLetter(autoWalkDirection);
+	},
 	getSettingsLayout: function() {
 		var autoWalkSettingsLayout = new LinearLayout_(CONTEXT);
 		autoWalkSettingsLayout.setOrientation(1);
@@ -3950,6 +3958,9 @@ var chestTracers = {
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
+	getExtraInfo: function() {
+		return capitalizeFirstLetter(chestTracersParticle);
+	},
 	requiresPro: function() {
 		return true;
 	},
@@ -5276,6 +5287,9 @@ var strafeAura = {
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
+	getExtraInfo: function() {
+		return capitalizeFirstLetter(strafeAuraDirectionSetting);
+	},
 	getSettingsLayout: function() {
 		var strafeAuraSettingsLayout = new LinearLayout_(CONTEXT);
 		strafeAuraSettingsLayout.setOrientation(1);
