@@ -220,6 +220,7 @@ var panicPlayerSetting = "on";
 var panicMiscSetting = "on";
 var buttonSoundSetting = "system";
 var transparentSplashScreenSetting = "off";
+var showIconsOnTileShortcutsSetting = "on";
 //------------------------------------
 var antiAFKDistancePerTick = 0.25;
 //------------------------------------
@@ -6700,7 +6701,7 @@ VertexClientPE.showShortcutManagerDialog = function() {
 				var dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
-				dialogLayout.setPadding(10, 10, 10, 10);
+				dialogLayout.setPadding(10, 0, 10, 10);
 				dialogLayout.addView(settingsTitle);
 				dialogLayout.addView(shortcutManagerTitle);
 				dialogLayout.addView(shortcutManagerEnter);
@@ -6735,7 +6736,12 @@ VertexClientPE.showShortcutManagerDialog = function() {
 				dialogLayout.addView(shortcutUIHeightSettingTitle);
 				dialogLayout.addView(shortcutUIHeightSettingSlider);
 				
-				var shortcutUIPosSettingFunc = new settingButton("Shortcut UI position ", null, dialogLayout.getWidth() - 20);
+				var shortcutUIPosSettingFunc = new settingButton("Shortcut UI position ", null, display.widthPixels - 20,
+					function(viewArg) {
+						shortcutUIPosSetting = "right-center";
+						shortcutUIPosSettingButton.setText("Right-center");
+					}
+				);
 				var shortcutUIPosSettingButton = shortcutUIPosSettingFunc.getButton();
 				if(shortcutUIPosSetting == "left-center") {
 					shortcutUIPosSettingButton.setText("Left-center");
@@ -6747,21 +6753,47 @@ VertexClientPE.showShortcutManagerDialog = function() {
 						if(shortcutUIPosSetting == "left-center") {
 							shortcutUIPosSetting = "right-center";
 							shortcutUIPosSettingButton.setText("Right-center");
-							VertexClientPE.saveMainSettings();
 						} else if(shortcutUIPosSetting == "right-center"){
 							shortcutUIPosSetting = "left-center";
 							shortcutUIPosSettingButton.setText("Left-center");
-							VertexClientPE.saveMainSettings();
 						}
+						VertexClientPE.saveMainSettings();
+					}
+				}));
+				
+				var showIconsOnTileShortcutsSettingFunc = new settingButton("Show icons on tile/screen shortcuts ", null, display.widthPixels - 20,
+					function(viewArg) {
+						showIconsOnTileShortcutsSetting = "on";
+						showIconsOnTileShortcutsSettingButton.setText("ON");
+					}
+				);
+				var showIconsOnTileShortcutsSettingButton = showIconsOnTileShortcutsSettingFunc.getButton();
+				if(showIconsOnTileShortcutsSetting == "off") {
+					showIconsOnTileShortcutsSettingButton.setText("OFF");
+				} else if(showIconsOnTileShortcutsSetting == "on") {
+					showIconsOnTileShortcutsSettingButton.setText("ON");
+				}
+				showIconsOnTileShortcutsSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(showIconsOnTileShortcutsSetting == "off") {
+							showIconsOnTileShortcutsSetting = "on";
+							showIconsOnTileShortcutsSettingButton.setText("ON");
+						} else if(showIconsOnTileShortcutsSetting == "on"){
+							showIconsOnTileShortcutsSetting = "off";
+							showIconsOnTileShortcutsSettingButton.setText("OFF");
+						}
+						VertexClientPE.saveMainSettings();
 					}
 				}));
 				
 				VertexClientPE.addView(dialogLayout, shortcutUIPosSettingFunc);
+				VertexClientPE.addView(dialogLayout, showIconsOnTileShortcutsSettingFunc);
 				dialogLayout.addView(clientTextView("\n"));
 				dialogLayout.addView(closeButton);
 				
 				var dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
+				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
 				dialog.setTitle("Shortcut Manager");
 				dialog.setOnDismissListener(new DialogInterface_.OnDismissListener() {
@@ -8903,10 +8935,11 @@ VertexClientPE.MusicUtils = {
 				if(mpPlayButton != null) {
 					mpPlayButton.setBackgroundResource(android.R.drawable.ic_media_pause);
 				}
-				mp.start();
 				if(playMusicSetting != "shuffle" && song == null && VertexClientPE.MusicUtils.playingFirstTime) {
 					mp.pause();
 					VertexClientPE.MusicUtils.isPaused = true;
+				} else {
+					mp.start();
 				}
 			}
 		});
@@ -9672,6 +9705,7 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + panicMiscSetting.toString());
 	outWrite.append("," + buttonSoundSetting.toString());
 	outWrite.append("," + transparentSplashScreenSetting.toString());
+	outWrite.append("," + showIconsOnTileShortcutsSetting.toString());
 
 	outWrite.close();
 	
@@ -9909,6 +9943,9 @@ VertexClientPE.loadMainSettings = function () {
 		}
 		if (arr[71] != null && arr[71] != undefined) {
 			transparentSplashScreenSetting = arr[71];
+		}
+		if (arr[72] != null && arr[72] != undefined) {
+			showIconsOnTileShortcutsSetting = arr[72];
 		}
 		fos.close();
 		VertexClientPE.loadCustomRGBSettings();
@@ -10729,6 +10766,13 @@ function tileButton(tile, fromDashboard) {
 	} else {
 		var defaultTileButton = clientButton(sharedPref.getString("VertexClientPE.tiles." + tileText + ".name", tileText));
 		defaultTileButton.setTypeface(VertexClientPE.font);
+		if(showIconsOnTileShortcutsSetting == "on") {
+			if(tile.usesCustomDrawable && tile.usesCustomDrawable()) {
+				defaultTileButton.setCompoundDrawablesWithIntrinsicBounds(null, tileIcon, null, null);
+			} else {
+				defaultTileButton.setCompoundDrawablesWithIntrinsicBounds(0, tileIcon, 0, 0);
+			}
+		}
 		defaultTileButton.setLayoutParams(new ViewGroup_.LayoutParams(dip2px(shortcutSizeSetting), dip2px(shortcutSizeSetting)));
 		defaultTileButton.setAlpha(0.54);
 	}
@@ -12172,39 +12216,6 @@ VertexClientPE.loadNews = function() {
 }
 
 var _0x498b=["\x6C\x6F\x61\x64\x53\x75\x70\x70\x6F\x72\x74","\x68\x74\x74\x70\x73\x3A\x2F\x2F\x72\x61\x77\x2E\x67\x69\x74\x68\x75\x62\x75\x73\x65\x72\x63\x6F\x6E\x74\x65\x6E\x74\x2E\x63\x6F\x6D\x2F\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2F\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2D\x50\x45\x2F\x75\x70\x64\x61\x74\x65\x2F\x53\x75\x70\x70\x6F\x72\x74\x2F","\x63\x75\x72\x72\x65\x6E\x74\x56\x65\x72\x73\x69\x6F\x6E","\x2F\x73\x75\x70\x70\x6F\x72\x74","\x6E\x65\x74","\x6F\x70\x65\x6E\x43\x6F\x6E\x6E\x65\x63\x74\x69\x6F\x6E","\x67\x65\x74\x49\x6E\x70\x75\x74\x53\x74\x72\x65\x61\x6D","","\x69\x6F","\x72\x65\x61\x64\x4C\x69\x6E\x65","\x20","\x73\x70\x6C\x69\x74","\x75\x6E\x73\x75\x70\x70\x6F\x72\x74\x65\x64","\x63\x6C\x6F\x73\x65","\x56\x65\x72\x74\x65\x78\x43\x6C\x69\x65\x6E\x74\x50\x45\x2E\x69\x73\x53\x75\x70\x70\x6F\x72\x74\x65\x64\x5F","\x67\x65\x74\x53\x74\x72\x69\x6E\x67","\x66\x61\x6C\x73\x65","\x5B\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x5D\x20\x56\x65\x72\x74\x65\x78\x43\x6C\x69\x65\x6E\x74\x50\x45\x2E\x6C\x6F\x61\x64\x53\x75\x70\x70\x6F\x72\x74\x28\x29\x20\x63\x61\x75\x67\x68\x74\x20\x61\x6E\x20\x65\x72\x72\x6F\x72\x3A\x20","\x6C\x6F\x67","\x70\x75\x74\x53\x74\x72\x69\x6E\x67","\x63\x6F\x6D\x6D\x69\x74","\x53\x75\x70\x70\x6F\x72\x74","\x54\x68\x69\x73\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x69\x73\x20\x6E\x6F\x74\x20\x73\x75\x70\x70\x6F\x72\x74\x65\x64\x20\x61\x6E\x79\x6D\x6F\x72\x65\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x75\x70\x67\x72\x61\x64\x65\x20\x74\x6F\x20\x74\x68\x65\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x2E","\x73\x68\x6F\x77\x42\x61\x73\x69\x63\x44\x69\x61\x6C\x6F\x67"];VertexClientPE[_0x498b[0]]= function(){try{var _0x6663x1= new java[_0x498b[4]].URL(_0x498b[1]+ VertexClientPE[_0x498b[2]]+ _0x498b[3]);var _0x6663x2=_0x6663x1[_0x498b[5]]();supportInputStream= _0x6663x2[_0x498b[6]]();var _0x6663x3=_0x498b[7];var _0x6663x4= new java[_0x498b[8]].BufferedReader( new java[_0x498b[8]].InputStreamReader(supportInputStream));var _0x6663x5=_0x498b[7];while((_0x6663x5= _0x6663x4[_0x498b[9]]())!= null){_0x6663x3+= _0x6663x5};isSupported= _0x6663x3.toString()[_0x498b[11]](_0x498b[10])[0]== _0x498b[12]?false:true;_0x6663x4[_0x498b[13]]()}catch(err){if(sharedPref[_0x498b[15]](_0x498b[14]+ VertexClientPE[_0x498b[2]],null)== _0x498b[16]){isSupported= false}else {isSupported= true};ModPE[_0x498b[18]](_0x498b[17]+ err);return};editor[_0x498b[19]](_0x498b[14]+ VertexClientPE[_0x498b[2]],isSupported.toString());editor[_0x498b[20]]();if(!isSupported){VertexClientPE[_0x498b[23]](_0x498b[21],clientTextView(_0x498b[22]))}}
-
-VertexClientPE.loadMilestones = function() {
-	try {
-		// download content
-		var url = new URL_("https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/update/News");
-		var connection = url.openConnection();
-
-		// get content
-		newsInputStream = connection.getInputStream();
-
-		// read result
-		var loadedNews = "";
-		var bufferedNewsReader = new BufferedReader_(new InputStreamReader_(newsInputStream));
-		var rowNews = "";
-		while((rowNews = bufferedNewsReader.readLine()) != null) {
-			loadedNews += rowNews;
-		}
-		news = loadedNews.toString();
-
-		// close what needs to be closed
-		bufferedNewsReader.close();
-
-		// test
-		//clientMessage(VertexClientPE.getVersion("current"); + " " + latestVersion);
-	} catch(err) {
-		news = "News couldn't be loaded";
-		ModPE.log("[Vertex Client PE] VertexClientPE.loadNews() caught an error: " + err);
-	} finally {
-		if(news == null || news == undefined) {
-			news = "News couldn't be loaded";
-		}
-	}
-}
 
 var lastLoop = new Date;
 function gameLoop() {
@@ -14013,12 +14024,11 @@ function settingsScreen() {
 							if(useLightThemeSetting == "on") {
 								useLightThemeSetting = "off";
 								useLightThemeSettingButton.setText("OFF");
-								VertexClientPE.saveMainSettings();
 							} else if(useLightThemeSetting == "off") {
 								useLightThemeSetting = "on";
 								useLightThemeSettingButton.setText("ON");
-								VertexClientPE.saveMainSettings();
 							}
+							VertexClientPE.saveMainSettings();
 							VertexClientPE.setShouldUpdateGUI("CLICKGUI_NORMAL", true);
 						}
 					}));
@@ -14047,33 +14057,29 @@ function settingsScreen() {
 						buttonStyleSettingButton.setText("Text only (less lag)");
 					}
 					buttonStyleSettingButton.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewArg) {
-						if(buttonStyleSetting == "normal") {
-							buttonStyleSetting = "normal_nostrokes";
-							buttonStyleSettingButton.setText("Normal (no strokes)");
-							VertexClientPE.saveMainSettings();
-						} else if(buttonStyleSetting == "normal_nostrokes") {
-							buttonStyleSetting = "transparent";
-							buttonStyleSettingButton.setText("Normal (no inner)");
-							VertexClientPE.saveMainSettings();
-						} else if(buttonStyleSetting == "transparent") {
-							buttonStyleSetting = "legacy";
-							buttonStyleSettingButton.setText("Legacy");
-							VertexClientPE.saveMainSettings();
-						} else if(buttonStyleSetting == "legacy") {
-							buttonStyleSetting = "legacy_inverted";
-							buttonStyleSettingButton.setText("Legacy (inverted)");
-							VertexClientPE.saveMainSettings();
-						} else if(buttonStyleSetting == "legacy_inverted") {
-							buttonStyleSetting = "invisible";
-							buttonStyleSettingButton.setText("Text only (less lag)");
-							VertexClientPE.saveMainSettings();
-						} else if(buttonStyleSetting == "invisible") {
-							buttonStyleSetting = "normal";
-							buttonStyleSettingButton.setText("Normal");
+						onClick: function(viewArg) {
+							if(buttonStyleSetting == "normal") {
+								buttonStyleSetting = "normal_nostrokes";
+								buttonStyleSettingButton.setText("Normal (no strokes)");
+							} else if(buttonStyleSetting == "normal_nostrokes") {
+								buttonStyleSetting = "transparent";
+								buttonStyleSettingButton.setText("Normal (no inner)");
+							} else if(buttonStyleSetting == "transparent") {
+								buttonStyleSetting = "legacy";
+								buttonStyleSettingButton.setText("Legacy");
+							} else if(buttonStyleSetting == "legacy") {
+								buttonStyleSetting = "legacy_inverted";
+								buttonStyleSettingButton.setText("Legacy (inverted)");
+							} else if(buttonStyleSetting == "legacy_inverted") {
+								buttonStyleSetting = "invisible";
+								buttonStyleSettingButton.setText("Text only (less lag)");
+							} else if(buttonStyleSetting == "invisible") {
+								buttonStyleSetting = "normal";
+								buttonStyleSettingButton.setText("Normal");
+							}
+							VertexClientPE.setShouldUpdateGUI("CLICKGUI_NORMAL", true);
 							VertexClientPE.saveMainSettings();
 						}
-					}
 					}));
 					
 					var buttonStrokeThicknessSettingFunc = new settingButton("Button stroke thickness", "Change the button stroke thickness.");
@@ -14106,20 +14112,17 @@ function settingsScreen() {
 							if(backgroundStyleSetting == "normal") {
 								backgroundStyleSetting = "normal_nostrokes";
 								backgroundStyleSettingButton.setText("Normal (no strokes)");
-								VertexClientPE.saveMainSettings();
 							} else if(backgroundStyleSetting == "normal_nostrokes") {
 								backgroundStyleSetting = "normal_noinner";
 								backgroundStyleSettingButton.setText("Normal (no inner)");
-								VertexClientPE.saveMainSettings();
 							} else if(backgroundStyleSetting == "normal_noinner") {
 								backgroundStyleSetting = "minecraft_dirt";
 								backgroundStyleSettingButton.setText("Minecraft (dirt)");
-								VertexClientPE.saveMainSettings();
 							} else if(backgroundStyleSetting == "minecraft_dirt") {
 								backgroundStyleSetting = "normal";
 								backgroundStyleSettingButton.setText("Normal");
-								VertexClientPE.saveMainSettings();
 							}
+							VertexClientPE.saveMainSettings();
 						}
 					}));
 					
@@ -14136,17 +14139,16 @@ function settingsScreen() {
 						transparentBgSettingButton.setText("OFF");
 					}
 					transparentBgSettingButton.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewArg) {
-						if(transparentBgSetting == "on") {
-							transparentBgSetting = "off";
-							transparentBgSettingButton.setText("OFF");
-							VertexClientPE.saveMainSettings();
-						} else if(transparentBgSetting == "off") {
-							transparentBgSetting = "on";
-							transparentBgSettingButton.setText("ON");
+						onClick: function(viewArg) {
+							if(transparentBgSetting == "on") {
+								transparentBgSetting = "off";
+								transparentBgSettingButton.setText("OFF");
+							} else if(transparentBgSetting == "off") {
+								transparentBgSetting = "on";
+								transparentBgSettingButton.setText("ON");
+							}
 							VertexClientPE.saveMainSettings();
 						}
-					}
 					}));
 					
 					var mcpeGUISettingFunc = new settingButton("MCPE GUI", "Change the MCPE GUI.", null,
@@ -14183,36 +14185,29 @@ function settingsScreen() {
 						if(mcpeGUISetting == "default") {
 							mcpeGUISetting = "green";
 							mcpeGUISettingButton.setText("Green");
-							VertexClientPE.saveMainSettings();
 						} else if(mcpeGUISetting == "green") {
 							mcpeGUISetting = "red";
 							mcpeGUISettingButton.setText("Red");
-							VertexClientPE.saveMainSettings();
 						} else if(mcpeGUISetting == "red") {
 							mcpeGUISetting = "blue";
 							mcpeGUISettingButton.setText("Blue");
-							VertexClientPE.saveMainSettings();
 						} else if(mcpeGUISetting == "blue") {
 							mcpeGUISetting = "purple";
 							mcpeGUISettingButton.setText("Purple");
-							VertexClientPE.saveMainSettings();
 						} else if(mcpeGUISetting == "purple") {
 							mcpeGUISetting = "yellow";
 							mcpeGUISettingButton.setText("Yellow");
-							VertexClientPE.saveMainSettings();
 						} else if(mcpeGUISetting == "yellow") {
 							mcpeGUISetting = "white";
 							mcpeGUISettingButton.setText("White");
-							VertexClientPE.saveMainSettings();
 						} else if(mcpeGUISetting == "white") {
 							mcpeGUISetting = "black";
 							mcpeGUISettingButton.setText("Black");
-							VertexClientPE.saveMainSettings();
 						} else if(mcpeGUISetting == "black") {
 							mcpeGUISetting = "default";
 							mcpeGUISettingButton.setText("Default");
-							VertexClientPE.saveMainSettings();
 						}
+						VertexClientPE.saveMainSettings();
 						VertexClientPE.setupMCPEGUI();
 						VertexClientPE.toast("Restart your MCPE launcher now!");
 					}
@@ -16129,7 +16124,7 @@ function musicPlayerScreen() {
 					}
 					mpPlayButton.setOnClickListener(new View_.OnClickListener() {
 						onClick: function(v) {
-							if(VertexClientPE.MusicUtils.mp.isPlaying() && !VertexClientPE.MusicUtils.isPaused) {
+							if(VertexClientPE.MusicUtils.mp.isPlaying()) {
 								VertexClientPE.MusicUtils.mp.pause();
 								VertexClientPE.MusicUtils.isPaused = true;
 								mpPlayButton.setBackgroundResource(android.R.drawable.ic_media_play);
