@@ -3244,7 +3244,7 @@ var glide = {
 		this.state = !this.state;
 	},
 	onTick: function() {
-		if(Entity.getVelY(getPlayerEnt()) <= 0 && Player.isFlying() == false) {
+		if(Entity.getVelY(getPlayerEnt()) <= 0 && !Player.isFlying()) {
 			setVelY(getPlayerEnt(), - 0.07);
 		}
 	}
@@ -5422,6 +5422,32 @@ var strafeAura = {
 	}
 }
 
+var fastFall = {
+	name: "FastFall",
+	desc: "Immediately teleports you to the first (non-air) block underneath yourself when falling (and blocks fall damage by doing so).",
+	category: VertexClientPE.category.MOVEMENT,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onTick: function() {
+		//clientMessage(Entity.getVelY(getPlayerEnt()));
+		if(!Player.isFlying() && !VertexClientPE.Utils.onGround && Entity.getVelY(getPlayerEnt()) < -0.07840000092983246) {
+			let x = getPlayerX();
+			let y = getPlayerY();
+			let z = getPlayerZ();
+			while(getTile(x, y, z) == 0) {
+				y--;
+			}
+			Entity.setPosition(getPlayerEnt(), x, y + 2.8, z);
+		}
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(aimbot);
 VertexClientPE.registerModule(antiBurn);
@@ -5451,6 +5477,7 @@ VertexClientPE.registerModule(autoWalk);
 } */
 VertexClientPE.registerModule(enderProjectiles);
 VertexClientPE.registerModule(fastBridge);
+VertexClientPE.registerModule(fastFall);
 VertexClientPE.registerModule(fastWalk);
 //VertexClientPE.registerModule(fenceJump);
 VertexClientPE.registerModule(flight);
