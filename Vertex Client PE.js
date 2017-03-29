@@ -2064,6 +2064,8 @@ VertexClientPE.drawTracer = function(x, y, z, groundMode, particleName) {
 
 var shownAddonProDialog = false;
 
+const ScriptableObject_ = org.mozilla.javascript.ScriptableObject;
+
 function registerAddon(name, desc, current_version, target_version, mods, songs, tiles, author) {
 	var shouldMessage = true;
 	if(!VertexClientPE.isPro()) {
@@ -2074,12 +2076,30 @@ function registerAddon(name, desc, current_version, target_version, mods, songs,
 		return;
 	}
 	try {
+		let scripts;
+		if(Launcher.isBlockLauncher() || Launcher.isToolbox()) {
+			scripts = ScriptManager__.scripts;
+		} else {
+			scripts = ScriptManager_.scripts;
+		}
+		let scriptName;
+		for(var i = 0; i < scripts.size(); i++) {
+			var script = scripts.get(i);
+			var scope = script.scope;
+			if(ScriptableObject_.hasProperty(scope, "ADDON_NAME")) {
+				if(ScriptableObject_.getProperty(scope, "ADDON_NAME") == name) {
+					scriptName = script.name;
+					break;
+				}
+			}
+		}
 		VertexClientPE.addons.push({
 			name: name,
 			desc: desc,
 			author: author==null?"Unknown":author,
 			current_version: current_version,
-			target_version: target_version
+			target_version: target_version,
+			scriptName: scriptName
 		});
 		registerModulesFromAddon(mods);
 		registerSongsFromAddon(songs);
@@ -4511,7 +4531,7 @@ var chatLog = {
 		} else {
 			chatString = "Nothing to see here, once you send or receive chat messages they'll be displayed here.";
 		}
-		VertexClientPE.showBasicDialog("ChatLog - Display", clientTextView(chatString));
+		VertexClientPE.showBasicDialog(VertexClientPE.getCustomModName(this.name) + " - Display", clientTextView(chatString));
 	},
 	onChatReceive: function(message, sender) {
 		VertexClientPE.Utils.world.chatMessages.push("<" + sender + "> " + message);
@@ -5220,7 +5240,7 @@ var serverInfo = {
 					serverString += "\nAddress: " + serverInfo.address;
 					serverString += "\nSoftware: " + serverInfo.software;
 					serverString += "\nPlugins: " + serverInfo.plugins;
-					VertexClientPE.showBasicDialog("ServerInfo - Display", clientTextView(serverString));
+					VertexClientPE.showBasicDialog(VertexClientPE.getCustomModName(this.name) + " - Display", clientTextView(serverString));
 					serverInfoStage = 0;
 				}
 			})).start();
@@ -8288,10 +8308,6 @@ VertexClientPE.showAddonDialog = function(addon) {
 			try {
 				var dialogTitle = clientTextView(addon.name);
 				dialogTitle.setTextSize(25);
-				var dialogDescTitle = clientTextView("Description:");
-				var dialogDesc = clientTextView(addon.desc);
-				var dialogAuthor = clientTextView("Author(s): " + addon.author);
-				var dialogVersion = clientTextView("Version: " + addon.current_version);
 				var dialogTargetVersion = clientTextView("Target version: " + addon.target_version);
 				var btn = clientButton("Close");
 				var dialogLayout = new LinearLayout_(CONTEXT);
@@ -8304,11 +8320,12 @@ VertexClientPE.showAddonDialog = function(addon) {
 					dialogTargetVersion.setTextColor(Color_.RED);
 				}
 				dialogLayout.addView(dialogTitle);
-				dialogLayout.addView(dialogDescTitle);
-				dialogLayout.addView(dialogDesc);
-				dialogLayout.addView(dialogAuthor);
-				dialogLayout.addView(dialogVersion);
+				dialogLayout.addView(clientTextView("Description:"));
+				dialogLayout.addView(clientTextView(addon.desc));
+				dialogLayout.addView(clientTextView("Author(s): " + addon.author));
+				dialogLayout.addView(clientTextView("Version: " + addon.current_version));
 				dialogLayout.addView(dialogTargetVersion);
+				dialogLayout.addView(clientTextView("File name: " + addon.scriptName + "\n"));
 				dialogLayout.addView(btn);
 				var dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
@@ -11412,6 +11429,9 @@ function clientEditText(text) //menu buttons
 
 function clientTextView(text, shadow) //menu buttons
 {
+	if(shadow == null) {
+		shadow = true;
+	}
 	var defaultTextView = new TextView_(CONTEXT);
 	defaultTextView.setText(text);
 	if(themeSetting == "white") {
@@ -11421,7 +11441,7 @@ function clientTextView(text, shadow) //menu buttons
 	}
 	defaultTextView.setTypeface(VertexClientPE.font);
 	
-	if(shadow == true && shadow != null && shadow != undefined) {
+	if(shadow) {
 		if(themeSetting == "white") {
 			if(fontSetting != "minecraft") {
 				defaultTextView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
