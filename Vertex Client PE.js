@@ -2101,8 +2101,8 @@ function registerAddon(name, desc, current_version, target_version, mods, songs,
 		for(var i = 0; i < scripts.size(); i++) {
 			var script = scripts.get(i);
 			var scope = script.scope;
-			if(ScriptableObject_.hasProperty(scope, "ADDON_NAME")) {
-				if(ScriptableObject_.getProperty(scope, "ADDON_NAME") == name) {
+			if(ScriptableObject_.hasProperty(scope, "ADDON_NAME") && ScriptableObject_.hasProperty(scope, "ADDON_VERSION")) {
+				if(ScriptableObject_.getProperty(scope, "ADDON_NAME") == name && ScriptableObject_.getProperty(scope, "ADDON_VERSION") == current_version) {
 					scriptName = script.name;
 					break;
 				}
@@ -6805,19 +6805,39 @@ VertexClientPE.showShortcutManagerDialog = function() {
 					}
 				);
 				var shortcutUIPosSettingButton = shortcutUIPosSettingFunc.getButton();
-				if(shortcutUIPosSetting == "left-center") {
+				if(shortcutUIPosSetting == "left-bottom") {
+					shortcutUIPosSettingButton.setText("Left-bottom");
+				} else if(shortcutUIPosSetting == "left-center") {
 					shortcutUIPosSettingButton.setText("Left-center");
+				} else if(shortcutUIPosSetting == "left-top") {
+					shortcutUIPosSettingButton.setText("Left-top");
+				} else if(shortcutUIPosSetting == "right-bottom") {
+					shortcutUIPosSettingButton.setText("Right-bottom");
 				} else if(shortcutUIPosSetting == "right-center") {
 					shortcutUIPosSettingButton.setText("Right-center");
+				} else if(shortcutUIPosSetting == "right-top") {
+					shortcutUIPosSettingButton.setText("Right-top");
 				}
 				shortcutUIPosSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
-						if(shortcutUIPosSetting == "left-center") {
-							shortcutUIPosSetting = "right-center";
-							shortcutUIPosSettingButton.setText("Right-center");
-						} else if(shortcutUIPosSetting == "right-center"){
+						if(shortcutUIPosSetting == "left-bottom") {
 							shortcutUIPosSetting = "left-center";
 							shortcutUIPosSettingButton.setText("Left-center");
+						} else if(shortcutUIPosSetting == "left-center") {
+							shortcutUIPosSetting = "left-top";
+							shortcutUIPosSettingButton.setText("Left-top");
+						} else if(shortcutUIPosSetting == "left-top") {
+							shortcutUIPosSetting = "right-bottom";
+							shortcutUIPosSettingButton.setText("Right-bottom");
+						} else if(shortcutUIPosSetting == "right-bottom") {
+							shortcutUIPosSetting = "right-center";
+							shortcutUIPosSettingButton.setText("Right-center");
+						} else if(shortcutUIPosSetting == "right-center") {
+							shortcutUIPosSetting = "right-top";
+							shortcutUIPosSettingButton.setText("Right-top");
+						} else if(shortcutUIPosSetting == "right-top") {
+							shortcutUIPosSetting = "left-bottom";
+							shortcutUIPosSettingButton.setText("Left-bottom");
 						}
 						VertexClientPE.saveMainSettings();
 					}
@@ -6840,7 +6860,7 @@ VertexClientPE.showShortcutManagerDialog = function() {
 						if(showIconsOnTileShortcutsSetting == "off") {
 							showIconsOnTileShortcutsSetting = "on";
 							showIconsOnTileShortcutsSettingButton.setText("ON");
-						} else if(showIconsOnTileShortcutsSetting == "on"){
+						} else if(showIconsOnTileShortcutsSetting == "on") {
 							showIconsOnTileShortcutsSetting = "off";
 							showIconsOnTileShortcutsSettingButton.setText("OFF");
 						}
@@ -18116,10 +18136,18 @@ function showShortcuts() {
 							shortcutGUI.setAnimationStyle(android.R.style.Animation_Translucent);
 						}
 						shortcutGUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-						if(shortcutUIPosSetting == "left-center") {
+						if(shortcutUIPosSetting == "left-bottom") {
+							shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
+						} else if(shortcutUIPosSetting == "left-center") {
 							shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.CENTER, 0, 0);
-						} else {
+						} else if(shortcutUIPosSetting == "left-top") {
+							shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+						} else if(shortcutUIPosSetting == "right-bottom") {
+							shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.BOTTOM, 0, 0);
+						} else if(shortcutUIPosSetting == "right-center") {
 							shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.CENTER, 0, 0);
+						} else if(shortcutUIPosSetting == "right-top") {
+							shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
 						}
 					}
 				} catch(error) {
