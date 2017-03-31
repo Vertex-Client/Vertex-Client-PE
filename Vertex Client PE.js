@@ -7194,10 +7194,6 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 							newRed = Color_.red(color);
 							newGreen = Color_.green(color);
 							newBlue = Color_.blue(color);
-							themeSetting = "custom rgb";
-							sRightButton.setText("Custom RGB");
-							VertexClientPE.saveCustomRGBSettings();
-							VertexClientPE.saveMainSettings();
 						}, function() {
 							dialog.show();
 							redSlider.setProgress(newRed);
@@ -7216,10 +7212,6 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 								newRedStroke = Color_.red(color);
 								newGreenStroke = Color_.green(color);
 								newBlueStroke = Color_.blue(color);
-								themeSetting = "custom rgb";
-								sRightButton.setText("Custom RGB");
-								VertexClientPE.saveCustomRGBSettings();
-								VertexClientPE.saveMainSettings();
 						}, function() {
 							dialog.show();
 							redStrokeSlider.setProgress(newRedStroke);
@@ -7346,11 +7338,11 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 							customRGBRedStroke = newRedStroke;
 							customRGBGreenStroke = newGreenStroke;
 							customRGBBlueStroke = newBlueStroke;
-							themeSetting = "custom rgb";
-							sRightButton.setText("Custom RGB");
-							VertexClientPE.saveCustomRGBSettings();
 							VertexClientPE.shouldUpdateGUI = true;
 						}
+						themeSetting = "custom rgb";
+						sRightButton.setText("Custom RGB");
+						VertexClientPE.saveCustomRGBSettings();
 						dialog.dismiss();
 					}
 				});
@@ -12032,7 +12024,7 @@ VertexClientPE.setupGradient = function(gradientDrawable, color, strokeColor, rg
 			gradientDrawable.setStroke(dip2px(2), Color_.parseColor(preset + strokeColor));
 		}
 	} else {
-		if(transparentBgSetting == "on") {
+		if(transparent) {
 			if(style != "normal_noinner") {
 				gradientDrawable.setColor(Color_.argb(127, rgbArray[0], rgbArray[1], rgbArray[2]));
 			}
@@ -12052,8 +12044,12 @@ VertexClientPE.setupGradient = function(gradientDrawable, color, strokeColor, rg
 
 function backgroundGradient(round, style, transparent) // TextView with colored background (edited by peacestorm)
 {
-	style = style || backgroundStyleSetting;
-	transparent = transparent || transparentBgSetting;
+	if(style == null) {
+		style = backgroundStyleSetting;
+	}
+	if(transparent == null) {
+		transparent = transparentBgSetting;
+	}
 	transparent = transparent=="on";
 	if(style == "normal" || style == "normal_nostrokes" || style == "normal_noinner") {
 		var bg = GradientDrawable_();
@@ -12097,7 +12093,7 @@ function backgroundGradient(round, style, transparent) // TextView with colored 
 			VertexClientPE.setupGradient(bg, "0B5B25", "0F8219", null, style, transparent);
 		}
 		if(themeSetting == "custom rgb") {
-			VertexClientPE.setupGradient(bg, null, null, [customRGBRed, customRGBGreen, customRGBBlue, customRGBRedStroke, customRGBGreenStroke, customRGBBlueStroke], transparent);
+			VertexClientPE.setupGradient(bg, null, null, [customRGBRed, customRGBGreen, customRGBBlue, customRGBRedStroke, customRGBGreenStroke, customRGBBlueStroke], style, transparent);
 		}
 		if(themeSetting == "red") {
 			if(useLightThemeSetting == "on") {
@@ -12141,9 +12137,9 @@ function backgroundGradient(round, style, transparent) // TextView with colored 
 		}
 		
 		var dirt = dirtBackgroundClientGUI;
-		if(transparentBgSetting == "on") {
+		if(transparent == "on") {
 			dirt.setAlpha(127);
-		} else if(transparentBgSetting == "off") {
+		} else if(transparent == "off") {
 			dirt.setAlpha(255);
 		}
 		
@@ -17742,9 +17738,9 @@ function showMenuButton() {
 		}
 	} else if(mainButtonStyleSetting == "global_background") {
 		if(mainButtonPositionSetting == "top-right") {
-			background = backgroundGradient("bottomleft");
+			background = backgroundGradient("bottomleft", null, "on");
 		} else {
-			background = backgroundGradient("bottomright");
+			background = backgroundGradient("bottomright", null, "on");
 		}
 	} else if(mainButtonStyleSetting == "classic") {
 		background = new ColorDrawable_(Color_.parseColor("#1D1D1D"));
@@ -17777,6 +17773,105 @@ function showMenuButton() {
 		GUI.setBackgroundDrawable(background);
 		GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
 	}
+	
+	let rgbArray = [customRGBRed, customRGBGreen, customRGBBlue, customRGBRedStroke, customRGBGreenStroke, customRGBBlueStroke];
+	let color = themeSetting;
+	
+	menuBtn.setOnTouchListener(new View_.OnTouchListener() {
+		onTouch: function(v, event) {
+			if(mainButtonStyleSetting == "normal") {
+				let action = event.getActionMasked();
+				if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
+					if(useLightThemeSetting == true) {
+						background.setColor(Color_.parseColor("#7000994C"));
+					} else {
+						background.setColor(Color_.parseColor("#700B5B25"));
+					}
+					if(color == "custom rgb") {
+						background.setColor(Color_.argb(127, rgbArray[0], rgbArray[1], rgbArray[2]));
+					}
+					if(color == "red") {
+						if(useLightThemeSetting == true) {
+							background.setColor(Color_.parseColor("#70FF3333"));
+						} else {
+							background.setColor(Color_.parseColor("#705B0C0C"));
+						}
+					} if(color == "blue") {
+						if(useLightThemeSetting == true) {
+							background.setColor(Color_.parseColor("#700080FF"));
+						} else {
+							background.setColor(Color_.parseColor("#700A175B"));
+						}
+					} if(color == "purple") {
+						background.setColor(Color_.parseColor("#709F018C"));
+					} if(color == "violet") {
+						background.setColor(Color_.parseColor("#70842DCE"));
+					} if(color == "yellow") {
+						background.setColor(Color_.parseColor("#70CCCC00"));
+					} if(color == "orange") {
+						background.setColor(Color_.parseColor("#70FF8C00"));
+					} if(color == "brown") {
+						background.setColor(Color_.parseColor("#708B4513"));
+					} if(color == "grey") {
+						background.setColor(Color_.parseColor("#70808080"));
+					} if(color == "white") {
+						background.setColor(Color_.parseColor("#70E1E1E1"));
+					} if(color == "black") {
+						background.setColor(Color_.parseColor("#70141414"));
+					}
+					
+					var rect = new android.graphics.Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+					if(rect.contains(v.getLeft() + event.getX(), v.getTop() + event.getY())) { // detect if the event happens inside the view
+						// onClick will run soon
+
+						// play sounds
+						if(buttonSoundSetting == "minecraft") {
+							//Level.playSoundEnt(getPlayerEnt(), "random.click", 100, 0);
+							Level.playSound(Player.getX(), Player.getY(), Player.getZ(), "random.click", 100, 0);
+						}
+					}
+				} else {
+					if(useLightThemeSetting == true) {
+						background.setColor(Color_.parseColor("#7000CC66"));
+					} else {
+						background.setColor(Color_.parseColor("#700F8219"));
+					}
+					if(color == "custom rgb") {
+						background.setColor(Color_.argb(127, rgbArray[3], rgbArray[4], rgbArray[5]));
+					}
+					if(color == "red") {
+						if(useLightThemeSetting == true) {
+							background.setColor(Color_.parseColor("#70FF6666"));
+						} else {
+							background.setColor(Color_.parseColor("#70821010"));
+						}
+					} if(color == "blue") {
+						if(useLightThemeSetting == true) {
+							background.setColor(Color_.parseColor("#703399FF"));
+						} else {
+							background.setColor(Color_.parseColor("#700E3882"));
+						}
+					} if(color == "purple") {
+						background.setColor(Color_.parseColor("#70BC21AB"));
+					} if(color == "violet") {
+						background.setColor(Color_.parseColor("#708D38C9"));
+					} if(color == "yellow") {
+						background.setColor(Color_.parseColor("#70FFFF00"));
+					} if(color == "orange") {
+						background.setColor(Color_.parseColor("#70FFA500"));
+					} if(color == "brown") {
+						background.setColor(Color_.parseColor("#70CD853F"));
+					} if(color == "grey") {
+						background.setColor(Color_.parseColor("#70A9A9A9"));
+					} if(color == "white") {
+						background.setColor(Color_.parseColor("#70FFFFFF"));
+					} if(color == "black") {
+						background.setColor(Color_.parseColor("#701E1E1E"));
+					}
+				}
+			}
+			return false;
+		}});
 	
 	if((currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud) && VertexClientPE.playerIsInGame) {
 		if(hacksList == null || !hacksList.isShowing()) {
