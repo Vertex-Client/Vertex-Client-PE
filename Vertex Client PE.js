@@ -7340,8 +7340,11 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 							customRGBBlueStroke = newBlueStroke;
 							VertexClientPE.shouldUpdateGUI = true;
 						}
-						themeSetting = "custom rgb";
-						sRightButton.setText("Custom RGB");
+						if(themeSetting != "custom rgb") {
+							themeSetting = "custom rgb";
+							sRightButton.setText("Custom RGB");
+							VertexClientPE.shouldUpdateGUI = true;
+						}
 						VertexClientPE.saveCustomRGBSettings();
 						dialog.dismiss();
 					}
