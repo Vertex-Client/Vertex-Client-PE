@@ -221,6 +221,7 @@ var panicMiscSetting = "on";
 var buttonSoundSetting = "system";
 var transparentSplashScreenSetting = "off";
 var showIconsOnTileShortcutsSetting = "on";
+var targetFriendsSetting = "off";
 //------------------------------------
 var antiAFKDistancePerTick = 0.25;
 //------------------------------------
@@ -999,7 +1000,7 @@ var VertexClientPE = {
 		return isSupported;
 	},
 	accounts: new JSONArray_(),
-	customTiles: new JSONArray_(),
+	friends: new JSONArray_(),
 	currentWorld: {
 		deathX: -1,
 		deathY: -1,
@@ -1045,6 +1046,18 @@ var VertexClientPE = {
 			}
 		},
 		Player: { //thanks to GodSoft029
+			isFriend: function(entity) {
+				let friendsLength = VertexClientPE.friends.length();
+				let username = Entity.getNameTag(entity);
+				if(VertexClientPE.friends != null && friendsLength != -1) {
+					for(var i = 0; i < friendsLength; i++) {
+						if(username == VertexClientPE.friends.get(i)) {
+							return true;
+						}
+					}
+				}
+				return false;
+			},
 			isInWater: function () {
 				if(VertexClientPE.Utils.Block.isLiquid(getTile(getPlayerX() + 0.5, getPlayerY() - 1.5, getPlayerZ() + 0.5))) return true;
 				return false;
@@ -1098,13 +1111,13 @@ var VertexClientPE = {
 				return false;
 			},
 			getNearestMob: function(range) {
-				var mobs = Entity.getAll();
+				let mobs = Entity.getAll();
 				if(targetMobsSetting == "on") {
-					for(var i = 0; i < mobs.length; i++) {
-						var ent = mobs[i];
-						var x = Entity.getX(ent) - getPlayerX();
-						var y = Entity.getY(ent) - getPlayerY();
-						var z = Entity.getZ(ent) - getPlayerZ();
+					for(let i = 0; i < mobs.length; i++) {
+						let ent = mobs[i];
+						let x = Entity.getX(ent) - getPlayerX();
+						let y = Entity.getY(ent) - getPlayerY();
+						let z = Entity.getZ(ent) - getPlayerZ();
 						if(x*x+y*y+z*z>range*range) {
 							continue;
 						}
@@ -1116,15 +1129,18 @@ var VertexClientPE = {
 				return null;
 			},
 			getNearestPlayer: function(range) {
-				var players = Server.getAllPlayers();
+				let players = Server.getAllPlayers();
 				if(targetPlayersSetting == "on") {
-					for(var i = 0; i < players.length; i++) {
-						var ent = players[i];
-						var x = Entity.getX(ent) - getPlayerX();
-						var y = Entity.getY(ent) - getPlayerY();
-						var z = Entity.getZ(ent) - getPlayerZ();
+					for(let i = 0; i < players.length; i++) {
+						let ent = players[i];
+						let x = Entity.getX(ent) - getPlayerX();
+						let y = Entity.getY(ent) - getPlayerY();
+						let z = Entity.getZ(ent) - getPlayerZ();
 						if(x*x+y*y+z*z>range*range) {
 							continue;
+						}
+						if(targetFriendsSetting == "off" && VertexClientPE.Utils.Player.isFriend(ent)) {
+							break;
 						}
 						if(ent != getPlayerEnt()) {
 							return ent;
@@ -1847,6 +1863,17 @@ var modManagerTile = {
 	}
 }
 
+var friendManagerTile = {
+	text: "Friend Manager",
+	color: "black",
+	icon: android.R.drawable.ic_menu_manage,
+	forceLightColor: false,
+	shouldDismissDashboard: true,
+	onClick: function(fromDashboard) {
+		VertexClientPE.showFriendManager(fromDashboard);
+	}
+}
+
 var informationTile = {
 	text: "Information",
 	color: "yellow",
@@ -2031,6 +2058,7 @@ var shutdownTile = {
 
 VertexClientPE.registerTile(settingsTile);
 VertexClientPE.registerTile(modManagerTile);
+VertexClientPE.registerTile(friendManagerTile);
 VertexClientPE.registerTile(informationTile);
 VertexClientPE.registerTile(updateCenterTile);
 VertexClientPE.registerTile(musicPlayerTile);
@@ -4895,8 +4923,8 @@ var target = {
 	category: VertexClientPE.category.MISC,
 	type: "Special",
 	getSettingsLayout: function() {
-		var twerkSettingsLayout = new LinearLayout_(CONTEXT);
-		twerkSettingsLayout.setOrientation(1);
+		var targetSettingsLayout = new LinearLayout_(CONTEXT);
+		targetSettingsLayout.setOrientation(1);
 		
 		var targetMobsCheckBox = new CheckBox_(CONTEXT);
 		targetMobsCheckBox.setChecked(targetMobsSetting == "on");
@@ -4932,13 +4960,35 @@ var target = {
 		targetPlayersCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				targetPlayersSetting = v.isChecked()?"on":"off";
+				targetFriendsCheckBox.setEnabled(v.isChecked());
 				VertexClientPE.saveMainSettings();
 			}
 		});
 		
-		twerkSettingsLayout.addView(targetMobsCheckBox);
-		twerkSettingsLayout.addView(targetPlayersCheckBox);
-		return twerkSettingsLayout;
+		var targetFriendsCheckBox = new CheckBox_(CONTEXT);
+		targetFriendsCheckBox.setChecked(targetFriendsSetting == "on");
+		targetFriendsCheckBox.setEnabled(targetPlayersCheckBox.isChecked());
+		targetFriendsCheckBox.setText("Friends");
+		if(themeSetting == "white") {
+			targetFriendsCheckBox.setTextColor(Color_.BLACK);
+		} else {
+			targetFriendsCheckBox.setTextColor(Color_.WHITE);
+		}
+		targetFriendsCheckBox.setTypeface(VertexClientPE.font);
+		if(fontSetting == "minecraft") {
+			MinecraftButtonLibrary.addMinecraftStyleToTextView(targetFriendsCheckBox);
+		}
+		targetFriendsCheckBox.setOnClickListener(new View_.OnClickListener() {
+			onClick: function(v) {
+				targetFriendsSetting = v.isChecked()?"on":"off";
+				VertexClientPE.saveMainSettings();
+			}
+		});
+		
+		targetSettingsLayout.addView(targetMobsCheckBox);
+		targetSettingsLayout.addView(targetPlayersCheckBox);
+		targetSettingsLayout.addView(targetFriendsCheckBox);
+		return targetSettingsLayout;
 	},
 	isStateMod: function() {
 		return false;
@@ -8234,7 +8284,7 @@ VertexClientPE.showAddAccountDialog = function(showBackButton) {
 				dialog.show();
 				okButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
-						accountName = accountNameInput.getText().toString();
+						let accountName = accountNameInput.getText().toString();
 						if(accountName == null || accountName == "" || accountName.replaceAll(" ", "") == "") {
 							VertexClientPE.toast("Enter an username!");
 							return;
@@ -8258,6 +8308,74 @@ VertexClientPE.showAddAccountDialog = function(showBackButton) {
 						}
 						exitScreenUI.dismiss();
 						VertexClientPE.showAccountManager(showBackButton);
+					}
+				});
+				cancelButton.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+					}
+				});
+			} catch(e) {
+				print("Error: " + e);
+				VertexClientPE.showBugReportDialog(e);
+			}
+		}
+	});
+}
+
+VertexClientPE.showAddFriendDialog = function(showBackButton) {
+	CONTEXT.runOnUiThread(new Runnable_() {
+		run: function() {
+			try {
+				VertexClientPE.loadMainSettings();
+				var friendTitle = clientTextView("Add friend", true);
+				friendNameInput = clientEditText();
+				friendNameInput.setTextColor(Color_.WHITE);
+				friendNameInput.setSingleLine(true);
+				friendNameInput.setHint("Enter an username");
+				var okButton = clientButton("Ok");
+				var cancelButton = clientButton("Cancel");
+				var dialogLayout = new LinearLayout_(CONTEXT);
+				dialogLayout.setBackgroundDrawable(backgroundGradient());
+				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
+				dialogLayout.setPadding(10, 10, 10, 10);
+				dialogLayout.addView(friendTitle);
+				dialogLayout.addView(friendNameInput);
+				//dialogLayout.addView(accountClientIdInput);
+				dialogLayout.addView(okButton);
+				dialogLayout.addView(cancelButton);
+				var dialog = new Dialog_(CONTEXT);
+				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
+				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+				dialog.setContentView(dialogLayout);
+				dialog.setTitle("Add friend");
+				dialog.show();
+				okButton.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(view) {
+						let friendName = friendNameInput.getText().toString();
+						if(friendName == null || friendName == "" || friendName.replaceAll(" ", "") == "") {
+							VertexClientPE.toast("Enter an username!");
+							return;
+						}
+						//accountClientId = accountClientIdInput.getText().toString();
+						if(VertexClientPE.friends.length() != undefined && VertexClientPE.friends.length() != undefined) {
+							for(var i = 0; i < VertexClientPE.friends.length(); i++) {
+								if(VertexClientPE.friends.get(i) == friendName) {
+									VertexClientPE.toast("This username already exists in your friends list!");
+									return;
+								}
+							}
+						}
+						VertexClientPE.friends.put(friendName);
+						//print("\'" + friendName + "\'");
+						VertexClientPE.saveFriends();
+						dialog.dismiss();
+						screenUI.dismiss();
+						if(backScreenUI != null) {
+							backScreenUI.dismiss();
+						}
+						exitScreenUI.dismiss();
+						VertexClientPE.showFriendManager(showBackButton);
 					}
 				});
 				cancelButton.setOnClickListener(new View_.OnClickListener() {
@@ -9512,6 +9630,18 @@ VertexClientPE.saveAccounts = function() {
 	}
 }
 
+VertexClientPE.saveFriends = function() {
+	File_(settingsPath).mkdirs();
+	var newFile = new File_(settingsPath, "vertexclientpe_friends.dat");
+	newFile.createNewFile();
+	var stream = new FileOutputStream_(newFile);
+	try {
+		stream.write(VertexClientPE.friends.toString().getBytes());
+	} finally {
+		stream.close();
+	}
+}
+
 VertexClientPE.loadAccounts = function() {
 	try {
 		if(!File_(settingsPath + "vertexclientpe_accounts.dat").exists())
@@ -9525,6 +9655,24 @@ VertexClientPE.loadAccounts = function() {
 			data.append("\n");
 		}
 		VertexClientPE.accounts = new JSONArray_(data.toString());
+	} catch(e) {
+		//error
+	}
+}
+
+VertexClientPE.loadFriends = function() {
+	try {
+		if(!File_(settingsPath + "vertexclientpe_friends.dat").exists())
+			return;
+		var file = new File_(settingsPath + "vertexclientpe_friends.dat");
+		var readed = (new BufferedReader_(new FileReader_(file)));
+		var data = new StringBuilder_();
+		var string;
+		while((string = readed.readLine()) != null) {
+			data.append(string);
+			data.append("\n");
+		}
+		VertexClientPE.friends = new JSONArray_(data.toString());
 	} catch(e) {
 		//error
 	}
@@ -9780,6 +9928,7 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + buttonSoundSetting.toString());
 	outWrite.append("," + transparentSplashScreenSetting.toString());
 	outWrite.append("," + showIconsOnTileShortcutsSetting.toString());
+	outWrite.append("," + targetFriendsSetting.toString());
 
 	outWrite.close();
 	
@@ -10020,6 +10169,9 @@ VertexClientPE.loadMainSettings = function () {
 		}
 		if (arr[72] != null && arr[72] != undefined) {
 			showIconsOnTileShortcutsSetting = arr[72];
+		}
+		if (arr[73] != null && arr[73] != undefined) {
+			targetFriendsSetting = arr[73];
 		}
 		fos.close();
 		VertexClientPE.loadCustomRGBSettings();
@@ -10517,6 +10669,12 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 	}
 }
 
+function copyToClipboard(textToCopy) {
+	let clipboard = CONTEXT.getSystemService(CONTEXT.CLIPBOARD_SERVICE);
+	let clip = android.content.ClipData.newPlainText("label", textToCopy);
+	clipboard.setPrimaryClip(clip);
+}
+
 function drawCircle(color) {
 	var drawable = GradientDrawable_();
 	drawable.setColor(color);
@@ -10730,20 +10888,25 @@ function updatePaneButton(updateVersion, updateDesc, isDev) {
 	var updatePaneDescText = clientTextView(updateDesc);
 	updatePaneLayoutLeft.addView(updatePaneText);
 	updatePaneLayoutLeft.addView(updatePaneDescText);
-	var updatePaneDownloadButton = clientButton("Download");
-	updatePaneDownloadButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.stat_sys_download, 0, 0, 0);
+	var updatePaneDownloadButton = clientButton(isDev?"Copy URL":"Download");
+	updatePaneDownloadButton.setCompoundDrawablesWithIntrinsicBounds(isDev?android.R.drawable.ic_input_get:android.R.drawable.stat_sys_download, 0, 0, 0);
 	updatePaneDownloadButton.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.MATCH_PARENT, display.heightPixels / 8));
 	updatePaneDownloadButton.setOnClickListener(new View_.OnClickListener() {
 		onClick: function(v) {
-			var updateGithubVersion = updateVersion;
-			if(updateGithubVersion.indexOf("Alpha") != -1 || updateGithubVersion.indexOf("Beta") != -1) {
-				updateGithubVersion = updateGithubVersion.split(" ")[0] + "-" + updateGithubVersion.split(" ")[1];
-			}
-			VertexClientPE.toast("Started downloading...");
-			if(!isDev) {
-				downloadFile("/sdcard/Download/Vertex_Client_PE.modpkg", "https://github.com/Vertex-Client/Vertex-Client-PE/releases/download/v" + updateGithubVersion + "/Vertex_Client_PE.modpkg", true);
+			if(isDev) {
+				copyToClipboard("https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/master/Vertex%20Client%20PE.js");
+				VertexClientPE.toast("Copied dev link to clipboard!");
 			} else {
-				downloadFile("/sdcard/Download/Vertex_Client_PE_Dev.js", "https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/master/Vertex Client PE.js", true);
+				var updateGithubVersion = updateVersion;
+				if(updateGithubVersion.indexOf("Alpha") != -1 || updateGithubVersion.indexOf("Beta") != -1) {
+					updateGithubVersion = updateGithubVersion.split(" ")[0] + "-" + updateGithubVersion.split(" ")[1];
+				}
+				VertexClientPE.toast("Started downloading...");
+				if(!isDev) {
+					downloadFile("/sdcard/Download/Vertex_Client_PE.modpkg", "https://github.com/Vertex-Client/Vertex-Client-PE/releases/download/v" + updateGithubVersion + "/Vertex_Client_PE.modpkg", true);
+				} else {
+					downloadFile("/sdcard/Download/Vertex_Client_PE_Dev.js", "https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/master/Vertex Client PE.js", true);
+				}
 			}
 		}
 	});
@@ -11430,6 +11593,55 @@ function accountButton(account, layout) {
 	accountManagerAccountLayoutRight.addView(deleteButton);
 	
 	return accountManagerAccountLayout;
+}
+
+function friendButton(friend, layout) {
+	var playerName = friend.toString();
+	
+	let delButtonWidth = display.widthPixels / 3 - display.widthPixels / 4  - dip2px(10);
+	
+	var friendManagerAccountLayout = new LinearLayout_(CONTEXT);
+	friendManagerAccountLayout.setOrientation(LinearLayout_.HORIZONTAL);
+	friendManagerAccountLayout.setPadding(dip2px(10), 0, dip2px(10), 0);
+	//friendManagerAccountLayout.setGravity(Gravity_.CENTER);
+	
+	var friendManagerAccountLayoutLeft_ = new LinearLayout_(CONTEXT);
+	friendManagerAccountLayoutLeft_.setOrientation(1);
+	friendManagerAccountLayoutLeft_.setGravity(Gravity_.CENTER_VERTICAL);
+	friendManagerAccountLayoutLeft_.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+	friendManagerAccountLayout.addView(friendManagerAccountLayoutLeft_);
+	
+	var friendManagerAccountLayoutLeft = new LinearLayout_(CONTEXT);
+	friendManagerAccountLayoutLeft.setOrientation(LinearLayout_.HORIZONTAL);
+	friendManagerAccountLayoutLeft.setGravity(Gravity_.CENTER_VERTICAL);
+	friendManagerAccountLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 4 - delButtonWidth, display.heightPixels / 10));
+	friendManagerAccountLayout.addView(friendManagerAccountLayoutLeft);
+	
+	var friendManagerAccountLayoutRight = new LinearLayout_(CONTEXT);
+	friendManagerAccountLayoutRight.setOrientation(LinearLayout_.HORIZONTAL);
+	friendManagerAccountLayoutRight.setGravity(Gravity_.RIGHT);
+	friendManagerAccountLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 4 + delButtonWidth, display.heightPixels / 10));
+	friendManagerAccountLayout.addView(friendManagerAccountLayoutRight);
+	
+	var usernameText = clientTextView(friend);
+	usernameText.setTextSize(15);
+	usernameText.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
+	usernameText.setMarqueeRepeatLimit(-1);
+	usernameText.setSingleLine();
+	usernameText.setHorizontallyScrolling(true);
+	usernameText.setSelected(true);
+	friendManagerAccountLayoutLeft.addView(usernameText);
+	
+	var deleteButton = clientButton("x");
+	deleteButton.setLayoutParams(new LinearLayout_.LayoutParams(delButtonWidth, display.heightPixels / 10));
+	deleteButton.setOnClickListener(new View_.OnClickListener({
+		onClick: function(viewarg) {
+			VertexClientPE.removeFriend(friend.toString(), layout, friendManagerAccountLayout);
+		}
+	}));
+	friendManagerAccountLayoutRight.addView(deleteButton);
+	
+	return friendManagerAccountLayout;
 }
 
 function clientTextButton(text, shadow) //menu buttons
@@ -13144,6 +13356,26 @@ VertexClientPE.removeAccount = function(str, layout, view) {
 	VertexClientPE.saveAccounts();
 }
 
+VertexClientPE.removeFriend = function(str, layout, view) {
+	if(VertexClientPE.friends.length() != null) {
+		var tempAccounts = new JSONArray_();
+		for(var i = 0; i < VertexClientPE.friends.length(); i++) {
+			if(VertexClientPE.friends.get(i) != str) {
+				tempAccounts.put(VertexClientPE.friends.get(i));
+			}
+		}
+		VertexClientPE.friends = tempAccounts;
+	}
+	if(layout != null && view != null) {
+		try {
+			layout.removeView(view);
+		} catch(e) {
+			//error
+		}
+	}
+	VertexClientPE.saveFriends();
+}
+
 VertexClientPE.showDirectUseAccountDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
@@ -13217,102 +13449,187 @@ VertexClientPE.showAccountManager = function(showBackButton) {
 	VertexClientPE.loadAccounts();
 	var display = new DisplayMetrics_();
 	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
-		CONTEXT.runOnUiThread(new Runnable_({
-			run: function() {
-				try {
-					if(GUI != null) {
-						if(GUI.isShowing()) {
-							GUI.dismiss();
-						}
+	CONTEXT.runOnUiThread(new Runnable_({
+		run: function() {
+			try {
+				if(GUI != null) {
+					if(GUI.isShowing()) {
+						GUI.dismiss();
 					}
-					if(accountManagerGUI != null) {
-						if(accountManagerGUI.isShowing()) {
-							accountManagerGUI.dismiss();
-						}
-					}
-					if(mainMenuTextList != null) {
-						if(mainMenuTextList.isShowing()) {
-							mainMenuTextList.dismiss();
-						}
-					}
-					
-					var accountManagerLayout1 = new LinearLayout_(CONTEXT);
-					accountManagerLayout1.setOrientation(1);
-					accountManagerLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
-					
-					var accountManagerTitle = clientTextView("Account Manager", true);
-					accountManagerTitle.setTextSize(25);
-					accountManagerTitle.setGravity(Gravity_.CENTER);
-					accountManagerLayout1.addView(accountManagerTitle);
-					
-					var accountManagerEnter = clientTextView("\n");
-					accountManagerLayout1.addView(accountManagerEnter);
-					
-					var accountManagerScrollViewHeight = (display.heightPixels / 3) * 2;
-					
-					var accountManagerBottomLayout = new LinearLayout_(CONTEXT);
-					accountManagerBottomLayout.setOrientation(LinearLayout_.HORIZONTAL);
-					accountManagerBottomLayout.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels, display.heightPixels - accountManagerScrollViewHeight - accountManagerTitle.getLineHeight() / 2 - accountManagerEnter.getLineHeight() / 2));
-					accountManagerBottomLayout.setGravity(Gravity_.CENTER);
-					
-					var addAccountButton = clientButton("Add account");
-					addAccountButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
-					addAccountButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							//show add account dialog
-							VertexClientPE.showAddAccountDialog(showBackButton);
-						}
-					}));
-					accountManagerBottomLayout.addView(addAccountButton);
-					
-					var directUseAccountButton = clientButton("Direct use");
-					directUseAccountButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
-					directUseAccountButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							VertexClientPE.showDirectUseAccountDialog();
-						}
-					}));
-					accountManagerBottomLayout.addView(directUseAccountButton);
-					
-					var importAccountButton = clientButton("Import");
-					importAccountButton.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.WRAP_CONTENT, display.heightPixels / 10));
-					importAccountButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							VertexClientPE.toast("W.I.P.");
-						}
-					}));
-					//accountManagerBottomLayout.addView(importAccountButton);
-					
-					var accountManagerScrollView = new ScrollView(CONTEXT);
-					accountManagerScrollView.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels, accountManagerScrollViewHeight - accountManagerTitle.getLineHeight() / 2 - accountManagerEnter.getLineHeight() / 2));
-					
-					var accountManagerLayout = new LinearLayout_(CONTEXT);
-					accountManagerLayout.setOrientation(1);
-					
-					accountManagerScrollView.addView(accountManagerLayout);
-					accountManagerLayout1.addView(accountManagerScrollView);
-					accountManagerLayout1.addView(accountManagerBottomLayout);
-					
-					var accountsLength = VertexClientPE.accounts.length();
-					if(VertexClientPE.accounts != null && accountsLength != -1) {
-						for(var i = 0; i < accountsLength; i++) {
-							//if(VertexClientPE.accounts[i].username != null && VertexClientPE.accounts[i].username != undefined && VertexClientPE.accounts[i].username != " ") {
-								var usernameLayout = accountButton(VertexClientPE.accounts.get(i), accountManagerLayout);
-								accountManagerLayout.addView(usernameLayout);
-							//}
-						}
-					}
-					
-					screenUI = new PopupWindow_(accountManagerLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
-					screenUI.setBackgroundDrawable(backgroundGradient());
-					screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-					
-					VertexClientPE.showExitButtons(showBackButton);
-				} catch(error) {
-					print('An error occurred: ' + error);
 				}
+				if(accountManagerGUI != null) {
+					if(accountManagerGUI.isShowing()) {
+						accountManagerGUI.dismiss();
+					}
+				}
+				if(mainMenuTextList != null) {
+					if(mainMenuTextList.isShowing()) {
+						mainMenuTextList.dismiss();
+					}
+				}
+				
+				var accountManagerLayout1 = new LinearLayout_(CONTEXT);
+				accountManagerLayout1.setOrientation(1);
+				accountManagerLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
+				
+				var accountManagerTitle = clientTextView("Account Manager", true);
+				accountManagerTitle.setTextSize(25);
+				accountManagerTitle.setGravity(Gravity_.CENTER);
+				accountManagerLayout1.addView(accountManagerTitle);
+				
+				var accountManagerEnter = clientTextView("\n");
+				accountManagerLayout1.addView(accountManagerEnter);
+				
+				var accountManagerScrollViewHeight = (display.heightPixels / 3) * 2;
+				
+				var accountManagerBottomLayout = new LinearLayout_(CONTEXT);
+				accountManagerBottomLayout.setOrientation(LinearLayout_.HORIZONTAL);
+				accountManagerBottomLayout.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels, display.heightPixels - accountManagerScrollViewHeight - accountManagerTitle.getLineHeight() / 2 - accountManagerEnter.getLineHeight() / 2));
+				accountManagerBottomLayout.setGravity(Gravity_.CENTER);
+				
+				var addAccountButton = clientButton("Add account");
+				addAccountButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+				addAccountButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						//show add account dialog
+						VertexClientPE.showAddAccountDialog(showBackButton);
+					}
+				}));
+				accountManagerBottomLayout.addView(addAccountButton);
+				
+				var directUseAccountButton = clientButton("Direct use");
+				directUseAccountButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+				directUseAccountButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						VertexClientPE.showDirectUseAccountDialog();
+					}
+				}));
+				accountManagerBottomLayout.addView(directUseAccountButton);
+				
+				var importAccountButton = clientButton("Import");
+				importAccountButton.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.WRAP_CONTENT, display.heightPixels / 10));
+				importAccountButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						VertexClientPE.toast("W.I.P.");
+					}
+				}));
+				//accountManagerBottomLayout.addView(importAccountButton);
+				
+				var accountManagerScrollView = new ScrollView(CONTEXT);
+				accountManagerScrollView.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels, accountManagerScrollViewHeight - accountManagerTitle.getLineHeight() / 2 - accountManagerEnter.getLineHeight() / 2));
+				
+				var accountManagerLayout = new LinearLayout_(CONTEXT);
+				accountManagerLayout.setOrientation(1);
+				
+				accountManagerScrollView.addView(accountManagerLayout);
+				accountManagerLayout1.addView(accountManagerScrollView);
+				accountManagerLayout1.addView(accountManagerBottomLayout);
+				
+				var accountsLength = VertexClientPE.accounts.length();
+				if(VertexClientPE.accounts != null && accountsLength != -1) {
+					for(var i = 0; i < accountsLength; i++) {
+						//if(VertexClientPE.accounts[i].username != null && VertexClientPE.accounts[i].username != undefined && VertexClientPE.accounts[i].username != " ") {
+							var usernameLayout = accountButton(VertexClientPE.accounts.get(i), accountManagerLayout);
+							accountManagerLayout.addView(usernameLayout);
+						//}
+					}
+				}
+				
+				screenUI = new PopupWindow_(accountManagerLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+				screenUI.setBackgroundDrawable(backgroundGradient());
+				screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+				
+				VertexClientPE.showExitButtons(showBackButton);
+			} catch(error) {
+				print('An error occurred: ' + error);
 			}
-		}));
+		}
+	}));
+}
+
+VertexClientPE.showFriendManager = function(showBackButton) {
+	VertexClientPE.menuIsShowing = true;
+	VertexClientPE.loadFriends();
+	var display = new DisplayMetrics_();
+	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
+	CONTEXT.runOnUiThread(new Runnable_({
+		run: function() {
+			try {
+				if(GUI != null) {
+					if(GUI.isShowing()) {
+						GUI.dismiss();
+					}
+				}
+				if(accountManagerGUI != null) {
+					if(accountManagerGUI.isShowing()) {
+						accountManagerGUI.dismiss();
+					}
+				}
+				if(mainMenuTextList != null) {
+					if(mainMenuTextList.isShowing()) {
+						mainMenuTextList.dismiss();
+					}
+				}
+				
+				var friendManagerLayout1 = new LinearLayout_(CONTEXT);
+				friendManagerLayout1.setOrientation(1);
+				friendManagerLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
+				
+				var friendManagerTitle = clientTextView("Friend Manager", true);
+				friendManagerTitle.setTextSize(25);
+				friendManagerTitle.setGravity(Gravity_.CENTER);
+				friendManagerLayout1.addView(friendManagerTitle);
+				
+				var friendManagerEnter = clientTextView("\n");
+				friendManagerLayout1.addView(friendManagerEnter);
+				
+				var friendManagerScrollViewHeight = (display.heightPixels / 3) * 2;
+				
+				var friendManagerBottomLayout = new LinearLayout_(CONTEXT);
+				friendManagerBottomLayout.setOrientation(LinearLayout_.HORIZONTAL);
+				friendManagerBottomLayout.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels, display.heightPixels - friendManagerScrollViewHeight - friendManagerTitle.getLineHeight() / 2 - friendManagerEnter.getLineHeight() / 2));
+				friendManagerBottomLayout.setGravity(Gravity_.CENTER);
+				
+				var addFriendButton = clientButton("Add friend");
+				addFriendButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+				addFriendButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						//show add account dialog
+						VertexClientPE.showAddFriendDialog(showBackButton);
+					}
+				}));
+				friendManagerBottomLayout.addView(addFriendButton);
+				
+				var friendManagerScrollView = new ScrollView(CONTEXT);
+				friendManagerScrollView.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels, friendManagerScrollViewHeight - friendManagerTitle.getLineHeight() / 2 - friendManagerEnter.getLineHeight() / 2));
+				
+				var friendManagerLayout = new LinearLayout_(CONTEXT);
+				friendManagerLayout.setOrientation(1);
+				
+				friendManagerScrollView.addView(friendManagerLayout);
+				friendManagerLayout1.addView(friendManagerScrollView);
+				friendManagerLayout1.addView(friendManagerBottomLayout);
+				
+				var friendsLength = VertexClientPE.friends.length();
+				if(VertexClientPE.friends != null && friendsLength != -1) {
+					for(var i = 0; i < friendsLength; i++) {
+						//if(VertexClientPE.friends[i].username != null && VertexClientPE.friends[i].username != undefined && VertexClientPE.friends[i].username != " ") {
+							var friendLayout = friendButton(VertexClientPE.friends.get(i), friendManagerLayout);
+							friendManagerLayout.addView(friendLayout);
+						//}
+					}
+				}
+				
+				screenUI = new PopupWindow_(friendManagerLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+				screenUI.setBackgroundDrawable(backgroundGradient());
+				screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+				
+				VertexClientPE.showExitButtons(showBackButton);
+			} catch(error) {
+				print('An error occurred: ' + error);
+			}
+		}
+	}));
 }
 
 VertexClientPE.downloadPro = function() {
