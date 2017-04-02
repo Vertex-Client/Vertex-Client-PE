@@ -1140,7 +1140,7 @@ var VertexClientPE = {
 							continue;
 						}
 						if(targetFriendsSetting == "off" && VertexClientPE.Utils.Player.isFriend(ent)) {
-							break;
+							continue;
 						}
 						if(ent != getPlayerEnt()) {
 							return ent;
@@ -3095,56 +3095,40 @@ var tpAura = {
 	onToggle: function() {
 		this.state = !this.state;
 	},
+	findPos: function(entity) {
+		var playerPos = new Array(getPlayerX(), getPlayerY() + 0.5, getPlayerZ());
+		var victimPos = new Array(Entity.getX(entity), Entity.getY(entity), Entity.getZ(entity));
+		var diffPos = new Array(victimPos[0] - playerPos[0], null, victimPos[2] - playerPos[2]);
+		playerPos[0] += diffPos[0] * 2;
+		playerPos[2] += diffPos[2] * 2;
+		return playerPos;
+	},
 	onInterval: function() {
 		if(tpAuraStage == 0) {
 			tpAuraStage = 1;
-			if(targetMobsSetting == "on") {
-				var mobs = Entity.getAll();
-				for(var i = 0; i < mobs.length; i++) {
-					var x = Entity.getX(mobs[i]) - getPlayerX();
-					var y = Entity.getY(mobs[i]) - getPlayerY();
-					var z = Entity.getZ(mobs[i]) - getPlayerZ();
-					if(x*x+y*y+z*z<=4*4 && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION && Entity.getHealth(mobs[i]) != 0) {
-						var playerPos = new Array(getPlayerX(), getPlayerY() + 0.5, getPlayerZ());
-						var victimPos = new Array(Entity.getX(mobs[i]), Entity.getY(mobs[i]), Entity.getZ(mobs[i]));
-						var diffPos = new Array(victimPos[0] - playerPos[0], null, victimPos[2] - playerPos[2]);
-						playerPos[0] += diffPos[0] * 2;
-						playerPos[2] += diffPos[2] * 2;
-						
-						if (getTile(playerPos[0], playerPos[1], playerPos[2]) == 0 && getTile(playerPos[0], playerPos[1] - 1, playerPos[2]) == 0 && getTile(playerPos[0], playerPos[1] - 2, playerPos[2]) == 0) {
-							Entity.setPosition(getPlayerEnt(), playerPos[0], playerPos[1], playerPos[2]);
-						}
-						
-						VertexClientPE.CombatUtils.aimAtEnt(mobs[i]);
-						
-						break;
-					}
+			
+			let mob = VertexClientPE.Utils.getNearestMob(4);
+			if(mob != null) {
+				let playerPos = this.findPos(mob);
+			
+				if (getTile(playerPos[0], playerPos[1], playerPos[2]) == 0 && getTile(playerPos[0], playerPos[1] - 1, playerPos[2]) == 0 && getTile(playerPos[0], playerPos[1] - 2, playerPos[2]) == 0) {
+					Entity.setPosition(getPlayerEnt(), playerPos[0], playerPos[1], playerPos[2]);
 				}
+				
+				VertexClientPE.CombatUtils.aimAtEnt(mob);
 			}
 			
-			if(targetPlayersSetting == "on") {
-				var players = Server.getAllPlayers();
-				for(var i = 0; i < players.length; i++) {
-					var x = Entity.getX(players[i]) - getPlayerX();
-					var y = Entity.getY(players[i]) - getPlayerY();
-					var z = Entity.getZ(players[i]) - getPlayerZ();
-					if(x*x+y*y+z*z<=4*4 && players[i] != getPlayerEnt() && Entity.getEntityTypeId(players[i]) != EntityType.ARROW && Entity.getEntityTypeId(players[i]) != EntityType.BOAT && Entity.getEntityTypeId(players[i]) != EntityType.EGG && Entity.getEntityTypeId(players[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(players[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(players[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(players[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(players[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(players[i]) != EntityType.ITEM && Entity.getEntityTypeId(players[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(players[i]) != EntityType.MINECART && Entity.getEntityTypeId(players[i]) != EntityType.PAINTING && Entity.getEntityTypeId(players[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(players[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(players[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(players[i]) != EntityType.THROWN_POTION && Entity.getHealth(players[i]) != 0) {
-						var playerPos = new Array(getPlayerX(), getPlayerY() + 0.5, getPlayerZ());
-						var victimPos = new Array(Entity.getX(players[i]), Entity.getY(players[i]), Entity.getZ(players[i]));
-						var diffPos = new Array(victimPos[0] - playerPos[0], null, victimPos[2] - playerPos[2]);
-						playerPos[0] += diffPos[0] * 2;
-						playerPos[2] += diffPos[2] * 2;
-						
-						if (getTile(playerPos[0], playerPos[1], playerPos[2]) == 0 && getTile(playerPos[0], playerPos[1] - 1, playerPos[2]) == 0 && getTile(playerPos[0], playerPos[1] - 2, playerPos[2]) == 0) {
-							Entity.setPosition(getPlayerEnt(), playerPos[0], playerPos[1], playerPos[2]);
-						}
-						
-						VertexClientPE.CombatUtils.aimAtEnt(players[i]);
-						
-						break;
-					}
+			let player = VertexClientPE.Utils.getNearestPlayer(4);
+			if(player != null) {
+				let playerPos = this.findPos(player);
+			
+				if (getTile(playerPos[0], playerPos[1], playerPos[2]) == 0 && getTile(playerPos[0], playerPos[1] - 1, playerPos[2]) == 0 && getTile(playerPos[0], playerPos[1] - 2, playerPos[2]) == 0) {
+					Entity.setPosition(getPlayerEnt(), playerPos[0], playerPos[1], playerPos[2]);
 				}
+				
+				VertexClientPE.CombatUtils.aimAtEnt(player);
 			}
+			
 			tpAuraStage = 0;
 		}
 	},
@@ -14089,7 +14073,6 @@ function deathHook(a, v) {
 }
 
 function leaveGame() {
-	currentScreen = ScreenType.start_screen;
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			if(hacksList != null) {
@@ -14115,9 +14098,6 @@ function leaveGame() {
 			VertexClientPE.playerIsInGame = false;
 		}
 	}));
-	if(mainMenuTextList == null || !mainMenuTextList.isShowing()) {
-		VertexClientPE.showStartScreenBar();
-	}
 	VertexClientPE.isPaused = false;
 }
 
