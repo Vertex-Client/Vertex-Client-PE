@@ -1110,7 +1110,7 @@ var VertexClientPE = {
 				}
 				return false;
 			},
-			getNearestMob: function(range) {
+			getNearestMob: function(range, minRange) {
 				let mobs = Entity.getAll();
 				if(targetMobsSetting == "on") {
 					for(let i = 0; i < mobs.length; i++) {
@@ -1121,6 +1121,11 @@ var VertexClientPE = {
 						if(x*x+y*y+z*z>range*range) {
 							continue;
 						}
+						if(minRange != null) {
+							if(x*x+y*y+z*z<=minRange*minRange) {
+								continue;
+							}
+						}
 						if(Entity.getEntityTypeId(ent) != EntityType.ARROW && Entity.getEntityTypeId(ent) != EntityType.BOAT && Entity.getEntityTypeId(ent) != EntityType.EGG && Entity.getEntityTypeId(ent) != EntityType.ENDER_PEARL && Entity.getEntityTypeId(ent) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(ent) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(ent) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(ent) != EntityType.FIREBALL && Entity.getEntityTypeId(ent) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(ent) != EntityType.ITEM && Entity.getEntityTypeId(ent) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(ent) != EntityType.MINECART && Entity.getEntityTypeId(ent) != EntityType.PAINTING && Entity.getEntityTypeId(ent) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(ent) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(ent) != EntityType.SNOWBALL && Entity.getEntityTypeId(ent) != EntityType.THROWN_POTION && ent != getPlayerEnt()) {
 							return ent;
 						}
@@ -1128,7 +1133,7 @@ var VertexClientPE = {
 				}
 				return null;
 			},
-			getNearestPlayer: function(range) {
+			getNearestPlayer: function(range, minRange) {
 				let players = Server.getAllPlayers();
 				if(targetPlayersSetting == "on") {
 					for(let i = 0; i < players.length; i++) {
@@ -1138,6 +1143,11 @@ var VertexClientPE = {
 						let z = Entity.getZ(ent) - getPlayerZ();
 						if(x*x+y*y+z*z>range*range) {
 							continue;
+						}
+						if(minRange != null) {
+							if(x*x+y*y+z*z<=minRange*minRange) {
+								continue;
+							}
 						}
 						if(targetFriendsSetting == "off" && VertexClientPE.Utils.Player.isFriend(ent)) {
 							continue;
@@ -3251,9 +3261,9 @@ var derp = {
 		this.state = !this.state;
 	},
 	onTick: function() {
-		var player = getPlayerEnt();
-		var yaw = Math.floor(Entity.getYaw(player));
-		var pitch = Math.floor(Entity.getPitch(player));
+		let player = getPlayerEnt();
+		let yaw = Math.floor(Entity.getYaw(player));
+		let pitch = Math.floor(Entity.getPitch(player));
 		Entity.setRot(player, yaw + 3, pitch);
 	}
 }
@@ -3316,37 +3326,23 @@ var follow = {
 	onTick: function() {
 		if(followStage == 0) {
 			followStage = 1;
-			var players = Server.getAllPlayers();
-			var mobs = Entity.getAll();
-			if(targetMobsSetting == "on") {
-				for(var i = 0; i < mobs.length; i++) {
-					var x = Entity.getX(mobs[i]) - getPlayerX();
-					var y = Entity.getY(mobs[i]) - getPlayerY();
-					var z = Entity.getZ(mobs[i]) - getPlayerZ();
-					if(x*x+y*y+z*z<=10*10 && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION) {
-						if(x*x+y*y+z*z>=2*2) {
-							setVelX(getPlayerEnt(), x * 0.05);
-							setVelZ(getPlayerEnt(), z * 0.05);
-							setVelY(getPlayerEnt(), y * 0.05);
-						}
-						break;
-					}
-				}
+			var mob = VertexClientPE.Utils.Player.getNearestMob(10, 2);
+			var player = VertexClientPE.Utils.Player.getNearestPlayer(10, 2);
+			if(mob != null) {
+				let x = Entity.getX(mob) - getPlayerX();
+				let y = Entity.getY(mob) - getPlayerY();
+				let z = Entity.getZ(mob) - getPlayerZ();
+				setVelX(getPlayerEnt(), x * 0.05);
+				setVelZ(getPlayerEnt(), z * 0.05);
+				setVelY(getPlayerEnt(), y * 0.05);
 			}
-			if(targetPlayersSetting == "on") {
-				for(var i = 0; i < players.length; i++) {
-					var x = Entity.getX(players[i]) - getPlayerX();
-					var y = Entity.getY(players[i]) - getPlayerY();
-					var z = Entity.getZ(players[i]) - getPlayerZ();
-					if(x*x+y*y+z*z<=10*10 && players[i] != getPlayerEnt() && Entity.getEntityTypeId(players[i]) != EntityType.ARROW && Entity.getEntityTypeId(players[i]) != EntityType.BOAT && Entity.getEntityTypeId(players[i]) != EntityType.EGG && Entity.getEntityTypeId(players[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(players[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(players[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(players[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(players[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(players[i]) != EntityType.ITEM && Entity.getEntityTypeId(players[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(players[i]) != EntityType.MINECART && Entity.getEntityTypeId(players[i]) != EntityType.PAINTING && Entity.getEntityTypeId(players[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(players[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(players[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(players[i]) != EntityType.THROWN_POTION) {
-						if(x*x+y*y+z*z>=2*2) {
-							setVelX(getPlayerEnt(), x * 0.05);
-							setVelZ(getPlayerEnt(), z * 0.05);
-							setVelY(getPlayerEnt(), y * 0.05);
-						}
-						break;
-					}
-				}
+			if(player != null) {
+				let x = Entity.getX(player) - getPlayerX();
+				let y = Entity.getY(player) - getPlayerY();
+				let z = Entity.getZ(player) - getPlayerZ();
+				setVelX(getPlayerEnt(), x * 0.05);
+				setVelZ(getPlayerEnt(), z * 0.05);
+				setVelY(getPlayerEnt(), y * 0.05);
 			}
 			followStage = 0;
 		}
@@ -3770,10 +3766,10 @@ var autoWalk = {
 	},
 	onTick: function() {
 		toDirectionalVector(playerDir, (getYaw() + 90) * DEG_TO_RAD, getPitch() * DEG_TO_RAD * -1);
-		var player = getPlayerEnt();
-		var xVel = playerWalkSpeed * playerDir[0];
-		var yVel = playerWalkSpeed * playerDir[1];
-		var zVel = playerWalkSpeed * playerDir[2];
+		let player = getPlayerEnt();
+		let xVel = playerWalkSpeed * playerDir[0];
+		let yVel = playerWalkSpeed * playerDir[1];
+		let zVel = playerWalkSpeed * playerDir[2];
 		if(autoWalkDirection == "backwards") {
 			xVel *= -1;
 			yVel *= -1;
@@ -3984,14 +3980,14 @@ var aimbot = {
 		this.state = !this.state;
 	},
 	onTick: function() {
-		var range;
+		let range;
 		if(aimbotUseKillauraRange == "off") {
 			range = aimbotRangeSetting;
 		} else if(aimbotUseKillauraRange == "on") {
 			range = killAuraRange;
 		}
-		var mob = VertexClientPE.Utils.Player.getNearestMob(range);
-		var player = VertexClientPE.Utils.Player.getNearestPlayer(range);
+		let mob = VertexClientPE.Utils.Player.getNearestMob(range);
+		let player = VertexClientPE.Utils.Player.getNearestPlayer(range);
 		if(mob != null) {
 			VertexClientPE.CombatUtils.aimAtEnt(mob);
 		}
@@ -4803,13 +4799,13 @@ var playerLocator = {
 		return false;
 	},
 	onToggle: function() {
-		var players = Server.getAllPlayers();
+		let players = Server.getAllPlayers();
 		if(players != null && players != undefined && players.length != -1 && !(players.length == 1 && players[0] == getPlayerEnt())) {
 			new Thread_(new Runnable_({
 				run: function() {
-					for(var i = 0; i < players.length; i++) {
-						var player = players[i];
-						var name = "player " + Player.getName(player);
+					for(let i = 0; i < players.length; i++) {
+						let player = players[i];
+						let name = "player " + Player.getName(player);
 						if(name != null && player[i] != getPlayerEnt()) {
 							VertexClientPE.clientMessage("Located " + name + " at " + parseInt(Entity.getX(player)) + " " + parseInt(Entity.getY(player)) + " " + parseInt(Entity.getZ(player)));
 							Thread_.sleep(1000);
@@ -5003,8 +4999,8 @@ var hitboxes = {
 			onProgressChanged: function() {
 				hitboxesHitboxWidthSetting = hitboxesHitboxWidthSlider.getProgress() + minHitboxesSize;
 				hitboxesHitboxWidthTitle.setText("Hitbox width: | " + hitboxesHitboxWidthSetting);
-				if(this.state) {
-					var players = Server.getAllPlayers();
+				if(this.state) { // TODO: Look if needs to be fixed.
+					let players = Server.getAllPlayers();
 					for(var i = 0; i < players.length; i++) {
 						this.updateHitboxesOnEnt(players[i]);
 					}
@@ -5021,7 +5017,7 @@ var hitboxes = {
 				hitboxesHitboxHeightSetting = hitboxesHitboxHeightSlider.getProgress() + minHitboxesSize;
 				hitboxesHitboxHeightTitle.setText("Hitbox height: | " + hitboxesHitboxHeightSetting);
 				if(this.state) {
-					var players = Server.getAllPlayers();
+					let players = Server.getAllPlayers();
 					for(var i = 0; i < players.length; i++) {
 						this.updateHitboxesOnEnt(players[i]);
 					}
@@ -5438,41 +5434,19 @@ var strafeAura = {
 		this.state = !this.state;
 	},
 	onTick: function() {
-		var players = Server.getAllPlayers();
-		var mobs = Entity.getAll();
-		if(targetMobsSetting == "on") {
-			for(var i = 0; i < mobs.length; i++) {
-				var ent = mobs[i];
-				var x = Entity.getX(ent) - getPlayerX();
-				var y = Entity.getY(ent) - getPlayerY();
-				var z = Entity.getZ(ent) - getPlayerZ();
-				if(x*x+y*y+z*z <= strafeAuraRangeSetting*strafeAuraRangeSetting) {
-					if(Entity.getEntityTypeId(ent) != EntityType.ARROW && Entity.getEntityTypeId(ent) != EntityType.BOAT && Entity.getEntityTypeId(ent) != EntityType.EGG && Entity.getEntityTypeId(ent) != EntityType.ENDER_PEARL && Entity.getEntityTypeId(ent) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(ent) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(ent) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(ent) != EntityType.FIREBALL && Entity.getEntityTypeId(ent) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(ent) != EntityType.ITEM && Entity.getEntityTypeId(ent) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(ent) != EntityType.MINECART && Entity.getEntityTypeId(ent) != EntityType.PAINTING && Entity.getEntityTypeId(ent) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(ent) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(ent) != EntityType.SNOWBALL && Entity.getEntityTypeId(ent) != EntityType.THROWN_POTION && ent != getPlayerEnt()) {
-						VertexClientPE.CombatUtils.strafeAroundEnt(ent, strafeAuraDirectionSetting);
-						return;
-					}
-				}
-			}
+		let mob = VertexClientPE.Utils.Player.getNearestMob(strafeAuraRangeSetting);
+		let player = VertexClientPE.Utils.Player.getNearestPlayer(strafeAuraRangeSetting);
+		if(mob != null) {
+			VertexClientPE.CombatUtils.strafeAroundEnt(mob, strafeAuraDirectionSetting);
 		}
-		if(targetPlayersSetting == "on") {
-			for(var i = 0; i < players.length; i++) {
-				var ent = players[i];
-				var x = Entity.getX(ent) - getPlayerX();
-				var y = Entity.getY(ent) - getPlayerY();
-				var z = Entity.getZ(ent) - getPlayerZ();
-				if(x*x+y*y+z*z <= strafeAuraRangeSetting*strafeAuraRangeSetting) {
-					if(ent != getPlayerEnt()) {
-						VertexClientPE.CombatUtils.strafeAroundEnt(ent, strafeAuraDirectionSetting);
-						return;
-					}
-				}
-			}
+		if(player != null) {
+			VertexClientPE.CombatUtils.strafeAroundEnt(player, strafeAuraDirectionSetting);
 		}
 	}
 }
 
-var fastFall = {
-	name: "FastFall",
+var noFall = {
+	name: "NoFall",
 	desc: "Immediately teleports you to the first (non-air) block underneath yourself when falling (and blocks fall damage by doing so).",
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
@@ -5485,7 +5459,7 @@ var fastFall = {
 	},
 	onTick: function() {
 		//clientMessage(Entity.getVelY(getPlayerEnt()));
-		if(!Player.isFlying() && !VertexClientPE.Utils.onGround && Entity.getVelY(getPlayerEnt()) < -0.07840000092983246) {
+		if(!Player.isFlying() && !VertexClientPE.Utils.Player.onGround() && Entity.getVelY(getPlayerEnt()) < -0.07840000092983246) {
 			let x = getPlayerX();
 			let y = getPlayerY();
 			let z = getPlayerZ();
@@ -5526,7 +5500,7 @@ VertexClientPE.registerModule(autoWalk);
 } */
 VertexClientPE.registerModule(enderProjectiles);
 VertexClientPE.registerModule(fastBridge);
-VertexClientPE.registerModule(fastFall);
+VertexClientPE.registerModule(noFall);
 VertexClientPE.registerModule(fastWalk);
 //VertexClientPE.registerModule(fenceJump);
 VertexClientPE.registerModule(flight);
@@ -9393,45 +9367,50 @@ VertexClientPE.fancyChat = function(str) {
 }
 
 VertexClientPE.getItemInSlot = function(newSlot) {
-	var oldSlot = Player.getSelectedSlotId();
+	let oldSlot = Player.getSelectedSlotId();
 	Player.setSelectedSlotId(newSlot);
-	var itemId = Player.getCarriedItem();
+	let itemId = Player.getCarriedItem();
 	Player.setSelectedSlotId(oldSlot);
 	
 	return itemId;
 }
 
+VertexClientPE.getSwordDamage = function(i) {
+	switch(i) {
+		default:
+			return;
+	}
+}
+
 VertexClientPE.autoSword = function(a, v) {
 	if(a == getPlayerEnt()) {
-		var swordIds = [];
-		var bestSlot = [null, null];
-		for(var i = 0; i <= 8; i++) {
-			var itemInSlot = VertexClientPE.getItemInSlot(i);
-			if(itemInSlot == 268 || itemInSlot == 283 || itemInSlot == 272 || itemInSlot == 267 || itemInSlot == 276) {
-				if(itemInSlot == 268) {
-					if(bestSlot[1] != 283 && bestSlot[1] != 272 && bestSlot[1] != 267 && bestSlot[1] != 276) {
-						bestSlot = [i, itemInSlot];
-					}
-				}
-				if(itemInSlot == 283) {
-					if(bestSlot[1] != 272 && bestSlot[1] != 267 && bestSlot[1] != 276) {
-						bestSlot = [i, itemInSlot];
-					}
-				}
-				if(itemInSlot == 272) {
-					if(bestSlot[1] != 267 && bestSlot[1] != 276) {
-						bestSlot = [i, itemInSlot];
-					}
-				}
-				if(itemInSlot == 267) {
-					if(bestSlot[1] != 276) {
-						bestSlot = [i, itemInSlot];
-					}
-				}
-				if(itemInSlot == 276) {
+		let swordIds = [];
+		let bestSlot = [null, null];
+		for(let i = 0; i <= 8; i++) {
+			let itemInSlot = VertexClientPE.getItemInSlot(i);
+			if(itemInSlot == 268) {
+				if(bestSlot[1] != 283 && bestSlot[1] != 272 && bestSlot[1] != 267 && bestSlot[1] != 276) {
 					bestSlot = [i, itemInSlot];
-					break;
 				}
+			}
+			if(itemInSlot == 283) {
+				if(bestSlot[1] != 272 && bestSlot[1] != 267 && bestSlot[1] != 276) {
+					bestSlot = [i, itemInSlot];
+				}
+			}
+			if(itemInSlot == 272) {
+				if(bestSlot[1] != 267 && bestSlot[1] != 276) {
+					bestSlot = [i, itemInSlot];
+				}
+			}
+			if(itemInSlot == 267) {
+				if(bestSlot[1] != 276) {
+					bestSlot = [i, itemInSlot];
+				}
+			}
+			if(itemInSlot == 276) {
+				bestSlot = [i, itemInSlot];
+				break;
 			}
 		}
 		if(bestSlot[0] != null) {	
@@ -9445,13 +9424,13 @@ VertexClientPE.ride = function(entity) {
 }
 
 VertexClientPE.autoSpammer = function() {
-	var runSpamMsg;
+	let runSpamMsg;
 	if(spamUseRandomMsgSetting == "on") {
 		runSpamMsg = Math.random().toString(36).replace(/[^a-z]+/g, '');
 	} else {
 		runSpamMsg = spamMessage;
 	}
-	var username = Player.getName(getPlayerEnt());
+	let username = Player.getName(getPlayerEnt());
 	Entity.setNameTag(getPlayerEnt(), "");
 	if(fancyChatState) {
 		VertexClientPE.fancyChat(runSpamMsg);
@@ -11152,7 +11131,7 @@ function modButton(mod, buttonOnly, customSize) {
 		defaultClientButton.setTextColor(modButtonColorDisabled);
 	}
 	defaultClientButton.setOnClickListener(new View_.OnClickListener({
-		onClick: function(viewarg) {
+		onClick: function(viewArg) {
 			var _0xff55=["\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x6F\x75\x74\x64\x61\x74\x65\x64\x2C\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C","\x74\x6F\x61\x73\x74","\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C"];if(!isAuthorized){if(!isSupported){VertexClientPE[_0xff55[1]](_0xff55[0])}else {VertexClientPE[_0xff55[1]](_0xff55[2])};return}
 			if(mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) {
 				VertexClientPE.showProDialog(mod.name);
@@ -11230,13 +11209,13 @@ function modButton(mod, buttonOnly, customSize) {
 	}
 	defaultInfoButton.setAlpha(0.54);
 	defaultInfoButton.setOnClickListener(new View_.OnClickListener({
-	onClick: function(viewarg) {
-		if(mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) {
-			VertexClientPE.showProDialog(mod.name);
-			return;
+		onClick: function(viewArg) {
+			if(mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) {
+				VertexClientPE.showProDialog(mod.name);
+				return;
+			}
+			VertexClientPE.showModDialog(mod, defaultClientButton);
 		}
-		VertexClientPE.showModDialog(mod, defaultClientButton);
-	}
 	}));
 	modButtonLayoutRight.addView(defaultInfoButton);
 	
@@ -11263,7 +11242,7 @@ function addonButton(addon) {
 	defaultClientButton.setHorizontallyScrolling(true);
 	defaultClientButton.setSelected(true);
 	defaultClientButton.setOnClickListener(new View_.OnClickListener({
-		onClick: function(viewarg) {
+		onClick: function(viewArg) {
 			VertexClientPE.showAddonDialog(addon);
 		}
 	}));
@@ -11314,7 +11293,7 @@ function categoryTab(category) {
 	defaultClientButton.setHorizontallyScrolling(true);
 	defaultClientButton.setSelected(true);
 	defaultClientButton.setOnClickListener(new View_.OnClickListener({
-		onClick: function(viewarg) {
+		onClick: function(viewArg) {
 			if(currentTab != categoryRealName) {
 				currentTab = categoryRealName;
 				menuMiddleLayout.removeAllViews();
@@ -11381,7 +11360,7 @@ function musicPlayerTab(name, tabLayout, songLayout, playBar) {
 	defaultClientButton.setHorizontallyScrolling(true);
 	defaultClientButton.setSelected(true);
 	defaultClientButton.setOnClickListener(new View_.OnClickListener({
-		onClick: function(viewarg) {
+		onClick: function(viewArg) {
 			if(currentMPTab != name) {
 				currentMPTab = name;
 				tabLayout.removeAllViews();
@@ -11417,7 +11396,7 @@ function tabGUICategoryButton(category, layout, layoutToBeOpened, layoutMain) {
 	var categoryButton = clientButton(VertexClientPE.category.toName(category));
 	categoryButton.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.MATCH_PARENT, (CONTEXT.getWindowManager().getDefaultDisplay().getHeight() / 3) / 5));
 	categoryButton.setOnClickListener(new View_.OnClickListener({
-		onClick: function(viewarg) {
+		onClick: function(viewArg) {
 			if(categoryButton.getCurrentTextColor() != Color_.GREEN) {
 				categoryButton.setTextColor(Color_.GREEN);
 				if(fontSetting != "minecraft") {
@@ -11547,7 +11526,7 @@ function accountButton(account, layout) {
 	var useButton = clientButton("Use");
 	useButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4  - dip2px(10), display.heightPixels / 10));
 	useButton.setOnClickListener(new View_.OnClickListener({
-		onClick: function(viewarg) {
+		onClick: function(viewArg) {
 			//var playerClientId = account.clientId.toString();
 			var shouldRestart = false;
 			if(playerName != ModPE.getPlayerName()) {
@@ -11570,7 +11549,7 @@ function accountButton(account, layout) {
 	var deleteButton = clientButton("x");
 	deleteButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 3 - display.widthPixels / 4  - dip2px(10), display.heightPixels / 10));
 	deleteButton.setOnClickListener(new View_.OnClickListener({
-		onClick: function(viewarg) {
+		onClick: function(viewArg) {
 			VertexClientPE.removeAccount(account.toString(), layout, accountManagerAccountLayout);
 		}
 	}));
@@ -11619,7 +11598,7 @@ function friendButton(friend, layout) {
 	var deleteButton = clientButton("x");
 	deleteButton.setLayoutParams(new LinearLayout_.LayoutParams(delButtonWidth, display.heightPixels / 10));
 	deleteButton.setOnClickListener(new View_.OnClickListener({
-		onClick: function(viewarg) {
+		onClick: function(viewArg) {
 			VertexClientPE.removeFriend(friend.toString(), layout, friendManagerAccountLayout);
 		}
 	}));
@@ -11952,7 +11931,7 @@ function settingSelector(text, desc, dialogTitle, selectionArray, currentSelecti
 	settingButtonLayoutRight.addView(defaultSettingsButton);
 	
 	defaultSettingsButton.setOnClickListener(new View_.OnClickListener({
-		onClick: function(viewarg) {
+		onClick: function(viewArg) {
 			VertexClientPE.showSettingSelectorDialog(defaultSettingsButton, dialogTitle, selectionArray, currentSelection, varToChange, customFirstOnClick);
 		}
 	}));
@@ -12821,15 +12800,15 @@ VertexClientPE.showStartScreenBar = function() {
 					});
 					
 					youTubeButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewarg) {
+						onClick: function(viewArg) {
 							ModPE.goToURL("https://www.youtube.com/c/AgameRGaming");
 					}}));
 					twitterButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewarg) {
+						onClick: function(viewArg) {
 							ModPE.goToURL("http://twitter.com/VertexHX");
 					}}));
 					gitHubButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewarg) {
+						onClick: function(viewArg) {
 							ModPE.goToURL("https://github.com/Vertex-Client");
 					}}));
 					
@@ -12946,7 +12925,7 @@ VertexClientPE.showSetupScreen = function() {
 								setupTextView.setText(setupStep1Text);
 								doneButton.setText("\u2794");
 								doneButton.setOnClickListener(new View_.OnClickListener({
-									onClick: function(viewarg) {
+									onClick: function(viewArg) {
 										step2Button.performClick();
 									}
 								}));
@@ -12978,7 +12957,7 @@ VertexClientPE.showSetupScreen = function() {
 								setupScreenLayoutBottomRight.addView(setupButtonPurple);
 								doneButton.setText("\u2794");
 								doneButton.setOnClickListener(new View_.OnClickListener({
-									onClick: function(viewarg) {
+									onClick: function(viewArg) {
 										step3Button.performClick();
 									}
 								}));
@@ -13102,7 +13081,7 @@ VertexClientPE.showSetupScreen = function() {
 					setupButtonGreen.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
 					setupButtonGreen.setTextColor(Color_.GREEN);
 					setupButtonGreen.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewarg) {
+						onClick: function(viewArg) {
 							setupColor = "green";
 							setupButtonGreen.setTextColor(Color_.GREEN);
 							setupButtonRed.setTextColor(Color_.WHITE);
@@ -13114,7 +13093,7 @@ VertexClientPE.showSetupScreen = function() {
 					var setupButtonRed = clientButton("Red", null, "red");
 					setupButtonRed.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
 					setupButtonRed.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewarg) {
+						onClick: function(viewArg) {
 							setupColor = "red";
 							setupButtonGreen.setTextColor(Color_.WHITE);
 							setupButtonRed.setTextColor(Color_.GREEN);
@@ -13126,7 +13105,7 @@ VertexClientPE.showSetupScreen = function() {
 					var setupButtonBlue = clientButton("Blue", null, "blue");
 					setupButtonBlue.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
 					setupButtonBlue.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewarg) {
+						onClick: function(viewArg) {
 							setupColor = "blue";
 							setupButtonGreen.setTextColor(Color_.WHITE);
 							setupButtonRed.setTextColor(Color_.WHITE);
@@ -13138,7 +13117,7 @@ VertexClientPE.showSetupScreen = function() {
 					var setupButtonPurple = clientButton("Purple", null, "purple");
 					setupButtonPurple.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
 					setupButtonPurple.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewarg) {
+						onClick: function(viewArg) {
 							setupColor = "purple";
 							setupButtonGreen.setTextColor(Color_.WHITE);
 							setupButtonRed.setTextColor(Color_.WHITE);
@@ -14368,7 +14347,7 @@ function settingsScreen() {
 					var shortcutManagerSettingButton = shortcutManagerSettingFunc.getButton();
 					shortcutManagerSettingButton.setText("Manage");
 					shortcutManagerSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewarg) {
+						onClick: function(viewArg) {
 							VertexClientPE.showShortcutManagerDialog();
 						}
 					}));
@@ -14464,7 +14443,7 @@ function settingsScreen() {
 					var buttonStrokeThicknessSettingButton = buttonStrokeThicknessSettingFunc.getButton();
 					buttonStrokeThicknessSettingButton.setText("Change");
 					buttonStrokeThicknessSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewarg) {
+						onClick: function(viewArg) {
 							VertexClientPE.showButtonStrokeThicknessDialog();
 						}
 					}));
@@ -14609,7 +14588,7 @@ function settingsScreen() {
 						fontSettingButton.setText("Minecraft");
 					}
 					fontSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewarg) {
+						onClick: function(viewArg) {
 							if(fontSetting == "default") {
 								fontSetting = "minecraft";
 								fontSettingButton.setText("Minecraft");
@@ -14649,7 +14628,7 @@ function settingsScreen() {
 						modButtonColorBlockedSettingButton.setText("Black");
 					}
 					modButtonColorBlockedSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewarg) {
+						onClick: function(viewArg) {
 							if(modButtonColorBlockedSetting == "red") {
 								modButtonColorBlockedSetting = "green";
 								modButtonColorBlockedSettingButton.setText("Green");
@@ -14700,7 +14679,7 @@ function settingsScreen() {
 						modButtonColorEnabledSettingButton.setText("Black");
 					}
 					modButtonColorEnabledSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewarg) {
+						onClick: function(viewArg) {
 							if(modButtonColorEnabledSetting == "red") {
 								modButtonColorEnabledSetting = "green";
 								modButtonColorEnabledSettingButton.setText("Green");
@@ -14751,7 +14730,7 @@ function settingsScreen() {
 						modButtonColorDisabledSettingButton.setText("Black");
 					}
 					modButtonColorDisabledSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewarg) {
+						onClick: function(viewArg) {
 							if(modButtonColorDisabledSetting == "red") {
 								modButtonColorDisabledSetting = "green";
 								modButtonColorDisabledSettingButton.setText("Green");
@@ -14837,7 +14816,7 @@ function settingsScreen() {
 						normalMenuTypeSizeButton.setText("Small");
 					}
 					normalMenuTypeSizeButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewarg) {
+						onClick: function(viewArg) {
 							if(normalMenuTypeSize == "normal") {
 								normalMenuTypeSize = "small";
 								customHeight = topBarHeight;
@@ -14869,7 +14848,7 @@ function settingsScreen() {
 						menuAnimationsSettingButton.setText("OFF");
 					}
 					menuAnimationsSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewarg) {
+						onClick: function(viewArg) {
 							if(menuAnimationsSetting == "on") {
 								menuAnimationsSetting = "off";
 								menuAnimationsSettingButton.setText("OFF");
@@ -14981,7 +14960,7 @@ function settingsScreen() {
 						transparentSplashScreenSettingButton.setText("OFF");
 					}
 					transparentSplashScreenSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewarg) {
+						onClick: function(viewArg) {
 							if(transparentSplashScreenSetting == "on") {
 								transparentSplashScreenSetting = "off";
 								transparentSplashScreenSettingButton.setText("OFF");
@@ -15009,7 +14988,7 @@ function settingsScreen() {
 						commandsSettingButton.setText("OFF");
 					}
 					commandsSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewarg) {
+						onClick: function(viewArg) {
 							if(commandsSetting == "on") {
 								commandsSetting = "off";
 								commandsSettingButton.setText("OFF");
@@ -15117,7 +15096,7 @@ function settingsScreen() {
 					var webBrowserStartPageSettingButton = webBrowserStartPageSettingFunc.getButton();
 					webBrowserStartPageSettingButton.setText("Change");
 					webBrowserStartPageSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewarg) {
+						onClick: function(viewArg) {
 							VertexClientPE.showWebbrowserStartPageDialog();
 						}
 					}));
@@ -17529,7 +17508,7 @@ VertexClientPE.showCategoryMenus = function () {
 					}
 
 					combatArrow.setOnClickListener(new View_.OnClickListener() {
-						onClick(viewarg) {
+						onClick(viewArg) {
 							if (combatMenuShown == true) {
 								combatMenuLayout1.removeView(combatMenuScrollView);
 								combatMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, ViewGroup_.LayoutParams.WRAP_CONTENT));
@@ -17600,7 +17579,7 @@ VertexClientPE.showCategoryMenus = function () {
 					}
 
 					worldArrow.setOnClickListener(new View_.OnClickListener() {
-						onClick: function (viewarg) {
+						onClick: function (viewArg) {
 							if (worldMenuShown == true) {
 								worldMenuLayout1.removeView(worldMenuScrollView);
 								worldMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, ViewGroup_.LayoutParams.WRAP_CONTENT));
@@ -17671,7 +17650,7 @@ VertexClientPE.showCategoryMenus = function () {
 					}
 
 					movementArrow.setOnClickListener(new View_.OnClickListener() {
-						onClick: function (viewarg) {
+						onClick: function (viewArg) {
 							if (movementMenuShown == true) {
 								movementMenuLayout1.removeView(movementMenuScrollView);
 								movementMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, ViewGroup_.LayoutParams.WRAP_CONTENT));
@@ -17741,7 +17720,7 @@ VertexClientPE.showCategoryMenus = function () {
 					}
 
 					playerArrow.setOnClickListener(new View_.OnClickListener() {
-						onClick: function (viewarg) {
+						onClick: function (viewArg) {
 							if (playerMenuShown == true) {
 								playerMenuLayout1.removeView(playerMenuScrollView);
 								playerMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, ViewGroup_.LayoutParams.WRAP_CONTENT));
@@ -17812,7 +17791,7 @@ VertexClientPE.showCategoryMenus = function () {
 					}
 
 					miscArrow.setOnClickListener(new View_.OnClickListener() {
-						onClick: function (viewarg) {
+						onClick: function (viewArg) {
 							if (miscMenuShown == true) {
 								miscMenuLayout1.removeView(miscMenuScrollView);
 								miscMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, ViewGroup_.LayoutParams.WRAP_CONTENT));
@@ -17996,6 +17975,9 @@ function showMenuButton() {
 		}
 	}
 	menuBtn.setTypeface(VertexClientPE.font);
+	if(buttonSoundSetting != "system") {
+		defaultButton.setSoundEffectsEnabled(false);
+	}
 	if(fontSetting == "minecraft") {
 		MinecraftButtonLibrary.addMinecraftStyleToTextView(menuBtn);
 	}
@@ -18211,7 +18193,7 @@ function showAccountManagerButton() {
 	var acBtn = clientButton("AM", null, null, "right_half");
 	acBtn.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(40), dip2px(40)));
 	acBtn.setOnClickListener(new View_.OnClickListener({
-		onClick: function(viewarg ){
+		onClick: function(viewArg ){
 			if(hacksList != null) {
 				hacksList.dismiss();
 			}
@@ -18640,7 +18622,7 @@ VertexClientPE.showChestUI = function(x, y, z) {
 				var chestLayout = new LinearLayout_(CONTEXT);
 				var chestStealButton = clientButton("Steal");
 				chestStealButton.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewarg) {
+					onClick: function(viewArg) {
 						hasPushed = true;
 					}
 				}));
@@ -18729,7 +18711,7 @@ function overlayWebBrowser() {
 				backPageWebBrowserButton.getBackground().setColorFilter(Color_.parseColor("#0B6138"), PorterDuff_.Mode.MULTIPLY);
 				backPageWebBrowserButton.setTextColor(Color_.WHITE);
 				backPageWebBrowserButton.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewarg) {
+					onClick: function(viewArg) {
 						if(webBrowserWebView != null) {
 							if(webBrowserWebView.canGoBack()) {
 								webBrowserWebView.goBack();
@@ -18747,7 +18729,7 @@ function overlayWebBrowser() {
 				forwardPageWebBrowserButton.getBackground().setColorFilter(Color_.parseColor("#0B6138"), PorterDuff_.Mode.MULTIPLY);
 				forwardPageWebBrowserButton.setTextColor(Color_.WHITE);
 				forwardPageWebBrowserButton.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewarg) {
+					onClick: function(viewArg) {
 						if(webBrowserWebView.canGoForward()) {
 							webBrowserWebView.goForward();
 						} else {
@@ -18763,7 +18745,7 @@ function overlayWebBrowser() {
 				reloadWebBrowserButton.getBackground().setColorFilter(Color_.parseColor("#0B6138"), PorterDuff_.Mode.MULTIPLY);
 				reloadWebBrowserButton.setTextColor(Color_.WHITE);
 				reloadWebBrowserButton.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewarg) {
+					onClick: function(viewArg) {
 						if(webBrowserWebView != null) {
 							webBrowserWebView.reload();
 						}
@@ -18777,7 +18759,7 @@ function overlayWebBrowser() {
 				urlBarWebBrowserButton.getBackground().setColorFilter(Color_.parseColor("#0B6138"), PorterDuff_.Mode.MULTIPLY);
 				urlBarWebBrowserButton.setTextColor(Color_.WHITE);
 				urlBarWebBrowserButton.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewarg) {
+					onClick: function(viewArg) {
 						VertexClientPE.showURLBarDialog();
 					}
 				}));
@@ -18789,7 +18771,7 @@ function overlayWebBrowser() {
 				devWebBrowserButton.getBackground().setColorFilter(Color_.parseColor("#0B6138"), PorterDuff_.Mode.MULTIPLY);
 				devWebBrowserButton.setTextColor(Color_.WHITE);
 				devWebBrowserButton.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewarg) {
+					onClick: function(viewArg) {
 						VertexClientPE.showF12Dialog();
 						VertexClientPE.toast("Still work in progress!");
 					}
@@ -18802,7 +18784,7 @@ function overlayWebBrowser() {
 				xWebBrowserButton.getBackground().setColorFilter(Color_.parseColor("#FF0000"), PorterDuff_.Mode.MULTIPLY);
 				xWebBrowserButton.setTextColor(Color_.WHITE);
 				xWebBrowserButton.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewarg) {
+					onClick: function(viewArg) {
 						backPageWebBrowserUI.dismiss(); //Close
 						forwardPageWebBrowserUI.dismiss(); //Close
 						reloadWebBrowserUI.dismiss(); //Close
