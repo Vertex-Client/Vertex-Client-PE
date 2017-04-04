@@ -117,7 +117,6 @@ const AlarmManager_ = android.app.AlarmManager,
 
 var ScrollView = android.widget.ScrollView;
 var EditText = android.widget.EditText;
-var SeekBar = android.widget.SeekBar;
 var KeyEvent = android.view.KeyEvent;
 var Scanner = java.util.Scanner;
 var ByteBuffer = java.nio.ByteBuffer;
@@ -2461,10 +2460,10 @@ var killAura = {
 		var killAuraSettingsLayout = new LinearLayout_(CONTEXT);
 		killAuraSettingsLayout.setOrientation(1);
 		var killAuraRangeTitle = clientTextView("Range: | " + killAuraRange);
-		var killAuraRangeSlider = new SeekBar(CONTEXT);
+		var killAuraRangeSlider = clientSeekBar();
 		killAuraRangeSlider.setProgress(killAuraRange);
 		killAuraRangeSlider.setMax(10);
-		killAuraRangeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+		killAuraRangeSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
 			onProgressChanged: function() {
 				killAuraRange = killAuraRangeSlider.getProgress();
 				killAuraRangeTitle.setText("Range: | " + killAuraRange);
@@ -2623,9 +2622,9 @@ var timer = {
 		var timerSettingsLayout = new LinearLayout_(CONTEXT);
 		timerSettingsLayout.setOrientation(1);
 		var timerSpeedTitle = clientTextView("Speed: | " + timerSpeed + " * 20 ticks");
-		var timerSpeedSlider = new SeekBar(CONTEXT);
+		var timerSpeedSlider = clientSeekBar();
 		timerSpeedSlider.setProgress(timerSpeed);
-		timerSpeedSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+		timerSpeedSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
 			onProgressChanged: function() {
 				timerSpeed = timerSpeedSlider.getProgress();
 				timerSpeedTitle.setText("Speed: | " + timerSpeed + " * 20 ticks");
@@ -2667,10 +2666,10 @@ var nuker = {
 		var nukerSettingsLayout = new LinearLayout_(CONTEXT);
 		nukerSettingsLayout.setOrientation(1);
 		var nukerRangeTitle = clientTextView("Range: | " + nukerRange);
-		var nukerRangeSlider = new SeekBar(CONTEXT);
+		var nukerRangeSlider = clientSeekBar();
 		nukerRangeSlider.setProgress(nukerRange);
 		nukerRangeSlider.setMax(10);
-		nukerRangeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+		nukerRangeSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
 			onProgressChanged: function() {
 				nukerRange = nukerRangeSlider.getProgress();
 				nukerRangeTitle.setText("Range: | " + nukerRange);
@@ -2961,10 +2960,10 @@ var fastBreak = {
 			fastBreakDestroyTimeTxt = fastBreakDestroyTime;
 		}
 		var fastBreakDestroyTimeTitle = clientTextView("Destroy time: | " + fastBreakDestroyTimeTxt);
-		var fastBreakDestroyTimeSlider = new SeekBar(CONTEXT);
+		var fastBreakDestroyTimeSlider = clientSeekBar();
 		fastBreakDestroyTimeSlider.setProgress(fastBreakDestroyTime * 100);
 		fastBreakDestroyTimeSlider.setMax(100);
-		fastBreakDestroyTimeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+		fastBreakDestroyTimeSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
 			onProgressChanged: function() {
 				fastBreakDestroyTime = fastBreakDestroyTimeSlider.getProgress() / 100;
 				if(fastBreakDestroyTime == 0) {
@@ -3061,10 +3060,10 @@ var autoSpammer = {
 		});
 		
 		var spamDelayTimeTitle = clientTextView("Delay time: | " + spamDelayTime + " seconds");
-		var spamDelayTimeSlider = new SeekBar_(CONTEXT);
+		var spamDelayTimeSlider = clientSeekBar();
 		spamDelayTimeSlider.setProgress(spamDelayTime);
 		spamDelayTimeSlider.setMax(60);
-		spamDelayTimeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+		spamDelayTimeSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
 			onProgressChanged: function() {
 				spamDelayTime = spamDelayTimeSlider.getProgress();
 				spamDelayTimeTitle.setText("Delay time: | " + spamDelayTime + " seconds");
@@ -3359,10 +3358,10 @@ var tapNuker = {
 		var tapNukerSettingsLayout = new LinearLayout_(CONTEXT);
 		tapNukerSettingsLayout.setOrientation(1);
 		var tapNukerRangeTitle = clientTextView("Range: | " + tapNukerRange);
-		var tapNukerRangeSlider = new SeekBar(CONTEXT);
+		var tapNukerRangeSlider = clientSeekBar();
 		tapNukerRangeSlider.setProgress(tapNukerRange);
 		tapNukerRangeSlider.setMax(10);
-		tapNukerRangeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+		tapNukerRangeSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
 			onProgressChanged: function() {
 				tapNukerRange = tapNukerRangeSlider.getProgress();
 				tapNukerRangeTitle.setText("Range: | " + tapNukerRange);
@@ -3954,10 +3953,10 @@ var aimbot = {
 		});
 		
 		var aimbotRangeTitle = clientTextView("Range: | " + aimbotRangeSetting);
-		var aimbotRangeSlider = new SeekBar(CONTEXT);
+		var aimbotRangeSlider = clientSeekBar();
 		aimbotRangeSlider.setProgress(aimbotRangeSetting);
 		aimbotRangeSlider.setMax(10);
-		aimbotRangeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+		aimbotRangeSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
 			onProgressChanged: function() {
 				aimbotRangeSetting = aimbotRangeSlider.getProgress();
 				aimbotRangeTitle.setText("Range: | " + aimbotRangeSetting);
@@ -4013,10 +4012,10 @@ var chestTracers = {
 		var chestTracersSettingsLayout = new LinearLayout_(CONTEXT);
 		chestTracersSettingsLayout.setOrientation(1);
 		var chestTracersRangeTitle = clientTextView("Range: | " + chestTracersRange);
-		var chestTracersRangeSlider = new SeekBar(CONTEXT);
+		var chestTracersRangeSlider = clientSeekBar();
 		chestTracersRangeSlider.setProgress(chestTracersRange);
 		chestTracersRangeSlider.setMax(25);
-		chestTracersRangeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+		chestTracersRangeSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
 			onProgressChanged: function() {
 				chestTracersRange = chestTracersRangeSlider.getProgress();
 				chestTracersRangeTitle.setText("Range: | " + chestTracersRange);
@@ -4416,10 +4415,10 @@ var speedHack = {
 		var speedHackSettingsLayout = new LinearLayout_(CONTEXT);
 		speedHackSettingsLayout.setOrientation(1);
 		var speedHackFrictionTitle = clientTextView("Friction: | " + speedHackFriction);
-		var speedHackFrictionSlider = new SeekBar(CONTEXT);
+		var speedHackFrictionSlider = clientSeekBar();
 		speedHackFrictionSlider.setProgress(speedHackFriction * 100 - 1);
 		speedHackFrictionSlider.setMax(99);
-		speedHackFrictionSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+		speedHackFrictionSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
 			onProgressChanged: function() {
 				speedHackFriction = (speedHackFrictionSlider.getProgress() + 1) / 100;
 				speedHackFrictionTitle.setText("Friction: | " + speedHackFriction);
@@ -4475,10 +4474,10 @@ var chestESP = {
 		var chestESPSettingsLayout = new LinearLayout_(CONTEXT);
 		chestESPSettingsLayout.setOrientation(1);
 		var chestESPRangeTitle = clientTextView("Range: | " + chestESPRange);
-		var chestESPRangeSlider = new SeekBar(CONTEXT);
+		var chestESPRangeSlider = clientSeekBar();
 		chestESPRangeSlider.setProgress(chestESPRange);
 		chestESPRangeSlider.setMax(25);
-		chestESPRangeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+		chestESPRangeSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
 			onProgressChanged: function() {
 				chestESPRange = chestESPRangeSlider.getProgress();
 				chestESPRangeTitle.setText("Range: | " + chestESPRange);
@@ -4992,10 +4991,10 @@ var hitboxes = {
 		var maxHitboxesSize = 100;
 		
 		var hitboxesHitboxWidthTitle = clientTextView("Hitbox width: | " + hitboxesHitboxWidthSetting);
-		var hitboxesHitboxWidthSlider = new SeekBar(CONTEXT);
+		var hitboxesHitboxWidthSlider = clientSeekBar();
 		hitboxesHitboxWidthSlider.setProgress(hitboxesHitboxWidthSetting - minHitboxesSize);
 		hitboxesHitboxWidthSlider.setMax(maxHitboxesSize - minHitboxesSize);
-		hitboxesHitboxWidthSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+		hitboxesHitboxWidthSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
 			onProgressChanged: function() {
 				hitboxesHitboxWidthSetting = hitboxesHitboxWidthSlider.getProgress() + minHitboxesSize;
 				hitboxesHitboxWidthTitle.setText("Hitbox width: | " + hitboxesHitboxWidthSetting);
@@ -5009,10 +5008,10 @@ var hitboxes = {
 		});
 		
 		var hitboxesHitboxHeightTitle = clientTextView("Hitbox height: | " + hitboxesHitboxHeightSetting);
-		var hitboxesHitboxHeightSlider = new SeekBar(CONTEXT);
+		var hitboxesHitboxHeightSlider = clientSeekBar();
 		hitboxesHitboxHeightSlider.setProgress(hitboxesHitboxHeightSetting - minHitboxesSize);
 		hitboxesHitboxHeightSlider.setMax(maxHitboxesSize - minHitboxesSize);
-		hitboxesHitboxHeightSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+		hitboxesHitboxHeightSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
 			onProgressChanged: function() {
 				hitboxesHitboxHeightSetting = hitboxesHitboxHeightSlider.getProgress() + minHitboxesSize;
 				hitboxesHitboxHeightTitle.setText("Hitbox height: | " + hitboxesHitboxHeightSetting);
@@ -5362,10 +5361,10 @@ var strafeAura = {
 		strafeAuraSettingsLayout.setOrientation(1);
 		
 		var strafeAuraRangeTitle = clientTextView("Range: | " + strafeAuraRangeSetting);
-		var strafeAuraRangeSlider = new SeekBar(CONTEXT);
+		var strafeAuraRangeSlider = clientSeekBar();
 		strafeAuraRangeSlider.setProgress(strafeAuraRangeSetting);
 		strafeAuraRangeSlider.setMax(10);
-		strafeAuraRangeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+		strafeAuraRangeSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
 			onProgressChanged: function() {
 				strafeAuraRangeSetting = strafeAuraRangeSlider.getProgress();
 				strafeAuraRangeTitle.setText("Range: | " + strafeAuraRangeSetting);
@@ -6777,11 +6776,11 @@ VertexClientPE.showShortcutManagerDialog = function() {
 				dialogLayout.addView(shortcutManagerEnter);
 				
 				var shortcutSizeSettingTitle = clientTextView("Shortcut button size: | " + shortcutSizeSetting, true);
-				var shortcutSizeSettingSlider = new SeekBar(CONTEXT);
+				var shortcutSizeSettingSlider = clientSeekBar();
 				var minShortcutSize = 16;
 				shortcutSizeSettingSlider.setProgress(shortcutSizeSetting - minShortcutSize);
 				shortcutSizeSettingSlider.setMax(64 - minShortcutSize);
-				shortcutSizeSettingSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+				shortcutSizeSettingSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
 					onProgressChanged: function() {
 						shortcutSizeSetting = shortcutSizeSettingSlider.getProgress() + minShortcutSize;
 						shortcutSizeSettingTitle.setText("Shortcut button size: | " + shortcutSizeSetting);
@@ -6789,12 +6788,12 @@ VertexClientPE.showShortcutManagerDialog = function() {
 				});
 				
 				var shortcutUIHeightSettingTitle = clientTextView("Shortcut UI height: | " + shortcutUIHeightSetting + " * shortcut button size", true);
-				var shortcutUIHeightSettingSlider = new SeekBar(CONTEXT);
+				var shortcutUIHeightSettingSlider = clientSeekBar();
 				var minShortcutUIHeight = 1;
 				var maxShortcutUIHeight = 20;
 				shortcutUIHeightSettingSlider.setProgress(shortcutUIHeightSetting - minShortcutUIHeight);
 				shortcutUIHeightSettingSlider.setMax(maxShortcutUIHeight - minShortcutUIHeight);
-				shortcutUIHeightSettingSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+				shortcutUIHeightSettingSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
 					onProgressChanged: function() {
 						shortcutUIHeightSetting = shortcutUIHeightSettingSlider.getProgress() + minShortcutUIHeight;
 						shortcutUIHeightSettingTitle.setText("Shortcut UI height: | " + shortcutUIHeightSetting + " * shortcut button size");
@@ -7217,9 +7216,9 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 					onClick: function(view) {
 						dialog.dismiss();
 						var pickerWindow = new ColorPickerWindow(newRedStroke, newGreenStroke, newBlueStroke, function (color) {
-								newRedStroke = Color_.red(color);
-								newGreenStroke = Color_.green(color);
-								newBlueStroke = Color_.blue(color);
+							newRedStroke = Color_.red(color);
+							newGreenStroke = Color_.green(color);
+							newBlueStroke = Color_.blue(color);
 						}, function() {
 							dialog.show();
 							redStrokeSlider.setProgress(newRedStroke);
@@ -7231,10 +7230,10 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 				});
 			 
 				var redTitle = clientTextView("Red (inner): | " + newRed, true);
-				var redSlider = new SeekBar(CONTEXT);
+				var redSlider = clientSeekBar();
 				redSlider.setMax(255);
 				redSlider.setProgress(newRed);
-				redSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+				redSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
 					onProgressChanged: function() {
 						newRed = redSlider.getProgress();
 						redTitle.setText("Red (inner): | " + newRed);
@@ -7242,10 +7241,10 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 				});
 				
 				var greenTitle = clientTextView("Green (inner): | " + newGreen, true);
-				var greenSlider = new SeekBar(CONTEXT);
+				var greenSlider = clientSeekBar();
 				greenSlider.setMax(255);
 				greenSlider.setProgress(newGreen);
-				greenSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+				greenSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
 					onProgressChanged: function() {
 						newGreen = greenSlider.getProgress();
 						greenTitle.setText("Green (inner): | " + newGreen);
@@ -7253,10 +7252,10 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 				});
 				
 				var blueTitle = clientTextView("Blue (inner): | " + newBlue, true);
-				var blueSlider = new SeekBar(CONTEXT);
+				var blueSlider = clientSeekBar();
 				blueSlider.setMax(255);
 				blueSlider.setProgress(newBlue);
-				blueSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+				blueSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
 					onProgressChanged: function() {
 						newBlue = blueSlider.getProgress();
 						blueTitle.setText("Blue (inner): | " + newBlue);
@@ -7264,10 +7263,10 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 				});
 				
 				var redStrokeTitle = clientTextView("Red (stroke): | " + newRedStroke, true);
-				var redStrokeSlider = new SeekBar(CONTEXT);
+				var redStrokeSlider = clientSeekBar();
 				redStrokeSlider.setMax(255);
 				redStrokeSlider.setProgress(newRedStroke);
-				redStrokeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+				redStrokeSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
 					onProgressChanged: function() {
 						newRedStroke = redStrokeSlider.getProgress();
 						redStrokeTitle.setText("Red (stroke): | " + newRedStroke);
@@ -7275,10 +7274,10 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 				});
 				
 				var greenStrokeTitle = clientTextView("Green (stroke): | " + newGreenStroke, true);
-				var greenStrokeSlider = new SeekBar(CONTEXT);
+				var greenStrokeSlider = clientSeekBar();
 				greenStrokeSlider.setMax(255);
 				greenStrokeSlider.setProgress(newGreenStroke);
-				greenStrokeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+				greenStrokeSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
 					onProgressChanged: function() {
 						newGreenStroke = greenStrokeSlider.getProgress();
 						greenStrokeTitle.setText("Green (stroke): | " + newGreenStroke);
@@ -7286,10 +7285,10 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 				});
 				
 				var blueStrokeTitle = clientTextView("Blue (stroke): | " + newBlueStroke, true);
-				var blueStrokeSlider = new SeekBar(CONTEXT);
+				var blueStrokeSlider = clientSeekBar();
 				blueStrokeSlider.setMax(255);
 				blueStrokeSlider.setProgress(newBlueStroke);
-				blueStrokeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+				blueStrokeSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
 					onProgressChanged: function() {
 						newBlueStroke = blueStrokeSlider.getProgress();
 						blueStrokeTitle.setText("Blue (stroke): | " + newBlueStroke);
@@ -8711,12 +8710,12 @@ VertexClientPE.showButtonStrokeThicknessDialog = function() {
 				var buttonStrokeThicknessDialogTitle = clientTextView("Change button stroke thickness", true);
 				var btn = clientButton("Close");
 				var buttonStrokeThicknessSettingDialogTitle = clientTextView("Button stroke thickness: | " + buttonStrokeThicknessSetting + " pixel(s)");
-				var buttonStrokeThicknessSettingDialogSlider = new SeekBar(CONTEXT);
+				var buttonStrokeThicknessSettingDialogSlider = clientSeekBar();
 				var minButtonStrokeThickness = 1;
 				var maxButtonStrokeThickness = 10;
 				buttonStrokeThicknessSettingDialogSlider.setProgress(buttonStrokeThicknessSetting - minButtonStrokeThickness);
 				buttonStrokeThicknessSettingDialogSlider.setMax(maxButtonStrokeThickness - minButtonStrokeThickness);
-				buttonStrokeThicknessSettingDialogSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+				buttonStrokeThicknessSettingDialogSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
 					onProgressChanged: function() {
 						buttonStrokeThicknessSetting = buttonStrokeThicknessSettingDialogSlider.getProgress() + minButtonStrokeThickness;
 						buttonStrokeThicknessSettingDialogTitle.setText("Button stroke thickness: | " + buttonStrokeThicknessSetting + " pixel(s)");
@@ -8763,11 +8762,11 @@ VertexClientPE.showDashboardTileSizeDialog = function() {
 				var dashboardTileSizeDialogTitle = clientTextView("Change Dashboard tile size", true);
 				var btn = clientButton("Close");
 				var dashboardTileSizeSettingTitle = clientTextView("Dashboard tile size: | Screen width / " + dashboardTileSize);
-				var dashboardTileSizeSettingSlider = new SeekBar(CONTEXT);
+				var dashboardTileSizeSettingSlider = clientSeekBar();
 				var minDashboardTileSize = 1;
 				dashboardTileSizeSettingSlider.setProgress(dashboardTileSize - minDashboardTileSize);
 				dashboardTileSizeSettingSlider.setMax(10 - minDashboardTileSize);
-				dashboardTileSizeSettingSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+				dashboardTileSizeSettingSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
 					onProgressChanged: function() {
 						dashboardTileSize = dashboardTileSizeSettingSlider.getProgress() + minDashboardTileSize;
 						dashboardTileSizeSettingTitle.setText("Dashboard tile size: | Screen width / " + dashboardTileSize);
@@ -10366,97 +10365,9 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 		
 		bg.setShape(GradientDrawable_.RECTANGLE);
 		
-		if(forceLightColor == true) {
-			bg.setColor(Color_.parseColor("#00994C"));
-			if(style != "normal_nostrokes") {
-				bg.setStroke(thickness, Color_.parseColor("#00CC66"));
-			}
-		} else {
-			bg.setColor(Color_.parseColor("#0B5B25"));
-			if(style != "normal_nostrokes") {
-				bg.setStroke(thickness, Color_.parseColor("#0F8219"));
-			}
-		}
-		if(color == "custom rgb") {
-			bg.setColor(Color_.rgb(rgbArray[0], rgbArray[1], rgbArray[2]));
-			if(style != "normal_nostrokes") {
-				bg.setStroke(thickness, Color_.rgb(rgbArray[3], rgbArray[4], rgbArray[5]));
-			}
-		}
-		if(color == "red") {
-			if(forceLightColor == true) {
-				bg.setColor(Color_.parseColor("#FF3333"));
-				if(style != "normal_nostrokes") {
-					bg.setStroke(thickness, Color_.parseColor("#FF6666"));
-				}
-			} else {
-				bg.setColor(Color_.parseColor("#5B0C0C"));
-				if(style != "normal_nostrokes") {
-					bg.setStroke(thickness, Color_.parseColor("#821010"));
-				}
-			}
-		} if(color == "blue") {
-			if(forceLightColor == true) {
-				bg.setColor(Color_.parseColor("#0080FF"));
-				if(style != "normal_nostrokes") {
-					bg.setStroke(thickness, Color_.parseColor("#3399FF"));
-				}
-			} else {
-				bg.setColor(Color_.parseColor("#0A175B"));
-				if(style != "normal_nostrokes") {
-					bg.setStroke(thickness, Color_.parseColor("#0E3882"));
-				}
-			}
-		} if(color == "purple") {
-			bg.setColor(Color_.parseColor("#9F018C"));
-			if(style != "normal_nostrokes") {
-				bg.setStroke(thickness, Color_.parseColor("#BC21AB"));
-			}
-		} if(color == "violet") {
-			bg.setColor(Color_.parseColor("#842DCE"));
-			if(style != "normal_nostrokes") {
-				bg.setStroke(thickness, Color_.parseColor("#8D38C9"));
-			}
-		} if(color == "yellow") {
-			bg.setColor(Color_.parseColor("#CCCC00"));
-			if(style != "normal_nostrokes") {
-				bg.setStroke(thickness, Color_.parseColor("#FFFF00"));
-			}
-		} if(color == "orange") {
-			bg.setColor(Color_.parseColor("#FF8C00"));
-			if(style != "normal_nostrokes") {
-				bg.setStroke(thickness, Color_.parseColor("#FFA500"));
-			}
-		} if(color == "brown") {
-			bg.setColor(Color_.parseColor("#8B4513"));
-			if(style != "normal_nostrokes") {
-				bg.setStroke(thickness, Color_.parseColor("#CD853F"));
-			}
-		} if(color == "grey") {
-			bg.setColor(Color_.parseColor("#808080"));
-			if(style != "normal_nostrokes") {
-				bg.setStroke(thickness, Color_.parseColor("#A9A9A9"));
-			}
-		} if(color == "white") {
-			bg.setColor(Color_.parseColor("#E1E1E1"));
-			if(style != "normal_nostrokes") {
-				bg.setStroke(thickness, Color_.parseColor("#FFFFFF"));
-			}
-		} if(color == "black") {
-			bg.setColor(Color_.parseColor("#141414"));
-			if(style != "normal_nostrokes") {
-				bg.setStroke(thickness, Color_.parseColor("#1E1E1E"));
-			}
-		}
-		
-		if(style == "legacy") {
-			bg.setColor(Color_.parseColor("#000000"));
-		}
-		if(style == "legacy_inverted") {
-			bg.setStroke(thickness, Color_.parseColor("#000000"));
-		}
-		if(style == "transparent") {
-			bg.setColor(Color_.TRANSPARENT);
+		bg.setColor(getColor("inner", color, forceLightColor));
+		if(style != "normal_nostrokes") {
+			bg.setStroke(thickness, getColor("stroke", color, forceLightColor));
 		}
 		
 		buttonView.setOnTouchListener(new View_.OnTouchListener() {
@@ -10775,7 +10686,7 @@ function musicBar() {
 	musicBarSongTitleView.setSingleLine();
 	musicBarSongTitleView.setHorizontallyScrolling(true);
 	musicBarSongTitleView.setSelected(true);
-	var musicBarSeekBar = new SeekBar(CONTEXT);
+	var musicBarSeekBar = clientSeekBar();
 	musicBarSeekBar.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.MATCH_PARENT, LinearLayout_.LayoutParams.WRAP_CONTENT, 1));
 	if(VertexClientPE.MusicUtils.mp == null) {
 		VertexClientPE.MusicUtils.initMusicPlayer();
@@ -11659,6 +11570,12 @@ function clientEditText(text) //menu buttons
 	return defaultEditText;
 }
 
+function clientSeekBar() {
+	let defaultSeekBar = new SeekBar_(CONTEXT);
+	//defaultSeekBar.getProgressDrawable().setColorFilter(new android.graphics.PorterDuffColorFilter(getColor("stroke"), PorterDuff_.Mode.SRC_IN));
+	return defaultSeekBar;
+}
+
 function clientTextView(text, shadow) //menu buttons
 {
 	if(shadow == null) {
@@ -11953,62 +11870,135 @@ function settingSelector(text, desc, dialogTitle, selectionArray, currentSelecti
 	}
 }
 
+function innerStringToCode(colorString, useLightColor) {
+	if(colorString == null) {
+		colorString = themeSetting;
+	}
+	if(useLightColor == null) {
+		useLightColor = useLightThemeSetting;
+	}
+	if(useLightColor == "on") {
+		useLightColor = true;
+	}
+	if(useLightColor == "off") {
+		useLightColor = false;
+	}
+	if(colorString == "custom rgb") {
+		return [customRGBRed, customRGBGreen, customRGBBlue];
+	}
+	if(colorString == "red") {
+		if(useLightColor) {
+			return "#FF3333";
+		} else {
+			return "#5B0C0C";
+		}
+	} if(colorString == "blue") {
+		if(useLightColor) {
+			return "#0080FF";
+		} else {
+			return "#0A175B";
+		}
+	} if(colorString == "purple") {
+		return "#9F018C";
+	} if(colorString == "violet") {
+		return "#842DCE";
+	} if(colorString == "yellow") {
+		return "#CCCC00";
+	} if(colorString == "orange") {
+		return "#FF8C00";
+	} if(colorString == "brown") {
+		return "#8B4513";
+	} if(colorString == "grey") {
+		return "#808080";
+	} if(colorString == "white") {
+		return "#E1E1E1";
+	} if(colorString == "black") {
+		return "#141414";
+	}
+	
+	if(useLightColor) {
+		return "#00994C";
+	} else {
+		return "#0B5B25";
+	}
+}
+
+function strokeStringToCode(colorString, useLightColor) {
+	if(colorString == null) {
+		colorString = themeSetting;
+	}
+	if(useLightColor == null) {
+		useLightColor = useLightThemeSetting;
+	}
+	if(useLightColor == "on") {
+		useLightColor = true;
+	}
+	if(useLightColor == "off") {
+		useLightColor = false;
+	}
+	if(colorString == "custom rgb") {
+		return [customRGBRedStroke, customRGBGreenStroke, customRGBBlueStroke];
+	}
+	if(colorString == "red") {
+		if(useLightColor) {
+			return "#FF6666";
+		} else {
+			return "#821010";
+		}
+	} if(colorString == "blue") {
+		if(useLightColor) {
+			return "#3399FF";
+		} else {
+			return "#0E3882";
+		}
+	} if(colorString == "purple") {
+		return "#BC21AB";
+	} if(colorString == "violet") {
+		return "#8D38C9";
+	} if(colorString == "yellow") {
+		return "#FFFF00";
+	} if(colorString == "orange") {
+		return "#FFA500";
+	} if(colorString == "brown") {
+		return "#CD853F";
+	} if(colorString == "grey") {
+		return "#A9A9A9";
+	} if(colorString == "white") {
+		return "#FFFFFF";
+	} if(colorString == "black") {
+		return "#1E1E1E";
+	}
+	
+	if(useLightColor) {
+		return "#00CC66";
+	} else {
+		return "#0F8219";
+	}
+}
+
+function getColor(part, colorString, useLightColor) {
+	if(part == null || part == "inner") {
+		if(colorString == "custom rgb") {
+			let rgbArray = innerStringToCode(colorString, useLightColor);
+			return Color_.rgb(rgbArray[0], rgbArray[1], rgbArray[2]);
+		} else {
+			return Color_.parseColor(innerStringToCode(colorString, useLightColor));
+		}
+	} else {
+		if(colorString == "custom rgb") {
+			let rgbArray = strokeStringToCode(colorString, useLightColor);
+			return Color_.rgb(rgbArray[0], rgbArray[1], rgbArray[2]);
+		} else {
+			return Color_.parseColor(strokeStringToCode(colorString, useLightColor));
+		}
+	}
+}
+
 function coloredSubTitle(subtitle) // TextView with colored background (edited by peacestorm)
 {
-	var rgbArray = [customRGBRed, customRGBGreen, customRGBBlue, customRGBRedStroke, customRGBGreenStroke, customRGBBlueStroke];
 	var bg = GradientDrawable_();
-	if(useLightThemeSetting == "on") {
-		bg.setColor(Color_.parseColor("#00994C"));
-		bg.setStroke(dip2px(2), Color_.parseColor("#00CC66"));
-	} else {
-		bg.setColor(Color_.parseColor("#0B5B25"));
-		bg.setStroke(dip2px(2), Color_.parseColor("#0F8219"));
-	}
-	if(themeSetting == "custom rgb") {
-		bg.setColor(Color_.rgb(rgbArray[0], rgbArray[1], rgbArray[2]));
-		bg.setStroke(dip2px(2), Color_.rgb(rgbArray[3], rgbArray[4], rgbArray[5]));
-	}
-	if(themeSetting == "red") {
-		if(useLightThemeSetting == "on") {
-			bg.setColor(Color_.parseColor("#FF3333"));
-			bg.setStroke(dip2px(2), Color_.parseColor("#FF6666"));
-		} else {
-			bg.setColor(Color_.parseColor("#5B0C0C"));
-			bg.setStroke(dip2px(2), Color_.parseColor("#821010"));
-		}
-	} if(themeSetting == "blue") {
-		if(useLightThemeSetting == "on") {
-			bg.setColor(Color_.parseColor("#0080FF"));
-			bg.setStroke(dip2px(2), Color_.parseColor("#3399FF"));
-		} else {
-			bg.setColor(Color_.parseColor("#0A175B"));
-			bg.setStroke(dip2px(2), Color_.parseColor("#0E3882"));
-		}
-	} if(themeSetting == "purple") {
-		bg.setColor(Color_.parseColor("#9F018C"));
-		bg.setStroke(dip2px(2), Color_.parseColor("#BC21AB"));
-	} if(themeSetting == "violet") {
-		bg.setColor(Color_.parseColor("#842DCE"));
-		bg.setStroke(dip2px(2), Color_.parseColor("#8D38C9"));
-	} if(themeSetting == "yellow") {
-		bg.setColor(Color_.parseColor("#CCCC00"));
-		bg.setStroke(dip2px(2), Color_.parseColor("#FFFF00"));
-	} if(themeSetting == "orange") {
-		bg.setColor(Color_.parseColor("#FF8C00"));
-		bg.setStroke(dip2px(2), Color_.parseColor("#FFA500"));
-	} if(themeSetting == "brown") {
-		bg.setColor(Color_.parseColor("#8B4513"));
-		bg.setStroke(dip2px(2), Color_.parseColor("#CD853F"));
-	} if(themeSetting == "grey") {
-		bg.setColor(Color_.parseColor("#808080"));
-		bg.setStroke(dip2px(2), Color_.parseColor("#A9A9A9"));
-	} if(themeSetting == "white") {
-		bg.setColor(Color_.parseColor("#E1E1E1"));
-		bg.setStroke(dip2px(2), Color_.parseColor("#FFFFFF"));
-	} if(themeSetting == "black") {
-		bg.setColor(Color_.parseColor("#141414"));
-		bg.setStroke(dip2px(2), Color_.parseColor("#1E1E1E"));
-	}
+	bg.setColor(getColor("inner"));
+	bg.setStroke(dip2px(2), getColor("stroke"));
 	bg.setShape(GradientDrawable_.RECTANGLE);
 
 	var title = clientTextView(subtitle, true);
@@ -12664,6 +12654,7 @@ VertexClientPE.showSplashScreen = function () {
 				
 				var splashProg = new android.widget.ProgressBar(CONTEXT);
 				splashProg.setIndeterminate(true);
+				splashProg.getIndeterminateDrawable().setColorFilter(getColor("stroke"), android.graphics.PorterDuff.Mode.SRC_IN);
 				
 				splashScreenLayout.addView(logoViewer5);
 				if(VertexClientPE.isPro()) {
@@ -16493,7 +16484,7 @@ function musicPlayerScreen() {
 							VertexClientPE.MusicUtils.playingFirstTime = false;
 						}
 					});
-					mpSeekBarView.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+					mpSeekBarView.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
 						onStopTrackingTouch: function(sB) {
 							VertexClientPE.MusicUtils.mp.seekTo(mpSeekBarView.getProgress());
 							mpCurrentPositionView.setText(VertexClientPE.MusicUtils.milliSecToMinString(VertexClientPE.MusicUtils.mp.getCurrentPosition()));
