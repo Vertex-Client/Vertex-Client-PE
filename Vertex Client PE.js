@@ -583,7 +583,7 @@ function VectorLib() {
 		CONTEXT.runOnUiThread({
 			run() {
 				let layout = new LinearLayout_(CONTEXT),
-					window = new PopupWindow_(layout, -2, -2);
+					window = new PopupWindow_(layout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
 				thiz._viewer.setOnClickListener(new View_.OnClickListener({
 					onClick(view) {
 						CONTEXT.runOnUiThread({
@@ -597,8 +597,9 @@ function VectorLib() {
 				}));
 				layout.addView(thiz._picker.show(), DP * 280, DP * 240);
 				layout.addView(thiz._viewer, DP * 280, DP * 100);
+				layout.setGravity(Gravity_.CENTER);
 				layout.setOrientation(1);
-				window.setBackgroundDrawable(new ColorDrawable_(Color_.rgb(97, 97, 97)));
+				window.setBackgroundDrawable(new ColorDrawable_(Color_.argb(127, 0, 0, 0)));
 				window.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER, 0, 0);
 			}
 		});
@@ -7193,7 +7194,7 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 				dScrollInside.setOrientation(1);
 				dScrollView.addView(dScrollInside);
 			 
-				var pickerButton0 = clientButton("Color Picker");
+				var pickerButton0 = clientButton("Pick inner color");
 				pickerButton0.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
 						dialog.dismiss();
@@ -7211,7 +7212,7 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 					}
 				});
 			 
-				var pickerButton1 = clientButton("Color Picker");
+				var pickerButton1 = clientButton("Pick stroke color");
 				pickerButton1.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
 						dialog.dismiss();
@@ -11977,20 +11978,29 @@ function strokeStringToCode(colorString, useLightColor) {
 }
 
 function getColor(part, colorString, useLightColor) {
+	if(colorString == null) {
+		colorString = themeSetting;
+	}
+	if(useLightColor == null) {
+		useLightColor = useLightThemeSetting;
+	}
+	if(useLightColor == "on") {
+		useLightColor = true;
+	}
+	if(useLightColor == "off") {
+		useLightColor = false;
+	}
+	let colorStringToCode;
 	if(part == null || part == "inner") {
-		if(colorString == "custom rgb") {
-			let rgbArray = innerStringToCode(colorString, useLightColor);
-			return Color_.rgb(rgbArray[0], rgbArray[1], rgbArray[2]);
-		} else {
-			return Color_.parseColor(innerStringToCode(colorString, useLightColor));
-		}
+		colorStringToCode = innerStringToCode;
 	} else {
-		if(colorString == "custom rgb") {
-			let rgbArray = strokeStringToCode(colorString, useLightColor);
-			return Color_.rgb(rgbArray[0], rgbArray[1], rgbArray[2]);
-		} else {
-			return Color_.parseColor(strokeStringToCode(colorString, useLightColor));
-		}
+		colorStringToCode = strokeStringToCode;
+	}
+	if(colorString == "custom rgb") {
+		let rgbArray = colorStringToCode(colorString, useLightColor);
+		return Color_.rgb(rgbArray[0], rgbArray[1], rgbArray[2]);
+	} else {
+		return Color_.parseColor(colorStringToCode(colorString, useLightColor));
 	}
 }
 
