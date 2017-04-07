@@ -11696,13 +11696,15 @@ function clientSectionTitle(text, style) {
 		var rainbowBg = new GradientDrawable_(GradientDrawable_.Orientation.LEFT_RIGHT, rainbowInt);
 		defaultTextView.setBackgroundDrawable(rainbowBg);
 	} else {
-		if(themeSetting == "white") {
-			defaultTextView.setTextColor(Color_.BLACK);
-			if(fontSetting != "minecraft") {
-				defaultTextView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
-			}
+		if(style == "theme") {
+			var colorInt = Array_.newInstance(Integer_.TYPE, 2);
+			colorInt[0] = getColor("inner");
+			colorInt[1] = getColor("stroke");
+			var colorBg = new GradientDrawable_(GradientDrawable_.Orientation.LEFT_RIGHT, colorInt);
+			defaultTextView.setBackgroundDrawable(colorBg);
+		} else {
+			defaultTextView.setBackgroundDrawable(backgroundSpecial());
 		}
-		defaultTextView.setBackgroundDrawable(backgroundSpecial());
 	}
 	defaultTextView.setPadding(0, 0, 0, 0);
 	defaultTextView.setLineSpacing(0, 1.15);
@@ -11788,8 +11790,8 @@ function categoryTitle(text) {
 }
 
 function settingButton(text, desc, parentWidth, resetFunc) {
-	if(parentWidth == null || parentWidth == NaN) {
-		parentWidth = display.widthPixels;
+	if(parentWidth == null) {
+		parentWidth = display.widthPixels - dip2px(4);
 	}
 	
 	var settingButtonLayout = new LinearLayout_(CONTEXT);
@@ -14185,6 +14187,7 @@ function settingsScreen() {
 					var settingsMenuLayout = new LinearLayout_(CONTEXT);
 					settingsMenuLayout.setOrientation(1);
 					settingsMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
+					settingsMenuLayout.setPadding(dip2px(2), 0, dip2px(2), 0);
 					
 					var settingsMenuScroll = new ScrollView(CONTEXT);
 					
@@ -14198,7 +14201,7 @@ function settingsScreen() {
 					settingsMenuScroll.addView(settingsMenuLayout);
 					settingsMenuLayout1.addView(settingsMenuScroll);
 					
-					var generalTitle = clientSectionTitle("HUD", "rainbow");
+					var generalTitle = clientSectionTitle("HUD", "theme");
 					
 					var hacksListModeSettingFunc = new settingButton("Hacks list mode", null, null,
 						function(viewArg) {
@@ -14406,7 +14409,7 @@ function settingsScreen() {
 						}
 					}));
 					
-					var themeTitle = clientSectionTitle("Theme", "rainbow");
+					var themeTitle = clientSectionTitle("Theme", "theme");
 					
 					var themeArray = ["Custom RGB", "Green", "Red", "Blue", "Purple", "Violet", "Yellow", "Orange", "Brown", "Grey", "White", "Black"];
 					var themeSettingFunc = new settingSelector("Color", "Choose a color.", "Color Selector", themeArray, capitalizeColorString(themeSetting), "themeSetting",
@@ -14810,7 +14813,7 @@ function settingsScreen() {
 						}
 					}));
 					
-					var menuTitle = clientSectionTitle("Menu", "rainbow");
+					var menuTitle = clientSectionTitle("Menu", "theme");
 					
 					var menuTypeSettingFunc = new settingButton("Menu style", "Sets the Client's menu style.", null,
 						function(viewArg) {
@@ -14915,7 +14918,7 @@ function settingsScreen() {
 						}
 					}));
 					
-					var soundsAndMusicTitle = clientSectionTitle("Sounds & music", "rainbow");
+					var soundsAndMusicTitle = clientSectionTitle("Sounds & music", "theme");
 					
 					var buttonSoundSettingFunc = new settingButton("Button sound", "The sound that you hear when tapping a button.", null,
 						function(viewArg) {
@@ -14988,7 +14991,7 @@ function settingsScreen() {
 						}
 					}));
 					
-					var dashboardTitle = clientSectionTitle("Dashboard", "rainbow");
+					var dashboardTitle = clientSectionTitle("Dashboard", "theme");
 					
 					var dashboardTileSizeSettingFunc = new settingButton("Tile size", "Sets the Dashboard tile style.");
 					var dashboardTileSizeSettingButton = dashboardTileSizeSettingFunc.getButton();
@@ -14999,7 +15002,7 @@ function settingsScreen() {
 						}
 					}));
 					
-					var splashScreenTitle = clientSectionTitle("Splash Screen", "rainbow");
+					var splashScreenTitle = clientSectionTitle("Splash Screen", "theme");
 					
 					var transparentSplashScreenSettingFunc = new settingButton("Transparent splash screen", "Makes the splash screen partly transparent.", null,
 						function(viewArg) {
@@ -15027,7 +15030,7 @@ function settingsScreen() {
 						}
 					}));
 					
-					var commandsTitle = clientSectionTitle("Commands", "rainbow");
+					var commandsTitle = clientSectionTitle("Commands", "theme");
 					
 					var commandsSettingFunc = new settingButton("Commands", "Toggle commands off to login on servers like Mineplex PE.", null,
 						function(viewArg) {
@@ -15085,7 +15088,7 @@ function settingsScreen() {
 						}
 					}));
 					
-					var otherTitle = clientSectionTitle("Other", "rainbow");
+					var otherTitle = clientSectionTitle("Other", "theme");
 					
 					var featuresSettingFunc = new settingButton("Opt in/out features", "Allows you to choose what categories/mods to show.");
 					var featuresSettingButton = featuresSettingFunc.getButton();
@@ -15218,6 +15221,7 @@ function devSettingsScreen() {
 					var devSettingsMenuLayout = new LinearLayout_(CONTEXT);
 					devSettingsMenuLayout.setOrientation(1);
 					devSettingsMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
+					devSettingsMenuLayout.setPadding(dip2px(2), 0, dip2px(2), 0);
 					
 					var devSettingsMenuScroll = new ScrollView(CONTEXT);
 					
@@ -15231,7 +15235,7 @@ function devSettingsScreen() {
 					devSettingsMenuScroll.addView(devSettingsMenuLayout);
 					devSettingsMenuLayout1.addView(devSettingsMenuScroll);
 					
-					var generalTitle = clientSectionTitle("General", "rainbow");
+					var generalTitle = clientSectionTitle("General", "theme");
 					
 					var debugModeSettingFunc = new settingButton("Debug mode", "Show debug messages.");
 					var debugModeSettingButton = debugModeSettingFunc.getButton();
@@ -15269,7 +15273,7 @@ function devSettingsScreen() {
 						}
 					}));
 					
-					var dataTitle = clientSectionTitle("Data", "rainbow");
+					var dataTitle = clientSectionTitle("Data", "theme");
 					
 					var resetDataSettingFunc = new settingButton("Reset all data", "Resets all data (including Pro).");
 					var resetDataSettingButton = resetDataSettingFunc.getButton();
