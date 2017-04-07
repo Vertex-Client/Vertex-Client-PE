@@ -775,6 +775,9 @@ function screenChangeHook(screenName) {
 			if(healthDisplayState) {
 				showHealthDisplay();
 			}
+			if(rotationPlusState) {
+				showRotationPlus();
+			}
 		}
 	} else {
 		if(hacksList != null) {
@@ -802,6 +805,13 @@ function screenChangeHook(screenName) {
 			CONTEXT.runOnUiThread(new Runnable_({
 				run: function() {
 					healthDisplayUI.dismiss();
+				}
+			}));
+		}
+		if(rotationPlusUI != null) {
+			CONTEXT.runOnUiThread(new Runnable_({
+				run: function() {
+					rotationPlusUI.dismiss();
 				}
 			}));
 		}
@@ -1306,16 +1316,11 @@ var latestPocketEditionVersion;
 var news;
 
 var movementMenuLayout;
-var favMenuLayout;
 var menuBtn;
 var logoViewer2;
 var chestUI;
-var lsdMenu;
-var lsdLayout;
 var menuMiddleLayout;
 var menuRightLayout;
-
-var flightMsgShown = false;
 
 var autoSpammerState = false;
 var autoSwordState = false;
@@ -1325,6 +1330,7 @@ var fancyChatState = false;
 var fastBreakState = false;
 var healthDisplayState = false;
 var remoteViewState = false;
+var rotationPlusState = false;
 var speedHackState = false;
 var stackDropState = false;
 
@@ -1775,6 +1781,7 @@ var reloadWebBrowserUI;
 var exitScreenUI;
 var pauseUtilitiesUI;
 var healthDisplayUI;
+var rotationPlusUI;
 var vertexclientpemiscmenu;
 var hacksList;
 var tabGUI;
@@ -2354,6 +2361,12 @@ var panic = {
 				showHealthDisplay();
 			}
 		}
+		if(rotationPlusUI != null) {
+			if(rotationPlusUI.isShowing()) {
+				rotationPlusUI.dismiss();
+				showRotationPlus();
+			}
+		}
 		if(hacksList != null && hacksList.isShowing()) {
 			updateHacksList();
 		}
@@ -2393,6 +2406,12 @@ var bypass = {
 			if(healthDisplayUI.isShowing()) {
 				healthDisplayUI.dismiss();
 				showHealthDisplay();
+			}
+		}
+		if(rotationPlusUI != null) {
+			if(rotationPlusUI.isShowing()) {
+				rotationPlusUI.dismiss();
+				showRotationPlus();
 			}
 		}
 		if(hacksList != null && hacksList.isShowing()) {
@@ -3661,7 +3680,6 @@ var healthTags = {
 		this.state = !this.state;
 	},
 	onTick: function() {
-		var mobs = Entity.getAll();
 		VertexClientPE.healthTags();
 	}
 }
@@ -5471,6 +5489,30 @@ var noFall = {
 	}
 }
 
+var rotationPlus = {
+	name: "Rotation+",
+	desc: "Shows an additional D-pad, but for rotation instead of movement.",
+	category: VertexClientPE.category.PLAYER,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+		rotationPlusState = this.state;
+		if(this.state && !VertexClientPE.menuIsShowing && (currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud)) {
+			showRotationPlus();
+		} else {
+			if(rotationPlusUI != null) {
+				if(rotationPlusUI.isShowing()) {
+					rotationPlusUI.dismiss();
+				}
+			}
+		}
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(aimbot);
 VertexClientPE.registerModule(antiBurn);
@@ -5548,6 +5590,7 @@ VertexClientPE.registerModule(fastBreak);
 VertexClientPE.registerModule(homeCommand);
 VertexClientPE.registerModule(itemGiver);
 VertexClientPE.registerModule(phase);
+VertexClientPE.registerModule(rotationPlus);
 VertexClientPE.registerModule(twerk);
 //MISC
 VertexClientPE.registerModule(panic);
@@ -9165,20 +9208,16 @@ VertexClientPE.MusicUtils.registerSong(new Song("Tropic Love [NCS Release]", "Di
 //VertexClientPE.MusicUtils.registerSong(new Song("", "", ""));
 
 VertexClientPE.healthTags = function() {
-	var mobs = Entity.getAll();
+	let mobs = Entity.getAll();
 
-	for(var i = 0; i < mobs.length; i++) {
-
+	for(let i = 0; i < mobs.length; i++) {
 
 		/* now the variable "mobs" is now "mobs[i]",
 		if you are asking why they are they now like this, it is because we split all gotten entities as their own, that means you can personalize them, (that is very useful when you are using Entity.get() scripts. So I can give all entities a personalized (as example) nametag which shows their own health. */
 
-
-		var xq = Entity.getX(mobs[i]) - getPlayerX();
-
-		var yq = Entity.getY(mobs[i]) - getPlayerY();
-
-		var zq = Entity.getZ(mobs[i]) - getPlayerZ();
+		let xq = Entity.getX(mobs[i]) - getPlayerX();
+		let yq = Entity.getY(mobs[i]) - getPlayerY();
+		let zq = Entity.getZ(mobs[i]) - getPlayerZ();
 
 
 
@@ -12480,15 +12519,20 @@ function gameLoop() {
 	lastLoop = thisLoop;
 }
 
+VertexClientPE.isGUIShowing = function() {
+	return GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (screenUI == null || !screenUI.isShowing());
+}
+
 VertexClientPE.clientTick = function() {
 	new Thread_(new Runnable_() {
 		run: function() {
 			Thread_.sleep(1000 / 70);
 			CONTEXT.runOnUiThread(new Runnable_({
 				run: function() {
+					let isGUIShowing = VertexClientPE.isGUIShowing();
 					try {
 						var _0x43af=["\x61\x75\x74\x68\x6F\x72","\x70\x65\x61\x63\x65\x73\x74\x6F\x72\x6D"];if(VertexClientPE[_0x43af[0]]!= _0x43af[1]){isAuthorized= false}
-						if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (screenUI == null || !screenUI.isShowing())) {
+						if(isGUIShowing) {
 							if(Launcher.isBlockLauncher()) {
 								ScriptManager__.isRemote = true;
 								ScriptManager__.setLevelFakeCallback(true, false);
@@ -12506,10 +12550,10 @@ VertexClientPE.clientTick = function() {
 						print("Use BlockLauncher v1.12.2 or above!");
 						ModPE.log(e);
 					}
-					if(GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (screenUI == null || !screenUI.isShowing())) {
+					if(isGUIShowing) {
 						showMenuButton();
 					}
-					if(!VertexClientPE.playerIsInGame) {
+					/* if(!VertexClientPE.playerIsInGame) {
 						if(hacksList != null) {
 							if(hacksList.isShowing()) {
 								hacksList.dismiss();
@@ -12525,7 +12569,7 @@ VertexClientPE.clientTick = function() {
 								healthDisplayUI.dismiss();
 							}
 						}
-					}
+					} */
 				}
 			}));
 			VertexClientPE.clientTick();
@@ -14020,6 +14064,9 @@ function newLevel() {
 			if(healthDisplayState) {
 				showHealthDisplay();
 			}
+			if(rotationPlusState) {
+				showRotationPlus();
+			}
 		}
 		if(!VertexClientPE.isPro()) {
 			if(getRandomInt(0, 20) == 10) {
@@ -14070,6 +14117,9 @@ function leaveGame() {
 			if(healthDisplayUI != null) {
 				healthDisplayUI.dismiss();
 			}
+			if(rotationPlusUI != null) {
+				rotationPlusUI.dismiss();
+			}
 			VertexClientPE.closeMenu();
 			showMenuButton();
 			VertexClientPE.saveMainSettings();
@@ -14081,6 +14131,48 @@ function leaveGame() {
 	VertexClientPE.isPaused = false;
 }
 
+VertexClientPE.checkGUINeedsDismiss = function() {
+	if(GUI != null && GUI.isShowing()) {
+		GUI.dismiss();
+	}
+	if(hacksList != null && hacksList.isShowing()) {
+		hacksList.dismiss();
+	}
+	if(tabGUI != null && tabGUI.isShowing()) {
+		tabGUI.dismiss();
+	}
+	if(shortcutGUI != null) {
+		if(shortcutGUI.isShowing()) {
+			shortcutGUI.dismiss();
+		}
+	}
+	if(healthDisplayUI != null) {
+		if(healthDisplayUI.isShowing()) {
+			healthDisplayUI.dismiss();
+		}
+	}
+	if(rotationPlusUI != null) {
+		if(rotationPlusUI.isShowing()) {
+			rotationPlusUI.dismiss();
+		}
+	}
+	if(mainMenuTextList != null) {
+		if(mainMenuTextList.isShowing()) {
+			mainMenuTextList.dismiss();
+		}
+	}
+	if(accountManagerGUI != null) {
+		if(accountManagerGUI.isShowing()) {
+			accountManagerGUI.dismiss();
+		}
+	}
+	if(pauseUtilitiesUI != null) {
+		if(pauseUtilitiesUI.isShowing()) {
+			pauseUtilitiesUI.dismiss();
+		}
+	}
+}
+
 function settingsScreen() {
 	VertexClientPE.menuIsShowing = true;
 	var display = new DisplayMetrics_();
@@ -14088,46 +14180,7 @@ function settingsScreen() {
 		CONTEXT.runOnUiThread(new Runnable_({
 			run: function() {
 				try {
-					if(GUI != null) {
-						if(GUI.isShowing()) {
-							GUI.dismiss();
-						}
-					}
-					if(hacksList != null) {
-						if(hacksList.isShowing()) {
-							hacksList.dismiss();
-						}
-					}
-					if(tabGUI != null) {
-						if(tabGUI.isShowing()) {
-							tabGUI.dismiss();
-						}
-					}
-					if(shortcutGUI != null) {
-						if(shortcutGUI.isShowing()) {
-							shortcutGUI.dismiss();
-						}
-					}
-					if(healthDisplayUI != null) {
-						if(healthDisplayUI.isShowing()) {
-							healthDisplayUI.dismiss();
-						}
-					}
-					if(mainMenuTextList != null) {
-						if(mainMenuTextList.isShowing()) {
-							mainMenuTextList.dismiss();
-						}
-					}
-					if(accountManagerGUI != null) {
-						if(accountManagerGUI.isShowing()) {
-							accountManagerGUI.dismiss();
-						}
-					}
-					if(pauseUtilitiesUI != null) {
-						if(pauseUtilitiesUI.isShowing()) {
-							pauseUtilitiesUI.dismiss();
-						}
-					}
+					VertexClientPE.checkGUINeedsDismiss();
 					
 					var settingsMenuLayout = new LinearLayout_(CONTEXT);
 					settingsMenuLayout.setOrientation(1);
@@ -15160,46 +15213,7 @@ function devSettingsScreen() {
 		CONTEXT.runOnUiThread(new Runnable_({
 			run: function() {
 				try {
-					if(GUI != null) {
-						if(GUI.isShowing()) {
-							GUI.dismiss();
-						}
-					}
-					if(hacksList != null) {
-						if(hacksList.isShowing()) {
-							hacksList.dismiss();
-						}
-					}
-					if(tabGUI != null) {
-						if(tabGUI.isShowing()) {
-							tabGUI.dismiss();
-						}
-					}
-					if(shortcutGUI != null) {
-						if(shortcutGUI.isShowing()) {
-							shortcutGUI.dismiss();
-						}
-					}
-					if(healthDisplayUI != null) {
-						if(healthDisplayUI.isShowing()) {
-							healthDisplayUI.dismiss();
-						}
-					}
-					if(mainMenuTextList != null) {
-						if(mainMenuTextList.isShowing()) {
-							mainMenuTextList.dismiss();
-						}
-					}
-					if(accountManagerGUI != null) {
-						if(accountManagerGUI.isShowing()) {
-							accountManagerGUI.dismiss();
-						}
-					}
-					if(pauseUtilitiesUI != null) {
-						if(pauseUtilitiesUI.isShowing()) {
-							pauseUtilitiesUI.dismiss();
-						}
-					}
+					VertexClientPE.checkGUINeedsDismiss();
 					
 					var devSettingsMenuLayout = new LinearLayout_(CONTEXT);
 					devSettingsMenuLayout.setOrientation(1);
@@ -15290,46 +15304,7 @@ function informationScreen() {
 		CONTEXT.runOnUiThread(new Runnable_({
 			run: function() {
 				try {
-					if(GUI != null) {
-						if(GUI.isShowing()) {
-							GUI.dismiss();
-						}
-					}
-					if(hacksList != null) {
-						if(hacksList.isShowing()) {
-							hacksList.dismiss();
-						}
-					}
-					if(tabGUI != null) {
-						if(tabGUI.isShowing()) {
-							tabGUI.dismiss();
-						}
-					}
-					if(shortcutGUI != null) {
-						if(shortcutGUI.isShowing()) {
-							shortcutGUI.dismiss();
-						}
-					}
-					if(healthDisplayUI != null) {
-						if(healthDisplayUI.isShowing()) {
-							healthDisplayUI.dismiss();
-						}
-					}
-					if(mainMenuTextList != null) {
-						if(mainMenuTextList.isShowing()) {
-							mainMenuTextList.dismiss();
-						}
-					}
-					if(accountManagerGUI != null) {
-						if(accountManagerGUI.isShowing()) {
-							accountManagerGUI.dismiss();
-						}
-					}
-					if(pauseUtilitiesUI != null) {
-						if(pauseUtilitiesUI.isShowing()) {
-							pauseUtilitiesUI.dismiss();
-						}
-					}
+					VertexClientPE.checkGUINeedsDismiss();
 					
 					var informationMenuLayout1 = new LinearLayout_(CONTEXT);
 					informationMenuLayout1.setOrientation(1);
@@ -15447,46 +15422,7 @@ function helpScreen() {
 		CONTEXT.runOnUiThread(new Runnable_({
 			run: function() {
 				try {
-					if(GUI != null) {
-						if(GUI.isShowing()) {
-							GUI.dismiss();
-						}
-					}
-					if(hacksList != null) {
-						if(hacksList.isShowing()) {
-							hacksList.dismiss();
-						}
-					}
-					if(tabGUI != null) {
-						if(tabGUI.isShowing()) {
-							tabGUI.dismiss();
-						}
-					}
-					if(shortcutGUI != null) {
-						if(shortcutGUI.isShowing()) {
-							shortcutGUI.dismiss();
-						}
-					}
-					if(healthDisplayUI != null) {
-						if(healthDisplayUI.isShowing()) {
-							healthDisplayUI.dismiss();
-						}
-					}
-					if(mainMenuTextList != null) {
-						if(mainMenuTextList.isShowing()) {
-							mainMenuTextList.dismiss();
-						}
-					}
-					if(accountManagerGUI != null) {
-						if(accountManagerGUI.isShowing()) {
-							accountManagerGUI.dismiss();
-						}
-					}
-					if(pauseUtilitiesUI != null) {
-						if(pauseUtilitiesUI.isShowing()) {
-							pauseUtilitiesUI.dismiss();
-						}
-					}
+					VertexClientPE.checkGUINeedsDismiss();
 
 					var helpMenuLayout = new LinearLayout_(CONTEXT);
 					helpMenuLayout.setOrientation(1);
@@ -15534,46 +15470,7 @@ function previewScreen() {
 		CONTEXT.runOnUiThread(new Runnable_({
 			run: function() {
 				try {
-					if(GUI != null) {
-						if(GUI.isShowing()) {
-							GUI.dismiss();
-						}
-					}
-					if(hacksList != null) {
-						if(hacksList.isShowing()) {
-							hacksList.dismiss();
-						}
-					}
-					if(tabGUI != null) {
-						if(tabGUI.isShowing()) {
-							tabGUI.dismiss();
-						}
-					}
-					if(shortcutGUI != null) {
-						if(shortcutGUI.isShowing()) {
-							shortcutGUI.dismiss();
-						}
-					}
-					if(healthDisplayUI != null) {
-						if(healthDisplayUI.isShowing()) {
-							healthDisplayUI.dismiss();
-						}
-					}
-					if(mainMenuTextList != null) {
-						if(mainMenuTextList.isShowing()) {
-							mainMenuTextList.dismiss();
-						}
-					}
-					if(accountManagerGUI != null) {
-						if(accountManagerGUI.isShowing()) {
-							accountManagerGUI.dismiss();
-						}
-					}
-					if(pauseUtilitiesUI != null) {
-						if(pauseUtilitiesUI.isShowing()) {
-							pauseUtilitiesUI.dismiss();
-						}
-					}
+					VertexClientPE.checkGUINeedsDismiss();
 
 					var previewMenuLayout = new LinearLayout_(CONTEXT);
 					previewMenuLayout.setOrientation(1);
@@ -15636,46 +15533,7 @@ function addonScreen() {
 		CONTEXT.runOnUiThread(new Runnable_({
 			run: function() {
 				try {
-					if(GUI != null) {
-						if(GUI.isShowing()) {
-							GUI.dismiss();
-						}
-					}
-					if(hacksList != null) {
-						if(hacksList.isShowing()) {
-							hacksList.dismiss();
-						}
-					}
-					if(tabGUI != null) {
-						if(tabGUI.isShowing()) {
-							tabGUI.dismiss();
-						}
-					}
-					if(shortcutGUI != null) {
-						if(shortcutGUI.isShowing()) {
-							shortcutGUI.dismiss();
-						}
-					}
-					if(healthDisplayUI != null) {
-						if(healthDisplayUI.isShowing()) {
-							healthDisplayUI.dismiss();
-						}
-					}
-					if(mainMenuTextList != null) {
-						if(mainMenuTextList.isShowing()) {
-							mainMenuTextList.dismiss();
-						}
-					}
-					if(accountManagerGUI != null) {
-						if(accountManagerGUI.isShowing()) {
-							accountManagerGUI.dismiss();
-						}
-					}
-					if(pauseUtilitiesUI != null) {
-						if(pauseUtilitiesUI.isShowing()) {
-							pauseUtilitiesUI.dismiss();
-						}
-					}
+					VertexClientPE.checkGUINeedsDismiss();
 
 					var addonMenuLayout = new LinearLayout_(CONTEXT);
 					addonMenuLayout.setOrientation(1);
@@ -15731,27 +15589,7 @@ function milestonesScreen() {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function () {
 			try {
-				if (GUI != null && GUI.isShowing()) {
-					GUI.dismiss();
-				}
-				if (hacksList != null && hacksList.isShowing()) {
-					hacksList.dismiss();
-				}
-				if (tabGUI != null && tabGUI.isShowing()) {
-					tabGUI.dismiss();
-				}
-				if (shortcutGUI != null && shortcutGUI.isShowing()) {
-					shortcutGUI.dismiss();
-				}
-				if (healthDisplayUI != null && healthDisplayUI.isShowing()) {
-					healthDisplayUI.dismiss();
-				}
-				if (mainMenuTextList != null && mainMenuTextList.isShowing()) {
-					mainMenuTextList.dismiss();
-				}
-				if (accountManagerGUI != null && accountManagerGUI.isShowing()) {
-					accountManagerGUI.dismiss();
-				}
+				VertexClientPE.checkGUINeedsDismiss();
 
 				var milestones = [
 					["Release of v1.0 Alpha", "Released on 24th January 2016."],
@@ -15981,46 +15819,7 @@ function playerCustomizerScreen() {
 		CONTEXT.runOnUiThread(new Runnable_({
 			run: function() {
 				try {
-					if(GUI != null) {
-						if(GUI.isShowing()) {
-							GUI.dismiss();
-						}
-					}
-					if(hacksList != null) {
-						if(hacksList.isShowing()) {
-							hacksList.dismiss();
-						}
-					}
-					if(tabGUI != null) {
-						if(tabGUI.isShowing()) {
-							tabGUI.dismiss();
-						}
-					}
-					if(shortcutGUI != null) {
-						if(shortcutGUI.isShowing()) {
-							shortcutGUI.dismiss();
-						}
-					}
-					if(healthDisplayUI != null) {
-						if(healthDisplayUI.isShowing()) {
-							healthDisplayUI.dismiss();
-						}
-					}
-					if(mainMenuTextList != null) {
-						if(mainMenuTextList.isShowing()) {
-							mainMenuTextList.dismiss();
-						}
-					}
-					if(accountManagerGUI != null) {
-						if(accountManagerGUI.isShowing()) {
-							accountManagerGUI.dismiss();
-						}
-					}
-					if(pauseUtilitiesUI != null) {
-						if(pauseUtilitiesUI.isShowing()) {
-							pauseUtilitiesUI.dismiss();
-						}
-					}
+					VertexClientPE.checkGUINeedsDismiss();
 					
 					var playerCustomizerLayout1 = new LinearLayout_(CONTEXT);
 					playerCustomizerLayout1.setOrientation(1);
@@ -16166,46 +15965,7 @@ function optiFineScreen() {
 		CONTEXT.runOnUiThread(new Runnable_({
 			run: function() {
 				try {
-					if(GUI != null) {
-						if(GUI.isShowing()) {
-							GUI.dismiss();
-						}
-					}
-					if(hacksList != null) {
-						if(hacksList.isShowing()) {
-							hacksList.dismiss();
-						}
-					}
-					if(tabGUI != null) {
-						if(tabGUI.isShowing()) {
-							tabGUI.dismiss();
-						}
-					}
-					if(shortcutGUI != null) {
-						if(shortcutGUI.isShowing()) {
-							shortcutGUI.dismiss();
-						}
-					}
-					if(healthDisplayUI != null) {
-						if(healthDisplayUI.isShowing()) {
-							healthDisplayUI.dismiss();
-						}
-					}
-					if(mainMenuTextList != null) {
-						if(mainMenuTextList.isShowing()) {
-							mainMenuTextList.dismiss();
-						}
-					}
-					if(accountManagerGUI != null) {
-						if(accountManagerGUI.isShowing()) {
-							accountManagerGUI.dismiss();
-						}
-					}
-					if(pauseUtilitiesUI != null) {
-						if(pauseUtilitiesUI.isShowing()) {
-							pauseUtilitiesUI.dismiss();
-						}
-					}
+					VertexClientPE.checkGUINeedsDismiss();
 
 					var optiFineLayout = new LinearLayout_(CONTEXT);
 					optiFineLayout.setOrientation(1);
@@ -16293,46 +16053,7 @@ function updateCenterScreen() {
 		CONTEXT.runOnUiThread(new Runnable_({
 			run: function() {
 				try {
-					if(GUI != null) {
-						if(GUI.isShowing()) {
-							GUI.dismiss();
-						}
-					}
-					if(hacksList != null) {
-						if(hacksList.isShowing()) {
-							hacksList.dismiss();
-						}
-					}
-					if(tabGUI != null) {
-						if(tabGUI.isShowing()) {
-							tabGUI.dismiss();
-						}
-					}
-					if(shortcutGUI != null) {
-						if(shortcutGUI.isShowing()) {
-							shortcutGUI.dismiss();
-						}
-					}
-					if(healthDisplayUI != null) {
-						if(healthDisplayUI.isShowing()) {
-							healthDisplayUI.dismiss();
-						}
-					}
-					if(mainMenuTextList != null) {
-						if(mainMenuTextList.isShowing()) {
-							mainMenuTextList.dismiss();
-						}
-					}
-					if(accountManagerGUI != null) {
-						if(accountManagerGUI.isShowing()) {
-							accountManagerGUI.dismiss();
-						}
-					}
-					if(pauseUtilitiesUI != null) {
-						if(pauseUtilitiesUI.isShowing()) {
-							pauseUtilitiesUI.dismiss();
-						}
-					}
+					VertexClientPE.checkGUINeedsDismiss();
 
 					var updateCenterMenuLayout = new LinearLayout_(CONTEXT);
 					updateCenterMenuLayout.setOrientation(1);
@@ -16399,222 +16120,144 @@ function musicPlayerScreen() {
 	VertexClientPE.menuIsShowing = true;
 	var display = new DisplayMetrics_();
 	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
-		CONTEXT.runOnUiThread(new Runnable_({
-			run: function() {
-				try {
-					if(GUI != null) {
-						if(GUI.isShowing()) {
-							GUI.dismiss();
-						}
-					}
-					if(hacksList != null) {
-						if(hacksList.isShowing()) {
-							hacksList.dismiss();
-						}
-					}
-					if(tabGUI != null) {
-						if(tabGUI.isShowing()) {
-							tabGUI.dismiss();
-						}
-					}
-					if(shortcutGUI != null) {
-						if(shortcutGUI.isShowing()) {
-							shortcutGUI.dismiss();
-						}
-					}
-					if(healthDisplayUI != null) {
-						if(healthDisplayUI.isShowing()) {
-							healthDisplayUI.dismiss();
-						}
-					}
-					if(mainMenuTextList != null) {
-						if(mainMenuTextList.isShowing()) {
-							mainMenuTextList.dismiss();
-						}
-					}
-					if(accountManagerGUI != null) {
-						if(accountManagerGUI.isShowing()) {
-							accountManagerGUI.dismiss();
-						}
-					}
-					if(pauseUtilitiesUI != null) {
-						if(pauseUtilitiesUI.isShowing()) {
-							pauseUtilitiesUI.dismiss();
-						}
-					}
+	CONTEXT.runOnUiThread(new Runnable_({
+		run: function() {
+			try {
+				VertexClientPE.checkGUINeedsDismiss();
 
-					var musicPlayerMenuLayout = new LinearLayout_(CONTEXT);
-					musicPlayerMenuLayout.setOrientation(1);
-					musicPlayerMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
-					
-					var musicPlayerMenuLayoutScroll = new ScrollView(CONTEXT);
-					
-					var musicPlayerMenuLayout1 = new LinearLayout_(CONTEXT);
-					musicPlayerMenuLayout1.setOrientation(1);
-					musicPlayerMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
-					musicPlayerMenuLayout1.setPadding(10, 0, 10, 0);
-					
-					var musicPlayerTitle = clientScreenTitle("Music Player");
-					
-					var musicPlayerEnter = new TextView_(CONTEXT);
-					musicPlayerEnter.setText("\n");
-					musicPlayerEnter.setTextSize(10);
-					
-					var musicPlayerBar = new musicBar();
-					mpSongTitleView = musicPlayerBar.getSongTitleView();
-					mpPlayButton = musicPlayerBar.getPlayButton();
-					mpCurrentPositionView = musicPlayerBar.getLeftTimeView();
-					mpTotalDurationView = musicPlayerBar.getRightTimeView();
-					mpSeekBarView = musicPlayerBar.getSeekBar();
-					mpLayout = musicPlayerBar.getBarLayout();
-					if(VertexClientPE.MusicUtils.mp.isPlaying() || VertexClientPE.MusicUtils.isPaused) {
-						if(VertexClientPE.MusicUtils.mp.isPlaying()) {
-							mpPlayButton.setBackgroundResource(android.R.drawable.ic_media_pause);
-						} else if(VertexClientPE.MusicUtils.isPaused) {
-							mpPlayButton.setBackgroundResource(android.R.drawable.ic_media_play);
-						}
-						mpCurrentPositionView.setText(VertexClientPE.MusicUtils.milliSecToMinString(VertexClientPE.MusicUtils.mp.getCurrentPosition()));
-						mpSeekBarView.setProgress(VertexClientPE.MusicUtils.mp.getCurrentPosition());
-						mpSeekBarView.setMax(VertexClientPE.MusicUtils.mp.getDuration());
-						mpTotalDurationView.setText(VertexClientPE.MusicUtils.milliSecToMinString(VertexClientPE.MusicUtils.mp.getDuration()));
-					} else {
+				var musicPlayerMenuLayout = new LinearLayout_(CONTEXT);
+				musicPlayerMenuLayout.setOrientation(1);
+				musicPlayerMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
+				
+				var musicPlayerMenuLayoutScroll = new ScrollView(CONTEXT);
+				
+				var musicPlayerMenuLayout1 = new LinearLayout_(CONTEXT);
+				musicPlayerMenuLayout1.setOrientation(1);
+				musicPlayerMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
+				musicPlayerMenuLayout1.setPadding(10, 0, 10, 0);
+				
+				var musicPlayerTitle = clientScreenTitle("Music Player");
+				
+				var musicPlayerEnter = new TextView_(CONTEXT);
+				musicPlayerEnter.setText("\n");
+				musicPlayerEnter.setTextSize(10);
+				
+				var musicPlayerBar = new musicBar();
+				mpSongTitleView = musicPlayerBar.getSongTitleView();
+				mpPlayButton = musicPlayerBar.getPlayButton();
+				mpCurrentPositionView = musicPlayerBar.getLeftTimeView();
+				mpTotalDurationView = musicPlayerBar.getRightTimeView();
+				mpSeekBarView = musicPlayerBar.getSeekBar();
+				mpLayout = musicPlayerBar.getBarLayout();
+				if(VertexClientPE.MusicUtils.mp.isPlaying() || VertexClientPE.MusicUtils.isPaused) {
+					if(VertexClientPE.MusicUtils.mp.isPlaying()) {
+						mpPlayButton.setBackgroundResource(android.R.drawable.ic_media_pause);
+					} else if(VertexClientPE.MusicUtils.isPaused) {
 						mpPlayButton.setBackgroundResource(android.R.drawable.ic_media_play);
 					}
-					mpPlayButton.setOnClickListener(new View_.OnClickListener() {
-						onClick: function(v) {
-							if(VertexClientPE.MusicUtils.mp.isPlaying()) {
-								VertexClientPE.MusicUtils.mp.pause();
-								VertexClientPE.MusicUtils.isPaused = true;
-								mpPlayButton.setBackgroundResource(android.R.drawable.ic_media_play);
-							} else {
-								VertexClientPE.MusicUtils.mp.start();
-								VertexClientPE.MusicUtils.isPaused = false;
-								mpPlayButton.setBackgroundResource(android.R.drawable.ic_media_pause);
-							}
-							VertexClientPE.MusicUtils.playingFirstTime = false;
-						}
-					});
-					mpSeekBarView.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
-						onStopTrackingTouch: function(sB) {
-							VertexClientPE.MusicUtils.mp.seekTo(mpSeekBarView.getProgress());
-							mpCurrentPositionView.setText(VertexClientPE.MusicUtils.milliSecToMinString(VertexClientPE.MusicUtils.mp.getCurrentPosition()));
-						}
-					});
-					
-					var mpTabLayout = new LinearLayout_(CONTEXT);
-					mpTabLayout.setOrientation(LinearLayout_.HORIZONTAL);
-					
-					mpTabLayout.addView(musicPlayerTab("All", mpTabLayout, musicPlayerMenuLayout, musicPlayerBar));
-					mpTabLayout.addView(musicPlayerTab("Favorite", mpTabLayout, musicPlayerMenuLayout, musicPlayerBar));
-					
-					musicPlayerMenuLayout1.addView(musicPlayerTitle);
-					musicPlayerMenuLayout1.addView(musicPlayerEnter);
-					musicPlayerMenuLayout1.addView(mpLayout);
-					musicPlayerMenuLayout1.addView(mpTabLayout);
-					musicPlayerMenuLayoutScroll.addView(musicPlayerMenuLayout);
-					musicPlayerMenuLayout1.addView(musicPlayerMenuLayoutScroll);
-					
-					VertexClientPE.MusicUtils.songList.forEach(function(element, index, array) {
-						if(currentMPTab == "Favorite" && sharedPref.getString("VertexClientPE.songs." + element.title + ".isFavorite", "false") == "false") {
-							return;
-						}
-						musicPlayerMenuLayout.addView(songButton(element, musicPlayerBar));
-					});
-
-					screenUI = new PopupWindow_(musicPlayerMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
-					screenUI.setBackgroundDrawable(backgroundGradient());
-					screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-				} catch(error) {
-					print('An error occurred: ' + error);
-					clientMessage(error);
+					mpCurrentPositionView.setText(VertexClientPE.MusicUtils.milliSecToMinString(VertexClientPE.MusicUtils.mp.getCurrentPosition()));
+					mpSeekBarView.setProgress(VertexClientPE.MusicUtils.mp.getCurrentPosition());
+					mpSeekBarView.setMax(VertexClientPE.MusicUtils.mp.getDuration());
+					mpTotalDurationView.setText(VertexClientPE.MusicUtils.milliSecToMinString(VertexClientPE.MusicUtils.mp.getDuration()));
+				} else {
+					mpPlayButton.setBackgroundResource(android.R.drawable.ic_media_play);
 				}
+				mpPlayButton.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(v) {
+						if(VertexClientPE.MusicUtils.mp.isPlaying()) {
+							VertexClientPE.MusicUtils.mp.pause();
+							VertexClientPE.MusicUtils.isPaused = true;
+							mpPlayButton.setBackgroundResource(android.R.drawable.ic_media_play);
+						} else {
+							VertexClientPE.MusicUtils.mp.start();
+							VertexClientPE.MusicUtils.isPaused = false;
+							mpPlayButton.setBackgroundResource(android.R.drawable.ic_media_pause);
+						}
+						VertexClientPE.MusicUtils.playingFirstTime = false;
+					}
+				});
+				mpSeekBarView.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
+					onStopTrackingTouch: function(sB) {
+						VertexClientPE.MusicUtils.mp.seekTo(mpSeekBarView.getProgress());
+						mpCurrentPositionView.setText(VertexClientPE.MusicUtils.milliSecToMinString(VertexClientPE.MusicUtils.mp.getCurrentPosition()));
+					}
+				});
+				
+				var mpTabLayout = new LinearLayout_(CONTEXT);
+				mpTabLayout.setOrientation(LinearLayout_.HORIZONTAL);
+				
+				mpTabLayout.addView(musicPlayerTab("All", mpTabLayout, musicPlayerMenuLayout, musicPlayerBar));
+				mpTabLayout.addView(musicPlayerTab("Favorite", mpTabLayout, musicPlayerMenuLayout, musicPlayerBar));
+				
+				musicPlayerMenuLayout1.addView(musicPlayerTitle);
+				musicPlayerMenuLayout1.addView(musicPlayerEnter);
+				musicPlayerMenuLayout1.addView(mpLayout);
+				musicPlayerMenuLayout1.addView(mpTabLayout);
+				musicPlayerMenuLayoutScroll.addView(musicPlayerMenuLayout);
+				musicPlayerMenuLayout1.addView(musicPlayerMenuLayoutScroll);
+				
+				VertexClientPE.MusicUtils.songList.forEach(function(element, index, array) {
+					if(currentMPTab == "Favorite" && sharedPref.getString("VertexClientPE.songs." + element.title + ".isFavorite", "false") == "false") {
+						return;
+					}
+					musicPlayerMenuLayout.addView(songButton(element, musicPlayerBar));
+				});
+
+				screenUI = new PopupWindow_(musicPlayerMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+				screenUI.setBackgroundDrawable(backgroundGradient());
+				screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+			} catch(error) {
+				print('An error occurred: ' + error);
+				clientMessage(error);
 			}
-		}));
+		}
+	}));
 }
 
 function modManagerScreen() {
 	VertexClientPE.menuIsShowing = true;
 	var display = new DisplayMetrics_();
 	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
-		CONTEXT.runOnUiThread(new Runnable_({
-			run: function() {
-				try {
-					if(GUI != null) {
-						if(GUI.isShowing()) {
-							GUI.dismiss();
-						}
-					}
-					if(hacksList != null) {
-						if(hacksList.isShowing()) {
-							hacksList.dismiss();
-						}
-					}
-					if(tabGUI != null) {
-						if(tabGUI.isShowing()) {
-							tabGUI.dismiss();
-						}
-					}
-					if(shortcutGUI != null) {
-						if(shortcutGUI.isShowing()) {
-							shortcutGUI.dismiss();
-						}
-					}
-					if(healthDisplayUI != null) {
-						if(healthDisplayUI.isShowing()) {
-							healthDisplayUI.dismiss();
-						}
-					}
-					if(mainMenuTextList != null) {
-						if(mainMenuTextList.isShowing()) {
-							mainMenuTextList.dismiss();
-						}
-					}
-					if(accountManagerGUI != null) {
-						if(accountManagerGUI.isShowing()) {
-							accountManagerGUI.dismiss();
-						}
-					}
-					if(pauseUtilitiesUI != null) {
-						if(pauseUtilitiesUI.isShowing()) {
-							pauseUtilitiesUI.dismiss();
-						}
-					}
+	CONTEXT.runOnUiThread(new Runnable_({
+		run: function() {
+			try {
+				VertexClientPE.checkGUINeedsDismiss();
 
-					var modManagerMenuLayout = new LinearLayout_(CONTEXT);
-					modManagerMenuLayout.setOrientation(1);
-					modManagerMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
-					
-					var modManagerMenuLayoutScroll = new ScrollView(CONTEXT);
-					
-					var modManagerMenuLayout1 = new LinearLayout_(CONTEXT);
-					modManagerMenuLayout1.setOrientation(1);
-					modManagerMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
-					//modManagerMenuLayout1.setPadding(10, 0, 10, 0);
-					
-					var modManagerTitle = clientScreenTitle("Mod Manager");
-					
-					modManagerMenuLayout1.addView(modManagerTitle);
-					modManagerMenuLayout1.addView(clientTextView("\n"));
-					modManagerMenuLayoutScroll.addView(modManagerMenuLayout);
-					modManagerMenuLayout1.addView(modManagerMenuLayoutScroll);
-					
-					VertexClientPE.modules.forEach(function(element, index, array) {
-						if(element.getSettingsLayout) {
-							var modTitle = clientSectionTitle(VertexClientPE.getCustomModName(element.name));
-							modTitle.setTypeface(VertexClientPE.font, Typeface_.BOLD);
-							modManagerMenuLayout.addView(modTitle);
-							modManagerMenuLayout.addView(element.getSettingsLayout());
-						}
-					});
+				var modManagerMenuLayout = new LinearLayout_(CONTEXT);
+				modManagerMenuLayout.setOrientation(1);
+				modManagerMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
+				
+				var modManagerMenuLayoutScroll = new ScrollView(CONTEXT);
+				
+				var modManagerMenuLayout1 = new LinearLayout_(CONTEXT);
+				modManagerMenuLayout1.setOrientation(1);
+				modManagerMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
+				//modManagerMenuLayout1.setPadding(10, 0, 10, 0);
+				
+				var modManagerTitle = clientScreenTitle("Mod Manager");
+				
+				modManagerMenuLayout1.addView(modManagerTitle);
+				modManagerMenuLayout1.addView(clientTextView("\n"));
+				modManagerMenuLayoutScroll.addView(modManagerMenuLayout);
+				modManagerMenuLayout1.addView(modManagerMenuLayoutScroll);
+				
+				VertexClientPE.modules.forEach(function(element, index, array) {
+					if(element.getSettingsLayout) {
+						var modTitle = clientSectionTitle(VertexClientPE.getCustomModName(element.name));
+						modTitle.setTypeface(VertexClientPE.font, Typeface_.BOLD);
+						modManagerMenuLayout.addView(modTitle);
+						modManagerMenuLayout.addView(element.getSettingsLayout());
+					}
+				});
 
-					screenUI = new PopupWindow_(modManagerMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
-					screenUI.setBackgroundDrawable(backgroundGradient());
-					screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-				} catch(error) {
-					print('An error occurred: ' + error);
-				}
+				screenUI = new PopupWindow_(modManagerMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+				screenUI.setBackgroundDrawable(backgroundGradient());
+				screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+			} catch(error) {
+				print('An error occurred: ' + error);
 			}
-		}));
+		}
+	}));
 }
 
 function dashboardScreen() {
@@ -16622,46 +16265,7 @@ function dashboardScreen() {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
-				if(GUI != null) {
-					if(GUI.isShowing()) {
-						GUI.dismiss();
-					}
-				}
-				if(hacksList != null) {
-					if(hacksList.isShowing()) {
-						hacksList.dismiss();
-					}
-				}
-				if(tabGUI != null) {
-					if(tabGUI.isShowing()) {
-						tabGUI.dismiss();
-					}
-				}
-				if(mainMenuTextList != null) {
-					if(mainMenuTextList.isShowing()) {
-						mainMenuTextList.dismiss();
-					}
-				}
-				if(shortcutGUI != null) {
-					if(shortcutGUI.isShowing()) {
-						shortcutGUI.dismiss();
-					}
-				}
-				if(healthDisplayUI != null) {
-					if(healthDisplayUI.isShowing()) {
-						healthDisplayUI.dismiss();
-					}
-				}
-				if(accountManagerGUI != null) {
-					if(accountManagerGUI.isShowing()) {
-						accountManagerGUI.dismiss();
-					}
-				}
-				if(pauseUtilitiesUI != null) {
-					if(pauseUtilitiesUI.isShowing()) {
-						pauseUtilitiesUI.dismiss();
-					}
-				}
+				VertexClientPE.checkGUINeedsDismiss();
 
 				var columnCount = dashboardTileSize;
 				var rowCount = Math.ceil(VertexClientPE.tiles.length / dashboardTileSize);
@@ -16898,46 +16502,7 @@ function webBrowserScreen() {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
-				if(GUI != null) {
-					if(GUI.isShowing()) {
-						GUI.dismiss();
-					}
-				}
-				if(hacksList != null) {
-					if(hacksList.isShowing()) {
-						hacksList.dismiss();
-					}
-				}
-				if(tabGUI != null) {
-					if(tabGUI.isShowing()) {
-						tabGUI.dismiss();
-					}
-				}
-				if(shortcutGUI != null) {
-					if(shortcutGUI.isShowing()) {
-						shortcutGUI.dismiss();
-					}
-				}
-				if(healthDisplayUI != null) {
-					if(healthDisplayUI.isShowing()) {
-						healthDisplayUI.dismiss();
-					}
-				}
-				if(mainMenuTextList != null) {
-					if(mainMenuTextList.isShowing()) {
-						mainMenuTextList.dismiss();
-					}
-				}
-				if(accountManagerGUI != null) {
-					if(accountManagerGUI.isShowing()) {
-						accountManagerGUI.dismiss();
-					}
-				}
-				if(pauseUtilitiesUI != null) {
-					if(pauseUtilitiesUI.isShowing()) {
-						pauseUtilitiesUI.dismiss();
-					}
-				}
+				VertexClientPE.checkGUINeedsDismiss();
 
 				var webBrowserMenuLayout = new LinearLayout_(CONTEXT);
 				webBrowserMenuLayout.setOrientation(1);
@@ -17116,36 +16681,7 @@ VertexClientPE.showFullScreenMenu = function() {
 		CONTEXT.runOnUiThread(new Runnable_({
 			run: function() {
 				try {
-					if(hacksList != null) {
-						if(hacksList.isShowing()) {
-							hacksList.dismiss();
-						}
-					}
-					if(tabGUI != null) {
-						if(tabGUI.isShowing()) {
-							tabGUI.dismiss();
-						}
-					}
-					if(shortcutGUI != null) {
-						if(shortcutGUI.isShowing()) {
-							shortcutGUI.dismiss();
-						}
-					}
-					if(healthDisplayUI != null) {
-						if(healthDisplayUI.isShowing()) {
-							healthDisplayUI.dismiss();
-						}
-					}
-					if(mainMenuTextList != null) {
-						if(mainMenuTextList.isShowing()) {
-							mainMenuTextList.dismiss();
-						}
-					}
-					if(pauseUtilitiesUI != null) {
-						if(pauseUtilitiesUI.isShowing()) {
-							pauseUtilitiesUI.dismiss();
-						}
-					}
+					VertexClientPE.checkGUINeedsDismiss();
 					
 					var fullScreenMenuLayoutScroll = new android.widget.HorizontalScrollView(CONTEXT);
 
@@ -17909,6 +17445,9 @@ function openMenuFromMenuButton(viewArg) {
 		if(healthDisplayUI != null) {
 			healthDisplayUI.dismiss();
 		}
+		if(rotationPlusUI != null) {
+			rotationPlusUI.dismiss();
+		}
 		if(pauseUtilitiesUI != null) {
 			pauseUtilitiesUI.dismiss();
 		}
@@ -17925,6 +17464,9 @@ function openMenuFromMenuButton(viewArg) {
 				showShortcuts();
 				if(healthDisplayState) {
 					showHealthDisplay();
+				}
+				if(rotationPlusState) {
+					showRotationPlus();
 				}
 			}
 			if(currentScreen == ScreenType.pause_screen && (pauseUtilitiesUI == null || !pauseUtilitiesUI.isShowing())) {
@@ -18163,6 +17705,9 @@ function showMenuButton() {
 			showShortcuts();
 			if(healthDisplayState) {
 				showHealthDisplay();
+			}
+			if(rotationPlusState) {
+				showRotationPlus();
 			}
 		}
 	}
@@ -18543,7 +18088,7 @@ function showHealthDisplay() {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
-				var healthDisplayLayout = new LinearLayout_(CONTEXT);
+				let healthDisplayLayout = new LinearLayout_(CONTEXT);
 				healthDisplayView = clientTextView(Entity.getHealth(getPlayerEnt()) + "/" + Entity.getMaxHealth(getPlayerEnt()) + " ❤", true);
 				healthDisplayLayout.addView(healthDisplayView);
 				
@@ -18551,6 +18096,111 @@ function showHealthDisplay() {
 				healthDisplayUI.setTouchable(false);
 				healthDisplayUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				healthDisplayUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
+			} catch(exception) {
+				print(exception);
+				VertexClientPE.showBugReportDialog(exception);
+			}
+		}
+	}));
+}
+
+const rotationtpopx_def = dip2px(120), rotationtpopy_def = dip2px(120);
+var rotationtpopx = rotationtpopx_def, rotationtpopy = rotationtpopy_def;
+var rotationmX, rotationmY;
+var rotationdown = false;
+
+function showRotationPlus() {
+	CONTEXT.runOnUiThread(new Runnable_({
+		run: function() {
+			try {
+				let rotationPlusLayout = new LinearLayout_(CONTEXT);
+				rotationPlusLayout.setOrientation(1);
+				let rotationPlusLayoutTop = new LinearLayout_(CONTEXT);
+				rotationPlusLayoutTop.setOrientation(LinearLayout_.HORIZONTAL);
+				rotationPlusLayoutTop.setGravity(Gravity_.CENTER);
+				let rotationPlusLayoutMiddle = new LinearLayout_(CONTEXT);
+				rotationPlusLayoutMiddle.setOrientation(LinearLayout_.HORIZONTAL);
+				let rotationPlusLayoutBottom = new LinearLayout_(CONTEXT);
+				rotationPlusLayoutBottom.setOrientation(LinearLayout_.HORIZONTAL);
+				rotationPlusLayoutBottom.setGravity(Gravity_.CENTER);
+				
+				rotationPlusLayout.addView(rotationPlusLayoutTop);
+				rotationPlusLayout.addView(rotationPlusLayoutMiddle);
+				rotationPlusLayout.addView(rotationPlusLayoutBottom);
+				
+				let rotationPlusTopCenterView = clientButton("\u21E7");
+				rotationPlusTopCenterView.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(40), dip2px(40)));
+				rotationPlusTopCenterView.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						let newPitch = getPitch() - 45;
+						Entity.setRot(getPlayerEnt(), getYaw(), newPitch);
+					}
+				}));
+				
+				let rotationPlusMiddleLeftView = clientButton("\u21E6");
+				rotationPlusMiddleLeftView.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(40), dip2px(40)));
+				rotationPlusMiddleLeftView.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						Entity.setRot(getPlayerEnt(), getYaw() - 90, getPitch());
+					}
+				}));
+				
+				let rotationPlusMiddleCenterView = clientTextView("MOVE");
+				rotationPlusMiddleCenterView.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(40), dip2px(40)));
+				rotationPlusMiddleCenterView.setOnLongClickListener(new View_.OnLongClickListener() {
+					onLongClick(v, t) {
+						rotationdown = true;
+						VertexClientPE.toast("Now you can move the menu!");
+						return true;
+					}
+				});
+				rotationPlusMiddleCenterView.setOnTouchListener(new View_.OnTouchListener({
+					onTouch(v, e) {
+						if (!rotationdown) {
+							rotationmX = e.getX();
+							rotationmY = e.getY();
+						}
+						if (rotationdown) {
+							var a = e.getAction();
+							if (a == 2) {
+								var X = parseInt(e.getX() - rotationmX) * -1 / 10;
+								var Y = parseInt(e.getY() - rotationmY) * -1 / 10;
+								rotationtpopx = rotationtpopx + X;
+								rotationtpopy = rotationtpopy + Y;
+								rotationPlusUI.update(parseInt(rotationtpopx), parseInt(rotationtpopy), -1, -1);
+							}
+							if (a == 1) rotationdown = false;
+						}
+						return false;
+					}
+				}));
+				
+				let rotationPlusMiddleRightView = clientButton("\u21E8");
+				rotationPlusMiddleRightView.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(40), dip2px(40)));
+				rotationPlusMiddleRightView.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						Entity.setRot(getPlayerEnt(), getYaw() + 90, getPitch());
+					}
+				}));
+				
+				let rotationPlusBottomCenterView = clientButton("\u21E9");
+				rotationPlusBottomCenterView.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(40), dip2px(40)));
+				rotationPlusBottomCenterView.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						let newPitch = getPitch() + 45;
+						Entity.setRot(getPlayerEnt(), getYaw(), newPitch);
+					}
+				}));
+				
+				rotationPlusLayoutTop.addView(rotationPlusTopCenterView);
+				rotationPlusLayoutMiddle.addView(rotationPlusMiddleLeftView);
+				rotationPlusLayoutMiddle.addView(rotationPlusMiddleCenterView);
+				rotationPlusLayoutMiddle.addView(rotationPlusMiddleRightView);
+				rotationPlusLayoutBottom.addView(rotationPlusBottomCenterView);
+				
+				rotationPlusUI = new PopupWindow_(rotationPlusLayout, dip2px(120), dip2px(120));
+				rotationPlusUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+				rotationPlusUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.BOTTOM, rotationtpopx, rotationtpopy);
 			} catch(exception) {
 				print(exception);
 				VertexClientPE.showBugReportDialog(exception);
