@@ -4706,19 +4706,19 @@ var randomTP = {
 	},
 	onUseItem: function(x, y, z, itemId, blockId, side) {
 		preventDefault();
-		var newEnt;
-		var randomEnt;
-		if(targetMobsSetting == "on") {
-			newEnt = Entity.getAll().getRandomElement();
-			if(newEnt != null && newEnt != undefined) {
-				randomEnt = newEnt;
-			}
-		} if(targetPlayersSetting == "on") {
-			newEnt = Server.getAllPlayers().getRandomElement();
-			if(newEnt != null && newEnt != undefined && newEnt != getPlayerEnt()) {
-				randomEnt = newEnt;
-			}
+		let randomEnts = [];
+		
+		let newMob = Entity.getAll().getRandomElement();
+		if(newMob != null && newMob != undefined) {
+			randomEnts.push(newMob);
 		}
+		
+		let newPlayer = Server.getAllPlayers().getRandomElement();
+		if(newPlayer != null && newPlayer != undefined && newPlayer != getPlayerEnt()) {
+			randomEnts.push(newPlayer);
+		}
+		
+		let randomEnt = randomEnts.getRandomElement();
 		
 		if(randomEnt != null && randomEnt != undefined) {
 			Entity.setPosition(getPlayerEnt(), Entity.getX(randomEnt), Entity.getY(randomEnt) + 1.8, Entity.getZ(randomEnt));
@@ -5351,7 +5351,7 @@ var switchAimbot = {
 				this.playerTargetNum = 0;
 			}
 			var cPlayer = players[this.playerTargetNum];
-			if(cPlayer != null && cPlayer != undefined) {
+			if(cPlayer != null && cPlayer != undefined && !(targetFriendsSetting == "off" && VertexClientPE.Utils.Player.isFriend(cMob)) {
 				var x = Entity.getX(cPlayer) - getPlayerX();
 				var y = Entity.getY(cPlayer) - getPlayerY();
 				var z = Entity.getZ(cPlayer) - getPlayerZ();
