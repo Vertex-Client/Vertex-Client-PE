@@ -2506,38 +2506,32 @@ var killAura = {
 		this.state = !this.state;
 	},
 	onTick: function() {
-		var mobs = Entity.getAll();
-		for(var i = 0; i < mobs.length; i++) {
-			var x = Entity.getX(mobs[i]) - getPlayerX();
-			var y = Entity.getY(mobs[i]) - getPlayerY();
-			var z = Entity.getZ(mobs[i]) - getPlayerZ();
-			if(x*x+y*y+z*z<=killAuraRange*killAuraRange && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION && Entity.getHealth(mobs[i]) != 0) {
-				if(autoSwordState) {
-					VertexClientPE.autoSword(getPlayerEnt(), mobs[i]);
-				}
-				switch(Entity.getEntityTypeId(mobs[i])) {
-					case EntityType.COW:
-						Level.playSoundEnt(mobs[i], "mob.cowhurt");
-						break;
-					case EntityType.CHICKEN:
-						Level.playSoundEnt(mobs[i], "mob.chickenhurt");
-						break;
-					case EntityType.ZOMBIE:
-						Level.playSoundEnt(mobs[i], "mob.zombiehurt");
-						break;
-					case EntityType.SKELETON:
-						Level.playSoundEnt(mobs[i], "mob.skeletonhurt");
-						break;
-					case EntityType.PIG_ZOMBIE:
-						Level.playSoundEnt(mobs[i], "mob.zombiepig.zpighurt");
-						break;
-					default:
-						Level.playSoundEnt(mobs[i], "random.hurt");
-						break;
-				}
-				Entity.setHealth(mobs[i], 0);
-				break;
+		let mob = VertexClientPE.Utils.Player.getNearestMob(killAuraRange);
+		if(mob != null && Entity.getHealth(mob) != 0) {
+			if(autoSwordState) {
+				VertexClientPE.autoSword(getPlayerEnt(), mob);
 			}
+			switch(Entity.getEntityTypeId(mob)) {
+				case EntityType.COW:
+					Level.playSoundEnt(mob, "mob.cowhurt");
+					break;
+				case EntityType.CHICKEN:
+					Level.playSoundEnt(mob, "mob.chickenhurt");
+					break;
+				case EntityType.ZOMBIE:
+					Level.playSoundEnt(mob, "mob.zombiehurt");
+					break;
+				case EntityType.SKELETON:
+					Level.playSoundEnt(mob, "mob.skeletonhurt");
+					break;
+				case EntityType.PIG_ZOMBIE:
+					Level.playSoundEnt(mob, "mob.zombiepig.zpighurt");
+					break;
+				default:
+					Level.playSoundEnt(mob, "random.hurt");
+					break;
+			}
+			Entity.setHealth(mob, 0);
 		}
 	}
 };
@@ -2559,14 +2553,9 @@ var freezeAura = {
 		this.state = !this.state;
 	},
 	onTick: function() {
-		var mobs = Entity.getAll();
-		for(var i = 0; i < mobs.length; i++) {
-			var x = Entity.getX(mobs[i]) - getPlayerX();
-			var y = Entity.getY(mobs[i]) - getPlayerY();
-			var z = Entity.getZ(mobs[i]) - getPlayerZ();
-			if(x*x+y*y+z*z<=4*4 && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION) {
-				Entity.setImmobile(mobs[i], true);
-			}
+		let mob = VertexClientPE.Utils.Player.getNearestMob(4);
+		if(mob != null) {
+			Entity.setImmobile(mob, true);
 		}
 	}
 };
@@ -2588,14 +2577,9 @@ var fireAura = {
 		this.state = !this.state;
 	},
 	onTick: function() {
-		var mobs = Entity.getAll();
-		for(var i = 0; i < mobs.length; i++) {
-			var x = Entity.getX(mobs[i]) - getPlayerX();
-			var y = Entity.getY(mobs[i]) - getPlayerY();
-			var z = Entity.getZ(mobs[i]) - getPlayerZ();
-			if(x*x+y*y+z*z<=4*4 && mobs[i] != getPlayerEnt() && Entity.getEntityTypeId(mobs[i]) != EntityType.ARROW && Entity.getEntityTypeId(mobs[i]) != EntityType.BOAT && Entity.getEntityTypeId(mobs[i]) != EntityType.EGG && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(mobs[i]) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(mobs[i]) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(mobs[i]) != EntityType.FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(mobs[i]) != EntityType.ITEM && Entity.getEntityTypeId(mobs[i]) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(mobs[i]) != EntityType.MINECART && Entity.getEntityTypeId(mobs[i]) != EntityType.PAINTING && Entity.getEntityTypeId(mobs[i]) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(mobs[i]) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.SNOWBALL && Entity.getEntityTypeId(mobs[i]) != EntityType.THROWN_POTION) {
-				Entity.setFireTicks(mobs[i], 100);
-			}
+		let mob = VertexClientPE.Utils.Player.getNearestMob(4);
+		if(mob != null) {
+			Entity.setFireTicks(mob, 100);
 		}
 	}
 };
@@ -3967,6 +3951,7 @@ var aimbot = {
 		useKillauraRangeCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				aimbotUseKillauraRange = v.isChecked()?"on":"off";
+				aimbotRangeSlider.setEnabled(!v.isChecked());
 				VertexClientPE.saveMainSettings();
 			}
 		});
@@ -3975,6 +3960,7 @@ var aimbot = {
 		var aimbotRangeSlider = clientSeekBar();
 		aimbotRangeSlider.setProgress(aimbotRangeSetting);
 		aimbotRangeSlider.setMax(10);
+		aimbotRangeSlider.setEnabled(!useKillauraRangeCheckBox.isChecked());
 		aimbotRangeSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
 			onProgressChanged: function() {
 				aimbotRangeSetting = aimbotRangeSlider.getProgress();
@@ -5327,8 +5313,8 @@ var switchAimbot = {
 	},
 	onTick: function() {
 		var range = Level.getGameMode()==1?9:7;
-		var players = Server.getAllPlayers();
 		var mobs = Entity.getAll();
+		var players = Server.getAllPlayers();
 		if(targetMobsSetting == "on") {
 			if(this.mobTargetNum >= mobs.length) {
 				this.mobTargetNum = 0;
@@ -15462,7 +15448,7 @@ function informationScreen() {
 		}));
 }
 
-var helpSections = [["Where do I report issues?", "You can report issues at http://bit.ly/VertexIssues."], ["How can I add shortcuts?", "Tap the star button in a mod's ... dialog or long click on a tile and then tap on the favorite button to make it favorite. The mod will now have its own shortcut."], ["Website", "Our website is http://Vertex-Client.ml/."], ["Twitter", "Our Twitter account is @VertexHX."]];
+var helpSections = [["Where do I report issues?", "You can report issues at http://bit.ly/VertexIssues."], ["How can I add shortcuts?", "Tap the star button in a mod's ... dialog or long click on a tile and then tap on the favorite button to make it favorite. The mod or tile will then have its own shortcut."], ["Website", "Our website is http://Vertex-Client.ml/."], ["Twitter", "Our Twitter account is @VertexHX."]];
 
 function helpScreen() {
 	VertexClientPE.menuIsShowing = true;
