@@ -5351,7 +5351,7 @@ var switchAimbot = {
 				this.playerTargetNum = 0;
 			}
 			var cPlayer = players[this.playerTargetNum];
-			if(cPlayer != null && cPlayer != undefined && !(targetFriendsSetting == "off" && VertexClientPE.Utils.Player.isFriend(cMob)) {
+			if(cPlayer != null && cPlayer != undefined && !(targetFriendsSetting == "off" && VertexClientPE.Utils.Player.isFriend(cMob))) {
 				var x = Entity.getX(cPlayer) - getPlayerX();
 				var y = Entity.getY(cPlayer) - getPlayerY();
 				var z = Entity.getZ(cPlayer) - getPlayerZ();
@@ -5513,6 +5513,50 @@ var rotationPlus = {
 	}
 }
 
+var glitchCam = {
+	name: "GlitchCam",
+	desc: "Reduces the camera movement speed and makes it look dizzy.",
+	category: VertexClientPE.category.PLAYER,
+	type: "Mod",
+	state: false,
+	oldPitch: null,
+	newPitch: null,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onTick: function() {
+		this.newYaw = Entity.getYaw(getPlayerEnt());
+		this.newPitch = Entity.getPitch(getPlayerEnt());
+		if(this.oldYaw != null) {
+			let yawDiff;
+			if(this.newYaw > this.oldYaw) {
+				yawDiff = this.newYaw - this.oldYaw;
+				Entity.setRot(getPlayerEnt(), this.newYaw - yawDiff / 2, Entity.getPitch(getPlayerEnt()));
+			}
+			if(this.newYaw < this.oldYaw) {
+				yawDiff = this.oldYaw - this.newYaw;
+				Entity.setRot(getPlayerEnt(), this.oldYaw - yawDiff / 2, Entity.getPitch(getPlayerEnt()));
+			}
+		}
+		if(this.oldPitch != null) {
+			let pitchDiff;
+			if(this.newPitch > this.oldPitch) {
+				pitchDiff = this.newPitch - this.oldPitch;
+				Entity.setRot(getPlayerEnt(), Entity.getYaw(getPlayerEnt()), this.newPitch - pitchDiff / 2);
+			}
+			if(this.newPitch < this.oldPitch) {
+				pitchDiff = this.oldPitch - this.newPitch;
+				Entity.setRot(getPlayerEnt(), Entity.getYaw(getPlayerEnt()), this.oldPitch - pitchDiff / 2);
+			}
+		}
+		this.oldYaw = Entity.getYaw(getPlayerEnt());
+		this.oldPitch = Entity.getPitch(getPlayerEnt());
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(aimbot);
 VertexClientPE.registerModule(antiBurn);
@@ -5587,6 +5631,7 @@ VertexClientPE.registerModule(chatRepeat);
 VertexClientPE.registerModule(derp);
 VertexClientPE.registerModule(fancyChat);
 VertexClientPE.registerModule(fastBreak);
+VertexClientPE.registerModule(glitchCam);
 VertexClientPE.registerModule(homeCommand);
 VertexClientPE.registerModule(itemGiver);
 VertexClientPE.registerModule(phase);
@@ -18108,7 +18153,7 @@ function showHealthDisplay() {
 	}));
 }
 
-const rotationtpopx_def = dip2px(120), rotationtpopy_def = dip2px(120);
+const rotationtpopx_def = 0, rotationtpopy_def = dip2px(120);
 var rotationtpopx = rotationtpopx_def, rotationtpopy = rotationtpopy_def;
 var rotationmX, rotationmY;
 var rotationdown = false;
