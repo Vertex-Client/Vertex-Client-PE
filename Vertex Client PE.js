@@ -1333,6 +1333,7 @@ var remoteViewState = false;
 var rotationPlusState = false;
 var speedHackState = false;
 var stackDropState = false;
+var timerState = false;
 
 var showingMenu = false;
 
@@ -2632,7 +2633,7 @@ var timer = {
 			onProgressChanged: function() {
 				timerSpeed = timerSpeedSlider.getProgress();
 				timerSpeedTitle.setText("Speed: | " + timerSpeed + " * 20 ticks");
-				if(this.state) {
+				if(timerState) {
 					ModPE.setGameSpeed(20 * timerSpeed);
 				}
 			}
@@ -2649,6 +2650,7 @@ var timer = {
 	},
 	onToggle: function() {
 		this.state = !this.state;
+		timerState = this.state;
 		if(this.state) {
 			ModPE.setGameSpeed(20 * timerSpeed);
 		} else {
@@ -12880,15 +12882,18 @@ VertexClientPE.showStartScreenBar = function() {
 					youTubeButton.setOnClickListener(new View_.OnClickListener({
 						onClick: function(viewArg) {
 							ModPE.goToURL("https://www.youtube.com/c/AgameRGaming");
-					}}));
+						}
+					}));
 					twitterButton.setOnClickListener(new View_.OnClickListener({
 						onClick: function(viewArg) {
 							ModPE.goToURL("http://twitter.com/VertexHX");
-					}}));
+						}
+					}));
 					gitHubButton.setOnClickListener(new View_.OnClickListener({
 						onClick: function(viewArg) {
 							ModPE.goToURL("https://github.com/Vertex-Client");
-					}}));
+						}
+					}));
 					
 					mainMenuListLayout.addView(youTubeButton);
 					mainMenuListLayout.addView(twitterButton);
@@ -13654,10 +13659,8 @@ VertexClientPE.showFriendManager = function(showBackButton) {
 				var friendsLength = VertexClientPE.friends.length();
 				if(VertexClientPE.friends != null && friendsLength != -1) {
 					for(var i = 0; i < friendsLength; i++) {
-						//if(VertexClientPE.friends[i].username != null && VertexClientPE.friends[i].username != undefined && VertexClientPE.friends[i].username != " ") {
-							var friendLayout = friendButton(VertexClientPE.friends.get(i), friendManagerLayout);
-							friendManagerLayout.addView(friendLayout);
-						//}
+						var friendLayout = friendButton(VertexClientPE.friends.get(i), friendManagerLayout);
+						friendManagerLayout.addView(friendLayout);
 					}
 				}
 				
@@ -14061,6 +14064,20 @@ VertexClientPE.getMyScriptName = function() {
 	}
 }
 
+VertexClientPE.refreshEnabledMods = function() {
+	VertexClientPE.modules.forEach(function(element, index, array) {
+		if(element.hasOwnProperty("isStateMod") && element.isStateMod()) {
+			if(element.state) {
+				for(let i = 0; i <= 1; i++) {
+					element.onToggle();
+				}
+			}
+		}
+	});
+	
+	//REFRESHED MODS
+}
+
 function newLevel() {
 	try {
 		//print(VertexClientPE.getMyScriptName());
@@ -14107,10 +14124,8 @@ function newLevel() {
 			}
 		}
 		VertexClientPE.Render.initViews();
-		if(chestESPState) {
-			VertexClientPE.Utils.loadChests();
-		}
 		VertexClientPE.Utils.world.chatMessages = [];
+		VertexClientPE.refreshEnabledMods();
 	} catch(e) {
 		VertexClientPE.showBugReportDialog(e);
 	}
