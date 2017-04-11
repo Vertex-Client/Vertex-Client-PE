@@ -9512,26 +9512,6 @@ VertexClientPE.autoSpammer = function() {
 	Entity.setNameTag(getPlayerEnt(), username);
 }
 
-var freecamEntity;
-
-VertexClientPE.freecam = function(onOrOff) {
-	switch(onOrOff) {
-		case 0: {
-			ModPE.setCamera(getPlayerEnt());
-			if(freecamEntity != null) {
-				Entity.remove(freecamEntity);
-			}
-			freecamEntity = null;
-			break;
-		} case 1: {
-			freecamEntity = Level.spawnMob(getPlayerX(), getPlayerY(), getPlayerZ(), EntityType.VILLAGER);
-			ModPE.setCamera(freecamEntity);
-			//Entity.setRenderType(freecamEntity, EntityRenderType.player2);
-			break;
-		}
-	}
-}
-
 VertexClientPE.teleporter = function(x, y, z) {
 	setPosition(getPlayerEnt(), x, y, z);
 	while(getTile(getPlayerX(), getPlayerY()-2, getPlayerZ()) != 0) {
@@ -9543,7 +9523,7 @@ var settingsPath = Environment_.getExternalStorageDirectory().getAbsolutePath() 
 var worldsPath = Environment_.getExternalStorageDirectory().getAbsolutePath() + "/games/com.mojang/minecraftWorlds/";
 
 VertexClientPE.saveAutoSpammerMessage = function() {
-	new File_(settingsPath).mkdirs();
+	File_(settingsPath).mkdirs();
 	var newFile = new File_(settingsPath, "vertexclientpe_spammessage.txt");
 	newFile.createNewFile();
 	var outWrite = new OutputStreamWriter_(new FileOutputStream_(newFile));
@@ -17006,6 +16986,7 @@ VertexClientPE.showCategoryMenus = function () {
 		run() {
 			try {
 				var display = new DisplayMetrics_();
+				CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
 				
 				if(VertexClientPE.getShouldUpdateGUI(vertexclientpecombatmenu)) {
 					let combatMenuLayout = new LinearLayout_(CONTEXT),
@@ -17050,8 +17031,6 @@ VertexClientPE.showCategoryMenus = function () {
 					vertexclientpemovementmenu = new PopupWindow_(CONTEXT);
 					vertexclientpeplayermenu = new PopupWindow_(CONTEXT);
 					vertexclientpemiscmenu = new PopupWindow_(CONTEXT);
-
-					CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
 					VertexClientPE.loadMainSettings();
 
 					VertexClientPE.modules.forEach(function (element, index, array) {
