@@ -9438,6 +9438,8 @@ VertexClientPE.fancyChat = function(str) {
 	Server.sendChat(newMsg);
 }
 
+/* 
+ALTERNATIVE WAY
 VertexClientPE.getItemInSlot = function(newSlot) {
 	let oldSlot = Player.getSelectedSlotId();
 	Player.setSelectedSlotId(newSlot);
@@ -9445,7 +9447,7 @@ VertexClientPE.getItemInSlot = function(newSlot) {
 	Player.setSelectedSlotId(oldSlot);
 	
 	return itemId;
-}
+} */
 
 VertexClientPE.getSwordDamage = function(i) {
 	switch(i) {
@@ -9459,7 +9461,7 @@ VertexClientPE.autoSword = function(a, v) {
 		let swordIds = [];
 		let bestSlot = [null, null];
 		for(let i = 0; i <= 8; i++) {
-			let itemInSlot = VertexClientPE.getItemInSlot(i);
+			let itemInSlot = Player.getInventorySlot(i);
 			if(itemInSlot == 268) {
 				if(bestSlot[1] != 283 && bestSlot[1] != 272 && bestSlot[1] != 267 && bestSlot[1] != 276) {
 					bestSlot = [i, itemInSlot];
