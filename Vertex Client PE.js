@@ -10374,7 +10374,7 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 	}
 	buttonView.setTransformationMethod(null);
 	
-	var rgbArray = [customRGBRed, customRGBGreen, customRGBBlue, customRGBRedStroke, customRGBGreenStroke, customRGBBlueStroke];
+	let rgbArray = [customRGBRed, customRGBGreen, customRGBBlue, customRGBRedStroke, customRGBGreenStroke, customRGBBlueStroke];
 	
 	if(style != "invisible") {
 		var bg = GradientDrawable_();
@@ -10421,8 +10421,18 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 		
 		bg.setShape(GradientDrawable_.RECTANGLE);
 		
-		bg.setColor(getColor("inner", color, forceLightColor));
-		if(style != "normal_nostrokes") {
+		if(style == "transparent") {
+			bg.setColor(Color_.TRANSPARENT);
+		} else {
+			if(style == "legacy") {
+				bg.setColor(Color_.parseColor("#000000"));
+			} else {
+				bg.setColor(getColor("inner", color, forceLightColor));
+			}
+		}
+		if(style == "legacy_inverted") {
+			bg.setStroke(thickness, Color_.parseColor("#000000"));
+		} else if(style != "normal_nostrokes") {
 			bg.setStroke(thickness, getColor("stroke", color, forceLightColor));
 		}
 		
@@ -10430,97 +10440,17 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 			onTouch: function(v, event) {
 				var action = event.getActionMasked();
 				if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
-					if(forceLightColor == true) {
-						bg.setColor(Color_.parseColor("#00994C"));
-						if(style != "normal_nostrokes") {
-							bg.setStroke(thickness, Color_.parseColor("#00CC66"));
-						}
-					} else {
-						bg.setColor(Color_.parseColor("#0B5B25"));
-						if(style != "normal_nostrokes") {
-							bg.setStroke(thickness, Color_.parseColor("#0F8219"));
-						}
-					}
-					if(color == "custom rgb") {
-						bg.setColor(Color_.rgb(rgbArray[0], rgbArray[1], rgbArray[2]));
-						if(style != "normal_nostrokes") {
-							bg.setStroke(dip2px(2), Color_.rgb(rgbArray[3], rgbArray[4], rgbArray[5]));
-						}
-					}
-					if(color == "red") {
-						if(forceLightColor == true) {
-							bg.setColor(Color_.parseColor("#FF3333"));
-							if(style != "normal_nostrokes") {
-								bg.setStroke(thickness, Color_.parseColor("#FF6666"));
-							}
-						} else {
-							bg.setColor(Color_.parseColor("#5B0C0C"));
-							if(style != "normal_nostrokes") {
-								bg.setStroke(thickness, Color_.parseColor("#821010"));
-							}
-						}
-					} if(color == "blue") {
-						if(forceLightColor == true) {
-							bg.setColor(Color_.parseColor("#0080FF"));
-							if(style != "normal_nostrokes") {
-								bg.setStroke(thickness, Color_.parseColor("#3399FF"));
-							}
-						} else {
-							bg.setColor(Color_.parseColor("#0A175B"));
-							if(style != "normal_nostrokes") {
-								bg.setStroke(thickness, Color_.parseColor("#0E3882"));
-							}
-						}
-					} if(color == "purple") {
-						bg.setColor(Color_.parseColor("#9F018C"));
-						if(style != "normal_nostrokes") {
-							bg.setStroke(thickness, Color_.parseColor("#BC21AB"));
-						}
-					} if(color == "violet") {
-						bg.setColor(Color_.parseColor("#842DCE"));
-						if(style != "normal_nostrokes") {
-							bg.setStroke(thickness, Color_.parseColor("#8D38C9"));
-						}
-					} if(color == "yellow") {
-						bg.setColor(Color_.parseColor("#CCCC00"));
-						if(style != "normal_nostrokes") {
-							bg.setStroke(thickness, Color_.parseColor("#FFFF00"));
-						}
-					} if(color == "orange") {
-						bg.setColor(Color_.parseColor("#FF8C00"));
-						if(style != "normal_nostrokes") {
-							bg.setStroke(thickness, Color_.parseColor("#FFA500"));
-						}
-					} if(color == "brown") {
-						bg.setColor(Color_.parseColor("#8B4513"));
-						if(style != "normal_nostrokes") {
-							bg.setStroke(thickness, Color_.parseColor("#CD853F"));
-						}
-					} if(color == "grey") {
-						bg.setColor(Color_.parseColor("#808080"));
-						if(style != "normal_nostrokes") {
-							bg.setStroke(thickness, Color_.parseColor("#A9A9A9"));
-						}
-					} if(color == "white") {
-						bg.setColor(Color_.parseColor("#E1E1E1"));
-						if(style != "normal_nostrokes") {
-							bg.setStroke(thickness, Color_.parseColor("#FFFFFF"));
-						}
-					} if(color == "black") {
-						bg.setColor(Color_.parseColor("#141414"));
-						if(style != "normal_nostrokes") {
-							bg.setStroke(thickness, Color_.parseColor("#1E1E1E"));
-						}
-					}
-					
-					if(style == "legacy") {
-						bg.setColor(Color_.parseColor("#000000"));
-					}
-					if(style == "legacy_inverted") {
-						bg.setStroke(thickness, Color_.parseColor("#000000"));
-					}
 					if(style == "transparent") {
 						bg.setColor(Color_.TRANSPARENT);
+					} else {
+						if(style == "legacy") {
+							bg.setColor(Color_.parseColor("#000000"));
+						} else {
+							bg.setColor(getColor("inner", color, forceLightColor));
+						}
+					}
+					if(style == "tile") {
+						bg.setStroke(thickness, getColor("stroke", color, forceLightColor));
 					}
 					
 					if(style != "tile") {
@@ -10536,49 +10466,13 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 						}
 					}
 				} else {
-					if(forceLightColor == true) {
-						bg.setColor(Color_.parseColor("#00CC66"));
-					} else {
-						bg.setColor(Color_.parseColor("#0F8219"));
-					}
-					if(color == "custom rgb") {
-						bg.setColor(Color_.rgb(rgbArray[3], rgbArray[4], rgbArray[5]));
-					}
-					if(color == "red") {
-						if(forceLightColor == true) {
-							bg.setColor(Color_.parseColor("#FF6666"));
-						} else {
-							bg.setColor(Color_.parseColor("#821010"));
-						}
-					} if(color == "blue") {
-						if(forceLightColor == true) {
-							bg.setColor(Color_.parseColor("#3399FF"));
-						} else {
-							bg.setColor(Color_.parseColor("#0E3882"));
-						}
-					} if(color == "purple") {
-						bg.setColor(Color_.parseColor("#BC21AB"));
-					} if(color == "violet") {
-						bg.setColor(Color_.parseColor("#8D38C9"));
-					} if(color == "yellow") {
-						bg.setColor(Color_.parseColor("#FFFF00"));
-					} if(color == "orange") {
-						bg.setColor(Color_.parseColor("#FFA500"));
-					} if(color == "brown") {
-						bg.setColor(Color_.parseColor("#CD853F"));
-					} if(color == "grey") {
-						bg.setColor(Color_.parseColor("#A9A9A9"));
-					} if(color == "white") {
-						bg.setColor(Color_.parseColor("#FFFFFF"));
-					} if(color == "black") {
-						bg.setColor(Color_.parseColor("#1E1E1E"));
-					}
-					
-					if(style == "legacy_inverted") {
-						bg.setColor(Color_.parseColor("#000000"));
-					}
 					if(style == "tile") {
 						bg.setStroke(dip2px(3), Color_.parseColor("#d3d3d3"));
+					}
+					if(style == "legacy_inverted") {
+						bg.setColor(Color_.parseColor("#000000"));
+					} else {
+						bg.setColor(getColor("stroke", color, forceLightColor));
 					}
 				}
 				return false;
@@ -10587,6 +10481,25 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 		
 		buttonView.setBackgroundDrawable(bg);
 	} else {
+		buttonView.setOnTouchListener(new View_.OnTouchListener() {
+			onTouch: function(v, event) {
+				var action = event.getActionMasked();
+				if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
+					var rect = new android.graphics.Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+					if(rect.contains(v.getLeft() + event.getX(), v.getTop() + event.getY())) { // detect if the event happens inside the view
+						// onClick will run soon
+
+						// play sounds
+						if(buttonSoundSetting == "minecraft") {
+							//Level.playSoundEnt(getPlayerEnt(), "random.click", 100, 0);
+							Level.playSound(Player.getX(), Player.getY(), Player.getZ(), "random.click", 100, 0);
+						}
+					}
+				}
+				return false;
+			}
+		});
+		
 		buttonView.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 	}
 	
@@ -11876,31 +11789,33 @@ function settingButton(text, desc, parentWidth, resetFunc) {
 }
 
 function settingSelector(text, desc, dialogTitle, selectionArray, currentSelection, varToChange, customFirstOnClick) {
+	let parentWidth = display.widthPixels - dip2px(4);
+	
 	var settingButtonLayout = new LinearLayout_(CONTEXT);
 	settingButtonLayout.setOrientation(LinearLayout_.HORIZONTAL);
 	
 	var settingButtonLayoutLeft = new LinearLayout_(CONTEXT);
 	settingButtonLayoutLeft.setOrientation(1);
-	settingButtonLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
+	settingButtonLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(parentWidth / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
 	settingButtonLayout.addView(settingButtonLayoutLeft);
 	
 	var settingButtonLayoutMiddle = new LinearLayout_(CONTEXT);
 	settingButtonLayoutMiddle.setOrientation(1);
-	settingButtonLayoutMiddle.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
+	settingButtonLayoutMiddle.setLayoutParams(new ViewGroup_.LayoutParams(parentWidth / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
 	settingButtonLayout.addView(settingButtonLayoutMiddle);
 	
 	var settingButtonLayoutRight = new LinearLayout_(CONTEXT);
 	settingButtonLayoutRight.setOrientation(1);
-	settingButtonLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
+	settingButtonLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(parentWidth / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
 	settingButtonLayout.addView(settingButtonLayoutRight);
 	
 	var defaultTitle = clientTextView(text, true);
-	defaultTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
+	defaultTitle.setLayoutParams(new LinearLayout_.LayoutParams(parentWidth / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
 	defaultTitle.setGravity(Gravity_.CENTER_VERTICAL);
 	
 	settingButtonLayoutLeft.addView(defaultTitle);
 	var defaultSettingsButton = clientButton(currentSelection, desc);
-	defaultSettingsButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
+	defaultSettingsButton.setLayoutParams(new LinearLayout_.LayoutParams(parentWidth / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
 	//defaultSettingsButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, android.R.layout.simple_spinner_dropdown_item, 0);
 	
 	settingButtonLayoutRight.addView(defaultSettingsButton);
@@ -17571,7 +17486,7 @@ function showMenuButton() {
 	}
 	menuBtn.setTypeface(VertexClientPE.font);
 	if(buttonSoundSetting != "system") {
-		defaultButton.setSoundEffectsEnabled(false);
+		menuBtn.setSoundEffectsEnabled(false);
 	}
 	if(fontSetting == "minecraft") {
 		MinecraftButtonLibrary.addMinecraftStyleToTextView(menuBtn);
