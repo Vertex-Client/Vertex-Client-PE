@@ -171,7 +171,7 @@ var antiLagDropRemoverSetting = "off";
 var useLightThemeSetting = "off";
 var buttonStyleSetting = "normal";
 var mcpeGUISetting = "default";
-var chestESPRange = 25;
+var storageESPRange = 25;
 var transparentBgSetting = "on";
 var aimbotUseKillauraRange = "off";
 var screenshotModeSetting = "default";
@@ -1261,13 +1261,14 @@ VertexClientPE.Utils.loadChests = function() {
 		let x = Math.round(getPlayerX());
 		let y = Math.round(getPlayerY());
 		let z = Math.round(getPlayerZ());
-		for(let blockX = - chestESPRange; blockX <= chestESPRange; blockX++) {
-			for(let blockY = - chestESPRange; blockY <= chestESPRange; blockY++) {
-				for(let blockZ = - chestESPRange; blockZ <= chestESPRange; blockZ++) {
+		for(let blockX = - storageESPRange; blockX <= storageESPRange; blockX++) {
+			for(let blockY = - storageESPRange; blockY <= storageESPRange; blockY++) {
+				for(let blockZ = - storageESPRange; blockZ <= storageESPRange; blockZ++) {
 					let newX = Math.round(x + blockX);
 					let newY = Math.round(y + blockY);
 					let newZ = Math.round(z + blockZ);
-					if(getTile(newX, newY, newZ) == 54) {
+					let tile = getTile(newX, newY, newZ);
+					if(tile == 23 || tile == 54 || tile == 158) {
 						VertexClientPE.Utils.chests.push({
 							x: newX,
 							y: newY,
@@ -1280,7 +1281,7 @@ VertexClientPE.Utils.loadChests = function() {
 	} catch(e) {
 		//an error occured
 	} finally {
-		VertexClientPE.toast("Successfully (re)loaded chests!");
+		VertexClientPE.toast("Successfully (re)loaded storage blocks!");
 	}
 }
 
@@ -1325,7 +1326,7 @@ var menuRightLayout;
 var autoSpammerState = false;
 var autoSwordState = false;
 var bypassState = false;
-var chestESPState = false;
+var storageESPState = false;
 var fancyChatState = false;
 var fastBreakState = false;
 var healthDisplayState = false;
@@ -4468,8 +4469,8 @@ var speedHack = {
 	}
 }
 
-var chestESP = {
-	name: "ChestESP",
+var storageESP = {
+	name: "StorageESP",
 	desc: "Allows you to find chests easily by showing boxes around them.",
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
@@ -4478,22 +4479,22 @@ var chestESP = {
 		return true;
 	},
 	getSettingsLayout: function() {
-		var chestESPSettingsLayout = new LinearLayout_(CONTEXT);
-		chestESPSettingsLayout.setOrientation(1);
-		var chestESPRangeTitle = clientTextView("Range: | " + chestESPRange);
-		var chestESPRangeSlider = clientSeekBar();
-		chestESPRangeSlider.setProgress(chestESPRange);
-		chestESPRangeSlider.setMax(25);
-		chestESPRangeSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
+		var storageESPSettingsLayout = new LinearLayout_(CONTEXT);
+		storageESPSettingsLayout.setOrientation(1);
+		var storageESPRangeTitle = clientTextView("Range: | " + storageESPRange);
+		var storageESPRangeSlider = clientSeekBar();
+		storageESPRangeSlider.setProgress(storageESPRange);
+		storageESPRangeSlider.setMax(25);
+		storageESPRangeSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
 			onProgressChanged: function() {
-				chestESPRange = chestESPRangeSlider.getProgress();
-				chestESPRangeTitle.setText("Range: | " + chestESPRange);
+				storageESPRange = storageESPRangeSlider.getProgress();
+				storageESPRangeTitle.setText("Range: | " + storageESPRange);
 			}
 		});
 		
-		chestESPSettingsLayout.addView(chestESPRangeTitle);
-		chestESPSettingsLayout.addView(chestESPRangeSlider);
-		return chestESPSettingsLayout;
+		storageESPSettingsLayout.addView(storageESPRangeTitle);
+		storageESPSettingsLayout.addView(storageESPRangeSlider);
+		return storageESPSettingsLayout;
 	},
 	onModDialogDismiss: function() {
 		VertexClientPE.saveMainSettings();
@@ -4503,7 +4504,7 @@ var chestESP = {
 	},
 	onToggle: function() {
 		this.state = !this.state;
-		chestESPState = this.state;
+		storageESPState = this.state;
 		if(this.state) {
 			VertexClientPE.Utils.loadFov();
 			VertexClientPE.Utils.loadChests();
@@ -5598,7 +5599,7 @@ VertexClientPE.registerModule(tapTeleport);
 VertexClientPE.registerModule(autoBuild);
 VertexClientPE.registerModule(autoMine);
 VertexClientPE.registerModule(autoPlace);
-VertexClientPE.registerModule(chestESP);
+VertexClientPE.registerModule(storageESP);
 VertexClientPE.registerModule(chestTracers);
 VertexClientPE.registerModule(fullBright);
 VertexClientPE.registerModule(nuker);
@@ -5708,17 +5709,17 @@ function useItem(x, y, z, itemId, blockId, side, blockDamage) {
 			element.onUseItem(x, y, z, itemId, blockId, side, blockDamage);
 		}
 	});
-	if(itemId == 54 && ((blockId != 54 && blockId != 58) || Entity.isSneaking(getPlayerEnt()))) {
-		if(chestESPState) {
+	if((itemId == 23 || itemId == 54 || itemId == 158) && ((blockId != 54 && blockId != 58) || Entity.isSneaking(getPlayerEnt()))) {
+		if(storageESPState) {
 			new Thread_(new Runnable_({
 				run: function() {
-					VertexClientPE.toast("Adding chest to chest list...");
+					VertexClientPE.toast("Adding storage block to storage block list...");
 					Thread_.sleep(1200);
-					let chestESPVector = new Vector3(x-(side==4?1:0)+(side==5?1:0),y-(side==0?1:0)+(side==1?1:0),z-(side==2?1:0)+(side==3?1:0));
+					let storageESPVector = new Vector3(x-(side==4?1:0)+(side==5?1:0),y-(side==0?1:0)+(side==1?1:0),z-(side==2?1:0)+(side==3?1:0));
 					VertexClientPE.Utils.chests.push({
-						x: chestESPVector.x,
-						y: chestESPVector.y,
-						z: chestESPVector.z
+						x: storageESPVector.x,
+						y: storageESPVector.y,
+						z: storageESPVector.z
 					});
 				}
 			})).start();
@@ -9896,7 +9897,7 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + useLightThemeSetting.toString());
 	outWrite.append("," + buttonStyleSetting.toString());
 	outWrite.append("," + mcpeGUISetting.toString());
-	outWrite.append("," + chestESPRange.toString());
+	outWrite.append("," + storageESPRange.toString());
 	outWrite.append("," + transparentBgSetting.toString());
 	outWrite.append("," + aimbotUseKillauraRange.toString());
 	outWrite.append("," + screenshotModeSetting.toString());
@@ -10041,7 +10042,7 @@ VertexClientPE.loadMainSettings = function () {
 			mcpeGUISetting = arr[23];
 		}
 		if (arr[24] != null && arr[24] != undefined) {
-			chestESPRange = arr[24];
+			storageESPRange = arr[24];
 		}
 		if (arr[25] != null && arr[25] != undefined) {
 			transparentBgSetting = arr[25];
@@ -18771,11 +18772,11 @@ function destroyBlock(x, y, z, side) {
 			}
 		}
 	}
-	if(tile == 54) {
-		if(chestESPState) {
+	if(tile == 23 || tile == 54 || tile == 158) {
+		if(storageESPState) {
 			new Thread_(new Runnable_({
 				run: function() {
-					VertexClientPE.toast("Removing chest from chest list...");
+					VertexClientPE.toast("Removing storage block from storage block list...");
 					Thread_.sleep(1200);
 					VertexClientPE.Utils.chests.forEach(function(element, index, array) {
 						if(element.x == x && element.y == y && element.z == z) {
