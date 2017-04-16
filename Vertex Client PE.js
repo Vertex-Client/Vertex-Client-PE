@@ -1,7 +1,7 @@
 /**
  * ##################################################################################################
  * @name Vertex Client PE
- * @version v2.3
+ * @version v2.3.1
  * @author peacestorm (@AgameR_Modder)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36, AutoGrind, TimmyIsDa
  *
@@ -1304,7 +1304,7 @@ VertexClientPE.isRemote = function() {
 
 VertexClientPE.playerIsInGame = false;
 
-VertexClientPE.currentVersion = "2.3";
+VertexClientPE.currentVersion = "2.3.1";
 VertexClientPE.currentVersionDesc = "The Visual Update";
 VertexClientPE.targetVersion = "MCPE v1.0.x alpha";
 VertexClientPE.minVersion = "1.0.0";
@@ -12318,6 +12318,26 @@ function backgroundGradient(round, style, transparent) // TextView with colored 
 				}
 			}
 			bg.setCornerRadii(radiiFloatArray);
+		} else if(round == "bottomleft_") {
+			var radiiFloatArray = Array_.newInstance(Float_.TYPE, 9);
+			for(var i = 0; i <= 7; i++) {
+				if(i == 0 || i == 1) {
+					radiiFloatArray[i] = 16;
+				} else {
+					radiiFloatArray[i] = radius;
+				}
+			}
+			bg.setCornerRadii(radiiFloatArray);
+		} else if(round == "bottomright_") {
+			var radiiFloatArray = Array_.newInstance(Float_.TYPE, 9);
+			for(var i = 0; i <= 7; i++) {
+				if(i == 2 || i == 3) {
+					radiiFloatArray[i] = 16;
+				} else {
+					radiiFloatArray[i] = radius;
+				}
+			}
+			bg.setCornerRadii(radiiFloatArray);
 		} else if(round != false && round != null) {
 			bg.setCornerRadius(round);
 		}
@@ -17595,8 +17615,10 @@ function showMenuButton() {
 	} else if(mainButtonStyleSetting == "global_background") {
 		if(mainButtonPositionSetting == "top-right") {
 			background = backgroundGradient("bottomleft", null, "on");
-		} else {
+		} else if(mainButtonPositionSetting == "top-left") {
 			background = backgroundGradient("bottomright", null, "on");
+		} else if(mainButtonPositionSetting == "bottom-left") {
+			background = backgroundGradient("bottomright_", null, "on");
 		}
 	} else if(mainButtonStyleSetting == "classic") {
 		background = new ColorDrawable_(Color_.parseColor("#1D1D1D"));
