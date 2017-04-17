@@ -2230,15 +2230,6 @@ var panic = {
 		var panicCombatCheckBox = clientCheckBox();
 		panicCombatCheckBox.setChecked(panicCombatSetting == "on");
 		panicCombatCheckBox.setText("Combat");
-		if(themeSetting == "white") {
-			panicCombatCheckBox.setTextColor(Color_.BLACK);
-		} else {
-			panicCombatCheckBox.setTextColor(Color_.WHITE);
-		}
-		panicCombatCheckBox.setTypeface(VertexClientPE.font);
-		if(fontSetting == "minecraft") {
-			MinecraftButtonLibrary.addMinecraftStyleToTextView(panicCombatCheckBox);
-		}
 		panicCombatCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				panicCombatSetting = v.isChecked()?"on":"off";
@@ -2249,15 +2240,6 @@ var panic = {
 		var panicWorldCheckBox = clientCheckBox();
 		panicWorldCheckBox.setChecked(panicWorldSetting == "on");
 		panicWorldCheckBox.setText("World");
-		if(themeSetting == "white") {
-			panicWorldCheckBox.setTextColor(Color_.BLACK);
-		} else {
-			panicWorldCheckBox.setTextColor(Color_.WHITE);
-		}
-		panicWorldCheckBox.setTypeface(VertexClientPE.font);
-		if(fontSetting == "minecraft") {
-			MinecraftButtonLibrary.addMinecraftStyleToTextView(panicWorldCheckBox);
-		}
 		panicWorldCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				panicWorldSetting = v.isChecked()?"on":"off";
@@ -2268,15 +2250,6 @@ var panic = {
 		var panicMovementCheckBox = clientCheckBox();
 		panicMovementCheckBox.setChecked(panicMovementSetting == "on");
 		panicMovementCheckBox.setText("Movement");
-		if(themeSetting == "white") {
-			panicMovementCheckBox.setTextColor(Color_.BLACK);
-		} else {
-			panicMovementCheckBox.setTextColor(Color_.WHITE);
-		}
-		panicMovementCheckBox.setTypeface(VertexClientPE.font);
-		if(fontSetting == "minecraft") {
-			MinecraftButtonLibrary.addMinecraftStyleToTextView(panicMovementCheckBox);
-		}
 		panicMovementCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				panicMovementSetting = v.isChecked()?"on":"off";
@@ -2287,15 +2260,6 @@ var panic = {
 		var panicPlayerCheckBox = clientCheckBox();
 		panicPlayerCheckBox.setChecked(panicPlayerSetting == "on");
 		panicPlayerCheckBox.setText("Player");
-		if(themeSetting == "white") {
-			panicPlayerCheckBox.setTextColor(Color_.BLACK);
-		} else {
-			panicPlayerCheckBox.setTextColor(Color_.WHITE);
-		}
-		panicPlayerCheckBox.setTypeface(VertexClientPE.font);
-		if(fontSetting == "minecraft") {
-			MinecraftButtonLibrary.addMinecraftStyleToTextView(panicPlayerCheckBox);
-		}
 		panicPlayerCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				panicPlayerSetting = v.isChecked()?"on":"off";
@@ -2306,15 +2270,6 @@ var panic = {
 		var panicMiscCheckBox = clientCheckBox();
 		panicMiscCheckBox.setChecked(panicMiscSetting == "on");
 		panicMiscCheckBox.setText("Misc");
-		if(themeSetting == "white") {
-			panicMiscCheckBox.setTextColor(Color_.BLACK);
-		} else {
-			panicMiscCheckBox.setTextColor(Color_.WHITE);
-		}
-		panicMiscCheckBox.setTypeface(VertexClientPE.font);
-		if(fontSetting == "minecraft") {
-			MinecraftButtonLibrary.addMinecraftStyleToTextView(panicMiscCheckBox);
-		}
 		panicMiscCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				panicMiscSetting = v.isChecked()?"on":"off";
@@ -3036,16 +2991,6 @@ var autoSpammer = {
 		var spamUseRandomMsgSettingCheckBox = clientCheckBox();
 		spamUseRandomMsgSettingCheckBox.setChecked(spamUseRandomMsgSetting=="on");
 		spamUseRandomMsgSettingCheckBox.setText("Use random messages instead of the custom message");
-		if(themeSetting == "white") {
-			spamUseRandomMsgSettingCheckBox.setTextColor(Color_.BLACK);
-		} else {
-			spamUseRandomMsgSettingCheckBox.setTextColor(Color_.WHITE);
-		}
-		spamUseRandomMsgSettingCheckBox.setTypeface(VertexClientPE.font);
-		
-		if(fontSetting == "minecraft") {
-			MinecraftButtonLibrary.addMinecraftStyleToTextView(spamUseRandomMsgSettingCheckBox);
-		}
 		spamUseRandomMsgSettingCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				spamUseRandomMsgSetting = v.isChecked()?"on":"off";
@@ -3941,16 +3886,6 @@ var aimbot = {
 		var useKillauraRangeCheckBox = clientCheckBox();
 		useKillauraRangeCheckBox.setChecked(aimbotUseKillauraRange == "on");
 		useKillauraRangeCheckBox.setText("Use same range as Killaura");
-		if(themeSetting == "white") {
-			useKillauraRangeCheckBox.setTextColor(Color_.BLACK);
-		} else {
-			useKillauraRangeCheckBox.setTextColor(Color_.WHITE);
-		}
-		useKillauraRangeCheckBox.setTypeface(VertexClientPE.font);
-		
-		if(fontSetting == "minecraft") {
-			MinecraftButtonLibrary.addMinecraftStyleToTextView(useKillauraRangeCheckBox);
-		}
 		useKillauraRangeCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				aimbotUseKillauraRange = v.isChecked()?"on":"off";
@@ -4104,15 +4039,6 @@ var chestTracers = {
 		var groundModeCheckBox = clientCheckBox();
 		groundModeCheckBox.setChecked(chestTracersGroundMode == "on");
 		groundModeCheckBox.setText("Ground Mode");
-		if(themeSetting == "white") {
-			groundModeCheckBox.setTextColor(Color_.BLACK);
-		} else {
-			groundModeCheckBox.setTextColor(Color_.WHITE);
-		}
-		groundModeCheckBox.setTypeface(VertexClientPE.font);
-		if(fontSetting == "minecraft") {
-			MinecraftButtonLibrary.addMinecraftStyleToTextView(groundModeCheckBox);
-		}
 		groundModeCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				chestTracersGroundMode = v.isChecked()?"on":"off";
@@ -4171,15 +4097,6 @@ var remoteView = {
 		var teleportToLocationCheckBox = clientCheckBox();
 		teleportToLocationCheckBox.setChecked(remoteViewTeleportSetting == "on");
 		teleportToLocationCheckBox.setText("Teleport to the target entity when you disable RemoteView");
-		if(themeSetting == "white") {
-			teleportToLocationCheckBox.setTextColor(Color_.BLACK);
-		} else {
-			teleportToLocationCheckBox.setTextColor(Color_.WHITE);
-		}
-		teleportToLocationCheckBox.setTypeface(VertexClientPE.font);
-		if(fontSetting == "minecraft") {
-			MinecraftButtonLibrary.addMinecraftStyleToTextView(teleportToLocationCheckBox);
-		}
 		teleportToLocationCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				remoteViewTeleportSetting = v.isChecked()?"on":"off";
@@ -4916,15 +4833,6 @@ var target = {
 		var targetMobsCheckBox = clientCheckBox();
 		targetMobsCheckBox.setChecked(targetMobsSetting == "on");
 		targetMobsCheckBox.setText("Mobs");
-		if(themeSetting == "white") {
-			targetMobsCheckBox.setTextColor(Color_.BLACK);
-		} else {
-			targetMobsCheckBox.setTextColor(Color_.WHITE);
-		}
-		targetMobsCheckBox.setTypeface(VertexClientPE.font);
-		if(fontSetting == "minecraft") {
-			MinecraftButtonLibrary.addMinecraftStyleToTextView(targetMobsCheckBox);
-		}
 		targetMobsCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				targetMobsSetting = v.isChecked()?"on":"off";
@@ -4935,15 +4843,6 @@ var target = {
 		var targetPlayersCheckBox = clientCheckBox();
 		targetPlayersCheckBox.setChecked(targetPlayersSetting == "on");
 		targetPlayersCheckBox.setText("Players");
-		if(themeSetting == "white") {
-			targetPlayersCheckBox.setTextColor(Color_.BLACK);
-		} else {
-			targetPlayersCheckBox.setTextColor(Color_.WHITE);
-		}
-		targetPlayersCheckBox.setTypeface(VertexClientPE.font);
-		if(fontSetting == "minecraft") {
-			MinecraftButtonLibrary.addMinecraftStyleToTextView(targetPlayersCheckBox);
-		}
 		targetPlayersCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				targetPlayersSetting = v.isChecked()?"on":"off";
@@ -4956,15 +4855,6 @@ var target = {
 		targetFriendsCheckBox.setChecked(targetFriendsSetting == "on");
 		targetFriendsCheckBox.setEnabled(targetPlayersCheckBox.isChecked());
 		targetFriendsCheckBox.setText("Friends");
-		if(themeSetting == "white") {
-			targetFriendsCheckBox.setTextColor(Color_.BLACK);
-		} else {
-			targetFriendsCheckBox.setTextColor(Color_.WHITE);
-		}
-		targetFriendsCheckBox.setTypeface(VertexClientPE.font);
-		if(fontSetting == "minecraft") {
-			MinecraftButtonLibrary.addMinecraftStyleToTextView(targetFriendsCheckBox);
-		}
 		targetFriendsCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				targetFriendsSetting = v.isChecked()?"on":"off";
@@ -5126,15 +5016,6 @@ var prevent = {
 		var preventDiggingCheckBox = clientCheckBox();
 		preventDiggingCheckBox.setChecked(preventDiggingSetting == "on");
 		preventDiggingCheckBox.setText("Prevent block digging");
-		if(themeSetting == "white") {
-			preventDiggingCheckBox.setTextColor(Color_.BLACK);
-		} else {
-			preventDiggingCheckBox.setTextColor(Color_.WHITE);
-		}
-		preventDiggingCheckBox.setTypeface(VertexClientPE.font);
-		if(fontSetting == "minecraft") {
-			MinecraftButtonLibrary.addMinecraftStyleToTextView(preventDiggingCheckBox);
-		}
 		preventDiggingCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				preventDiggingSetting = v.isChecked()?"on":"off";
@@ -5145,15 +5026,6 @@ var prevent = {
 		var preventPlacingCheckBox = clientCheckBox();
 		preventPlacingCheckBox.setChecked(preventPlacingSetting == "on");
 		preventPlacingCheckBox.setText("Prevent block placing/tapping with items on blocks");
-		if(themeSetting == "white") {
-			preventPlacingCheckBox.setTextColor(Color_.BLACK);
-		} else {
-			preventPlacingCheckBox.setTextColor(Color_.WHITE);
-		}
-		preventPlacingCheckBox.setTypeface(VertexClientPE.font);
-		if(fontSetting == "minecraft") {
-			MinecraftButtonLibrary.addMinecraftStyleToTextView(preventPlacingCheckBox);
-		}
 		preventPlacingCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				preventPlacingSetting = v.isChecked()?"on":"off";
@@ -5164,15 +5036,6 @@ var prevent = {
 		var preventAttacksCheckBox = clientCheckBox();
 		preventAttacksCheckBox.setChecked(preventAttacksSetting == "on");
 		preventAttacksCheckBox.setText("Prevent hitting other entities");
-		if(themeSetting == "white") {
-			preventAttacksCheckBox.setTextColor(Color_.BLACK);
-		} else {
-			preventAttacksCheckBox.setTextColor(Color_.WHITE);
-		}
-		preventAttacksCheckBox.setTypeface(VertexClientPE.font);
-		if(fontSetting == "minecraft") {
-			MinecraftButtonLibrary.addMinecraftStyleToTextView(preventAttacksCheckBox);
-		}
 		preventAttacksCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				preventAttacksSetting = v.isChecked()?"on":"off";
@@ -5709,12 +5572,12 @@ function useItem(x, y, z, itemId, blockId, side, blockDamage) {
 			element.onUseItem(x, y, z, itemId, blockId, side, blockDamage);
 		}
 	});
-	if((itemId == 23 || itemId == 54 || itemId == 125) && ((blockId != 23 && blockId != 54 && blockId != 58 && blockId != 125) || Entity.isSneaking(getPlayerEnt()))) {
-		if(storageESPState) {
+	
+	if(storageESPState) {
+		if((itemId == 23 || itemId == 54 || itemId == 125) && ((blockId != 23 && blockId != 54 && blockId != 58 && blockId != 125) || Entity.isSneaking(getPlayerEnt()))) {
 			new Thread_(new Runnable_({
 				run: function() {
 					VertexClientPE.toast("Adding storage block to storage block list...");
-					Thread_.sleep(1200);
 					let storageESPVector = new Vector3(x-(side==4?1:0)+(side==5?1:0),y-(side==0?1:0)+(side==1?1:0),z-(side==2?1:0)+(side==3?1:0));
 					VertexClientPE.Utils.chests.push({
 						x: storageESPVector.x,
@@ -7924,16 +7787,6 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 				var tileDropDownUseLightColorCheckBox = clientCheckBox();
 				tileDropDownUseLightColorCheckBox.setChecked(currentUseLightColor);
 				tileDropDownUseLightColorCheckBox.setText("Lighter color");
-				if(themeSetting == "white") {
-					tileDropDownUseLightColorCheckBox.setTextColor(Color_.BLACK);
-				} else {
-					tileDropDownUseLightColorCheckBox.setTextColor(Color_.WHITE);
-				}
-				tileDropDownUseLightColorCheckBox.setTypeface(VertexClientPE.font);
-				
-				if(fontSetting == "minecraft") {
-					MinecraftButtonLibrary.addMinecraftStyleToTextView(tileDropDownUseLightColorCheckBox);
-				}
 				tileDropDownUseLightColorCheckBox.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(v) {
 						currentUseLightColor = v.isChecked();
@@ -8973,7 +8826,7 @@ VertexClientPE.toast = function(message, vibrate) {
 			layout.setBackground(backgroundGradient());
 			var title = VertexClientPE.getName();
 			var _0xc62b=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x20\x50\x72\x6F"];if(VertexClientPE[_0xc62b[0]]()==_0xc62b[1]){title+=_0xc62b[2]}
-			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message), 0);
+			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message));
 			layout.addView(text);
 			if(toast != null) {
 				toast.cancel();
@@ -8995,7 +8848,7 @@ VertexClientPE.addonLoadToast = function(message) {
 			icon.setImageResource(android.R.drawable.ic_menu_more);
 			var title = VertexClientPE.getName();
 			var _0xc62b=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x20\x50\x72\x6F"];if(VertexClientPE[_0xc62b[0]]()==_0xc62b[1]){title+=_0xc62b[2]}
-			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message), 0);
+			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message));
 			layout.addView(icon);
 			layout.addView(text);
 			toast = new Toast_(CONTEXT);
@@ -9015,7 +8868,7 @@ VertexClientPE.updateToast = function(message) {
 			icon.setImageResource(android.R.drawable.ic_menu_compass);
 			var title = VertexClientPE.getName();
 			var _0xc62b=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x20\x50\x72\x6F"];if(VertexClientPE[_0xc62b[0]]()==_0xc62b[1]){title+=_0xc62b[2]}
-			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message), 0);
+			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message));
 			layout.addView(icon);
 			layout.addView(text);
 			toast = new Toast_(CONTEXT);
@@ -9037,7 +8890,7 @@ VertexClientPE.showChristmasToast = function(daysLeft) {
 			var title = VertexClientPE.getName();
 			var _0xc62b=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x20\x50\x72\x6F"];if(VertexClientPE[_0xc62b[0]]()==_0xc62b[1]){title+=_0xc62b[2]}
 			var cText = daysLeft == null ? "Merry Christmas!" : (daysLeft + " days left until Christmas!");
-			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + cText), 0);
+			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + cText));
 			layout.addView(icon);
 			layout.addView(text);
 			toast = new Toast_(CONTEXT);
@@ -11548,8 +11401,21 @@ function clientSeekBar() {
 
 function clientCheckBox() {
 	let defaultCheckBox = new CheckBox_(CONTEXT);
-	defaultCheckBox.getProgressDrawable().setColorFilter(new android.graphics.PorterDuffColorFilter(getColor("stroke"), PorterDuff_.Mode.SRC_IN));
-	defaultCheckBox.getThumb().setColorFilter(new android.graphics.PorterDuffColorFilter(getColor("stroke"), PorterDuff_.Mode.SRC_IN));
+	if(themeSetting == "white") {
+		defaultCheckBox.setTextColor(Color_.BLACK);
+		if(fontSetting != "minecraft") {
+			defaultCheckBox.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
+		}
+	} else {
+		defaultCheckBox.setTextColor(Color_.WHITE);
+		if(fontSetting != "minecraft") {
+			defaultCheckBox.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+		}
+	}
+	defaultCheckBox.setTypeface(VertexClientPE.font);
+	if(fontSetting == "minecraft") {
+		MinecraftButtonLibrary.addMinecraftStyleToTextView(defaultCheckBox);
+	}
 	return defaultCheckBox;
 }
 
@@ -18702,7 +18568,6 @@ function destroyBlock(x, y, z, side) {
 				new Thread_(new Runnable_({
 					run: function() {
 						VertexClientPE.toast("Removing storage block from storage block list...");
-						Thread_.sleep(1200);
 						VertexClientPE.Utils.chests.forEach(function(element, index, array) {
 							if(element.x == x && element.y == y && element.z == z) {
 								array.splice(index, 1);
