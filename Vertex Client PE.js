@@ -1268,7 +1268,7 @@ VertexClientPE.Utils.loadChests = function() {
 					let newY = Math.round(y + blockY);
 					let newZ = Math.round(z + blockZ);
 					let tile = getTile(newX, newY, newZ);
-					if(tile == 23 || tile == 54 || tile == 158) {
+					if(tile == 23 || tile == 54 || tile == 125) {
 						VertexClientPE.Utils.chests.push({
 							x: newX,
 							y: newY,
@@ -2227,7 +2227,7 @@ var panic = {
 		var panicSettingsLayout = new LinearLayout_(CONTEXT);
 		panicSettingsLayout.setOrientation(1);
 		
-		var panicCombatCheckBox = new CheckBox_(CONTEXT);
+		var panicCombatCheckBox = clientCheckBox();
 		panicCombatCheckBox.setChecked(panicCombatSetting == "on");
 		panicCombatCheckBox.setText("Combat");
 		if(themeSetting == "white") {
@@ -2246,7 +2246,7 @@ var panic = {
 			}
 		});
 		
-		var panicWorldCheckBox = new CheckBox_(CONTEXT);
+		var panicWorldCheckBox = clientCheckBox();
 		panicWorldCheckBox.setChecked(panicWorldSetting == "on");
 		panicWorldCheckBox.setText("World");
 		if(themeSetting == "white") {
@@ -2265,7 +2265,7 @@ var panic = {
 			}
 		});
 		
-		var panicMovementCheckBox = new CheckBox_(CONTEXT);
+		var panicMovementCheckBox = clientCheckBox();
 		panicMovementCheckBox.setChecked(panicMovementSetting == "on");
 		panicMovementCheckBox.setText("Movement");
 		if(themeSetting == "white") {
@@ -2284,7 +2284,7 @@ var panic = {
 			}
 		});
 		
-		var panicPlayerCheckBox = new CheckBox_(CONTEXT);
+		var panicPlayerCheckBox = clientCheckBox();
 		panicPlayerCheckBox.setChecked(panicPlayerSetting == "on");
 		panicPlayerCheckBox.setText("Player");
 		if(themeSetting == "white") {
@@ -2303,7 +2303,7 @@ var panic = {
 			}
 		});
 		
-		var panicMiscCheckBox = new CheckBox_(CONTEXT);
+		var panicMiscCheckBox = clientCheckBox();
 		panicMiscCheckBox.setChecked(panicMiscSetting == "on");
 		panicMiscCheckBox.setText("Misc");
 		if(themeSetting == "white") {
@@ -2431,7 +2431,7 @@ var switchGamemode = {
 		var switchGamemodeSettingsLayout = new LinearLayout_(CONTEXT);
 		switchGamemodeSettingsLayout.setOrientation(1);
 		
-		var sendCommandCheckBox = new CheckBox_(CONTEXT);
+		var sendCommandCheckBox = clientCheckBox();
 		sendCommandCheckBox.setChecked(switchGamemodeSendCommandSetting == "on");
 		sendCommandCheckBox.setText("Send gamemode command to server when switching gamemode");
 		if(themeSetting == "white") {
@@ -3033,7 +3033,7 @@ var autoSpammer = {
 	type: "Mod",
 	state: false,
 	getSettingsLayout: function() {
-		var spamUseRandomMsgSettingCheckBox = new CheckBox_(CONTEXT);
+		var spamUseRandomMsgSettingCheckBox = clientCheckBox();
 		spamUseRandomMsgSettingCheckBox.setChecked(spamUseRandomMsgSetting=="on");
 		spamUseRandomMsgSettingCheckBox.setText("Use random messages instead of the custom message");
 		if(themeSetting == "white") {
@@ -3938,7 +3938,7 @@ var aimbot = {
 		var aimbotSettingsLayout = new LinearLayout_(CONTEXT);
 		aimbotSettingsLayout.setOrientation(1);
 		
-		var useKillauraRangeCheckBox = new CheckBox_(CONTEXT);
+		var useKillauraRangeCheckBox = clientCheckBox();
 		useKillauraRangeCheckBox.setChecked(aimbotUseKillauraRange == "on");
 		useKillauraRangeCheckBox.setText("Use same range as Killaura");
 		if(themeSetting == "white") {
@@ -4101,7 +4101,7 @@ var chestTracers = {
 		chestTracersParticleLayoutCenter.addView(chestTracersRedstoneButton);
 		chestTracersParticleLayoutRight.addView(chestTracersCriticalButton);
 		
-		var groundModeCheckBox = new CheckBox_(CONTEXT);
+		var groundModeCheckBox = clientCheckBox();
 		groundModeCheckBox.setChecked(chestTracersGroundMode == "on");
 		groundModeCheckBox.setText("Ground Mode");
 		if(themeSetting == "white") {
@@ -4168,7 +4168,7 @@ var remoteView = {
 		var remoteViewSettingsLayout = new LinearLayout_(CONTEXT);
 		remoteViewSettingsLayout.setOrientation(1);
 		
-		var teleportToLocationCheckBox = new CheckBox_(CONTEXT);
+		var teleportToLocationCheckBox = clientCheckBox();
 		teleportToLocationCheckBox.setChecked(remoteViewTeleportSetting == "on");
 		teleportToLocationCheckBox.setText("Teleport to the target entity when you disable RemoteView");
 		if(themeSetting == "white") {
@@ -4913,7 +4913,7 @@ var target = {
 		var targetSettingsLayout = new LinearLayout_(CONTEXT);
 		targetSettingsLayout.setOrientation(1);
 		
-		var targetMobsCheckBox = new CheckBox_(CONTEXT);
+		var targetMobsCheckBox = clientCheckBox();
 		targetMobsCheckBox.setChecked(targetMobsSetting == "on");
 		targetMobsCheckBox.setText("Mobs");
 		if(themeSetting == "white") {
@@ -4932,7 +4932,7 @@ var target = {
 			}
 		});
 		
-		var targetPlayersCheckBox = new CheckBox_(CONTEXT);
+		var targetPlayersCheckBox = clientCheckBox();
 		targetPlayersCheckBox.setChecked(targetPlayersSetting == "on");
 		targetPlayersCheckBox.setText("Players");
 		if(themeSetting == "white") {
@@ -4952,7 +4952,7 @@ var target = {
 			}
 		});
 		
-		var targetFriendsCheckBox = new CheckBox_(CONTEXT);
+		var targetFriendsCheckBox = clientCheckBox();
 		targetFriendsCheckBox.setChecked(targetFriendsSetting == "on");
 		targetFriendsCheckBox.setEnabled(targetPlayersCheckBox.isChecked());
 		targetFriendsCheckBox.setText("Friends");
@@ -5123,7 +5123,7 @@ var prevent = {
 		var twerkSettingsLayout = new LinearLayout_(CONTEXT);
 		twerkSettingsLayout.setOrientation(1);
 		
-		var preventDiggingCheckBox = new CheckBox_(CONTEXT);
+		var preventDiggingCheckBox = clientCheckBox();
 		preventDiggingCheckBox.setChecked(preventDiggingSetting == "on");
 		preventDiggingCheckBox.setText("Prevent block digging");
 		if(themeSetting == "white") {
@@ -5142,7 +5142,7 @@ var prevent = {
 			}
 		});
 		
-		var preventPlacingCheckBox = new CheckBox_(CONTEXT);
+		var preventPlacingCheckBox = clientCheckBox();
 		preventPlacingCheckBox.setChecked(preventPlacingSetting == "on");
 		preventPlacingCheckBox.setText("Prevent block placing/tapping with items on blocks");
 		if(themeSetting == "white") {
@@ -5161,7 +5161,7 @@ var prevent = {
 			}
 		});
 		
-		var preventAttacksCheckBox = new CheckBox_(CONTEXT);
+		var preventAttacksCheckBox = clientCheckBox();
 		preventAttacksCheckBox.setChecked(preventAttacksSetting == "on");
 		preventAttacksCheckBox.setText("Prevent hitting other entities");
 		if(themeSetting == "white") {
@@ -5599,13 +5599,13 @@ VertexClientPE.registerModule(tapTeleport);
 VertexClientPE.registerModule(autoBuild);
 VertexClientPE.registerModule(autoMine);
 VertexClientPE.registerModule(autoPlace);
-VertexClientPE.registerModule(storageESP);
 VertexClientPE.registerModule(chestTracers);
 VertexClientPE.registerModule(fullBright);
 VertexClientPE.registerModule(nuker);
 VertexClientPE.registerModule(powerExplosions);
 VertexClientPE.registerModule(signEditor);
 VertexClientPE.registerModule(stackDrop);
+VertexClientPE.registerModule(storageESP);
 VertexClientPE.registerModule(tapExplosion);
 VertexClientPE.registerModule(tapNuker);
 VertexClientPE.registerModule(tapRemover);
@@ -5709,7 +5709,7 @@ function useItem(x, y, z, itemId, blockId, side, blockDamage) {
 			element.onUseItem(x, y, z, itemId, blockId, side, blockDamage);
 		}
 	});
-	if((itemId == 23 || itemId == 54 || itemId == 158) && ((blockId != 54 && blockId != 58) || Entity.isSneaking(getPlayerEnt()))) {
+	if((itemId == 23 || itemId == 54 || itemId == 125) && ((blockId != 23 && blockId != 54 && blockId != 58 && blockId != 125) || Entity.isSneaking(getPlayerEnt()))) {
 		if(storageESPState) {
 			new Thread_(new Runnable_({
 				run: function() {
@@ -7921,7 +7921,7 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 					}
 				}));
 				
-				var tileDropDownUseLightColorCheckBox = new CheckBox_(CONTEXT);
+				var tileDropDownUseLightColorCheckBox = clientCheckBox();
 				tileDropDownUseLightColorCheckBox.setChecked(currentUseLightColor);
 				tileDropDownUseLightColorCheckBox.setText("Lighter color");
 				if(themeSetting == "white") {
@@ -11541,8 +11541,16 @@ function clientEditText(text) //menu buttons
 
 function clientSeekBar() {
 	let defaultSeekBar = new SeekBar_(CONTEXT);
-	//defaultSeekBar.getProgressDrawable().setColorFilter(new android.graphics.PorterDuffColorFilter(getColor("stroke"), PorterDuff_.Mode.SRC_IN));
+	defaultSeekBar.getProgressDrawable().setColorFilter(new android.graphics.PorterDuffColorFilter(getColor("stroke"), PorterDuff_.Mode.SRC_IN));
+	defaultSeekBar.getThumb().setColorFilter(new android.graphics.PorterDuffColorFilter(getColor("stroke"), PorterDuff_.Mode.SRC_IN));
 	return defaultSeekBar;
+}
+
+function clientCheckBox() {
+	let defaultCheckBox = new CheckBox_(CONTEXT);
+	defaultCheckBox.getProgressDrawable().setColorFilter(new android.graphics.PorterDuffColorFilter(getColor("stroke"), PorterDuff_.Mode.SRC_IN));
+	defaultCheckBox.getThumb().setColorFilter(new android.graphics.PorterDuffColorFilter(getColor("stroke"), PorterDuff_.Mode.SRC_IN));
+	return defaultCheckBox;
 }
 
 function clientTextView(text, shadow) //menu buttons
@@ -18687,20 +18695,23 @@ function destroyBlock(x, y, z, side) {
 			}
 		}
 	}
-	if(tile == 23 || tile == 54 || tile == 158) {
-		if(storageESPState) {
-			new Thread_(new Runnable_({
-				run: function() {
-					VertexClientPE.toast("Removing storage block from storage block list...");
-					Thread_.sleep(1200);
-					VertexClientPE.Utils.chests.forEach(function(element, index, array) {
-						if(element.x == x && element.y == y && element.z == z) {
-							array.splice(index, 1);
-							return;
-						}
-					});
-				}
-			})).start();
+	let playerItem = Player.getCarriedItem();
+	if(playerItem != 267 && playerItem != 268 && playerItem != 272 && playerItem != 276 && playerItem != 283) {
+		if(tile == 23 || tile == 54 || tile == 125) {
+			if(storageESPState) {
+				new Thread_(new Runnable_({
+					run: function() {
+						VertexClientPE.toast("Removing storage block from storage block list...");
+						Thread_.sleep(1200);
+						VertexClientPE.Utils.chests.forEach(function(element, index, array) {
+							if(element.x == x && element.y == y && element.z == z) {
+								array.splice(index, 1);
+								return;
+							}
+						});
+					}
+				})).start();
+			}
 		}
 	}
 }
