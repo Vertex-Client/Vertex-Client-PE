@@ -1325,14 +1325,15 @@ var menuRightLayout;
 var autoSpammerState = false;
 var autoSwordState = false;
 var bypassState = false;
-var storageESPState = false;
 var fancyChatState = false;
 var fastBreakState = false;
 var healthDisplayState = false;
+var hitboxesState = false;
 var remoteViewState = false;
 var rotationPlusState = false;
 var speedHackState = false;
 var stackDropState = false;
+var storageESPState = false;
 var timerState = false;
 
 var showingMenu = false;
@@ -4895,10 +4896,10 @@ var hitboxes = {
 			onProgressChanged: function() {
 				hitboxesHitboxWidthSetting = hitboxesHitboxWidthSlider.getProgress() + minHitboxesSize;
 				hitboxesHitboxWidthTitle.setText("Hitbox width: | " + hitboxesHitboxWidthSetting);
-				if(this.state) { // TODO: Look if needs to be fixed.
+				if(hitboxesState) {
 					let players = Server.getAllPlayers();
 					for(var i = 0; i < players.length; i++) {
-						this.updateHitboxesOnEnt(players[i]);
+						hitboxes.updateHitboxesOnEnt(players[i]);
 					}
 				}
 			}
@@ -4912,10 +4913,10 @@ var hitboxes = {
 			onProgressChanged: function() {
 				hitboxesHitboxHeightSetting = hitboxesHitboxHeightSlider.getProgress() + minHitboxesSize;
 				hitboxesHitboxHeightTitle.setText("Hitbox height: | " + hitboxesHitboxHeightSetting);
-				if(this.state) {
+				if(hitboxesState) {
 					let players = Server.getAllPlayers();
 					for(var i = 0; i < players.length; i++) {
-						this.updateHitboxesOnEnt(players[i]);
+						hitboxes.updateHitboxesOnEnt(players[i]);
 					}
 				}
 			}
@@ -4931,7 +4932,7 @@ var hitboxes = {
 	},
 	updateHitboxesOnEnt: function(ent) {
 		if(ent != getPlayerEnt()) {
-			Entity.setCollisionSize(ent, this.state?hitboxesHitboxWidthSetting:0.6, this.state?hitboxesHitboxHeightSetting:1.8);
+			Entity.setCollisionSize(ent, hitboxesState?hitboxesHitboxWidthSetting:0.6, hitboxesState?hitboxesHitboxHeightSetting:1.8);
 		}
 	},
 	isStateMod: function() {
@@ -4939,6 +4940,7 @@ var hitboxes = {
 	},
 	onToggle: function() {
 		this.state = !this.state;
+		hitboxesState = this.state;
 		var players = Server.getAllPlayers();
 		for(var i = 0; i < players.length; i++) {
 			this.updateHitboxesOnEnt(players[i]);
@@ -9057,6 +9059,7 @@ function Song(songTitle, songArtist, songUrl, songGenre) {
 	this.genre = songGenre || "Unknown";
 	this.url = songUrl;
 }
+
 //TODO: Add Genre
 //VertexClientPE.MusicUtils.registerSong(new Song("Hello", "OMFG", "http://b1.ge.tt/gett/1a353nd2/OMFG+-+Hello.mp3?index=0&user=user-ixW6scU8M6%E2%80%A6TeP06a11F-&referrer=user-ixW6scU8M6tdtVBWuAeo7oA2hZquSTeP06a11F-&download=1"));
 //VertexClientPE.MusicUtils.registerSong(new Song("Neopolitan Dreams (Nilow Remix)", "Lisa Mitchell", "http://b1.ge.tt/gett/4WKD4nd2/Lisa+Mitchell+-+Neopolitan+Dreams+%28Nilow+Rmx?index=0&user=user-ixW6scU8M6%E2%80%A6TeP06a11F-&referrer=user-ixW6scU8M6tdtVBWuAeo7oA2hZquSTeP06a11F-&download=1"));
@@ -11868,7 +11871,7 @@ function coloredSubTitle(subtitle) // TextView with colored background (edited b
 }
 
 function backgroundSpecial(round, color, showProLine, lightColor) {
-	var bg = GradientDrawable_();//todo
+	var bg = GradientDrawable_();
 	var rgbArray = [customRGBRed, customRGBGreen, customRGBBlue];
 	if(round == true) {
 		bg.setCornerRadius(8);
@@ -18570,10 +18573,10 @@ function destroyBlock(x, y, z, side) {
 			}
 		}
 	}
-	let playerItem = Player.getCarriedItem();
-	if(playerItem != 267 && playerItem != 268 && playerItem != 272 && playerItem != 276 && playerItem != 283) {
-		if(tile == 23 || tile == 54 || tile == 125) {
-			if(storageESPState) {
+	if(storageESPState) {
+		let playerItem = Player.getCarriedItem();
+		if(playerItem != 267 && playerItem != 268 && playerItem != 272 && playerItem != 276 && playerItem != 283) {
+			if(tile == 23 || tile == 54 || tile == 125) {
 				new Thread_(new Runnable_({
 					run: function() {
 						VertexClientPE.toast("Removing storage block from storage block list...");
