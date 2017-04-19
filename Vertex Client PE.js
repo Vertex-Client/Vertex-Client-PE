@@ -845,7 +845,6 @@ function screenChangeHook(screenName) {
 					}));
 				}
 			}
-			//print(screenName);
 		}
 	}
 	if(screenName == ScreenType.pause_screen) {
@@ -8823,10 +8822,11 @@ VertexClientPE.toast = function(message, vibrate) {
 				CONTEXT.getSystemService(Context_.VIBRATOR_SERVICE).vibrate(37);
 			}
 			var layout = new LinearLayout_(CONTEXT);
+			layout.setPadding(dip2px(2), dip2px(2), dip2px(2), dip2px(2));
 			layout.setBackground(backgroundGradient());
 			var title = VertexClientPE.getName();
 			var _0xc62b=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x20\x50\x72\x6F"];if(VertexClientPE[_0xc62b[0]]()==_0xc62b[1]){title+=_0xc62b[2]}
-			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message));
+			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message), true, "diff");
 			layout.addView(text);
 			if(toast != null) {
 				toast.cancel();
@@ -8848,7 +8848,7 @@ VertexClientPE.addonLoadToast = function(message) {
 			icon.setImageResource(android.R.drawable.ic_menu_more);
 			var title = VertexClientPE.getName();
 			var _0xc62b=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x20\x50\x72\x6F"];if(VertexClientPE[_0xc62b[0]]()==_0xc62b[1]){title+=_0xc62b[2]}
-			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message));
+			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message), true, "diff");
 			layout.addView(icon);
 			layout.addView(text);
 			toast = new Toast_(CONTEXT);
@@ -8868,7 +8868,7 @@ VertexClientPE.updateToast = function(message) {
 			icon.setImageResource(android.R.drawable.ic_menu_compass);
 			var title = VertexClientPE.getName();
 			var _0xc62b=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x20\x50\x72\x6F"];if(VertexClientPE[_0xc62b[0]]()==_0xc62b[1]){title+=_0xc62b[2]}
-			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message));
+			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message), true, "diff");
 			layout.addView(icon);
 			layout.addView(text);
 			toast = new Toast_(CONTEXT);
@@ -8890,7 +8890,7 @@ VertexClientPE.showChristmasToast = function(daysLeft) {
 			var title = VertexClientPE.getName();
 			var _0xc62b=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x20\x50\x72\x6F"];if(VertexClientPE[_0xc62b[0]]()==_0xc62b[1]){title+=_0xc62b[2]}
 			var cText = daysLeft == null ? "Merry Christmas!" : (daysLeft + " days left until Christmas!");
-			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + cText));
+			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + cText), true, "diff");
 			layout.addView(icon);
 			layout.addView(text);
 			toast = new Toast_(CONTEXT);
@@ -11419,22 +11419,25 @@ function clientCheckBox() {
 	return defaultCheckBox;
 }
 
-function clientTextView(text, shadow) //menu buttons
+function clientTextView(text, useShadow, color) //menu buttons
 {
-	if(shadow == null) {
-		shadow = true;
+	if(useShadow == null) {
+		useShadow = true;
+	}
+	if(color == null) {
+		color = themeSetting;
 	}
 	var defaultTextView = new TextView_(CONTEXT);
 	defaultTextView.setText(text);
-	if(themeSetting == "white") {
+	if(color == "white") {
 		defaultTextView.setTextColor(Color_.BLACK);
 	} else {
 		defaultTextView.setTextColor(Color_.WHITE);
 	}
 	defaultTextView.setTypeface(VertexClientPE.font);
 	
-	if(shadow) {
-		if(themeSetting == "white") {
+	if(useShadow) {
+		if(color == "white") {
 			if(fontSetting != "minecraft") {
 				defaultTextView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
 			}
@@ -12691,20 +12694,24 @@ VertexClientPE.showStartScreenBar = function() {
 					mainMenuListLayout.addView(twitterButton);
 					mainMenuListLayout.addView(gitHubButton);
 
-					mainMenuTextList = new PopupWindow_(mainMenuListLayout, -2, -2);
-					if(mainButtonPositionSetting == "top-right") {
-						mainMenuTextList.setBackgroundDrawable(backgroundSpecial("bottomleft", "#212121|#ffffff"));
-						mainMenuTextList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-					} else {
-						mainMenuTextList.setBackgroundDrawable(backgroundSpecial("bottomright", "#212121|#ffffff"));
-						mainMenuTextList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
-					}
-					
-					mainMenuTextList.setOnDismissListener(new PopupWindow_.OnDismissListener({
-						onDismiss() {
-							snowEffect.finish();
+					if(currentScreen == ScreenType.start_screen) {
+						if((mainMenuTextList == null || !mainMenuTextList.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
+							mainMenuTextList = new PopupWindow_(mainMenuListLayout, -2, -2);
+							if(mainButtonPositionSetting == "top-right") {
+								mainMenuTextList.setBackgroundDrawable(backgroundSpecial("bottomleft", "#212121|#ffffff"));
+								mainMenuTextList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+							} else {
+								mainMenuTextList.setBackgroundDrawable(backgroundSpecial("bottomright", "#212121|#ffffff"));
+								mainMenuTextList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
+							}
+							
+							mainMenuTextList.setOnDismissListener(new PopupWindow_.OnDismissListener({
+								onDismiss() {
+									snowEffect.finish();
+								}
+							}));
 						}
-					}));
+					}
 				} catch(error) {
 					print('An error occurred: ' + error);
 				}
@@ -17575,11 +17582,11 @@ function showMenuButton() {
 
 function showAccountManagerButton() {
 	VertexClientPE.loadMainSettings();
-	var layout = new LinearLayout_(CONTEXT);
-	layout.setOrientation(1);
-	var display = new DisplayMetrics_();
+	let acBtnLayout = new LinearLayout_(CONTEXT);
+	acBtnLayout.setOrientation(1);
+	let display = new DisplayMetrics_();
 	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
-	var acBtn = clientButton("AM", null, null, "right_half");
+	let acBtn = clientButton("AM", null, null, "right_half");
 	acBtn.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(40), dip2px(40)));
 	acBtn.setOnClickListener(new View_.OnClickListener({
 		onClick: function(viewArg ){
@@ -17594,14 +17601,16 @@ function showAccountManagerButton() {
 			VertexClientPE.showAccountManager(false);
 		}
 	}));
-	layout.addView(acBtn);
-	 
-	accountManagerGUI = new PopupWindow_(layout, dip2px(40), dip2px(40));
-	if(menuAnimationsSetting == "on") {
-		accountManagerGUI.setAnimationStyle(android.R.style.Animation_Translucent);
+	acBtnLayout.addView(acBtn);
+	
+	if((accountManagerGUI == null || !accountManagerGUI.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
+		accountManagerGUI = new PopupWindow_(acBtnLayout, dip2px(40), dip2px(40));
+		if(menuAnimationsSetting == "on") {
+			accountManagerGUI.setAnimationStyle(android.R.style.Animation_Translucent);
+		}
+		accountManagerGUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+		accountManagerGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.LEFT, 0, 0);
 	}
-	accountManagerGUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-	accountManagerGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.LEFT, 0, 0);
 }
  
 function dip2px(dips){
