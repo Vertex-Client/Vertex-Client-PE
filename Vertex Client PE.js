@@ -10731,8 +10731,11 @@ function tileButton(tile, fromDashboard) {
 	return defaultTileButton;
 }
 
+let barLayoutHeight = dip2px(40);
+let steveHead_SCALED = Bitmap_.createScaledBitmap(imgSteveHead, barLayoutHeight - dip2px(2), barLayoutHeight - dip2px(2), false);
+
 function userBar() {
-	var params = new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT);
+	var params = new LinearLayout_.LayoutParams(barLayoutHeight, barLayoutHeight);
 	
 	var defaultUserLayout = new LinearLayout_(CONTEXT);
 	defaultUserLayout.setOrientation(LinearLayout_.HORIZONTAL);
@@ -10740,27 +10743,28 @@ function userBar() {
 	defaultUserLayout.setLayoutParams(params);
 	
 	var steveHeadView = new ImageView_(CONTEXT);
-	steveHeadView.setImageBitmap(imgSteveHead);
+	steveHeadView.setImageBitmap(steveHead_SCALED);
 	
-	var defaultUserTextView = clientTextView(ModPE.getPlayerName(), true);
+	/* var defaultUserTextView = clientTextView(ModPE.getPlayerName(), true);
 	defaultUserTextView.setPadding(dip2px(8), 0, 0, 0);
 	defaultUserTextView.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
 	defaultUserTextView.setMarqueeRepeatLimit(-1);
 	defaultUserTextView.setSingleLine();
 	defaultUserTextView.setHorizontallyScrolling(true);
-	defaultUserTextView.setSelected(true);
+	defaultUserTextView.setSelected(true); */
 	
 	var bg = GradientDrawable_();
-	bg.setColor(/*Color_.parseColor("#70151515")*/Color_.TRANSPARENT);
+	bg.setColor(Color_.TRANSPARENT); //Color_.parseColor("#70151515")
+	bg.setStroke(dip2px(2), Color_.parseColor("#FFFFFF"));
 	defaultUserLayout.setBackgroundDrawable(bg);
 	
 	defaultUserLayout.setOnTouchListener(new View_.OnTouchListener() {
 		onTouch: function(v, event) {
 			var action = event.getActionMasked();
 			if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
-				bg.setStroke(0, Color_.parseColor("#70151515"));
+				bg.setStroke(dip2px(2), Color_.parseColor("#FFFFFF"));
 			} else {
-				bg.setStroke(dip2px(3), Color_.parseColor("#d3d3d3"));
+				bg.setStroke(dip2px(2), Color_.parseColor("#d3d3d3"));
 			}
 			return false;
 		}
@@ -10768,14 +10772,14 @@ function userBar() {
 	
 	defaultUserLayout.setOnClickListener(new View_.OnClickListener() {
 		onClick: function(viewArg) {
-			exitScreenUI.dismiss();
+			barUI.dismiss();
 			screenUI.dismiss();
 			VertexClientPE.showAccountManager(true, "Account Manager");
 		}
 	});
 	
 	defaultUserLayout.addView(steveHeadView);
-	defaultUserLayout.addView(defaultUserTextView);
+	//defaultUserLayout.addView(defaultUserTextView);
 	
 	return defaultUserLayout;
 }
@@ -16052,7 +16056,7 @@ function dashboardScreen(title, icon) {
 				screenUI.setBackgroundDrawable(backgroundGradient());
 				screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
 				
-				VertexClientPE.showExitButtons(false, title, icon);
+				VertexClientPE.showExitButtons(false, title, icon, userBar());
 			} catch(error) {
 				print("An error occurred: " + error);
 			}
@@ -18034,7 +18038,6 @@ var backScreenUI;
 var exitScreenUI;
 
 let barUI;
-let barLayoutHeight = dip2px(40);
 
 let backBg = GradientDrawable_();
 backBg.setColor(Color_.parseColor("#00BFFF"));
@@ -18056,6 +18059,17 @@ VertexClientPE.showExitButtons = function(showBackButton, title, icon, extraView
 				//backScreenUIButton.getBackground().setColorFilter(Color_.parseColor("#00BFFF"), PorterDuff_.Mode.MULTIPLY);
 				backScreenUIButton.setBackgroundDrawable(backBg);
 				backScreenUIButton.setTextColor(Color_.WHITE);
+				backScreenUIButton.setOnTouchListener(new View_.OnTouchListener() {
+					onTouch: function(v, event) {
+						var action = event.getActionMasked();
+						if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
+							backBg.setStroke(dip2px(1), Color_.parseColor("#FFFFFF"));
+						} else {
+							backBg.setStroke(dip2px(1), Color_.parseColor("#d3d3d3"));
+						}
+						return false;
+					}
+				});
 				backScreenUIButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						if(title == null) {
@@ -18072,6 +18086,9 @@ VertexClientPE.showExitButtons = function(showBackButton, title, icon, extraView
 				if(showBackButton) {
 					backScreenUILayout.addView(backScreenUIButton);
 				}
+				if(extraView != null) {
+					backScreenUILayout.addView(extraView);
+				}
 				
 				var xScreenUILayout = new LinearLayout_(CONTEXT);
 				var xScreenUIButton = new Button_(CONTEXT);
@@ -18079,6 +18096,17 @@ VertexClientPE.showExitButtons = function(showBackButton, title, icon, extraView
 				//xScreenUIButton.getBackground().setColorFilter(Color_.parseColor("#FF0000"), PorterDuff_.Mode.MULTIPLY);
 				xScreenUIButton.setBackgroundDrawable(exitBg);
 				xScreenUIButton.setTextColor(Color_.WHITE);
+				xScreenUIButton.setOnTouchListener(new View_.OnTouchListener() {
+					onTouch: function(v, event) {
+						var action = event.getActionMasked();
+						if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
+							exitBg.setStroke(dip2px(1), Color_.parseColor("#FFFFFF"));
+						} else {
+							exitBg.setStroke(dip2px(1), Color_.parseColor("#d3d3d3"));
+						}
+						return false;
+					}
+				});
 				xScreenUIButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						if(title == null) {
