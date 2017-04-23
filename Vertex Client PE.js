@@ -5747,7 +5747,7 @@ var toggle = {
 				var shouldReturn = false;
 				VertexClientPE.modules.forEach(function (element, index, array) {
 					if(element.type != "Command") {
-						if (element.name.toLowerCase() == cmd.substring(2, cmd.length).toLowerCase() && !shouldReturn) {
+						if ((element.name.toLowerCase() == cmd.substring(2, cmd.length).toLowerCase() || VertexClientPE.getCustomModName(element.name).toLowerCase() == cmd.substring(2, cmd.length).toLowerCase()) && !shouldReturn) {
 							if (element.isStateMod()) {
 								if(element.requiresPro && element.requiresPro() && !VertexClientPE.isPro()) {
 									VertexClientPE.showProDialog(element.name);
@@ -16292,7 +16292,7 @@ VertexClientPE.showTipBar = function() {
 				
 				var subject = mainButtonTapSetting=="menu"?"the Dashboard and the Shop":"the main menu";
 				
-				var tipBarTextView = clientTextView("You can access " + subject + " by long tapping the main button.", true);
+				var tipBarTextView = clientTextView("You can access " + subject + " by long tapping the main button.", true, "diff");
 				tipBarTextView.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
 				tipBarTextView.setMarqueeRepeatLimit(-1);
 				tipBarTextView.setSingleLine();
@@ -18036,6 +18036,16 @@ var exitScreenUI;
 let barUI;
 let barLayoutHeight = dip2px(40);
 
+let backBg = GradientDrawable_();
+backBg.setColor(Color_.parseColor("#00BFFF"));
+backBg.setStroke(dip2px(1), Color_.parseColor("#FFFFFF"));
+backBg.setShape(GradientDrawable_.RECTANGLE);
+
+let exitBg = GradientDrawable_();
+exitBg.setColor(Color_.parseColor("#FF0000"));
+exitBg.setStroke(dip2px(1), Color_.parseColor("#FFFFFF"));
+exitBg.setShape(GradientDrawable_.RECTANGLE);
+
 VertexClientPE.showExitButtons = function(showBackButton, title, icon, extraView) {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
@@ -18043,7 +18053,8 @@ VertexClientPE.showExitButtons = function(showBackButton, title, icon, extraView
 				var backScreenUILayout = new LinearLayout_(CONTEXT);
 				var backScreenUIButton = new Button_(CONTEXT);
 				backScreenUIButton.setText("<");//Text
-				backScreenUIButton.getBackground().setColorFilter(Color_.parseColor("#00BFFF"), PorterDuff_.Mode.MULTIPLY);
+				//backScreenUIButton.getBackground().setColorFilter(Color_.parseColor("#00BFFF"), PorterDuff_.Mode.MULTIPLY);
+				backScreenUIButton.setBackgroundDrawable(backBg);
 				backScreenUIButton.setTextColor(Color_.WHITE);
 				backScreenUIButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
@@ -18065,7 +18076,8 @@ VertexClientPE.showExitButtons = function(showBackButton, title, icon, extraView
 				var xScreenUILayout = new LinearLayout_(CONTEXT);
 				var xScreenUIButton = new Button_(CONTEXT);
 				xScreenUIButton.setText("X");//Text
-				xScreenUIButton.getBackground().setColorFilter(Color_.parseColor("#FF0000"), PorterDuff_.Mode.MULTIPLY);
+				//xScreenUIButton.getBackground().setColorFilter(Color_.parseColor("#FF0000"), PorterDuff_.Mode.MULTIPLY);
+				xScreenUIButton.setBackgroundDrawable(exitBg);
 				xScreenUIButton.setTextColor(Color_.WHITE);
 				xScreenUIButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
