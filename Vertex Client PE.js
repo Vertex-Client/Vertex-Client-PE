@@ -1724,40 +1724,40 @@ VertexClientPE.Render.deinitViews = function() {
 	});
 }
 
+VertexClientPE.Render.vertex = [
+	0, 0, 0,
+	1.0, 0, 0,
+	0, 0, 1.0,
+	1.0, 0, 1.0,
+
+	0, 1.0, 0,
+	1.0, 1.0, 0,
+	0, 1.0, 1.0,
+	1.0, 1.0, 1.0,
+];
+
+VertexClientPE.Render.index = [
+	0, 1,
+	0, 2,
+	0, 4,
+
+	3, 1,
+	3, 2,
+	3, 7,
+
+	5, 4,
+	5, 7,
+	5, 1,
+
+	6, 4,
+	6, 7,
+	6, 2
+];
+
+const vertexBuffer = VertexClientPE.Render.getFloatBuffer(VertexClientPE.Render.vertex);
+const indexBuffer = VertexClientPE.Render.getShortBuffer(VertexClientPE.Render.index);
+
 VertexClientPE.drawCubeShapedBox = function(gl, x, y, z) { //many thanks to GodSoft029, be sure to follow him on Twitter
-	var vertex = [
-		0, 0, 0,
-		1.0, 0, 0,
-		0, 0, 1.0,
-		1.0, 0, 1.0,
- 
-		0, 1.0, 0,
-		1.0, 1.0, 0,
-		0, 1.0, 1.0,
-		1.0, 1.0, 1.0,
-	];
- 
-	var index = [
-		0, 1,
-		0, 2,
-		0, 4,
-
-		3, 1,
-		3, 2,
-		3, 7,
-
-		5, 4,
-		5, 7,
-		5, 1,
-
-		6, 4,
-		6, 7,
-		6, 2
-	];
-	
-	var vertexBuffer = VertexClientPE.Render.getFloatBuffer(vertex);
-	var indexBuffer = VertexClientPE.Render.getShortBuffer(index);
-	
 	gl.glTranslatef(x, y, z);
 	gl.glFrontFace(GL10.GL_CCW);
 	gl.glEnable(GL10.GL_BLEND);
@@ -1765,7 +1765,7 @@ VertexClientPE.drawCubeShapedBox = function(gl, x, y, z) { //many thanks to GodS
 	gl.glColor4f(0.0, 1.0, 0.0, 0.0);
 	gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 	gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
-	gl.glDrawElements(GL10.GL_LINES, index.length, GL10.GL_UNSIGNED_SHORT, indexBuffer);
+	gl.glDrawElements(GL10.GL_LINES, VertexClientPE.Render.index.length, GL10.GL_UNSIGNED_SHORT, indexBuffer);
 	gl.glTranslatef(-x, -y, -z);
 }
 
@@ -5011,8 +5011,8 @@ var prevent = {
 	category: VertexClientPE.category.MISC,
 	type: "Special",
 	getSettingsLayout: function() {
-		var twerkSettingsLayout = new LinearLayout_(CONTEXT);
-		twerkSettingsLayout.setOrientation(1);
+		var preventSettingsLayout = new LinearLayout_(CONTEXT);
+		preventSettingsLayout.setOrientation(1);
 		
 		var preventDiggingCheckBox = clientCheckBox();
 		preventDiggingCheckBox.setChecked(preventDiggingSetting == "on");
@@ -5044,10 +5044,10 @@ var prevent = {
 			}
 		});
 		
-		twerkSettingsLayout.addView(preventDiggingCheckBox);
-		twerkSettingsLayout.addView(preventPlacingCheckBox);
-		twerkSettingsLayout.addView(preventAttacksCheckBox);
-		return twerkSettingsLayout;
+		preventSettingsLayout.addView(preventDiggingCheckBox);
+		preventSettingsLayout.addView(preventPlacingCheckBox);
+		preventSettingsLayout.addView(preventAttacksCheckBox);
+		return preventSettingsLayout;
 	},
 	isStateMod: function() {
 		return false;
@@ -7486,6 +7486,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
 							}
 						} else {
 							toggleButton.setText("Enable");
+							toggleButton.setTextColor(modButtonColorDisabled);
 						}
 					}
 					toggleButton.setOnClickListener(new View_.OnClickListener() {
@@ -7503,7 +7504,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
 									} else if(mod.isStateMod() && !mod.state) {
 										mod.state = true;
 									} else if(!mod.isStateMod()) {
-										VertexClientPE.toast("This mod is blocked by Bypass!");
+										VertexClientPE.toast("This mod is blocked by " + VertexClientPE.getCustomModName("Bypass") + "!");
 									}
 								}
 							}
@@ -7519,20 +7520,24 @@ VertexClientPE.showModDialog = function(mod, btn) {
 									}
 									if(fontSetting != "minecraft") {
 										toggleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+										btn.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
 									}
-									btn.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
 								} else if(!mod.state) {
 									toggleButton.setText("Enable");
-									if(themeSetting == "white" && modButtonColorDisabledSetting == "black") {
-										toggleButton.setTextColor(Color_.BLACK);
-										btn.setTextColor(Color_.BLACK);
-										if(fontSetting != "minecraft") {
-											toggleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
-											btn.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
+									toggleButton.setTextColor(modButtonColorDisabled);
+									btn.setTextColor(modButtonColorDisabled);
+									if(themeSetting == "white") {
+										if(modButtonColorDisabledSetting == "black") {
+											if(fontSetting != "minecraft") {
+												toggleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
+												btn.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
+											}
+										} else {
+											if(fontSetting != "minecraft") {
+												toggleButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+												btn.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+											}
 										}
-									} else {
-										toggleButton.setTextColor(modButtonColorDisabled);
-										btn.setTextColor(modButtonColorDisabled);
 									}
 								}
 							}
@@ -9374,8 +9379,43 @@ VertexClientPE.teleporter = function(x, y, z) {
 	}
 }
 
-var settingsPath = Environment_.getExternalStorageDirectory().getAbsolutePath() + "/games/com.mojang/minecraftpe/";
-var worldsPath = Environment_.getExternalStorageDirectory().getAbsolutePath() + "/games/com.mojang/minecraftWorlds/";
+const settingsPath = Environment_.getExternalStorageDirectory().getAbsolutePath() + "/games/com.mojang/minecraftpe/";
+const worldsPath = Environment_.getExternalStorageDirectory().getAbsolutePath() + "/games/com.mojang/minecraftWorlds/";
+
+VertexClientPE.setupMCPEGUI = function() {
+	if(mcpeGUISetting == "default") {
+		ModPE.resetImages();
+	}
+	if(mcpeGUISetting == "green") {
+		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/BCA6vgv.png");
+		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/dY3c1Jl.png");
+	}
+	if(mcpeGUISetting == "red") {
+		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/BxuGkEJ.png");
+		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/S3qiQ01.png");
+	}
+	if(mcpeGUISetting == "blue") {
+		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/X5rCyoN.png");
+		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/t6tGtMk.png");
+	}
+	if(mcpeGUISetting == "purple") {
+		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/3xsluNN.png");
+		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/R9te7Bd.png");
+	}
+	if(mcpeGUISetting == "yellow") {
+		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/z1BGkj5.png");
+		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/RXE3pbS.png");
+	}
+	if(mcpeGUISetting == "white") {
+		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/GlwhFt5.png");
+		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/gsn6Qfp.png");
+	}
+	if(mcpeGUISetting == "black") {
+		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/l7nG7ZU.png");
+		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/MZeX8XN.png");
+	}
+	ModPE.overrideTexture("images/gui/title.png","http://Vertex-Client.github.io/bootstrap/img/title.png");
+}
 
 VertexClientPE.saveAutoSpammerMessage = function() {
 	File_(settingsPath).mkdirs();
@@ -10124,44 +10164,6 @@ VertexClientPE.resetData = function() {
 	VertexClientPE.toast("Successfully reset all data!");
 }
 
-VertexClientPE.setupMCPEGUI = function() {
-	VertexClientPE.loadMainSettings();
-	if(mcpeGUISetting == "default") {
-		ModPE.resetImages();
-	}
-	if(mcpeGUISetting == "green") {
-		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/BCA6vgv.png");
-		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/dY3c1Jl.png");
-	}
-	if(mcpeGUISetting == "red") {
-		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/BxuGkEJ.png");
-		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/S3qiQ01.png");
-	}
-	if(mcpeGUISetting == "blue") {
-		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/X5rCyoN.png");
-		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/t6tGtMk.png");
-	}
-	if(mcpeGUISetting == "purple") {
-		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/3xsluNN.png");
-		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/R9te7Bd.png");
-	}
-	if(mcpeGUISetting == "yellow") {
-		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/z1BGkj5.png");
-		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/RXE3pbS.png");
-	}
-	if(mcpeGUISetting == "white") {
-		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/GlwhFt5.png");
-		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/gsn6Qfp.png");
-	}
-	if(mcpeGUISetting == "black") {
-		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/l7nG7ZU.png");
-		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/MZeX8XN.png");
-	}
-	ModPE.overrideTexture("images/gui/title.png","http://Vertex-Client.github.io/bootstrap/img/title.png");
-}
-
-VertexClientPE.setupMCPEGUI();
-
 var createUiThread = function(func) {
 	getContext().runOnUiThread(new Runnable_({
 		run: function() {
@@ -10904,13 +10906,12 @@ function modButton(mod, buttonOnly, customSize) {
 						defaultClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
 					}
 				} else if(!mod.state) {
+					defaultClientButton.setTextColor(modButtonColorDisabled);
 					if(themeSetting == "white" && modButtonColorDisabledSetting == "black") {
-						defaultClientButton.setTextColor(Color_.BLACK);
 						if(fontSetting != "minecraft") {
 							defaultClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
 						}
 					} else {
-						defaultClientButton.setTextColor(modButtonColorDisabled);
 						if(fontSetting != "minecraft") {
 							defaultClientButton.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
 						}
@@ -12157,8 +12158,7 @@ function backgroundGradient(round, style, transparent) // TextView with colored 
 	}
 }
 
-VertexClientPE.loadMainSettings();
-(VertexClientPE.editCopyrightText = function() {
+VertexClientPE.editCopyrightText = function() {
 	ModPE.langEdit("menu.copyright", "\u00A9Mojang AB | \u00A72Vertex Client PE by peacestorm");
 	if(themeSetting == "red") {
 		ModPE.langEdit("menu.copyright", "\u00A9Mojang AB | \u00A74Vertex Client PE by peacestorm");
@@ -12181,7 +12181,7 @@ VertexClientPE.loadMainSettings();
 	} if(themeSetting == "black") {
 		ModPE.langEdit("menu.copyright", "\u00A9Mojang AB | \u00A70Vertex Client PE by peacestorm");
 	}
-})();
+}
 
 function getRandomInt(min, max) {
 	return Math.floor((Math.random() * max) + min);
@@ -13488,12 +13488,12 @@ VertexClientPE.loadItemGiverItems = function() {
 }
 
 VertexClientPE.setup = function() {
-	currentScreen = ScreenType.start_screen;
 	new Thread_(new Runnable_({
 		run: function() {
 			try {
 				VertexClientPE.loadMainSettings();
 				VertexClientPE.showSplashScreen();
+				VertexClientPE.setupMCPEGUI();
 				VertexClientPE.loadFeaturesSettings();
 				VertexClientPE.loadSupport();
 				VertexClientPE.checkForUpdates();
@@ -13501,8 +13501,6 @@ VertexClientPE.setup = function() {
 				VertexClientPE.loadNews();
 				VertexClientPE.loadItemGiverItems();
 				Thread_.sleep(3000);
-			} catch(e) {
-				
 			} finally {
 				CONTEXT.runOnUiThread(new Runnable_({
 					run: function() {
@@ -13513,6 +13511,7 @@ VertexClientPE.setup = function() {
 						if(VertexClientPE.loadMainSettings() == null) {
 							VertexClientPE.showSetupScreen();
 						} else {
+							VertexClientPE.editCopyrightText();
 							VertexClientPE.clientTick();
 							VertexClientPE.inGameTick();
 							VertexClientPE.specialTick();
@@ -17492,13 +17491,15 @@ function showAccountManagerButton() {
 	}));
 	acBtnLayout.addView(acBtn);
 	
-	if((accountManagerGUI == null || !accountManagerGUI.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
-		accountManagerGUI = new PopupWindow_(acBtnLayout, dip2px(40), dip2px(40));
-		if(menuAnimationsSetting == "on") {
-			accountManagerGUI.setAnimationStyle(android.R.style.Animation_Translucent);
+	if(currentScreen == ScreenType.start_screen) {
+		if((accountManagerGUI == null || !accountManagerGUI.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
+			accountManagerGUI = new PopupWindow_(acBtnLayout, dip2px(40), dip2px(40));
+			if(menuAnimationsSetting == "on") {
+				accountManagerGUI.setAnimationStyle(android.R.style.Animation_Translucent);
+			}
+			accountManagerGUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+			accountManagerGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.LEFT, 0, 0);
 		}
-		accountManagerGUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-		accountManagerGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.LEFT, 0, 0);
 	}
 }
  
@@ -18034,8 +18035,13 @@ VertexClientPE.hideChestUI = function() {
 	}));
 }
 
-var backScreenUI;
-var exitScreenUI;
+VertexClientPE.createScreen = function(layout, name, showBackButton, extraView) {
+	VertexClientPE.toast("WIP");
+	return;
+}
+
+let backScreenUI;
+let exitScreenUI;
 
 let barUI;
 
@@ -18053,6 +18059,8 @@ VertexClientPE.showExitButtons = function(showBackButton, title, icon, extraView
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
+				title = (title == null)?"Unknown":title;
+				
 				var backScreenUILayout = new LinearLayout_(CONTEXT);
 				var backScreenUIButton = new Button_(CONTEXT);
 				backScreenUIButton.setText("<");//Text
@@ -18109,47 +18117,29 @@ VertexClientPE.showExitButtons = function(showBackButton, title, icon, extraView
 				});
 				xScreenUIButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
-						if(title == null) {
-							if(showBackButton) {
-								backScreenUI.dismiss(); //Close
-							}
-							exitScreenUI.dismiss(); //Close
-						} else {
-							barUI.dismiss(); //Close
-						}
+						barUI.dismiss(); //Close
 						screenUI.dismiss(); //Close
 						showMenuButton();
 					}
 				}));
 				xScreenUILayout.addView(xScreenUIButton);
 				
-				if(title == null) {
-					if(showBackButton) {
-						backScreenUI = new PopupWindow_(backScreenUILayout, barLayoutHeight, barLayoutHeight);
-						backScreenUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-						backScreenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-					}
-					
-					exitScreenUI = new PopupWindow_(xScreenUILayout, barLayoutHeight, barLayoutHeight);
-					exitScreenUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-					exitScreenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
-				} else {
-					let barLayout = new LinearLayout_(CONTEXT);
-					barLayout.setOrientation(LinearLayout_.HORIZONTAL);
-					let titleLayout = new LinearLayout_(CONTEXT);
-					titleLayout.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
-					titleLayout.setGravity(Gravity_.CENTER);
-					let titleView = clientScreenTitle(title, icon);
-					titleLayout.addView(titleView);
-					backScreenUILayout.setLayoutParams(new LinearLayout_.LayoutParams(barLayoutHeight, barLayoutHeight));
-					barLayout.addView(backScreenUILayout);
-					barLayout.addView(titleLayout);
-					xScreenUILayout.setLayoutParams(new LinearLayout_.LayoutParams(barLayoutHeight, barLayoutHeight));
-					barLayout.addView(xScreenUILayout);
-					barUI = new PopupWindow_(barLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), LinearLayout_.LayoutParams.WRAP_CONTENT);
-					barUI.setBackgroundDrawable(backgroundSpecial(null, "#212121|#ffffff"));
-					barUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-				}
+				let barLayout = new LinearLayout_(CONTEXT);
+				barLayout.setOrientation(LinearLayout_.HORIZONTAL);
+				let titleLayout = new LinearLayout_(CONTEXT);
+				titleLayout.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
+				titleLayout.setGravity(Gravity_.CENTER);
+				let titleView = clientScreenTitle(title, icon);
+				titleLayout.addView(titleView);
+				backScreenUILayout.setLayoutParams(new LinearLayout_.LayoutParams(barLayoutHeight, barLayoutHeight));
+				barLayout.addView(backScreenUILayout);
+				barLayout.addView(titleLayout);
+				xScreenUILayout.setLayoutParams(new LinearLayout_.LayoutParams(barLayoutHeight, barLayoutHeight));
+				barLayout.addView(xScreenUILayout);
+				
+				barUI = new PopupWindow_(barLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), LinearLayout_.LayoutParams.WRAP_CONTENT);
+				barUI.setBackgroundDrawable(backgroundSpecial(null, "#212121|#ffffff"));
+				barUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
 			} catch(exception) {
 				print(exception);
 				VertexClientPE.showBugReportDialog(exception);
@@ -18529,7 +18519,7 @@ function destroyBlock(x, y, z, side) {
 	}
 	if(storageESPState) {
 		let playerItem = Player.getCarriedItem();
-		if(playerItem != 267 && playerItem != 268 && playerItem != 272 && playerItem != 276 && playerItem != 283) {
+		if(Level.getGameMode() == 0 || (playerItem != 267 && playerItem != 268 && playerItem != 272 && playerItem != 276 && playerItem != 283)) {
 			if(tile == 23 || tile == 54 || tile == 125) {
 				new Thread_(new Runnable_({
 					run: function() {
