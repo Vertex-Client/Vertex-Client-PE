@@ -221,6 +221,7 @@ var buttonSoundSetting = "system";
 var transparentSplashScreenSetting = "off";
 var showIconsOnTileShortcutsSetting = "on";
 var targetFriendsSetting = "off";
+var antiAFKKeepScreenOnSetting = "on";
 //------------------------------------
 var antiAFKDistancePerTick = 0.25;
 //------------------------------------
@@ -1322,6 +1323,7 @@ var chestUI;
 var menuMiddleLayout;
 var menuRightLayout;
 
+var antiAFKState = false;
 var autoSpammerState = false;
 var autoSwordState = false;
 var bypassState = false;
@@ -4135,16 +4137,44 @@ var remoteView = {
 
 var antiAFK = {
 	name: "AntiAFK",
-	desc: "Makes the player walk around to prevent you from getting disconnected.",
+	desc: "Makes the player walk around to prevent you from getting disconnected. Also keeps the screen on as long as the 'Keep screen on' checkbox is checked.",
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
 	timer: 0,
+	setKeepScreenOn: function(state) {
+		if(state) {
+			CONTEXT.getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		} else {
+			CONTEXT.getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		}
+	},
+	getSettingsLayout: function() {
+		var antiAFKSettingsLayout = new LinearLayout_(CONTEXT);
+		antiAFKSettingsLayout.setOrientation(1);
+		
+		var antiAFKKeepScreenOnCheckBox = clientCheckBox();
+		antiAFKKeepScreenOnCheckBox.setChecked(antiAFKKeepScreenOnSetting == "on");
+		antiAFKKeepScreenOnCheckBox.setText("Keep screen on");
+		antiAFKKeepScreenOnCheckBox.setOnClickListener(new View_.OnClickListener() {
+			onClick: function(v) {
+				antiAFKKeepScreenOnSetting = v.isChecked()?"on":"off";
+				antiAFK.setKeepScreenOn(antiAFKState);
+				VertexClientPE.saveMainSettings();
+			}
+		});
+		
+		antiAFKSettingsLayout.addView(antiAFKKeepScreenOnCheckBox);
+		
+		return antiAFKSettingsLayout;
+	},
 	isStateMod: function() {
 		return true;
 	},
 	onToggle: function() {
 		this.state = !this.state;
+		antiAFKState = this.state;
+		antiAFK.setKeepScreenOn(this.state);
 	},
 	onTick: function() {
 		this.timer++;
@@ -9839,6 +9869,7 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + transparentSplashScreenSetting.toString());
 	outWrite.append("," + showIconsOnTileShortcutsSetting.toString());
 	outWrite.append("," + targetFriendsSetting.toString());
+	outWrite.append("," + antiAFKKeepScreenOnSetting.toString());
 
 	outWrite.close();
 	
@@ -10082,6 +10113,9 @@ VertexClientPE.loadMainSettings = function () {
 		}
 		if (arr[73] != null && arr[73] != undefined) {
 			targetFriendsSetting = arr[73];
+		}
+		if (arr[74] != null && arr[74] != undefined) {
+			antiAFKKeepScreenOnSetting = arr[74];
 		}
 		fos.close();
 		VertexClientPE.loadCustomRGBSettings();
@@ -15238,7 +15272,7 @@ function helpScreen(fromDashboard) {
 					
 					helpSections.forEach(function(element, index, array) {
 						if(index != 0) {
-							var helpSectionEnter = clientTextView("\n");
+							var helpSectionEnter = clientTextView("\n", true, "diff");
 							helpSectionEnter.setTextSize(10);
 							helpMenuLayout.addView(helpSectionEnter);
 						}
