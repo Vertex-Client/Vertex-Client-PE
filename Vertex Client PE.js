@@ -6593,12 +6593,12 @@ VertexClientPE.showMoreDialog = function() {
 					return;
 				}
 				moreMenuIsOpen = true;
-				var moreTitle = clientTextView("More", true);
-				var moreHR = clientHR();
+				let moreTitle = clientTextView("More", true);
+				let moreHR = clientHR();
 				
-				var webBrowserTitle = "";
-				var playerCustomizerTitle = "";
-				var optiFineTitle = "";
+				let webBrowserTitle = "";
+				let playerCustomizerTitle = "";
+				let optiFineTitle = "";
 				if(!VertexClientPE.isPro()) {
 					webBrowserTitle += "\uD83D\uDD12 ";
 					playerCustomizerTitle += "\uD83D\uDD12 ";
@@ -6608,19 +6608,29 @@ VertexClientPE.showMoreDialog = function() {
 				playerCustomizerTitle += "Player Customizer";
 				optiFineTitle += "OptiFine";
 				
-				var dashboardButton = clientButton("Dashboard");
-				dashboardButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.ic_dialog_dialer, 0, 0);
-				var webBrowserButton = clientButton(webBrowserTitle);
-				webBrowserButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.ic_menu_mapmode, 0, 0);
-				var playerCustomizerButton = clientButton(playerCustomizerTitle);
-				playerCustomizerButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.presence_online, 0, 0);
-				var optiFineButton = clientButton(optiFineTitle);
-				optiFineButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.ic_menu_zoom, 0, 0);
-				var resetPosButton = clientButton("Reset moveable menu positions");
-				resetPosButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.stat_notify_sync, 0, 0);
-				var screenshotButton = clientButton("Take a screenshot");
-				var rvTargetButton = clientButton("RemoteView | Target player by username");
-				var dialogLayout1 = new LinearLayout_(CONTEXT);
+				let dashboardButton = clientButton("Dashboard");
+				let webBrowserButton = clientButton(webBrowserTitle);
+				let playerCustomizerButton = clientButton(playerCustomizerTitle);
+				let optiFineButton = clientButton(optiFineTitle);
+				let resetPosButton = clientButton("Reset moveable menu positions");
+				
+				if(buttonStyleSetting != "android") {
+					dashboardButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.ic_dialog_dialer, 0, 0);
+					webBrowserButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.ic_menu_mapmode, 0, 0);
+					playerCustomizerButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.presence_online, 0, 0);
+					optiFineButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.ic_menu_zoom, 0, 0);
+					resetPosButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.stat_notify_sync, 0, 0);
+				} else {
+					dashboardButton.setCompoundDrawablesRelativeWithIntrinsicBounds(android.R.drawable.ic_dialog_dialer, 0, 0, 0);
+					webBrowserButton.setCompoundDrawablesRelativeWithIntrinsicBounds(android.R.drawable.ic_menu_mapmode, 0, 0, 0);
+					playerCustomizerButton.setCompoundDrawablesRelativeWithIntrinsicBounds(android.R.drawable.presence_online, 0, 0, 0);
+					optiFineButton.setCompoundDrawablesRelativeWithIntrinsicBounds(android.R.drawable.ic_menu_zoom, 0, 0, 0);
+					resetPosButton.setCompoundDrawablesRelativeWithIntrinsicBounds(android.R.drawable.stat_notify_sync, 0, 0, 0);
+				}
+				
+				let screenshotButton = clientButton("Take a screenshot");
+				let rvTargetButton = clientButton("RemoteView | Target player by username");
+				let dialogLayout1 = new LinearLayout_(CONTEXT);
 				dialogLayout1.setBackgroundDrawable(backgroundGradient());
 				dialogLayout1.setOrientation(LinearLayout_.VERTICAL);
 				dialogLayout1.setPadding(10, 10, 10, 10);
@@ -6733,7 +6743,9 @@ VertexClientPE.showShortcutManagerDialog = function() {
 		run: function() {
 			try {
 				VertexClientPE.loadMainSettings();
-				var settingsTitle = clientScreenTitle("Settings");
+				//var settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
+				//settingsTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
+				var settingsTitle = clientScreenTitle("Settings", null, themeSetting);
 				var shortcutManagerTitle = clientTextView("Shortcut Manager", true);
 				shortcutManagerTitle.setGravity(Gravity_.CENTER);
 				var shortcutManagerEnter = clientTextView("\n");
@@ -6883,7 +6895,9 @@ VertexClientPE.showFeaturesDialog = function() {
 		run: function() {
 			try {
 				VertexClientPE.loadMainSettings();
-				var settingsTitle = clientScreenTitle("Settings");
+				//var settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
+				//settingsTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
+				var settingsTitle = clientScreenTitle("Settings", null, themeSetting);
 				var featuresTitle = clientTextView("Opt in/out features\n", true);
 				featuresTitle.setGravity(Gravity_.CENTER);
 				var featuresText = clientTextView("Changes on this dialog will only apply after restart", true);
@@ -7023,7 +7037,9 @@ VertexClientPE.showSettingSelectorDialog = function(sRightButton, dialogTitle, s
 		run: function() {
 			try {
 				VertexClientPE.loadMainSettings();
-				var settingsTitle = clientScreenTitle("Settings");
+				//var settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
+				//settingsTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
+				var settingsTitle = clientScreenTitle("Settings", null, themeSetting);
 				var dTitle = clientTextView(dialogTitle, true);
 				dTitle.setGravity(Gravity_.CENTER);
 				var closeEnter = clientTextView("\n");
@@ -7146,7 +7162,9 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 				newGreenStroke = customRGBGreenStroke;
 				newBlueStroke = customRGBBlueStroke;
 				
-				var settingsTitle = clientScreenTitle("Settings");
+				//var settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
+				//settingsTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
+				var settingsTitle = clientScreenTitle("Settings", null, themeSetting);
 				var dTitle = clientTextView(dialogTitle, true);
 				dTitle.setGravity(Gravity_.CENTER);
 				var cancelEnter = clientTextView("\n");
@@ -8547,7 +8565,6 @@ VertexClientPE.showJavascriptConsoleDialog = function() {
 				dialog.setContentView(dialogLayout);
 				dialog.setTitle("Javascript Console");
 				inputBar.setHint("Javascript input");
-				inputBar.setTextColor(Color_.WHITE);
 				dialog.show();
 				btn.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
@@ -8620,7 +8637,6 @@ VertexClientPE.showCategoryDialog = function(titleView, currentName, categoryId)
 				dialog.setTitle("Rename category \'" + currentName + "\'");
 				inputBar.setHint("Category name");
 				inputBar.setText(currentName);
-				inputBar.setTextColor(Color_.WHITE);
 				dialog.show();
 				inputBar.addTextChangedListener(new TextWatcher_() {
 					onTextChanged: function() {
@@ -8789,7 +8805,6 @@ VertexClientPE.showWebbrowserStartPageDialog = function() {
 				dialog.setTitle("Change Webbrowser startpage");
 				inputBar.setHint("Webbrowser startpage");
 				inputBar.setText(webBrowserStartPageSetting);
-				inputBar.setTextColor(Color_.WHITE);
 				dialog.show();
 				inputBar.addTextChangedListener(new TextWatcher_() {
 					onTextChanged: function() {
@@ -8847,6 +8862,7 @@ VertexClientPE.debugMessage = function(message) {
 }
 
 var toast;
+var loadingToast;
 
 VertexClientPE.toast = function(message, vibrate) {
 	CONTEXT.runOnUiThread(new Runnable_({
@@ -8859,7 +8875,7 @@ VertexClientPE.toast = function(message, vibrate) {
 			layout.setBackground(backgroundGradient());
 			var title = VertexClientPE.getName();
 			var _0xc62b=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x20\x50\x72\x6F"];if(VertexClientPE[_0xc62b[0]]()==_0xc62b[1]){title+=_0xc62b[2]}
-			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message), true, "diff");
+			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message));
 			layout.addView(text);
 			if(toast != null) {
 				toast.cancel();
@@ -8888,6 +8904,30 @@ VertexClientPE.addonLoadToast = function(message) {
 			toast.setView(layout);
 			toast.setGravity(Gravity_.CENTER | Gravity_.TOP, 0, 0);
 			toast.show();
+		}
+	}));
+}
+
+VertexClientPE.loadToast = function(message) {
+	CONTEXT.runOnUiThread(new Runnable_({
+		run: function() {
+			let layout = new LinearLayout_(CONTEXT);
+			layout.setBackground(backgroundSpecial(true));
+			let loadProg = new android.widget.ProgressBar(CONTEXT);
+			loadProg.setIndeterminate(true);
+			loadProg.getIndeterminateDrawable().setColorFilter(getColor("stroke"), android.graphics.PorterDuff.Mode.SRC_IN);
+			/* var title = VertexClientPE.getName();
+			var _0xc62b=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x20\x50\x72\x6F"];if(VertexClientPE[_0xc62b[0]]()==_0xc62b[1]){title+=_0xc62b[2]}
+			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message), true, "diff"); */
+			layout.addView(loadProg);
+			//layout.addView(text);
+			if(loadingToast != null) {
+				loadingToast.cancel();
+			}
+			loadingToast = new Toast_(CONTEXT);
+			loadingToast.setView(layout);
+			loadingToast.setGravity(Gravity_.CENTER | Gravity_.TOP, 0, 0);
+			loadingToast.show();
 		}
 	}));
 }
@@ -9411,6 +9451,75 @@ VertexClientPE.teleporter = function(x, y, z) {
 
 const settingsPath = Environment_.getExternalStorageDirectory().getAbsolutePath() + "/games/com.mojang/minecraftpe/";
 const worldsPath = Environment_.getExternalStorageDirectory().getAbsolutePath() + "/games/com.mojang/minecraftWorlds/";
+
+VertexClientPE.setupModButtonColors = function() {
+	switch(modButtonColorBlockedSetting) {
+		case "red":
+			modButtonColorBlocked = Color_.RED;
+			break;
+		case "green":
+			modButtonColorBlocked = Color_.GREEN;
+			break;
+		case "blue":
+			modButtonColorBlocked = Color_.BLUE;
+			break;
+		case "yellow":
+			modButtonColorBlocked = Color_.YELLOW;
+			break;
+		case "white":
+			modButtonColorBlocked = Color_.WHITE;
+			break;
+		case "black":
+			modButtonColorBlocked = Color_.BLACK;
+			break;
+	}
+	switch(modButtonColorEnabledSetting) {
+		case "red":
+			modButtonColorEnabled = Color_.RED;
+			break;
+		case "green":
+			modButtonColorEnabled = Color_.GREEN;
+			break;
+		case "blue":
+			modButtonColorEnabled = Color_.BLUE;
+			break;
+		case "yellow":
+			modButtonColorEnabled = Color_.YELLOW;
+			break;
+		case "white":
+			modButtonColorEnabled = Color_.WHITE;
+			break;
+		case "black":
+			modButtonColorEnabled = Color_.BLACK;
+			break;
+	}
+	switch(modButtonColorDisabledSetting) {
+		case "red": {
+			modButtonColorDisabled = Color_.RED;
+			break;
+		}
+		case "green": {
+			modButtonColorDisabled = Color_.GREEN;
+			break;
+		}
+		case "blue": {
+			modButtonColorDisabled = Color_.BLUE;
+			break;
+		}
+		case "yellow": {
+			modButtonColorDisabled = Color_.YELLOW;
+			break;
+		}
+		case "white": {
+			modButtonColorDisabled = Color_.WHITE;
+			break;
+		}
+		case "black": {
+			modButtonColorDisabled = Color_.BLACK;
+			break;
+		}
+	}
+}
 
 VertexClientPE.setupMCPEGUI = function() {
 	if(mcpeGUISetting == "default") {
@@ -10119,76 +10228,13 @@ VertexClientPE.loadMainSettings = function () {
 		}
 		fos.close();
 		VertexClientPE.loadCustomRGBSettings();
+		VertexClientPE.setupModButtonColors();
 		VertexClientPE.loadAutoSpammerSettings();
 		VertexClientPE.loadCategorySettings();
 		VertexClientPE.font = fontSetting=="minecraft"?Typeface_.createFromFile(new File_(PATH, "minecraft.ttf")):VertexClientPE.defaultFont;
 		MinecraftButtonLibrary.ProcessedResources.font = VertexClientPE.font;
-		VertexClientPE.setupModButtonColors();
 		
 		return true;
-	}
-}
-
-VertexClientPE.setupModButtonColors = function() {
-	switch(modButtonColorBlockedSetting) {
-		case "red":
-			modButtonColorBlocked = Color_.RED;
-			break;
-		case "green":
-			modButtonColorBlocked = Color_.GREEN;
-			break;
-		case "blue":
-			modButtonColorBlocked = Color_.BLUE;
-			break;
-		case "yellow":
-			modButtonColorBlocked = Color_.YELLOW;
-			break;
-		case "white":
-			modButtonColorBlocked = Color_.WHITE;
-			break;
-		case "black":
-			modButtonColorBlocked = Color_.BLACK;
-			break;
-	}
-	switch(modButtonColorEnabledSetting) {
-		case "red":
-			modButtonColorEnabled = Color_.RED;
-			break;
-		case "green":
-			modButtonColorEnabled = Color_.GREEN;
-			break;
-		case "blue":
-			modButtonColorEnabled = Color_.BLUE;
-			break;
-		case "yellow":
-			modButtonColorEnabled = Color_.YELLOW;
-			break;
-		case "white":
-			modButtonColorEnabled = Color_.WHITE;
-			break;
-		case "black":
-			modButtonColorEnabled = Color_.BLACK;
-			break;
-	}
-	switch(modButtonColorDisabledSetting) {
-		case "red":
-			modButtonColorDisabled = Color_.RED;
-			break;
-		case "green":
-			modButtonColorDisabled = Color_.GREEN;
-			break;
-		case "blue":
-			modButtonColorDisabled = Color_.BLUE;
-			break;
-		case "yellow":
-			modButtonColorDisabled = Color_.YELLOW;
-			break;
-		case "white":
-			modButtonColorDisabled = Color_.WHITE;
-			break;
-		case "black":
-			modButtonColorDisabled = Color_.BLACK;
-			break;
 	}
 }
 
@@ -10264,7 +10310,7 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 	
 	let rgbArray = [customRGBRed, customRGBGreen, customRGBBlue, customRGBRedStroke, customRGBGreenStroke, customRGBBlueStroke];
 	
-	if(style != "invisible") {
+	if(style != "android" && style != "invisible") {
 		var bg = GradientDrawable_();
 		if(round == true) {
 			bg.setCornerRadius(10);
@@ -10328,17 +10374,19 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 			onTouch: function(v, event) {
 				var action = event.getActionMasked();
 				if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
-					if(style == "transparent") {
-						bg.setColor(Color_.TRANSPARENT);
-					} else {
-						if(style == "legacy") {
-							bg.setColor(Color_.parseColor("#000000"));
+					if(style != "android") {
+						if(style == "transparent") {
+							bg.setColor(Color_.TRANSPARENT);
 						} else {
-							bg.setColor(getColor("inner", color, forceLightColor));
+							if(style == "legacy") {
+								bg.setColor(Color_.parseColor("#000000"));
+							} else {
+								bg.setColor(getColor("inner", color, forceLightColor));
+							}
 						}
-					}
-					if(style == "tile") {
-						bg.setStroke(thickness, getColor("stroke", color, forceLightColor));
+						if(style == "tile") {
+							bg.setStroke(thickness, getColor("stroke", color, forceLightColor));
+						}
 					}
 					
 					if(style != "tile") {
@@ -10354,13 +10402,15 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 						}
 					}
 				} else {
-					if(style == "tile") {
-						bg.setStroke(dip2px(3), Color_.parseColor("#d3d3d3"));
-					}
-					if(style == "legacy_inverted") {
-						bg.setColor(Color_.parseColor("#000000"));
-					} else {
-						bg.setColor(getColor("stroke", color, forceLightColor));
+					if(style != "android") {
+						if(style == "tile") {
+							bg.setStroke(dip2px(3), Color_.parseColor("#d3d3d3"));
+						}
+						if(style == "legacy_inverted") {
+							bg.setColor(Color_.parseColor("#000000"));
+						} else {
+							bg.setColor(getColor("stroke", color, forceLightColor));
+						}
 					}
 				}
 				return false;
@@ -10368,6 +10418,8 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 		});
 		
 		buttonView.setBackgroundDrawable(bg);
+		buttonView.setPaintFlags(buttonView.getPaintFlags() | Paint_.SUBPIXEL_TEXT_FLAG);
+		buttonView.setTextSize(15);
 	} else {
 		buttonView.setOnTouchListener(new View_.OnTouchListener() {
 			onTouch: function(v, event) {
@@ -10388,11 +10440,15 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 			}
 		});
 		
-		buttonView.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+		if(style != "android") {
+			buttonView.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+			buttonView.setPaintFlags(buttonView.getPaintFlags() | Paint_.SUBPIXEL_TEXT_FLAG);
+			buttonView.setTextSize(15);
+		} else {
+			buttonView.getBackground().setColorFilter(getColor("inner", color, forceLightColor), PorterDuff_.Mode.MULTIPLY);
+		}
 	}
 	
-	buttonView.setPaintFlags(buttonView.getPaintFlags() | Paint_.SUBPIXEL_TEXT_FLAG);
-	buttonView.setTextSize(15);
 	if(color == "white") {
 		buttonView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
 	} else {
@@ -10492,6 +10548,7 @@ function songButton(song, barLayout) {
 	songClientButton.setLayoutParams(new LinearLayout_.LayoutParams(songLeftWidth - dip2px(10) - dip2px(50), LinearLayout_.LayoutParams.WRAP_CONTENT));
 	songClientButton.setOnClickListener(new View_.OnClickListener() {
 		onClick: function(v) {
+			VertexClientPE.loadToast();
 			VertexClientPE.MusicUtils.isPaused = false;
 			barLayout.getLeftTimeView().setText("0:00");
 			if(mpPlayButton != null) {
@@ -10893,7 +10950,7 @@ function modButton(mod, buttonOnly, customSize) {
 	defaultClientButton.setSingleLine();
 	defaultClientButton.setHorizontallyScrolling(true);
 	defaultClientButton.setSelected(true);
-	if(mod.isStateMod() && mod.state) {
+	if(mod.isStateMod && mod.isStateMod() && mod.state) {
 		if(bypassState && mod.canBypassBypassMod && !mod.canBypassBypassMod()) {
 			defaultClientButton.setTextColor(modButtonColorBlocked);
 		} else {
@@ -11428,19 +11485,19 @@ function clientSeekBar() {
 	return defaultSeekBar;
 }
 
-function clientCheckBox(text, color) {
+function clientCheckBox(text, parentBackgroundColor) {
 	if(text == null) {
 		text = "";
 	}
 	let defaultCheckBox = new CheckBox_(CONTEXT);
 	defaultCheckBox.setText(text);
 	
-	VertexClientPE.addTextStyleToView(defaultCheckBox, color);
+	VertexClientPE.addTextStyleToView(defaultCheckBox, parentBackgroundColor);
 	
 	return defaultCheckBox;
 }
 
-function clientTextView(text, useShadow, color) //menu buttons
+function clientTextView(text, useShadow, parentBackgroundColor) //menu buttons
 {
 	if(useShadow == null) {
 		useShadow = true;
@@ -11448,7 +11505,7 @@ function clientTextView(text, useShadow, color) //menu buttons
 	let defaultTextView = new TextView_(CONTEXT);
 	defaultTextView.setText(text);
 	
-	VertexClientPE.addTextStyleToView(defaultTextView, color);
+	VertexClientPE.addTextStyleToView(defaultTextView, parentBackgroundColor);
 	
 	defaultTextView.setPadding(0, 0, 0, 0);
 	defaultTextView.setLineSpacing(0, 1.15);
@@ -11456,7 +11513,7 @@ function clientTextView(text, useShadow, color) //menu buttons
 	return defaultTextView;
 }
 
-function clientSwitch(text, color) {
+function clientSwitch(text, parentBackgroundColor) {
 	if(text == null) {
 		text = "";
 	}
@@ -11464,7 +11521,7 @@ function clientSwitch(text, color) {
 	let defaultSwitch = new Switch_(CONTEXT);
 	defaultSwitch.setText(text);
 	
-	VertexClientPE.addTextStyleToView(defaultSwitch, color);
+	VertexClientPE.addTextStyleToView(defaultSwitch, parentBackgroundColor);
 	
 	return defaultSwitch;
 }
@@ -11504,9 +11561,13 @@ function clientSectionTitle(text, style) {
 	return defaultTextView;
 }
 
-function clientScreenTitle(defaultText, icon) {
+function clientScreenTitle(defaultText, icon, parentBackgroundColor) {
+	if(parentBackgroundColor == null) {
+		parentBackgroundColor = "diff";
+	}
+	
 	let defaultScreenTitle;
-	defaultScreenTitle = clientTextView(sharedPref.getString("VertexClientPE.tiles." + defaultText + ".name", defaultText), true, "diff");
+	defaultScreenTitle = clientTextView(sharedPref.getString("VertexClientPE.tiles." + defaultText + ".name", defaultText), true, parentBackgroundColor);
 	defaultScreenTitle.setTextSize(25);
 	defaultScreenTitle.setGravity(Gravity_.CENTER);
 	if(icon != null) {
@@ -13225,11 +13286,9 @@ VertexClientPE.showDirectUseAccountDialog = function() {
 				VertexClientPE.loadMainSettings();
 				var accountTitle = clientTextView("Direct use account", true);
 				var accountNameInput = clientEditText();
-				accountNameInput.setTextColor(Color_.WHITE);
 				accountNameInput.setSingleLine(true);
 				accountNameInput.setHint("Enter an username");
 				var accountClientIdInput = clientEditText();
-				accountClientIdInput.setTextColor(Color_.WHITE);
 				accountClientIdInput.setHint("Enter a client id (leave blank for random)");
 				var okButton = clientButton("Ok");
 				var cancelButton = clientButton("Cancel");
@@ -13541,6 +13600,8 @@ VertexClientPE.setup = function() {
 						if(!VertexClientPE.getHasUsedCurrentVersion()) {
 							userIsNewToCurrentVersion = true;
 						}
+						
+						VertexClientPE.setupModButtonColors();
 						
 						if(VertexClientPE.loadMainSettings() == null) {
 							VertexClientPE.showSetupScreen();
@@ -14293,6 +14354,8 @@ function settingsScreen(fromDashboard) {
 						buttonStyleSettingButton.setText("Normal (no strokes)");
 					} else if(buttonStyleSetting == "transparent") {
 						buttonStyleSettingButton.setText("Normal (no inner)");
+					} else if(buttonStyleSetting == "android") {
+						buttonStyleSettingButton.setText("Android");
 					} else if(buttonStyleSetting == "legacy") {
 						buttonStyleSettingButton.setText("Legacy");
 					} else if(buttonStyleSetting == "legacy_inverted") {
@@ -14309,6 +14372,9 @@ function settingsScreen(fromDashboard) {
 								buttonStyleSetting = "transparent";
 								buttonStyleSettingButton.setText("Normal (no inner)");
 							} else if(buttonStyleSetting == "transparent") {
+								buttonStyleSetting = "android";
+								buttonStyleSettingButton.setText("Android");
+							} else if(buttonStyleSetting == "android") {
 								buttonStyleSetting = "legacy";
 								buttonStyleSettingButton.setText("Legacy");
 							} else if(buttonStyleSetting == "legacy") {
@@ -16126,7 +16192,6 @@ VertexClientPE.showURLBarDialog = function() {
 				dialog.setContentView(dialogLayout);
 				dialog.setTitle("Enter an URL");
 				inputBar.setHint("URL");
-				inputBar.setTextColor(Color_.WHITE);
 				dialog.show();
 				btn.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
@@ -16201,7 +16266,6 @@ VertexClientPE.showF12Dialog = function() {
 				dialogOutputLayout.addView(outputTextView);
 				
 				var inputBar = clientEditText("");
-				inputBar.setTextColor(Color_.WHITE);
 				dialogInputLayout.addView(inputBar);
 				
 				dialogOutputScroll.addView(dialogOutputLayout);
