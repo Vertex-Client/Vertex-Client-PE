@@ -244,12 +244,12 @@ var movementEnabled = "on";
 var playerEnabled = "on";
 var miscEnabled = "on";
 var singleplayerEnabled = "on";
-var combatSaveEnabled = "on";
-var worldSaveEnabled = "on";
-var movementSaveEnabled = "on";
-var playerSaveEnabled = "on";
-var miscSaveEnabled = "on";
-var singleplayerSaveEnabled = "on";
+var combatEnabled = "on";
+var worldEnabled = "on";
+var movementEnabled = "on";
+var playerEnabled = "on";
+var miscEnabled = "on";
+var singleplayerEnabled = "on";
 //End of settings
 
 var modButtonColorBlocked = Color_.RED;
@@ -2096,14 +2096,18 @@ VertexClientPE.registerTile(restartTile);
 VertexClientPE.registerTile(shutdownTile);
 
 VertexClientPE.initMods = function() {
+	delete VertexClientPE.modules;
+	VertexClientPE.modules = [];
 	try {
 		VertexClientPE.preInitModules.forEach(function(element, index, array) {
 			if((element.type == "Command" || (element.pack == "Combat" && combatEnabled == "on") || (element.pack == "World" && worldEnabled == "on") || (element.pack == "Movement" && movementEnabled == "on") || (element.pack == "Player" && playerEnabled == "on") || (element.pack == "Miscellaneous" && miscEnabled == "on")) && !(element.singleplayerOnly && singleplayerEnabled == "off")) {
 				VertexClientPE.modules.push(element);
 			}
 		});
+	} catch(e) {
+		VertexClientPE.showBugReportDialog(e);
 	} finally {
-		delete VertexClientPE.preInitModules;
+		//delete VertexClientPE.preInitModules;
 	}
 }
 
@@ -5780,7 +5784,7 @@ var toggle = {
 						if ((element.name.toLowerCase() == cmd.substring(2, cmd.length).toLowerCase() || VertexClientPE.getCustomModName(element.name).toLowerCase() == cmd.substring(2, cmd.length).toLowerCase()) && !shouldReturn) {
 							if (element.isStateMod()) {
 								if(element.requiresPro && element.requiresPro() && !VertexClientPE.isPro()) {
-									VertexClientPE.showProDialog(element.name);
+									VertexClientPE.showProDialog(VertexClientPE.getCustomModName(element.name));
 									return;
 								}
 								if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
@@ -5795,9 +5799,9 @@ var toggle = {
 								if(hacksList != null && hacksList.isShowing()) {
 									updateHacksList();
 								}
-								VertexClientPE.toast("Sucessfully toggled module " + element.name);
+								VertexClientPE.toast("Sucessfully toggled module " + VertexClientPE.getCustomModName(element.name));
 							} else {
-								VertexClientPE.toast(element.name + " can't be toggled!");
+								VertexClientPE.toast(VertexClientPE.getCustomModName(element.name) + " can't be toggled!");
 							}
 							shouldReturn = true;
 						}
@@ -6900,7 +6904,7 @@ VertexClientPE.showFeaturesDialog = function() {
 				var settingsTitle = clientScreenTitle("Settings", null, themeSetting);
 				var featuresTitle = clientTextView("Opt in/out features\n", true);
 				featuresTitle.setGravity(Gravity_.CENTER);
-				var featuresText = clientTextView("Changes on this dialog will only apply after restart", true);
+				var featuresText = clientTextView("Changes on this dialog will disable all mods", true);
 				featuresText.setTextSize(8);
 				featuresText.setTypeface(null, Typeface_.ITALIC);
 				featuresText.setGravity(Gravity_.CENTER);
@@ -6916,85 +6920,97 @@ VertexClientPE.showFeaturesDialog = function() {
 				
 				var combatEnabledSettingButton = clientSwitch();
 				combatEnabledSettingButton.setText("Combat");
-				combatEnabledSettingButton.setChecked(combatSaveEnabled == "on");
+				combatEnabledSettingButton.setChecked(combatEnabled == "on");
 				combatEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
 					onCheckedChanged: function() {
-						if(combatSaveEnabled == "off") {
-							combatSaveEnabled = "on";
-						} else if(combatSaveEnabled == "on") {
-							combatSaveEnabled = "off";
+						if(combatEnabled == "off") {
+							combatEnabled = "on";
+						} else if(combatEnabled == "on") {
+							combatEnabled = "off";
 						}
+						VertexClientPE.shouldUpdateGUI = true;
 						VertexClientPE.saveFeaturesSettings();
+						VertexClientPE.initMods();
 					}
 				}));
 				
 				var worldEnabledSettingButton = clientSwitch();
 				worldEnabledSettingButton.setText("World");
-				worldEnabledSettingButton.setChecked(worldSaveEnabled == "on");
+				worldEnabledSettingButton.setChecked(worldEnabled == "on");
 				worldEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
 					onCheckedChanged: function() {
-						if(worldSaveEnabled == "off") {
-							worldSaveEnabled = "on";
-						} else if(worldSaveEnabled == "on") {
-							worldSaveEnabled = "off";
+						if(worldEnabled == "off") {
+							worldEnabled = "on";
+						} else if(worldEnabled == "on") {
+							worldEnabled = "off";
 						}
+						VertexClientPE.shouldUpdateGUI = true;
 						VertexClientPE.saveFeaturesSettings();
+						VertexClientPE.initMods();
 					}
 				}));
 				
 				var movementEnabledSettingButton = clientSwitch();
 				movementEnabledSettingButton.setText("Movement");
-				movementEnabledSettingButton.setChecked(movementSaveEnabled == "on");
+				movementEnabledSettingButton.setChecked(movementEnabled == "on");
 				movementEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
 					onCheckedChanged: function() {
-						if(movementSaveEnabled == "off") {
-							movementSaveEnabled = "on";
-						} else if(movementSaveEnabled == "on") {
-							movementSaveEnabled = "off";
+						if(movementEnabled == "off") {
+							movementEnabled = "on";
+						} else if(movementEnabled == "on") {
+							movementEnabled = "off";
 						}
+						VertexClientPE.shouldUpdateGUI = true;
 						VertexClientPE.saveFeaturesSettings();
+						VertexClientPE.initMods();
 					}
 				}));
 				
 				var playerEnabledSettingButton = clientSwitch();
 				playerEnabledSettingButton.setText("Player");
-				playerEnabledSettingButton.setChecked(playerSaveEnabled == "on");
+				playerEnabledSettingButton.setChecked(playerEnabled == "on");
 				playerEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
 					onCheckedChanged: function() {
-						if(playerSaveEnabled == "off") {
-							playerSaveEnabled = "on";
-						} else if(playerSaveEnabled == "on") {
-							playerSaveEnabled = "off";
+						if(playerEnabled == "off") {
+							playerEnabled = "on";
+						} else if(playerEnabled == "on") {
+							playerEnabled = "off";
 						}
+						VertexClientPE.shouldUpdateGUI = true;
 						VertexClientPE.saveFeaturesSettings();
+						VertexClientPE.initMods();
 					}
 				}));
 				
 				var miscEnabledSettingButton = clientSwitch();
 				miscEnabledSettingButton.setText("Misc");
-				miscEnabledSettingButton.setChecked(miscSaveEnabled == "on");
+				miscEnabledSettingButton.setChecked(miscEnabled == "on");
 				miscEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
 					onCheckedChanged: function() {
-						if(miscSaveEnabled == "off") {
-							miscSaveEnabled = "on";
-						} else if(miscSaveEnabled == "on") {
-							miscSaveEnabled = "off";
+						if(miscEnabled == "off") {
+							miscEnabled = "on";
+						} else if(miscEnabled == "on") {
+							miscEnabled = "off";
 						}
+						VertexClientPE.shouldUpdateGUI = true;
 						VertexClientPE.saveFeaturesSettings();
+						VertexClientPE.initMods();
 					}
 				}));
 				
 				var singleplayerEnabledSettingButton = clientSwitch();
 				singleplayerEnabledSettingButton.setText("Singleplayer Only Mods");
-				singleplayerEnabledSettingButton.setChecked(singleplayerSaveEnabled == "on");
+				singleplayerEnabledSettingButton.setChecked(singleplayerEnabled == "on");
 				singleplayerEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
 					onCheckedChanged: function() {
-						if(singleplayerSaveEnabled == "off") {
-							singleplayerSaveEnabled = "on";
-						} else if(singleplayerSaveEnabled == "on") {
-							singleplayerSaveEnabled = "off";
+						if(singleplayerEnabled == "off") {
+							singleplayerEnabled = "on";
+						} else if(singleplayerEnabled == "on") {
+							singleplayerEnabled = "off";
 						}
+						VertexClientPE.shouldUpdateGUI = true;
 						VertexClientPE.saveFeaturesSettings();
+						VertexClientPE.initMods();
 					}
 				}));
 				
@@ -7010,7 +7026,7 @@ VertexClientPE.showFeaturesDialog = function() {
 				var dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.setContentView(dialogLayout);
-				dialog.setTitle("Shortcut Manager");
+				dialog.setTitle("Opt in/out features");
 				dialog.setOnDismissListener(new DialogInterface_.OnDismissListener() {
 					onDismiss: function() {
 						VertexClientPE.saveMainSettings();
@@ -9587,12 +9603,12 @@ VertexClientPE.saveFeaturesSettings = function() {
 	var newFile = new File_(settingsPath, "vertexclientpe_features.txt");
 	newFile.createNewFile();
 	var outWrite = new OutputStreamWriter_(new FileOutputStream_(newFile));
-	outWrite.append(combatSaveEnabled.toString());
-	outWrite.append("," + worldSaveEnabled.toString());
-	outWrite.append("," + movementSaveEnabled.toString());
-	outWrite.append("," + playerSaveEnabled.toString());
-	outWrite.append("," + miscSaveEnabled.toString());
-	outWrite.append("," + singleplayerSaveEnabled.toString());
+	outWrite.append(combatEnabled.toString());
+	outWrite.append("," + worldEnabled.toString());
+	outWrite.append("," + movementEnabled.toString());
+	outWrite.append("," + playerEnabled.toString());
+	outWrite.append("," + miscEnabled.toString());
+	outWrite.append("," + singleplayerEnabled.toString());
 
 	outWrite.close();
 }
@@ -9609,27 +9625,27 @@ VertexClientPE.loadFeaturesSettings = function() {
 		var arr = str.toString().split(",");
 		if (arr[0] != null && arr[0] != undefined) {
 			combatEnabled = arr[0];
-			combatSaveEnabled = combatEnabled;
+			combatEnabled = combatEnabled;
 		}
 		if (arr[1] != null && arr[1] != undefined) {
 			worldEnabled = arr[1];
-			worldSaveEnabled = worldEnabled;
+			worldEnabled = worldEnabled;
 		}
 		if (arr[2] != null && arr[2] != undefined) {
 			movementEnabled = arr[2];
-			movementSaveEnabled = movementEnabled;
+			movementEnabled = movementEnabled;
 		}
 		if (arr[3] != null && arr[3] != undefined) {
 			playerEnabled = arr[3];
-			playerSaveEnabled = playerEnabled;
+			playerEnabled = playerEnabled;
 		}
 		if (arr[4] != null && arr[4] != undefined) {
 			miscEnabled = arr[4];
-			miscSaveEnabled = miscEnabled;
+			miscEnabled = miscEnabled;
 		}
 		if (arr[5] != null && arr[5] != undefined) {
 			singleplayerEnabled = arr[5];
-			singleplayerSaveEnabled = singleplayerEnabled;
+			singleplayerEnabled = singleplayerEnabled;
 		}
 		fos.close();
 		
@@ -11105,6 +11121,9 @@ function categoryTab(category) {
 	}
 	if(currentTab == "Player" && playerEnabled == "off") {
 		currentTab = "Misc";
+	}
+	if(currentTab == "Misc" && miscEnabled == "off") {
+		currentTab = "Combat";
 	}
 
 	var categoryName = VertexClientPE.category.toName(category);
@@ -13068,90 +13087,84 @@ VertexClientPE.showSetupScreen = function() {
 					
 					var combatEnabledSettingButton = clientSwitch();
 					combatEnabledSettingButton.setText("Combat");
-					combatEnabledSettingButton.setChecked(combatSaveEnabled == "on");
+					combatEnabledSettingButton.setChecked(combatEnabled == "on");
 					combatEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
 						onCheckedChanged: function() {
-							if(combatSaveEnabled == "off") {
-								combatSaveEnabled = "on";
-							} else if(combatSaveEnabled == "on") {
-								combatSaveEnabled = "off";
+							if(combatEnabled == "off") {
+								combatEnabled = "on";
+							} else if(combatEnabled == "on") {
+								combatEnabled = "off";
 							}
-							combatEnabled = combatSaveEnabled;
 							VertexClientPE.saveFeaturesSettings();
 						}
 					}));
 					
 					var worldEnabledSettingButton = clientSwitch();
 					worldEnabledSettingButton.setText("World");
-					worldEnabledSettingButton.setChecked(worldSaveEnabled == "on");
+					worldEnabledSettingButton.setChecked(worldEnabled == "on");
 					worldEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
 						onCheckedChanged: function() {
-							if(worldSaveEnabled == "off") {
-								worldSaveEnabled = "on";
-							} else if(worldSaveEnabled == "on") {
-								worldSaveEnabled = "off";
+							if(worldEnabled == "off") {
+								worldEnabled = "on";
+							} else if(worldEnabled == "on") {
+								worldEnabled = "off";
 							}
-							worldEnabled = worldSaveEnabled;
 							VertexClientPE.saveFeaturesSettings();
 						}
 					}));
 					
 					var movementEnabledSettingButton = clientSwitch();
 					movementEnabledSettingButton.setText("Movement");
-					movementEnabledSettingButton.setChecked(movementSaveEnabled == "on");
+					movementEnabledSettingButton.setChecked(movementEnabled == "on");
 					movementEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
 						onCheckedChanged: function() {
-							if(movementSaveEnabled == "off") {
-								movementSaveEnabled = "on";
-							} else if(movementSaveEnabled == "on") {
-								movementSaveEnabled = "off";
+							if(movementEnabled == "off") {
+								movementEnabled = "on";
+							} else if(movementEnabled == "on") {
+								movementEnabled = "off";
 							}
-							movementEnabled = movementSaveEnabled;
 							VertexClientPE.saveFeaturesSettings();
 						}
 					}));
 					
 					var playerEnabledSettingButton = clientSwitch();
 					playerEnabledSettingButton.setText("Player");
-					playerEnabledSettingButton.setChecked(playerSaveEnabled == "on");
+					playerEnabledSettingButton.setChecked(playerEnabled == "on");
 					playerEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
 						onCheckedChanged: function() {
-							if(playerSaveEnabled == "off") {
-								playerSaveEnabled = "on";
-							} else if(playerSaveEnabled == "on") {
-								playerSaveEnabled = "off";
+							if(playerEnabled == "off") {
+								playerEnabled = "on";
+							} else if(playerEnabled == "on") {
+								playerEnabled = "off";
 							}
-							playerEnabled = playerSaveEnabled;
 							VertexClientPE.saveFeaturesSettings();
 						}
 					}));
 					
 					var miscEnabledSettingButton = clientSwitch();
 					miscEnabledSettingButton.setText("Misc");
-					miscEnabledSettingButton.setChecked(miscSaveEnabled == "on");
+					miscEnabledSettingButton.setChecked(miscEnabled == "on");
 					miscEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
 						onCheckedChanged: function() {
-							if(miscSaveEnabled == "off") {
-								miscSaveEnabled = "on";
-							} else if(miscSaveEnabled == "on") {
-								miscSaveEnabled = "off";
+							if(miscEnabled == "off") {
+								miscEnabled = "on";
+							} else if(miscEnabled == "on") {
+								miscEnabled = "off";
 							}
-							miscEnabled = miscSaveEnabled;
 							VertexClientPE.saveFeaturesSettings();
 						}
 					}));
 					
 					var singleplayerEnabledSettingButton = clientSwitch();
 					singleplayerEnabledSettingButton.setText("Singleplayer Only Mods");
-					singleplayerEnabledSettingButton.setChecked(singleplayerSaveEnabled == "on");
+					singleplayerEnabledSettingButton.setChecked(singleplayerEnabled == "on");
 					singleplayerEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
 						onCheckedChanged: function() {
-							if(singleplayerSaveEnabled == "off") {
-								singleplayerSaveEnabled = "on";
-							} else if(singleplayerSaveEnabled == "on") {
-								singleplayerSaveEnabled = "off";
+							if(singleplayerEnabled == "off") {
+								singleplayerEnabled = "on";
+							} else if(singleplayerEnabled == "on") {
+								singleplayerEnabled = "off";
 							}
-							singleplayerEnabled = singleplayerSaveEnabled;
 							VertexClientPE.saveFeaturesSettings();
 						}
 					}));
