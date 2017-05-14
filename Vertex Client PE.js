@@ -2690,7 +2690,6 @@ var nuker = {
 				VertexClientPE.addTextStyleToView(nukerModeFlatButton);
 				VertexClientPE.addTextStyleToView(nukerModeSmashButton);
 				VertexClientPE.saveMainSettings();
-				VertexClientPE.loadMainSettings();
 			}
 		});
 		nukerModeFlatButton.setOnClickListener(new View_.OnClickListener() {
@@ -2700,7 +2699,6 @@ var nuker = {
 				nukerModeFlatButton.setTextColor(Color_.GREEN);
 				VertexClientPE.addTextStyleToView(nukerModeSmashButton);
 				VertexClientPE.saveMainSettings();
-				VertexClientPE.loadMainSettings();
 			}
 		});
 		nukerModeSmashButton.setOnClickListener(new View_.OnClickListener() {
@@ -2710,7 +2708,6 @@ var nuker = {
 				VertexClientPE.addTextStyleToView(nukerModeFlatButton);
 				nukerModeSmashButton.setTextColor(Color_.GREEN);
 				VertexClientPE.saveMainSettings();
-				VertexClientPE.loadMainSettings();
 			}
 		});
 		nukerSettingsLayout.addView(nukerRangeTitle);
@@ -4014,7 +4011,6 @@ var chestTracers = {
 				VertexClientPE.addTextStyleToView(chestTracersRedstoneButton);
 				VertexClientPE.addTextStyleToView(chestTracersCriticalButton);
 				VertexClientPE.saveMainSettings();
-				VertexClientPE.loadMainSettings();
 			}
 		});
 		chestTracersRedstoneButton.setOnClickListener(new View_.OnClickListener() {
@@ -4024,7 +4020,6 @@ var chestTracers = {
 				chestTracersRedstoneButton.setTextColor(Color_.GREEN);
 				VertexClientPE.addTextStyleToView(chestTracersCriticalButton);
 				VertexClientPE.saveMainSettings();
-				VertexClientPE.loadMainSettings();
 			}
 		});
 		chestTracersCriticalButton.setOnClickListener(new View_.OnClickListener() {
@@ -4034,7 +4029,6 @@ var chestTracers = {
 				VertexClientPE.addTextStyleToView(chestTracersRedstoneButton);
 				chestTracersCriticalButton.setTextColor(Color_.GREEN);
 				VertexClientPE.saveMainSettings();
-				VertexClientPE.loadMainSettings();
 			}
 		});
 		
@@ -6118,10 +6112,6 @@ VertexClientPE.GUI.PopupWindow = function() {
 
 VertexClientPE.GUI.registerFloatingMenu = function() {
 	var floatingPopupWindowShown = false;
-	var display = new DisplayMetrics_();
-	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
-	
-	VertexClientPE.loadMainSettings();
 
 	var floatingPopupWindow = new VertexClientPE.GUI.PopupWindow();
 	var floatingPopupWindowLayout1 = new LinearLayout_(CONTEXT);
@@ -6570,19 +6560,19 @@ VertexClientPE.showRemoteViewTargetDialog = function() {
 VertexClientPE.resetMenuPos = function() {
 	combattpopx = combattpopx_def;
 	combattpopy = combattpopy_def;
-	vertexclientpecombatmenu.update(parseInt(combattpopx), parseInt(combattpopy), -1, -1);
+	vertexclientpecombatmenu.update(combattpopx, combattpopy, -1, -1);
 	worldtpopx = worldtpopx_def;
 	worldtpopy = worldtpopy_def;
-	vertexclientpeworldmenu.update(parseInt(worldtpopx), parseInt(worldtpopy), -1, -1);
+	vertexclientpeworldmenu.update(worldtpopx, worldtpopy, -1, -1);
 	movementtpopx = movementtpopx_def;
 	movementtpopy = movementtpopy_def;
-	vertexclientpemovementmenu.update(parseInt(movementtpopx), parseInt(movementtpopy), -1, -1);
+	vertexclientpemovementmenu.update(movementtpopx, movementtpopy, -1, -1);
 	playertpopx = playertpopx_def;
 	playertpopy = playertpopy_def;
-	vertexclientpeplayermenu.update(parseInt(playertpopx), parseInt(playertpopy), -1, -1);
+	vertexclientpeplayermenu.update(playertpopx, playertpopy, -1, -1);
 	misctpopx = misctpopx_def;
 	misctpopy = misctpopy_def;
-	vertexclientpemiscmenu.update(parseInt(misctpopx), parseInt(misctpopy), -1, -1);
+	vertexclientpemiscmenu.update(misctpopx, misctpopy, -1, -1);
 	VertexClientPE.saveFloatingMenus("all");
 	VertexClientPE.toast("Successfully reset all menu positions!");
 }
@@ -6746,7 +6736,6 @@ VertexClientPE.showShortcutManagerDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				VertexClientPE.loadMainSettings();
 				//var settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
 				//settingsTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
 				var settingsTitle = clientScreenTitle("Settings", null, themeSetting);
@@ -6898,7 +6887,6 @@ VertexClientPE.showFeaturesDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				VertexClientPE.loadMainSettings();
 				//var settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
 				//settingsTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
 				var settingsTitle = clientScreenTitle("Settings", null, themeSetting);
@@ -7052,7 +7040,6 @@ VertexClientPE.showSettingSelectorDialog = function(sRightButton, dialogTitle, s
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				VertexClientPE.loadMainSettings();
 				//var settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
 				//settingsTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
 				var settingsTitle = clientScreenTitle("Settings", null, themeSetting);
@@ -7169,7 +7156,6 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				VertexClientPE.loadMainSettings();
 				
 				newRed = customRGBRed;
 				newGreen = customRGBGreen;
@@ -7449,7 +7435,6 @@ VertexClientPE.showModDialog = function(mod, btn) {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				VertexClientPE.loadMainSettings();
 				var modTitleLayout = new LinearLayout_(CONTEXT);
 				modTitleLayout.setOrientation(LinearLayout_.HORIZONTAL);
 				var modTitle = clientTextView(VertexClientPE.getCustomModName(mod.name), true);
@@ -7646,7 +7631,6 @@ VertexClientPE.showSongDialog = function(song, songBtn, playBar) {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				VertexClientPE.loadMainSettings();
 				var songLayout = songBtn.getParent().getParent();
 				var songTitleLayout = new LinearLayout_(CONTEXT);
 				songTitleLayout.setOrientation(LinearLayout_.HORIZONTAL);
@@ -7926,7 +7910,6 @@ VertexClientPE.showItemGiverDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				VertexClientPE.loadMainSettings();
 				var itemGiverTitle = clientTextView("ItemGiver", true);
 				var closeButton = clientButton("Close");
 				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
@@ -8069,7 +8052,6 @@ VertexClientPE.showTeleportDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				VertexClientPE.loadMainSettings();
 				var teleportTitle = clientTextView("Teleport", true);
 				var closeButton = clientButton("Close");
 				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
@@ -8216,7 +8198,6 @@ VertexClientPE.showAddAccountDialog = function(showBackButton, title) {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				VertexClientPE.loadMainSettings();
 				var accountTitle = clientTextView("Add account", true);
 				accountNameInput = clientEditText();
 				accountNameInput.setTextColor(Color_.WHITE);
@@ -8284,7 +8265,6 @@ VertexClientPE.showAddFriendDialog = function(showBackButton, title, icon) {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				VertexClientPE.loadMainSettings();
 				var friendTitle = clientTextView("Add friend", true);
 				friendNameInput = clientEditText();
 				friendNameInput.setTextColor(Color_.WHITE);
@@ -10527,8 +10507,7 @@ function clientButton(text, desc, color, round, forceLightColor, style, thicknes
 	if(thickness == null) {
 		thickness = dip2px(buttonStrokeThicknessSetting);
 	}
-	var display = new DisplayMetrics_();
-	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
+	
 	var defaultButton = new Button_(CONTEXT);
 	defaultButton.setTypeface(VertexClientPE.font);
 	if(desc != null && desc != undefined) {
@@ -12654,146 +12633,144 @@ VertexClientPE.showSplashScreen = function () {
 var hasShownDialog = false;
 
 VertexClientPE.showStartScreenBar = function() {
-	var display = new DisplayMetrics_();
-	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
-		CONTEXT.runOnUiThread(new Runnable_({
-			run: function() {
-				try {
-					var snowEffect = new SnowEffect();
-					if(showSnowInWinterSetting == "on" && (VertexClientPE.Utils.month == java.util.Calendar.DECEMBER || VertexClientPE.Utils.month == java.util.Calendar.JANUARY || (VertexClientPE.Utils.month == java.util.Calendar.FEBRUARY && VertexClientPE.Utils.day <= 28))) {
-						snowEffect.start();
-					}
-					
-					if(!hasShownDialog) {
-						if(userIsNewToCurrentVersion == true) {
-							VertexClientPE.showWhatsNewDialog();
-						} else {
-							if(!VertexClientPE.getHasShownWarningDialog()) {
-								VertexClientPE.showWarningDialog();
-							} else if(!VertexClientPE.getHasShownTipDialog()) {
-								VertexClientPE.showTipDialog();
-							}
-						}
-						hasShownDialog = true;
-					}
-					
-					var mainMenuListLayout = new LinearLayout_(CONTEXT);
-					mainMenuListLayout.setOrientation(LinearLayout_.HORIZONTAL);
-					mainMenuListLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
-					mainMenuListLayout.setPadding(dip2px(8),dip2px(8),dip2px(8),dip2px(8));
-					
-					var youTubeButton = new Button_(CONTEXT);
-					youTubeButton.setBackground(splashYouTubeButtonClientGUI);
-					youTubeButton.setGravity(Gravity_.CENTER);
-					youTubeButton.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(42), dip2px(42)));
-					youTubeButton.setOnTouchListener(new View_.OnTouchListener() {
-						onTouch: function(v, event) {
-							youTubeButton.setSoundEffectsEnabled(false);
-							var action = event.getActionMasked();
-							if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
-								var bNP = splashYouTubeButtonClientGUI;
-								bNP.setFilterBitmap(false);
-								bNP.setAntiAlias(false);
-								youTubeButton.setBackgroundDrawable(bNP);
-							} else {
-								var bNP = splashYouTubeButtonClickedClientGUI;
-								bNP.setFilterBitmap(false);
-								bNP.setAntiAlias(false);
-								youTubeButton.setBackgroundDrawable(bNP);
-							}
-							return false;
-						}
-					});
-					
-					var twitterButton = new Button_(CONTEXT);
-					twitterButton.setBackgroundDrawable(splashTwitterButtonClientGUI);
-					twitterButton.setGravity(Gravity_.CENTER);
-					twitterButton.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(42), dip2px(42)));
-					twitterButton.setOnTouchListener(new View_.OnTouchListener() {
-						onTouch: function(v, event) {
-							twitterButton.setSoundEffectsEnabled(false);
-							var action = event.getActionMasked();
-							if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
-								var bNP = splashTwitterButtonClientGUI;
-								bNP.setFilterBitmap(false);
-								bNP.setAntiAlias(false);
-								twitterButton.setBackgroundDrawable(bNP);
-							} else {
-								var bNP = splashTwitterButtonClickedClientGUI;
-								bNP.setFilterBitmap(false);
-								bNP.setAntiAlias(false);
-								twitterButton.setBackgroundDrawable(bNP);
-							}
-							return false;
-						}
-					});
-					
-					var gitHubButton = new Button_(CONTEXT);
-					gitHubButton.setBackgroundDrawable(splashGitHubButtonClientGUI);
-					gitHubButton.setGravity(Gravity_.CENTER);
-					gitHubButton.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(42), dip2px(42)));
-					gitHubButton.setOnTouchListener(new View_.OnTouchListener() {
-						onTouch: function(v, event) {
-							gitHubButton.setSoundEffectsEnabled(false);
-							var action = event.getActionMasked();
-							if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
-								var bNP = splashGitHubButtonClientGUI;
-								bNP.setFilterBitmap(false);
-								bNP.setAntiAlias(false);
-								gitHubButton.setBackgroundDrawable(bNP);
-							} else {
-								var bNP = splashGitHubButtonClickedClientGUI;
-								bNP.setFilterBitmap(false);
-								bNP.setAntiAlias(false);
-								gitHubButton.setBackgroundDrawable(bNP);
-							}
-							return false;
-						}
-					});
-					
-					youTubeButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							ModPE.goToURL("https://www.youtube.com/c/AgameRGaming");
-						}
-					}));
-					twitterButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							ModPE.goToURL("http://twitter.com/VertexHX");
-						}
-					}));
-					gitHubButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							ModPE.goToURL("https://github.com/Vertex-Client");
-						}
-					}));
-					
-					mainMenuListLayout.addView(youTubeButton);
-					mainMenuListLayout.addView(twitterButton);
-					mainMenuListLayout.addView(gitHubButton);
-
-					if(currentScreen == ScreenType.start_screen) {
-						if((mainMenuTextList == null || !mainMenuTextList.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
-							mainMenuTextList = new PopupWindow_(mainMenuListLayout, -2, -2);
-							if(mainButtonPositionSetting == "top-right") {
-								mainMenuTextList.setBackgroundDrawable(backgroundSpecial("bottomleft", "#212121|#ffffff"));
-								mainMenuTextList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-							} else {
-								mainMenuTextList.setBackgroundDrawable(backgroundSpecial("bottomright", "#212121|#ffffff"));
-								mainMenuTextList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
-							}
-							
-							mainMenuTextList.setOnDismissListener(new PopupWindow_.OnDismissListener({
-								onDismiss() {
-									snowEffect.finish();
-								}
-							}));
-						}
-					}
-				} catch(error) {
-					print("An error occurred: " + error);
+	CONTEXT.runOnUiThread(new Runnable_({
+		run: function() {
+			try {
+				var snowEffect = new SnowEffect();
+				if(showSnowInWinterSetting == "on" && (VertexClientPE.Utils.month == java.util.Calendar.DECEMBER || VertexClientPE.Utils.month == java.util.Calendar.JANUARY || (VertexClientPE.Utils.month == java.util.Calendar.FEBRUARY && VertexClientPE.Utils.day <= 28))) {
+					snowEffect.start();
 				}
+				
+				if(!hasShownDialog) {
+					if(userIsNewToCurrentVersion == true) {
+						VertexClientPE.showWhatsNewDialog();
+					} else {
+						if(!VertexClientPE.getHasShownWarningDialog()) {
+							VertexClientPE.showWarningDialog();
+						} else if(!VertexClientPE.getHasShownTipDialog()) {
+							VertexClientPE.showTipDialog();
+						}
+					}
+					hasShownDialog = true;
+				}
+				
+				var mainMenuListLayout = new LinearLayout_(CONTEXT);
+				mainMenuListLayout.setOrientation(LinearLayout_.HORIZONTAL);
+				mainMenuListLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
+				mainMenuListLayout.setPadding(dip2px(8),dip2px(8),dip2px(8),dip2px(8));
+				
+				var youTubeButton = new Button_(CONTEXT);
+				youTubeButton.setBackground(splashYouTubeButtonClientGUI);
+				youTubeButton.setGravity(Gravity_.CENTER);
+				youTubeButton.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(42), dip2px(42)));
+				youTubeButton.setOnTouchListener(new View_.OnTouchListener() {
+					onTouch: function(v, event) {
+						youTubeButton.setSoundEffectsEnabled(false);
+						var action = event.getActionMasked();
+						if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
+							var bNP = splashYouTubeButtonClientGUI;
+							bNP.setFilterBitmap(false);
+							bNP.setAntiAlias(false);
+							youTubeButton.setBackgroundDrawable(bNP);
+						} else {
+							var bNP = splashYouTubeButtonClickedClientGUI;
+							bNP.setFilterBitmap(false);
+							bNP.setAntiAlias(false);
+							youTubeButton.setBackgroundDrawable(bNP);
+						}
+						return false;
+					}
+				});
+				
+				var twitterButton = new Button_(CONTEXT);
+				twitterButton.setBackgroundDrawable(splashTwitterButtonClientGUI);
+				twitterButton.setGravity(Gravity_.CENTER);
+				twitterButton.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(42), dip2px(42)));
+				twitterButton.setOnTouchListener(new View_.OnTouchListener() {
+					onTouch: function(v, event) {
+						twitterButton.setSoundEffectsEnabled(false);
+						var action = event.getActionMasked();
+						if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
+							var bNP = splashTwitterButtonClientGUI;
+							bNP.setFilterBitmap(false);
+							bNP.setAntiAlias(false);
+							twitterButton.setBackgroundDrawable(bNP);
+						} else {
+							var bNP = splashTwitterButtonClickedClientGUI;
+							bNP.setFilterBitmap(false);
+							bNP.setAntiAlias(false);
+							twitterButton.setBackgroundDrawable(bNP);
+						}
+						return false;
+					}
+				});
+				
+				var gitHubButton = new Button_(CONTEXT);
+				gitHubButton.setBackgroundDrawable(splashGitHubButtonClientGUI);
+				gitHubButton.setGravity(Gravity_.CENTER);
+				gitHubButton.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(42), dip2px(42)));
+				gitHubButton.setOnTouchListener(new View_.OnTouchListener() {
+					onTouch: function(v, event) {
+						gitHubButton.setSoundEffectsEnabled(false);
+						var action = event.getActionMasked();
+						if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
+							var bNP = splashGitHubButtonClientGUI;
+							bNP.setFilterBitmap(false);
+							bNP.setAntiAlias(false);
+							gitHubButton.setBackgroundDrawable(bNP);
+						} else {
+							var bNP = splashGitHubButtonClickedClientGUI;
+							bNP.setFilterBitmap(false);
+							bNP.setAntiAlias(false);
+							gitHubButton.setBackgroundDrawable(bNP);
+						}
+						return false;
+					}
+				});
+				
+				youTubeButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						ModPE.goToURL("https://www.youtube.com/c/AgameRGaming");
+					}
+				}));
+				twitterButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						ModPE.goToURL("http://twitter.com/VertexHX");
+					}
+				}));
+				gitHubButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						ModPE.goToURL("https://github.com/Vertex-Client");
+					}
+				}));
+				
+				mainMenuListLayout.addView(youTubeButton);
+				mainMenuListLayout.addView(twitterButton);
+				mainMenuListLayout.addView(gitHubButton);
+
+				if(currentScreen == ScreenType.start_screen) {
+					if((mainMenuTextList == null || !mainMenuTextList.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
+						mainMenuTextList = new PopupWindow_(mainMenuListLayout, -2, -2);
+						if(mainButtonPositionSetting == "top-right") {
+							mainMenuTextList.setBackgroundDrawable(backgroundSpecial("bottomleft", "#212121|#ffffff"));
+							mainMenuTextList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+						} else {
+							mainMenuTextList.setBackgroundDrawable(backgroundSpecial("bottomright", "#212121|#ffffff"));
+							mainMenuTextList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
+						}
+						
+						mainMenuTextList.setOnDismissListener(new PopupWindow_.OnDismissListener({
+							onDismiss() {
+								snowEffect.finish();
+							}
+						}));
+					}
+				}
+			} catch(error) {
+				print("An error occurred: " + error);
 			}
-		}));
+		}
+	}));
 }
 
 VertexClientPE.showUpdate = function() {
@@ -12820,409 +12797,407 @@ VertexClientPE.showUpdate = function() {
 var currentStep = 1;
 
 VertexClientPE.showSetupScreen = function() {
-	var display = new DisplayMetrics_();
-	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
-		CONTEXT.runOnUiThread(new Runnable_({
-			run: function() {
-				try {
-					var setupScreenLayout = new LinearLayout_(CONTEXT);
-					setupScreenLayout.setOrientation(1);
-					setupScreenLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
-					
-					var setupScreenLayoutBottom = new LinearLayout_(CONTEXT);
-					setupScreenLayoutBottom.setOrientation(LinearLayout_.HORIZONTAL);
-					
-					var setupScreenLayoutBottomLeft = new LinearLayout_(CONTEXT);
-					setupScreenLayoutBottomLeft.setOrientation(1);
-					setupScreenLayoutBottomLeft.setGravity(Gravity_.CENTER_HORIZONTAL);
-					setupScreenLayoutBottomLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 4, LinearLayout_.LayoutParams.WRAP_CONTENT));
-					
-					var setupScreenLayoutBottomCenter = new LinearLayout_(CONTEXT);
-					setupScreenLayoutBottomCenter.setOrientation(1);
-					setupScreenLayoutBottomCenter.setGravity(Gravity_.CENTER_HORIZONTAL);
-					setupScreenLayoutBottomCenter.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 4, LinearLayout_.LayoutParams.WRAP_CONTENT));
-					
-					var setupScreenLayoutBottomCenter1 = new LinearLayout_(CONTEXT);
-					setupScreenLayoutBottomCenter1.setOrientation(1);
-					setupScreenLayoutBottomCenter1.setGravity(Gravity_.CENTER_HORIZONTAL);
-					setupScreenLayoutBottomCenter1.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 4, LinearLayout_.LayoutParams.WRAP_CONTENT));
-					
-					var setupScreenLayoutBottomRight = new LinearLayout_(CONTEXT);
-					setupScreenLayoutBottomRight.setOrientation(1);
-					setupScreenLayoutBottomRight.setGravity(Gravity_.CENTER_HORIZONTAL);
-					setupScreenLayoutBottomRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 4, LinearLayout_.LayoutParams.WRAP_CONTENT));
-					
-					var logoViewer3 = new ImageView_(CONTEXT);
-					logoViewer3.setPadding(0, dip2px(16), 0, dip2px(16));
-					logoViewer3.setImageBitmap(imgLogo);
-					logoViewer3.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 4, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16 + dip2px(32)));
-					setupScreenLayout.addView(logoViewer3);
-					
-					var setupStepRow = new LinearLayout_(CONTEXT);
-					setupStepRow.setOrientation(LinearLayout_.HORIZONTAL);
-					setupStepRow.setGravity(Gravity_.CENTER);
-					setupScreenLayout.addView(setupStepRow);
-					
-					var step1Button = new Button_(CONTEXT);
-					step1Button.setBackgroundDrawable(drawCircle(Color_.parseColor("#80ffffff")));
-					step1Button.setText("1");
-					step1Button.setTextColor(Color_.parseColor("#0080FF"));
-					step1Button.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16));
-					step1Button.setOnClickListener(new android.view.View.OnClickListener() {
-						onClick: function(v) {
-							if(currentStep != 1) {
-								currentStep = 1;
-								setupScreenLayoutBottomLeft.removeAllViews();
-								setupScreenLayoutBottomCenter.removeAllViews();
-								setupScreenLayoutBottomCenter1.removeAllViews();
-								setupScreenLayoutBottomRight.removeAllViews();
-								step1Button.setTextColor(Color_.parseColor("#0080FF"));
-								step2Button.setTextColor(Color_.WHITE);
-								step3Button.setTextColor(Color_.WHITE);
-								step4Button.setTextColor(Color_.WHITE);
-								setupTextView.startAnimation(textAnim);
-								setupTextView.setText(setupStep1Text);
-								doneButton.setText("\u2794");
-								doneButton.setOnClickListener(new View_.OnClickListener({
-									onClick: function(viewArg) {
-										step2Button.performClick();
-									}
-								}));
-							}
+	CONTEXT.runOnUiThread(new Runnable_({
+		run: function() {
+			try {
+				var setupScreenLayout = new LinearLayout_(CONTEXT);
+				setupScreenLayout.setOrientation(1);
+				setupScreenLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
+				
+				var setupScreenLayoutBottom = new LinearLayout_(CONTEXT);
+				setupScreenLayoutBottom.setOrientation(LinearLayout_.HORIZONTAL);
+				
+				var setupScreenLayoutBottomLeft = new LinearLayout_(CONTEXT);
+				setupScreenLayoutBottomLeft.setOrientation(1);
+				setupScreenLayoutBottomLeft.setGravity(Gravity_.CENTER_HORIZONTAL);
+				setupScreenLayoutBottomLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 4, LinearLayout_.LayoutParams.WRAP_CONTENT));
+				
+				var setupScreenLayoutBottomCenter = new LinearLayout_(CONTEXT);
+				setupScreenLayoutBottomCenter.setOrientation(1);
+				setupScreenLayoutBottomCenter.setGravity(Gravity_.CENTER_HORIZONTAL);
+				setupScreenLayoutBottomCenter.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 4, LinearLayout_.LayoutParams.WRAP_CONTENT));
+				
+				var setupScreenLayoutBottomCenter1 = new LinearLayout_(CONTEXT);
+				setupScreenLayoutBottomCenter1.setOrientation(1);
+				setupScreenLayoutBottomCenter1.setGravity(Gravity_.CENTER_HORIZONTAL);
+				setupScreenLayoutBottomCenter1.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 4, LinearLayout_.LayoutParams.WRAP_CONTENT));
+				
+				var setupScreenLayoutBottomRight = new LinearLayout_(CONTEXT);
+				setupScreenLayoutBottomRight.setOrientation(1);
+				setupScreenLayoutBottomRight.setGravity(Gravity_.CENTER_HORIZONTAL);
+				setupScreenLayoutBottomRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 4, LinearLayout_.LayoutParams.WRAP_CONTENT));
+				
+				var logoViewer3 = new ImageView_(CONTEXT);
+				logoViewer3.setPadding(0, dip2px(16), 0, dip2px(16));
+				logoViewer3.setImageBitmap(imgLogo);
+				logoViewer3.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 4, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16 + dip2px(32)));
+				setupScreenLayout.addView(logoViewer3);
+				
+				var setupStepRow = new LinearLayout_(CONTEXT);
+				setupStepRow.setOrientation(LinearLayout_.HORIZONTAL);
+				setupStepRow.setGravity(Gravity_.CENTER);
+				setupScreenLayout.addView(setupStepRow);
+				
+				var step1Button = new Button_(CONTEXT);
+				step1Button.setBackgroundDrawable(drawCircle(Color_.parseColor("#80ffffff")));
+				step1Button.setText("1");
+				step1Button.setTextColor(Color_.parseColor("#0080FF"));
+				step1Button.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16));
+				step1Button.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(v) {
+						if(currentStep != 1) {
+							currentStep = 1;
+							setupScreenLayoutBottomLeft.removeAllViews();
+							setupScreenLayoutBottomCenter.removeAllViews();
+							setupScreenLayoutBottomCenter1.removeAllViews();
+							setupScreenLayoutBottomRight.removeAllViews();
+							step1Button.setTextColor(Color_.parseColor("#0080FF"));
+							step2Button.setTextColor(Color_.WHITE);
+							step3Button.setTextColor(Color_.WHITE);
+							step4Button.setTextColor(Color_.WHITE);
+							setupTextView.startAnimation(textAnim);
+							setupTextView.setText(setupStep1Text);
+							doneButton.setText("\u2794");
+							doneButton.setOnClickListener(new View_.OnClickListener({
+								onClick: function(viewArg) {
+									step2Button.performClick();
+								}
+							}));
 						}
-					});
-					var step2Button = new Button_(CONTEXT);
-					step2Button.setBackgroundDrawable(drawCircle(Color_.parseColor("#80ffffff")));
-					step2Button.setText("2");
-					step2Button.setTextColor(Color_.WHITE);
-					step2Button.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16));
-					step2Button.setOnClickListener(new android.view.View.OnClickListener() {
-						onClick: function(v) {
-							if(currentStep != 2) {
-								currentStep = 2;
-								setupScreenLayoutBottomLeft.removeAllViews();
-								setupScreenLayoutBottomCenter.removeAllViews();
-								setupScreenLayoutBottomCenter1.removeAllViews();
-								setupScreenLayoutBottomRight.removeAllViews();
-								step1Button.setTextColor(Color_.WHITE);
-								step2Button.setTextColor(Color_.parseColor("#0080FF"));
-								step3Button.setTextColor(Color_.WHITE);
-								step4Button.setTextColor(Color_.WHITE);
-								setupTextView.startAnimation(textAnim);
-								setupTextView.setText(setupStep2Text);
-								setupScreenLayoutBottomLeft.addView(setupButtonGreen);
-								setupScreenLayoutBottomCenter.addView(setupButtonRed);
-								setupScreenLayoutBottomCenter1.addView(setupButtonBlue);
-								setupScreenLayoutBottomRight.addView(setupButtonPurple);
-								doneButton.setText("\u2794");
-								doneButton.setOnClickListener(new View_.OnClickListener({
-									onClick: function(viewArg) {
-										step3Button.performClick();
-									}
-								}));
-							}
+					}
+				});
+				var step2Button = new Button_(CONTEXT);
+				step2Button.setBackgroundDrawable(drawCircle(Color_.parseColor("#80ffffff")));
+				step2Button.setText("2");
+				step2Button.setTextColor(Color_.WHITE);
+				step2Button.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16));
+				step2Button.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(v) {
+						if(currentStep != 2) {
+							currentStep = 2;
+							setupScreenLayoutBottomLeft.removeAllViews();
+							setupScreenLayoutBottomCenter.removeAllViews();
+							setupScreenLayoutBottomCenter1.removeAllViews();
+							setupScreenLayoutBottomRight.removeAllViews();
+							step1Button.setTextColor(Color_.WHITE);
+							step2Button.setTextColor(Color_.parseColor("#0080FF"));
+							step3Button.setTextColor(Color_.WHITE);
+							step4Button.setTextColor(Color_.WHITE);
+							setupTextView.startAnimation(textAnim);
+							setupTextView.setText(setupStep2Text);
+							setupScreenLayoutBottomLeft.addView(setupButtonGreen);
+							setupScreenLayoutBottomCenter.addView(setupButtonRed);
+							setupScreenLayoutBottomCenter1.addView(setupButtonBlue);
+							setupScreenLayoutBottomRight.addView(setupButtonPurple);
+							doneButton.setText("\u2794");
+							doneButton.setOnClickListener(new View_.OnClickListener({
+								onClick: function(viewArg) {
+									step3Button.performClick();
+								}
+							}));
 						}
-					});
-					var step3Button = new Button_(CONTEXT);
-					step3Button.setBackgroundDrawable(drawCircle(Color_.parseColor("#80ffffff")));
-					step3Button.setText("3");
-					step3Button.setTextColor(Color_.WHITE);
-					step3Button.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16));
-					step3Button.setOnClickListener(new android.view.View.OnClickListener() {
-						onClick: function(v) {
-							if(currentStep != 3) {
-								currentStep = 3;
-								setupScreenLayoutBottomLeft.removeAllViews();
-								setupScreenLayoutBottomCenter.removeAllViews();
-								setupScreenLayoutBottomCenter1.removeAllViews();
-								setupScreenLayoutBottomRight.removeAllViews();
-								step1Button.setTextColor(Color_.WHITE);
-								step2Button.setTextColor(Color_.WHITE);
-								step3Button.setTextColor(Color_.parseColor("#0080FF"));
-								step4Button.setTextColor(Color_.WHITE);
-								setupTextView.startAnimation(textAnim);
-								setupTextView.setText(setupStep3Text);
-								setupScreenLayoutBottomCenter.addView(combatEnabledSettingButton);
-								setupScreenLayoutBottomCenter.addView(worldEnabledSettingButton);
-								setupScreenLayoutBottomCenter.addView(movementEnabledSettingButton);
-								setupScreenLayoutBottomCenter1.addView(playerEnabledSettingButton);
-								setupScreenLayoutBottomCenter1.addView(miscEnabledSettingButton);
-								setupScreenLayoutBottomCenter1.addView(singleplayerEnabledSettingButton);
-								doneButton.setText("\u2794");
-								doneButton.setOnClickListener(new View_.OnClickListener({
-									onClick: function(viewArg) {
-										step4Button.performClick();
-									}
-								}));
-							}
+					}
+				});
+				var step3Button = new Button_(CONTEXT);
+				step3Button.setBackgroundDrawable(drawCircle(Color_.parseColor("#80ffffff")));
+				step3Button.setText("3");
+				step3Button.setTextColor(Color_.WHITE);
+				step3Button.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16));
+				step3Button.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(v) {
+						if(currentStep != 3) {
+							currentStep = 3;
+							setupScreenLayoutBottomLeft.removeAllViews();
+							setupScreenLayoutBottomCenter.removeAllViews();
+							setupScreenLayoutBottomCenter1.removeAllViews();
+							setupScreenLayoutBottomRight.removeAllViews();
+							step1Button.setTextColor(Color_.WHITE);
+							step2Button.setTextColor(Color_.WHITE);
+							step3Button.setTextColor(Color_.parseColor("#0080FF"));
+							step4Button.setTextColor(Color_.WHITE);
+							setupTextView.startAnimation(textAnim);
+							setupTextView.setText(setupStep3Text);
+							setupScreenLayoutBottomCenter.addView(combatEnabledSettingButton);
+							setupScreenLayoutBottomCenter.addView(worldEnabledSettingButton);
+							setupScreenLayoutBottomCenter.addView(movementEnabledSettingButton);
+							setupScreenLayoutBottomCenter1.addView(playerEnabledSettingButton);
+							setupScreenLayoutBottomCenter1.addView(miscEnabledSettingButton);
+							setupScreenLayoutBottomCenter1.addView(singleplayerEnabledSettingButton);
+							doneButton.setText("\u2794");
+							doneButton.setOnClickListener(new View_.OnClickListener({
+								onClick: function(viewArg) {
+									step4Button.performClick();
+								}
+							}));
 						}
-					});
-					var step4Button = new Button_(CONTEXT);
-					step4Button.setBackgroundDrawable(drawCircle(Color_.parseColor("#80ffffff")));
-					step4Button.setText("4");
-					step4Button.setTextColor(Color_.WHITE);
-					step4Button.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16));
-					step4Button.setOnClickListener(new android.view.View.OnClickListener() {
-						onClick: function(v) {
-							if(currentStep != 4) {
-								currentStep = 4;
-								setupScreenLayoutBottomLeft.removeAllViews();
-								setupScreenLayoutBottomCenter.removeAllViews();
-								setupScreenLayoutBottomCenter1.removeAllViews();
-								setupScreenLayoutBottomRight.removeAllViews();
-								step1Button.setTextColor(Color_.WHITE);
-								step2Button.setTextColor(Color_.WHITE);
-								step3Button.setTextColor(Color_.WHITE);
-								step4Button.setTextColor(Color_.parseColor("#0080FF"));
-								setupTextView.startAnimation(textAnim);
-								setupTextView.setText(setupStep4Text);
-								doneButton.setText("\u2713");
-								doneButton.setOnClickListener(new View_.OnClickListener({
-									onClick: function(viewArg) {
-										themeSetting = setupColor;
-										VertexClientPE.saveMainSettings();
-										VertexClientPE.editCopyrightText();
-										logoViewer3.clearAnimation();
-										doneUI.dismiss(); //Close
-										screenUI.dismiss();
-										showMenuButton();
-										VertexClientPE.showUpdate();
-										VertexClientPE.loadAddons();
-										VertexClientPE.loadFloatingMenus();
-										VertexClientPE.clientTick();
-										VertexClientPE.inGameTick();
-										VertexClientPE.specialTick();
-										VertexClientPE.secondTick();
-										VertexClientPE.setupMCPEGUI();
-										VertexClientPE.initMods();
-									}
-								}));
-							}
+					}
+				});
+				var step4Button = new Button_(CONTEXT);
+				step4Button.setBackgroundDrawable(drawCircle(Color_.parseColor("#80ffffff")));
+				step4Button.setText("4");
+				step4Button.setTextColor(Color_.WHITE);
+				step4Button.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16));
+				step4Button.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(v) {
+						if(currentStep != 4) {
+							currentStep = 4;
+							setupScreenLayoutBottomLeft.removeAllViews();
+							setupScreenLayoutBottomCenter.removeAllViews();
+							setupScreenLayoutBottomCenter1.removeAllViews();
+							setupScreenLayoutBottomRight.removeAllViews();
+							step1Button.setTextColor(Color_.WHITE);
+							step2Button.setTextColor(Color_.WHITE);
+							step3Button.setTextColor(Color_.WHITE);
+							step4Button.setTextColor(Color_.parseColor("#0080FF"));
+							setupTextView.startAnimation(textAnim);
+							setupTextView.setText(setupStep4Text);
+							doneButton.setText("\u2713");
+							doneButton.setOnClickListener(new View_.OnClickListener({
+								onClick: function(viewArg) {
+									themeSetting = setupColor;
+									VertexClientPE.saveMainSettings();
+									VertexClientPE.editCopyrightText();
+									logoViewer3.clearAnimation();
+									doneUI.dismiss(); //Close
+									screenUI.dismiss();
+									showMenuButton();
+									VertexClientPE.showUpdate();
+									VertexClientPE.loadAddons();
+									VertexClientPE.loadFloatingMenus();
+									VertexClientPE.clientTick();
+									VertexClientPE.inGameTick();
+									VertexClientPE.specialTick();
+									VertexClientPE.secondTick();
+									VertexClientPE.setupMCPEGUI();
+									VertexClientPE.initMods();
+								}
+							}));
 						}
-					});
-					
-					var space1 = new TextView_(CONTEXT);
-					space1.setBackgroundDrawable(new ColorDrawable_(Color_.WHITE));
-					
-					var space2 = new TextView_(CONTEXT);
-					space2.setBackgroundDrawable(new ColorDrawable_(Color_.WHITE));
-					
-					var space3 = new TextView_(CONTEXT);
-					space3.setBackgroundDrawable(new ColorDrawable_(Color_.WHITE));
-					
-					setupStepRow.addView(step1Button);
-					setupStepRow.addView(space1, dip2px(8), dip2px(1));
-					setupStepRow.addView(step2Button);
-					setupStepRow.addView(space2, dip2px(8), dip2px(1));
-					setupStepRow.addView(step3Button);
-					setupStepRow.addView(space3, dip2px(8), dip2px(1));
-					setupStepRow.addView(step4Button);
-					
-					var setupTextView = clientTextView("");
-					setupTextView.setGravity(Gravity_.CENTER);
-					setupScreenLayout.addView(setupTextView);
-					
-					var setupStep1Text = "Thanks for choosing Vertex Client PE!\nGo to the next step to choose your favourite color. :)";
-					var setupStep2Text = "You can always change the color on the settings screen.\nEven more colors are available there.";
-					var setupStep3Text = "Now you can optimize your experience by choosing the mod categories you want to use. You'll be able to change this on the settings screen anytime.";
-					var setupStep4Text = "That's it! Your experience begins here.\nHere's some additional help to get started:\n- You can open the Dashboard and some other features from the 'More' dialog,\nwhich can be opened by long tapping the menu button.";
-					
-					setupTextView.setText(setupStep1Text);
-					
-					setupScreenLayoutBottom.addView(setupScreenLayoutBottomLeft);
-					setupScreenLayoutBottom.addView(setupScreenLayoutBottomCenter);
-					setupScreenLayoutBottom.addView(setupScreenLayoutBottomCenter1);
-					setupScreenLayoutBottom.addView(setupScreenLayoutBottomRight);
-					
-					setupScreenLayout.addView(setupScreenLayoutBottom);
-					
-					var setupButtonGreen = clientButton("Green", null, "green");
-					setupButtonGreen.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
-					setupButtonGreen.setTextColor(Color_.GREEN);
-					setupButtonGreen.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							setupColor = "green";
-							setupButtonGreen.setTextColor(Color_.GREEN);
-							setupButtonRed.setTextColor(Color_.WHITE);
-							setupButtonBlue.setTextColor(Color_.WHITE);
-							setupButtonPurple.setTextColor(Color_.WHITE);
+					}
+				});
+				
+				var space1 = new TextView_(CONTEXT);
+				space1.setBackgroundDrawable(new ColorDrawable_(Color_.WHITE));
+				
+				var space2 = new TextView_(CONTEXT);
+				space2.setBackgroundDrawable(new ColorDrawable_(Color_.WHITE));
+				
+				var space3 = new TextView_(CONTEXT);
+				space3.setBackgroundDrawable(new ColorDrawable_(Color_.WHITE));
+				
+				setupStepRow.addView(step1Button);
+				setupStepRow.addView(space1, dip2px(8), dip2px(1));
+				setupStepRow.addView(step2Button);
+				setupStepRow.addView(space2, dip2px(8), dip2px(1));
+				setupStepRow.addView(step3Button);
+				setupStepRow.addView(space3, dip2px(8), dip2px(1));
+				setupStepRow.addView(step4Button);
+				
+				var setupTextView = clientTextView("");
+				setupTextView.setGravity(Gravity_.CENTER);
+				setupScreenLayout.addView(setupTextView);
+				
+				var setupStep1Text = "Thanks for choosing Vertex Client PE!\nGo to the next step to choose your favourite color. :)";
+				var setupStep2Text = "You can always change the color on the settings screen.\nEven more colors are available there.";
+				var setupStep3Text = "Now you can optimize your experience by choosing the mod categories you want to use. You'll be able to change this on the settings screen anytime.";
+				var setupStep4Text = "That's it! Your experience begins here.\nHere's some additional help to get started:\n- You can open the Dashboard and some other features from the 'More' dialog,\nwhich can be opened by long tapping the menu button.";
+				
+				setupTextView.setText(setupStep1Text);
+				
+				setupScreenLayoutBottom.addView(setupScreenLayoutBottomLeft);
+				setupScreenLayoutBottom.addView(setupScreenLayoutBottomCenter);
+				setupScreenLayoutBottom.addView(setupScreenLayoutBottomCenter1);
+				setupScreenLayoutBottom.addView(setupScreenLayoutBottomRight);
+				
+				setupScreenLayout.addView(setupScreenLayoutBottom);
+				
+				var setupButtonGreen = clientButton("Green", null, "green");
+				setupButtonGreen.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+				setupButtonGreen.setTextColor(Color_.GREEN);
+				setupButtonGreen.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						setupColor = "green";
+						setupButtonGreen.setTextColor(Color_.GREEN);
+						setupButtonRed.setTextColor(Color_.WHITE);
+						setupButtonBlue.setTextColor(Color_.WHITE);
+						setupButtonPurple.setTextColor(Color_.WHITE);
+					}
+				}));
+				
+				var setupButtonRed = clientButton("Red", null, "red");
+				setupButtonRed.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+				setupButtonRed.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						setupColor = "red";
+						setupButtonGreen.setTextColor(Color_.WHITE);
+						setupButtonRed.setTextColor(Color_.GREEN);
+						setupButtonBlue.setTextColor(Color_.WHITE);
+						setupButtonPurple.setTextColor(Color_.WHITE);
+					}
+				}));
+				
+				var setupButtonBlue = clientButton("Blue", null, "blue");
+				setupButtonBlue.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+				setupButtonBlue.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						setupColor = "blue";
+						setupButtonGreen.setTextColor(Color_.WHITE);
+						setupButtonRed.setTextColor(Color_.WHITE);
+						setupButtonBlue.setTextColor(Color_.GREEN);
+						setupButtonPurple.setTextColor(Color_.WHITE);
+					}
+				}));
+				
+				var setupButtonPurple = clientButton("Purple", null, "purple");
+				setupButtonPurple.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
+				setupButtonPurple.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						setupColor = "purple";
+						setupButtonGreen.setTextColor(Color_.WHITE);
+						setupButtonRed.setTextColor(Color_.WHITE);
+						setupButtonBlue.setTextColor(Color_.WHITE);
+						setupButtonPurple.setTextColor(Color_.GREEN);
+					}
+				}));
+				
+				var combatEnabledSettingButton = clientSwitch();
+				combatEnabledSettingButton.setText("Combat");
+				combatEnabledSettingButton.setChecked(combatEnabled == "on");
+				combatEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
+					onCheckedChanged: function() {
+						if(combatEnabled == "off") {
+							combatEnabled = "on";
+						} else if(combatEnabled == "on") {
+							combatEnabled = "off";
 						}
-					}));
-					
-					var setupButtonRed = clientButton("Red", null, "red");
-					setupButtonRed.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
-					setupButtonRed.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							setupColor = "red";
-							setupButtonGreen.setTextColor(Color_.WHITE);
-							setupButtonRed.setTextColor(Color_.GREEN);
-							setupButtonBlue.setTextColor(Color_.WHITE);
-							setupButtonPurple.setTextColor(Color_.WHITE);
+						VertexClientPE.saveFeaturesSettings();
+					}
+				}));
+				
+				var worldEnabledSettingButton = clientSwitch();
+				worldEnabledSettingButton.setText("World");
+				worldEnabledSettingButton.setChecked(worldEnabled == "on");
+				worldEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
+					onCheckedChanged: function() {
+						if(worldEnabled == "off") {
+							worldEnabled = "on";
+						} else if(worldEnabled == "on") {
+							worldEnabled = "off";
 						}
-					}));
-					
-					var setupButtonBlue = clientButton("Blue", null, "blue");
-					setupButtonBlue.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
-					setupButtonBlue.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							setupColor = "blue";
-							setupButtonGreen.setTextColor(Color_.WHITE);
-							setupButtonRed.setTextColor(Color_.WHITE);
-							setupButtonBlue.setTextColor(Color_.GREEN);
-							setupButtonPurple.setTextColor(Color_.WHITE);
+						VertexClientPE.saveFeaturesSettings();
+					}
+				}));
+				
+				var movementEnabledSettingButton = clientSwitch();
+				movementEnabledSettingButton.setText("Movement");
+				movementEnabledSettingButton.setChecked(movementEnabled == "on");
+				movementEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
+					onCheckedChanged: function() {
+						if(movementEnabled == "off") {
+							movementEnabled = "on";
+						} else if(movementEnabled == "on") {
+							movementEnabled = "off";
 						}
-					}));
-					
-					var setupButtonPurple = clientButton("Purple", null, "purple");
-					setupButtonPurple.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
-					setupButtonPurple.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							setupColor = "purple";
-							setupButtonGreen.setTextColor(Color_.WHITE);
-							setupButtonRed.setTextColor(Color_.WHITE);
-							setupButtonBlue.setTextColor(Color_.WHITE);
-							setupButtonPurple.setTextColor(Color_.GREEN);
+						VertexClientPE.saveFeaturesSettings();
+					}
+				}));
+				
+				var playerEnabledSettingButton = clientSwitch();
+				playerEnabledSettingButton.setText("Player");
+				playerEnabledSettingButton.setChecked(playerEnabled == "on");
+				playerEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
+					onCheckedChanged: function() {
+						if(playerEnabled == "off") {
+							playerEnabled = "on";
+						} else if(playerEnabled == "on") {
+							playerEnabled = "off";
 						}
-					}));
-					
-					var combatEnabledSettingButton = clientSwitch();
-					combatEnabledSettingButton.setText("Combat");
-					combatEnabledSettingButton.setChecked(combatEnabled == "on");
-					combatEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
-						onCheckedChanged: function() {
-							if(combatEnabled == "off") {
-								combatEnabled = "on";
-							} else if(combatEnabled == "on") {
-								combatEnabled = "off";
-							}
-							VertexClientPE.saveFeaturesSettings();
+						VertexClientPE.saveFeaturesSettings();
+					}
+				}));
+				
+				var miscEnabledSettingButton = clientSwitch();
+				miscEnabledSettingButton.setText("Misc");
+				miscEnabledSettingButton.setChecked(miscEnabled == "on");
+				miscEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
+					onCheckedChanged: function() {
+						if(miscEnabled == "off") {
+							miscEnabled = "on";
+						} else if(miscEnabled == "on") {
+							miscEnabled = "off";
 						}
-					}));
-					
-					var worldEnabledSettingButton = clientSwitch();
-					worldEnabledSettingButton.setText("World");
-					worldEnabledSettingButton.setChecked(worldEnabled == "on");
-					worldEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
-						onCheckedChanged: function() {
-							if(worldEnabled == "off") {
-								worldEnabled = "on";
-							} else if(worldEnabled == "on") {
-								worldEnabled = "off";
-							}
-							VertexClientPE.saveFeaturesSettings();
+						VertexClientPE.saveFeaturesSettings();
+					}
+				}));
+				
+				var singleplayerEnabledSettingButton = clientSwitch();
+				singleplayerEnabledSettingButton.setText("Singleplayer Only Mods");
+				singleplayerEnabledSettingButton.setChecked(singleplayerEnabled == "on");
+				singleplayerEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
+					onCheckedChanged: function() {
+						if(singleplayerEnabled == "off") {
+							singleplayerEnabled = "on";
+						} else if(singleplayerEnabled == "on") {
+							singleplayerEnabled = "off";
 						}
-					}));
-					
-					var movementEnabledSettingButton = clientSwitch();
-					movementEnabledSettingButton.setText("Movement");
-					movementEnabledSettingButton.setChecked(movementEnabled == "on");
-					movementEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
-						onCheckedChanged: function() {
-							if(movementEnabled == "off") {
-								movementEnabled = "on";
-							} else if(movementEnabled == "on") {
-								movementEnabled = "off";
-							}
-							VertexClientPE.saveFeaturesSettings();
-						}
-					}));
-					
-					var playerEnabledSettingButton = clientSwitch();
-					playerEnabledSettingButton.setText("Player");
-					playerEnabledSettingButton.setChecked(playerEnabled == "on");
-					playerEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
-						onCheckedChanged: function() {
-							if(playerEnabled == "off") {
-								playerEnabled = "on";
-							} else if(playerEnabled == "on") {
-								playerEnabled = "off";
-							}
-							VertexClientPE.saveFeaturesSettings();
-						}
-					}));
-					
-					var miscEnabledSettingButton = clientSwitch();
-					miscEnabledSettingButton.setText("Misc");
-					miscEnabledSettingButton.setChecked(miscEnabled == "on");
-					miscEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
-						onCheckedChanged: function() {
-							if(miscEnabled == "off") {
-								miscEnabled = "on";
-							} else if(miscEnabled == "on") {
-								miscEnabled = "off";
-							}
-							VertexClientPE.saveFeaturesSettings();
-						}
-					}));
-					
-					var singleplayerEnabledSettingButton = clientSwitch();
-					singleplayerEnabledSettingButton.setText("Singleplayer Only Mods");
-					singleplayerEnabledSettingButton.setChecked(singleplayerEnabled == "on");
-					singleplayerEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
-						onCheckedChanged: function() {
-							if(singleplayerEnabled == "off") {
-								singleplayerEnabled = "on";
-							} else if(singleplayerEnabled == "on") {
-								singleplayerEnabled = "off";
-							}
-							VertexClientPE.saveFeaturesSettings();
-						}
-					}));
-					
-					var doneLayout = new LinearLayout_(CONTEXT);
-					var doneButton = new Button_(CONTEXT);
-					doneButton.setBackgroundDrawable(drawQuarterCircle(Color_.parseColor("#80ffffff"), dip2px(60)));
-					doneButton.setGravity(Gravity_.RIGHT | Gravity_.TOP);
-					doneButton.setPadding(0, dip2px(8), dip2px(8), 0);
-					doneButton.setText("\u2794");//Text
-					doneButton.setTextSize(20);
-					//doneButton.getBackground().setColorFilter(Color_.parseColor("#008000"), PorterDuff_.Mode.MULTIPLY);
-					doneButton.setTextColor(Color_.WHITE);
-					doneButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							step2Button.performClick();
-						}
-					}));
-					doneLayout.addView(doneButton, dip2px(54), dip2px(54));
-					
-					screenUI = new PopupWindow_(setupScreenLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
-					screenUI.setBackgroundDrawable(new ColorDrawable_(Color_.parseColor("#0080FF")));
-					screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-					//set animation after being shown, because the animation is for when it dismisses.
-					//screenUI.setAnimationStyle(android.R.style.Animation_Dialog);
-					
-					var logoAnim = new android.view.animation.AlphaAnimation(0, 1);
-					logoAnim.setInterpolator(new android.view.animation.LinearInterpolator());
-					logoAnim.setRepeatCount(android.view.animation.Animation.INFINITE);
-					logoAnim.setRepeatMode(android.view.animation.Animation.REVERSE);
-					logoAnim.setDuration(1500);
-					
-					logoViewer3.startAnimation(logoAnim);
-					
-					var textAnim = new android.view.animation.AlphaAnimation(0, 1);
-					textAnim.setInterpolator(new android.view.animation.LinearInterpolator());
-					textAnim.setRepeatCount(android.view.animation.Animation.INFINITE);
-					textAnim.setDuration(1500);
-					textAnim.setAnimationListener(new android.view.animation.Animation.AnimationListener() {
-						onAnimationStart: function(arg0) {
-							
-						},
-						onAnimationRepeat: function(arg0) {
-							setupTextView.clearAnimation();
-						},
-						onAnimationEnd: function(arg0) {
-							setupTextView.clearAnimation();
-						}
-					});
-					
-					setupTextView.startAnimation(textAnim);
-					
-					doneUI = new PopupWindow_(doneLayout, LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT);
-					doneUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-					doneUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
-				} catch(error) {
-					print("An error occurred: " + error);
-					VertexClientPE.showBugReportDialog(error);
+						VertexClientPE.saveFeaturesSettings();
+					}
+				}));
+				
+				var doneLayout = new LinearLayout_(CONTEXT);
+				var doneButton = new Button_(CONTEXT);
+				doneButton.setBackgroundDrawable(drawQuarterCircle(Color_.parseColor("#80ffffff"), dip2px(60)));
+				doneButton.setGravity(Gravity_.RIGHT | Gravity_.TOP);
+				doneButton.setPadding(0, dip2px(8), dip2px(8), 0);
+				doneButton.setText("\u2794");//Text
+				doneButton.setTextSize(20);
+				//doneButton.getBackground().setColorFilter(Color_.parseColor("#008000"), PorterDuff_.Mode.MULTIPLY);
+				doneButton.setTextColor(Color_.WHITE);
+				doneButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						step2Button.performClick();
+					}
+				}));
+				doneLayout.addView(doneButton, dip2px(54), dip2px(54));
+				
+				screenUI = new PopupWindow_(setupScreenLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+				screenUI.setBackgroundDrawable(new ColorDrawable_(Color_.parseColor("#0080FF")));
+				screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+				//set animation after being shown, because the animation is for when it dismisses.
+				//screenUI.setAnimationStyle(android.R.style.Animation_Dialog);
+				
+				var logoAnim = new android.view.animation.AlphaAnimation(0, 1);
+				logoAnim.setInterpolator(new android.view.animation.LinearInterpolator());
+				logoAnim.setRepeatCount(android.view.animation.Animation.INFINITE);
+				logoAnim.setRepeatMode(android.view.animation.Animation.REVERSE);
+				logoAnim.setDuration(1500);
+				
+				logoViewer3.startAnimation(logoAnim);
+				
+				var textAnim = new android.view.animation.AlphaAnimation(0, 1);
+				textAnim.setInterpolator(new android.view.animation.LinearInterpolator());
+				textAnim.setRepeatCount(android.view.animation.Animation.INFINITE);
+				textAnim.setDuration(1500);
+				textAnim.setAnimationListener(new android.view.animation.Animation.AnimationListener() {
+					onAnimationStart: function(arg0) {
+						
+					},
+					onAnimationRepeat: function(arg0) {
+						setupTextView.clearAnimation();
+					},
+					onAnimationEnd: function(arg0) {
+						setupTextView.clearAnimation();
+					}
+				});
+				
+				setupTextView.startAnimation(textAnim);
+				
+				doneUI = new PopupWindow_(doneLayout, LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT);
+				doneUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+				doneUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
+			} catch(error) {
+				print("An error occurred: " + error);
+				VertexClientPE.showBugReportDialog(error);
 			}
 		}
 	}));
@@ -13296,7 +13271,6 @@ VertexClientPE.showDirectUseAccountDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				VertexClientPE.loadMainSettings();
 				var accountTitle = clientTextView("Direct use account", true);
 				var accountNameInput = clientEditText();
 				accountNameInput.setSingleLine(true);
@@ -13361,8 +13335,6 @@ VertexClientPE.showDirectUseAccountDialog = function() {
 VertexClientPE.showAccountManager = function(showBackButton, title) {
 	VertexClientPE.menuIsShowing = true;
 	VertexClientPE.loadAccounts();
-	var display = new DisplayMetrics_();
-	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
@@ -13459,8 +13431,6 @@ VertexClientPE.showAccountManager = function(showBackButton, title) {
 VertexClientPE.showFriendManager = function(showBackButton, title, icon) {
 	VertexClientPE.menuIsShowing = true;
 	VertexClientPE.loadFriends();
-	var display = new DisplayMetrics_();
-	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
@@ -14084,1402 +14054,1388 @@ VertexClientPE.checkGUINeedsDismiss = function() {
 
 function settingsScreen(fromDashboard) {
 	VertexClientPE.menuIsShowing = true;
-	var display = new DisplayMetrics_();
-	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
-		CONTEXT.runOnUiThread(new Runnable_({
-			run: function() {
-				try {
-					VertexClientPE.checkGUINeedsDismiss();
-					
-					var settingsMenuLayout = new LinearLayout_(CONTEXT);
-					settingsMenuLayout.setOrientation(1);
-					settingsMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
-					settingsMenuLayout.setPadding(dip2px(2), 0, dip2px(2), 0);
-					
-					var settingsMenuScroll = new ScrollView(CONTEXT);
-					
-					var settingsMenuLayout1 = new LinearLayout_(CONTEXT);
-					settingsMenuLayout1.setOrientation(1);
-					settingsMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
-					
-					settingsMenuScroll.addView(settingsMenuLayout);
-					settingsMenuLayout1.addView(settingsMenuScroll);
-					
-					var generalTitle = clientSectionTitle("HUD", "theme");
-					
-					var hacksListModeSettingFunc = new settingButton("Hacks list mode", null, null,
-						function(viewArg) {
+	CONTEXT.runOnUiThread(new Runnable_({
+		run: function() {
+			try {
+				VertexClientPE.checkGUINeedsDismiss();
+				
+				var settingsMenuLayout = new LinearLayout_(CONTEXT);
+				settingsMenuLayout.setOrientation(1);
+				settingsMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
+				settingsMenuLayout.setPadding(dip2px(2), 0, dip2px(2), 0);
+				
+				var settingsMenuScroll = new ScrollView(CONTEXT);
+				
+				var settingsMenuLayout1 = new LinearLayout_(CONTEXT);
+				settingsMenuLayout1.setOrientation(1);
+				settingsMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
+				
+				settingsMenuScroll.addView(settingsMenuLayout);
+				settingsMenuLayout1.addView(settingsMenuScroll);
+				
+				var generalTitle = clientSectionTitle("HUD", "theme");
+				
+				var hacksListModeSettingFunc = new settingButton("Hacks list mode", null, null,
+					function(viewArg) {
+						hacksListModeSetting = "on";
+						hacksListModeSettingButton.setText("Normal");
+					}
+				);
+				var hacksListModeSettingButton = hacksListModeSettingFunc.getButton();
+				if(hacksListModeSetting == "on") {
+					hacksListModeSettingButton.setText("Normal");
+				} else if(hacksListModeSetting == "counter") {
+					hacksListModeSettingButton.setText("Counter");
+				} else if(hacksListModeSetting == "logo") {
+					hacksListModeSettingButton.setText("Logo");
+				} else if(hacksListModeSetting == "off") {
+					hacksListModeSettingButton.setText("Hidden");
+				}
+				hacksListModeSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(hacksListModeSetting == "off") {
 							hacksListModeSetting = "on";
 							hacksListModeSettingButton.setText("Normal");
+							VertexClientPE.saveMainSettings();
+						} else if(hacksListModeSetting == "on"){
+							hacksListModeSetting = "counter";
+							hacksListModeSettingButton.setText("Counter");
+							VertexClientPE.saveMainSettings();
+						} else if(hacksListModeSetting == "counter"){
+							hacksListModeSetting = "logo";
+							hacksListModeSettingButton.setText("Logo");
+							VertexClientPE.saveMainSettings();
+						} else if(hacksListModeSetting == "logo"){
+							hacksListModeSetting = "off";
+							hacksListModeSettingButton.setText("Hidden");
+							VertexClientPE.saveMainSettings();
 						}
-					);
-					var hacksListModeSettingButton = hacksListModeSettingFunc.getButton();
-					if(hacksListModeSetting == "on") {
-						hacksListModeSettingButton.setText("Normal");
-					} else if(hacksListModeSetting == "counter") {
-						hacksListModeSettingButton.setText("Counter");
-					} else if(hacksListModeSetting == "logo") {
-						hacksListModeSettingButton.setText("Logo");
-					} else if(hacksListModeSetting == "off") {
-						hacksListModeSettingButton.setText("Hidden");
 					}
-					hacksListModeSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							if(hacksListModeSetting == "off") {
-								hacksListModeSetting = "on";
-								hacksListModeSettingButton.setText("Normal");
-								VertexClientPE.saveMainSettings();
-							} else if(hacksListModeSetting == "on"){
-								hacksListModeSetting = "counter";
-								hacksListModeSettingButton.setText("Counter");
-								VertexClientPE.saveMainSettings();
-							} else if(hacksListModeSetting == "counter"){
-								hacksListModeSetting = "logo";
-								hacksListModeSettingButton.setText("Logo");
-								VertexClientPE.saveMainSettings();
-							} else if(hacksListModeSetting == "logo"){
-								hacksListModeSetting = "off";
-								hacksListModeSettingButton.setText("Hidden");
-								VertexClientPE.saveMainSettings();
-							}
-						}
-					}));
-					
-					var hacksListPosSettingFunc = new settingButton("Hacks list position", null, null,
-						function(viewArg) {
+				}));
+				
+				var hacksListPosSettingFunc = new settingButton("Hacks list position", null, null,
+					function(viewArg) {
+						hacksListPosSetting = "top-center";
+						hacksListPosSettingButton.setText("Top-center");
+					}
+				);
+				var hacksListPosSettingButton = hacksListPosSettingFunc.getButton();
+				if(hacksListPosSetting == "top-left") {
+					hacksListPosSettingButton.setText("Top-left");
+				} else if(hacksListPosSetting == "top-center") {
+					hacksListPosSettingButton.setText("Top-center");
+				} else if(hacksListPosSetting == "top-right") {
+					hacksListPosSettingButton.setText("Top-right");
+				}
+				hacksListPosSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(hacksListPosSetting == "top-left") {
 							hacksListPosSetting = "top-center";
 							hacksListPosSettingButton.setText("Top-center");
+						} else if(hacksListPosSetting == "top-center"){
+							hacksListPosSetting = "top-right";
+							hacksListPosSettingButton.setText("Top-right");
+						} else if(hacksListPosSetting == "top-right"){
+							hacksListPosSetting = "top-left";
+							hacksListPosSettingButton.setText("Top-left");
 						}
-					);
-					var hacksListPosSettingButton = hacksListPosSettingFunc.getButton();
-					if(hacksListPosSetting == "top-left") {
-						hacksListPosSettingButton.setText("Top-left");
-					} else if(hacksListPosSetting == "top-center") {
-						hacksListPosSettingButton.setText("Top-center");
-					} else if(hacksListPosSetting == "top-right") {
-						hacksListPosSettingButton.setText("Top-right");
+						VertexClientPE.saveMainSettings();
 					}
-					hacksListPosSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							if(hacksListPosSetting == "top-left") {
-								hacksListPosSetting = "top-center";
-								hacksListPosSettingButton.setText("Top-center");
-							} else if(hacksListPosSetting == "top-center"){
-								hacksListPosSetting = "top-right";
-								hacksListPosSettingButton.setText("Top-right");
-							} else if(hacksListPosSetting == "top-right"){
-								hacksListPosSetting = "top-left";
-								hacksListPosSettingButton.setText("Top-left");
-							}
-							VertexClientPE.saveMainSettings();
-						}
-					}));
-					
-					var tabGUIModeSettingFunc = new settingButton("TabGUI Mode", null, null,
-						function(viewArg) {
-							tabGUIModeSetting = "off";
-							tabGUIModeSettingButton.setText("Hidden");
-						}
-					);
-					var tabGUIModeSettingButton = tabGUIModeSettingFunc.getButton();
-					if(tabGUIModeSetting == "on") {
-						tabGUIModeSettingButton.setText("Shown");
-					} else if(tabGUIModeSetting == "off") {
+				}));
+				
+				var tabGUIModeSettingFunc = new settingButton("TabGUI Mode", null, null,
+					function(viewArg) {
+						tabGUIModeSetting = "off";
 						tabGUIModeSettingButton.setText("Hidden");
 					}
-					tabGUIModeSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							if(tabGUIModeSetting == "on") {
-								tabGUIModeSetting = "off";
-								tabGUIModeSettingButton.setText("Hidden");
-							} else if(tabGUIModeSetting == "off"){
-								tabGUIModeSetting = "on";
-								tabGUIModeSettingButton.setText("Shown");
-							}
-							VertexClientPE.saveMainSettings();
+				);
+				var tabGUIModeSettingButton = tabGUIModeSettingFunc.getButton();
+				if(tabGUIModeSetting == "on") {
+					tabGUIModeSettingButton.setText("Shown");
+				} else if(tabGUIModeSetting == "off") {
+					tabGUIModeSettingButton.setText("Hidden");
+				}
+				tabGUIModeSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(tabGUIModeSetting == "on") {
+							tabGUIModeSetting = "off";
+							tabGUIModeSettingButton.setText("Hidden");
+						} else if(tabGUIModeSetting == "off"){
+							tabGUIModeSetting = "on";
+							tabGUIModeSettingButton.setText("Shown");
 						}
-					}));
-					
-					var mainButtonPositionSettingFunc = new settingButton("Main button position", "Sets the main menu's button position.", null,
-						function(viewArg) {
-							mainButtonPositionSetting = "top-left";
-							mainButtonPositionSettingButton.setText("Top-left");
-						}
-					);
-					var mainButtonPositionSettingButton = mainButtonPositionSettingFunc.getButton();
-					if(mainButtonPositionSetting == "top-right") {
-						mainButtonPositionSettingButton.setText("Top-right");
-					} else if(mainButtonPositionSetting == "top-left") {
+						VertexClientPE.saveMainSettings();
+					}
+				}));
+				
+				var mainButtonPositionSettingFunc = new settingButton("Main button position", "Sets the main menu's button position.", null,
+					function(viewArg) {
+						mainButtonPositionSetting = "top-left";
 						mainButtonPositionSettingButton.setText("Top-left");
-					} else if(mainButtonPositionSetting == "bottom-left") {
+					}
+				);
+				var mainButtonPositionSettingButton = mainButtonPositionSettingFunc.getButton();
+				if(mainButtonPositionSetting == "top-right") {
+					mainButtonPositionSettingButton.setText("Top-right");
+				} else if(mainButtonPositionSetting == "top-left") {
+					mainButtonPositionSettingButton.setText("Top-left");
+				} else if(mainButtonPositionSetting == "bottom-left") {
+					mainButtonPositionSettingButton.setText("Bottom-left");
+				}
+				mainButtonPositionSettingButton.setOnClickListener(new View_.OnClickListener({
+				onClick: function(viewArg) {
+					if(mainButtonPositionSetting == "top-right") {
+						mainButtonPositionSetting = "top-left";
+						mainButtonPositionSettingButton.setText("Top-left");
+					} else if(mainButtonPositionSetting == "top-left") {
+						mainButtonPositionSetting = "bottom-left";
 						mainButtonPositionSettingButton.setText("Bottom-left");
+					} else if(mainButtonPositionSetting == "bottom-left") {
+						mainButtonPositionSetting = "top-right";
+						mainButtonPositionSettingButton.setText("Top-right");
 					}
-					mainButtonPositionSettingButton.setOnClickListener(new View_.OnClickListener({
+					VertexClientPE.saveMainSettings();
+				}
+				}));
+				
+				var mainButtonSizeSettingFunc = new settingButton("Main button size", "Sets the main menu's button size.");
+				var mainButtonSizeSettingButton = mainButtonSizeSettingFunc.getButton();
+				mainButtonSizeSettingButton.setText("Change");
+				mainButtonSizeSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
-						if(mainButtonPositionSetting == "top-right") {
-							mainButtonPositionSetting = "top-left";
-							mainButtonPositionSettingButton.setText("Top-left");
-						} else if(mainButtonPositionSetting == "top-left") {
-							mainButtonPositionSetting = "bottom-left";
-							mainButtonPositionSettingButton.setText("Bottom-left");
-						} else if(mainButtonPositionSetting == "bottom-left") {
-							mainButtonPositionSetting = "top-right";
-							mainButtonPositionSettingButton.setText("Top-right");
-						}
-						VertexClientPE.saveMainSettings();
+						VertexClientPE.showMainButtonSizeDialog();
 					}
-					}));
-					
-					var mainButtonSizeSettingFunc = new settingButton("Main button size", "Sets the main menu's button size.");
-					var mainButtonSizeSettingButton = mainButtonSizeSettingFunc.getButton();
-					mainButtonSizeSettingButton.setText("Change");
-					mainButtonSizeSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							VertexClientPE.showMainButtonSizeDialog();
-						}
-					}));
-					
-					var mainButtonStyleSettingFunc = new settingButton("Main button style", "Sets the main menu's button style.", null,
-						function(viewArg) {
-							mainButtonStyleSetting = "normal";
-							mainButtonStyleSettingButton.setText("Normal");
-						}
-					);
-					var mainButtonStyleSettingButton = mainButtonStyleSettingFunc.getButton();
-					if(mainButtonStyleSetting == "normal") {
+				}));
+				
+				var mainButtonStyleSettingFunc = new settingButton("Main button style", "Sets the main menu's button style.", null,
+					function(viewArg) {
+						mainButtonStyleSetting = "normal";
 						mainButtonStyleSettingButton.setText("Normal");
-					} else if(mainButtonStyleSetting == "global_background") {
+					}
+				);
+				var mainButtonStyleSettingButton = mainButtonStyleSettingFunc.getButton();
+				if(mainButtonStyleSetting == "normal") {
+					mainButtonStyleSettingButton.setText("Normal");
+				} else if(mainButtonStyleSetting == "global_background") {
+					mainButtonStyleSettingButton.setText("Global background (fits better)");
+				} else if(mainButtonStyleSetting == "no_background") {
+					mainButtonStyleSettingButton.setText("Invisible background");
+				} else if(mainButtonStyleSetting == "invisible_ghost") {
+					mainButtonStyleSettingButton.setText("Invisible (ghost)");
+				} else if(mainButtonStyleSetting == "classic") {
+					mainButtonStyleSettingButton.setText("Classic");
+				}
+				mainButtonStyleSettingButton.setOnClickListener(new View_.OnClickListener({
+				onClick: function(viewArg) {
+					if(mainButtonStyleSetting == "normal") {
+						mainButtonStyleSetting = "global_background";
 						mainButtonStyleSettingButton.setText("Global background (fits better)");
-					} else if(mainButtonStyleSetting == "no_background") {
+					} else if(mainButtonStyleSetting == "global_background") {
+						mainButtonStyleSetting = "no_background";
 						mainButtonStyleSettingButton.setText("Invisible background");
-					} else if(mainButtonStyleSetting == "invisible_ghost") {
+					} else if(mainButtonStyleSetting == "no_background") {
+						mainButtonStyleSetting = "invisible_ghost";
 						mainButtonStyleSettingButton.setText("Invisible (ghost)");
-					} else if(mainButtonStyleSetting == "classic") {
+					} else if(mainButtonStyleSetting == "invisible_ghost") {
+						mainButtonStyleSetting = "classic";
 						mainButtonStyleSettingButton.setText("Classic");
+					} else if(mainButtonStyleSetting == "classic") {
+						mainButtonStyleSetting = "normal";
+						mainButtonStyleSettingButton.setText("Normal");
 					}
-					mainButtonStyleSettingButton.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewArg) {
-						if(mainButtonStyleSetting == "normal") {
-							mainButtonStyleSetting = "global_background";
-							mainButtonStyleSettingButton.setText("Global background (fits better)");
-						} else if(mainButtonStyleSetting == "global_background") {
-							mainButtonStyleSetting = "no_background";
-							mainButtonStyleSettingButton.setText("Invisible background");
-						} else if(mainButtonStyleSetting == "no_background") {
-							mainButtonStyleSetting = "invisible_ghost";
-							mainButtonStyleSettingButton.setText("Invisible (ghost)");
-						} else if(mainButtonStyleSetting == "invisible_ghost") {
-							mainButtonStyleSetting = "classic";
-							mainButtonStyleSettingButton.setText("Classic");
-						} else if(mainButtonStyleSetting == "classic") {
-							mainButtonStyleSetting = "normal";
-							mainButtonStyleSettingButton.setText("Normal");
-						}
-						VertexClientPE.saveMainSettings();
-					}
-					}));
-					
-					var mainButtonTapSettingFunc = new settingButton("Main button action", "Sets the main menu's button action.", null,
-						function(viewArg) {
-							mainButtonTapSetting = "menu";
-							mainButtonTapSettingButton.setText("Menu (normal tap) | More dialog (long tap)");
-						}
-					);
-					var mainButtonTapSettingButton = mainButtonTapSettingFunc.getButton();
-					if(mainButtonTapSetting == "menu") {
+					VertexClientPE.saveMainSettings();
+				}
+				}));
+				
+				var mainButtonTapSettingFunc = new settingButton("Main button action", "Sets the main menu's button action.", null,
+					function(viewArg) {
+						mainButtonTapSetting = "menu";
 						mainButtonTapSettingButton.setText("Menu (normal tap) | More dialog (long tap)");
-					} else if(mainButtonTapSetting == "moredialog") {
-						mainButtonTapSettingButton.setText("More dialog (normal tap) | Menu (long tap)");
 					}
-					mainButtonTapSettingButton.setOnClickListener(new View_.OnClickListener({
+				);
+				var mainButtonTapSettingButton = mainButtonTapSettingFunc.getButton();
+				if(mainButtonTapSetting == "menu") {
+					mainButtonTapSettingButton.setText("Menu (normal tap) | More dialog (long tap)");
+				} else if(mainButtonTapSetting == "moredialog") {
+					mainButtonTapSettingButton.setText("More dialog (normal tap) | Menu (long tap)");
+				}
+				mainButtonTapSettingButton.setOnClickListener(new View_.OnClickListener({
+				onClick: function(viewArg) {
+					if(mainButtonTapSetting == "menu") {
+						mainButtonTapSetting = "moredialog";
+						mainButtonTapSettingButton.setText("More dialog (normal tap) | Menu (long tap)");
+					} else if(mainButtonTapSetting == "moredialog") {
+						mainButtonTapSetting = "menu";
+						mainButtonTapSettingButton.setText("Menu (normal tap) | More dialog (long tap)");
+					}
+					VertexClientPE.saveMainSettings();
+				}
+				}));
+				
+				var shortcutManagerSettingFunc = new settingButton("Shortcuts", "Manage the shortcut buttons.");
+				var shortcutManagerSettingButton = shortcutManagerSettingFunc.getButton();
+				shortcutManagerSettingButton.setText("Manage");
+				shortcutManagerSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
-						if(mainButtonTapSetting == "menu") {
-							mainButtonTapSetting = "moredialog";
-							mainButtonTapSettingButton.setText("More dialog (normal tap) | Menu (long tap)");
-						} else if(mainButtonTapSetting == "moredialog") {
-							mainButtonTapSetting = "menu";
-							mainButtonTapSettingButton.setText("Menu (normal tap) | More dialog (long tap)");
+						VertexClientPE.showShortcutManagerDialog();
+					}
+				}));
+				
+				var themeTitle = clientSectionTitle("Theme", "theme");
+				
+				var themeArray = ["Custom RGB", "Green", "Red", "Blue", "Purple", "Violet", "Yellow", "Orange", "Brown", "Grey", "White", "Black"];
+				var themeSettingFunc = new settingSelector("Color", "Choose a color.", "Color Selector", themeArray, capitalizeColorString(themeSetting), "themeSetting",
+				function(sRightButton, dialogTitle) {
+					VertexClientPE.showCustomRGBDialog(sRightButton, dialogTitle);
+				});
+				var themeSettingButton = themeSettingFunc.getButton();
+				
+				var useLightThemeSettingFunc = new settingButton("Lighter theme colors", "Use light theme colors if available.", null,
+					function(viewArg) {
+						if(useLightThemeSetting != "off") {
+							useLightThemeSetting = "off";
+							useLightThemeSettingButton.setText("OFF");
+							VertexClientPE.shouldUpdateGUI = true;
+						}
+					}
+				);
+				var useLightThemeSettingButton = useLightThemeSettingFunc.getButton();
+				if(useLightThemeSetting == "on") {
+					useLightThemeSettingButton.setText("ON");
+				} else if(useLightThemeSetting == "off") {
+					useLightThemeSettingButton.setText("OFF");
+				}
+				useLightThemeSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(useLightThemeSetting == "on") {
+							useLightThemeSetting = "off";
+							useLightThemeSettingButton.setText("OFF");
+						} else if(useLightThemeSetting == "off") {
+							useLightThemeSetting = "on";
+							useLightThemeSettingButton.setText("ON");
 						}
 						VertexClientPE.saveMainSettings();
+						VertexClientPE.shouldUpdateGUI = true;
 					}
-					}));
-					
-					var shortcutManagerSettingFunc = new settingButton("Shortcuts", "Manage the shortcut buttons.");
-					var shortcutManagerSettingButton = shortcutManagerSettingFunc.getButton();
-					shortcutManagerSettingButton.setText("Manage");
-					shortcutManagerSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							VertexClientPE.showShortcutManagerDialog();
-						}
-					}));
-					
-					var themeTitle = clientSectionTitle("Theme", "theme");
-					
-					var themeArray = ["Custom RGB", "Green", "Red", "Blue", "Purple", "Violet", "Yellow", "Orange", "Brown", "Grey", "White", "Black"];
-					var themeSettingFunc = new settingSelector("Color", "Choose a color.", "Color Selector", themeArray, capitalizeColorString(themeSetting), "themeSetting",
-					function(sRightButton, dialogTitle) {
-						VertexClientPE.showCustomRGBDialog(sRightButton, dialogTitle);
-					});
-					var themeSettingButton = themeSettingFunc.getButton();
-					
-					var useLightThemeSettingFunc = new settingButton("Lighter theme colors", "Use light theme colors if available.", null,
-						function(viewArg) {
-							if(useLightThemeSetting != "off") {
-								useLightThemeSetting = "off";
-								useLightThemeSettingButton.setText("OFF");
-								VertexClientPE.shouldUpdateGUI = true;
-							}
-						}
-					);
-					var useLightThemeSettingButton = useLightThemeSettingFunc.getButton();
-					if(useLightThemeSetting == "on") {
-						useLightThemeSettingButton.setText("ON");
-					} else if(useLightThemeSetting == "off") {
-						useLightThemeSettingButton.setText("OFF");
-					}
-					useLightThemeSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							if(useLightThemeSetting == "on") {
-								useLightThemeSetting = "off";
-								useLightThemeSettingButton.setText("OFF");
-							} else if(useLightThemeSetting == "off") {
-								useLightThemeSetting = "on";
-								useLightThemeSettingButton.setText("ON");
-							}
-							VertexClientPE.saveMainSettings();
+				}));
+				
+				var buttonStyleSettingFunc = new settingButton("Button style", "Change the button style.", null,
+					function(viewArg) {
+						if(buttonStyleSetting != "normal") {
+							buttonStyleSetting = "normal";
+							buttonStyleSettingButton.setText("Normal");
 							VertexClientPE.shouldUpdateGUI = true;
 						}
-					}));
-					
-					var buttonStyleSettingFunc = new settingButton("Button style", "Change the button style.", null,
-						function(viewArg) {
-							if(buttonStyleSetting != "normal") {
-								buttonStyleSetting = "normal";
-								buttonStyleSettingButton.setText("Normal");
-								VertexClientPE.shouldUpdateGUI = true;
-							}
-						}
-					);
-					var buttonStyleSettingButton = buttonStyleSettingFunc.getButton();
-					if(buttonStyleSetting == "normal") {
-						buttonStyleSettingButton.setText("Normal");
-					} else if(buttonStyleSetting == "normal_nostrokes") {
-						buttonStyleSettingButton.setText("Normal (no strokes)");
-					} else if(buttonStyleSetting == "transparent") {
-						buttonStyleSettingButton.setText("Normal (no inner)");
-					} else if(buttonStyleSetting == "android") {
-						buttonStyleSettingButton.setText("Android");
-					} else if(buttonStyleSetting == "legacy") {
-						buttonStyleSettingButton.setText("Legacy");
-					} else if(buttonStyleSetting == "legacy_inverted") {
-						buttonStyleSettingButton.setText("Legacy (inverted)");
-					} else if(buttonStyleSetting == "invisible") {
-						buttonStyleSettingButton.setText("Text only (less lag)");
 					}
-					buttonStyleSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							if(buttonStyleSetting == "normal") {
-								buttonStyleSetting = "normal_nostrokes";
-								buttonStyleSettingButton.setText("Normal (no strokes)");
-							} else if(buttonStyleSetting == "normal_nostrokes") {
-								buttonStyleSetting = "transparent";
-								buttonStyleSettingButton.setText("Normal (no inner)");
-							} else if(buttonStyleSetting == "transparent") {
-								buttonStyleSetting = "android";
-								buttonStyleSettingButton.setText("Android");
-							} else if(buttonStyleSetting == "android") {
-								buttonStyleSetting = "legacy";
-								buttonStyleSettingButton.setText("Legacy");
-							} else if(buttonStyleSetting == "legacy") {
-								buttonStyleSetting = "legacy_inverted";
-								buttonStyleSettingButton.setText("Legacy (inverted)");
-							} else if(buttonStyleSetting == "legacy_inverted") {
-								buttonStyleSetting = "invisible";
-								buttonStyleSettingButton.setText("Text only (less lag)");
-							} else if(buttonStyleSetting == "invisible") {
-								buttonStyleSetting = "normal";
-								buttonStyleSettingButton.setText("Normal");
-							}
-							VertexClientPE.shouldUpdateGUI = true;
-							VertexClientPE.saveMainSettings();
+				);
+				var buttonStyleSettingButton = buttonStyleSettingFunc.getButton();
+				if(buttonStyleSetting == "normal") {
+					buttonStyleSettingButton.setText("Normal");
+				} else if(buttonStyleSetting == "normal_nostrokes") {
+					buttonStyleSettingButton.setText("Normal (no strokes)");
+				} else if(buttonStyleSetting == "transparent") {
+					buttonStyleSettingButton.setText("Normal (no inner)");
+				} else if(buttonStyleSetting == "android") {
+					buttonStyleSettingButton.setText("Android");
+				} else if(buttonStyleSetting == "legacy") {
+					buttonStyleSettingButton.setText("Legacy");
+				} else if(buttonStyleSetting == "legacy_inverted") {
+					buttonStyleSettingButton.setText("Legacy (inverted)");
+				} else if(buttonStyleSetting == "invisible") {
+					buttonStyleSettingButton.setText("Text only (less lag)");
+				}
+				buttonStyleSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(buttonStyleSetting == "normal") {
+							buttonStyleSetting = "normal_nostrokes";
+							buttonStyleSettingButton.setText("Normal (no strokes)");
+						} else if(buttonStyleSetting == "normal_nostrokes") {
+							buttonStyleSetting = "transparent";
+							buttonStyleSettingButton.setText("Normal (no inner)");
+						} else if(buttonStyleSetting == "transparent") {
+							buttonStyleSetting = "android";
+							buttonStyleSettingButton.setText("Android");
+						} else if(buttonStyleSetting == "android") {
+							buttonStyleSetting = "legacy";
+							buttonStyleSettingButton.setText("Legacy");
+						} else if(buttonStyleSetting == "legacy") {
+							buttonStyleSetting = "legacy_inverted";
+							buttonStyleSettingButton.setText("Legacy (inverted)");
+						} else if(buttonStyleSetting == "legacy_inverted") {
+							buttonStyleSetting = "invisible";
+							buttonStyleSettingButton.setText("Text only (less lag)");
+						} else if(buttonStyleSetting == "invisible") {
+							buttonStyleSetting = "normal";
+							buttonStyleSettingButton.setText("Normal");
 						}
-					}));
-					
-					var buttonStrokeThicknessSettingFunc = new settingButton("Button stroke thickness", "Change the button stroke thickness.");
-					var buttonStrokeThicknessSettingButton = buttonStrokeThicknessSettingFunc.getButton();
-					buttonStrokeThicknessSettingButton.setText("Change");
-					buttonStrokeThicknessSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							VertexClientPE.showButtonStrokeThicknessDialog();
-						}
-					}));
-					
-					var backgroundStyleSettingFunc = new settingButton("Background style", "Changes the background style.", null,
-						function(viewArg) {
+						VertexClientPE.shouldUpdateGUI = true;
+						VertexClientPE.saveMainSettings();
+					}
+				}));
+				
+				var buttonStrokeThicknessSettingFunc = new settingButton("Button stroke thickness", "Change the button stroke thickness.");
+				var buttonStrokeThicknessSettingButton = buttonStrokeThicknessSettingFunc.getButton();
+				buttonStrokeThicknessSettingButton.setText("Change");
+				buttonStrokeThicknessSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						VertexClientPE.showButtonStrokeThicknessDialog();
+					}
+				}));
+				
+				var backgroundStyleSettingFunc = new settingButton("Background style", "Changes the background style.", null,
+					function(viewArg) {
+						backgroundStyleSetting = "normal";
+						backgroundStyleSettingButton.setText("Normal");
+					}
+				);
+				var backgroundStyleSettingButton = backgroundStyleSettingFunc.getButton();
+				if(backgroundStyleSetting == "normal") {
+					backgroundStyleSettingButton.setText("Normal");
+				} else if(backgroundStyleSetting == "normal_nostrokes") {
+					backgroundStyleSettingButton.setText("Normal (no strokes)");
+				} else if(backgroundStyleSetting == "normal_noinner") {
+					backgroundStyleSettingButton.setText("Normal (no inner)");
+				} else if(backgroundStyleSetting == "minecraft_dirt") {
+					backgroundStyleSettingButton.setText("Minecraft (dirt)");
+				}
+				backgroundStyleSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(backgroundStyleSetting == "normal") {
+							backgroundStyleSetting = "normal_nostrokes";
+							backgroundStyleSettingButton.setText("Normal (no strokes)");
+						} else if(backgroundStyleSetting == "normal_nostrokes") {
+							backgroundStyleSetting = "normal_noinner";
+							backgroundStyleSettingButton.setText("Normal (no inner)");
+						} else if(backgroundStyleSetting == "normal_noinner") {
+							backgroundStyleSetting = "minecraft_dirt";
+							backgroundStyleSettingButton.setText("Minecraft (dirt)");
+						} else if(backgroundStyleSetting == "minecraft_dirt") {
 							backgroundStyleSetting = "normal";
 							backgroundStyleSettingButton.setText("Normal");
 						}
-					);
-					var backgroundStyleSettingButton = backgroundStyleSettingFunc.getButton();
-					if(backgroundStyleSetting == "normal") {
-						backgroundStyleSettingButton.setText("Normal");
-					} else if(backgroundStyleSetting == "normal_nostrokes") {
-						backgroundStyleSettingButton.setText("Normal (no strokes)");
-					} else if(backgroundStyleSetting == "normal_noinner") {
-						backgroundStyleSettingButton.setText("Normal (no inner)");
-					} else if(backgroundStyleSetting == "minecraft_dirt") {
-						backgroundStyleSettingButton.setText("Minecraft (dirt)");
+						VertexClientPE.saveMainSettings();
 					}
-					backgroundStyleSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							if(backgroundStyleSetting == "normal") {
-								backgroundStyleSetting = "normal_nostrokes";
-								backgroundStyleSettingButton.setText("Normal (no strokes)");
-							} else if(backgroundStyleSetting == "normal_nostrokes") {
-								backgroundStyleSetting = "normal_noinner";
-								backgroundStyleSettingButton.setText("Normal (no inner)");
-							} else if(backgroundStyleSetting == "normal_noinner") {
-								backgroundStyleSetting = "minecraft_dirt";
-								backgroundStyleSettingButton.setText("Minecraft (dirt)");
-							} else if(backgroundStyleSetting == "minecraft_dirt") {
-								backgroundStyleSetting = "normal";
-								backgroundStyleSettingButton.setText("Normal");
-							}
-							VertexClientPE.saveMainSettings();
-						}
-					}));
-					
-					var transparentBgSettingFunc = new settingButton("Transparent backgrounds", "Makes screens and dialogs transparent.", null,
-						function(viewArg) {
+				}));
+				
+				var transparentBgSettingFunc = new settingButton("Transparent backgrounds", "Makes screens and dialogs transparent.", null,
+					function(viewArg) {
+						transparentBgSetting = "on";
+						transparentBgSettingButton.setText("ON");
+					}
+				);
+				var transparentBgSettingButton = transparentBgSettingFunc.getButton();
+				if(transparentBgSetting == "on") {
+					transparentBgSettingButton.setText("ON");
+				} else if(transparentBgSetting == "off") {
+					transparentBgSettingButton.setText("OFF");
+				}
+				transparentBgSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(transparentBgSetting == "on") {
+							transparentBgSetting = "off";
+							transparentBgSettingButton.setText("OFF");
+						} else if(transparentBgSetting == "off") {
 							transparentBgSetting = "on";
 							transparentBgSettingButton.setText("ON");
 						}
-					);
-					var transparentBgSettingButton = transparentBgSettingFunc.getButton();
-					if(transparentBgSetting == "on") {
-						transparentBgSettingButton.setText("ON");
-					} else if(transparentBgSetting == "off") {
-						transparentBgSettingButton.setText("OFF");
+						VertexClientPE.saveMainSettings();
 					}
-					transparentBgSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							if(transparentBgSetting == "on") {
-								transparentBgSetting = "off";
-								transparentBgSettingButton.setText("OFF");
-							} else if(transparentBgSetting == "off") {
-								transparentBgSetting = "on";
-								transparentBgSettingButton.setText("ON");
-							}
-							VertexClientPE.saveMainSettings();
-						}
-					}));
-					
-					var mcpeGUISettingFunc = new settingButton("MCPE GUI", "Change the MCPE GUI.", null,
-						function(viewArg) {
-							if(mcpeGUISetting != "default") {
-								mcpeGUISetting = "default";
-								mcpeGUISettingButton.setText("Default");
-								VertexClientPE.saveMainSettings();
-								VertexClientPE.setupMCPEGUI();
-								VertexClientPE.toast("Restart your MCPE launcher now!");
-							}
-						}
-					);
-					var mcpeGUISettingButton = mcpeGUISettingFunc.getButton();
-					if(mcpeGUISetting == "default") {
-						mcpeGUISettingButton.setText("Default");
-					} else if(mcpeGUISetting == "green") {
-						mcpeGUISettingButton.setText("Green");
-					} else if(mcpeGUISetting == "red") {
-						mcpeGUISettingButton.setText("Red");
-					} else if(mcpeGUISetting == "blue") {
-						mcpeGUISettingButton.setText("Blue");
-					} else if(mcpeGUISetting == "purple") {
-						mcpeGUISettingButton.setText("Purple");
-					} else if(mcpeGUISetting == "yellow") {
-						mcpeGUISettingButton.setText("Yellow");
-					} else if(mcpeGUISetting == "white") {
-						mcpeGUISettingButton.setText("White");
-					} else if(mcpeGUISetting == "black") {
-						mcpeGUISettingButton.setText("Black");
-					}
-					mcpeGUISettingButton.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewArg) {
-						if(mcpeGUISetting == "default") {
-							mcpeGUISetting = "green";
-							mcpeGUISettingButton.setText("Green");
-						} else if(mcpeGUISetting == "green") {
-							mcpeGUISetting = "red";
-							mcpeGUISettingButton.setText("Red");
-						} else if(mcpeGUISetting == "red") {
-							mcpeGUISetting = "blue";
-							mcpeGUISettingButton.setText("Blue");
-						} else if(mcpeGUISetting == "blue") {
-							mcpeGUISetting = "purple";
-							mcpeGUISettingButton.setText("Purple");
-						} else if(mcpeGUISetting == "purple") {
-							mcpeGUISetting = "yellow";
-							mcpeGUISettingButton.setText("Yellow");
-						} else if(mcpeGUISetting == "yellow") {
-							mcpeGUISetting = "white";
-							mcpeGUISettingButton.setText("White");
-						} else if(mcpeGUISetting == "white") {
-							mcpeGUISetting = "black";
-							mcpeGUISettingButton.setText("Black");
-						} else if(mcpeGUISetting == "black") {
+				}));
+				
+				var mcpeGUISettingFunc = new settingButton("MCPE GUI", "Change the MCPE GUI.", null,
+					function(viewArg) {
+						if(mcpeGUISetting != "default") {
 							mcpeGUISetting = "default";
 							mcpeGUISettingButton.setText("Default");
+							VertexClientPE.saveMainSettings();
+							VertexClientPE.setupMCPEGUI();
+							VertexClientPE.toast("Restart your MCPE launcher now!");
 						}
-						VertexClientPE.saveMainSettings();
-						VertexClientPE.setupMCPEGUI();
-						VertexClientPE.toast("Restart your MCPE launcher now!");
 					}
-					}));
-					
-					var fontSettingFunc = new settingButton("Font", "Change the font/typeface.", null,
-						function(viewArg) {
-							if(fontSetting != "default") {
-								fontSetting = "default";
-								fontSettingButton.setText("Default");
-								VertexClientPE.font = fontSetting=="minecraft"?Typeface_.createFromFile(new File_(PATH, "minecraft.ttf")):VertexClientPE.defaultFont;
-								MinecraftButtonLibrary.ProcessedResources.font = VertexClientPE.font;
-								VertexClientPE.shouldUpdateGUI = true;
-							}
-						}
-					);
-					var fontSettingButton = fontSettingFunc.getButton();
-					if(fontSetting == "default") {
-						fontSettingButton.setText("Default");
-					} else if(fontSetting == "minecraft") {
-						fontSettingButton.setText("Minecraft");
+				);
+				var mcpeGUISettingButton = mcpeGUISettingFunc.getButton();
+				if(mcpeGUISetting == "default") {
+					mcpeGUISettingButton.setText("Default");
+				} else if(mcpeGUISetting == "green") {
+					mcpeGUISettingButton.setText("Green");
+				} else if(mcpeGUISetting == "red") {
+					mcpeGUISettingButton.setText("Red");
+				} else if(mcpeGUISetting == "blue") {
+					mcpeGUISettingButton.setText("Blue");
+				} else if(mcpeGUISetting == "purple") {
+					mcpeGUISettingButton.setText("Purple");
+				} else if(mcpeGUISetting == "yellow") {
+					mcpeGUISettingButton.setText("Yellow");
+				} else if(mcpeGUISetting == "white") {
+					mcpeGUISettingButton.setText("White");
+				} else if(mcpeGUISetting == "black") {
+					mcpeGUISettingButton.setText("Black");
+				}
+				mcpeGUISettingButton.setOnClickListener(new View_.OnClickListener({
+				onClick: function(viewArg) {
+					if(mcpeGUISetting == "default") {
+						mcpeGUISetting = "green";
+						mcpeGUISettingButton.setText("Green");
+					} else if(mcpeGUISetting == "green") {
+						mcpeGUISetting = "red";
+						mcpeGUISettingButton.setText("Red");
+					} else if(mcpeGUISetting == "red") {
+						mcpeGUISetting = "blue";
+						mcpeGUISettingButton.setText("Blue");
+					} else if(mcpeGUISetting == "blue") {
+						mcpeGUISetting = "purple";
+						mcpeGUISettingButton.setText("Purple");
+					} else if(mcpeGUISetting == "purple") {
+						mcpeGUISetting = "yellow";
+						mcpeGUISettingButton.setText("Yellow");
+					} else if(mcpeGUISetting == "yellow") {
+						mcpeGUISetting = "white";
+						mcpeGUISettingButton.setText("White");
+					} else if(mcpeGUISetting == "white") {
+						mcpeGUISetting = "black";
+						mcpeGUISettingButton.setText("Black");
+					} else if(mcpeGUISetting == "black") {
+						mcpeGUISetting = "default";
+						mcpeGUISettingButton.setText("Default");
 					}
-					fontSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							if(fontSetting == "default") {
-								fontSetting = "minecraft";
-								fontSettingButton.setText("Minecraft");
-							} else if(fontSetting == "minecraft") {
-								fontSetting = "default";
-								fontSettingButton.setText("Default");
-							}
+					VertexClientPE.saveMainSettings();
+					VertexClientPE.setupMCPEGUI();
+					VertexClientPE.toast("Restart your MCPE launcher now!");
+				}
+				}));
+				
+				var fontSettingFunc = new settingButton("Font", "Change the font/typeface.", null,
+					function(viewArg) {
+						if(fontSetting != "default") {
+							fontSetting = "default";
+							fontSettingButton.setText("Default");
 							VertexClientPE.font = fontSetting=="minecraft"?Typeface_.createFromFile(new File_(PATH, "minecraft.ttf")):VertexClientPE.defaultFont;
 							MinecraftButtonLibrary.ProcessedResources.font = VertexClientPE.font;
-							VertexClientPE.saveMainSettings();
 							VertexClientPE.shouldUpdateGUI = true;
 						}
-					}));
-					
-					var modButtonColorBlockedSettingFunc = new settingButton("Mod button text color (blocked)", "Change the mod button blocked text color.", null,
-						function(viewArg) {
-							if(modButtonColorDisabledSetting != "red") {
-								modButtonColorBlockedSetting = "red";
-								modButtonColorBlockedSettingButton.setText("Red");
-								VertexClientPE.setupModButtonColors();
-								VertexClientPE.shouldUpdateGUI = true;
-							}
-						}
-					);
-					var modButtonColorBlockedSettingButton = modButtonColorBlockedSettingFunc.getButton();
-					if(modButtonColorBlockedSetting == "red") {
-						modButtonColorBlockedSettingButton.setText("Red");
-					} else if(modButtonColorBlockedSetting == "green") {
-						modButtonColorBlockedSettingButton.setText("Green");
-					} else if(modButtonColorBlockedSetting == "blue") {
-						modButtonColorBlockedSettingButton.setText("Blue");
-					} else if(modButtonColorBlockedSetting == "yellow") {
-						modButtonColorBlockedSettingButton.setText("Yellow");
-					} else if(modButtonColorBlockedSetting == "white") {
-						modButtonColorBlockedSettingButton.setText("White");
-					} else if(modButtonColorBlockedSetting == "black") {
-						modButtonColorBlockedSettingButton.setText("Black");
 					}
-					modButtonColorBlockedSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							if(modButtonColorBlockedSetting == "red") {
-								modButtonColorBlockedSetting = "green";
-								modButtonColorBlockedSettingButton.setText("Green");
-							} else if(modButtonColorBlockedSetting == "green") {
-								modButtonColorBlockedSetting = "blue";
-								modButtonColorBlockedSettingButton.setText("Blue");
-							} else if(modButtonColorBlockedSetting == "blue") {
-								modButtonColorBlockedSetting = "yellow";
-								modButtonColorBlockedSettingButton.setText("Yellow");
-							} else if(modButtonColorBlockedSetting == "yellow") {
-								modButtonColorBlockedSetting = "white";
-								modButtonColorBlockedSettingButton.setText("White");
-							} else if(modButtonColorBlockedSetting == "white") {
-								modButtonColorBlockedSetting = "black";
-								modButtonColorBlockedSettingButton.setText("Black");
-							} else if(modButtonColorBlockedSetting == "black") {
-								modButtonColorBlockedSetting = "red";
-								modButtonColorBlockedSettingButton.setText("Red");
-							}
-							VertexClientPE.setupModButtonColors();
-							VertexClientPE.saveMainSettings();
-							VertexClientPE.shouldUpdateGUI = true;
-						}
-					}));
-					
-					var modButtonColorEnabledSettingFunc = new settingButton("Mod button text color (enabled)", "Change the mod button enabled text color.", null,
-						function(viewArg) {
-							if(modButtonColorDisabledSetting != "green") {
-								modButtonColorEnabledSetting = "green";
-								modButtonColorEnabledSettingButton.setText("Green");
-								VertexClientPE.setupModButtonColors();
-								VertexClientPE.shouldUpdateGUI = true;
-							}
-						}
-					);
-					var modButtonColorEnabledSettingButton = modButtonColorEnabledSettingFunc.getButton();
-					if(modButtonColorEnabledSetting == "red") {
-						modButtonColorEnabledSettingButton.setText("Red");
-					} else if(modButtonColorEnabledSetting == "green") {
-						modButtonColorEnabledSettingButton.setText("Green");
-					} else if(modButtonColorEnabledSetting == "blue") {
-						modButtonColorEnabledSettingButton.setText("Blue");
-					} else if(modButtonColorEnabledSetting == "yellow") {
-						modButtonColorEnabledSettingButton.setText("Yellow");
-					} else if(modButtonColorEnabledSetting == "white") {
-						modButtonColorEnabledSettingButton.setText("White");
-					} else if(modButtonColorEnabledSetting == "black") {
-						modButtonColorEnabledSettingButton.setText("Black");
-					}
-					modButtonColorEnabledSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							if(modButtonColorEnabledSetting == "red") {
-								modButtonColorEnabledSetting = "green";
-								modButtonColorEnabledSettingButton.setText("Green");
-							} else if(modButtonColorEnabledSetting == "green") {
-								modButtonColorEnabledSetting = "blue";
-								modButtonColorEnabledSettingButton.setText("Blue");
-							} else if(modButtonColorEnabledSetting == "blue") {
-								modButtonColorEnabledSetting = "yellow";
-								modButtonColorEnabledSettingButton.setText("Yellow");
-							} else if(modButtonColorEnabledSetting == "yellow") {
-								modButtonColorEnabledSetting = "white";
-								modButtonColorEnabledSettingButton.setText("White");
-							} else if(modButtonColorEnabledSetting == "white") {
-								modButtonColorEnabledSetting = "black";
-								modButtonColorEnabledSettingButton.setText("Black");
-							} else if(modButtonColorEnabledSetting == "black") {
-								modButtonColorEnabledSetting = "red";
-								modButtonColorEnabledSettingButton.setText("Red");
-							}
-							VertexClientPE.setupModButtonColors();
-							VertexClientPE.saveMainSettings();
-							VertexClientPE.shouldUpdateGUI = true;
-						}
-					}));
-					
-					var modButtonColorDisabledSettingFunc = new settingButton("Mod button text color (disabled)", "Change the mod button disabled text color.", null,
-						function(viewArg) {
-							if(modButtonColorDisabledSetting != "white") {
-								modButtonColorDisabledSetting = "white";
-								modButtonColorDisabledSettingButton.setText("White");
-								VertexClientPE.setupModButtonColors();
-								VertexClientPE.shouldUpdateGUI = true;
-							}
-						}
-					);
-					var modButtonColorDisabledSettingButton = modButtonColorDisabledSettingFunc.getButton();
-					if(modButtonColorDisabledSetting == "red") {
-						modButtonColorDisabledSettingButton.setText("Red");
-					} else if(modButtonColorDisabledSetting == "green") {
-						modButtonColorDisabledSettingButton.setText("Green");
-					} else if(modButtonColorDisabledSetting == "blue") {
-						modButtonColorDisabledSettingButton.setText("Blue");
-					} else if(modButtonColorDisabledSetting == "yellow") {
-						modButtonColorDisabledSettingButton.setText("Yellow");
-					} else if(modButtonColorDisabledSetting == "white") {
-						modButtonColorDisabledSettingButton.setText("White");
-					} else if(modButtonColorDisabledSetting == "black") {
-						modButtonColorDisabledSettingButton.setText("Black");
-					}
-					modButtonColorDisabledSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							if(modButtonColorDisabledSetting == "red") {
-								modButtonColorDisabledSetting = "green";
-								modButtonColorDisabledSettingButton.setText("Green");
-							} else if(modButtonColorDisabledSetting == "green") {
-								modButtonColorDisabledSetting = "blue";
-								modButtonColorDisabledSettingButton.setText("Blue");
-							} else if(modButtonColorDisabledSetting == "blue") {
-								modButtonColorDisabledSetting = "yellow";
-								modButtonColorDisabledSettingButton.setText("Yellow");
-							} else if(modButtonColorDisabledSetting == "yellow") {
-								modButtonColorDisabledSetting = "white";
-								modButtonColorDisabledSettingButton.setText("White");
-							} else if(modButtonColorDisabledSetting == "white") {
-								modButtonColorDisabledSetting = "black";
-								modButtonColorDisabledSettingButton.setText("Black");
-							} else if(modButtonColorDisabledSetting == "black") {
-								modButtonColorDisabledSetting = "red";
-								modButtonColorDisabledSettingButton.setText("Red");
-							}
-							VertexClientPE.setupModButtonColors();
-							VertexClientPE.saveMainSettings();
-							VertexClientPE.shouldUpdateGUI = true;
-						}
-					}));
-					
-					var menuTitle = clientSectionTitle("Menu", "theme");
-					
-					var menuTypeSettingFunc = new settingButton("Menu style", "Sets the Client's menu style.", null,
-						function(viewArg) {
-							menuType = "normal";
-							menuTypeSettingButton.setText("Normal");
-						}
-					);
-					var menuTypeSettingButton = menuTypeSettingFunc.getButton();
-					if(menuType == "normal") {
-						menuTypeSettingButton.setText("Normal");
-					} else if(menuType == "halfscreen") {
-						menuTypeSettingButton.setText("Tabbed (side)");
-					} else if(menuType == "halfscreen_top") {
-						menuTypeSettingButton.setText("Tabbed (top)");
-					} else if(menuType == "tabbed_fullscreen") {
-						menuTypeSettingButton.setText("Tabbed (fullscreen)");
-					} else if(menuType == "fullscreen") {
-						menuTypeSettingButton.setText("Fullscreen");
-					}
-					menuTypeSettingButton.setOnClickListener(new View_.OnClickListener({
+				);
+				var fontSettingButton = fontSettingFunc.getButton();
+				if(fontSetting == "default") {
+					fontSettingButton.setText("Default");
+				} else if(fontSetting == "minecraft") {
+					fontSettingButton.setText("Minecraft");
+				}
+				fontSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
-						if(menuType == "normal") {
-							menuType = "halfscreen";
-							menuTypeSettingButton.setText("Tabbed (side)");
-						} else if(menuType == "halfscreen") {
-							menuType = "halfscreen_top";
-							menuTypeSettingButton.setText("Tabbed (top)");
-						} else if(menuType == "halfscreen_top") {
-							menuType = "tabbed_fullscreen";
-							menuTypeSettingButton.setText("Tabbed (fullscreen)");
-						} else if(menuType == "tabbed_fullscreen") {
-							menuType = "fullscreen";
-							menuTypeSettingButton.setText("Fullscreen");
-						} else if(menuType == "fullscreen") {
-							menuType = "normal";
-							menuTypeSettingButton.setText("Normal");
+						if(fontSetting == "default") {
+							fontSetting = "minecraft";
+							fontSettingButton.setText("Minecraft");
+						} else if(fontSetting == "minecraft") {
+							fontSetting = "default";
+							fontSettingButton.setText("Default");
+						}
+						VertexClientPE.font = fontSetting=="minecraft"?Typeface_.createFromFile(new File_(PATH, "minecraft.ttf")):VertexClientPE.defaultFont;
+						MinecraftButtonLibrary.ProcessedResources.font = VertexClientPE.font;
+						VertexClientPE.saveMainSettings();
+						VertexClientPE.shouldUpdateGUI = true;
+					}
+				}));
+				
+				var modButtonColorBlockedSettingFunc = new settingButton("Mod button text color (blocked)", "Change the mod button blocked text color.", null,
+					function(viewArg) {
+						if(modButtonColorDisabledSetting != "red") {
+							modButtonColorBlockedSetting = "red";
+							modButtonColorBlockedSettingButton.setText("Red");
+							VertexClientPE.setupModButtonColors();
+							VertexClientPE.shouldUpdateGUI = true;
+						}
+					}
+				);
+				var modButtonColorBlockedSettingButton = modButtonColorBlockedSettingFunc.getButton();
+				if(modButtonColorBlockedSetting == "red") {
+					modButtonColorBlockedSettingButton.setText("Red");
+				} else if(modButtonColorBlockedSetting == "green") {
+					modButtonColorBlockedSettingButton.setText("Green");
+				} else if(modButtonColorBlockedSetting == "blue") {
+					modButtonColorBlockedSettingButton.setText("Blue");
+				} else if(modButtonColorBlockedSetting == "yellow") {
+					modButtonColorBlockedSettingButton.setText("Yellow");
+				} else if(modButtonColorBlockedSetting == "white") {
+					modButtonColorBlockedSettingButton.setText("White");
+				} else if(modButtonColorBlockedSetting == "black") {
+					modButtonColorBlockedSettingButton.setText("Black");
+				}
+				modButtonColorBlockedSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(modButtonColorBlockedSetting == "red") {
+							modButtonColorBlockedSetting = "green";
+							modButtonColorBlockedSettingButton.setText("Green");
+						} else if(modButtonColorBlockedSetting == "green") {
+							modButtonColorBlockedSetting = "blue";
+							modButtonColorBlockedSettingButton.setText("Blue");
+						} else if(modButtonColorBlockedSetting == "blue") {
+							modButtonColorBlockedSetting = "yellow";
+							modButtonColorBlockedSettingButton.setText("Yellow");
+						} else if(modButtonColorBlockedSetting == "yellow") {
+							modButtonColorBlockedSetting = "white";
+							modButtonColorBlockedSettingButton.setText("White");
+						} else if(modButtonColorBlockedSetting == "white") {
+							modButtonColorBlockedSetting = "black";
+							modButtonColorBlockedSettingButton.setText("Black");
+						} else if(modButtonColorBlockedSetting == "black") {
+							modButtonColorBlockedSetting = "red";
+							modButtonColorBlockedSettingButton.setText("Red");
+						}
+						VertexClientPE.setupModButtonColors();
+						VertexClientPE.saveMainSettings();
+						VertexClientPE.shouldUpdateGUI = true;
+					}
+				}));
+				
+				var modButtonColorEnabledSettingFunc = new settingButton("Mod button text color (enabled)", "Change the mod button enabled text color.", null,
+					function(viewArg) {
+						if(modButtonColorDisabledSetting != "green") {
+							modButtonColorEnabledSetting = "green";
+							modButtonColorEnabledSettingButton.setText("Green");
+							VertexClientPE.setupModButtonColors();
+							VertexClientPE.shouldUpdateGUI = true;
+						}
+					}
+				);
+				var modButtonColorEnabledSettingButton = modButtonColorEnabledSettingFunc.getButton();
+				if(modButtonColorEnabledSetting == "red") {
+					modButtonColorEnabledSettingButton.setText("Red");
+				} else if(modButtonColorEnabledSetting == "green") {
+					modButtonColorEnabledSettingButton.setText("Green");
+				} else if(modButtonColorEnabledSetting == "blue") {
+					modButtonColorEnabledSettingButton.setText("Blue");
+				} else if(modButtonColorEnabledSetting == "yellow") {
+					modButtonColorEnabledSettingButton.setText("Yellow");
+				} else if(modButtonColorEnabledSetting == "white") {
+					modButtonColorEnabledSettingButton.setText("White");
+				} else if(modButtonColorEnabledSetting == "black") {
+					modButtonColorEnabledSettingButton.setText("Black");
+				}
+				modButtonColorEnabledSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(modButtonColorEnabledSetting == "red") {
+							modButtonColorEnabledSetting = "green";
+							modButtonColorEnabledSettingButton.setText("Green");
+						} else if(modButtonColorEnabledSetting == "green") {
+							modButtonColorEnabledSetting = "blue";
+							modButtonColorEnabledSettingButton.setText("Blue");
+						} else if(modButtonColorEnabledSetting == "blue") {
+							modButtonColorEnabledSetting = "yellow";
+							modButtonColorEnabledSettingButton.setText("Yellow");
+						} else if(modButtonColorEnabledSetting == "yellow") {
+							modButtonColorEnabledSetting = "white";
+							modButtonColorEnabledSettingButton.setText("White");
+						} else if(modButtonColorEnabledSetting == "white") {
+							modButtonColorEnabledSetting = "black";
+							modButtonColorEnabledSettingButton.setText("Black");
+						} else if(modButtonColorEnabledSetting == "black") {
+							modButtonColorEnabledSetting = "red";
+							modButtonColorEnabledSettingButton.setText("Red");
+						}
+						VertexClientPE.setupModButtonColors();
+						VertexClientPE.saveMainSettings();
+						VertexClientPE.shouldUpdateGUI = true;
+					}
+				}));
+				
+				var modButtonColorDisabledSettingFunc = new settingButton("Mod button text color (disabled)", "Change the mod button disabled text color.", null,
+					function(viewArg) {
+						if(modButtonColorDisabledSetting != "white") {
+							modButtonColorDisabledSetting = "white";
+							modButtonColorDisabledSettingButton.setText("White");
+							VertexClientPE.setupModButtonColors();
+							VertexClientPE.shouldUpdateGUI = true;
+						}
+					}
+				);
+				var modButtonColorDisabledSettingButton = modButtonColorDisabledSettingFunc.getButton();
+				if(modButtonColorDisabledSetting == "red") {
+					modButtonColorDisabledSettingButton.setText("Red");
+				} else if(modButtonColorDisabledSetting == "green") {
+					modButtonColorDisabledSettingButton.setText("Green");
+				} else if(modButtonColorDisabledSetting == "blue") {
+					modButtonColorDisabledSettingButton.setText("Blue");
+				} else if(modButtonColorDisabledSetting == "yellow") {
+					modButtonColorDisabledSettingButton.setText("Yellow");
+				} else if(modButtonColorDisabledSetting == "white") {
+					modButtonColorDisabledSettingButton.setText("White");
+				} else if(modButtonColorDisabledSetting == "black") {
+					modButtonColorDisabledSettingButton.setText("Black");
+				}
+				modButtonColorDisabledSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(modButtonColorDisabledSetting == "red") {
+							modButtonColorDisabledSetting = "green";
+							modButtonColorDisabledSettingButton.setText("Green");
+						} else if(modButtonColorDisabledSetting == "green") {
+							modButtonColorDisabledSetting = "blue";
+							modButtonColorDisabledSettingButton.setText("Blue");
+						} else if(modButtonColorDisabledSetting == "blue") {
+							modButtonColorDisabledSetting = "yellow";
+							modButtonColorDisabledSettingButton.setText("Yellow");
+						} else if(modButtonColorDisabledSetting == "yellow") {
+							modButtonColorDisabledSetting = "white";
+							modButtonColorDisabledSettingButton.setText("White");
+						} else if(modButtonColorDisabledSetting == "white") {
+							modButtonColorDisabledSetting = "black";
+							modButtonColorDisabledSettingButton.setText("Black");
+						} else if(modButtonColorDisabledSetting == "black") {
+							modButtonColorDisabledSetting = "red";
+							modButtonColorDisabledSettingButton.setText("Red");
+						}
+						VertexClientPE.setupModButtonColors();
+						VertexClientPE.saveMainSettings();
+						VertexClientPE.shouldUpdateGUI = true;
+					}
+				}));
+				
+				var menuTitle = clientSectionTitle("Menu", "theme");
+				
+				var menuTypeSettingFunc = new settingButton("Menu style", "Sets the Client's menu style.", null,
+					function(viewArg) {
+						menuType = "normal";
+						menuTypeSettingButton.setText("Normal");
+					}
+				);
+				var menuTypeSettingButton = menuTypeSettingFunc.getButton();
+				if(menuType == "normal") {
+					menuTypeSettingButton.setText("Normal");
+				} else if(menuType == "halfscreen") {
+					menuTypeSettingButton.setText("Tabbed (side)");
+				} else if(menuType == "halfscreen_top") {
+					menuTypeSettingButton.setText("Tabbed (top)");
+				} else if(menuType == "tabbed_fullscreen") {
+					menuTypeSettingButton.setText("Tabbed (fullscreen)");
+				} else if(menuType == "fullscreen") {
+					menuTypeSettingButton.setText("Fullscreen");
+				}
+				menuTypeSettingButton.setOnClickListener(new View_.OnClickListener({
+				onClick: function(viewArg) {
+					if(menuType == "normal") {
+						menuType = "halfscreen";
+						menuTypeSettingButton.setText("Tabbed (side)");
+					} else if(menuType == "halfscreen") {
+						menuType = "halfscreen_top";
+						menuTypeSettingButton.setText("Tabbed (top)");
+					} else if(menuType == "halfscreen_top") {
+						menuType = "tabbed_fullscreen";
+						menuTypeSettingButton.setText("Tabbed (fullscreen)");
+					} else if(menuType == "tabbed_fullscreen") {
+						menuType = "fullscreen";
+						menuTypeSettingButton.setText("Fullscreen");
+					} else if(menuType == "fullscreen") {
+						menuType = "normal";
+						menuTypeSettingButton.setText("Normal");
+					}
+					VertexClientPE.saveMainSettings();
+				}
+				}));
+				
+				var normalMenuTypeSizeFunc = new settingButton("Normal menu style size", "Change menu size to fit your screen size better (this only works for the normal menu style).", null,
+					function(viewArg) {
+						if(normalMenuTypeSize != "normal") {
+							normalMenuTypeSize = "normal";
+							customHeight = topBarHeight / 2;
+							normalMenuTypeSizeButton.setText("Normal");
+							VertexClientPE.toast("You may need to restart your launcher to make it work (this only works for the normal menu style)!");
+							VertexClientPE.shouldUpdateGUI = true;
+						}
+					}
+				);
+				var normalMenuTypeSizeButton = normalMenuTypeSizeFunc.getButton();
+				if(normalMenuTypeSize == "normal") {
+					normalMenuTypeSizeButton.setText("Normal");
+				} else if(normalMenuTypeSize == "small") {
+					normalMenuTypeSizeButton.setText("Small");
+				}
+				normalMenuTypeSizeButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(normalMenuTypeSize == "normal") {
+							normalMenuTypeSize = "small";
+							customHeight = topBarHeight;
+							normalMenuTypeSizeButton.setText("Small");
+						} else if(normalMenuTypeSize == "small") {
+							normalMenuTypeSize = "normal";
+							customHeight = topBarHeight / 2;
+							normalMenuTypeSizeButton.setText("Normal");
 						}
 						VertexClientPE.saveMainSettings();
+						VertexClientPE.toast("Now restart your launcher to make it work (this only works for the normal menu style)!");
+						VertexClientPE.shouldUpdateGUI = true;
 					}
-					}));
-					
-					var normalMenuTypeSizeFunc = new settingButton("Normal menu style size", "Change menu size to fit your screen size better (this only works for the normal menu style).", null,
-						function(viewArg) {
-							if(normalMenuTypeSize != "normal") {
-								normalMenuTypeSize = "normal";
-								customHeight = topBarHeight / 2;
-								normalMenuTypeSizeButton.setText("Normal");
-								VertexClientPE.toast("You may need to restart your launcher to make it work (this only works for the normal menu style)!");
-								VertexClientPE.shouldUpdateGUI = true;
-							}
-						}
-					);
-					var normalMenuTypeSizeButton = normalMenuTypeSizeFunc.getButton();
-					if(normalMenuTypeSize == "normal") {
-						normalMenuTypeSizeButton.setText("Normal");
-					} else if(normalMenuTypeSize == "small") {
-						normalMenuTypeSizeButton.setText("Small");
-					}
-					normalMenuTypeSizeButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							if(normalMenuTypeSize == "normal") {
-								normalMenuTypeSize = "small";
-								customHeight = topBarHeight;
-								normalMenuTypeSizeButton.setText("Small");
-							} else if(normalMenuTypeSize == "small") {
-								normalMenuTypeSize = "normal";
-								customHeight = topBarHeight / 2;
-								normalMenuTypeSizeButton.setText("Normal");
-							}
-							VertexClientPE.saveMainSettings();
-							VertexClientPE.toast("Now restart your launcher to make it work (this only works for the normal menu style)!");
+				}));
+				
+				var menuAnimationsSettingFunc = new settingButton("Menu animations", "Show menu animations.", null,
+					function(viewArg) {
+						if(menuAnimationsSetting != "on") {
+							menuAnimationsSetting = "on";
+							menuAnimationsSettingButton.setText("ON");
 							VertexClientPE.shouldUpdateGUI = true;
 						}
-					}));
-					
-					var menuAnimationsSettingFunc = new settingButton("Menu animations", "Show menu animations.", null,
-						function(viewArg) {
-							if(menuAnimationsSetting != "on") {
-								menuAnimationsSetting = "on";
-								menuAnimationsSettingButton.setText("ON");
-								VertexClientPE.shouldUpdateGUI = true;
-							}
-						}
-					);
-					var menuAnimationsSettingButton = menuAnimationsSettingFunc.getButton();
-					if(menuAnimationsSetting == "on") {
-						menuAnimationsSettingButton.setText("ON");
-					} else if(menuAnimationsSetting == "off") {
-						menuAnimationsSettingButton.setText("OFF");
 					}
-					menuAnimationsSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							if(menuAnimationsSetting == "on") {
-								menuAnimationsSetting = "off";
-								menuAnimationsSettingButton.setText("OFF");
-							} else if(menuAnimationsSetting == "off") {
-								menuAnimationsSetting = "on";
-								menuAnimationsSettingButton.setText("ON");
-							}
-							VertexClientPE.saveMainSettings();
+				);
+				var menuAnimationsSettingButton = menuAnimationsSettingFunc.getButton();
+				if(menuAnimationsSetting == "on") {
+					menuAnimationsSettingButton.setText("ON");
+				} else if(menuAnimationsSetting == "off") {
+					menuAnimationsSettingButton.setText("OFF");
+				}
+				menuAnimationsSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(menuAnimationsSetting == "on") {
+							menuAnimationsSetting = "off";
+							menuAnimationsSettingButton.setText("OFF");
+						} else if(menuAnimationsSetting == "off") {
+							menuAnimationsSetting = "on";
+							menuAnimationsSettingButton.setText("ON");
+						}
+						VertexClientPE.saveMainSettings();
+						VertexClientPE.shouldUpdateGUI = true;
+					}
+				}));
+				
+				var soundsAndMusicTitle = clientSectionTitle("Sounds & music", "theme");
+				
+				var buttonSoundSettingFunc = new settingButton("Button sound", "The sound that you hear when tapping a button.", null,
+					function(viewArg) {
+						if(buttonSoundSetting != "system") {
+							buttonSoundSetting = "system";
+							buttonSoundSettingButton.setText("System");
 							VertexClientPE.shouldUpdateGUI = true;
 						}
-					}));
-					
-					var soundsAndMusicTitle = clientSectionTitle("Sounds & music", "theme");
-					
-					var buttonSoundSettingFunc = new settingButton("Button sound", "The sound that you hear when tapping a button.", null,
-						function(viewArg) {
-							if(buttonSoundSetting != "system") {
-								buttonSoundSetting = "system";
-								buttonSoundSettingButton.setText("System");
-								VertexClientPE.shouldUpdateGUI = true;
-							}
-						}
-					);
-					var buttonSoundSettingButton = buttonSoundSettingFunc.getButton();
-					if(buttonSoundSetting == "system") {
-						buttonSoundSettingButton.setText("System");
-					} else if(buttonSoundSetting == "minecraft") {
-						buttonSoundSettingButton.setText("Minecraft");
-					} else if(buttonSoundSetting == "off") {
-						buttonSoundSettingButton.setText("OFF");
 					}
-					buttonSoundSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							if(buttonSoundSetting == "off") {
-								buttonSoundSetting = "system";
-								buttonSoundSettingButton.setText("System");
-							} else if(buttonSoundSetting == "system") {
-								buttonSoundSetting = "minecraft";
-								buttonSoundSettingButton.setText("Minecraft");
-							} else if(buttonSoundSetting == "minecraft") {
-								buttonSoundSetting = "off";
-								buttonSoundSettingButton.setText("OFF");
-							}
-							VertexClientPE.saveMainSettings();
-							VertexClientPE.shouldUpdateGUI = true;
+				);
+				var buttonSoundSettingButton = buttonSoundSettingFunc.getButton();
+				if(buttonSoundSetting == "system") {
+					buttonSoundSettingButton.setText("System");
+				} else if(buttonSoundSetting == "minecraft") {
+					buttonSoundSettingButton.setText("Minecraft");
+				} else if(buttonSoundSetting == "off") {
+					buttonSoundSettingButton.setText("OFF");
+				}
+				buttonSoundSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(buttonSoundSetting == "off") {
+							buttonSoundSetting = "system";
+							buttonSoundSettingButton.setText("System");
+						} else if(buttonSoundSetting == "system") {
+							buttonSoundSetting = "minecraft";
+							buttonSoundSettingButton.setText("Minecraft");
+						} else if(buttonSoundSetting == "minecraft") {
+							buttonSoundSetting = "off";
+							buttonSoundSettingButton.setText("OFF");
 						}
-					}));
-					
-					var playMusicSettingFunc = new settingButton("Automatically play music", "Automatically play music.", null,
-						function(viewArg) {
-							playMusicSetting = "off";
-							playMusicSettingButton.setText("OFF");
-						}
-					);
-					var playMusicSettingButton = playMusicSettingFunc.getButton();
-					if(playMusicSetting == "on") playMusicSetting = "off";
-					/*if(playMusicSetting == "on") {
-						playMusicSettingButton.setText("Normal");
-					} else */if(playMusicSetting == "shuffle") {
-						playMusicSettingButton.setText("Shuffle");
-					} else if(playMusicSetting == "off") {
+						VertexClientPE.saveMainSettings();
+						VertexClientPE.shouldUpdateGUI = true;
+					}
+				}));
+				
+				var playMusicSettingFunc = new settingButton("Automatically play music", "Automatically play music.", null,
+					function(viewArg) {
+						playMusicSetting = "off";
 						playMusicSettingButton.setText("OFF");
 					}
-					playMusicSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							//if(playMusicSetting == "on") {
-							if(playMusicSetting == "off") {
-								playMusicSetting = "shuffle";
-								playMusicSettingButton.setText("Shuffle");
-							} else if(playMusicSetting == "shuffle") {
-								playMusicSetting = "off";
-								playMusicSettingButton.setText("OFF");
-							}/* else if(playMusicSetting == "off") {
-								playMusicSetting = "on";
-								playMusicSettingButton.setText("Normal");
-								VertexClientPE.saveMainSettings();
-								VertexClientPE.loadMainSettings();
-								VertexClientPE.resetMusic();
-								//VertexClientPE.playMusic();
-								print("This mode is not ready yet!");
-							}*/
+				);
+				var playMusicSettingButton = playMusicSettingFunc.getButton();
+				if(playMusicSetting == "on") playMusicSetting = "off";
+				/*if(playMusicSetting == "on") {
+					playMusicSettingButton.setText("Normal");
+				} else */if(playMusicSetting == "shuffle") {
+					playMusicSettingButton.setText("Shuffle");
+				} else if(playMusicSetting == "off") {
+					playMusicSettingButton.setText("OFF");
+				}
+				playMusicSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						//if(playMusicSetting == "on") {
+						if(playMusicSetting == "off") {
+							playMusicSetting = "shuffle";
+							playMusicSettingButton.setText("Shuffle");
+						} else if(playMusicSetting == "shuffle") {
+							playMusicSetting = "off";
+							playMusicSettingButton.setText("OFF");
+						}/* else if(playMusicSetting == "off") {
+							playMusicSetting = "on";
+							playMusicSettingButton.setText("Normal");
 							VertexClientPE.saveMainSettings();
-						}
-					}));
-					
-					var dashboardTitle = clientSectionTitle("Dashboard", "theme");
-					
-					var dashboardTileSizeSettingFunc = new settingButton("Tile size", "Sets the Dashboard tile style.");
-					var dashboardTileSizeSettingButton = dashboardTileSizeSettingFunc.getButton();
-					dashboardTileSizeSettingButton.setText("Change");
-					dashboardTileSizeSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							VertexClientPE.showDashboardTileSizeDialog();
-						}
-					}));
-					
-					var splashScreenTitle = clientSectionTitle("Splash Screen", "theme");
-					
-					var transparentSplashScreenSettingFunc = new settingButton("Transparent splash screen", "Makes the splash screen partly transparent.", null,
-						function(viewArg) {
-							transparentSplashScreenSetting = "off";
-							transparentSplashScreenSettingButton.setText("OFF");
-						}
-					);
-					var transparentSplashScreenSettingButton = transparentSplashScreenSettingFunc.getButton();
-					if(transparentSplashScreenSetting == "on") {
-						transparentSplashScreenSettingButton.setText("ON");
-					} else if(transparentSplashScreenSetting == "off") {
+							VertexClientPE.loadMainSettings();
+							VertexClientPE.resetMusic();
+							//VertexClientPE.playMusic();
+							print("This mode is not ready yet!");
+						}*/
+						VertexClientPE.saveMainSettings();
+					}
+				}));
+				
+				var dashboardTitle = clientSectionTitle("Dashboard", "theme");
+				
+				var dashboardTileSizeSettingFunc = new settingButton("Tile size", "Sets the Dashboard tile style.");
+				var dashboardTileSizeSettingButton = dashboardTileSizeSettingFunc.getButton();
+				dashboardTileSizeSettingButton.setText("Change");
+				dashboardTileSizeSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						VertexClientPE.showDashboardTileSizeDialog();
+					}
+				}));
+				
+				var splashScreenTitle = clientSectionTitle("Splash Screen", "theme");
+				
+				var transparentSplashScreenSettingFunc = new settingButton("Transparent splash screen", "Makes the splash screen partly transparent.", null,
+					function(viewArg) {
+						transparentSplashScreenSetting = "off";
 						transparentSplashScreenSettingButton.setText("OFF");
 					}
-					transparentSplashScreenSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							if(transparentSplashScreenSetting == "on") {
-								transparentSplashScreenSetting = "off";
-								transparentSplashScreenSettingButton.setText("OFF");
-								VertexClientPE.saveMainSettings();
-							} else if(transparentSplashScreenSetting == "off") {
-								transparentSplashScreenSetting = "on";
-								transparentSplashScreenSettingButton.setText("ON");
-								VertexClientPE.saveMainSettings();
-							}
+				);
+				var transparentSplashScreenSettingButton = transparentSplashScreenSettingFunc.getButton();
+				if(transparentSplashScreenSetting == "on") {
+					transparentSplashScreenSettingButton.setText("ON");
+				} else if(transparentSplashScreenSetting == "off") {
+					transparentSplashScreenSettingButton.setText("OFF");
+				}
+				transparentSplashScreenSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(transparentSplashScreenSetting == "on") {
+							transparentSplashScreenSetting = "off";
+							transparentSplashScreenSettingButton.setText("OFF");
+							VertexClientPE.saveMainSettings();
+						} else if(transparentSplashScreenSetting == "off") {
+							transparentSplashScreenSetting = "on";
+							transparentSplashScreenSettingButton.setText("ON");
+							VertexClientPE.saveMainSettings();
 						}
-					}));
-					
-					var commandsTitle = clientSectionTitle("Commands", "theme");
-					
-					var commandsSettingFunc = new settingButton("Commands", "Toggle commands off to login on servers like Mineplex PE.", null,
-						function(viewArg) {
+					}
+				}));
+				
+				var commandsTitle = clientSectionTitle("Commands", "theme");
+				
+				var commandsSettingFunc = new settingButton("Commands", "Toggle commands off to login on servers like Mineplex PE.", null,
+					function(viewArg) {
+						commandsSetting = "on";
+						commandsSettingButton.setText("ON");
+					}
+				);
+				var commandsSettingButton = commandsSettingFunc.getButton();
+				if(commandsSetting == "on") {
+					commandsSettingButton.setText("ON");
+				} else if(commandsSetting == "off") {
+					commandsSettingButton.setText("OFF");
+				}
+				commandsSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(commandsSetting == "on") {
+							commandsSetting = "off";
+							commandsSettingButton.setText("OFF");
+							VertexClientPE.saveMainSettings();
+						} else if(commandsSetting == "off") {
 							commandsSetting = "on";
 							commandsSettingButton.setText("ON");
+							VertexClientPE.saveMainSettings();
 						}
-					);
-					var commandsSettingButton = commandsSettingFunc.getButton();
-					if(commandsSetting == "on") {
-						commandsSettingButton.setText("ON");
-					} else if(commandsSetting == "off") {
-						commandsSettingButton.setText("OFF");
 					}
-					commandsSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							if(commandsSetting == "on") {
-								commandsSetting = "off";
-								commandsSettingButton.setText("OFF");
-								VertexClientPE.saveMainSettings();
-							} else if(commandsSetting == "off") {
-								commandsSetting = "on";
-								commandsSettingButton.setText("ON");
-								VertexClientPE.saveMainSettings();
-							}
-						}
-					}));
-					
-					var cmdPrefixFunc = new settingButton("Command prefix", "Change the first character of all Vertex Client PE commands.", null,
-						function(viewArg) {
+				}));
+				
+				var cmdPrefixFunc = new settingButton("Command prefix", "Change the first character of all Vertex Client PE commands.", null,
+					function(viewArg) {
+						cmdPrefix = ".";
+						cmdPrefixButton.setText(".");
+					}
+				);
+				var cmdPrefixButton = cmdPrefixFunc.getButton();
+				cmdPrefixButton.setText(cmdPrefix);
+				cmdPrefixButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(cmdPrefix == ".") {
+							cmdPrefix = "#";
+							cmdPrefixButton.setText("#");
+							VertexClientPE.saveMainSettings();
+						} else if(cmdPrefix == "#") {
+							cmdPrefix = "$";
+							cmdPrefixButton.setText("$");
+							VertexClientPE.saveMainSettings();
+						} else if(cmdPrefix == "$") {
+							cmdPrefix = "@";
+							cmdPrefixButton.setText("@");
+							VertexClientPE.saveMainSettings();
+						} else if(cmdPrefix == "@") {
 							cmdPrefix = ".";
 							cmdPrefixButton.setText(".");
+							VertexClientPE.saveMainSettings();
 						}
-					);
-					var cmdPrefixButton = cmdPrefixFunc.getButton();
-					cmdPrefixButton.setText(cmdPrefix);
-					cmdPrefixButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							if(cmdPrefix == ".") {
-								cmdPrefix = "#";
-								cmdPrefixButton.setText("#");
-								VertexClientPE.saveMainSettings();
-							} else if(cmdPrefix == "#") {
-								cmdPrefix = "$";
-								cmdPrefixButton.setText("$");
-								VertexClientPE.saveMainSettings();
-							} else if(cmdPrefix == "$") {
-								cmdPrefix = "@";
-								cmdPrefixButton.setText("@");
-								VertexClientPE.saveMainSettings();
-							} else if(cmdPrefix == "@") {
-								cmdPrefix = ".";
-								cmdPrefixButton.setText(".");
-								VertexClientPE.saveMainSettings();
-							}
-						}
-					}));
-					
-					var otherTitle = clientSectionTitle("Other", "theme");
-					
-					var featuresSettingFunc = new settingButton("Opt in/out features", "Allows you to choose what categories/mods to show.");
-					var featuresSettingButton = featuresSettingFunc.getButton();
-					featuresSettingButton.setText("Manage");
-					featuresSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							VertexClientPE.showFeaturesDialog();
-						}
-					}));
-					
-					var showNewsSettingFunc = new settingButton("Show news", "Show news at start.", null,
-						function(viewArg) {
+					}
+				}));
+				
+				var otherTitle = clientSectionTitle("Other", "theme");
+				
+				var featuresSettingFunc = new settingButton("Opt in/out features", "Allows you to choose what categories/mods to show.");
+				var featuresSettingButton = featuresSettingFunc.getButton();
+				featuresSettingButton.setText("Manage");
+				featuresSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						VertexClientPE.showFeaturesDialog();
+					}
+				}));
+				
+				var showNewsSettingFunc = new settingButton("Show news", "Show news at start.", null,
+					function(viewArg) {
+						showNewsSetting = "on";
+						showNewsSettingButton.setText("ON");
+					}
+				);
+				var showNewsSettingButton = showNewsSettingFunc.getButton();
+				if(showNewsSetting == "on") {
+					showNewsSettingButton.setText("ON");
+				} else if(showNewsSetting == "off") {
+					showNewsSettingButton.setText("OFF");
+				}
+				showNewsSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(showNewsSetting == "on") {
+							showNewsSetting = "off";
+							showNewsSettingButton.setText("OFF");
+						} else if(showNewsSetting == "off") {
 							showNewsSetting = "on";
 							showNewsSettingButton.setText("ON");
 						}
-					);
-					var showNewsSettingButton = showNewsSettingFunc.getButton();
-					if(showNewsSetting == "on") {
-						showNewsSettingButton.setText("ON");
-					} else if(showNewsSetting == "off") {
-						showNewsSettingButton.setText("OFF");
+						VertexClientPE.saveMainSettings();
 					}
-					showNewsSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							if(showNewsSetting == "on") {
-								showNewsSetting = "off";
-								showNewsSettingButton.setText("OFF");
-							} else if(showNewsSetting == "off") {
-								showNewsSetting = "on";
-								showNewsSettingButton.setText("ON");
-							}
-							VertexClientPE.saveMainSettings();
-						}
-					}));
-					
-					var showSnowInWinterSettingFunc = new settingButton("Show snowflakes on the start screen in the winter", null, null,
-						function(viewArg) {
+				}));
+				
+				var showSnowInWinterSettingFunc = new settingButton("Show snowflakes on the start screen in the winter", null, null,
+					function(viewArg) {
+						showSnowInWinterSetting = "off";
+						showSnowInWinterSettingButton.setText("OFF");
+					}
+				);
+				var showSnowInWinterSettingButton = showSnowInWinterSettingFunc.getButton();
+				if(showSnowInWinterSetting == "on") {
+					showSnowInWinterSettingButton.setText("ON");
+				} else if(showSnowInWinterSetting == "off") {
+					showSnowInWinterSettingButton.setText("OFF");
+				}
+				showSnowInWinterSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(showSnowInWinterSetting == "off") {
+							showSnowInWinterSetting = "on";
+							showSnowInWinterSettingButton.setText("ON");
+						} else if(showSnowInWinterSetting == "on") {
 							showSnowInWinterSetting = "off";
 							showSnowInWinterSettingButton.setText("OFF");
 						}
-					);
-					var showSnowInWinterSettingButton = showSnowInWinterSettingFunc.getButton();
-					if(showSnowInWinterSetting == "on") {
-						showSnowInWinterSettingButton.setText("ON");
-					} else if(showSnowInWinterSetting == "off") {
-						showSnowInWinterSettingButton.setText("OFF");
+						VertexClientPE.saveMainSettings();
 					}
-					showSnowInWinterSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							if(showSnowInWinterSetting == "off") {
-								showSnowInWinterSetting = "on";
-								showSnowInWinterSettingButton.setText("ON");
-							} else if(showSnowInWinterSetting == "on") {
-								showSnowInWinterSetting = "off";
-								showSnowInWinterSettingButton.setText("OFF");
-							}
-							VertexClientPE.saveMainSettings();
-						}
-					}));
-					
-					var webBrowserStartPageSettingFunc = new settingButton("Webbrowser startpage", "Change the default webbrowser page.");
-					var webBrowserStartPageSettingButton = webBrowserStartPageSettingFunc.getButton();
-					webBrowserStartPageSettingButton.setText("Change");
-					webBrowserStartPageSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							VertexClientPE.showWebbrowserStartPageDialog();
-						}
-					}));
-					
-					settingsMenuLayout.addView(generalTitle);
-					VertexClientPE.addView(settingsMenuLayout, hacksListModeSettingFunc);
-					VertexClientPE.addView(settingsMenuLayout, hacksListPosSettingFunc);
-					VertexClientPE.addView(settingsMenuLayout, tabGUIModeSettingFunc);
-					VertexClientPE.addView(settingsMenuLayout, mainButtonPositionSettingFunc);
-					VertexClientPE.addView(settingsMenuLayout, mainButtonStyleSettingFunc);
-					VertexClientPE.addView(settingsMenuLayout, mainButtonTapSettingFunc);
-					VertexClientPE.addView(settingsMenuLayout, shortcutManagerSettingFunc);
-					settingsMenuLayout.addView(themeTitle);
-					VertexClientPE.addView(settingsMenuLayout, themeSettingFunc);
-					VertexClientPE.addView(settingsMenuLayout, useLightThemeSettingFunc);
-					VertexClientPE.addView(settingsMenuLayout, buttonStyleSettingFunc);
-					VertexClientPE.addView(settingsMenuLayout, buttonStrokeThicknessSettingFunc);
-					VertexClientPE.addView(settingsMenuLayout, backgroundStyleSettingFunc);
-					VertexClientPE.addView(settingsMenuLayout, transparentBgSettingFunc);
-					VertexClientPE.addView(settingsMenuLayout, mcpeGUISettingFunc);
-					VertexClientPE.addView(settingsMenuLayout, fontSettingFunc);
-					VertexClientPE.addView(settingsMenuLayout, modButtonColorBlockedSettingFunc);
-					VertexClientPE.addView(settingsMenuLayout, modButtonColorEnabledSettingFunc);
-					VertexClientPE.addView(settingsMenuLayout, modButtonColorDisabledSettingFunc);
-					settingsMenuLayout.addView(menuTitle);
-					VertexClientPE.addView(settingsMenuLayout, menuTypeSettingFunc);
-					VertexClientPE.addView(settingsMenuLayout, normalMenuTypeSizeFunc);
-					VertexClientPE.addView(settingsMenuLayout, menuAnimationsSettingFunc);
-					settingsMenuLayout.addView(soundsAndMusicTitle);
-					VertexClientPE.addView(settingsMenuLayout, buttonSoundSettingFunc);
-					VertexClientPE.addView(settingsMenuLayout, playMusicSettingFunc);
-					settingsMenuLayout.addView(dashboardTitle);
-					VertexClientPE.addView(settingsMenuLayout, dashboardTileSizeSettingFunc);
-					settingsMenuLayout.addView(splashScreenTitle);
-					VertexClientPE.addView(settingsMenuLayout, transparentSplashScreenSettingFunc);
-					settingsMenuLayout.addView(commandsTitle);
-					VertexClientPE.addView(settingsMenuLayout, commandsSettingFunc);
-					VertexClientPE.addView(settingsMenuLayout, cmdPrefixFunc);
-					settingsMenuLayout.addView(otherTitle);
-					VertexClientPE.addView(settingsMenuLayout, featuresSettingFunc);
-					VertexClientPE.addView(settingsMenuLayout, showNewsSettingFunc);
-					VertexClientPE.addView(settingsMenuLayout, showSnowInWinterSettingFunc);
-					VertexClientPE.addView(settingsMenuLayout, webBrowserStartPageSettingFunc);
+				}));
+				
+				var webBrowserStartPageSettingFunc = new settingButton("Webbrowser startpage", "Change the default webbrowser page.");
+				var webBrowserStartPageSettingButton = webBrowserStartPageSettingFunc.getButton();
+				webBrowserStartPageSettingButton.setText("Change");
+				webBrowserStartPageSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						VertexClientPE.showWebbrowserStartPageDialog();
+					}
+				}));
+				
+				settingsMenuLayout.addView(generalTitle);
+				VertexClientPE.addView(settingsMenuLayout, hacksListModeSettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, hacksListPosSettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, tabGUIModeSettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, mainButtonPositionSettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, mainButtonStyleSettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, mainButtonTapSettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, shortcutManagerSettingFunc);
+				settingsMenuLayout.addView(themeTitle);
+				VertexClientPE.addView(settingsMenuLayout, themeSettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, useLightThemeSettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, buttonStyleSettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, buttonStrokeThicknessSettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, backgroundStyleSettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, transparentBgSettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, mcpeGUISettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, fontSettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, modButtonColorBlockedSettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, modButtonColorEnabledSettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, modButtonColorDisabledSettingFunc);
+				settingsMenuLayout.addView(menuTitle);
+				VertexClientPE.addView(settingsMenuLayout, menuTypeSettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, normalMenuTypeSizeFunc);
+				VertexClientPE.addView(settingsMenuLayout, menuAnimationsSettingFunc);
+				settingsMenuLayout.addView(soundsAndMusicTitle);
+				VertexClientPE.addView(settingsMenuLayout, buttonSoundSettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, playMusicSettingFunc);
+				settingsMenuLayout.addView(dashboardTitle);
+				VertexClientPE.addView(settingsMenuLayout, dashboardTileSizeSettingFunc);
+				settingsMenuLayout.addView(splashScreenTitle);
+				VertexClientPE.addView(settingsMenuLayout, transparentSplashScreenSettingFunc);
+				settingsMenuLayout.addView(commandsTitle);
+				VertexClientPE.addView(settingsMenuLayout, commandsSettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, cmdPrefixFunc);
+				settingsMenuLayout.addView(otherTitle);
+				VertexClientPE.addView(settingsMenuLayout, featuresSettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, showNewsSettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, showSnowInWinterSettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, webBrowserStartPageSettingFunc);
 
-					screenUI = new PopupWindow_(settingsMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
-					screenUI.setBackgroundDrawable(backgroundGradient());
-					screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
-				} catch(error) {
-					print('An error occured: ' + error);
-					VertexClientPE.showBugReportDialog(error);
-				}
+				screenUI = new PopupWindow_(settingsMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
+				screenUI.setBackgroundDrawable(backgroundGradient());
+				screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
+			} catch(error) {
+				print('An error occured: ' + error);
+				VertexClientPE.showBugReportDialog(error);
 			}
-		}));
+		}
+	}));
 }
 
 function devSettingsScreen(fromDashboard) {
 	VertexClientPE.menuIsShowing = true;
-	var display = new DisplayMetrics_();
-	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
-		CONTEXT.runOnUiThread(new Runnable_({
-			run: function() {
-				try {
-					VertexClientPE.checkGUINeedsDismiss();
-					
-					var devSettingsMenuLayout = new LinearLayout_(CONTEXT);
-					devSettingsMenuLayout.setOrientation(1);
-					devSettingsMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
-					devSettingsMenuLayout.setPadding(dip2px(2), 0, dip2px(2), 0);
-					
-					var devSettingsMenuScroll = new ScrollView(CONTEXT);
-					
-					var devSettingsMenuLayout1 = new LinearLayout_(CONTEXT);
-					devSettingsMenuLayout1.setOrientation(1);
-					devSettingsMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
-					
-					devSettingsMenuScroll.addView(devSettingsMenuLayout);
-					devSettingsMenuLayout1.addView(devSettingsMenuScroll);
-					
-					var generalTitle = clientSectionTitle("General", "theme");
-					
-					var debugModeSettingFunc = new settingButton("Debug mode", "Show debug messages.");
-					var debugModeSettingButton = debugModeSettingFunc.getButton();
-					if(VertexClientPE.isDebugMode()) {
-						debugModeSettingButton.setText("ON");
-					} else {
-						debugModeSettingButton.setText("OFF");
-					}
-					debugModeSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							VertexClientPE.setIsDebugMode(!VertexClientPE.isDebugMode());
-							if(VertexClientPE.isDebugMode()) {
-								debugModeSettingButton.setText("ON");
-							} else {
-								debugModeSettingButton.setText("OFF");
-							}
-						}
-					}));
-					
-					var expModeSettingFunc = new settingButton("Experimental features", "Show experimental features that are still in development.");
-					var expModeSettingButton = expModeSettingFunc.getButton();
-					if(VertexClientPE.isExpMode()) {
-						expModeSettingButton.setText("ON");
-					} else {
-						expModeSettingButton.setText("OFF");
-					}
-					expModeSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							VertexClientPE.setIsExpMode(!VertexClientPE.isExpMode());
-							if(VertexClientPE.isExpMode()) {
-								expModeSettingButton.setText("ON");
-							} else {
-								expModeSettingButton.setText("OFF");
-							}
-						}
-					}));
-					
-					var dataTitle = clientSectionTitle("Data", "theme");
-					
-					var resetDataSettingFunc = new settingButton("Reset all data", "Resets all data (including Pro).");
-					var resetDataSettingButton = resetDataSettingFunc.getButton();
-					resetDataSettingButton.setText("Reset");
-					resetDataSettingButton.setOnClickListener(new View_.OnClickListener({
-						onClick: function(viewArg) {
-							VertexClientPE.resetData();
-						}
-					}));
-					
-					devSettingsMenuLayout.addView(generalTitle);
-					VertexClientPE.addView(devSettingsMenuLayout, debugModeSettingFunc);
-					VertexClientPE.addView(devSettingsMenuLayout, expModeSettingFunc);
-					devSettingsMenuLayout.addView(dataTitle);
-					VertexClientPE.addView(devSettingsMenuLayout, resetDataSettingFunc);
-
-					screenUI = new PopupWindow_(devSettingsMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
-					screenUI.setBackgroundDrawable(backgroundGradient());
-					screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
-				} catch(error) {
-					print('An error occured: ' + error);
-					VertexClientPE.showBugReportDialog(error);
+	CONTEXT.runOnUiThread(new Runnable_({
+		run: function() {
+			try {
+				VertexClientPE.checkGUINeedsDismiss();
+				
+				var devSettingsMenuLayout = new LinearLayout_(CONTEXT);
+				devSettingsMenuLayout.setOrientation(1);
+				devSettingsMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
+				devSettingsMenuLayout.setPadding(dip2px(2), 0, dip2px(2), 0);
+				
+				var devSettingsMenuScroll = new ScrollView(CONTEXT);
+				
+				var devSettingsMenuLayout1 = new LinearLayout_(CONTEXT);
+				devSettingsMenuLayout1.setOrientation(1);
+				devSettingsMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
+				
+				devSettingsMenuScroll.addView(devSettingsMenuLayout);
+				devSettingsMenuLayout1.addView(devSettingsMenuScroll);
+				
+				var generalTitle = clientSectionTitle("General", "theme");
+				
+				var debugModeSettingFunc = new settingButton("Debug mode", "Show debug messages.");
+				var debugModeSettingButton = debugModeSettingFunc.getButton();
+				if(VertexClientPE.isDebugMode()) {
+					debugModeSettingButton.setText("ON");
+				} else {
+					debugModeSettingButton.setText("OFF");
 				}
+				debugModeSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						VertexClientPE.setIsDebugMode(!VertexClientPE.isDebugMode());
+						if(VertexClientPE.isDebugMode()) {
+							debugModeSettingButton.setText("ON");
+						} else {
+							debugModeSettingButton.setText("OFF");
+						}
+					}
+				}));
+				
+				var expModeSettingFunc = new settingButton("Experimental features", "Show experimental features that are still in development.");
+				var expModeSettingButton = expModeSettingFunc.getButton();
+				if(VertexClientPE.isExpMode()) {
+					expModeSettingButton.setText("ON");
+				} else {
+					expModeSettingButton.setText("OFF");
+				}
+				expModeSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						VertexClientPE.setIsExpMode(!VertexClientPE.isExpMode());
+						if(VertexClientPE.isExpMode()) {
+							expModeSettingButton.setText("ON");
+						} else {
+							expModeSettingButton.setText("OFF");
+						}
+					}
+				}));
+				
+				var dataTitle = clientSectionTitle("Data", "theme");
+				
+				var resetDataSettingFunc = new settingButton("Reset all data", "Resets all data (including Pro).");
+				var resetDataSettingButton = resetDataSettingFunc.getButton();
+				resetDataSettingButton.setText("Reset");
+				resetDataSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						VertexClientPE.resetData();
+					}
+				}));
+				
+				devSettingsMenuLayout.addView(generalTitle);
+				VertexClientPE.addView(devSettingsMenuLayout, debugModeSettingFunc);
+				VertexClientPE.addView(devSettingsMenuLayout, expModeSettingFunc);
+				devSettingsMenuLayout.addView(dataTitle);
+				VertexClientPE.addView(devSettingsMenuLayout, resetDataSettingFunc);
+
+				screenUI = new PopupWindow_(devSettingsMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
+				screenUI.setBackgroundDrawable(backgroundGradient());
+				screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
+			} catch(error) {
+				print('An error occured: ' + error);
+				VertexClientPE.showBugReportDialog(error);
 			}
-		}));
+		}
+	}));
 }
 
 function informationScreen(fromDashboard) {
 	VertexClientPE.menuIsShowing = true;
-	var display = new DisplayMetrics_();
-	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
-		CONTEXT.runOnUiThread(new Runnable_({
-			run: function() {
-				try {
-					VertexClientPE.checkGUINeedsDismiss();
-					
-					var informationMenuLayout1 = new LinearLayout_(CONTEXT);
-					informationMenuLayout1.setOrientation(1);
-					informationMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
-					informationMenuLayout1.setPadding(dip2px(2), 0, dip2px(2), 0);
-					
-					var informationMenuScrollView = new ScrollView(CONTEXT);
-
-					var informationMenuLayout = new LinearLayout_(CONTEXT);
-					informationMenuLayout.setOrientation(1);
-					informationMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
-					
-					informationMenuLayout1.addView(clientTextView("\n"));
-					informationMenuScrollView.addView(informationMenuLayout);
-					informationMenuLayout1.addView(informationMenuScrollView);
-					
-					var informationText = clientTextView("\u00A9 peacestorm, imYannic, _TXMO, LPMG, Astro36, AutoGrind and TimmyIsDa | 2015 - 2017. Some rights reserved. Thanks to @_TXMO for making some graphic designs and helping with choosing a name and @imYannic for some other graphic designs.", true);
-					
-					var enterOne = clientTextView("\n");
-					var hrView = clientHR();
-					var enterTwo = clientTextView("\n");
-					
-					informationMenuLayout.addView(informationText);
-					informationMenuLayout.addView(enterOne);
-					informationMenuLayout.addView(hrView);
-					informationMenuLayout.addView(enterTwo);
-					
-					var minecraftInfoTitle = clientSectionTitle("Minecraft info");
+	CONTEXT.runOnUiThread(new Runnable_({
+		run: function() {
+			try {
+				VertexClientPE.checkGUINeedsDismiss();
 				
-					var minecraftVersion = ModPE.getMinecraftVersion();
-					var minecraftVersionTextView = clientTextView("Version: " + minecraftVersion);
-					
-					var username = ModPE.getPlayerName();
-					var usernameTextView = clientTextView("Username: " + username);
-					
-					var clientId = ModPE.getClientId();
-					var clientIdTextView = clientTextView("Client ID: " + clientId);
-					
-					var vertexInfoTitle = clientSectionTitle("Vertex info");
-					
-					var vertexVersion = VertexClientPE.currentVersion;
-					var vertexVersionTextView = clientTextView("Version: " + vertexVersion);
-					
-					var vertexEdition = VertexClientPE.edition;
-					var vertexEditionTextView = clientTextView("Edition: " + vertexEdition);
-					
-					var statusType = "normal user";
-					if(VertexClientPE.isDevMode()) {
-						statusType = "developer";
-					}
-					var statusTextView = clientTextView("Status: " + statusType);
-					statusTextView.setOnClickListener(new android.view.View.OnClickListener() {
-						onClick: function(v) {
-							VertexClientPE.setIsDevMode(!VertexClientPE.isDevMode());
-							if(VertexClientPE.isDevMode()) {
-								statusType = "developer";
-								VertexClientPE.toast("You're a developer now!");
-							} else {
-								statusType = "normal user";
-								VertexClientPE.setIsDebugMode(false);
-								VertexClientPE.setIsExpMode(false);
-								VertexClientPE.toast("You're no longer a developer!");
-							}
-							statusTextView.setText("Status: " + statusType);
-						}
-					});
-					
-					var proType = "no";
-					if(VertexClientPE.isPro()) {
-						proType = "yes";
-					}
-					var proTextView = clientTextView("Pro: " + proType);
-					
-					var deviceInfoTitle = clientSectionTitle("Device info");
-					
-					var androidVersion = ModPE.getAndroidVersion();
-					var androidVersionTextView = clientTextView("Android version: " + androidVersion);
-					
-					var deviceType = VertexClientPE.getDeviceName();
-					var deviceTextView = clientTextView("Device: " + deviceType);
-					
-					informationMenuLayout.addView(minecraftInfoTitle);
-					informationMenuLayout.addView(minecraftVersionTextView);
-					informationMenuLayout.addView(usernameTextView);
-					informationMenuLayout.addView(clientIdTextView);
-					//-------------------------------------------
-					informationMenuLayout.addView(vertexInfoTitle);
-					informationMenuLayout.addView(vertexVersionTextView);
-					informationMenuLayout.addView(vertexEditionTextView);
-					informationMenuLayout.addView(statusTextView);
-					informationMenuLayout.addView(proTextView);
-					//-------------------------------------------
-					informationMenuLayout.addView(deviceInfoTitle);
-					informationMenuLayout.addView(androidVersionTextView);
-					informationMenuLayout.addView(deviceTextView);
+				var informationMenuLayout1 = new LinearLayout_(CONTEXT);
+				informationMenuLayout1.setOrientation(1);
+				informationMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
+				informationMenuLayout1.setPadding(dip2px(2), 0, dip2px(2), 0);
+				
+				var informationMenuScrollView = new ScrollView(CONTEXT);
 
-					screenUI = new PopupWindow_(informationMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
-					screenUI.setBackgroundDrawable(backgroundGradient());
-					screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
-				} catch(error) {
-					print("An error occurred: " + error);
+				var informationMenuLayout = new LinearLayout_(CONTEXT);
+				informationMenuLayout.setOrientation(1);
+				informationMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
+				
+				informationMenuLayout1.addView(clientTextView("\n"));
+				informationMenuScrollView.addView(informationMenuLayout);
+				informationMenuLayout1.addView(informationMenuScrollView);
+				
+				var informationText = clientTextView("\u00A9 peacestorm, imYannic, _TXMO, LPMG, Astro36, AutoGrind and TimmyIsDa | 2015 - 2017. Some rights reserved. Thanks to @_TXMO for making some graphic designs and helping with choosing a name and @imYannic for some other graphic designs.", true);
+				
+				var enterOne = clientTextView("\n");
+				var hrView = clientHR();
+				var enterTwo = clientTextView("\n");
+				
+				informationMenuLayout.addView(informationText);
+				informationMenuLayout.addView(enterOne);
+				informationMenuLayout.addView(hrView);
+				informationMenuLayout.addView(enterTwo);
+				
+				var minecraftInfoTitle = clientSectionTitle("Minecraft info");
+			
+				var minecraftVersion = ModPE.getMinecraftVersion();
+				var minecraftVersionTextView = clientTextView("Version: " + minecraftVersion);
+				
+				var username = ModPE.getPlayerName();
+				var usernameTextView = clientTextView("Username: " + username);
+				
+				var clientId = ModPE.getClientId();
+				var clientIdTextView = clientTextView("Client ID: " + clientId);
+				
+				var vertexInfoTitle = clientSectionTitle("Vertex info");
+				
+				var vertexVersion = VertexClientPE.currentVersion;
+				var vertexVersionTextView = clientTextView("Version: " + vertexVersion);
+				
+				var vertexEdition = VertexClientPE.edition;
+				var vertexEditionTextView = clientTextView("Edition: " + vertexEdition);
+				
+				var statusType = "normal user";
+				if(VertexClientPE.isDevMode()) {
+					statusType = "developer";
 				}
+				var statusTextView = clientTextView("Status: " + statusType);
+				statusTextView.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(v) {
+						VertexClientPE.setIsDevMode(!VertexClientPE.isDevMode());
+						if(VertexClientPE.isDevMode()) {
+							statusType = "developer";
+							VertexClientPE.toast("You're a developer now!");
+						} else {
+							statusType = "normal user";
+							VertexClientPE.setIsDebugMode(false);
+							VertexClientPE.setIsExpMode(false);
+							VertexClientPE.toast("You're no longer a developer!");
+						}
+						statusTextView.setText("Status: " + statusType);
+					}
+				});
+				
+				var proType = "no";
+				if(VertexClientPE.isPro()) {
+					proType = "yes";
+				}
+				var proTextView = clientTextView("Pro: " + proType);
+				
+				var deviceInfoTitle = clientSectionTitle("Device info");
+				
+				var androidVersion = ModPE.getAndroidVersion();
+				var androidVersionTextView = clientTextView("Android version: " + androidVersion);
+				
+				var deviceType = VertexClientPE.getDeviceName();
+				var deviceTextView = clientTextView("Device: " + deviceType);
+				
+				informationMenuLayout.addView(minecraftInfoTitle);
+				informationMenuLayout.addView(minecraftVersionTextView);
+				informationMenuLayout.addView(usernameTextView);
+				informationMenuLayout.addView(clientIdTextView);
+				//-------------------------------------------
+				informationMenuLayout.addView(vertexInfoTitle);
+				informationMenuLayout.addView(vertexVersionTextView);
+				informationMenuLayout.addView(vertexEditionTextView);
+				informationMenuLayout.addView(statusTextView);
+				informationMenuLayout.addView(proTextView);
+				//-------------------------------------------
+				informationMenuLayout.addView(deviceInfoTitle);
+				informationMenuLayout.addView(androidVersionTextView);
+				informationMenuLayout.addView(deviceTextView);
+
+				screenUI = new PopupWindow_(informationMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
+				screenUI.setBackgroundDrawable(backgroundGradient());
+				screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
+			} catch(error) {
+				print("An error occurred: " + error);
 			}
-		}));
+		}
+	}));
 }
 
 var helpSections = [["Where do I report issues?", "You can report issues at http://bit.ly/VertexIssues."], ["How can I add shortcuts?", "Tap the star button in a mod's ... dialog or long click on a tile and then tap on the favorite button to make it favorite. The mod or tile will then have its own shortcut."], ["Website", "Our website is http://Vertex-Client.ml/."], ["Twitter", "Our Twitter account is @VertexHX."]];
 
 function helpScreen(fromDashboard) {
 	VertexClientPE.menuIsShowing = true;
-	var display = new DisplayMetrics_();
-	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
-		CONTEXT.runOnUiThread(new Runnable_({
-			run: function() {
-				try {
-					VertexClientPE.checkGUINeedsDismiss();
+	CONTEXT.runOnUiThread(new Runnable_({
+		run: function() {
+			try {
+				VertexClientPE.checkGUINeedsDismiss();
 
-					var helpMenuLayout = new LinearLayout_(CONTEXT);
-					helpMenuLayout.setOrientation(1);
-					helpMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
-					
-					var helpMenuLayoutScroll = new ScrollView(CONTEXT);
-					
-					var helpMenuLayout1 = new LinearLayout_(CONTEXT);
-					helpMenuLayout1.setOrientation(1);
-					helpMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
-					helpMenuLayout1.setPadding(10, 0, 10, 0);
-					
-					var helpEnter = clientTextView("\n");
-					
-					helpMenuLayout1.addView(helpEnter);
-					helpMenuLayoutScroll.addView(helpMenuLayout);
-					helpMenuLayout1.addView(helpMenuLayoutScroll);
-					
-					helpSections.forEach(function(element, index, array) {
-						if(index != 0) {
-							var helpSectionEnter = clientTextView("\n", true, "diff");
-							helpSectionEnter.setTextSize(10);
-							helpMenuLayout.addView(helpSectionEnter);
-						}
-						helpMenuLayout.addView(helpSection(element[0], element[1]));
-					});
+				var helpMenuLayout = new LinearLayout_(CONTEXT);
+				helpMenuLayout.setOrientation(1);
+				helpMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
+				
+				var helpMenuLayoutScroll = new ScrollView(CONTEXT);
+				
+				var helpMenuLayout1 = new LinearLayout_(CONTEXT);
+				helpMenuLayout1.setOrientation(1);
+				helpMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
+				helpMenuLayout1.setPadding(10, 0, 10, 0);
+				
+				var helpEnter = clientTextView("\n");
+				
+				helpMenuLayout1.addView(helpEnter);
+				helpMenuLayoutScroll.addView(helpMenuLayout);
+				helpMenuLayout1.addView(helpMenuLayoutScroll);
+				
+				helpSections.forEach(function(element, index, array) {
+					if(index != 0) {
+						var helpSectionEnter = clientTextView("\n", true, "diff");
+						helpSectionEnter.setTextSize(10);
+						helpMenuLayout.addView(helpSectionEnter);
+					}
+					helpMenuLayout.addView(helpSection(element[0], element[1]));
+				});
 
-					screenUI = new PopupWindow_(helpMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
-					screenUI.setBackgroundDrawable(backgroundGradient());
-					screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
-				} catch(error) {
-					print("An error occurred: " + error);
-				}
+				screenUI = new PopupWindow_(helpMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
+				screenUI.setBackgroundDrawable(backgroundGradient());
+				screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
+			} catch(error) {
+				print("An error occurred: " + error);
 			}
-		}));
+		}
+	}));
 }
 
 function previewScreen(fromDashboard) {
 	VertexClientPE.menuIsShowing = true;
-	var display = new DisplayMetrics_();
-	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
-		CONTEXT.runOnUiThread(new Runnable_({
-			run: function() {
-				try {
-					VertexClientPE.checkGUINeedsDismiss();
+	CONTEXT.runOnUiThread(new Runnable_({
+		run: function() {
+			try {
+				VertexClientPE.checkGUINeedsDismiss();
 
-					var previewMenuLayout = new LinearLayout_(CONTEXT);
-					previewMenuLayout.setOrientation(1);
-					previewMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
-					
-					var previewMenuLayoutScroll = new ScrollView(CONTEXT);
-					
-					var previewMenuLayout1 = new LinearLayout_(CONTEXT);
-					previewMenuLayout1.setOrientation(1);
-					previewMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
-					previewMenuLayout1.setPadding(10, 0, 10, 0);
-					
-					previewMenuLayoutScroll.addView(previewMenuLayout);
-					previewMenuLayout1.addView(previewMenuLayoutScroll);
-					
-					//Webview: set url to latest preview vid
-					
-					var previewWebView = new WebView_(CONTEXT);
-					var wS = previewWebView.getSettings();
-					
-					var previewLatestUrl = "http://bit.ly/VertexListEmbed";
-					var frameVideo = "<html><body><center><iframe width=\"420\" height=\"315\" src=\"" + previewLatestUrl + "\" frameborder=\"0\" allowfullscreen></iframe></center></body></html>";
+				var previewMenuLayout = new LinearLayout_(CONTEXT);
+				previewMenuLayout.setOrientation(1);
+				previewMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
+				
+				var previewMenuLayoutScroll = new ScrollView(CONTEXT);
+				
+				var previewMenuLayout1 = new LinearLayout_(CONTEXT);
+				previewMenuLayout1.setOrientation(1);
+				previewMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
+				previewMenuLayout1.setPadding(10, 0, 10, 0);
+				
+				previewMenuLayoutScroll.addView(previewMenuLayout);
+				previewMenuLayout1.addView(previewMenuLayoutScroll);
+				
+				//Webview: set url to latest preview vid
+				
+				var previewWebView = new WebView_(CONTEXT);
+				var wS = previewWebView.getSettings();
+				
+				var previewLatestUrl = "http://bit.ly/VertexListEmbed";
+				var frameVideo = "<html><body><center><iframe width=\"420\" height=\"315\" src=\"" + previewLatestUrl + "\" frameborder=\"0\" allowfullscreen></iframe></center></body></html>";
 
-					wS.setJavaScriptEnabled(true);
-					previewWebView.setBackgroundColor(0x00000000);
-					previewWebView.setWebChromeClient(new WebChromeClient_());
-					previewWebView.setWebViewClient(new WebViewClient_());
+				wS.setJavaScriptEnabled(true);
+				previewWebView.setBackgroundColor(0x00000000);
+				previewWebView.setWebChromeClient(new WebChromeClient_());
+				previewWebView.setWebViewClient(new WebViewClient_());
 
-					previewWebView.loadData(frameVideo, "text/html", "utf-8");
-					
-					previewMenuLayout.addView(previewWebView);
+				previewWebView.loadData(frameVideo, "text/html", "utf-8");
+				
+				previewMenuLayout.addView(previewWebView);
 
-					screenUI = new PopupWindow_(previewMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
-					screenUI.setBackgroundDrawable(backgroundGradient());
-					screenUI.setOnDismissListener(new PopupWindow_.OnDismissListener() {
-						onDismiss: function() {
-							previewWebView.loadUrl("about:blank");
-						}
-					});
-					screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
-				} catch(error) {
-					print("An error occurred: " + error);
-				}
+				screenUI = new PopupWindow_(previewMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
+				screenUI.setBackgroundDrawable(backgroundGradient());
+				screenUI.setOnDismissListener(new PopupWindow_.OnDismissListener() {
+					onDismiss: function() {
+						previewWebView.loadUrl("about:blank");
+					}
+				});
+				screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
+			} catch(error) {
+				print("An error occurred: " + error);
 			}
-		}));
+		}
+	}));
 }
 
 function addonScreen(fromDashboard) {
 	VertexClientPE.menuIsShowing = true;
-	var display = new DisplayMetrics_();
-	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
-		CONTEXT.runOnUiThread(new Runnable_({
-			run: function() {
-				try {
-					VertexClientPE.checkGUINeedsDismiss();
+	CONTEXT.runOnUiThread(new Runnable_({
+		run: function() {
+			try {
+				VertexClientPE.checkGUINeedsDismiss();
 
-					var addonMenuLayout = new LinearLayout_(CONTEXT);
-					addonMenuLayout.setOrientation(1);
-					addonMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
-					
-					var addonMenuLayoutScroll = new ScrollView(CONTEXT);
-					
-					var addonMenuLayout1 = new LinearLayout_(CONTEXT);
-					addonMenuLayout1.setOrientation(1);
-					addonMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
-					
-					var addonDownloadTextView = clientTextView("Download addons");
-					addonDownloadTextView.setGravity(Gravity_.CENTER);
-					addonDownloadTextView.setPaintFlags(addonDownloadTextView.getPaintFlags() | Paint_.UNDERLINE_TEXT_FLAG);
-					addonDownloadTextView.setOnClickListener(new View_.OnClickListener() {
-						onClick: function(v) {
-							ModPE.goToURL("http://Vertex-Client.ml/#addons");
-						}
-					});
-					addonMenuLayout1.addView(addonDownloadTextView);
-					addonMenuLayout1.addView(clientTextView("\n"));
-					
-					addonMenuLayoutScroll.addView(addonMenuLayout);
-					addonMenuLayout1.addView(addonMenuLayoutScroll);
-					
-					if(VertexClientPE.addons.length == 0) {
-						var noAddonsText = clientTextView("You either don't have any addons or you should restart to load them!");
-						noAddonsText.setGravity(Gravity_.CENTER);
-						addonMenuLayout.addView(noAddonsText);
+				var addonMenuLayout = new LinearLayout_(CONTEXT);
+				addonMenuLayout.setOrientation(1);
+				addonMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
+				
+				var addonMenuLayoutScroll = new ScrollView(CONTEXT);
+				
+				var addonMenuLayout1 = new LinearLayout_(CONTEXT);
+				addonMenuLayout1.setOrientation(1);
+				addonMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
+				
+				var addonDownloadTextView = clientTextView("Download addons");
+				addonDownloadTextView.setGravity(Gravity_.CENTER);
+				addonDownloadTextView.setPaintFlags(addonDownloadTextView.getPaintFlags() | Paint_.UNDERLINE_TEXT_FLAG);
+				addonDownloadTextView.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(v) {
+						ModPE.goToURL("http://Vertex-Client.ml/#addons");
 					}
-					
-					VertexClientPE.addons.forEach(function(element, index, array) {
-						addonMenuLayout.addView(new addonButton(element));
-					});
-
-					screenUI = new PopupWindow_(addonMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
-					screenUI.setBackgroundDrawable(backgroundGradient());
-					screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
-				} catch(error) {
-					print("An error occurred: " + error);
+				});
+				addonMenuLayout1.addView(addonDownloadTextView);
+				addonMenuLayout1.addView(clientTextView("\n"));
+				
+				addonMenuLayoutScroll.addView(addonMenuLayout);
+				addonMenuLayout1.addView(addonMenuLayoutScroll);
+				
+				if(VertexClientPE.addons.length == 0) {
+					var noAddonsText = clientTextView("You either don't have any addons or you should restart to load them!");
+					noAddonsText.setGravity(Gravity_.CENTER);
+					addonMenuLayout.addView(noAddonsText);
 				}
+				
+				VertexClientPE.addons.forEach(function(element, index, array) {
+					addonMenuLayout.addView(new addonButton(element));
+				});
+
+				screenUI = new PopupWindow_(addonMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
+				screenUI.setBackgroundDrawable(backgroundGradient());
+				screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
+			} catch(error) {
+				print("An error occurred: " + error);
 			}
-		}));
+		}
+	}));
 }
 
 function milestonesScreen(fromDashboard) {
 	VertexClientPE.menuIsShowing = true;
-	var display = new DisplayMetrics_();
-	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function () {
 			try {
@@ -15582,8 +15538,6 @@ function milestonesScreen(fromDashboard) {
 
 function christmasScreen(fromDashboard) {
 	VertexClientPE.menuIsShowing = true;
-	var display = new DisplayMetrics_();
-	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function () {
 			try {
@@ -15706,272 +15660,264 @@ function christmasScreen(fromDashboard) {
  */
 function playerCustomizerScreen(fromDashboard, title, icon) {
 	VertexClientPE.menuIsShowing = true;
-	var display = new DisplayMetrics_();
-	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
-		CONTEXT.runOnUiThread(new Runnable_({
-			run: function() {
-				try {
-					VertexClientPE.checkGUINeedsDismiss();
-					
-					var playerCustomizerLayout1 = new LinearLayout_(CONTEXT);
-					playerCustomizerLayout1.setOrientation(1);
-					playerCustomizerLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
+	CONTEXT.runOnUiThread(new Runnable_({
+		run: function() {
+			try {
+				VertexClientPE.checkGUINeedsDismiss();
+				
+				var playerCustomizerLayout1 = new LinearLayout_(CONTEXT);
+				playerCustomizerLayout1.setOrientation(1);
+				playerCustomizerLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-					var playerCustomizerLayout = new LinearLayout_(CONTEXT);
-					playerCustomizerLayout.setOrientation(LinearLayout_.HORIZONTAL);
-					playerCustomizerLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
-					
-					var playerCustomizerLayoutLeft = new LinearLayout_(CONTEXT);
-					playerCustomizerLayoutLeft.setOrientation(1);
-					playerCustomizerLayoutLeft.setGravity(Gravity_.CENTER_HORIZONTAL);
-					
-					var playerCustomizerLayoutLeftScroll = new ScrollView(CONTEXT);
-					
-					var playerCustomizerLayoutLeft1 = new LinearLayout_(CONTEXT);
-					playerCustomizerLayoutLeft1.setOrientation(1);
-					playerCustomizerLayoutLeft1.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2, display.heightPixels / 2 - barLayoutHeight / 2));
-					
-					var playerCustomizerLayoutRight = new LinearLayout_(CONTEXT);
-					playerCustomizerLayoutRight.setOrientation(1);
-					playerCustomizerLayoutRight.setGravity(Gravity_.CENTER_HORIZONTAL);
-					
-					var playerCustomizerLayoutRightScroll = new ScrollView(CONTEXT);
-					
-					var playerCustomizerLayoutRight1 = new LinearLayout_(CONTEXT);
-					playerCustomizerLayoutRight1.setOrientation(1);
-					playerCustomizerLayoutRight1.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2, display.heightPixels / 2 - barLayoutHeight / 2));
-					
-					var playerCustomizerLayoutBottom = new LinearLayout_(CONTEXT);
-					playerCustomizerLayoutBottom.setOrientation(1);
-					playerCustomizerLayoutBottom.setGravity(Gravity_.CENTER_HORIZONTAL);
-					
-					var playerCustomizerLayoutBottomScroll = new ScrollView(CONTEXT);
-					
-					var playerCustomizerLayoutBottom1 = new LinearLayout_(CONTEXT);
-					playerCustomizerLayoutBottom1.setOrientation(1);
-					playerCustomizerLayoutBottom1.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels, display.heightPixels / 2 - barLayoutHeight / 2));
-					
-					var playerCustomizerLeftTitle = clientTextView("Morphing", true);
-					playerCustomizerLeftTitle.setGravity(Gravity_.CENTER);
-					playerCustomizerLeftTitle.setBackgroundDrawable(backgroundSpecial(null, themeSetting));
-					
-					var playerCustomizerRightTitle = clientTextView("Trails", true);
-					playerCustomizerRightTitle.setGravity(Gravity_.CENTER);
-					playerCustomizerRightTitle.setBackgroundDrawable(backgroundSpecial(null, themeSetting));
-					
-					var playerCustomizerBottomTitle = clientTextView("Options", true);
-					playerCustomizerBottomTitle.setGravity(Gravity_.CENTER);
-					playerCustomizerBottomTitle.setBackgroundDrawable(backgroundSpecial(null, themeSetting));
-					
-					playerCustomizerLayoutLeftScroll.addView(playerCustomizerLayoutLeft);
-					playerCustomizerLayoutLeft1.addView(playerCustomizerLeftTitle);
-					playerCustomizerLayoutLeft1.addView(playerCustomizerLayoutLeftScroll);
-					
-					playerCustomizerLayoutRightScroll.addView(playerCustomizerLayoutRight);
-					playerCustomizerLayoutRight1.addView(playerCustomizerRightTitle);
-					playerCustomizerLayoutRight1.addView(playerCustomizerLayoutRightScroll);
-					
-					playerCustomizerLayoutBottomScroll.addView(playerCustomizerLayoutBottom);
-					playerCustomizerLayoutBottom1.addView(playerCustomizerBottomTitle);
-					playerCustomizerLayoutBottom1.addView(playerCustomizerLayoutBottomScroll);
-					
-					var killToMorphSettingButton = clientSwitch();
-					killToMorphSettingButton.setText("Automatically morph when killing entities");
-					killToMorphSettingButton.setChecked(killToMorphSetting == "on");
-					killToMorphSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
-						onCheckedChanged: function() {
-							if(killToMorphSetting == "off") {
-								killToMorphSetting = "on";
-							} else if(killToMorphSetting == "on") {
-								killToMorphSetting = "off";
-							}
-							VertexClientPE.saveMainSettings();
+				var playerCustomizerLayout = new LinearLayout_(CONTEXT);
+				playerCustomizerLayout.setOrientation(LinearLayout_.HORIZONTAL);
+				playerCustomizerLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
+				
+				var playerCustomizerLayoutLeft = new LinearLayout_(CONTEXT);
+				playerCustomizerLayoutLeft.setOrientation(1);
+				playerCustomizerLayoutLeft.setGravity(Gravity_.CENTER_HORIZONTAL);
+				
+				var playerCustomizerLayoutLeftScroll = new ScrollView(CONTEXT);
+				
+				var playerCustomizerLayoutLeft1 = new LinearLayout_(CONTEXT);
+				playerCustomizerLayoutLeft1.setOrientation(1);
+				playerCustomizerLayoutLeft1.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2, display.heightPixels / 2 - barLayoutHeight / 2));
+				
+				var playerCustomizerLayoutRight = new LinearLayout_(CONTEXT);
+				playerCustomizerLayoutRight.setOrientation(1);
+				playerCustomizerLayoutRight.setGravity(Gravity_.CENTER_HORIZONTAL);
+				
+				var playerCustomizerLayoutRightScroll = new ScrollView(CONTEXT);
+				
+				var playerCustomizerLayoutRight1 = new LinearLayout_(CONTEXT);
+				playerCustomizerLayoutRight1.setOrientation(1);
+				playerCustomizerLayoutRight1.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2, display.heightPixels / 2 - barLayoutHeight / 2));
+				
+				var playerCustomizerLayoutBottom = new LinearLayout_(CONTEXT);
+				playerCustomizerLayoutBottom.setOrientation(1);
+				playerCustomizerLayoutBottom.setGravity(Gravity_.CENTER_HORIZONTAL);
+				
+				var playerCustomizerLayoutBottomScroll = new ScrollView(CONTEXT);
+				
+				var playerCustomizerLayoutBottom1 = new LinearLayout_(CONTEXT);
+				playerCustomizerLayoutBottom1.setOrientation(1);
+				playerCustomizerLayoutBottom1.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels, display.heightPixels / 2 - barLayoutHeight / 2));
+				
+				var playerCustomizerLeftTitle = clientTextView("Morphing", true);
+				playerCustomizerLeftTitle.setGravity(Gravity_.CENTER);
+				playerCustomizerLeftTitle.setBackgroundDrawable(backgroundSpecial(null, themeSetting));
+				
+				var playerCustomizerRightTitle = clientTextView("Trails", true);
+				playerCustomizerRightTitle.setGravity(Gravity_.CENTER);
+				playerCustomizerRightTitle.setBackgroundDrawable(backgroundSpecial(null, themeSetting));
+				
+				var playerCustomizerBottomTitle = clientTextView("Options", true);
+				playerCustomizerBottomTitle.setGravity(Gravity_.CENTER);
+				playerCustomizerBottomTitle.setBackgroundDrawable(backgroundSpecial(null, themeSetting));
+				
+				playerCustomizerLayoutLeftScroll.addView(playerCustomizerLayoutLeft);
+				playerCustomizerLayoutLeft1.addView(playerCustomizerLeftTitle);
+				playerCustomizerLayoutLeft1.addView(playerCustomizerLayoutLeftScroll);
+				
+				playerCustomizerLayoutRightScroll.addView(playerCustomizerLayoutRight);
+				playerCustomizerLayoutRight1.addView(playerCustomizerRightTitle);
+				playerCustomizerLayoutRight1.addView(playerCustomizerLayoutRightScroll);
+				
+				playerCustomizerLayoutBottomScroll.addView(playerCustomizerLayoutBottom);
+				playerCustomizerLayoutBottom1.addView(playerCustomizerBottomTitle);
+				playerCustomizerLayoutBottom1.addView(playerCustomizerLayoutBottomScroll);
+				
+				var killToMorphSettingButton = clientSwitch();
+				killToMorphSettingButton.setText("Automatically morph when killing entities");
+				killToMorphSettingButton.setChecked(killToMorphSetting == "on");
+				killToMorphSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
+					onCheckedChanged: function() {
+						if(killToMorphSetting == "off") {
+							killToMorphSetting = "on";
+						} else if(killToMorphSetting == "on") {
+							killToMorphSetting = "off";
 						}
-					}));
-					
-					playerCustomizerLayoutBottom.addView(killToMorphSettingButton);
-					
-					playerCustomizerLayout1.addView(playerCustomizerLayout);
-					playerCustomizerLayout.addView(playerCustomizerLayoutLeft1);
-					playerCustomizerLayout.addView(playerCustomizerLayoutRight1);
-					playerCustomizerLayout1.addView(playerCustomizerLayoutBottom1);
-					
-					renderTypes.forEach(function(element, index, array) {
-						var rTButton = clientButton(Entity.renderTypeToName(element));
-						if(element == Entity.getRenderType(getPlayerEnt())) {
-							rTButton.setTextColor(Color_.GREEN);
-						}
-						rTButton.setOnClickListener(new View_.OnClickListener() {
-							onClick: function() {
-								VertexClientPE.setPlayerModel(element, playerCustomizerLayoutLeft);
-							}
-						});
-						if(Entity.renderTypeToName(element) != "Unknown") {
-							playerCustomizerLayoutLeft.addView(rTButton);
+						VertexClientPE.saveMainSettings();
+					}
+				}));
+				
+				playerCustomizerLayoutBottom.addView(killToMorphSettingButton);
+				
+				playerCustomizerLayout1.addView(playerCustomizerLayout);
+				playerCustomizerLayout.addView(playerCustomizerLayoutLeft1);
+				playerCustomizerLayout.addView(playerCustomizerLayoutRight1);
+				playerCustomizerLayout1.addView(playerCustomizerLayoutBottom1);
+				
+				renderTypes.forEach(function(element, index, array) {
+					var rTButton = clientButton(Entity.renderTypeToName(element));
+					if(element == Entity.getRenderType(getPlayerEnt())) {
+						rTButton.setTextColor(Color_.GREEN);
+					}
+					rTButton.setOnClickListener(new View_.OnClickListener() {
+						onClick: function() {
+							VertexClientPE.setPlayerModel(element, playerCustomizerLayoutLeft);
 						}
 					});
-					
-					trailsModes.forEach(function(element, index, array) {
-						var trailButton = clientButton(element[1]);
-						if(element[0] == VertexClientPE.trailsMode) {
-							trailButton.setTextColor(Color_.GREEN);
+					if(Entity.renderTypeToName(element) != "Unknown") {
+						playerCustomizerLayoutLeft.addView(rTButton);
+					}
+				});
+				
+				trailsModes.forEach(function(element, index, array) {
+					var trailButton = clientButton(element[1]);
+					if(element[0] == VertexClientPE.trailsMode) {
+						trailButton.setTextColor(Color_.GREEN);
+					}
+					trailButton.setOnClickListener(new View_.OnClickListener() {
+						onClick: function() {
+							VertexClientPE.setTrailsMode(element, playerCustomizerLayoutRight);
 						}
-						trailButton.setOnClickListener(new View_.OnClickListener() {
-							onClick: function() {
-								VertexClientPE.setTrailsMode(element, playerCustomizerLayoutRight);
-							}
-						});
-						playerCustomizerLayoutRight.addView(trailButton);
 					});
+					playerCustomizerLayoutRight.addView(trailButton);
+				});
 
-					screenUI = new PopupWindow_(playerCustomizerLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
-					screenUI.setBackgroundDrawable(backgroundGradient());
-					screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
-					
-					VertexClientPE.showExitButtons(fromDashboard, title, icon);
-				} catch(error) {
-					print("An error occurred: " + error);
-				}
+				screenUI = new PopupWindow_(playerCustomizerLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
+				screenUI.setBackgroundDrawable(backgroundGradient());
+				screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
+				
+				VertexClientPE.showExitButtons(fromDashboard, title, icon);
+			} catch(error) {
+				print("An error occurred: " + error);
 			}
-		}));
+		}
+	}));
 }
 
 function optiFineScreen(fromDashboard, title, icon) {
 	VertexClientPE.menuIsShowing = true;
-	var display = new DisplayMetrics_();
-	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
-		CONTEXT.runOnUiThread(new Runnable_({
-			run: function() {
-				try {
-					VertexClientPE.checkGUINeedsDismiss();
+	CONTEXT.runOnUiThread(new Runnable_({
+		run: function() {
+			try {
+				VertexClientPE.checkGUINeedsDismiss();
 
-					var optiFineLayout = new LinearLayout_(CONTEXT);
-					optiFineLayout.setOrientation(1);
-					optiFineLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
-					
-					var optiFineLayoutScroll = new ScrollView(CONTEXT);
-					
-					var optiFineLayout1 = new LinearLayout_(CONTEXT);
-					optiFineLayout1.setOrientation(1);
-					optiFineLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
-					
-					optiFineLayoutScroll.addView(optiFineLayout);
-					optiFineLayout1.addView(optiFineLayoutScroll);
-					
-					var antiLagDropRemoverButton = clientSwitch();
-					antiLagDropRemoverButton.setText("Automatically remove dropped items to reduce lag");
-					antiLagDropRemoverButton.setChecked(antiLagDropRemoverSetting == "on");
-					antiLagDropRemoverButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
-						onCheckedChanged: function() {
-							if(antiLagDropRemoverSetting == "off") {
-								antiLagDropRemoverSetting = "on";
-							} else if(antiLagDropRemoverSetting == "on") {
-								antiLagDropRemoverSetting = "off";
-							}
-							lagTimer = 0;
-							VertexClientPE.saveMainSettings();
+				var optiFineLayout = new LinearLayout_(CONTEXT);
+				optiFineLayout.setOrientation(1);
+				optiFineLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
+				
+				var optiFineLayoutScroll = new ScrollView(CONTEXT);
+				
+				var optiFineLayout1 = new LinearLayout_(CONTEXT);
+				optiFineLayout1.setOrientation(1);
+				optiFineLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
+				
+				optiFineLayoutScroll.addView(optiFineLayout);
+				optiFineLayout1.addView(optiFineLayoutScroll);
+				
+				var antiLagDropRemoverButton = clientSwitch();
+				antiLagDropRemoverButton.setText("Automatically remove dropped items to reduce lag");
+				antiLagDropRemoverButton.setChecked(antiLagDropRemoverSetting == "on");
+				antiLagDropRemoverButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
+					onCheckedChanged: function() {
+						if(antiLagDropRemoverSetting == "off") {
+							antiLagDropRemoverSetting = "on";
+						} else if(antiLagDropRemoverSetting == "on") {
+							antiLagDropRemoverSetting = "off";
 						}
-					}));
-					optiFineLayout.addView(antiLagDropRemoverButton);
-					
-					var betterPauseButton = clientSwitch();
-					betterPauseButton.setText("Better pause (don't move while paused on multiplayer)");
-					betterPauseButton.setChecked(betterPauseSetting == "on");
-					betterPauseButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
-						onCheckedChanged: function() {
-							if(betterPauseSetting == "off") {
-								betterPauseSetting = "on";
-							} else if(betterPauseSetting == "on") {
-								betterPauseSetting = "off";
-							}
-							VertexClientPE.saveMainSettings();
+						lagTimer = 0;
+						VertexClientPE.saveMainSettings();
+					}
+				}));
+				optiFineLayout.addView(antiLagDropRemoverButton);
+				
+				var betterPauseButton = clientSwitch();
+				betterPauseButton.setText("Better pause (don't move while paused on multiplayer)");
+				betterPauseButton.setChecked(betterPauseSetting == "on");
+				betterPauseButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
+					onCheckedChanged: function() {
+						if(betterPauseSetting == "off") {
+							betterPauseSetting = "on";
+						} else if(betterPauseSetting == "on") {
+							betterPauseSetting = "off";
 						}
-					}));
-					optiFineLayout.addView(betterPauseButton);
+						VertexClientPE.saveMainSettings();
+					}
+				}));
+				optiFineLayout.addView(betterPauseButton);
 
-					screenUI = new PopupWindow_(optiFineLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
-					screenUI.setBackgroundDrawable(backgroundGradient());
-					screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
-					
-					VertexClientPE.showExitButtons(fromDashboard, title, icon);
-				} catch(error) {
-					print("An error occurred: " + error);
-				}
+				screenUI = new PopupWindow_(optiFineLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
+				screenUI.setBackgroundDrawable(backgroundGradient());
+				screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
+				
+				VertexClientPE.showExitButtons(fromDashboard, title, icon);
+			} catch(error) {
+				print("An error occurred: " + error);
 			}
-		}));
+		}
+	}));
 }
 
 function updateCenterScreen(fromDashboard) {
 	VertexClientPE.menuIsShowing = true;
-	var display = new DisplayMetrics_();
-	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
-		CONTEXT.runOnUiThread(new Runnable_({
-			run: function() {
-				try {
-					VertexClientPE.checkGUINeedsDismiss();
+	CONTEXT.runOnUiThread(new Runnable_({
+		run: function() {
+			try {
+				VertexClientPE.checkGUINeedsDismiss();
 
-					var updateCenterMenuLayout = new LinearLayout_(CONTEXT);
-					updateCenterMenuLayout.setOrientation(1);
-					updateCenterMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
-					
-					var updateCenterMenuLayoutScroll = new ScrollView(CONTEXT);
-					
-					var updateCenterMenuLayout1 = new LinearLayout_(CONTEXT);
-					updateCenterMenuLayout1.setOrientation(1);
-					updateCenterMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
-					updateCenterMenuLayout1.setPadding(10, 0, 10, 0);
-					
-					var showUpdateToastsSettingSwitch = clientSwitch();
-					showUpdateToastsSettingSwitch.setText("Show update toasts on start");
-					showUpdateToastsSettingSwitch.setChecked(showUpdateToastsSetting == "on");
-					showUpdateToastsSettingSwitch.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
-						onCheckedChanged: function() {
-							if(showUpdateToastsSetting == "off") {
-								showUpdateToastsSetting = "on";
-							} else if(showUpdateToastsSetting == "on") {
-								showUpdateToastsSetting = "off";
-							}
-							VertexClientPE.saveMainSettings();
+				var updateCenterMenuLayout = new LinearLayout_(CONTEXT);
+				updateCenterMenuLayout.setOrientation(1);
+				updateCenterMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
+				
+				var updateCenterMenuLayoutScroll = new ScrollView(CONTEXT);
+				
+				var updateCenterMenuLayout1 = new LinearLayout_(CONTEXT);
+				updateCenterMenuLayout1.setOrientation(1);
+				updateCenterMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
+				updateCenterMenuLayout1.setPadding(10, 0, 10, 0);
+				
+				var showUpdateToastsSettingSwitch = clientSwitch();
+				showUpdateToastsSettingSwitch.setText("Show update toasts on start");
+				showUpdateToastsSettingSwitch.setChecked(showUpdateToastsSetting == "on");
+				showUpdateToastsSettingSwitch.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
+					onCheckedChanged: function() {
+						if(showUpdateToastsSetting == "off") {
+							showUpdateToastsSetting = "on";
+						} else if(showUpdateToastsSetting == "on") {
+							showUpdateToastsSetting = "off";
 						}
-					}));
-					
-					updateCenterMenuLayout1.addView(clientTextView("\n"));
-					updateCenterMenuLayout1.addView(showUpdateToastsSettingSwitch);
-					updateCenterMenuLayoutScroll.addView(updateCenterMenuLayout);
-					updateCenterMenuLayout1.addView(updateCenterMenuLayoutScroll);
-					
-					var devUpdateView = updatePaneButton("Latest dev version", "http://bit.ly/VertexDev", true);
-					var updateDevEnterView = new TextView_(CONTEXT);
-					updateDevEnterView.setText("\n");
-					var latestUpdateView = updatePaneButton(VertexClientPE.latestVersion, VertexClientPE.latestVersionDesc);
-					var updateEnterView = new TextView_(CONTEXT);
-					updateEnterView.setText("\n");
-					var currentUpdateView = updatePaneButton(VertexClientPE.currentVersion, VertexClientPE.currentVersionDesc);
-					
-					if(VertexClientPE.isDevMode()) {
-						updateCenterMenuLayout.addView(devUpdateView);
-						updateCenterMenuLayout.addView(updateDevEnterView);
+						VertexClientPE.saveMainSettings();
 					}
-					if(VertexClientPE.latestVersion != VertexClientPE.currentVersion) {
-						updateCenterMenuLayout.addView(latestUpdateView);
-						updateCenterMenuLayout.addView(updateEnterView);
-					}
-					updateCenterMenuLayout.addView(currentUpdateView);
-
-					screenUI = new PopupWindow_(updateCenterMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
-					screenUI.setBackgroundDrawable(backgroundGradient());
-					screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
-				} catch(error) {
-					print("An error occurred: " + error);
+				}));
+				
+				updateCenterMenuLayout1.addView(clientTextView("\n"));
+				updateCenterMenuLayout1.addView(showUpdateToastsSettingSwitch);
+				updateCenterMenuLayoutScroll.addView(updateCenterMenuLayout);
+				updateCenterMenuLayout1.addView(updateCenterMenuLayoutScroll);
+				
+				var devUpdateView = updatePaneButton("Latest dev version", "http://bit.ly/VertexDev", true);
+				var updateDevEnterView = new TextView_(CONTEXT);
+				updateDevEnterView.setText("\n");
+				var latestUpdateView = updatePaneButton(VertexClientPE.latestVersion, VertexClientPE.latestVersionDesc);
+				var updateEnterView = new TextView_(CONTEXT);
+				updateEnterView.setText("\n");
+				var currentUpdateView = updatePaneButton(VertexClientPE.currentVersion, VertexClientPE.currentVersionDesc);
+				
+				if(VertexClientPE.isDevMode()) {
+					updateCenterMenuLayout.addView(devUpdateView);
+					updateCenterMenuLayout.addView(updateDevEnterView);
 				}
+				if(VertexClientPE.latestVersion != VertexClientPE.currentVersion) {
+					updateCenterMenuLayout.addView(latestUpdateView);
+					updateCenterMenuLayout.addView(updateEnterView);
+				}
+				updateCenterMenuLayout.addView(currentUpdateView);
+
+				screenUI = new PopupWindow_(updateCenterMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
+				screenUI.setBackgroundDrawable(backgroundGradient());
+				screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
+			} catch(error) {
+				print("An error occurred: " + error);
 			}
-		}));
+		}
+	}));
 }
 
 function musicPlayerScreen(fromDashboard) {
 	VertexClientPE.menuIsShowing = true;
-	var display = new DisplayMetrics_();
-	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
@@ -16065,8 +16011,6 @@ function musicPlayerScreen(fromDashboard) {
 
 function modManagerScreen(fromDashboard) {
 	VertexClientPE.menuIsShowing = true;
-	var display = new DisplayMetrics_();
-	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
@@ -16345,8 +16289,6 @@ VertexClientPE.showF12Dialog = function() {
 
 function webBrowserScreen(fromDashboard) {
 	VertexClientPE.menuIsShowing = true;
-	var display = new DisplayMetrics_();
-	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
@@ -16394,8 +16336,6 @@ function webBrowserScreen(fromDashboard) {
 }
 
 VertexClientPE.showTipBar = function() {
-	var display = new DisplayMetrics_();
-	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
@@ -16524,156 +16464,154 @@ VertexClientPE.closeMenu = function() {
 
 VertexClientPE.showFullScreenMenu = function() {
 	VertexClientPE.menuIsShowing = true;
-	var display = new DisplayMetrics_();
-	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
-		CONTEXT.runOnUiThread(new Runnable_({
-			run: function() {
-				try {
-					VertexClientPE.checkGUINeedsDismiss();
-					
-					var fullScreenMenuLayoutScroll = new android.widget.HorizontalScrollView(CONTEXT);
+	CONTEXT.runOnUiThread(new Runnable_({
+		run: function() {
+			try {
+				VertexClientPE.checkGUINeedsDismiss();
+				
+				var fullScreenMenuLayoutScroll = new android.widget.HorizontalScrollView(CONTEXT);
 
-					var fullScreenMenuLayout = new LinearLayout_(CONTEXT);
-					fullScreenMenuLayout.setOrientation(LinearLayout_.HORIZONTAL);
-					fullScreenMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
-					
-					fullScreenMenuLayoutScroll.addView(fullScreenMenuLayout);
-					
-					var fullScreenMenuLayout1Combat = new LinearLayout_(CONTEXT);
-					fullScreenMenuLayout1Combat.setOrientation(1);
-					fullScreenMenuLayout1Combat.setGravity(Gravity_.CENTER_HORIZONTAL);
-					var fullScreenMenuLayout1World = new LinearLayout_(CONTEXT);
-					fullScreenMenuLayout1World.setOrientation(1);
-					fullScreenMenuLayout1World.setGravity(Gravity_.CENTER_HORIZONTAL);
-					var fullScreenMenuLayout1Movement = new LinearLayout_(CONTEXT);
-					fullScreenMenuLayout1Movement.setOrientation(1);
-					fullScreenMenuLayout1Movement.setGravity(Gravity_.CENTER_HORIZONTAL);
-					var fullScreenMenuLayout1Player = new LinearLayout_(CONTEXT);
-					fullScreenMenuLayout1Player.setOrientation(1);
-					fullScreenMenuLayout1Player.setGravity(Gravity_.CENTER_HORIZONTAL);
-					var fullScreenMenuLayout1Misc = new LinearLayout_(CONTEXT);
-					fullScreenMenuLayout1Misc.setOrientation(1);
-					fullScreenMenuLayout1Misc.setGravity(Gravity_.CENTER_HORIZONTAL);
-					
-					var combatSectionTitle = coloredSubTitle(combatName);
-					combatSectionTitle.setGravity(Gravity_.CENTER);
-					var worldSectionTitle = coloredSubTitle(worldName);
-					worldSectionTitle.setGravity(Gravity_.CENTER);
-					var movementSectionTitle = coloredSubTitle(movementName);
-					movementSectionTitle.setGravity(Gravity_.CENTER);
-					var playerSectionTitle = coloredSubTitle(playerName);
-					playerSectionTitle.setGravity(Gravity_.CENTER);
-					var miscSectionTitle = coloredSubTitle(miscName);
-					miscSectionTitle.setGravity(Gravity_.CENTER);
-					
-					fullScreenMenuLayout1Combat.addView(combatSectionTitle);
-					fullScreenMenuLayout1World.addView(worldSectionTitle);
-					fullScreenMenuLayout1Movement.addView(movementSectionTitle);
-					fullScreenMenuLayout1Player.addView(playerSectionTitle);
-					fullScreenMenuLayout1Misc.addView(miscSectionTitle);
-					
-					var fullScreenMenuLayoutScrollCombat = new ScrollView(CONTEXT);
-					var fullScreenMenuLayoutScrollWorld = new ScrollView(CONTEXT);
-					var fullScreenMenuLayoutScrollMovement = new ScrollView(CONTEXT);
-					var fullScreenMenuLayoutScrollPlayer = new ScrollView(CONTEXT);
-					var fullScreenMenuLayoutScrollMisc = new ScrollView(CONTEXT);
-					
-					var fullScreenMenuLayoutCombat = new LinearLayout_(CONTEXT);
-					fullScreenMenuLayoutCombat.setOrientation(1);
-					var fullScreenMenuLayoutWorld = new LinearLayout_(CONTEXT);
-					fullScreenMenuLayoutWorld.setOrientation(1);
-					var fullScreenMenuLayoutMovement = new LinearLayout_(CONTEXT);
-					fullScreenMenuLayoutMovement.setOrientation(1);
-					var fullScreenMenuLayoutPlayer = new LinearLayout_(CONTEXT);
-					fullScreenMenuLayoutPlayer.setOrientation(1);
-					var fullScreenMenuLayoutMisc = new LinearLayout_(CONTEXT);
-					fullScreenMenuLayoutMisc.setOrientation(1);
-					
-					fullScreenMenuLayoutScrollCombat.addView(fullScreenMenuLayoutCombat);
-					fullScreenMenuLayoutScrollWorld.addView(fullScreenMenuLayoutWorld);
-					fullScreenMenuLayoutScrollMovement.addView(fullScreenMenuLayoutMovement);
-					fullScreenMenuLayoutScrollPlayer.addView(fullScreenMenuLayoutPlayer);
-					fullScreenMenuLayoutScrollMisc.addView(fullScreenMenuLayoutMisc);
-					
-					fullScreenMenuLayout1Combat.addView(fullScreenMenuLayoutScrollCombat);
-					fullScreenMenuLayout1World.addView(fullScreenMenuLayoutScrollWorld);
-					fullScreenMenuLayout1Movement.addView(fullScreenMenuLayoutScrollMovement);
-					fullScreenMenuLayout1Player.addView(fullScreenMenuLayoutScrollPlayer);
-					fullScreenMenuLayout1Misc.addView(fullScreenMenuLayoutScrollMisc);
-					
-					if(combatEnabled == "on") {
-						fullScreenMenuLayout.addView(fullScreenMenuLayout1Combat);
-					} if(worldEnabled == "on") {
-						fullScreenMenuLayout.addView(fullScreenMenuLayout1World);
-					} if(movementEnabled == "on") {
-						fullScreenMenuLayout.addView(fullScreenMenuLayout1Movement);
-					} if(playerEnabled == "on") {
-						fullScreenMenuLayout.addView(fullScreenMenuLayout1Player);
-					} if(miscEnabled == "on") {
-						fullScreenMenuLayout.addView(fullScreenMenuLayout1Misc);
-					}
-					
-					var fullScreenMenuLayout1 = new LinearLayout_(CONTEXT);
-					fullScreenMenuLayout1.setOrientation(1);
-					fullScreenMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
-					fullScreenMenuLayout1.setPadding(10, 0, 10, 0);
-					
-					if(mainButtonPositionSetting == "top-left" || mainButtonPositionSetting == "top-right") {
-						fullScreenMenuLayout1.addView(clientTextView("\n"));
-					}
-					fullScreenMenuLayout1.addView(fullScreenMenuLayoutScroll);
-					
-					VertexClientPE.modules.forEach(function (element, index, array) {
-						if (element.type == "Mod" || element.type == "Special") {
-							if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
-								return;
-							}
-							if(element.checkBeforeAdding && !element.checkBeforeAdding()) {
-								return;
-							}
-							if (element.category == VertexClientPE.category.COMBAT) {
-								if(combatEnabled == "on") {
-									fullScreenMenuLayoutCombat.addView(new modButton(element));
-								}
-							} else if (element.category == VertexClientPE.category.WORLD) {
-								if(worldEnabled == "on") {
-									fullScreenMenuLayoutWorld.addView(new modButton(element));
-								}
-							} else if (element.category == VertexClientPE.category.MOVEMENT) {
-								if(movementEnabled == "on") {
-									fullScreenMenuLayoutMovement.addView(new modButton(element));
-								}
-							} else if (element.category == VertexClientPE.category.PLAYER) {
-								if(playerEnabled == "on") {
-									fullScreenMenuLayoutPlayer.addView(new modButton(element));
-								}
-							} else if (element.category == VertexClientPE.category.MISC) {
-								if(miscEnabled == "on") {
-									fullScreenMenuLayoutMisc.addView(new modButton(element));
-								}
-							}
-						}
-					});
-
-					fullScreenMenu = new PopupWindow_(fullScreenMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
-					fullScreenMenu.setBackgroundDrawable(backgroundSpecial());
-					fullScreenMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-					
-					if(GUI != null) {
-						GUI.dismiss();
-						if(mainButtonPositionSetting == "top-right") {
-							GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
-						} else if(mainButtonPositionSetting == "top-left") {
-							GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-						} else if(mainButtonPositionSetting == "bottom-left") {
-							GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
-						}
-					}
-				} catch(error) {
-					print("An error occurred: " + error);
+				var fullScreenMenuLayout = new LinearLayout_(CONTEXT);
+				fullScreenMenuLayout.setOrientation(LinearLayout_.HORIZONTAL);
+				fullScreenMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
+				
+				fullScreenMenuLayoutScroll.addView(fullScreenMenuLayout);
+				
+				var fullScreenMenuLayout1Combat = new LinearLayout_(CONTEXT);
+				fullScreenMenuLayout1Combat.setOrientation(1);
+				fullScreenMenuLayout1Combat.setGravity(Gravity_.CENTER_HORIZONTAL);
+				var fullScreenMenuLayout1World = new LinearLayout_(CONTEXT);
+				fullScreenMenuLayout1World.setOrientation(1);
+				fullScreenMenuLayout1World.setGravity(Gravity_.CENTER_HORIZONTAL);
+				var fullScreenMenuLayout1Movement = new LinearLayout_(CONTEXT);
+				fullScreenMenuLayout1Movement.setOrientation(1);
+				fullScreenMenuLayout1Movement.setGravity(Gravity_.CENTER_HORIZONTAL);
+				var fullScreenMenuLayout1Player = new LinearLayout_(CONTEXT);
+				fullScreenMenuLayout1Player.setOrientation(1);
+				fullScreenMenuLayout1Player.setGravity(Gravity_.CENTER_HORIZONTAL);
+				var fullScreenMenuLayout1Misc = new LinearLayout_(CONTEXT);
+				fullScreenMenuLayout1Misc.setOrientation(1);
+				fullScreenMenuLayout1Misc.setGravity(Gravity_.CENTER_HORIZONTAL);
+				
+				var combatSectionTitle = coloredSubTitle(combatName);
+				combatSectionTitle.setGravity(Gravity_.CENTER);
+				var worldSectionTitle = coloredSubTitle(worldName);
+				worldSectionTitle.setGravity(Gravity_.CENTER);
+				var movementSectionTitle = coloredSubTitle(movementName);
+				movementSectionTitle.setGravity(Gravity_.CENTER);
+				var playerSectionTitle = coloredSubTitle(playerName);
+				playerSectionTitle.setGravity(Gravity_.CENTER);
+				var miscSectionTitle = coloredSubTitle(miscName);
+				miscSectionTitle.setGravity(Gravity_.CENTER);
+				
+				fullScreenMenuLayout1Combat.addView(combatSectionTitle);
+				fullScreenMenuLayout1World.addView(worldSectionTitle);
+				fullScreenMenuLayout1Movement.addView(movementSectionTitle);
+				fullScreenMenuLayout1Player.addView(playerSectionTitle);
+				fullScreenMenuLayout1Misc.addView(miscSectionTitle);
+				
+				var fullScreenMenuLayoutScrollCombat = new ScrollView(CONTEXT);
+				var fullScreenMenuLayoutScrollWorld = new ScrollView(CONTEXT);
+				var fullScreenMenuLayoutScrollMovement = new ScrollView(CONTEXT);
+				var fullScreenMenuLayoutScrollPlayer = new ScrollView(CONTEXT);
+				var fullScreenMenuLayoutScrollMisc = new ScrollView(CONTEXT);
+				
+				var fullScreenMenuLayoutCombat = new LinearLayout_(CONTEXT);
+				fullScreenMenuLayoutCombat.setOrientation(1);
+				var fullScreenMenuLayoutWorld = new LinearLayout_(CONTEXT);
+				fullScreenMenuLayoutWorld.setOrientation(1);
+				var fullScreenMenuLayoutMovement = new LinearLayout_(CONTEXT);
+				fullScreenMenuLayoutMovement.setOrientation(1);
+				var fullScreenMenuLayoutPlayer = new LinearLayout_(CONTEXT);
+				fullScreenMenuLayoutPlayer.setOrientation(1);
+				var fullScreenMenuLayoutMisc = new LinearLayout_(CONTEXT);
+				fullScreenMenuLayoutMisc.setOrientation(1);
+				
+				fullScreenMenuLayoutScrollCombat.addView(fullScreenMenuLayoutCombat);
+				fullScreenMenuLayoutScrollWorld.addView(fullScreenMenuLayoutWorld);
+				fullScreenMenuLayoutScrollMovement.addView(fullScreenMenuLayoutMovement);
+				fullScreenMenuLayoutScrollPlayer.addView(fullScreenMenuLayoutPlayer);
+				fullScreenMenuLayoutScrollMisc.addView(fullScreenMenuLayoutMisc);
+				
+				fullScreenMenuLayout1Combat.addView(fullScreenMenuLayoutScrollCombat);
+				fullScreenMenuLayout1World.addView(fullScreenMenuLayoutScrollWorld);
+				fullScreenMenuLayout1Movement.addView(fullScreenMenuLayoutScrollMovement);
+				fullScreenMenuLayout1Player.addView(fullScreenMenuLayoutScrollPlayer);
+				fullScreenMenuLayout1Misc.addView(fullScreenMenuLayoutScrollMisc);
+				
+				if(combatEnabled == "on") {
+					fullScreenMenuLayout.addView(fullScreenMenuLayout1Combat);
+				} if(worldEnabled == "on") {
+					fullScreenMenuLayout.addView(fullScreenMenuLayout1World);
+				} if(movementEnabled == "on") {
+					fullScreenMenuLayout.addView(fullScreenMenuLayout1Movement);
+				} if(playerEnabled == "on") {
+					fullScreenMenuLayout.addView(fullScreenMenuLayout1Player);
+				} if(miscEnabled == "on") {
+					fullScreenMenuLayout.addView(fullScreenMenuLayout1Misc);
 				}
+				
+				var fullScreenMenuLayout1 = new LinearLayout_(CONTEXT);
+				fullScreenMenuLayout1.setOrientation(1);
+				fullScreenMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
+				fullScreenMenuLayout1.setPadding(10, 0, 10, 0);
+				
+				if(mainButtonPositionSetting == "top-left" || mainButtonPositionSetting == "top-right") {
+					fullScreenMenuLayout1.addView(clientTextView("\n"));
+				}
+				fullScreenMenuLayout1.addView(fullScreenMenuLayoutScroll);
+				
+				VertexClientPE.modules.forEach(function (element, index, array) {
+					if (element.type == "Mod" || element.type == "Special") {
+						if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
+							return;
+						}
+						if(element.checkBeforeAdding && !element.checkBeforeAdding()) {
+							return;
+						}
+						if (element.category == VertexClientPE.category.COMBAT) {
+							if(combatEnabled == "on") {
+								fullScreenMenuLayoutCombat.addView(new modButton(element));
+							}
+						} else if (element.category == VertexClientPE.category.WORLD) {
+							if(worldEnabled == "on") {
+								fullScreenMenuLayoutWorld.addView(new modButton(element));
+							}
+						} else if (element.category == VertexClientPE.category.MOVEMENT) {
+							if(movementEnabled == "on") {
+								fullScreenMenuLayoutMovement.addView(new modButton(element));
+							}
+						} else if (element.category == VertexClientPE.category.PLAYER) {
+							if(playerEnabled == "on") {
+								fullScreenMenuLayoutPlayer.addView(new modButton(element));
+							}
+						} else if (element.category == VertexClientPE.category.MISC) {
+							if(miscEnabled == "on") {
+								fullScreenMenuLayoutMisc.addView(new modButton(element));
+							}
+						}
+					}
+				});
+
+				fullScreenMenu = new PopupWindow_(fullScreenMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+				fullScreenMenu.setBackgroundDrawable(backgroundSpecial());
+				fullScreenMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+				
+				if(GUI != null) {
+					GUI.dismiss();
+					if(mainButtonPositionSetting == "top-right") {
+						GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
+					} else if(mainButtonPositionSetting == "top-left") {
+						GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+					} else if(mainButtonPositionSetting == "bottom-left") {
+						GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
+					}
+				}
+			} catch(error) {
+				print("An error occurred: " + error);
 			}
-		}));
+		}
+	}));
 }
 
 var currentTab = "Combat";
@@ -16684,9 +16622,6 @@ var currentTab = "Combat";
  * @since v1.0-pre
 */
 function retroMenu() {
-	VertexClientPE.loadMainSettings();
-	var display = new DisplayMetrics_();
-	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
@@ -16803,8 +16738,6 @@ VertexClientPE.showCategoryMenus = function () {
 	CONTEXT.runOnUiThread({
 		run() {
 			try {
-				var display = new DisplayMetrics_();
-				CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
 				
 				if(VertexClientPE.getShouldUpdateGUI(vertexclientpecombatmenu)) {
 					let combatMenuLayout = new LinearLayout_(CONTEXT),
@@ -16849,7 +16782,6 @@ VertexClientPE.showCategoryMenus = function () {
 					vertexclientpemovementmenu = new PopupWindow_(CONTEXT);
 					vertexclientpeplayermenu = new PopupWindow_(CONTEXT);
 					vertexclientpemiscmenu = new PopupWindow_(CONTEXT);
-					VertexClientPE.loadMainSettings();
 
 					VertexClientPE.modules.forEach(function (element, index, array) {
 						if (element.type == "Mod" || element.type == "Special") {
@@ -16925,9 +16857,9 @@ VertexClientPE.showCategoryMenus = function () {
 								if (a == 2) {
 									var X = parseInt(e.getX() - combatmX) * -1 / 10;
 									var Y = parseInt(e.getY() - combatmY) * -1 / 10;
-									combattpopx = combattpopx + X;
-									combattpopy = combattpopy + Y;
-									vertexclientpecombatmenu.update(parseInt(combattpopx), parseInt(combattpopy), -1, -1);
+									combattpopx = parseInt(combattpopx + X);
+									combattpopy = parseInt(combattpopy + Y);
+									vertexclientpecombatmenu.update(combattpopx, combattpopy, -1, -1);
 									VertexClientPE.saveFloatingMenus("combat");
 								}
 								if (a == 1) combatdown = false;
@@ -16996,9 +16928,9 @@ VertexClientPE.showCategoryMenus = function () {
 								if (a == 2) {
 									var X = parseInt(e.getX() - worldmX) * -1 / 10;
 									var Y = parseInt(e.getY() - worldmY) * -1 / 10;
-									worldtpopx = worldtpopx + X;
-									worldtpopy = worldtpopy + Y;
-									vertexclientpeworldmenu.update(parseInt(worldtpopx), parseInt(worldtpopy), -1, -1);
+									worldtpopx = parseInt(worldtpopx + X);
+									worldtpopy = parseInt(worldtpopy + Y);
+									vertexclientpeworldmenu.update(worldtpopx, worldtpopy, -1, -1);
 									VertexClientPE.saveFloatingMenus("world");
 								}
 								if (a == 1) worlddown = false;
@@ -17067,9 +16999,9 @@ VertexClientPE.showCategoryMenus = function () {
 								if (a == 2) {
 									var X = parseInt(e.getX() - movementmX) * -1 / 10;
 									var Y = parseInt(e.getY() - movementmY) * -1 / 10;
-									movementtpopx = movementtpopx + X;
-									movementtpopy = movementtpopy + Y;
-									vertexclientpemovementmenu.update(parseInt(movementtpopx), parseInt(movementtpopy), -1, -1);
+									movementtpopx = parseInt(movementtpopx + X);
+									movementtpopy = parseInt(movementtpopy + Y);
+									vertexclientpemovementmenu.update(movementtpopx, movementtpopy, -1, -1);
 									VertexClientPE.saveFloatingMenus("movement");
 								}
 								if (a == 1) movementdown = false;
@@ -17137,9 +17069,9 @@ VertexClientPE.showCategoryMenus = function () {
 								if (a == 2) {
 									var X = parseInt(e.getX() - playermX) * -1 / 10;
 									var Y = parseInt(e.getY() - playermY) * -1 / 10;
-									playertpopx = playertpopx + X;
-									playertpopy = playertpopy + Y;
-									vertexclientpeplayermenu.update(parseInt(playertpopx), parseInt(playertpopy), -1, -1);
+									playertpopx = parseInt(playertpopx + X);
+									playertpopy = parseInt(playertpopy + Y);
+									vertexclientpeplayermenu.update(playertpopx, playertpopy, -1, -1);
 									VertexClientPE.saveFloatingMenus("player");
 								}
 								if (a == 1) playerdown = false;
@@ -17208,9 +17140,9 @@ VertexClientPE.showCategoryMenus = function () {
 								if (a == 2) {
 									var X = parseInt(e.getX() - miscmX) * -1 / 10;
 									var Y = parseInt(e.getY() - miscmY) * -1 / 10;
-									misctpopx = misctpopx + X;
-									misctpopy = misctpopy + Y;
-									vertexclientpemiscmenu.update(parseInt(misctpopx), parseInt(misctpopy), -1, -1);
+									misctpopx = parseInt(misctpopx + X);
+									misctpopy = parseInt(misctpopy + Y);
+									vertexclientpemiscmenu.update(misctpopx, misctpopy, -1, -1);
 									VertexClientPE.saveFloatingMenus("misc");
 								}
 								if (a == 1) miscdown = false;
@@ -17324,13 +17256,10 @@ function openMenuFromMenuButton(viewArg) {
 }
 
 function showMenuButton() {
-	VertexClientPE.loadMainSettings();
 	VertexClientPE.menuIsShowing = false;
 	var layout = new LinearLayout_(CONTEXT);
 	layout.setOrientation(1);
 	layout.setGravity(Gravity_.TOP);
-	var display = new DisplayMetrics_();
-	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
 	menuBtn = new Button_(CONTEXT);
 	if(mainButtonStyleSetting != "invisible_ghost") {
 		if(mainButtonTapSetting == "menu") {
@@ -17580,11 +17509,8 @@ function showMenuButton() {
 }
 
 function showAccountManagerButton() {
-	VertexClientPE.loadMainSettings();
 	let acBtnLayout = new LinearLayout_(CONTEXT);
 	acBtnLayout.setOrientation(1);
-	let display = new DisplayMetrics_();
-	CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
 	let acBtn = clientButton("AM", null, null, "right_half");
 	acBtn.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(40), dip2px(40)));
 	acBtn.setOnClickListener(new View_.OnClickListener({
@@ -17636,8 +17562,6 @@ function showHacksList() {
 		CONTEXT.runOnUiThread(new Runnable_({
 			run: function() {
 				try {
-					display.getMetrics(new DisplayMetrics_());
-
 					enabledHacksCounter = 0;
 					
 					var hacksListLayout = new LinearLayout_(CONTEXT);
@@ -17808,8 +17732,6 @@ function showTabGUI() {
 		CONTEXT.runOnUiThread(new Runnable_({
 			run: function() {
 				try {
-					var display = new DisplayMetrics_();
-					CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
 
 					var tabGUILayout = new LinearLayout_(CONTEXT);
 					tabGUILayout.setOrientation(LinearLayout_.HORIZONTAL);
@@ -17862,8 +17784,6 @@ function showShortcuts() {
 		CONTEXT.runOnUiThread(new Runnable_({
 			run: function() {
 				try {
-					var display = new DisplayMetrics_();
-					CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
 					
 					var shortcutGUILayout1 = new LinearLayout_(CONTEXT);
 					shortcutGUILayout1.setOrientation(1);
