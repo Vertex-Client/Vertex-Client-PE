@@ -252,9 +252,9 @@ var miscEnabled = "on";
 var singleplayerEnabled = "on";
 //End of settings
 
-var modButtonColorBlocked = Color_.RED;
-var modButtonColorEnabled = Color_.GREEN;
-var modButtonColorDisabled = Color_.WHITE;
+let modButtonColorBlocked = Color_.RED;
+let modButtonColorEnabled = Color_.GREEN;
+let modButtonColorDisabled = Color_.WHITE;
 
 var bypassModButtonView;
 var panicModButtonView;
@@ -2392,18 +2392,8 @@ var switchGamemode = {
 		var switchGamemodeSettingsLayout = new LinearLayout_(CONTEXT);
 		switchGamemodeSettingsLayout.setOrientation(1);
 		
-		var sendCommandCheckBox = clientCheckBox();
+		var sendCommandCheckBox = clientCheckBox("Send gamemode command to server when switching gamemode");
 		sendCommandCheckBox.setChecked(switchGamemodeSendCommandSetting == "on");
-		sendCommandCheckBox.setText("Send gamemode command to server when switching gamemode");
-		if(themeSetting == "white") {
-			sendCommandCheckBox.setTextColor(Color_.BLACK);
-		} else {
-			sendCommandCheckBox.setTextColor(Color_.WHITE);
-		}
-		sendCommandCheckBox.setTypeface(VertexClientPE.font);
-		if(fontSetting == "minecraft") {
-			MinecraftButtonLibrary.addMinecraftStyleToTextView(sendCommandCheckBox);
-		}
 		sendCommandCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				switchGamemodeSendCommandSetting = v.isChecked()?"on":"off";
@@ -3006,7 +2996,6 @@ var autoSpammer = {
 		var spamMessageTitle = clientTextView("Custom message:");
 		var spamMessageInput = clientEditText();
 		spamMessageInput.setText(spamMessage);
-		spamMessageInput.setTextColor(Color_.WHITE);
 		spamMessageInput.setHint("Spam message");
 		spamMessageInput.addTextChangedListener(new TextWatcher_() {
 			onTextChanged: function() {
@@ -6519,7 +6508,6 @@ VertexClientPE.showRemoteViewTargetDialog = function() {
 				dialog.setContentView(dialogLayout);
 				dialog.setTitle("RemoteView | Target by username");
 				inputBar.setHint("Username");
-				inputBar.setTextColor(Color_.WHITE);
 				dialog.show();
 				btn.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
@@ -7522,6 +7510,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
 					dialogExtraLayoutLeft.addView(closeButton);
 					var toggleButton = clientButton("Toggle");
 					toggleButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 3 - 10, display.heightPixels / 10));
+					toggleButton.setTextColor(modButtonColorDisabled);
 					if(mod.isStateMod()) {
 						if(mod.state) {
 							toggleButton.setText("Disable");
@@ -7535,7 +7524,6 @@ VertexClientPE.showModDialog = function(mod, btn) {
 							}
 						} else {
 							toggleButton.setText("Enable");
-							toggleButton.setTextColor(modButtonColorDisabled);
 						}
 					}
 					toggleButton.setOnClickListener(new View_.OnClickListener() {
@@ -7930,15 +7918,12 @@ VertexClientPE.showItemGiverDialog = function() {
 				var tempButton;
 				var itemNameText = clientTextView("Name: Unknown");
 				var itemIdInput = clientEditText();
-				itemIdInput.setTextColor(Color_.WHITE);
 				itemIdInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
 				itemIdInput.setHint("Id");
 				var itemAmountInput = clientEditText();
-				itemAmountInput.setTextColor(Color_.WHITE);
 				itemAmountInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
 				itemAmountInput.setHint("Amount");
 				var itemDataInput = clientEditText();
-				itemDataInput.setTextColor(Color_.WHITE);
 				itemDataInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
 				itemDataInput.setHint("Data");
 				
@@ -8073,15 +8058,12 @@ VertexClientPE.showTeleportDialog = function() {
 				var tempButton;
 				var teleportNameText = clientTextView("Teleport location: Unknown");
 				var teleportXInput = clientEditText();
-				teleportXInput.setTextColor(Color_.WHITE);
 				teleportXInput.setInputType(InputType_.TYPE_CLASS_NUMBER | InputType_.TYPE_NUMBER_FLAG_SIGNED);
 				teleportXInput.setHint("X");
 				var teleportYInput = clientEditText();
-				teleportYInput.setTextColor(Color_.WHITE);
 				teleportYInput.setInputType(InputType_.TYPE_CLASS_NUMBER | InputType_.TYPE_NUMBER_FLAG_SIGNED);
 				teleportYInput.setHint("Y");
 				var teleportZInput = clientEditText();
-				teleportZInput.setTextColor(Color_.WHITE);
 				teleportZInput.setInputType(InputType_.TYPE_CLASS_NUMBER | InputType_.TYPE_NUMBER_FLAG_SIGNED);
 				teleportZInput.setHint("Z");
 				
@@ -8200,11 +8182,9 @@ VertexClientPE.showAddAccountDialog = function(showBackButton, title) {
 			try {
 				var accountTitle = clientTextView("Add account", true);
 				accountNameInput = clientEditText();
-				accountNameInput.setTextColor(Color_.WHITE);
 				accountNameInput.setSingleLine(true);
 				accountNameInput.setHint("Enter an username");
 				accountClientIdInput = clientEditText();
-				accountClientIdInput.setTextColor(Color_.WHITE);
 				accountClientIdInput.setHint("Enter a client id (wip, added later)");
 				var okButton = clientButton("Ok");
 				var cancelButton = clientButton("Cancel");
@@ -8267,7 +8247,6 @@ VertexClientPE.showAddFriendDialog = function(showBackButton, title, icon) {
 			try {
 				var friendTitle = clientTextView("Add friend", true);
 				friendNameInput = clientEditText();
-				friendNameInput.setTextColor(Color_.WHITE);
 				friendNameInput.setSingleLine(true);
 				friendNameInput.setHint("Enter an username");
 				var okButton = clientButton("Ok");
@@ -9449,71 +9428,61 @@ const settingsPath = Environment_.getExternalStorageDirectory().getAbsolutePath(
 const worldsPath = Environment_.getExternalStorageDirectory().getAbsolutePath() + "/games/com.mojang/minecraftWorlds/";
 
 VertexClientPE.setupModButtonColors = function() {
-	switch(modButtonColorBlockedSetting) {
-		case "red":
-			modButtonColorBlocked = Color_.RED;
-			break;
-		case "green":
-			modButtonColorBlocked = Color_.GREEN;
-			break;
-		case "blue":
-			modButtonColorBlocked = Color_.BLUE;
-			break;
-		case "yellow":
-			modButtonColorBlocked = Color_.YELLOW;
-			break;
-		case "white":
-			modButtonColorBlocked = Color_.WHITE;
-			break;
-		case "black":
-			modButtonColorBlocked = Color_.BLACK;
-			break;
+	if(modButtonColorBlockedSetting == "red") {
+		modButtonColorBlocked = Color_.RED;
 	}
-	switch(modButtonColorEnabledSetting) {
-		case "red":
-			modButtonColorEnabled = Color_.RED;
-			break;
-		case "green":
-			modButtonColorEnabled = Color_.GREEN;
-			break;
-		case "blue":
-			modButtonColorEnabled = Color_.BLUE;
-			break;
-		case "yellow":
-			modButtonColorEnabled = Color_.YELLOW;
-			break;
-		case "white":
-			modButtonColorEnabled = Color_.WHITE;
-			break;
-		case "black":
-			modButtonColorEnabled = Color_.BLACK;
-			break;
+	if(modButtonColorBlockedSetting == "green") {
+		modButtonColorBlocked = Color_.GREEN;
 	}
-	switch(modButtonColorDisabledSetting) {
-		case "red": {
-			modButtonColorDisabled = Color_.RED;
-			break;
-		}
-		case "green": {
-			modButtonColorDisabled = Color_.GREEN;
-			break;
-		}
-		case "blue": {
-			modButtonColorDisabled = Color_.BLUE;
-			break;
-		}
-		case "yellow": {
-			modButtonColorDisabled = Color_.YELLOW;
-			break;
-		}
-		case "white": {
-			modButtonColorDisabled = Color_.WHITE;
-			break;
-		}
-		case "black": {
-			modButtonColorDisabled = Color_.BLACK;
-			break;
-		}
+	if(modButtonColorBlockedSetting == "blue") {
+		modButtonColorBlocked = Color_.BLUE;
+	}
+	if(modButtonColorBlockedSetting == "yellow") {
+		modButtonColorBlocked = Color_.YELLOW;
+	}
+	if(modButtonColorBlockedSetting == "white") {
+		modButtonColorBlocked = Color_.WHITE;
+	}
+	if(modButtonColorBlockedSetting == "black") {
+		modButtonColorBlocked = Color_.BLACK;
+	}
+	
+	if(modButtonColorEnabledSetting == "red") {
+		modButtonColorEnabled = Color_.RED;
+	}
+	if(modButtonColorEnabledSetting == "green") {
+		modButtonColorEnabled = Color_.GREEN;
+	}
+	if(modButtonColorEnabledSetting == "blue") {
+		modButtonColorEnabled = Color_.BLUE;
+	}
+	if(modButtonColorEnabledSetting == "yellow") {
+		modButtonColorEnabled = Color_.YELLOW;
+	}
+	if(modButtonColorEnabledSetting == "white") {
+		modButtonColorEnabled = Color_.WHITE;
+	}
+	if(modButtonColorEnabledSetting == "black") {
+		modButtonColorEnabled = Color_.BLACK;
+	}
+	
+	if(modButtonColorDisabledSetting == "red") {
+		modButtonColorDisabled = Color_.RED;
+	}
+	if(modButtonColorDisabledSetting == "green") {
+		modButtonColorDisabled = Color_.GREEN;
+	}
+	if(modButtonColorDisabledSetting == "blue") {
+		modButtonColorDisabled = Color_.BLUE;
+	}
+	if(modButtonColorDisabledSetting == "yellow") {
+		modButtonColorDisabled = Color_.YELLOW;
+	}
+	if(modButtonColorDisabledSetting == "white") {
+		modButtonColorDisabled = Color_.WHITE;
+	}
+	if(modButtonColorDisabledSetting == "black") {
+		modButtonColorDisabled = Color_.BLACK;
 	}
 }
 
@@ -10224,7 +10193,6 @@ VertexClientPE.loadMainSettings = function () {
 		}
 		fos.close();
 		VertexClientPE.loadCustomRGBSettings();
-		VertexClientPE.setupModButtonColors();
 		VertexClientPE.loadAutoSpammerSettings();
 		VertexClientPE.loadCategorySettings();
 		VertexClientPE.font = fontSetting=="minecraft"?Typeface_.createFromFile(new File_(PATH, "minecraft.ttf")):VertexClientPE.defaultFont;
@@ -11436,18 +11404,18 @@ function friendButton(friend, layout) {
 	return friendManagerAccountLayout;
 }
 
-VertexClientPE.addTextStyleToView = function(view, color) {
-	if(color == null) {
-		color = themeSetting;
+VertexClientPE.addTextStyleToView = function(view, parentBackgroundColor) {
+	if(parentBackgroundColor == null) {
+		parentBackgroundColor = themeSetting;
 	}
-	if(color == "white") {
+	if(parentBackgroundColor == "white") {
 		view.setTextColor(Color_.BLACK);
 	} else {
 		view.setTextColor(Color_.WHITE);
 	}
 	view.setTypeface(VertexClientPE.font);
 	
-	if(color == "white") {
+	if(parentBackgroundColor == "white") {
 		if(fontSetting != "minecraft") {
 			view.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
 		}
@@ -14539,7 +14507,7 @@ function settingsScreen(fromDashboard) {
 				
 				var modButtonColorBlockedSettingFunc = new settingButton("Mod button text color (blocked)", "Change the mod button blocked text color.", null,
 					function(viewArg) {
-						if(modButtonColorDisabledSetting != "red") {
+						if(modButtonColorBlockedSetting != "red") {
 							modButtonColorBlockedSetting = "red";
 							modButtonColorBlockedSettingButton.setText("Red");
 							VertexClientPE.setupModButtonColors();
@@ -14590,7 +14558,7 @@ function settingsScreen(fromDashboard) {
 				
 				var modButtonColorEnabledSettingFunc = new settingButton("Mod button text color (enabled)", "Change the mod button enabled text color.", null,
 					function(viewArg) {
-						if(modButtonColorDisabledSetting != "green") {
+						if(modButtonColorEnabledSetting != "green") {
 							modButtonColorEnabledSetting = "green";
 							modButtonColorEnabledSettingButton.setText("Green");
 							VertexClientPE.setupModButtonColors();
