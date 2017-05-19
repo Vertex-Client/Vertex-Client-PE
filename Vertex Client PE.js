@@ -2095,9 +2095,18 @@ VertexClientPE.registerTile(jsConsoleTile);
 VertexClientPE.registerTile(restartTile);
 VertexClientPE.registerTile(shutdownTile);
 
-VertexClientPE.initMods = function() {
-	delete VertexClientPE.modules;
-	VertexClientPE.modules = [];
+VertexClientPE.initMods = function(cat) {
+	if(cat != "on") {
+		VertexClientPE.modules.forEach(function(element, index, array) {
+			if(element.isStateMod() && element.state) {
+				if((element.pack == "Combat" && combatEnabled == "off") || (element.pack == "World" && worldEnabled == "off") || (element.pack == "Movement" && movementEnabled == "off") || (element.pack == "Player" && playerEnabled == "off") || (element.pack == "Miscellaneous" && miscEnabled == "off") || (element.singleplayerOnly && singleplayerEnabled == "off")) {
+					element.onToggle();
+				}
+			}
+		});
+		delete VertexClientPE.modules;
+		VertexClientPE.modules = [];
+	}
 	try {
 		VertexClientPE.preInitModules.forEach(function(element, index, array) {
 			if((element.type == "Command" || (element.pack == "Combat" && combatEnabled == "on") || (element.pack == "World" && worldEnabled == "on") || (element.pack == "Movement" && movementEnabled == "on") || (element.pack == "Player" && playerEnabled == "on") || (element.pack == "Miscellaneous" && miscEnabled == "on")) && !(element.singleplayerOnly && singleplayerEnabled == "off")) {
@@ -2106,8 +2115,6 @@ VertexClientPE.initMods = function() {
 		});
 	} catch(e) {
 		VertexClientPE.showBugReportDialog(e);
-	} finally {
-		//delete VertexClientPE.preInitModules;
 	}
 }
 
@@ -6871,6 +6878,20 @@ VertexClientPE.showShortcutManagerDialog = function() {
 	});
 }
 
+function setupAndroidUI() {
+	// Set the IMMERSIVE flag.
+	// Set the content to appear under the system bars so that the content
+	// doesn't resize when the system bars hide and show.
+	var decorView = CONTEXT.getWindow().getDecorView();
+    decorView.setSystemUiVisibility(
+			View_.SYSTEM_UI_FLAG_LAYOUT_STABLE
+			| View_.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+			| View_.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+			| View_.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+			| View_.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+			| View_.SYSTEM_UI_FLAG_IMMERSIVE);
+}
+
 VertexClientPE.showFeaturesDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
@@ -6880,7 +6901,7 @@ VertexClientPE.showFeaturesDialog = function() {
 				var settingsTitle = clientScreenTitle("Settings", null, themeSetting);
 				var featuresTitle = clientTextView("Opt in/out features\n", true);
 				featuresTitle.setGravity(Gravity_.CENTER);
-				var featuresText = clientTextView("Changes on this dialog will disable all mods", true);
+				var featuresText = clientTextView("Changes on this dialog will disable and show/hide all mods in that category", true);
 				featuresText.setTextSize(8);
 				featuresText.setTypeface(null, Typeface_.ITALIC);
 				featuresText.setGravity(Gravity_.CENTER);
@@ -6906,7 +6927,7 @@ VertexClientPE.showFeaturesDialog = function() {
 						}
 						VertexClientPE.shouldUpdateGUI = true;
 						VertexClientPE.saveFeaturesSettings();
-						VertexClientPE.initMods();
+						VertexClientPE.initMods(combatEnabled);
 					}
 				}));
 				
@@ -6922,7 +6943,7 @@ VertexClientPE.showFeaturesDialog = function() {
 						}
 						VertexClientPE.shouldUpdateGUI = true;
 						VertexClientPE.saveFeaturesSettings();
-						VertexClientPE.initMods();
+						VertexClientPE.initMods(worldEnabled);
 					}
 				}));
 				
@@ -6938,7 +6959,7 @@ VertexClientPE.showFeaturesDialog = function() {
 						}
 						VertexClientPE.shouldUpdateGUI = true;
 						VertexClientPE.saveFeaturesSettings();
-						VertexClientPE.initMods();
+						VertexClientPE.initMods(movementEnabled);
 					}
 				}));
 				
@@ -6954,7 +6975,7 @@ VertexClientPE.showFeaturesDialog = function() {
 						}
 						VertexClientPE.shouldUpdateGUI = true;
 						VertexClientPE.saveFeaturesSettings();
-						VertexClientPE.initMods();
+						VertexClientPE.initMods(playerEnabled);
 					}
 				}));
 				
@@ -6970,7 +6991,7 @@ VertexClientPE.showFeaturesDialog = function() {
 						}
 						VertexClientPE.shouldUpdateGUI = true;
 						VertexClientPE.saveFeaturesSettings();
-						VertexClientPE.initMods();
+						VertexClientPE.initMods(miscEnabled);
 					}
 				}));
 				
@@ -6986,7 +7007,7 @@ VertexClientPE.showFeaturesDialog = function() {
 						}
 						VertexClientPE.shouldUpdateGUI = true;
 						VertexClientPE.saveFeaturesSettings();
-						VertexClientPE.initMods();
+						VertexClientPE.initMods(singleplayerEnabled);
 					}
 				}));
 				
@@ -7528,12 +7549,10 @@ VertexClientPE.showModDialog = function(mod, btn) {
 					}
 					toggleButton.setOnClickListener(new View_.OnClickListener() {
 						onClick: function(view) {
-							if(mod.name == "Bypass") {
+							if(mod.name == "Bypass" || !bypassState) {
 								mod.onToggle();
 							} else {
-								if(!bypassState) {
-									mod.onToggle();
-								} else if(bypassState && mod.canBypassBypassMod == undefined || mod.canBypassBypassMod == null) {
+								if(bypassState && mod.canBypassBypassMod == undefined || mod.canBypassBypassMod == null) {
 									mod.onToggle();
 								} else if(bypassState && mod.canBypassBypassMod && !mod.canBypassBypassMod()) {
 									if(mod.isStateMod() && mod.state) {
@@ -9491,34 +9510,34 @@ VertexClientPE.setupMCPEGUI = function() {
 		ModPE.resetImages();
 	}
 	if(mcpeGUISetting == "green") {
-		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/BCA6vgv.png");
-		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/dY3c1Jl.png");
+		ModPE.overrideTexture("images/gui/spritesheet.png", "http://i.imgur.com/BCA6vgv.png");
+		ModPE.overrideTexture("images/gui/touchgui.png", "http://i.imgur.com/dY3c1Jl.png");
 	}
 	if(mcpeGUISetting == "red") {
-		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/BxuGkEJ.png");
-		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/S3qiQ01.png");
+		ModPE.overrideTexture("images/gui/spritesheet.png", "http://i.imgur.com/BxuGkEJ.png");
+		ModPE.overrideTexture("images/gui/touchgui.png", "http://i.imgur.com/S3qiQ01.png");
 	}
 	if(mcpeGUISetting == "blue") {
-		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/X5rCyoN.png");
-		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/t6tGtMk.png");
+		ModPE.overrideTexture("images/gui/spritesheet.png", "http://i.imgur.com/X5rCyoN.png");
+		ModPE.overrideTexture("images/gui/touchgui.png", "http://i.imgur.com/t6tGtMk.png");
 	}
 	if(mcpeGUISetting == "purple") {
-		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/3xsluNN.png");
-		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/R9te7Bd.png");
+		ModPE.overrideTexture("images/gui/spritesheet.png", "http://i.imgur.com/3xsluNN.png");
+		ModPE.overrideTexture("images/gui/touchgui.png", "http://i.imgur.com/R9te7Bd.png");
 	}
 	if(mcpeGUISetting == "yellow") {
-		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/z1BGkj5.png");
-		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/RXE3pbS.png");
+		ModPE.overrideTexture("images/gui/spritesheet.png", "http://i.imgur.com/z1BGkj5.png");
+		ModPE.overrideTexture("images/gui/touchgui.png", "http://i.imgur.com/RXE3pbS.png");
 	}
 	if(mcpeGUISetting == "white") {
-		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/GlwhFt5.png");
-		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/gsn6Qfp.png");
+		ModPE.overrideTexture("images/gui/spritesheet.png", "http://i.imgur.com/GlwhFt5.png");
+		ModPE.overrideTexture("images/gui/touchgui.png", "http://i.imgur.com/gsn6Qfp.png");
 	}
 	if(mcpeGUISetting == "black") {
-		ModPE.overrideTexture("images/gui/spritesheet.png","http://i.imgur.com/l7nG7ZU.png");
-		ModPE.overrideTexture("images/gui/touchgui.png","http://i.imgur.com/MZeX8XN.png");
+		ModPE.overrideTexture("images/gui/spritesheet.png", "http://i.imgur.com/l7nG7ZU.png");
+		ModPE.overrideTexture("images/gui/touchgui.png", "http://i.imgur.com/MZeX8XN.png");
 	}
-	ModPE.overrideTexture("images/gui/title.png","http://Vertex-Client.github.io/bootstrap/img/title.png");
+	ModPE.overrideTexture("images/gui/title.png", "http://Vertex-Client.github.io/bootstrap/img/title.png");
 }
 
 VertexClientPE.saveAutoSpammerMessage = function() {
@@ -9574,27 +9593,21 @@ VertexClientPE.loadFeaturesSettings = function() {
 		var arr = str.toString().split(",");
 		if (arr[0] != null && arr[0] != undefined) {
 			combatEnabled = arr[0];
-			combatEnabled = combatEnabled;
 		}
 		if (arr[1] != null && arr[1] != undefined) {
 			worldEnabled = arr[1];
-			worldEnabled = worldEnabled;
 		}
 		if (arr[2] != null && arr[2] != undefined) {
 			movementEnabled = arr[2];
-			movementEnabled = movementEnabled;
 		}
 		if (arr[3] != null && arr[3] != undefined) {
 			playerEnabled = arr[3];
-			playerEnabled = playerEnabled;
 		}
 		if (arr[4] != null && arr[4] != undefined) {
 			miscEnabled = arr[4];
-			miscEnabled = miscEnabled;
 		}
 		if (arr[5] != null && arr[5] != undefined) {
 			singleplayerEnabled = arr[5];
-			singleplayerEnabled = singleplayerEnabled;
 		}
 		fos.close();
 		
@@ -13552,6 +13565,10 @@ VertexClientPE.setup = function() {
 							userIsNewToCurrentVersion = true;
 						}
 						
+						/* if(Launcher.isToolbox()) {
+							setupAndroidUI();
+						} */
+						
 						VertexClientPE.setupModButtonColors();
 						
 						if(VertexClientPE.loadMainSettings() == null) {
@@ -13867,8 +13884,10 @@ VertexClientPE.refreshEnabledMods = function() {
 	VertexClientPE.modules.forEach(function(element, index, array) {
 		if(element.hasOwnProperty("isStateMod") && element.isStateMod()) {
 			if(element.state) {
-				for(let i = 0; i <= 1; i++) {
-					element.onToggle();
+				if(element.name == "Bypass" || !bypassState || (bypassState && element.canBypassBypassMod == undefined || element.canBypassBypassMod == null)) {
+					for(let i = 0; i <= 1; i++) {
+						element.onToggle();
+					}
 				}
 			}
 		}
