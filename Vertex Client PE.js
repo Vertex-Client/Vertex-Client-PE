@@ -222,6 +222,7 @@ var transparentSplashScreenSetting = "off";
 var showIconsOnTileShortcutsSetting = "on";
 var targetFriendsSetting = "off";
 var antiAFKKeepScreenOnSetting = "on";
+var shortcutUIModeSetting = "on";
 //------------------------------------
 var antiAFKDistancePerTick = 0.25;
 //------------------------------------
@@ -6755,12 +6756,19 @@ VertexClientPE.showShortcutManagerDialog = function() {
 				var closeButton = clientButton("Close");
 				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
 				var dialogLayout = new LinearLayout_(CONTEXT);
-				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
-				dialogLayout.setPadding(10, 0, 10, 10);
-				dialogLayout.addView(settingsTitle);
-				dialogLayout.addView(shortcutManagerTitle);
-				dialogLayout.addView(shortcutManagerEnter);
+				var dialogScrollView = new ScrollView_(CONTEXT);
+				dialogScrollView.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - 20, display.heightPixels / 2));
+				var dialogLayout1 = new LinearLayout_(CONTEXT);
+				dialogLayout1.setBackgroundDrawable(backgroundGradient());
+				dialogLayout1.setOrientation(LinearLayout_.VERTICAL);
+				dialogLayout1.setPadding(10, 0, 10, 10);
+				dialogLayout1.addView(settingsTitle);
+				dialogLayout1.addView(shortcutManagerTitle);
+				dialogLayout1.addView(shortcutManagerEnter);
+				
+				dialogScrollView.addView(dialogLayout);
+				dialogLayout1.addView(dialogScrollView);
 				
 				var shortcutSizeSettingTitle = clientTextView("Shortcut button size: | " + shortcutSizeSetting, true);
 				var shortcutSizeSettingSlider = clientSeekBar();
@@ -6791,6 +6799,36 @@ VertexClientPE.showShortcutManagerDialog = function() {
 				dialogLayout.addView(shortcutSizeSettingSlider);
 				dialogLayout.addView(shortcutUIHeightSettingTitle);
 				dialogLayout.addView(shortcutUIHeightSettingSlider);
+				
+				var shortcutUIModeSettingFunc = new settingButton("Shortcut UI mode ", null, display.widthPixels - 20,
+					function(viewArg) {
+						shortcutUIModeSetting = "on";
+						shortcutUIModeSettingButton.setText("Normal");
+					}
+				);
+				var shortcutUIModeSettingButton = shortcutUIModeSettingFunc.getButton();
+				if(shortcutUIModeSetting == "off") {
+					shortcutUIModeSettingButton.setText("Hidden");
+				} else if(shortcutUIModeSetting == "on") {
+					shortcutUIModeSettingButton.setText("Normal");
+				} else if(shortcutUIModeSetting == "multirow") {
+					shortcutUIModeSettingButton.setText("Multi-row");
+				}
+				shortcutUIModeSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(shortcutUIModeSetting == "on") {
+							shortcutUIModeSetting = "off";
+							shortcutUIModeSettingButton.setText("Hidden");
+						} else if(shortcutUIModeSetting == "off") {
+							shortcutUIModeSetting = "on";
+							shortcutUIModeSettingButton.setText("Normal");
+						}/*  else if(shortcutUIModeSetting == "on") {
+							shortcutUIModeSetting = "multirow";
+							shortcutUIModeSettingButton.setText("Multi-row");
+						} */
+						VertexClientPE.saveMainSettings();
+					}
+				}));
 				
 				var shortcutUIPosSettingFunc = new settingButton("Shortcut UI position ", null, display.widthPixels - 20,
 					function(viewArg) {
@@ -6862,15 +6900,16 @@ VertexClientPE.showShortcutManagerDialog = function() {
 					}
 				}));
 				
+				VertexClientPE.addView(dialogLayout, shortcutUIModeSettingFunc);
 				VertexClientPE.addView(dialogLayout, shortcutUIPosSettingFunc);
 				VertexClientPE.addView(dialogLayout, showIconsOnTileShortcutsSettingFunc);
-				dialogLayout.addView(clientTextView("\n"));
-				dialogLayout.addView(closeButton);
+				dialogLayout1.addView(clientTextView("\n"));
+				dialogLayout1.addView(closeButton);
 				
 				var dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-				dialog.setContentView(dialogLayout);
+				dialog.setContentView(dialogLayout1);
 				dialog.setTitle("Shortcut Manager");
 				dialog.setOnDismissListener(new DialogInterface_.OnDismissListener() {
 					onDismiss: function() {
@@ -9972,6 +10011,7 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + showIconsOnTileShortcutsSetting.toString());
 	outWrite.append("," + targetFriendsSetting.toString());
 	outWrite.append("," + antiAFKKeepScreenOnSetting.toString());
+	outWrite.append("," + shortcutUIModeSetting.toString());
 
 	outWrite.close();
 	
@@ -10218,6 +10258,9 @@ VertexClientPE.loadMainSettings = function () {
 		}
 		if (arr[74] != null && arr[74] != undefined) {
 			antiAFKKeepScreenOnSetting = arr[74];
+		}
+		if (arr[75] != null && arr[75] != undefined) {
+			shortcutUIModeSetting = arr[75];
 		}
 		fos.close();
 		VertexClientPE.loadCustomRGBSettings();
@@ -17847,18 +17890,20 @@ function showShortcuts() {
 							shortcutGUI.setAnimationStyle(android.R.style.Animation_Translucent);
 						}
 						shortcutGUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-						if(shortcutUIPosSetting == "left-bottom") {
-							shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
-						} else if(shortcutUIPosSetting == "left-center") {
-							shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.CENTER, 0, 0);
-						} else if(shortcutUIPosSetting == "left-top") {
-							shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-						} else if(shortcutUIPosSetting == "right-bottom") {
-							shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.BOTTOM, 0, 0);
-						} else if(shortcutUIPosSetting == "right-center") {
-							shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.CENTER, 0, 0);
-						} else if(shortcutUIPosSetting == "right-top") {
-							shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
+						if(shortcutUIModeSetting != "off") {
+							if(shortcutUIPosSetting == "left-bottom") {
+								shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
+							} else if(shortcutUIPosSetting == "left-center") {
+								shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.CENTER, 0, 0);
+							} else if(shortcutUIPosSetting == "left-top") {
+								shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+							} else if(shortcutUIPosSetting == "right-bottom") {
+								shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.BOTTOM, 0, 0);
+							} else if(shortcutUIPosSetting == "right-center") {
+								shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.CENTER, 0, 0);
+							} else if(shortcutUIPosSetting == "right-top") {
+								shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
+							}
 						}
 					}
 				} catch(error) {
