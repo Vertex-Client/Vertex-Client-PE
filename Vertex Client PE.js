@@ -245,12 +245,6 @@ var movementEnabled = "on";
 var playerEnabled = "on";
 var miscEnabled = "on";
 var singleplayerEnabled = "on";
-var combatEnabled = "on";
-var worldEnabled = "on";
-var movementEnabled = "on";
-var playerEnabled = "on";
-var miscEnabled = "on";
-var singleplayerEnabled = "on";
 //End of settings
 
 let modButtonColorBlocked = Color_.RED;
@@ -6604,19 +6598,23 @@ VertexClientPE.showMoreDialog = function() {
 				let webBrowserTitle = "";
 				let playerCustomizerTitle = "";
 				let optiFineTitle = "";
+				let hideMenuTitle = "";
 				if(!VertexClientPE.isPro()) {
 					webBrowserTitle += "\uD83D\uDD12 ";
 					playerCustomizerTitle += "\uD83D\uDD12 ";
 					optiFineTitle += "\uD83D\uDD12 ";
+					hideMenuTitle += "\uD83D\uDD12 ";
 				}
 				webBrowserTitle += "Webbrowser";
 				playerCustomizerTitle += "Player Customizer";
 				optiFineTitle += "OptiFine";
+				hideMenuTitle += "Hide Menu";
 				
 				let dashboardButton = clientButton("Dashboard");
 				let webBrowserButton = clientButton(webBrowserTitle);
 				let playerCustomizerButton = clientButton(playerCustomizerTitle);
 				let optiFineButton = clientButton(optiFineTitle);
+				let hideMenuButton = clientButton(hideMenuTitle);
 				let resetPosButton = clientButton("Reset moveable menu positions");
 				
 				if(buttonStyleSetting != "android") {
@@ -6624,12 +6622,14 @@ VertexClientPE.showMoreDialog = function() {
 					webBrowserButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.ic_menu_mapmode, 0, 0);
 					playerCustomizerButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.presence_online, 0, 0);
 					optiFineButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.ic_menu_zoom, 0, 0);
+					hideMenuButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.ic_menu_zoom, 0, 0);
 					resetPosButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.stat_notify_sync, 0, 0);
 				} else {
 					dashboardButton.setCompoundDrawablesRelativeWithIntrinsicBounds(android.R.drawable.ic_dialog_dialer, 0, 0, 0);
 					webBrowserButton.setCompoundDrawablesRelativeWithIntrinsicBounds(android.R.drawable.ic_menu_mapmode, 0, 0, 0);
 					playerCustomizerButton.setCompoundDrawablesRelativeWithIntrinsicBounds(android.R.drawable.presence_online, 0, 0, 0);
 					optiFineButton.setCompoundDrawablesRelativeWithIntrinsicBounds(android.R.drawable.ic_menu_zoom, 0, 0, 0);
+					hideMenuButton.setCompoundDrawablesRelativeWithIntrinsicBounds(android.R.drawable.ic_menu_zoom, 0, 0, 0);
 					resetPosButton.setCompoundDrawablesRelativeWithIntrinsicBounds(android.R.drawable.stat_notify_sync, 0, 0, 0);
 				}
 				
@@ -6649,6 +6649,7 @@ VertexClientPE.showMoreDialog = function() {
 				dialogLayout1.addView(dialogScrollView);
 				dialogLayout.addView(dashboardButton);
 				dialogLayout.addView(optiFineButton);
+				dialogLayout.addView(hideMenuButton);
 				dialogLayout.addView(playerCustomizerButton);
 				dialogLayout.addView(webBrowserButton);
 				if(VertexClientPE.menuIsShowing && menuType == "normal") {
@@ -6710,6 +6711,13 @@ VertexClientPE.showMoreDialog = function() {
 						dialog.dismiss();
 						VertexClientPE.closeMenu();
 						optiFineScreen(false, "OptiFine", android.R.drawable.ic_menu_zoom);
+					}
+				});
+				hideMenuButton.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(view) {
+                    dialog.dismiss();
+					leaveGame();
+					screenChangeHook("Yo Mama")
 					}
 				});
 				resetPosButton.setOnClickListener(new View_.OnClickListener() {
