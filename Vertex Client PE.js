@@ -113,7 +113,7 @@ const AlarmManager_ = android.app.AlarmManager,
 	JSONObject_ = org.json.JSONObject,
 	CONTEXT = MainActivity_.currentMainActivity.get(),
 	GITHUB_URL = "https://github.com/Vertex-Client/Vertex-Client.github.io/raw/master/",
-	PATH = Environment_.getExternalStorageDirectory() + "/games/com.mojang/";
+	PATH = "/sdcard/games/com.mojang/";
 
 var ScrollView = android.widget.ScrollView;
 var EditText = android.widget.EditText;
@@ -10816,7 +10816,7 @@ function tileButton(tile, fromDashboard) {
 }
 
 let barLayoutHeight = dip2px(40);
-let steveHead_SCALED = Bitmap_.createScaledBitmap(imgSteveHead, barLayoutHeight - dip2px(2), barLayoutHeight - dip2px(2), false);
+let steveHead_SCALED;
 
 function userBar() {
 	var params = new LinearLayout_.LayoutParams(barLayoutHeight, barLayoutHeight);
@@ -13636,7 +13636,7 @@ function downloadFile(path, url, showNotification) {
 		if(!showNotification) {
 			downloadManager.setNotificationVisibility(0);
 		}
-		downloadManager.setDestinationInExternalPublicDir(file.getParent().replace(Environment_.getExternalStorageDirectory(), ""), filename);
+		downloadManager.setDestinationInExternalPublicDir(file.getParent().replace("/sdcard", ""), filename);
 		CONTEXT.getSystemService(Context_.DOWNLOAD_SERVICE).enqueue(downloadManager);
 	} catch (e) {
 		print("@" + e.lineNumber + ": " + e);
@@ -13653,6 +13653,7 @@ function downloadFile(path, url, showNotification) {
 		}
 	}
 	if (isExisting) {
+		steveHead_SCALED = Bitmap_.createScaledBitmap(imgSteveHead, barLayoutHeight - dip2px(2), barLayoutHeight - dip2px(2), false);
 		VertexClientPE.setup();
 	} else {
 		new Thread_({
