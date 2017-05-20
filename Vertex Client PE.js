@@ -2418,12 +2418,22 @@ var switchGamemode = {
 		if(Level.getGameMode() == 0) {
 			Level.setGameMode(1);
 			if(switchGamemodeSendCommandSetting == "on") {
-				Server.sendChat("/gamemode 1");
+				let cmd = "/gamemode 1";
+				if(Level.executeCommand != undefined) {
+					Level.executeCommand(cmd);
+				} else {
+					Server.sendChat(cmd);
+				}
 			}
 		} else if(Level.getGameMode() == 1) {
 			Level.setGameMode(0);
 			if(switchGamemodeSendCommandSetting == "on") {
-				Server.sendChat("/gamemode 0");
+				let cmd = "/gamemode 0";
+				if(Level.executeCommand != undefined) {
+					Level.executeCommand(cmd);
+				} else {
+					Server.sendChat(cmd);
+				}
 			}
 		}
 	}
@@ -2572,7 +2582,12 @@ var homeCommand = {
 		return false;
 	},
 	onToggle: function() {
-		Server.sendChat("/home");
+		let cmd = "/home";
+		if(Level.executeCommand != undefined) {
+			Level.executeCommand(cmd);
+		} else {
+			Server.sendChat(cmd);
+		}
 	}
 };
 
@@ -9438,8 +9453,8 @@ VertexClientPE.autoSpammer = function() {
 
 VertexClientPE.teleporter = function(x, y, z) {
 	setPosition(getPlayerEnt(), x, y, z);
-	while(getTile(getPlayerX(), getPlayerY()-2, getPlayerZ()) != 0) {
-		Entity.setPosition(getPlayerEnt(), getPlayerX(), getPlayerY()+1, getPlayerZ());
+	while(getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) != 0) {
+		Entity.setPosition(getPlayerEnt(), getPlayerX(), getPlayerY() + 1, getPlayerZ());
 	}
 }
 
@@ -17543,7 +17558,11 @@ function showHacksList() {
 		width = display.getWidth(),
 		height = display.getHeight();
 	if(hacksList != null) {
-		hacksList.dismiss();
+		CONTEXT.runOnUiThread(new Runnable_({
+			run: function() {
+				hacksList.dismiss();
+			}
+		}));
 	}
 	if(hacksList == null || !hacksList.isShowing()) {
 		CONTEXT.runOnUiThread(new Runnable_({
@@ -17713,7 +17732,11 @@ function updateHacksList() {
 
 function showTabGUI() {
 	if(tabGUI != null) {
-		tabGUI.dismiss();
+		CONTEXT.runOnUiThread(new Runnable_({
+			run: function() {
+				tabGUI.dismiss();
+			}
+		}));
 	}
 	if(tabGUI == null || !tabGUI.isShowing()) {
 		CONTEXT.runOnUiThread(new Runnable_({
@@ -17765,7 +17788,11 @@ function showTabGUI() {
 
 function showShortcuts() {
 	if(shortcutGUI != null) {
-		shortcutGUI.dismiss();
+		CONTEXT.runOnUiThread(new Runnable_({
+			run: function() {
+				shortcutGUI.dismiss();
+			}
+		}));
 	}
 	if(shortcutGUI == null || !shortcutGUI.isShowing()) {
 		CONTEXT.runOnUiThread(new Runnable_({
