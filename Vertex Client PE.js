@@ -113,7 +113,7 @@ const AlarmManager_ = android.app.AlarmManager,
 	JSONObject_ = org.json.JSONObject,
 	CONTEXT = MainActivity_.currentMainActivity.get(),
 	GITHUB_URL = "https://github.com/Vertex-Client/Vertex-Client.github.io/raw/master/",
-	PATH = "/sdcard/games/com.mojang/";
+	PATH = Environment_.getExternalStorageDirectory() + "/games/com.mojang/";
 
 var ScrollView = android.widget.ScrollView;
 var EditText = android.widget.EditText;
@@ -6236,7 +6236,7 @@ ModPE.getAndroidVersion = function() {
 
 ModPE.getPlayerName = function() {
 	if(Launcher.isToolbox) {
-		var file = new File_("/sdcard/games/com.mojang/minecraftpe/options.txt");
+		var file = new File_(Environment_.getExternalStorageDirectory() + "/games/com.mojang/minecraftpe/options.txt");
 		var br = new BufferedReader_(new InputStreamReader_(new FileInputStream_(file)));
 		var read, username;
 		while((read = br.readLine()) != null) {
@@ -6253,7 +6253,7 @@ ModPE.getPlayerName = function() {
 };
 
 ModPE.getFov = function() {
-	var file = new File_("/sdcard/games/com.mojang/minecraftpe/options.txt");
+	var file = new File_(Environment_.getExternalStorageDirectory() + "/games/com.mojang/minecraftpe/options.txt");
 	var br = new BufferedReader_(new InputStreamReader_(new FileInputStream_(file)));
 	var read, fov;
 	while((read = br.readLine()) != null) {
@@ -6279,7 +6279,7 @@ ModPE.changeClientId = function(clientId) {
 };
 
 ModPE.getClientId = function() {
-	var file = new File_("/sdcard/games/com.mojang/minecraftpe/clientId.txt");
+	var file = new File_(Environment_.getExternalStorageDirectory() + "/games/com.mojang/minecraftpe/clientId.txt");
 	var br = new BufferedReader_(new InputStreamReader_(new FileInputStream_(file)));
 	var read, username;
 	while((read = br.readLine()) != null) {
@@ -6320,7 +6320,7 @@ ModPE.setSession = function(sessionId) {
 }
 
 ModPE.playerHasSplitControls = function() {
-	var file = new File_("/sdcard/games/com.mojang/minecraftpe/options.txt");
+	var file = new File_(Environment_.getExternalStorageDirectory() + "/games/com.mojang/minecraftpe/options.txt");
 	var br = new BufferedReader_(new InputStreamReader_(new FileInputStream_(file)));
 	var read, splitcontrols;
 	while((read = br.readLine()) != null) {
@@ -6334,7 +6334,7 @@ ModPE.playerHasSplitControls = function() {
 };
 
 ModPE.getCurrentUsedSkin = function() {
-	var file = new File_("/sdcard/games/com.mojang/minecraftpe/options.txt");
+	var file = new File_(Environment_.getExternalStorageDirectory() + "/games/com.mojang/minecraftpe/options.txt");
 	var br = new BufferedReader_(new InputStreamReader_(new FileInputStream_(file)));
 	var read, skin;
 	while((read = br.readLine()) != null) {
@@ -10684,9 +10684,9 @@ function updatePaneButton(updateVersion, updateDesc, isDev) {
 				}
 				VertexClientPE.toast("Started downloading...");
 				if(!isDev) {
-					downloadFile("/sdcard/Download/Vertex_Client_PE.modpkg", "https://github.com/Vertex-Client/Vertex-Client-PE/releases/download/v" + updateGithubVersion + "/Vertex_Client_PE.modpkg", true);
+					downloadFile(Environment_.getExternalStorageDirectory() + "/Download/Vertex_Client_PE.modpkg", "https://github.com/Vertex-Client/Vertex-Client-PE/releases/download/v" + updateGithubVersion + "/Vertex_Client_PE.modpkg", true);
 				} else {
-					downloadFile("/sdcard/Download/Vertex_Client_PE_Dev.js", "https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/master/Vertex Client PE.js", true);
+					downloadFile(Environment_.getExternalStorageDirectory() + "/Download/Vertex_Client_PE_Dev.js", "https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/master/Vertex Client PE.js", true);
 				}
 			}
 		}
@@ -12229,7 +12229,7 @@ function backgroundGradient(round, style, transparent) // TextView with colored 
 		return bg;
 	} else if(style == "minecraft_dirt") {
 		if(fileDirt == null) {
-			fileDirt = new File_("/sdcard/games/com.mojang/dirt_background.png");
+			fileDirt = new File_(Environment_.getExternalStorageDirectory() + "/games/com.mojang/dirt_background.png");
 			inputStreamDirt = new FileInputStream_(fileDirt);
 			dirtBackgroundClientGUI = new BitmapDrawable_(android.graphics.Bitmap.createScaledBitmap(BitmapFactory_.decodeStream(inputStreamDirt), dip2px(64), dip2px(64), false));
 			dirtBackgroundClientGUI.setColorFilter(android.graphics.Color.rgb(70, 70, 70), android.graphics.PorterDuff.Mode.MULTIPLY);
@@ -13636,7 +13636,7 @@ function downloadFile(path, url, showNotification) {
 		if(!showNotification) {
 			downloadManager.setNotificationVisibility(0);
 		}
-		downloadManager.setDestinationInExternalPublicDir(file.getParent().replace("/sdcard", ""), filename);
+		downloadManager.setDestinationInExternalPublicDir(file.getParent().replace(Environment_.getExternalStorageDirectory(), ""), filename);
 		CONTEXT.getSystemService(Context_.DOWNLOAD_SERVICE).enqueue(downloadManager);
 	} catch (e) {
 		print("@" + e.lineNumber + ": " + e);
