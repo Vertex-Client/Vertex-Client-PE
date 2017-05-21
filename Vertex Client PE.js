@@ -6608,7 +6608,7 @@ VertexClientPE.showMoreDialog = function() {
 				webBrowserTitle += "Webbrowser";
 				playerCustomizerTitle += "Player Customizer";
 				optiFineTitle += "OptiFine";
-				hideMenuTitle += "Hide Menu";
+				hideMenuTitle += "Temporarily disable the client";
 				
 				let dashboardButton = clientButton("Dashboard");
 				let webBrowserButton = clientButton(webBrowserTitle);
@@ -6622,14 +6622,14 @@ VertexClientPE.showMoreDialog = function() {
 					webBrowserButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.ic_menu_mapmode, 0, 0);
 					playerCustomizerButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.presence_online, 0, 0);
 					optiFineButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.ic_menu_zoom, 0, 0);
-					hideMenuButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.ic_menu_zoom, 0, 0);
+					hideMenuButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.ic_menu_close_clear_cancel, 0, 0);
 					resetPosButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.stat_notify_sync, 0, 0);
 				} else {
 					dashboardButton.setCompoundDrawablesRelativeWithIntrinsicBounds(android.R.drawable.ic_dialog_dialer, 0, 0, 0);
 					webBrowserButton.setCompoundDrawablesRelativeWithIntrinsicBounds(android.R.drawable.ic_menu_mapmode, 0, 0, 0);
 					playerCustomizerButton.setCompoundDrawablesRelativeWithIntrinsicBounds(android.R.drawable.presence_online, 0, 0, 0);
 					optiFineButton.setCompoundDrawablesRelativeWithIntrinsicBounds(android.R.drawable.ic_menu_zoom, 0, 0, 0);
-					hideMenuButton.setCompoundDrawablesRelativeWithIntrinsicBounds(android.R.drawable.ic_menu_zoom, 0, 0, 0);
+					hideMenuButton.setCompoundDrawablesRelativeWithIntrinsicBounds(android.R.drawable.ic_menu_close_clear_cancel, 0, 0, 0);
 					resetPosButton.setCompoundDrawablesRelativeWithIntrinsicBounds(android.R.drawable.stat_notify_sync, 0, 0, 0);
 				}
 				
@@ -6715,9 +6715,13 @@ VertexClientPE.showMoreDialog = function() {
 				});
 				hideMenuButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
-                    dialog.dismiss();
-					leaveGame();
-					screenChangeHook("Yo Mama")
+						if(!VertexClientPE.isPro()) {
+							VertexClientPE.showProDialog("Temporarily disabling the client");
+							return;
+						}
+						dialog.dismiss();
+						leaveGame();
+						screenChangeHook("Yo Mama");
 					}
 				});
 				resetPosButton.setOnClickListener(new View_.OnClickListener() {
