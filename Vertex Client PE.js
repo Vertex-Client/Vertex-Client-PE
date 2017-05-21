@@ -6720,8 +6720,44 @@ VertexClientPE.showMoreDialog = function() {
 							return;
 						}
 						dialog.dismiss();
+						VertexClientPE.MusicUtils.mp.reset();
+						ModPE.langEdit("menu.copyright", "\u00A9Mojang AB");
 						leaveGame();
 						screenChangeHook("Yo Mama");
+						attackHook = null;
+						chatHook = null;
+						chatReceiveHook = null;
+						deathHook = null;
+						destroyBlock = null;
+						entityAddedHook = null;
+						entityHurtHook = null;
+						leaveGame = null;
+						modTick = null;
+						newLevel = null;
+						projectileHitBlockHook = null;
+						screenChangeHook = null;
+						startDestroyBlock = null;
+						textPacketReceiveHook = null;
+						useItem = null;
+						VertexClientPE.clientTick = function() {};
+						VertexClientPE.inGameTick = function() {};
+						VertexClientPE.specialTick = function() {};
+						VertexClientPE.secondTick = function() {};
+						if(tipBar != null && tipBar.isShowing()) {
+							tipBar.dismiss();
+							tipBar = null;
+						}
+						if(GUI != null && GUI.isShowing()) {
+							GUI.dismiss();
+							GUI = null;
+						}
+						VertexClientPE.modules.forEach(function(element, index, array) {
+							if(element.isStateMod() && element.state) {
+								element.onToggle();
+							}
+						});
+						VertexClientPE.modules = [];
+						VertexClientPE.toast("Successfully disabled Vertex Client PE! Restart to get the functionality back.");
 					}
 				});
 				resetPosButton.setOnClickListener(new View_.OnClickListener() {
@@ -16429,8 +16465,10 @@ VertexClientPE.showTipBar = function() {
 						Thread_.sleep(500);
 						CONTEXT.runOnUiThread({
 							run: function () {
-								tipBar.dismiss();
-								tipBarLayout = null;
+								if(tipBar != null) {
+									tipBar.dismiss();
+									tipBarLayout = null;
+								}
 							}
 						});
 					}
