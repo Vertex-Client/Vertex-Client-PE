@@ -8700,7 +8700,12 @@ VertexClientPE.showCategoryDialog = function(titleView, currentName, categoryId)
 				dialog.show();
 				inputBar.addTextChangedListener(new TextWatcher_() {
 					onTextChanged: function() {
+						if(inputBar.getText().equals(combatName)||inputBar.getText().equals(worldName)||inputBar.getText().equals(movementName)||inputBar.getText().equals(playerName)||inputBar.getText().equals(miscName)){
+						VertexClientPE.toast("This name already exists!");
+						inputBar.setText("");
+					}else{
 						currentName = inputBar.getText();
+					}
 					}
 				});
 				btn.setOnClickListener(new View_.OnClickListener() {
