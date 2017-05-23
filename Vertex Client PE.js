@@ -1319,6 +1319,8 @@ var chestUI;
 var menuMiddleLayout;
 var menuRightLayout;
 
+var ghostModeState = false;
+
 var antiAFKState = false;
 var autoSpammerState = false;
 var autoSwordState = false;
@@ -5158,14 +5160,14 @@ var attackShock = {
 	getSettingsLayout: function() {
 		var attackShockSettingsLayout = new LinearLayout_(CONTEXT);
 		attackShockSettingsLayout.setOrientation(1);
-		var attackShockIntensityTitle = clientTextView("Intensity: | " + attackShockIntensity);
+		var attackShockIntensityTitle = clientTextView("Intensity: | " + attackShockIntensity + " * 20");
 		var attackShockIntensitySlider = clientSeekBar();
 		attackShockIntensitySlider.setProgress(attackShockIntensity);
 		attackShockIntensitySlider.setMax(20);
 		attackShockIntensitySlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
 			onProgressChanged: function() {
 				attackShockIntensity = attackShockIntensitySlider.getProgress();
-				attackShockIntensityTitle.setText("Intensity: | " + attackShockIntensity);
+				attackShockIntensityTitle.setText("Intensity: | " + attackShockIntensity + " * 20");
 			}
 		});
 
@@ -5173,12 +5175,15 @@ var attackShock = {
 		attackShockSettingsLayout.addView(attackShockIntensitySlider);
 		return attackShockSettingsLayout;
 	},
+	onModDialogDismiss: function() {
+		VertexClientPE.saveMainSettings();
+	},
 	onToggle: function() {
 		this.state = !this.state;
 	},
 	onAttack: function(a, v) {
 		if(a == getPlayerEnt()) {
-			CONTEXT.getSystemService(Context_.VIBRATOR_SERVICE).vibrate(attackShockIntensity*20);
+			CONTEXT.getSystemService(Context_.VIBRATOR_SERVICE).vibrate(attackShockIntensity * 20);
 		}
 	}
 }
@@ -6634,6 +6639,7 @@ VertexClientPE.showMoreDialog = function() {
 				let playerCustomizerButton = clientButton(playerCustomizerTitle);
 				let optiFineButton = clientButton(optiFineTitle);
 				let hideMenuButton = clientButton(hideMenuTitle);
+				let ghostModeButton = clientButton("Enable/disable ghost mode");
 				let resetPosButton = clientButton("Reset moveable menu positions");
 
 				if(buttonStyleSetting != "android") {
@@ -6669,6 +6675,7 @@ VertexClientPE.showMoreDialog = function() {
 				dialogLayout.addView(dashboardButton);
 				dialogLayout.addView(optiFineButton);
 				dialogLayout.addView(hideMenuButton);
+				dialogLayout.addView(ghostModeButton);
 				dialogLayout.addView(playerCustomizerButton);
 				dialogLayout.addView(webBrowserButton);
 				if(VertexClientPE.menuIsShowing && menuType == "normal") {
@@ -6777,6 +6784,26 @@ VertexClientPE.showMoreDialog = function() {
 						});
 						VertexClientPE.modules = [];
 						VertexClientPE.toast("Successfully disabled Vertex Client PE! Restart to get the functionality back.");
+					}
+				});
+				ghostModeButton.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(view) {
+						ghostModeState = !ghostModeState;
+						if(ghostModeState) {
+							if(hacksList != null && hacksList.isShowing()) {
+								hacksList.dismiss();
+							}
+							if(tabGUI != null && tabGUI.isShowing()) {
+								tabGUI.dismiss();
+							}
+							if(shortcutGUI != null && shortcutGUI.isShowing()) {
+								shortcutGUI.dismiss();
+							}
+						}
+						if(GUI != null && GUI.isShowing()) {
+							GUI.dismiss();
+						}
+						showMenuButton();
 					}
 				});
 				resetPosButton.setOnClickListener(new View_.OnClickListener() {
@@ -17379,7 +17406,7 @@ function showMenuButton() {
 	layout.setOrientation(1);
 	layout.setGravity(Gravity_.TOP);
 	menuBtn = new Button_(CONTEXT);
-	if(mainButtonStyleSetting != "invisible_ghost") {
+	if(mainButtonStyleSetting != "invisible_ghost" && !ghostModeState) {
 		if(mainButtonTapSetting == "menu") {
 			if(VertexClientPE.menuIsShowing) {
 				menuBtn.setBackgroundDrawable(iconClickedClientGUI);
@@ -17447,7 +17474,9 @@ function showMenuButton() {
 	}
 
 	var background;
-	if(mainButtonStyleSetting == "normal") {
+	if(mainButtonStyleSetting == "no_background" || mainButtonStyleSetting == "invisible_ghost" || ghostModeState) {
+		background = new ColorDrawable_(Color_.TRANSPARENT);
+	} else if(mainButtonStyleSetting == "normal") {
 		if(mainButtonPositionSetting == "top-right") {
 			background = backgroundSpecial("cornerleft", themeSetting, true);
 		} else if(mainButtonPositionSetting == "top-left") {
@@ -17465,8 +17494,6 @@ function showMenuButton() {
 		}
 	} else if(mainButtonStyleSetting == "classic") {
 		background = new ColorDrawable_(Color_.parseColor("#1D1D1D"));
-	} else if(mainButtonStyleSetting == "no_background" || mainButtonStyleSetting == "invisible_ghost") {
-		background = new ColorDrawable_(Color_.TRANSPARENT);
 	}
 
 	if(mainButtonPositionSetting == "top-right") {
@@ -17500,7 +17527,7 @@ function showMenuButton() {
 
 	menuBtn.setOnTouchListener(new View_.OnTouchListener() {
 		onTouch: function(v, event) {
-			if(mainButtonStyleSetting == "normal") {
+			if(mainButtonStyleSetting == "normal" && !ghostModeState) {
 				let action = event.getActionMasked();
 				if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
 					if(useLightThemeSetting == true) {
@@ -17781,7 +17808,7 @@ function showHacksList() {
 							hacksList.setAnimationStyle(android.R.style.Animation_Translucent);
 						}
 						hacksList.setTouchable(false);
-						if(hacksListModeSetting != "off") {
+						if(hacksListModeSetting != "off" && !ghostModeState) {
 							if(hacksListPosSetting == "top-left") {
 								hacksList.setBackgroundDrawable(backgroundGradient("bottomright"));
 								hacksList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
@@ -17858,7 +17885,6 @@ function showTabGUI() {
 		CONTEXT.runOnUiThread(new Runnable_({
 			run: function() {
 				try {
-
 					var tabGUILayout = new LinearLayout_(CONTEXT);
 					tabGUILayout.setOrientation(LinearLayout_.HORIZONTAL);
 					tabGUILayout.setGravity(Gravity_.CENTER_VERTICAL);
@@ -17889,7 +17915,7 @@ function showTabGUI() {
 							tabGUI.setAnimationStyle(android.R.style.Animation_Translucent);
 						}
 						tabGUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-						if(tabGUIModeSetting != "off") {
+						if(tabGUIModeSetting != "off" && !ghostModeState) {
 							tabGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, dip2px(70));
 						}
 					}
@@ -17962,7 +17988,7 @@ function showShortcuts() {
 							shortcutGUI.setAnimationStyle(android.R.style.Animation_Translucent);
 						}
 						shortcutGUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-						if(shortcutUIModeSetting != "off") {
+						if(shortcutUIModeSetting != "off" && !ghostModeState) {
 							if(shortcutUIPosSetting == "left-bottom") {
 								shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
 							} else if(shortcutUIPosSetting == "left-center") {
