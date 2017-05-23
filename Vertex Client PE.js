@@ -1,7 +1,7 @@
 /**
  * ##################################################################################################
  * @name Vertex Client PE
- * @version v2.3.1
+ * @version v2.4
  * @author peacestorm (@AgameR_Modder)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36, AutoGrind, TimmyIsDa
  *
@@ -1301,8 +1301,8 @@ VertexClientPE.isRemote = function() {
 
 VertexClientPE.playerIsInGame = false;
 
-VertexClientPE.currentVersion = "2.3.1";
-VertexClientPE.currentVersionDesc = "The Visual Update";
+VertexClientPE.currentVersion = "2.4";
+VertexClientPE.currentVersionDesc = "The ? Update";
 VertexClientPE.targetVersion = "MCPE v1.0.x alpha";
 VertexClientPE.minVersion = "1.0.0";
 VertexClientPE.edition = "Normal";
@@ -6634,12 +6634,20 @@ VertexClientPE.showMoreDialog = function() {
 				optiFineTitle += "OptiFine";
 				hideMenuTitle += "Temporarily disable the client";
 
+				let ghostModeTitle;
+				if(ghostModeState) {
+					ghostModeTitle = "Disable ";
+				} else {
+					ghostModeTitle = "Enable ";
+				}
+				ghostModeTitle += "ghost mode";
+				
 				let dashboardButton = clientButton("Dashboard");
 				let webBrowserButton = clientButton(webBrowserTitle);
 				let playerCustomizerButton = clientButton(playerCustomizerTitle);
 				let optiFineButton = clientButton(optiFineTitle);
 				let hideMenuButton = clientButton(hideMenuTitle);
-				let ghostModeButton = clientButton("Enable/disable ghost mode");
+				let ghostModeButton = clientButton(ghostModeTitle);
 				let resetPosButton = clientButton("Reset moveable menu positions");
 
 				if(buttonStyleSetting != "android") {
@@ -6674,10 +6682,10 @@ VertexClientPE.showMoreDialog = function() {
 				dialogLayout1.addView(dialogScrollView);
 				dialogLayout.addView(dashboardButton);
 				dialogLayout.addView(optiFineButton);
-				dialogLayout.addView(hideMenuButton);
-				dialogLayout.addView(ghostModeButton);
 				dialogLayout.addView(playerCustomizerButton);
 				dialogLayout.addView(webBrowserButton);
+				dialogLayout.addView(hideMenuButton);
+				dialogLayout.addView(ghostModeButton);
 				if(VertexClientPE.menuIsShowing && menuType == "normal") {
 					dialogLayout.addView(resetPosButton);
 				}
@@ -6790,6 +6798,7 @@ VertexClientPE.showMoreDialog = function() {
 					onClick: function(view) {
 						ghostModeState = !ghostModeState;
 						if(ghostModeState) {
+							ghostModeTitle = "Disable ";
 							if(hacksList != null && hacksList.isShowing()) {
 								hacksList.dismiss();
 							}
@@ -6799,11 +6808,15 @@ VertexClientPE.showMoreDialog = function() {
 							if(shortcutGUI != null && shortcutGUI.isShowing()) {
 								shortcutGUI.dismiss();
 							}
+						} else {
+							ghostModeTitle = "Enable ";
 						}
 						if(GUI != null && GUI.isShowing()) {
 							GUI.dismiss();
 						}
 						showMenuButton();
+						ghostModeTitle += "ghost mode";
+						ghostModeButton.setText(ghostModeTitle);
 					}
 				});
 				resetPosButton.setOnClickListener(new View_.OnClickListener() {
@@ -7528,7 +7541,7 @@ VertexClientPE.showModEditorDialog = function(defaultName, modTitleView, modButt
 					modButtonView = bypassModButtonView;
 				}
 				if(defaultName == "Panic") {
-					modButtonView = panicModButtonView;
+					modButtonView = panicModButtonView; //this code is needed to prevent a bug <<
 				}
 
 				var dialogLayout = new LinearLayout_(CONTEXT);
@@ -7549,8 +7562,6 @@ VertexClientPE.showModEditorDialog = function(defaultName, modTitleView, modButt
 						currentName = modEditorDialogEditText.getText();
 						modTitleView.setText(currentName);
 						modButtonView.setText(currentName);
-						editor.putString("VertexClientPE.mods." + defaultName + ".name", currentName);
-						editor.commit();
 					}
 				});
 
@@ -7562,6 +7573,21 @@ VertexClientPE.showModEditorDialog = function(defaultName, modTitleView, modButt
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
 				dialog.setTitle(currentName);
+				dialog.setOnDismissListener(new DialogInterface_.OnDismissListener() {
+					onDismiss: function() {
+						/* VertexClientPE.mods.forEach(function(element, index, array) {
+							if((currentName == VertexClientPE.getCustomModName(element.name) || currentName == element.name) && defaultName != element.name) {
+								currentName = defaultName;
+								modTitleView.setText(currentName);
+								modButtonView.setText(currentName);
+								VertexClientPE.toast("There's already a mod with that (default or custom) name!");
+								return;
+							}
+						}); */
+						editor.putString("VertexClientPE.mods." + defaultName + ".name", currentName);
+						editor.commit();
+					}
+				});
 				dialog.show();
 				var window = dialog.getWindow();
 				var windowParams = window.getAttributes();
@@ -17530,7 +17556,7 @@ function showMenuButton() {
 			if(mainButtonStyleSetting == "normal" && !ghostModeState) {
 				let action = event.getActionMasked();
 				if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
-					if(useLightThemeSetting == true) {
+					if(useLightThemeSetting == "on") {
 						background.setColor(Color_.parseColor("#7000994C"));
 					} else {
 						background.setColor(Color_.parseColor("#700B5B25"));
@@ -17539,13 +17565,13 @@ function showMenuButton() {
 						background.setColor(Color_.argb(127, rgbArray[0], rgbArray[1], rgbArray[2]));
 					}
 					if(color == "red") {
-						if(useLightThemeSetting == true) {
+						if(useLightThemeSetting == "on") {
 							background.setColor(Color_.parseColor("#70FF3333"));
 						} else {
 							background.setColor(Color_.parseColor("#705B0C0C"));
 						}
 					} if(color == "blue") {
-						if(useLightThemeSetting == true) {
+						if(useLightThemeSetting == "on") {
 							background.setColor(Color_.parseColor("#700080FF"));
 						} else {
 							background.setColor(Color_.parseColor("#700A175B"));
@@ -17579,7 +17605,7 @@ function showMenuButton() {
 						}
 					}
 				} else {
-					if(useLightThemeSetting == true) {
+					if(useLightThemeSetting == "on") {
 						background.setColor(Color_.parseColor("#7000CC66"));
 					} else {
 						background.setColor(Color_.parseColor("#700F8219"));
@@ -17588,13 +17614,13 @@ function showMenuButton() {
 						background.setColor(Color_.argb(127, rgbArray[3], rgbArray[4], rgbArray[5]));
 					}
 					if(color == "red") {
-						if(useLightThemeSetting == true) {
+						if(useLightThemeSetting == "on") {
 							background.setColor(Color_.parseColor("#70FF6666"));
 						} else {
 							background.setColor(Color_.parseColor("#70821010"));
 						}
 					} if(color == "blue") {
-						if(useLightThemeSetting == true) {
+						if(useLightThemeSetting == "on") {
 							background.setColor(Color_.parseColor("#703399FF"));
 						} else {
 							background.setColor(Color_.parseColor("#700E3882"));
