@@ -2120,6 +2120,12 @@ VertexClientPE.registerModule = function(obj) {
 	if(obj.type != "Command" && (obj.pack == undefined || obj.pack == null)) {
 		obj.pack = VertexClientPE.category.toRealName(obj.category);
 	}
+	if(obj.type == undefined || obj.type == null) {
+		obj.type = "Mod";
+	}
+	if(obj.batteryUsage == undefined || obj.batteryUsage == null) {
+		obj.batteryUsage = "Normal";
+	}
 	VertexClientPE.preInitModules.push(obj);
 };
 
@@ -3897,7 +3903,7 @@ var aimbot = {
 
 		var useKillauraRangeCheckBox = clientCheckBox();
 		useKillauraRangeCheckBox.setChecked(aimbotUseKillauraRange == "on");
-		useKillauraRangeCheckBox.setText("Use same range as Killaura");
+		useKillauraRangeCheckBox.setText("Use same range as Killaura"/* (" + killAuraRange + ")"*/);
 		useKillauraRangeCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				aimbotUseKillauraRange = v.isChecked()?"on":"off";
@@ -4147,6 +4153,7 @@ var antiAFK = {
 	desc: "Makes the player walk around to prevent you from getting disconnected. Also keeps the screen on as long as the 'Keep screen on' checkbox is checked.",
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
+	batteryUsage: "Normal (high when 'Keep screen on' is enabled)",
 	state: false,
 	timer: 0,
 	setKeepScreenOn: function(state) {
@@ -5153,6 +5160,7 @@ var attackShock = {
 	desc: "Makes your device vibrate when hitting an entity.",
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
+	batteryUsage: "High",
 	state: false,
 	isStateMod: function() {
 		return true;
@@ -6557,7 +6565,7 @@ VertexClientPE.showRemoteViewTargetDialog = function() {
 						var rvTargetDone = false;
 						players.forEach(function(element, index, array) {
 							if(Player.getName(element) == username || Entity.getNameTag(element) == username) {
-								VertexClientPE.mods.forEach(function(e, i, a) {
+								VertexClientPE.modules.forEach(function(e, i, a) {
 									if(e.name == "RemoteView") {
 										e.targetEntity = element;
 										ModPE.setCamera(element);
@@ -7575,7 +7583,7 @@ VertexClientPE.showModEditorDialog = function(defaultName, modTitleView, modButt
 				dialog.setTitle(currentName);
 				dialog.setOnDismissListener(new DialogInterface_.OnDismissListener() {
 					onDismiss: function() {
-						/* VertexClientPE.mods.forEach(function(element, index, array) {
+						VertexClientPE.modules.forEach(function(element, index, array) {
 							if((currentName == VertexClientPE.getCustomModName(element.name) || currentName == element.name) && defaultName != element.name) {
 								currentName = defaultName;
 								modTitleView.setText(currentName);
@@ -7583,7 +7591,7 @@ VertexClientPE.showModEditorDialog = function(defaultName, modTitleView, modButt
 								VertexClientPE.toast("There's already a mod with that (default or custom) name!");
 								return;
 							}
-						}); */
+						});
 						editor.putString("VertexClientPE.mods." + defaultName + ".name", currentName);
 						editor.commit();
 					}
@@ -7657,11 +7665,9 @@ VertexClientPE.showModDialog = function(mod, btn) {
 				if(mod.singleplayerOnly) {
 					type += " (singleplayer only)";
 				}
-				type += "\n";
 				var modTypeText = clientTextView(type);
-				var modDescTitle = clientTextView("Description:");
-				var modDescText = clientTextView(mod.desc);
-				var modEnter = clientTextView("\n");
+				var modBatteryUsageText = clientTextView("Battery usage: \uD83D\uDD0B " + mod.batteryUsage + "\n");
+				var modDescText = clientTextView("Description:\n" + mod.desc + "\n");
 				var closeButton = clientButton("Close");
 				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
 				var dialogLayout = new LinearLayout_(CONTEXT);
@@ -7673,9 +7679,8 @@ VertexClientPE.showModDialog = function(mod, btn) {
 					dialogLayout.addView(clientTextView("Source: " + mod.source + "\n"));
 				}
 				dialogLayout.addView(modTypeText);
-				dialogLayout.addView(modDescTitle);
+				dialogLayout.addView(modBatteryUsageText);
 				dialogLayout.addView(modDescText);
-				dialogLayout.addView(modEnter);
 
 				var settingsLinearLayout = new ScrollView(CONTEXT);
 				settingsLinearLayout.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels, display.heightPixels / 3));
@@ -11035,10 +11040,6 @@ function userBar() {
 }
 
 function modButton(mod, buttonOnly, customSize) {
-	if(mod.type == null) {
-		mod.type = "Mod";
-	}
-
 	var modButtonName = VertexClientPE.getCustomModName(mod.name);
 	var modInfoButtonName = "...";
 	if(mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) {
@@ -16211,6 +16212,11 @@ function modManagerScreen(fromDashboard) {
 
 				screenUI = new PopupWindow_(modManagerMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
 				screenUI.setBackgroundDrawable(backgroundGradient());
+				screenUI.setOnDismissListener(new PopupWindow_.OnDismissListener() {
+					onDismiss: function() {
+						VertexClientPE.saveMainSettings();
+					}
+				});
 				screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
 			} catch(error) {
 				print("An error occurred: " + error);
