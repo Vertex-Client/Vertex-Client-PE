@@ -1708,7 +1708,7 @@ VertexClientPE.Render.renderer = new Renderer({
 		GLU.gluLookAt(gl, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, 0, 1, 0);
 
 		VertexClientPE.modules.forEach(function(element, index, array) {
-			if(element.state && element.onRender) {
+			if(element.state && element.hasOwnProperty("onRender")) {
 				element.onRender(gl);
 			}
 		});
@@ -5607,7 +5607,7 @@ function attackHook(a, v) {
 		preventDefault();
 	}
 	VertexClientPE.modules.forEach(function(element, index, array) {
-		if(element.isStateMod() && element.state && element.onAttack) {
+		if(element.isStateMod() && element.state && element.hasOwnProperty("onAttack")) {
 			if(bypassState && element.hasOwnProperty("canBypassBypassMod")) {
 				if(!element.canBypassBypassMod()) {
 					return;
@@ -5620,7 +5620,7 @@ function attackHook(a, v) {
 
 function entityHurtHook(a, v) {
 	VertexClientPE.modules.forEach(function(element, index, array) {
-		if(element.isStateMod() && element.state && element.onHurt) {
+		if(element.isStateMod() && element.state && element.hasOwnProperty("onHurt")) {
 			if(bypassState && element.hasOwnProperty("canBypassBypassMod")) {
 				if(!element.canBypassBypassMod()) {
 					return;
@@ -5633,7 +5633,7 @@ function entityHurtHook(a, v) {
 
 function entityAddedHook(entity) {
 	VertexClientPE.modules.forEach(function(element, index, array) {
-		if(element.isStateMod() && element.state && element.onEntityAdded) {
+		if(element.isStateMod() && element.state && element.hasOwnProperty("onEntityAdded")) {
 			if(bypassState && element.hasOwnProperty("canBypassBypassMod")) {
 				if(!element.canBypassBypassMod()) {
 					return;
@@ -5649,7 +5649,7 @@ function useItem(x, y, z, itemId, blockId, side, blockDamage) {
 		preventDefault();
 	}
 	VertexClientPE.modules.forEach(function(element, index, array) {
-		if(element.isStateMod() && element.state && element.onUseItem) {
+		if(element.isStateMod() && element.state && element.hasOwnProperty("onUseItem")) {
 			if(bypassState && element.hasOwnProperty("canBypassBypassMod")) {
 				if(!element.canBypassBypassMod()) {
 					return;
@@ -5681,7 +5681,7 @@ function useItem(x, y, z, itemId, blockId, side, blockDamage) {
 
 function explodeHook(entity, x, y, z, power, onFire) {
 	VertexClientPE.modules.forEach(function(element, index, array) {
-		if(element.isStateMod() && element.state && element.onExplode) {
+		if(element.isStateMod() && element.state && element.hasOwnProperty("onExplode")) {
 			if(bypassState && element.hasOwnProperty("canBypassBypassMod")) {
 				if(!element.canBypassBypassMod()) {
 					return;
@@ -5694,7 +5694,7 @@ function explodeHook(entity, x, y, z, power, onFire) {
 
 function projectileHitBlockHook(projectile, blockX, blockY, blockZ, side) {
 	VertexClientPE.modules.forEach(function(element, index, array) {
-		if(element.isStateMod() && element.state && element.onProjectileHitBlock) {
+		if(element.isStateMod() && element.state && element.hasOwnProperty("onProjectileHitBlock")) {
 			if(bypassState && element.hasOwnProperty("canBypassBypassMod")) {
 				if(!element.canBypassBypassMod()) {
 					return;
@@ -6640,6 +6640,93 @@ VertexClientPE.resetMenuPos = function() {
 	VertexClientPE.toast("Successfully reset all menu positions!");
 }
 
+VertexClientPE.tempDisable = function() {
+	VertexClientPE.MusicUtils.mp.reset();
+	ModPE.langEdit("menu.copyright", "\u00A9Mojang AB");
+	leaveGame();
+	screenChangeHook("Yo Mama");
+	attackHook = null;
+	chatHook = null;
+	chatReceiveHook = null;
+	deathHook = null;
+	destroyBlock = null;
+	entityAddedHook = null;
+	entityHurtHook = null;
+	leaveGame = null;
+	modTick = null;
+	newLevel = null;
+	projectileHitBlockHook = null;
+	screenChangeHook = null;
+	startDestroyBlock = null;
+	textPacketReceiveHook = null;
+	useItem = null;
+	VertexClientPE.clientTick = function() {};
+	VertexClientPE.inGameTick = function() {};
+	VertexClientPE.specialTick = function() {};
+	VertexClientPE.secondTick = function() {};
+	if(tipBar != null && tipBar.isShowing()) {
+		tipBar.dismiss();
+		tipBar = null;
+	}
+	if(GUI != null && GUI.isShowing()) {
+		GUI.dismiss();
+		GUI = null;
+	}
+	VertexClientPE.modules.forEach(function(element, index, array) {
+		if(element.isStateMod() && element.state) {
+			element.onToggle();
+		}
+	});
+	VertexClientPE.modules = [];
+	VertexClientPE.toast("Successfully disabled Vertex Client PE! Restart to get the functionality back.");
+}
+
+VertexClientPE.showTempDisableDialog = function() {
+	var dialogTitle = clientTextView("Temporarily disable the client");
+	dialogTitle.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
+	dialogTitle.setMarqueeRepeatLimit(-1);
+	dialogTitle.setSingleLine();
+	dialogTitle.setHorizontallyScrolling(true);
+	dialogTitle.setSelected(true);
+	dialogTitle.setTextSize(25);
+	let yesBtn = clientButton("Yes");
+	yesBtn.setOnClickListener(new View_.OnClickListener() {
+		onClick: function(view) {
+			dialog.dismiss();
+			VertexClientPE.tempDisable();
+		}
+	});
+	let noBtn = clientButton("No");
+	noBtn.setOnClickListener(new View_.OnClickListener() {
+		onClick: function(view) {
+			dialog.dismiss();
+		}
+	});
+
+	var dialogLayout1 = new LinearLayout_(CONTEXT);
+	dialogLayout1.setBackgroundDrawable(backgroundGradient());
+	dialogLayout1.setOrientation(LinearLayout_.VERTICAL);
+	dialogLayout1.setPadding(10, 10, 10, 10);
+
+	var dialogScrollView = new ScrollView(CONTEXT);
+	var dialogLayout = new LinearLayout_(CONTEXT);
+
+	dialogLayout.addView(clientTextView("Are you sure you want to temporarily disable the client?"));
+	dialogScrollView.addView(dialogLayout);
+
+	dialogLayout1.addView(dialogTitle);
+	dialogLayout1.addView(dialogScrollView);
+	dialogLayout1.addView(yesBtn);
+	dialogLayout1.addView(noBtn);
+
+	var dialog = new Dialog_(CONTEXT);
+	dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
+	dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+	dialog.setContentView(dialogLayout1);
+	dialog.setTitle("Temporarily disable the client");
+	dialog.show();
+}
+
 var moreMenuIsOpen = false;
 
 VertexClientPE.showMoreDialog = function() {
@@ -6788,44 +6875,7 @@ VertexClientPE.showMoreDialog = function() {
 							return;
 						}
 						dialog.dismiss();
-						VertexClientPE.MusicUtils.mp.reset();
-						ModPE.langEdit("menu.copyright", "\u00A9Mojang AB");
-						leaveGame();
-						screenChangeHook("Yo Mama");
-						attackHook = null;
-						chatHook = null;
-						chatReceiveHook = null;
-						deathHook = null;
-						destroyBlock = null;
-						entityAddedHook = null;
-						entityHurtHook = null;
-						leaveGame = null;
-						modTick = null;
-						newLevel = null;
-						projectileHitBlockHook = null;
-						screenChangeHook = null;
-						startDestroyBlock = null;
-						textPacketReceiveHook = null;
-						useItem = null;
-						VertexClientPE.clientTick = function() {};
-						VertexClientPE.inGameTick = function() {};
-						VertexClientPE.specialTick = function() {};
-						VertexClientPE.secondTick = function() {};
-						if(tipBar != null && tipBar.isShowing()) {
-							tipBar.dismiss();
-							tipBar = null;
-						}
-						if(GUI != null && GUI.isShowing()) {
-							GUI.dismiss();
-							GUI = null;
-						}
-						VertexClientPE.modules.forEach(function(element, index, array) {
-							if(element.isStateMod() && element.state) {
-								element.onToggle();
-							}
-						});
-						VertexClientPE.modules = [];
-						VertexClientPE.toast("Successfully disabled Vertex Client PE! Restart to get the functionality back.");
+						VertexClientPE.showTempDisableDialog();
 					}
 				});
 				ghostModeButton.setOnClickListener(new View_.OnClickListener() {
@@ -8676,18 +8726,22 @@ VertexClientPE.showBasicDialog = function(title, view, onDialogDismiss) {
 						dialog.dismiss();
 					}
 				});
-				var inputBar = clientEditText();
+				
 				var dialogLayout1 = new LinearLayout_(CONTEXT);
-				var dialogScrollView = new ScrollView(CONTEXT);
-				var dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout1.setBackgroundDrawable(backgroundGradient());
 				dialogLayout1.setOrientation(LinearLayout_.VERTICAL);
 				dialogLayout1.setPadding(10, 10, 10, 10);
-				dialogLayout1.addView(dialogTitle);
+
+				var dialogScrollView = new ScrollView(CONTEXT);
+				var dialogLayout = new LinearLayout_(CONTEXT);
+
 				dialogLayout.addView(view);
 				dialogScrollView.addView(dialogLayout);
+
+				dialogLayout1.addView(dialogTitle);
 				dialogLayout1.addView(dialogScrollView);
 				dialogLayout1.addView(btn);
+
 				var dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
@@ -8695,7 +8749,7 @@ VertexClientPE.showBasicDialog = function(title, view, onDialogDismiss) {
 				dialog.setTitle(title);
 				dialog.setOnDismissListener(new DialogInterface_.OnDismissListener() {
 					onDismiss: function() {
-						if(onDialogDismiss) {
+						if(onDialogDismiss != null) {
 							onDialogDismiss();
 						}
 					}
