@@ -1317,7 +1317,7 @@ VertexClientPE.isRemote = function() {
 VertexClientPE.playerIsInGame = false;
 
 VertexClientPE.currentVersion = "2.4";
-VertexClientPE.currentVersionDesc = "The ? Update";
+VertexClientPE.currentVersionDesc = "The Debug Update";
 VertexClientPE.targetVersion = "MCPE v1.0.x alpha";
 VertexClientPE.minVersion = "1.0.0";
 VertexClientPE.edition = "Normal";
@@ -6892,8 +6892,14 @@ VertexClientPE.showMoreDialog = function() {
 							if(shortcutGUI != null && shortcutGUI.isShowing()) {
 								shortcutGUI.dismiss();
 							}
+							if(pauseUtilitiesUI != null && pauseUtilitiesUI.isShowing()) {
+								pauseUtilitiesUI.dismiss();
+							}
 						} else {
 							ghostModeTitle = "Enable ";
+							if(currentScreen == ScreenType.pause_screen) {
+								showPauseUtilities();
+							}
 						}
 						if(GUI != null && GUI.isShowing()) {
 							GUI.dismiss();
@@ -18287,27 +18293,29 @@ function showPauseUtilities() {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
-				var pauseUtilitiesLayout = new LinearLayout_(CONTEXT); //TODO: pin button
-				var playerViewButton = clientButton("F5");
-				playerViewButton.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewArg) {
-						if(Launcher.isToolbox()) {
-							var currentView = ModPE.getPlayerViewPerspective();
-							if(currentView < 2) {
-								ModPE.setPlayerViewPerspective(currentView + 1);
+				if(!ghostModeState) {
+					var pauseUtilitiesLayout = new LinearLayout_(CONTEXT); //TODO: pin button
+					var playerViewButton = clientButton("F5");
+					playerViewButton.setOnClickListener(new View_.OnClickListener({
+						onClick: function(viewArg) {
+							if(Launcher.isToolbox()) {
+								var currentView = ModPE.getPlayerViewPerspective();
+								if(currentView < 2) {
+									ModPE.setPlayerViewPerspective(currentView + 1);
+								} else {
+									ModPE.setPlayerViewPerspective(0);
+								}
 							} else {
-								ModPE.setPlayerViewPerspective(0);
+								VertexClientPE.toast("Sorry, this feature only works on Toolbox!");
 							}
-						} else {
-							VertexClientPE.toast("Sorry, this feature only works on Toolbox!");
 						}
-					}
-				}));
-				pauseUtilitiesLayout.addView(playerViewButton);
+					}));
+					pauseUtilitiesLayout.addView(playerViewButton);
 
-				pauseUtilitiesUI = new PopupWindow_(pauseUtilitiesLayout, dip2px(40), dip2px(40));
-				pauseUtilitiesUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-				pauseUtilitiesUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, dip2px(80));
+					pauseUtilitiesUI = new PopupWindow_(pauseUtilitiesLayout, dip2px(40), dip2px(40));
+					pauseUtilitiesUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+					pauseUtilitiesUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, dip2px(80));
+				}
 			} catch(exception) {
 				print(exception);
 				VertexClientPE.showBugReportDialog(exception);
