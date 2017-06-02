@@ -1961,7 +1961,7 @@ var christmasTile = {
 		return false;
 	},
 	checkBeforeAdding: function() {
-		return VertexClientPE.Utils.month == java.util.Calendar.DECEMBER || VertexClientPE.isDevMode();
+		return VertexClientPE.Utils.month == java.util.Calendar.DECEMBER;
 	},
 	onClick: function(fromDashboard) {
 		christmasScreen();
@@ -2326,7 +2326,8 @@ var panic = {
 	isStateMod: function() {
 		return false;
 	},
-	onToggle: function() {
+	onToggle: function(fromCmd) {
+		fromCmd = fromCmd || false;
 		VertexClientPE.modules.forEach(function (element, index, array) {
 			if(element.isStateMod() && element.state) {
 				if((element.category == VertexClientPE.category.COMBAT && panicCombatSetting == "on") || (element.category == VertexClientPE.category.WORLD && panicWorldSetting == "on") || (element.category == VertexClientPE.category.MOVEMENT && panicMovementSetting == "on") || (element.category == VertexClientPE.category.PLAYER && panicPlayerSetting == "on") || (element.category == VertexClientPE.category.MISC && panicMiscSetting == "on")) {
@@ -2334,37 +2335,39 @@ var panic = {
 				}
 			}
 		});
-		if(VertexClientPE.menuIsShowing) {
-			VertexClientPE.shouldUpdateGUI = true;
-			VertexClientPE.closeMenu();
-			VertexClientPE.showMenu();
-		}
-		if(tabGUI != null) {
-			if(tabGUI.isShowing()) {
-				tabGUI.dismiss();
-				showTabGUI();
+		if(!fromCmd) {
+			if(VertexClientPE.menuIsShowing) {
+				VertexClientPE.shouldUpdateGUI = true;
+				VertexClientPE.closeMenu();
+				VertexClientPE.showMenu();
 			}
-		}
-		if(shortcutGUI != null) {
-			if(shortcutGUI.isShowing()) {
-				shortcutGUI.dismiss();
-				showShortcuts();
+			if(tabGUI != null) {
+				if(tabGUI.isShowing()) {
+					tabGUI.dismiss();
+					showTabGUI();
+				}
 			}
-		}
-		if(healthDisplayUI != null) {
-			if(healthDisplayUI.isShowing()) {
-				healthDisplayUI.dismiss();
-				showHealthDisplay();
+			if(shortcutGUI != null) {
+				if(shortcutGUI.isShowing()) {
+					shortcutGUI.dismiss();
+					showShortcuts();
+				}
 			}
-		}
-		if(rotationPlusUI != null) {
-			if(rotationPlusUI.isShowing()) {
-				rotationPlusUI.dismiss();
-				showRotationPlus();
+			if(healthDisplayUI != null) {
+				if(healthDisplayUI.isShowing()) {
+					healthDisplayUI.dismiss();
+					showHealthDisplay();
+				}
 			}
-		}
-		if(hacksList != null && hacksList.isShowing()) {
-			updateHacksList();
+			if(rotationPlusUI != null) {
+				if(rotationPlusUI.isShowing()) {
+					rotationPlusUI.dismiss();
+					showRotationPlus();
+				}
+			}
+			if(hacksList != null && hacksList.isShowing()) {
+				updateHacksList();
+			}
 		}
 	}
 };
@@ -2483,6 +2486,9 @@ var killAura = {
 			onProgressChanged: function() {
 				killAuraRange = killAuraRangeSlider.getProgress();
 				killAuraRangeTitle.setText("Range: | " + killAuraRange);
+				if(useKillauraRangeCheckBox != null) {
+					useKillauraRangeCheckBox.setText("Use same range as Killaura (" + killAuraRange + ")");
+				}
 			}
 		});
 		killAuraSettingsLayout.addView(killAuraRangeTitle);
@@ -3894,24 +3900,31 @@ var fastWalk = {
 		f = this.state?1:0;
 	},
 	onTick: function() {
+		let xPos;
+		let zPos;
+		let xDiff;
+		let zDiff;
+
 		if(f == 1) {
-			Xpos = getPlayerX();
-			Zpos = getPlayerZ();
-			f = f + 1;
+			xPos = getPlayerX();
+			zPos = getPlayerZ();
+			f += 1;
 		} else if(f == 3) {
 			f = 1;
-			Xdiff = getPlayerX() - Xpos;
-			Zdiff = getPlayerZ() - Zpos;
-			setVelX(getPlayerEnt(), Xdiff);
-			setVelZ(getPlayerEnt(), Zdiff);
-			Xdiff = 0;
-			Zdiff = 0;
+			xDiff = getPlayerX() - xPos;
+			zDiff = getPlayerZ() - zPos;
+			setVelX(getPlayerEnt(), xDiff);
+			setVelZ(getPlayerEnt(), zDiff);
+			xDiff = 0;
+			zDiff = 0;
 		}
 		if(f != 1) {
-			f = f + 1;
+			f += 1;
 		}
 	}
 }
+
+let useKillauraRangeCheckBox;
 
 var aimbot = {
 	name: "Aimbot",
@@ -3923,9 +3936,9 @@ var aimbot = {
 		var aimbotSettingsLayout = new LinearLayout_(CONTEXT);
 		aimbotSettingsLayout.setOrientation(1);
 
-		var useKillauraRangeCheckBox = clientCheckBox();
+		useKillauraRangeCheckBox = clientCheckBox();
 		useKillauraRangeCheckBox.setChecked(aimbotUseKillauraRange == "on");
-		useKillauraRangeCheckBox.setText("Use same range as Killaura"/* (" + killAuraRange + ")"*/);
+		useKillauraRangeCheckBox.setText("Use same range as Killaura (" + killAuraRange + ")");
 		useKillauraRangeCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				aimbotUseKillauraRange = v.isChecked()?"on":"off";
@@ -5836,31 +5849,34 @@ var toggle = {
 				VertexClientPE.modules.forEach(function (element, index, array) {
 					if(element.type != "Command") {
 						if ((element.name.toLowerCase() == cmd.substring(2, cmd.length).toLowerCase() || VertexClientPE.getCustomModName(element.name).toLowerCase() == cmd.substring(2, cmd.length).toLowerCase()) && !shouldReturn) {
-							if (element.isStateMod()) {
-								if(element.requiresPro && element.requiresPro() && !VertexClientPE.isPro()) {
-									VertexClientPE.showProDialog(VertexClientPE.getCustomModName(element.name));
-									return;
-								}
-								if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
-									VertexClientPE.toast("Experimental features aren't enabled!");
-									return;
-								}
-								if(element.checkBeforeAdding && !element.checkBeforeAdding()) {
-									VertexClientPE.toast("You didn't unlock this feature yet!");
-									return;
-								}
-								if(mod.name == "Bypass" || !bypassState || (mod.canBypassBypassMod == undefined || mod.canBypassBypassMod == null || mod.canBypassBypassMod()) || mod.state) {
-									mod.onToggle();
-								} else if(!mod.canBypassBypassMod() && !mod.state) {
-									mod.state = true;
-								}
-								if(hacksList != null && hacksList.isShowing()) {
-									updateHacksList();
-								}
-								VertexClientPE.toast("Sucessfully toggled module " + VertexClientPE.getCustomModName(element.name));
-							} else {
-								VertexClientPE.toast(VertexClientPE.getCustomModName(element.name) + " can't be toggled using the .t(oggle) command!");
+							if(element.requiresPro && element.requiresPro() && !VertexClientPE.isPro()) {
+								VertexClientPE.showProDialog(VertexClientPE.getCustomModName(element.name));
+								return;
 							}
+							if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
+								VertexClientPE.toast("Experimental features aren't enabled!");
+								return;
+							}
+							if(element.checkBeforeAdding && !element.checkBeforeAdding()) {
+								VertexClientPE.toast("You didn't unlock this feature yet!");
+								return;
+							}
+							if(element.name == "Bypass" || !bypassState || (element.canBypassBypassMod == undefined || element.canBypassBypassMod == null || element.canBypassBypassMod()) || (element.isStateMod() && element.state)) {
+								element.onToggle(true);
+							} else if(bypassState && !element.canBypassBypassMod()) {
+								if(element.isStateMod() && !element.state) {
+									element.state = true;
+								} else if(!element.isStateMod()) {
+									VertexClientPE.toast("This mod is blocked by " + VertexClientPE.getCustomModName("Bypass") + "!");
+								}
+							}
+							if(hacksList != null && hacksList.isShowing()) {
+								updateHacksList();
+							}
+							VertexClientPE.toast("Sucessfully toggled module " + VertexClientPE.getCustomModName(element.name));
+							/*
+								VertexClientPE.toast(VertexClientPE.getCustomModName(element.name) + " can't be toggled using the .t(oggle) command!");
+							*/
 							shouldReturn = true;
 						}
 					}
@@ -10996,7 +11012,7 @@ function updatePaneButton(updateVersion, updateDesc, isDev) {
 	return updatePaneLayout;
 }
 
-function helpSection(title, description) {
+function helpSection(title, description, extraView) {
 	var helpSectionLayout1 = new LinearLayout_(CONTEXT);
 	helpSectionLayout1.setOrientation(1);
 	helpSectionLayout1.setGravity(Gravity_.CENTER);
@@ -11009,16 +11025,20 @@ function helpSection(title, description) {
 	helpSectionLayoutLeft.setGravity(Gravity_.CENTER);
 	helpSectionLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - dip2px(10), LinearLayout_.LayoutParams.WRAP_CONTENT));
 	var helpSectionLayoutRight = new LinearLayout_(CONTEXT);
-	helpSectionLayoutRight.setOrientation(1);
+	helpSectionLayoutRight.setOrientation(LinearLayout_.HORIZONTAL);
 	helpSectionLayoutRight.setGravity(Gravity_.CENTER);
 	helpSectionLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - dip2px(10), LinearLayout_.LayoutParams.WRAP_CONTENT));
 	helpSectionLayout.addView(helpSectionLayoutLeft);
 	helpSectionLayout.addView(helpSectionLayoutRight);
-	var helpSectionTitle = clientTextView(title);
+	var helpSectionTitle = clientTextView(" " + title);
 	helpSectionTitle.setTypeface(VertexClientPE.font, Typeface_.BOLD);
 	helpSectionTitle.setBackgroundDrawable(backgroundSpecial("top", themeSetting));
 	var helpSectionDescription = clientTextView(description);
 	helpSectionLayoutLeft.addView(helpSectionDescription);
+	
+	if(extraView != null) {
+		helpSectionLayoutRight.addView(extraView);
+	}
 
 	helpSectionLayout1.addView(helpSectionTitle);
 	helpSectionLayout1.addView(helpSectionLayout);
@@ -15563,7 +15583,30 @@ function informationScreen(fromDashboard) {
 	}));
 }
 
-var helpSections = [["Where do I report issues?", "You can report issues at http://bit.ly/VertexIssues."], ["How can I add shortcuts?", "Tap the star button in a mod's ... dialog or long click on a tile and then tap on the favorite button to make it favorite. The mod or tile will then have its own shortcut."], ["Website", "Our website is http://Vertex-Client.ml/."], ["Twitter", "Our Twitter account is @VertexHX."]];
+function getFavoriteTutorialView() {
+	let tutLayout = new LinearLayout_(CONTEXT);
+	tutLayout.setOrientation(LinearLayout_.HORIZONTAL);
+	
+	let tutView = new Button_(CONTEXT);
+	tutView.setLayoutParams(new LinearLayout_.LayoutParams(96, 96));
+	tutView.setBackgroundDrawable(CONTEXT.getResources().getDrawable(android.R.drawable.btn_star_big_off));
+	
+	let tutView1 = new TextView_(CONTEXT);
+	tutView1.setText("\u21C4");
+	tutView1.setTextColor(Color_.WHITE);
+	tutView1.setTextSize(50);
+	
+	let tutView2 = new Button_(CONTEXT);
+	tutView2.setLayoutParams(new LinearLayout_.LayoutParams(96, 96));
+	tutView2.setBackgroundDrawable(CONTEXT.getResources().getDrawable(android.R.drawable.btn_star_big_on));
+	
+	tutLayout.addView(tutView);
+	tutLayout.addView(tutView1);
+	tutLayout.addView(tutView2);
+	
+	return tutLayout;
+}
+var helpSections = [["Where do I report issues?", "You can report issues at http://bit.ly/VertexIssues.", null], ["How can I add shortcuts?", "Tap the star button in a mod's ... dialog or long click on a tile and then tap on the favorite button to make it favorite. The mod or tile will then have its own shortcut.", getFavoriteTutorialView()], ["Website", "Our website is http://Vertex-Client.ml/.", null], ["Twitter", "Our Twitter account is @VertexHX.", null]];
 
 function helpScreen(fromDashboard) {
 	VertexClientPE.menuIsShowing = true;
@@ -15595,7 +15638,7 @@ function helpScreen(fromDashboard) {
 						helpSectionEnter.setTextSize(10);
 						helpMenuLayout.addView(helpSectionEnter);
 					}
-					helpMenuLayout.addView(helpSection(element[0], element[1]));
+					helpMenuLayout.addView(helpSection(element[0], element[1], element[2]));
 				});
 
 				screenUI = new PopupWindow_(helpMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
