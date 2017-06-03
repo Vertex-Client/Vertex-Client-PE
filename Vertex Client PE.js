@@ -235,6 +235,7 @@ var targetFriendsSetting = "off";
 var antiAFKKeepScreenOnSetting = "on";
 var shortcutUIModeSetting = "on";
 var attackShockIntensity = 20;
+var f5ButtonModeSetting = "pause";
 //------------------------------------
 var antiAFKDistancePerTick = 0.25;
 //------------------------------------
@@ -5863,9 +5864,11 @@ var toggle = {
 							}
 							if(element.name == "Bypass" || !bypassState || (element.canBypassBypassMod == undefined || element.canBypassBypassMod == null || element.canBypassBypassMod()) || (element.isStateMod() && element.state)) {
 								element.onToggle(true);
+								VertexClientPE.shouldUpdateGUI = true;
 							} else if(bypassState && !element.canBypassBypassMod()) {
 								if(element.isStateMod() && !element.state) {
 									element.state = true;
+									VertexClientPE.shouldUpdateGUI = true;
 								} else if(!element.isStateMod()) {
 									VertexClientPE.toast("This mod is blocked by " + VertexClientPE.getCustomModName("Bypass") + "!");
 								}
@@ -6062,7 +6065,7 @@ var panic_cmd = {
 		return false;
 	},
 	onCall: function(cmd) {
-		panic.onToggle();
+		panic.onToggle(true);
 	}
 }
 
@@ -11163,18 +11166,15 @@ function userBar() {
 	return defaultUserLayout;
 }
 
-function modButton(mod, buttonOnly, customSize) {
+function modButton(mod, buttonOnly, customSize, shouldUpdateGUI) {
 	var modButtonName = VertexClientPE.getCustomModName(mod.name);
 	var modInfoButtonName = "...";
 	if(mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) {
 		modInfoButtonName = "\uD83D\uDD12";
 	}
-
-	if(mod.state) {
-		if(bypassState && mod.canBypassBypassMod && !mod.canBypassBypassMod()) {
-			mod.onToggle();
-			mod.state = true;
-		}
+	
+	if(shouldUpdateGUI == null) {
+		shouldUpdateGUI = false;
 	}
 
 	var modButtonLayout = new LinearLayout_(CONTEXT);
@@ -11247,6 +11247,7 @@ function modButton(mod, buttonOnly, customSize) {
 	defaultClientButton.setOnClickListener(new View_.OnClickListener({
 		onClick: function(viewArg) {
 			var _0xff55=["\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x6F\x75\x74\x64\x61\x74\x65\x64\x2C\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C","\x74\x6F\x61\x73\x74","\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C"];if(!isAuthorized){if(!isSupported){VertexClientPE[_0xff55[1]](_0xff55[0])}else {VertexClientPE[_0xff55[1]](_0xff55[2])};return}
+			let tempShouldUpdate = shouldUpdateGUI;
 			if(mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) {
 				VertexClientPE.showProDialog(mod.name);
 				return;
@@ -11265,6 +11266,7 @@ function modButton(mod, buttonOnly, customSize) {
 						mod.state = true;
 					} else if(!mod.isStateMod()) {
 						VertexClientPE.toast("This mod is blocked by Bypass!");
+						tempShouldUpdate = false;
 					}
 				}
 			}
@@ -11304,6 +11306,9 @@ function modButton(mod, buttonOnly, customSize) {
 						showTabGUI();
 					}
 				}
+			}
+			if(tempShouldUpdate) {
+				VertexClientPE.shouldUpdateGUI = true;
 			}
 		}
 	}));
@@ -11565,7 +11570,7 @@ function tabGUICategoryButton(category, layout, layoutToBeOpened, layoutMain) {
 							if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
 								return;
 							}
-							layoutToBeOpened1.addView(new modButton(element, true));
+							layoutToBeOpened1.addView(new modButton(element, true, null, true));
 						}
 					});
 					if(VertexClientPE.isDebugMode()) {
@@ -11587,7 +11592,7 @@ function tabGUICategoryButton(category, layout, layoutToBeOpened, layoutMain) {
 							if(element.checkBeforeAdding && !element.checkBeforeAdding()) {
 								return;
 							}
-							layoutToBeOpened1.addView(new modButton(element, true));
+							layoutToBeOpened1.addView(new modButton(element, true, null, true));
 						}
 					});
 					if(VertexClientPE.isDebugMode()) {
@@ -18154,7 +18159,7 @@ function showShortcuts() {
 								return;
 							}
 							shortcutCount++;
-							shortcutGUILayout.addView(modButton(element, true, shortcutSizeSetting));
+							shortcutGUILayout.addView(modButton(element, true, shortcutSizeSetting, true));
 						}
 					});
 
@@ -18357,7 +18362,11 @@ function showPauseUtilities() {
 
 					pauseUtilitiesUI = new PopupWindow_(pauseUtilitiesLayout, dip2px(40), dip2px(40));
 					pauseUtilitiesUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-					pauseUtilitiesUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, dip2px(80));
+					if(f5ButtonModeSetting == "pause") {
+						pauseUtilitiesUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, dip2px(80));
+					} else {
+						pauseUtilitiesUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, dip2px(80));
+					}
 				}
 			} catch(exception) {
 				print(exception);
