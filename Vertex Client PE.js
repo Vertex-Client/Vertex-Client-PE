@@ -788,6 +788,9 @@ function screenChangeHook(screenName) {
 			if(rotationPlusState) {
 				showRotationPlus();
 			}
+			if(f5ButtonModeSetting == "ingame") {
+				showPauseUtilities();
+			}
 		}
 	} else {
 		VertexClientPE.Render.deinitViews();
@@ -826,6 +829,15 @@ function screenChangeHook(screenName) {
 				}
 			}));
 		}
+		if(pauseUtilitiesUI != null) {
+			if(pauseUtilitiesUI.isShowing()) {
+				CONTEXT.runOnUiThread(new Runnable_({
+					run: function() {
+						pauseUtilitiesUI.dismiss();
+					}
+				}));
+			}
+		}
 		if(screenName == ScreenType.start_screen) {
 			if((mainMenuTextList == null || !mainMenuTextList.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
 				VertexClientPE.showStartScreenBar();
@@ -860,7 +872,7 @@ function screenChangeHook(screenName) {
 	}
 	if(screenName == ScreenType.pause_screen) {
 		VertexClientPE.isPaused = true;
-		if(!VertexClientPE.menuIsShowing) {
+		if(!VertexClientPE.menuIsShowing && f5ButtonModeSetting == "pause") {
 			showPauseUtilities();
 		}
 	} else if(currentScreen == ScreenType.pause_screen) {
@@ -1867,6 +1879,15 @@ VertexClientPE.tiles = [];
 VertexClientPE.preInitModules = [];
 VertexClientPE.modules = [];
 VertexClientPE.addons = [];
+
+/* function callVertexFunction(func) {
+	let usedFunc = func;
+	let args = arguments;
+	args.splice(0, 1);
+	
+	VertexClientPE[usedFunc].apply(this, args);
+	
+} */
 
 VertexClientPE.loadAddons = function() {
 	if(Launcher.isBlockLauncher() || Launcher.isToolbox()) {
@@ -6920,9 +6941,9 @@ VertexClientPE.showMoreDialog = function() {
 							}
 						} else {
 							ghostModeTitle = "Enable ";
-							if(currentScreen == ScreenType.pause_screen) {
+							/* if((currentScreen == ScreenType.pause_screen && f5ButtonModeSetting == "pause") || ((currentScreen == ScreenType.hud || currentScreen == ScreenType.ingame) && f5ButtonModeSetting == "ingame")) {
 								showPauseUtilities();
-							}
+							} */
 						}
 						if(GUI != null && GUI.isShowing()) {
 							GUI.dismiss();
@@ -7672,7 +7693,7 @@ VertexClientPE.showModEditorDialog = function(defaultName, modTitleView, modButt
 				modEditorDialogEditText.setTextSize(20);
 				modEditorDialogEditText.addTextChangedListener(new TextWatcher_() {
 					afterTextChanged: function() {
-						currentName = modEditorDialogEditText.getText();
+						currentName = modEditorDialogEditText.getText().toString();
 						modTitleView.setText(currentName);
 						modButtonView.setText(currentName);
 					}
@@ -7688,15 +7709,26 @@ VertexClientPE.showModEditorDialog = function(defaultName, modTitleView, modButt
 				dialog.setTitle(currentName);
 				dialog.setOnDismissListener(new DialogInterface_.OnDismissListener() {
 					onDismiss: function() {
-						VertexClientPE.modules.forEach(function(element, index, array) {
-							if((currentName == VertexClientPE.getCustomModName(element.name) || currentName == element.name) && defaultName != element.name) {
-								currentName = defaultName;
-								modTitleView.setText(currentName);
-								modButtonView.setText(currentName);
-								VertexClientPE.toast("There's already a mod with that (default or custom) name!");
-								return;
-							}
-						});
+						if(currentName.replaceAll(" ", "") == "") {
+							currentName = defaultName;
+							modTitleView.setText(currentName);
+							modButtonView.setText(currentName);
+							VertexClientPE.toast("You can't give a mod an empty name!");
+						} else {
+							let lowerCasedCurrentName = currentName.toLowerCase();
+							VertexClientPE.modules.forEach(function(element, index, array) {
+								if(element.type != "Command") {
+									let elementDefaultName = element.name;
+									if((lowerCasedCurrentName == VertexClientPE.getCustomModName(elementDefaultName).toLowerCase() || lowerCasedCurrentName == elementDefaultName.toLowerCase()) && defaultName != elementDefaultName) {
+										currentName = defaultName;
+										modTitleView.setText(currentName);
+										modButtonView.setText(currentName);
+										VertexClientPE.toast("There's already a mod with that (default or custom) name!");
+										return;
+									}
+								}
+							});
+						}
 						editor.putString("VertexClientPE.mods." + defaultName + ".name", currentName);
 						editor.commit();
 					}
@@ -10256,6 +10288,8 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + targetFriendsSetting.toString());
 	outWrite.append("," + antiAFKKeepScreenOnSetting.toString());
 	outWrite.append("," + shortcutUIModeSetting.toString());
+	outWrite.append("," + attackShockIntensity.toString());
+	outWrite.append("," + f5ButtonModeSetting.toString());
 
 	outWrite.close();
 
@@ -10508,6 +10542,9 @@ VertexClientPE.loadMainSettings = function () {
 		}
 		if (arr[76] != null && arr[76] != undefined) {
 			attackShockIntensity = arr[76];
+		}
+		if (arr[77] != null && arr[77] != undefined) {
+			f5ButtonModeSetting = arr[77];
 		}
 		fos.close();
 		VertexClientPE.loadCustomRGBSettings();
@@ -15332,6 +15369,36 @@ function settingsScreen(fromDashboard) {
 						VertexClientPE.saveMainSettings();
 					}
 				}));
+				
+				var f5ButtonModeSettingFunc = new settingButton("F5 button mode", null, null,
+					function(viewArg) {
+						f5ButtonModeSetting = "pause";
+						f5ButtonModeSettingButton.setText("Pause screen");
+					}
+				);
+				var f5ButtonModeSettingButton = f5ButtonModeSettingFunc.getButton();
+				if(f5ButtonModeSetting == "pause") {
+					f5ButtonModeSettingButton.setText("Pause screen");
+				} else if(f5ButtonModeSetting == "ingame") {
+					f5ButtonModeSettingButton.setText("Ingame/HUD screen");
+				} else if(f5ButtonModeSetting == "off") {
+					f5ButtonModeSettingButton.setText("Hidden");
+				}
+				f5ButtonModeSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(f5ButtonModeSetting == "off") {
+							f5ButtonModeSetting = "pause";
+							f5ButtonModeSettingButton.setText("Pause screen");
+						} else if(f5ButtonModeSetting == "pause") {
+							f5ButtonModeSetting = "ingame";
+							f5ButtonModeSettingButton.setText("Ingame/HUD screen");
+						} else if(f5ButtonModeSetting == "ingame") {
+							f5ButtonModeSetting = "off";
+							f5ButtonModeSettingButton.setText("Hidden");
+						}
+						VertexClientPE.saveMainSettings();
+					}
+				}));
 
 				var webBrowserStartPageSettingFunc = new settingButton("Webbrowser startpage", "Change the default webbrowser page.");
 				var webBrowserStartPageSettingButton = webBrowserStartPageSettingFunc.getButton();
@@ -15380,6 +15447,7 @@ function settingsScreen(fromDashboard) {
 				VertexClientPE.addView(settingsMenuLayout, featuresSettingFunc);
 				VertexClientPE.addView(settingsMenuLayout, showNewsSettingFunc);
 				VertexClientPE.addView(settingsMenuLayout, showSnowInWinterSettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, f5ButtonModeSettingFunc);
 				VertexClientPE.addView(settingsMenuLayout, webBrowserStartPageSettingFunc);
 
 				screenUI = new PopupWindow_(settingsMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
@@ -17595,7 +17663,7 @@ function openMenuFromMenuButton(viewArg) {
 					showRotationPlus();
 				}
 			}
-			if(currentScreen == ScreenType.pause_screen && (pauseUtilitiesUI == null || !pauseUtilitiesUI.isShowing())) {
+			if(((currentScreen == ScreenType.pause_screen && f5ButtonModeSetting == "pause") || ((currentScreen == ScreenType.hud || currentScreen == ScreenType.ingame) && f5ButtonModeSetting == "ingame")) && (pauseUtilitiesUI == null || !pauseUtilitiesUI.isShowing())) {
 				showPauseUtilities();
 			}
 		}
@@ -17603,7 +17671,6 @@ function openMenuFromMenuButton(viewArg) {
 }
 
 function showMenuButton() {
-	VertexClientPE.menuIsShowing = false;
 	var layout = new LinearLayout_(CONTEXT);
 	layout.setOrientation(1);
 	layout.setGravity(Gravity_.TOP);
@@ -17823,34 +17890,40 @@ function showMenuButton() {
 			return false;
 		}});
 
-	if((currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud) && VertexClientPE.playerIsInGame) {
-		if(hacksList == null || !hacksList.isShowing()) {
-			showHacksList();
-			showTabGUI();
-			showShortcuts();
-			if(healthDisplayState) {
-				showHealthDisplay();
-			}
-			if(rotationPlusState) {
-				showRotationPlus();
+	if(!VertexClientPE.menuIsShowing) {
+		if((currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud) && VertexClientPE.playerIsInGame) {
+			if(hacksList == null || !hacksList.isShowing()) {
+				showHacksList();
+				showTabGUI();
+				showShortcuts();
+				if(healthDisplayState) {
+					showHealthDisplay();
+				}
+				if(rotationPlusState) {
+					showRotationPlus();
+				}
 			}
 		}
 	}
+	
 	if(currentScreen == ScreenType.start_screen || currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud || currentScreen == ScreenType.pause_screen) {
 		GUI.setTouchable(true);
 		GUI.update();
 	}
-	if(currentScreen == ScreenType.start_screen) {
-		if((mainMenuTextList == null || !mainMenuTextList.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
-			VertexClientPE.showStartScreenBar();
+	
+	if(!VertexClientPE.menuIsShowing) {
+		if(currentScreen == ScreenType.start_screen) {
+			if((mainMenuTextList == null || !mainMenuTextList.isShowing()) && !VertexClientPE.playerIsInGame) {
+				VertexClientPE.showStartScreenBar();
+			}
+			if((accountManagerGUI == null || !accountManagerGUI.isShowing()) && !VertexClientPE.playerIsInGame) {
+				showAccountManagerButton();
+			}
 		}
-		if((accountManagerGUI == null || !accountManagerGUI.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
-			showAccountManagerButton();
-		}
-	}
-	if(currentScreen == ScreenType.pause_screen) {
-		if((pauseUtilitiesUI == null || !pauseUtilitiesUI.isShowing()) && !VertexClientPE.menuIsShowing) {
-			showPauseUtilities();
+		if((currentScreen == ScreenType.pause_screen && f5ButtonModeSetting == "pause") || ((currentScreen == ScreenType.hud || currentScreen == ScreenType.ingame) && f5ButtonModeSetting == "ingame")) {
+			if((pauseUtilitiesUI == null || !pauseUtilitiesUI.isShowing())) {
+				showPauseUtilities();
+			}
 		}
 	}
 }
@@ -18370,7 +18443,7 @@ function showPauseUtilities() {
 					if(f5ButtonModeSetting == "pause") {
 						pauseUtilitiesUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, dip2px(80));
 					} else {
-						pauseUtilitiesUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, dip2px(80));
+						pauseUtilitiesUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
 					}
 				}
 			} catch(exception) {
@@ -18516,6 +18589,7 @@ VertexClientPE.showExitButtons = function(showBackButton, title, icon, extraView
 					onClick: function(viewArg) {
 						barUI.dismiss(); //Close
 						screenUI.dismiss(); //Close
+						VertexClientPE.menuIsShowing = false;
 						showMenuButton();
 					}
 				}));
