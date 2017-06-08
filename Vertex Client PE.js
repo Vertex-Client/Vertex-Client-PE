@@ -6773,6 +6773,8 @@ VertexClientPE.showTempDisableDialog = function() {
 
 var moreMenuIsOpen = false;
 
+let moreDialog;
+
 VertexClientPE.showMoreDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
@@ -6860,20 +6862,20 @@ VertexClientPE.showMoreDialog = function() {
 				if(remoteViewState) {
 					dialogLayout.addView(rvTargetButton);
 				}
-				var dialog = new Dialog_(CONTEXT);
-				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
-				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-				dialog.setContentView(dialogLayout1);
-				dialog.setTitle("More");
-				dialog.setOnDismissListener(new DialogInterface_.OnDismissListener() {
+				moreDialog = new Dialog_(CONTEXT);
+				moreDialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
+				moreDialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+				moreDialog.setContentView(dialogLayout1);
+				moreDialog.setTitle("More");
+				moreDialog.setOnDismissListener(new DialogInterface_.OnDismissListener() {
 					onDismiss: function() {
 						moreMenuIsOpen = false;
 					}
 				});
-				dialog.show();
+				moreDialog.show();
 				dashboardButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
-						dialog.dismiss();
+						moreDialog.dismiss();
 						VertexClientPE.closeMenu();
 						dashboardScreen("Dashboard", android.R.drawable.ic_dialog_dialer);
 					}
@@ -6884,7 +6886,7 @@ VertexClientPE.showMoreDialog = function() {
 							VertexClientPE.showProDialog("Webbrowser");
 							return;
 						}
-						dialog.dismiss();
+						moreDialog.dismiss();
 						VertexClientPE.closeMenu();
 						webBrowserScreen();
 						overlayWebBrowser();
@@ -6896,7 +6898,7 @@ VertexClientPE.showMoreDialog = function() {
 							VertexClientPE.showProDialog("Player Customizer");
 							return;
 						}
-						dialog.dismiss();
+						moreDialog.dismiss();
 						VertexClientPE.closeMenu();
 						playerCustomizerScreen(false, "Player Customizer", android.R.drawable.presence_online);
 					}
@@ -6907,7 +6909,7 @@ VertexClientPE.showMoreDialog = function() {
 							VertexClientPE.showProDialog("OptiFine");
 							return;
 						}
-						dialog.dismiss();
+						moreDialog.dismiss();
 						VertexClientPE.closeMenu();
 						optiFineScreen(false, "OptiFine", android.R.drawable.ic_menu_zoom);
 					}
@@ -6918,7 +6920,7 @@ VertexClientPE.showMoreDialog = function() {
 							VertexClientPE.showProDialog("Temporarily disabling the client");
 							return;
 						}
-						dialog.dismiss();
+						moreDialog.dismiss();
 						VertexClientPE.showTempDisableDialog();
 					}
 				});
@@ -6956,14 +6958,14 @@ VertexClientPE.showMoreDialog = function() {
 				resetPosButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
 						VertexClientPE.resetMenuPos();
-						dialog.dismiss();
+						moreDialog.dismiss();
 					}
 				});
 				screenshotButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
 						new Thread_(new Runnable_() {
 							run: function() {
-								dialog.dismiss();
+								moreDialog.dismiss();
 								Thread_.sleep(1000);
 								VertexClientPE.Utils.takeScreenshot(screenshotModeSetting);
 							}
@@ -6972,7 +6974,7 @@ VertexClientPE.showMoreDialog = function() {
 				});
 				rvTargetButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
-						dialog.dismiss();
+						moreDialog.dismiss();
 						VertexClientPE.showRemoteViewTargetDialog();
 					}
 				});
@@ -14348,13 +14350,22 @@ function leaveGame() {
 			VertexClientPE.saveMainSettings();
 			VertexClientPE.editCopyrightText();
 			VertexClientPE.Render.deinitViews();
-			VertexClientPE.playerIsInGame = false;
 		}
 	}));
+	VertexClientPE.playerIsInGame = false;
 	VertexClientPE.isPaused = false;
 }
 
 VertexClientPE.checkGUINeedsDismiss = function() {
+	if(moreMenuIsOpen) {
+		moreDialog.dismiss();
+	}
+	if(screenUI != null && screenUI.isShowing()) {
+		screenUI.dismiss();
+	}
+	if(barUI != null && barUI.isShowing()) {
+		barUI.dismiss();
+	}
 	if(GUI != null && GUI.isShowing()) {
 		GUI.dismiss();
 	}
@@ -15553,6 +15564,10 @@ function informationScreen(fromDashboard) {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
+				var display = CONTEXT.getWindowManager().getDefaultDisplay(),
+				width = display.getWidth(),
+				height = display.getHeight();
+				
 				VertexClientPE.checkGUINeedsDismiss();
 
 				var informationMenuLayout1 = new LinearLayout_(CONTEXT);
@@ -15566,20 +15581,28 @@ function informationScreen(fromDashboard) {
 				informationMenuLayout.setOrientation(1);
 				informationMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-				informationMenuLayout1.addView(clientTextView("\n"));
+				informationMenuLayout1.addView(clientTextView(""));
 				informationMenuScrollView.addView(informationMenuLayout);
 				informationMenuLayout1.addView(informationMenuScrollView);
 
+				let logoViewer = new ImageView_(CONTEXT);
+				logoViewer.setImageBitmap(imgLogo);
+				logoViewer.setLayoutParams(new LinearLayout_.LayoutParams(width / 3, height / 3));
+
+				var hrView = clientHR();
+
 				var informationText = clientTextView("\u00A9 peacestorm, imYannic, _TXMO, LPMG, Astro36, AutoGrind and TimmyIsDa | 2015 - 2017. Some rights reserved. Thanks to @_TXMO for making some graphic designs and helping with choosing a name and @imYannic for some other graphic designs.", true);
 
-				var enterOne = clientTextView("\n");
-				var hrView = clientHR();
-				var enterTwo = clientTextView("\n");
+				var hrView1 = clientHR();
 
-				informationMenuLayout.addView(informationText);
-				informationMenuLayout.addView(enterOne);
+				informationMenuLayout.addView(logoViewer);
+				informationMenuLayout.addView(clientTextView(""));
 				informationMenuLayout.addView(hrView);
-				informationMenuLayout.addView(enterTwo);
+				informationMenuLayout.addView(clientTextView(""));
+				informationMenuLayout.addView(informationText);
+				informationMenuLayout.addView(clientTextView(""));
+				informationMenuLayout.addView(hrView1);
+				informationMenuLayout.addView(clientTextView(""));
 
 				var minecraftInfoTitle = clientSectionTitle("Minecraft info");
 
@@ -15650,7 +15673,7 @@ function informationScreen(fromDashboard) {
 				informationMenuLayout.addView(androidVersionTextView);
 				informationMenuLayout.addView(deviceTextView);
 
-				screenUI = new PopupWindow_(informationMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
+				screenUI = new PopupWindow_(informationMenuLayout1, width, height - barLayoutHeight);
 				screenUI.setBackgroundDrawable(backgroundGradient());
 				screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
 			} catch(error) {
@@ -16864,6 +16887,7 @@ VertexClientPE.closeMenu = function() {
 			}
 		}
 	}
+	VertexClientPE.menuIsShowing = false;
 	if(GUI != null) {
 		if(GUI.isShowing()) {
 			if(mainButtonTapSetting == "menu" && mainButtonStyleSetting != "invisible_ghost" && !ghostModeState) {
@@ -17651,7 +17675,6 @@ function openMenuFromMenuButton(viewArg) {
 			VertexClientPE.toast("You need to be in game to open the menu!");
 		} else {
 			VertexClientPE.closeMenu();
-			VertexClientPE.menuIsShowing = false;
 			if(!hacksList.isShowing() && !tabGUI.isShowing() && !shortcutGUI.isShowing() && (currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud)) {
 				showHacksList();
 				showTabGUI();
@@ -17972,7 +17995,7 @@ var enabledHacksCounter = 0;
 var musicText = "None";
 
 function showHacksList() {
-	var display = CONTEXT.getWindowManager().getDefaultDisplay(),
+	let display = CONTEXT.getWindowManager().getDefaultDisplay(),
 		width = display.getWidth(),
 		height = display.getHeight();
 	if(hacksList != null) {
@@ -18009,7 +18032,7 @@ function showHacksList() {
 
 					hacksListLayout.addView(hacksListLayoutRight);
 
-					logoViewer2 = new ImageView_(CONTEXT);
+					let logoViewer2 = new ImageView_(CONTEXT);
 					logoViewer2.setImageBitmap(imgLogo);
 					logoViewer2.setLayoutParams(new LinearLayout_.LayoutParams(width / 8, width / 16));
 
@@ -18442,7 +18465,7 @@ function showPauseUtilities() {
 					pauseUtilitiesUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 					if(f5ButtonModeSetting == "pause") {
 						pauseUtilitiesUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, dip2px(80));
-					} else {
+					} else if(f5ButtonModeSetting == "ingame") {
 						pauseUtilitiesUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
 					}
 				}
@@ -18713,6 +18736,7 @@ function overlayWebBrowser() {
 						devWebBrowserUI.dismiss(); //Close
 						exitWebBrowserUI.dismiss(); //Close
 						screenUI.dismiss(); //Close
+						VertexClientPE.menuIsShowing = false;
 						showMenuButton();
 					}
 				}));
