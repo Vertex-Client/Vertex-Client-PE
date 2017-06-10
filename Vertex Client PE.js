@@ -5537,6 +5537,48 @@ var glitchCam = {
 	}
 }
 
+var bunnyHop = {
+	name: "BunnyHop",
+	desc: "Makes the player jump automatically while walking.",
+	category: VertexClientPE.category.MOVEMENT,
+	type: "Mod",
+	state: false,
+	tick: 0,
+	isExpMod: function() {
+		return true;
+	},
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onTick: function() {
+		if(this.tick == 0) {
+			var yaw = Entity.getYaw(getPlayerEnt()) + 90;
+			var pitch = 0;
+			yaw *= PI_CIRCLE;
+
+			var x = Math.cos(yaw) * Math.cos(pitch);
+			var z = Math.sin(yaw) * Math.cos(pitch);
+			
+			Entity.setVelX(getPlayerEnt(), x);
+			Entity.setVelY(getPlayerEnt(), 0.5);
+			Entity.setVelZ(getPlayerEnt(), z);
+		} else {
+			Entity.setVelX(getPlayerEnt(), 0);
+			Entity.setVelY(getPlayerEnt(), 0);
+			Entity.setVelZ(getPlayerEnt(), 0);
+			if(this.tick == 19) {
+				this.tick = 0;
+			} else {
+				this.tick++;
+			}
+		}
+		
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(aimbot);
 VertexClientPE.registerModule(antiBurn);
@@ -5561,6 +5603,7 @@ VertexClientPE.registerModule(tapAimbot);
 VertexClientPE.registerModule(tpAura);
 //MOVEMENT
 VertexClientPE.registerModule(autoWalk);
+VertexClientPE.registerModule(bunnyHop);
 /* if(Launcher.isToolbox()) {
 	//VertexClientPE.registerModule(elytraBoost);
 } */
@@ -6317,6 +6360,10 @@ var fileDirt;
 var inputStreamDirt;
 var dirtBackgroundClientGUI;
 
+var fileRainbow;
+var inputStreamRainbow;
+var rainbowBackgroundClientGUI;
+
 var getContext = function() {
 	return CONTEXT;
 };
@@ -6943,14 +6990,13 @@ VertexClientPE.showMoreDialog = function() {
 							}
 						} else {
 							ghostModeTitle = "Enable ";
-							/* if((currentScreen == ScreenType.pause_screen && f5ButtonModeSetting == "pause") || ((currentScreen == ScreenType.hud || currentScreen == ScreenType.ingame) && f5ButtonModeSetting == "ingame")) {
-								showPauseUtilities();
-							} */
 						}
-						if(GUI != null && GUI.isShowing()) {
-							GUI.dismiss();
-						}
-						showMenuButton();
+						//if(!VertexClientPE.menuIsShowing) { //TODO
+							if(GUI != null && GUI.isShowing()) {
+								GUI.dismiss();
+							}
+							showMenuButton();
+						//}
 						ghostModeTitle += "ghost mode";
 						ghostModeButton.setText(ghostModeTitle);
 					}
@@ -9189,7 +9235,7 @@ VertexClientPE.toast = function(message, vibrate) {
 			}
 			var layout = new LinearLayout_(CONTEXT);
 			layout.setPadding(dip2px(2), dip2px(2), dip2px(2), dip2px(2));
-			layout.setBackground(backgroundGradient());
+			layout.setBackground(backgroundGradient(null, "normal"));
 			var title = VertexClientPE.getName();
 			var _0xc62b=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x20\x50\x72\x6F"];if(VertexClientPE[_0xc62b[0]]()==_0xc62b[1]){title+=_0xc62b[2]}
 			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message));
@@ -12587,6 +12633,21 @@ function backgroundGradient(round, style, transparent) // TextView with colored 
 		}
 
 		return dirt;
+	} else if(style == "rainbow") {
+		if(fileRainbow == null) {
+			fileRainbow = new File_(Environment_.getExternalStorageDirectory() + "/games/com.mojang/rainbow_background.png");
+			inputStreamRainbow = new FileInputStream_(fileRainbow);
+			rainbowBackgroundClientGUI = new BitmapDrawable_(android.graphics.Bitmap.createScaledBitmap(BitmapFactory_.decodeStream(inputStreamRainbow), dip2px(64), dip2px(64), false));
+		}
+
+		var rainbow = rainbowBackgroundClientGUI;
+		if(transparent == "on") {
+			rainbow.setAlpha(127);
+		} else if(transparent == "off") {
+			rainbow.setAlpha(255);
+		}
+
+		return rainbow;
 	}
 }
 
@@ -13987,7 +14048,7 @@ function downloadFile(path, url, showNotification) {
 };
 
 (function checkFiles() {
-	var res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png", "github_button.png", "github_button_clicked.png", "vertex_logo_new.png", "stevehead.png", "pro_logo.png", "minecraft.ttf", "christmas_tree.png", "dirt_background.png"],
+	var res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png", "github_button.png", "github_button_clicked.png", "vertex_logo_new.png", "stevehead.png", "pro_logo.png", "minecraft.ttf", "christmas_tree.png", "dirt_background.png", "rainbow_background.png"],
 		isExisting = true;
 	for (var i = res.length; i--;) {
 		if (!new File_(PATH, res[i]).exists()) {
@@ -14752,6 +14813,8 @@ function settingsScreen(fromDashboard) {
 					backgroundStyleSettingButton.setText("Normal (no inner)");
 				} else if(backgroundStyleSetting == "minecraft_dirt") {
 					backgroundStyleSettingButton.setText("Minecraft (dirt)");
+				} else if(backgroundStyleSetting == "rainbow") {
+					backgroundStyleSettingButton.setText("Rainbow");
 				}
 				backgroundStyleSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
@@ -14765,6 +14828,9 @@ function settingsScreen(fromDashboard) {
 							backgroundStyleSetting = "minecraft_dirt";
 							backgroundStyleSettingButton.setText("Minecraft (dirt)");
 						} else if(backgroundStyleSetting == "minecraft_dirt") {
+							backgroundStyleSetting = "rainbow";
+							backgroundStyleSettingButton.setText("Rainbow");
+						} else if(backgroundStyleSetting == "rainbow") {
 							backgroundStyleSetting = "normal";
 							backgroundStyleSettingButton.setText("Normal");
 						}
@@ -15588,6 +15654,16 @@ function informationScreen(fromDashboard) {
 				let logoViewer = new ImageView_(CONTEXT);
 				logoViewer.setImageBitmap(imgLogo);
 				logoViewer.setLayoutParams(new LinearLayout_.LayoutParams(width / 3, height / 3));
+				
+				let descText = new TextView_(CONTEXT);
+				descText.setText(VertexClientPE.currentVersionDesc.toUpperCase());
+				descText.setGravity(Gravity_.CENTER);
+				descText.setTextColor(Color_.BLACK);
+				if(!Launcher.isToolbox()) {
+					descText.setTypeface(VertexClientPE.tileFont, Typeface_.BOLD);
+				}
+				descText.setShadowLayer(1.6, 1.5, 1.3, Color_.parseColor("#008000"));
+				descText.setTextSize(50);
 
 				var hrView = clientHR();
 
@@ -15596,6 +15672,7 @@ function informationScreen(fromDashboard) {
 				var hrView1 = clientHR();
 
 				informationMenuLayout.addView(logoViewer);
+				informationMenuLayout.addView(descText);
 				informationMenuLayout.addView(clientTextView(""));
 				informationMenuLayout.addView(hrView);
 				informationMenuLayout.addView(clientTextView(""));
