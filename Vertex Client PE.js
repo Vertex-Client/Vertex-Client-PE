@@ -1313,16 +1313,6 @@ VertexClientPE.Utils.getChests = function() {
 	return VertexClientPE.Utils.chests;
 }
 
-var _0x199a=["\x69\x73\x50\x72\x6F","\x67\x65\x74\x50\x72\x65\x66\x65\x72\x65\x6E\x63\x65\x73","\x56\x65\x72\x74\x65\x78\x43\x6C\x69\x65\x6E\x74\x50\x45\x2E\x69\x73\x50\x72\x6F","\x67\x65\x74\x53\x74\x72\x69\x6E\x67","\x73\x65\x74\x49\x73\x50\x72\x6F","\x54\x68\x69\x73\x49\x73\x53\x70\x61\x72\x74\x61"];VertexClientPE[_0x199a[0]]=function(){var _0xf36dx1=CONTEXT[_0x199a[1]](CONTEXT.MODE_PRIVATE);return _0xf36dx1[_0x199a[3]](_0x199a[2],null)};VertexClientPE[_0x199a[4]]=function(){var _0xf36dx2=_0x199a[5];return _0xf36dx2}
-
-var _0xda74=["\x68\x61\x73\x45\x61\x72\x6E\x65\x64\x50\x72\x6F\x56\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x67\x65\x74\x50\x72\x65\x66\x65\x72\x65\x6E\x63\x65\x73","\x56\x65\x72\x74\x65\x78\x43\x6C\x69\x65\x6E\x74\x50\x45\x2E\x68\x61\x73\x45\x61\x72\x6E\x65\x64\x50\x72\x6F\x56\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x67\x65\x74\x53\x74\x72\x69\x6E\x67","\x74\x72\x75\x65"];VertexClientPE[_0xda74[0]]= function(){var _0xdb22x1=CONTEXT[_0xda74[1]](CONTEXT.MODE_PRIVATE);if(_0xdb22x1[_0xda74[3]](_0xda74[2],null)== _0xda74[4]){return true}else {return false}}
-
-var _0xb21b=["\x67\x65\x74\x56\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x67\x65\x74\x50\x72\x65\x66\x65\x72\x65\x6E\x63\x65\x73","\x56\x65\x72\x74\x65\x78\x43\x6C\x69\x65\x6E\x74\x50\x45\x2E\x76\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x67\x65\x74\x49\x6E\x74"];VertexClientPE[_0xb21b[0]]= function(){var _0x602dx1=CONTEXT[_0xb21b[1]](CONTEXT.MODE_PRIVATE);var _0x602dx2=_0x602dx1[_0xb21b[3]](_0xb21b[2],0);return _0x602dx2}
-
-var _0xe844=["\x67\x69\x76\x65\x50\x72\x6F\x56\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x68\x61\x73\x45\x61\x72\x6E\x65\x64\x50\x72\x6F\x56\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x67\x65\x74\x50\x72\x65\x66\x65\x72\x65\x6E\x63\x65\x73","\x65\x64\x69\x74","\x67\x65\x74\x56\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x56\x65\x72\x74\x65\x78\x43\x6C\x69\x65\x6E\x74\x50\x45\x2E\x76\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x70\x75\x74\x49\x6E\x74","\x56\x65\x72\x74\x65\x78\x43\x6C\x69\x65\x6E\x74\x50\x45\x2E\x68\x61\x73\x45\x61\x72\x6E\x65\x64\x50\x72\x6F\x56\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x74\x72\x75\x65","\x70\x75\x74\x53\x74\x72\x69\x6E\x67","\x63\x6F\x6D\x6D\x69\x74","\x69\x73\x44\x65\x76\x4D\x6F\x64\x65","\x47\x61\x76\x65\x20\x70\x72\x6F\x20\x63\x61\x73\x68","\x41\x6C\x72\x65\x61\x64\x79\x20\x67\x61\x76\x65\x20\x70\x72\x6F\x20\x63\x61\x73\x68"];VertexClientPE[_0xe844[0]]= function(){if(!VertexClientPE[_0xe844[1]]()){var _0x3b1cx1=CONTEXT[_0xe844[2]](CONTEXT.MODE_PRIVATE);var _0x3b1cx2=_0x3b1cx1[_0xe844[3]]();var _0x3b1cx3=VertexClientPE[_0xe844[4]]();_0x3b1cx2[_0xe844[6]](_0xe844[5],_0x3b1cx3+ 500);_0x3b1cx2[_0xe844[9]](_0xe844[7],_0xe844[8]);_0x3b1cx2[_0xe844[10]]();if(VertexClientPE[_0xe844[11]]()){print(_0xe844[12])}}else {if(VertexClientPE[_0xe844[11]]()){print(_0xe844[13])}}}
-
-var _0xc116=["\x73\x65\x74\x56\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x56\x65\x72\x74\x65\x78\x43\x6C\x69\x65\x6E\x74\x50\x45\x2E\x76\x65\x72\x74\x65\x78\x43\x61\x73\x68","\x70\x75\x74\x49\x6E\x74","\x63\x6F\x6D\x6D\x69\x74"];VertexClientPE[_0xc116[0]]= function(_0x5824x1){editor[_0xc116[2]](_0xc116[1],_0x5824x1);editor[_0xc116[3]]()}
-
 VertexClientPE.isRemote = function() {
 	return Server.getAddress() != null;
 }
@@ -7661,8 +7651,6 @@ VertexClientPE.showModEditorDialog = function(defaultName, modTitleView, modButt
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				var _0xf030=["\x69\x73\x50\x72\x6F","\x52\x65\x6E\x61\x6D\x69\x6E\x67\x20\x6D\x6F\x64\x73","\x73\x68\x6F\x77\x50\x72\x6F\x44\x69\x61\x6C\x6F\x67"];if(!VertexClientPE[_0xf030[0]]()){VertexClientPE[_0xf030[2]](_0xf030[1]);return}
-
 				if(defaultName == "Bypass") {
 					modButtonView = bypassModButtonView;
 				}
@@ -8840,7 +8828,6 @@ VertexClientPE.showCategoryDialog = function(titleView, currentName, categoryId)
 				if(titleView.getMiddleButton) {
 					titleView = titleView.getMiddleButton();
 				}
-				var _0x25ea=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x52\x65\x6E\x61\x6D\x69\x6E\x67\x20\x63\x61\x74\x65\x67\x6F\x72\x69\x65\x73","\x73\x68\x6F\x77\x50\x72\x6F\x44\x69\x61\x6C\x6F\x67"];if(VertexClientPE[_0x25ea[0]]()!=_0x25ea[1]){VertexClientPE[_0x25ea[3]](_0x25ea[2]);return}
 				var categoryDialogTitle = clientTextView("Rename category \'" + currentName + "\'", true);
 				var btn = clientButton("Close");
 				var inputBar = clientEditText();
@@ -9092,7 +9079,6 @@ VertexClientPE.toast = function(message, vibrate) {
 			layout.setPadding(dip2px(2), dip2px(2), dip2px(2), dip2px(2));
 			layout.setBackground(backgroundGradient(null, "normal"));
 			var title = VertexClientPE.getName();
-			var _0xc62b=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x20\x50\x72\x6F"];if(VertexClientPE[_0xc62b[0]]()==_0xc62b[1]){title+=_0xc62b[2]}
 			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message));
 			layout.addView(text);
 			if(toast != null) {
@@ -9114,7 +9100,6 @@ VertexClientPE.addonLoadToast = function(message) {
 			var icon = new android.widget.ImageView(CONTEXT);
 			icon.setImageResource(android.R.drawable.ic_menu_more);
 			var title = VertexClientPE.getName();
-			var _0xc62b=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x20\x50\x72\x6F"];if(VertexClientPE[_0xc62b[0]]()==_0xc62b[1]){title+=_0xc62b[2]}
 			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message), true, "diff");
 			layout.addView(icon);
 			layout.addView(text);
@@ -9135,7 +9120,6 @@ VertexClientPE.loadToast = function(message) {
 			loadProg.setIndeterminate(true);
 			loadProg.getIndeterminateDrawable().setColorFilter(getColor("stroke"), android.graphics.PorterDuff.Mode.SRC_IN);
 			/* var title = VertexClientPE.getName();
-			var _0xc62b=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x20\x50\x72\x6F"];if(VertexClientPE[_0xc62b[0]]()==_0xc62b[1]){title+=_0xc62b[2]}
 			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message), true, "diff"); */
 			layout.addView(loadProg);
 			//layout.addView(text);
@@ -9158,7 +9142,6 @@ VertexClientPE.updateToast = function(message) {
 			var icon = new android.widget.ImageView(CONTEXT);
 			icon.setImageResource(android.R.drawable.ic_menu_compass);
 			var title = VertexClientPE.getName();
-			var _0xc62b=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x20\x50\x72\x6F"];if(VertexClientPE[_0xc62b[0]]()==_0xc62b[1]){title+=_0xc62b[2]}
 			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message), true, "diff");
 			layout.addView(icon);
 			layout.addView(text);
@@ -9179,7 +9162,6 @@ VertexClientPE.showChristmasToast = function(daysLeft) {
 			icon.setImageBitmap(imgChristmasTree);
 			icon.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(16), dip2px(16)));
 			var title = VertexClientPE.getName();
-			var _0xc62b=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x20\x50\x72\x6F"];if(VertexClientPE[_0xc62b[0]]()==_0xc62b[1]){title+=_0xc62b[2]}
 			var cText = daysLeft == null ? "Merry Christmas!" : (daysLeft + " days left until Christmas!");
 			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + cText), true, "diff");
 			layout.addView(icon);
@@ -9872,7 +9854,11 @@ VertexClientPE.loadCategorySettings = function() {
 	while((ch = fos.read()) != -1)
 		str.append(Character_(ch));
 	if(str != null && str != undefined) {
-		var _0xbbeb=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\x2C","\x73\x70\x6C\x69\x74"];if(VertexClientPE[_0xbbeb[0]]()==_0xbbeb[1]){combatName=str.toString()[_0xbbeb[3]](_0xbbeb[2])[0];worldName=str.toString()[_0xbbeb[3]](_0xbbeb[2])[1];movementName=str.toString()[_0xbbeb[3]](_0xbbeb[2])[2];playerName=str.toString()[_0xbbeb[3]](_0xbbeb[2])[3];miscName=str.toString()[_0xbbeb[3]](_0xbbeb[2])[4]}
+		combatName = str.toString().split(',')[0];
+		worldName = str.toString().split(',')[1];
+		movementName = str.toString().split(',')[2];
+		playerName = str.toString().split(',')[3];
+		miscName = str.toString().split(',')[4]
 	}
 	fos.close();
 	return true;
