@@ -2191,13 +2191,6 @@ const ScriptableObject_ = org.mozilla.javascript.ScriptableObject;
 
 function registerAddon(name, desc, current_version, target_version, mods, songs, tiles, author) {
 	var shouldMessage = true;
-	if(!VertexClientPE.isPro()) {
-		if(!shownAddonProDialog) {
-			VertexClientPE.showProDialog("Loading addons");
-			shownAddonProDialog = true;
-		}
-		return;
-	}
 	try {
 		let scripts;
 		if(Launcher.isBlockLauncher() || Launcher.isToolbox()) {
@@ -3337,9 +3330,6 @@ var follow = {
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
-	requiresPro: function() {
-		return true;
-	},
 	isStateMod: function() {
 		return true;
 	},
@@ -4027,9 +4017,6 @@ var chestTracers = {
 	getExtraInfo: function() {
 		return capitalizeFirstLetter(chestTracersParticle);
 	},
-	requiresPro: function() {
-		return true;
-	},
 	getSettingsLayout: function() {
 		var chestTracersSettingsLayout = new LinearLayout_(CONTEXT);
 		chestTracersSettingsLayout.setOrientation(1);
@@ -4497,9 +4484,6 @@ var storageESP = {
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
-	requiresPro: function() {
-		return true;
-	},
 	getSettingsLayout: function() {
 		var storageESPSettingsLayout = new LinearLayout_(CONTEXT);
 		storageESPSettingsLayout.setOrientation(1);
@@ -4709,9 +4693,6 @@ var randomTP = {
 	isStateMod: function() {
 		return true;
 	},
-	requiresPro: function() {
-		return true;
-	},
 	onToggle: function() {
 		this.state = !this.state;
 	},
@@ -4744,9 +4725,6 @@ var fullBright = {
 	type: "Mod",
 	state: false,
 	isStateMod: function() {
-		return true;
-	},
-	requiresPro: function() {
 		return true;
 	},
 	onToggle: function() {
@@ -5554,7 +5532,7 @@ var bunnyHop = {
 		this.state = !this.state;
 	},
 	onTick: function() {
-		if(this.tick == 0) {
+		/* if(this.tick == 0) {
 			var yaw = Entity.getYaw(getPlayerEnt()) + 90;
 			var pitch = 0;
 			yaw *= PI_CIRCLE;
@@ -5574,7 +5552,7 @@ var bunnyHop = {
 			} else {
 				this.tick++;
 			}
-		}
+		} */
 		
 	}
 }
@@ -5831,6 +5809,7 @@ function chatHook(text) {
 				if(element.isStateMod() && element.state && element.onChat) {
 					if(bypassState && element.hasOwnProperty("canBypassBypassMod")) {
 						if(!element.canBypassBypassMod()) {
+							//This command can't bypass/is blocked by Bypass
 							return;
 						}
 					}
@@ -5918,10 +5897,6 @@ var toggle = {
 				VertexClientPE.modules.forEach(function (element, index, array) {
 					if(element.type != "Command") {
 						if ((element.name.toLowerCase() == cmd.substring(2, cmd.length).toLowerCase() || VertexClientPE.getCustomModName(element.name).toLowerCase() == cmd.substring(2, cmd.length).toLowerCase()) && !shouldReturn) {
-							if(element.requiresPro && element.requiresPro() && !VertexClientPE.isPro()) {
-								VertexClientPE.showProDialog(VertexClientPE.getCustomModName(element.name));
-								return;
-							}
 							if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
 								VertexClientPE.toast("Experimental features aren't enabled!");
 								return;
@@ -6331,7 +6306,7 @@ Block.setDestroyTimeDefaultAll = function() {
 }
 
 var imgLogo = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/vertex_logo_new.png");
-var imgProLogo = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/pro_logo.png");
+//var imgProLogo = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/pro_logo.png");
 var imgIcon = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/clienticon_new.png");
 var imgIconClicked = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/clienticon_new_clicked.png");
 var imgPlayButton = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/play_button.png");
@@ -6833,21 +6808,6 @@ VertexClientPE.showMoreDialog = function() {
 				let moreTitle = clientTextView("More", true);
 				let moreHR = clientHR();
 
-				let webBrowserTitle = "";
-				let playerCustomizerTitle = "";
-				let optiFineTitle = "";
-				let hideMenuTitle = "";
-				if(!VertexClientPE.isPro()) {
-					webBrowserTitle += "\uD83D\uDD12 ";
-					playerCustomizerTitle += "\uD83D\uDD12 ";
-					optiFineTitle += "\uD83D\uDD12 ";
-					hideMenuTitle += "\uD83D\uDD12 ";
-				}
-				webBrowserTitle += "Webbrowser";
-				playerCustomizerTitle += "Player Customizer";
-				optiFineTitle += "OptiFine";
-				hideMenuTitle += "Temporarily disable the client";
-
 				let ghostModeTitle;
 				if(ghostModeState) {
 					ghostModeTitle = "Disable ";
@@ -6857,10 +6817,10 @@ VertexClientPE.showMoreDialog = function() {
 				ghostModeTitle += "ghost mode";
 
 				let dashboardButton = clientButton("Dashboard");
-				let webBrowserButton = clientButton(webBrowserTitle);
-				let playerCustomizerButton = clientButton(playerCustomizerTitle);
-				let optiFineButton = clientButton(optiFineTitle);
-				let hideMenuButton = clientButton(hideMenuTitle);
+				let webBrowserButton = clientButton("Webbrowser");
+				let playerCustomizerButton = clientButton("Player Customizer");
+				let optiFineButton = clientButton("OptiFine");
+				let hideMenuButton = clientButton("Temporarily disable the client");
 				let ghostModeButton = clientButton(ghostModeTitle);
 				let resetPosButton = clientButton("Reset moveable menu positions");
 
@@ -6929,10 +6889,6 @@ VertexClientPE.showMoreDialog = function() {
 				});
 				webBrowserButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
-						if(!VertexClientPE.isPro()) {
-							VertexClientPE.showProDialog("Webbrowser");
-							return;
-						}
 						moreDialog.dismiss();
 						VertexClientPE.closeMenu();
 						webBrowserScreen();
@@ -6941,10 +6897,6 @@ VertexClientPE.showMoreDialog = function() {
 				});
 				playerCustomizerButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
-						if(!VertexClientPE.isPro()) {
-							VertexClientPE.showProDialog("Player Customizer");
-							return;
-						}
 						moreDialog.dismiss();
 						VertexClientPE.closeMenu();
 						playerCustomizerScreen(false, "Player Customizer", android.R.drawable.presence_online);
@@ -6952,10 +6904,6 @@ VertexClientPE.showMoreDialog = function() {
 				});
 				optiFineButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
-						if(!VertexClientPE.isPro()) {
-							VertexClientPE.showProDialog("OptiFine");
-							return;
-						}
 						moreDialog.dismiss();
 						VertexClientPE.closeMenu();
 						optiFineScreen(false, "OptiFine", android.R.drawable.ic_menu_zoom);
@@ -6963,10 +6911,6 @@ VertexClientPE.showMoreDialog = function() {
 				});
 				hideMenuButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
-						if(!VertexClientPE.isPro()) {
-							VertexClientPE.showProDialog("Temporarily disabling the client");
-							return;
-						}
 						moreDialog.dismiss();
 						VertexClientPE.showTempDisableDialog();
 					}
@@ -8688,92 +8632,6 @@ VertexClientPE.showAddFriendDialog = function(showBackButton, title, icon) {
 	});
 }
 
-VertexClientPE.showProDialog = function(featureName) {
-	CONTEXT.runOnUiThread(new Runnable_() {
-		run: function() {
-			try {
-				var dialogTitle = clientTextView("Pro");
-				dialogTitle.setTextSize(25);
-				var dialogDesc = clientTextView(featureName + " requires Vertex Client PE Pro!\n");
-				var btn = clientButton("Get Pro for free!");
-				var btn1 = clientButton("Close");
-				var inputBar = clientEditText();
-				var dialogLayout = new LinearLayout_(CONTEXT);
-				dialogLayout.setBackgroundDrawable(backgroundGradient());
-				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
-				dialogLayout.setPadding(10, 10, 10, 10);
-				dialogLayout.addView(dialogTitle);
-				dialogLayout.addView(dialogDesc);
-				dialogLayout.addView(btn);
-				dialogLayout.addView(btn1);
-				var dialog = new Dialog_(CONTEXT);
-				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
-				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-				dialog.setContentView(dialogLayout);
-				dialog.setTitle(featureName + " requires Vertex Client PE Pro");
-				dialog.show();
-				btn.setOnClickListener(new View_.OnClickListener() {
-					onClick: function(view) {
-						dialog.dismiss();
-						VertexClientPE.downloadPro();
-					}
-				});
-				btn1.setOnClickListener(new View_.OnClickListener() {
-					onClick: function(view) {
-						dialog.dismiss();
-					}
-				});
-			} catch(e) {
-				print("Error: " + e);
-				VertexClientPE.showBugReportDialog(e);
-			}
-		}
-	});
-}
-
-VertexClientPE.showUpgradeDialog = function(featureName) {
-	CONTEXT.runOnUiThread(new Runnable_() {
-		run: function() {
-			try {
-				var dialogTitle = clientTextView("Pro");
-				dialogTitle.setTextSize(25);
-				var dialogDesc = clientTextView("Hey, why not get Vertex Client PE Pro and enjoy all the features for free?");
-				var btn = clientButton("Get Pro for free!");
-				var btn1 = clientButton("Close");
-				var inputBar = clientEditText();
-				var dialogLayout = new LinearLayout_(CONTEXT);
-				dialogLayout.setBackgroundDrawable(backgroundGradient());
-				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
-				dialogLayout.setPadding(10, 10, 10, 10);
-				dialogLayout.addView(dialogTitle);
-				dialogLayout.addView(dialogDesc);
-				dialogLayout.addView(btn);
-				dialogLayout.addView(btn1);
-				var dialog = new Dialog_(CONTEXT);
-				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
-				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-				dialog.setContentView(dialogLayout);
-				dialog.setTitle("Hey, why not get Vertex Client PE Pro and enjoy all the features for free?");
-				dialog.show();
-				btn.setOnClickListener(new View_.OnClickListener() {
-					onClick: function(view) {
-						dialog.dismiss();
-						VertexClientPE.downloadPro();
-					}
-				});
-				btn1.setOnClickListener(new View_.OnClickListener() {
-					onClick: function(view) {
-						dialog.dismiss();
-					}
-				});
-			} catch(e) {
-				print("Error: " + e);
-				VertexClientPE.showBugReportDialog(e);
-			}
-		}
-	});
-}
-
 VertexClientPE.showAddonDialog = function(addon) {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
@@ -9214,9 +9072,6 @@ VertexClientPE.spectate = function(playerName) {
 
 VertexClientPE.clientMessage = function(message) {
 	var clientName = VertexClientPE.getName();
-	if(VertexClientPE.isPro() == "true") {
-		clientName += " Pro";
-	}
 	clientMessage(ChatColor.RED + "[" + ChatColor.DARK_GREEN + clientName + ChatColor.RED + "] " + ChatColor.WHITE + message);
 }
 
@@ -11258,9 +11113,6 @@ function userBar() {
 function modButton(mod, buttonOnly, customSize, shouldUpdateGUI) {
 	var modButtonName = VertexClientPE.getCustomModName(mod.name);
 	var modInfoButtonName = "...";
-	if(mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) {
-		modInfoButtonName = "\uD83D\uDD12";
-	}
 
 	if(shouldUpdateGUI == null) {
 		shouldUpdateGUI = false;
@@ -11337,10 +11189,6 @@ function modButton(mod, buttonOnly, customSize, shouldUpdateGUI) {
 		onClick: function(viewArg) {
 			var _0xff55=["\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x6F\x75\x74\x64\x61\x74\x65\x64\x2C\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C","\x74\x6F\x61\x73\x74","\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C"];if(!isAuthorized){if(!isSupported){VertexClientPE[_0xff55[1]](_0xff55[0])}else {VertexClientPE[_0xff55[1]](_0xff55[2])};return}
 			let tempShouldUpdate = shouldUpdateGUI;
-			if(mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) {
-				VertexClientPE.showProDialog(mod.name);
-				return;
-			}
 			if(mod.name == "Bypass") {
 				mod.onToggle();
 			} else {
@@ -11401,7 +11249,7 @@ function modButton(mod, buttonOnly, customSize, shouldUpdateGUI) {
 			}
 		}
 	}));
-	//var _0x9276=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\uD83D\uDD12\x20","\x73\x65\x74\x54\x65\x78\x74"];if(isProFeature&&VertexClientPE[_0x9276[0]]()!=_0x9276[1]){defaultClientButton[_0x9276[3]](_0x9276[2]+mod.name)}
+
 	if(buttonOnly == null || !buttonOnly) {
 		modButtonLayoutLeft.addView(defaultClientButton);
 	}
@@ -11417,10 +11265,6 @@ function modButton(mod, buttonOnly, customSize, shouldUpdateGUI) {
 	defaultInfoButton.setAlpha(0.54);
 	defaultInfoButton.setOnClickListener(new View_.OnClickListener({
 		onClick: function(viewArg) {
-			if(mod.requiresPro && mod.requiresPro() && !VertexClientPE.isPro()) {
-				VertexClientPE.showProDialog(mod.name);
-				return;
-			}
 			VertexClientPE.showModDialog(mod, defaultClientButton);
 		}
 	}));
@@ -11459,7 +11303,7 @@ function addonButton(addon) {
 			return true;
 		}
 	});
-	//var _0x9276=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\uD83D\uDD12\x20","\x73\x65\x74\x54\x65\x78\x74"];if(isProFeature&&VertexClientPE[_0x9276[0]]()!=_0x9276[1]){defaultClientButton[_0x9276[3]](_0x9276[2]+mod.name)}
+
 	addonButtonLayout.addView(defaultClientButton);
 
 	return addonButtonLayout;
@@ -11542,7 +11386,7 @@ function categoryTab(category) {
 			return true;
 		}
 	}));
-	//var _0x9276=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\uD83D\uDD12\x20","\x73\x65\x74\x54\x65\x78\x74"];if(isProFeature&&VertexClientPE[_0x9276[0]]()!=_0x9276[1]){defaultClientButton[_0x9276[3]](_0x9276[2]+mod.name)}
+
 	categoryTabLayout.addView(defaultClientButton);
 
 	return categoryTabLayout;
@@ -11595,7 +11439,7 @@ function musicPlayerTab(name, tabLayout, songLayout, playBar) {
 			}
 		}
 	}));
-	//var _0x9276=["\x69\x73\x50\x72\x6F","\x74\x72\x75\x65","\uD83D\uDD12\x20","\x73\x65\x74\x54\x65\x78\x74"];if(isProFeature&&VertexClientPE[_0x9276[0]]()!=_0x9276[1]){defaultClientButton[_0x9276[3]](_0x9276[2]+mod.name)}
+
 	musicPlayerTabHolderLayout.addView(defaultClientButton);
 
 	return musicPlayerTabHolderLayout;
@@ -12468,7 +12312,7 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
 		}
 	}
 
-	if (showProLine == true && VertexClientPE.isPro()) {
+	if (showProLine == true) {
 		bg.setStroke(dip2px(2), Color_.parseColor("#70DAA520"));
 	}
 	bg.setShape(GradientDrawable_.RECTANGLE);
@@ -12987,19 +12831,11 @@ VertexClientPE.showSplashScreen = function () {
 				logoViewer5.setImageBitmap(imgLogo);
 				logoViewer5.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 4, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16 + dip2px(32)));
 
-				var proViewer = new ImageView_(CONTEXT);
-				proViewer.setPadding(0, dip2px(16), 0, dip2px(16));
-				proViewer.setImageBitmap(imgProLogo);
-				proViewer.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 4, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16 + dip2px(32)));
-
 				var splashProg = new android.widget.ProgressBar(CONTEXT);
 				splashProg.setIndeterminate(true);
 				splashProg.getIndeterminateDrawable().setColorFilter(getColor("stroke"), android.graphics.PorterDuff.Mode.SRC_IN);
 
 				splashScreenLayout.addView(logoViewer5);
-				if(VertexClientPE.isPro()) {
-					splashScreenLayout.addView(proViewer);
-				}
 				splashScreenLayout.addView(splashProg);
 				splashScreenLayout.startAnimation(fadeIn(500));
 
@@ -14048,7 +13884,7 @@ function downloadFile(path, url, showNotification) {
 };
 
 (function checkFiles() {
-	var res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png", "github_button.png", "github_button_clicked.png", "vertex_logo_new.png", "stevehead.png", "pro_logo.png", "minecraft.ttf", "christmas_tree.png", "dirt_background.png", "rainbow_background.png"],
+	var res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png", "github_button.png", "github_button_clicked.png", "vertex_logo_new.png", "stevehead.png", "minecraft.ttf", "christmas_tree.png", "dirt_background.png", "rainbow_background.png"],
 		isExisting = true;
 	for (var i = res.length; i--;) {
 		if (!new File_(PATH, res[i]).exists()) {
@@ -14354,11 +14190,6 @@ function newLevel() {
 			}
 			if(rotationPlusState) {
 				showRotationPlus();
-			}
-		}
-		if(!VertexClientPE.isPro()) {
-			if(getRandomInt(0, 20) == 10) {
-				VertexClientPE.showUpgradeDialog();
 			}
 		}
 		VertexClientPE.Render.initViews();
@@ -15721,12 +15552,6 @@ function informationScreen(fromDashboard) {
 					}
 				});
 
-				var proType = "no";
-				if(VertexClientPE.isPro()) {
-					proType = "yes";
-				}
-				var proTextView = clientTextView("Pro: " + proType);
-
 				var deviceInfoTitle = clientSectionTitle("Device info");
 
 				var androidVersion = ModPE.getAndroidVersion();
@@ -15744,7 +15569,7 @@ function informationScreen(fromDashboard) {
 				informationMenuLayout.addView(vertexVersionTextView);
 				informationMenuLayout.addView(vertexEditionTextView);
 				informationMenuLayout.addView(statusTextView);
-				informationMenuLayout.addView(proTextView);
+				//informationMenuLayout.addView(proTextView);
 				//-------------------------------------------
 				informationMenuLayout.addView(deviceInfoTitle);
 				informationMenuLayout.addView(androidVersionTextView);
@@ -18173,9 +17998,8 @@ function showHacksList() {
 						hacksListLayoutRight.addView(musicTextView);
 					} else {
 						hacksListLayoutRight.addView(versionText);
-						if(VertexClientPE.isPro()) {
-							hacksListLayoutRight.addView(proText);
-						}
+						
+						// TODO
 					}
 					if(hacksList == null || !hacksList.isShowing()) {
 						hacksList = new PopupWindow_(hacksListLayout, LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT);
