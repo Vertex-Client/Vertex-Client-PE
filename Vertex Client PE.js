@@ -3889,7 +3889,12 @@ var highJump = {
 	}
 }
 
-var f = 0;
+let f = 0;
+
+let xPos;
+let zPos;
+let xDiff;
+let zDiff;
 
 var fastWalk = {
 	name: "FastWalk",
@@ -3906,11 +3911,6 @@ var fastWalk = {
 		f = this.state?1:0;
 	},
 	onTick: function() {
-		let xPos;
-		let zPos;
-		let xDiff;
-		let zDiff;
-
 		if(f == 1) {
 			xPos = getPlayerX();
 			zPos = getPlayerZ();
@@ -9077,7 +9077,7 @@ VertexClientPE.toast = function(message, vibrate) {
 			}
 			var layout = new LinearLayout_(CONTEXT);
 			layout.setPadding(dip2px(2), dip2px(2), dip2px(2), dip2px(2));
-			layout.setBackground(backgroundGradient(null, "normal"));
+			layout.setBackground(backgroundGradient(null, "normal", "on"));
 			var title = VertexClientPE.getName();
 			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message));
 			layout.addView(text);
@@ -14141,7 +14141,7 @@ VertexClientPE.refreshEnabledMods = function() {
 function newLevel() {
 	try {
 		//print(VertexClientPE.getMyScriptName());
-		currentScreen = ScreenType.ingame;
+		VertexClientPE.playerIsInGame = true;
 		lagTimer = 0;
 		CONTEXT.runOnUiThread(new Runnable_() {
 			run: function() {
@@ -14158,7 +14158,6 @@ function newLevel() {
 			}
 		});
 		autoLeaveStage = 0;
-		VertexClientPE.playerIsInGame = true;
 		VertexClientPE.loadMainSettings();
 		if(!VertexClientPE.isRemote()) {
 			VertexClientPE.loadDeathCoords();
@@ -14166,17 +14165,6 @@ function newLevel() {
 		VertexClientPE.Utils.loadFov();
 		if(VertexClientPE.latestVersion != VertexClientPE.currentVersion && VertexClientPE.latestVersion != undefined) {
 			VertexClientPE.clientMessage("There is a new version available (v" + VertexClientPE.latestVersion + " for Minecraft Pocket Edition v" + latestPocketEditionVersion + ")!");
-		}
-		if((hacksList == null || !hacksList.isShowing()) && !VertexClientPE.menuIsShowing) {
-			showHacksList();
-			showTabGUI();
-			showShortcuts();
-			if(healthDisplayState) {
-				showHealthDisplay();
-			}
-			if(rotationPlusState) {
-				showRotationPlus();
-			}
 		}
 		VertexClientPE.Render.initViews();
 		VertexClientPE.Utils.world.chatMessages = [];
