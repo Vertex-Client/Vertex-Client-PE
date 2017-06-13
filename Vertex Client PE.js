@@ -1868,6 +1868,7 @@ VertexClientPE.category = {
 VertexClientPE.tiles = [];
 VertexClientPE.preInitModules = [];
 VertexClientPE.modules = [];
+VertexClientPE.commands = [];
 VertexClientPE.addons = [];
 
 /* function callVertexFunction(func) {
@@ -2141,7 +2142,7 @@ VertexClientPE.initMods = function(cat) {
 	}
 	try {
 		VertexClientPE.preInitModules.forEach(function(element, index, array) {
-			if((element.type == "Command" || (element.pack == "Combat" && combatEnabled == "on") || (element.pack == "World" && worldEnabled == "on") || (element.pack == "Movement" && movementEnabled == "on") || (element.pack == "Player" && playerEnabled == "on") || (element.pack == "Miscellaneous" && miscEnabled == "on")) && !(element.singleplayerOnly && singleplayerEnabled == "off")) {
+			if(((element.pack == "Combat" && combatEnabled == "on") || (element.pack == "World" && worldEnabled == "on") || (element.pack == "Movement" && movementEnabled == "on") || (element.pack == "Player" && playerEnabled == "on") || (element.pack == "Miscellaneous" && miscEnabled == "on")) && !(element.singleplayerOnly && singleplayerEnabled == "off")) {
 				VertexClientPE.modules.push(element);
 			}
 		});
@@ -2151,7 +2152,7 @@ VertexClientPE.initMods = function(cat) {
 }
 
 VertexClientPE.registerModule = function(obj) {
-	if(obj.type != "Command" && (obj.pack == undefined || obj.pack == null)) {
+	if((obj.pack == undefined || obj.pack == null)) {
 		obj.pack = VertexClientPE.category.toRealName(obj.category);
 	}
 	if(obj.type == undefined || obj.type == null) {
@@ -2161,6 +2162,10 @@ VertexClientPE.registerModule = function(obj) {
 		obj.batteryUsage = "Normal";
 	}
 	VertexClientPE.preInitModules.push(obj);
+};
+
+VertexClientPE.registerCommand = function(obj) {
+	VertexClientPE.commands.push(obj);
 };
 
 VertexClientPE.drawTracer = function(x, y, z, groundMode, particleName) {
@@ -2250,16 +2255,14 @@ function registerTilesFromAddon(tileArray) {
 
 VertexClientPE.getCommandCount = function() {
 	var commandCount = 0;
-	VertexClientPE.modules.forEach(function(element, index, array) {
-		if(element.type == "Command") {
-			commandCount++;
-		}
+	VertexClientPE.commands.forEach(function(element, index, array) {
+		commandCount++;
 	});
 	return commandCount;
 };
 
 VertexClientPE.getFeatureCount = function() {
-	return VertexClientPE.modules.length;
+	return VertexClientPE.modules.length + VertexClientPE.commands.length;
 };
 
 var panic = {
@@ -5797,11 +5800,9 @@ function chatHook(text) {
 		if(text.charAt(0) != "/") {
 			VertexClientPE.modules.forEach(function(element, index, array) {
 				if(element.isStateMod() && element.state && element.onChat) {
-					if(bypassState && element.hasOwnProperty("canBypassBypassMod")) {
-						if(!element.canBypassBypassMod()) {
-							//This command can't bypass/is blocked by Bypass
-							return;
-						}
+					if(bypassState && element.hasOwnProperty("canBypassBypassMod") && !element.canBypassBypassMod()) {
+						//This command can't bypass/is blocked by Bypass
+						return;
 					}
 					element.onChat(text);
 				}
@@ -5816,16 +5817,10 @@ function chatHook(text) {
  *  ############
  */
 
-VertexClientPE.getHighestPageNumber = function() {
-	var commands = [];
-	VertexClientPE.modules.forEach(function(element, index, array) {
-		if(element != null && element.syntax != null && element.type == "Command") {
-			commands.push(element);
-		}
-	});
+VertexClientPE.getHighestHelpPageNumber = function() {
 	var i = 0;
 	var page = 1;
-	while(commands[i] != null) {
+	while(VertexClientPE.commands[i] != null) {
 		i++;
 		while(i > 8*page) {
 			page++;
@@ -5835,14 +5830,8 @@ VertexClientPE.getHighestPageNumber = function() {
 }
 
 VertexClientPE.showHelpPage = function(page) {
-	var commands = [];
-	VertexClientPE.clientMessage("Showing help page " + page + "/" + VertexClientPE.getHighestPageNumber());
-	VertexClientPE.modules.forEach(function(element, index, array) {
-		if(element != null && element.syntax != null && element.type == "Command") {
-			commands.push(element);
-		}
-	});
-	commands.forEach(function(element, index, array) {
+	VertexClientPE.clientMessage("Showing help page " + page + "/" + VertexClientPE.getHighestHelpPageNumber());
+	VertexClientPE.commands.forEach(function(element, index, array) {
 		if(element.syntax != null) {
 			if(index >= 8*(page-1) && index <= 8*page-1) {
 				VertexClientPE.clientMessage(cmdPrefix + element.syntax);
@@ -5853,16 +5842,12 @@ VertexClientPE.showHelpPage = function(page) {
 
 var help = {
 	syntax: "help <page>",
-	type: "Command",
-	isStateMod: function() {
-		return false;
-	},
 	onCall: function(cmd) {
 		var commandSplit = cmd.split(" ");
 		if(commandSplit[1] == undefined || commandSplit[1] == null || commandSplit[1] == "1") {
 			VertexClientPE.showHelpPage("1");
 		} else {
-			if(commandSplit[1] != "1" && commandSplit[1] > 1 && commandSplit[1] <= VertexClientPE.getHighestPageNumber()) {
+			if(commandSplit[1] != "1" && commandSplit[1] > 1 && commandSplit[1] <= VertexClientPE.getHighestHelpPageNumber()) {
 				VertexClientPE.showHelpPage(commandSplit[1]);
 			} else if(commandSplit[1] <= 0) {
 				VertexClientPE.clientMessage(ChatColor.RED + "Error: page number is too low!");
@@ -5875,46 +5860,40 @@ var help = {
 
 var toggle = {
 	syntax: "toggle <module>",
-	type: "Command",
-	isStateMod: function() {
-		return false;
-	},
 	onCall: function(cmd) {
 		try {
 			var commandSplit = cmd.split(" ");
 			if (cmd.substring(2, cmd.length) != null && cmd.substring(2, cmd.length) != undefined && commandSplit[1] != null) {
 				var shouldReturn = false;
 				VertexClientPE.modules.forEach(function (element, index, array) {
-					if(element.type != "Command") {
-						if ((element.name.toLowerCase() == cmd.substring(2, cmd.length).toLowerCase() || VertexClientPE.getCustomModName(element.name).toLowerCase() == cmd.substring(2, cmd.length).toLowerCase()) && !shouldReturn) {
-							if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
-								VertexClientPE.toast("Experimental features aren't enabled!");
-								return;
-							}
-							if(element.checkBeforeAdding && !element.checkBeforeAdding()) {
-								VertexClientPE.toast("You didn't unlock this feature yet!");
-								return;
-							}
-							if(element.name == "Bypass" || !bypassState || (element.canBypassBypassMod == undefined || element.canBypassBypassMod == null || element.canBypassBypassMod()) || (element.isStateMod() && element.state)) {
-								element.onToggle(true);
-								VertexClientPE.shouldUpdateGUI = true;
-							} else if(bypassState && !element.canBypassBypassMod()) {
-								if(element.isStateMod() && !element.state) {
-									element.state = true;
-									VertexClientPE.shouldUpdateGUI = true;
-								} else if(!element.isStateMod()) {
-									VertexClientPE.toast("This mod is blocked by " + VertexClientPE.getCustomModName("Bypass") + "!");
-								}
-							}
-							if(hacksList != null && hacksList.isShowing()) {
-								updateHacksList();
-							}
-							VertexClientPE.toast("Sucessfully toggled module " + VertexClientPE.getCustomModName(element.name));
-							/*
-								VertexClientPE.toast(VertexClientPE.getCustomModName(element.name) + " can't be toggled using the .t(oggle) command!");
-							*/
-							shouldReturn = true;
+					if ((element.name.toLowerCase() == cmd.substring(2, cmd.length).toLowerCase() || VertexClientPE.getCustomModName(element.name).toLowerCase() == cmd.substring(2, cmd.length).toLowerCase()) && !shouldReturn) {
+						if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
+							VertexClientPE.toast("Experimental features aren't enabled!");
+							return;
 						}
+						if(element.checkBeforeAdding && !element.checkBeforeAdding()) {
+							VertexClientPE.toast("You didn't unlock this feature yet!");
+							return;
+						}
+						if(element.name == "Bypass" || !bypassState || (element.canBypassBypassMod == undefined || element.canBypassBypassMod == null || element.canBypassBypassMod()) || (element.isStateMod() && element.state)) {
+							element.onToggle(true);
+							VertexClientPE.shouldUpdateGUI = true;
+						} else if(bypassState && !element.canBypassBypassMod()) {
+							if(element.isStateMod() && !element.state) {
+								element.state = true;
+								VertexClientPE.shouldUpdateGUI = true;
+							} else if(!element.isStateMod()) {
+								VertexClientPE.toast("This mod is blocked by " + VertexClientPE.getCustomModName("Bypass") + "!");
+							}
+						}
+						if(hacksList != null && hacksList.isShowing()) {
+							updateHacksList();
+						}
+						VertexClientPE.toast("Sucessfully toggled module " + VertexClientPE.getCustomModName(element.name));
+						/*
+							VertexClientPE.toast(VertexClientPE.getCustomModName(element.name) + " can't be toggled using the .t(oggle) command!");
+						*/
+						shouldReturn = true;
 					}
 				});
 				if(shouldReturn) {
@@ -5936,10 +5915,6 @@ var toggle = {
 
 var t = {
 	syntax: "t <module>",
-	type: "Command",
-	isStateMod: function() {
-		return false;
-	},
 	onCall: function(cmd) {
 		toggle.onCall(cmd);
 	}
@@ -5947,10 +5922,6 @@ var t = {
 
 var say = {
 	syntax: "say <message>",
-	type: "Command",
-	isStateMod: function() {
-		return false;
-	},
 	onCall: function(cmd) {
 		sayMsg = cmd.substring(4, cmd.length);
 		if(fancyChatState) {
@@ -5963,10 +5934,6 @@ var say = {
 
 var drop = {
 	syntax: "drop [infinite]",
-	type: "Command",
-	isStateMod: function() {
-		return false;
-	},
 	onCall: function(cmd) {
 		var commandSplit = cmd.split(" ");
 		try {
@@ -5994,10 +5961,6 @@ var drop = {
 
 var give = {
 	syntax: "give (<item_name|item_id>) [<amount>] [<data>]",
-	type: "Command",
-	isStateMod: function() {
-		return false;
-	},
 	onCall: function(cmd) {
 		var commandSplit = cmd.split(" ");
 		try {
@@ -6034,10 +5997,6 @@ var give = {
 
 var tp = {
 	syntax: "tp <x> <y> <z>",
-	type: "Command",
-	isStateMod: function() {
-		return false;
-	},
 	onCall: function(cmd) {
 		var commandSplit = cmd.split(" ");
 		try {
@@ -6073,10 +6032,6 @@ var tp = {
 
 var version = {
 	syntax: "version <current|target|latest>",
-	type: "Command",
-	isStateMod: function() {
-		return false;
-	},
 	onCall: function(cmd) {
 		var commandSplit = cmd.split(" ");
 		try {
@@ -6093,10 +6048,6 @@ var version = {
 
 var panic_cmd = {
 	syntax: "panic",
-	type: "Command",
-	isStateMod: function() {
-		return false;
-	},
 	onCall: function(cmd) {
 		panic.onToggle(true);
 	}
@@ -6104,10 +6055,6 @@ var panic_cmd = {
 
 var p = {
 	syntax: "p",
-	type: "Command",
-	isStateMod: function() {
-		return false;
-	},
 	onCall: function(cmd) {
 		panic_cmd.onCall(cmd);
 	}
@@ -6115,10 +6062,6 @@ var p = {
 
 var gamemode = {
 	syntax: "gamemode",
-	type: "Command",
-	isStateMod: function() {
-		return false;
-	},
 	onCall: function(cmd) {
 		VertexClientPE.switchGameMode();
 		VertexClientPE.clientMessage("Your gamemode has been updated!");
@@ -6127,10 +6070,6 @@ var gamemode = {
 
 var gm = {
 	syntax: "gm",
-	type: "Command",
-	isStateMod: function() {
-		return false;
-	},
 	onCall: function(cmd) {
 		gamemode.onCall(cmd);
 	}
@@ -6138,10 +6077,6 @@ var gm = {
 
 var js = {
 	syntax: "js",
-	type: "Command",
-	isStateMod: function() {
-		return false;
-	},
 	onCall: function(cmd) {
 		VertexClientPE.showJavascriptConsoleDialog();
 	}
@@ -6149,10 +6084,6 @@ var js = {
 
 var rename = {
 	syntax: "rename <name>",
-	type: "Command",
-	isStateMod: function() {
-		return false;
-	},
 	onCall: function(cmd) {
 		var renameName = cmd.substring(7, cmd.length);
 		var renameSlot = Player.getSelectedSlotId();
@@ -6170,10 +6101,6 @@ var rename = {
 
 var w = {
 	syntax: "w <url>",
-	type: "Command",
-	isStateMod: function() {
-		return false;
-	},
 	onCall: function(cmd) {
 		var url = cmd.split(" ")[1];
 		if(url == null || url.replaceAll(" ") == null) {
@@ -6186,31 +6113,27 @@ var w = {
 
 var website = {
 	syntax: "website <url>",
-	type: "Command",
-	isStateMod: function() {
-		return false;
-	},
 	onCall: function(cmd) {
 		w.onCall(cmd);
 	}
 }
 
-VertexClientPE.registerModule(help);
-VertexClientPE.registerModule(drop);
-VertexClientPE.registerModule(gamemode);
-VertexClientPE.registerModule(give);
-VertexClientPE.registerModule(gm);
-VertexClientPE.registerModule(js);
-VertexClientPE.registerModule(p);
-VertexClientPE.registerModule(panic_cmd);
-VertexClientPE.registerModule(rename);
-VertexClientPE.registerModule(say);
-VertexClientPE.registerModule(t);
-VertexClientPE.registerModule(toggle);
-VertexClientPE.registerModule(tp);
-VertexClientPE.registerModule(version);
-VertexClientPE.registerModule(w);
-VertexClientPE.registerModule(website);
+VertexClientPE.registerCommand(help);
+VertexClientPE.registerCommand(drop);
+VertexClientPE.registerCommand(gamemode);
+VertexClientPE.registerCommand(give);
+VertexClientPE.registerCommand(gm);
+VertexClientPE.registerCommand(js);
+VertexClientPE.registerCommand(p);
+VertexClientPE.registerCommand(panic_cmd);
+VertexClientPE.registerCommand(rename);
+VertexClientPE.registerCommand(say);
+VertexClientPE.registerCommand(t);
+VertexClientPE.registerCommand(toggle);
+VertexClientPE.registerCommand(tp);
+VertexClientPE.registerCommand(version);
+VertexClientPE.registerCommand(w);
+VertexClientPE.registerCommand(website);
 
 /**
  *  ##############
@@ -6218,47 +6141,8 @@ VertexClientPE.registerModule(website);
  *  ##############
  */
 
-VertexClientPE.GUI = {
-	floatingMenus: []
-}
-
-VertexClientPE.GUI.PopupWindow = function() {
+VertexClientPE.createScreen = function() {
 	var popupWindow = new PopupWindow_();
-}
-
-VertexClientPE.GUI.registerFloatingMenu = function() {
-	var floatingPopupWindowShown = false;
-
-	var floatingPopupWindow = new VertexClientPE.GUI.PopupWindow();
-	var floatingPopupWindowLayout1 = new LinearLayout_(CONTEXT);
-	var floatingPopupWindowScrollView = new ScrollView(CONTEXT);
-	var floatingPopupWindowLayout = new LinearLayout_(CONTEXT);
-
-	floatingPopupWindowLayout.setOrientation(1);
-	floatingPopupWindowLayout1.setOrientation(1);
-
-	floatingPopupWindowScrollView.addView(floatingPopupWindowLayout);
-
-	var floatingCategoryTitle = new categoryTitle(VertexClientPE.category.toName(category), true);
-	var floatingCategoryTitleSettings = floatingCategoryTitle.getLeftButton();
-	var floatingCategoryTitleTitle = floatingCategoryTitle.getMiddleButton();
-	var floatingCategoryTitleArrow = floatingCategoryTitle.getRightButton();
-
-	floatingCategoryTitleSettings.setOnClickListener(new View_.OnClickListener({
-		onClick: function() {
-			VertexClientPE.showCategoryDialog(floatingCategoryTitle, VertexClientPE.category.toName(category), 0);
-		}
-	}));
-
-	VertexClientPE.addView(floatingPopupWindow, floatingCategoryTitle);
-
-	if(floatingPopupWindowShown == true) {
-		floatingCategoryTitleArrow.setText("\u25B3");
-		floatingPopupWindowLayout1.addView(floatingPopupWindowScrollView);
-	} else if(floatingPopupWindowShown == false) {
-		floatingCategoryTitleArrow.setText("\u25BD");
-	}
-	VertexClientPE.GUI.floatingMenus.push(this);
 }
 
 VertexClientPE.showNotification = function(eventTitle, eventText) {
@@ -7697,15 +7581,13 @@ VertexClientPE.showModEditorDialog = function(defaultName, modTitleView, modButt
 						} else {
 							let lowerCasedCurrentName = currentName.toLowerCase();
 							VertexClientPE.modules.forEach(function(element, index, array) {
-								if(element.type != "Command") {
-									let elementDefaultName = element.name;
-									if((lowerCasedCurrentName == VertexClientPE.getCustomModName(elementDefaultName).toLowerCase() || lowerCasedCurrentName == elementDefaultName.toLowerCase()) && defaultName != elementDefaultName) {
-										currentName = defaultName;
-										modTitleView.setText(currentName);
-										modButtonView.setText(currentName);
-										VertexClientPE.toast("There's already a mod with that (default or custom) name!");
-										return;
-									}
+								let elementDefaultName = element.name;
+								if((lowerCasedCurrentName == VertexClientPE.getCustomModName(elementDefaultName).toLowerCase() || lowerCasedCurrentName == elementDefaultName.toLowerCase()) && defaultName != elementDefaultName) {
+									currentName = defaultName;
+									modTitleView.setText(currentName);
+									modButtonView.setText(currentName);
+									VertexClientPE.toast("There's already a mod with that (default or custom) name!");
+									return;
 								}
 							});
 						}
@@ -8728,7 +8610,7 @@ VertexClientPE.showWhatsNewDialog = function() {
 }
 
 VertexClientPE.showTipDialog = function() {
-	var openText;
+	let openText;
 	if(mainButtonTapSetting == "menu") {
 		openText = "long tap on the main button";
 	} else {
@@ -8750,7 +8632,7 @@ VertexClientPE.showWarningDialog = function() {
 	);
 }
 
-var consoleInput;
+let consoleInput;
 
 VertexClientPE.showJavascriptConsoleDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
@@ -9066,8 +8948,8 @@ VertexClientPE.debugMessage = function(message) {
 	clientMessage(ChatColor.GRAY + "[DEBUG] " + ChatColor.WHITE + message);
 }
 
-var toast;
-var loadingToast;
+let toast;
+let loadingToast;
 
 VertexClientPE.toast = function(message, vibrate) {
 	CONTEXT.runOnUiThread(new Runnable_({
@@ -9196,18 +9078,18 @@ VertexClientPE.getVersion = function(type) {
 	}
 }
 
-var p, y, xx, yy, zz;
+let p, y, xx, yy, zz;
 
-var sayMsg;
+let sayMsg;
 
 VertexClientPE.commandManager = function(cmd) {
-	var _0xff55=["\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x6F\x75\x74\x64\x61\x74\x65\x64\x2C\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C","\x74\x6F\x61\x73\x74","\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C"];if(!isAuthorized){if(!isSupported){VertexClientPE[_0xff55[1]](_0xff55[0])}else {VertexClientPE[_0xff55[1]](_0xff55[2])};return}
-	var finished = false;
-	commandSplit = cmd.split(" ");
-	VertexClientPE.modules.forEach(function(element, index, array) {
-		if(element.syntax != null && commandSplit[0] == element.syntax.split(" ")[0] && element.type == "Command") {
-			if(element.onCall) {
-				if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
+	let _0xff55=["\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x6F\x75\x74\x64\x61\x74\x65\x64\x2C\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C","\x74\x6F\x61\x73\x74","\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C"];if(!isAuthorized){if(!isSupported){VertexClientPE[_0xff55[1]](_0xff55[0])}else {VertexClientPE[_0xff55[1]](_0xff55[2])};return}
+	let finished = false;
+	let commandSplit = cmd.split(" ");
+	VertexClientPE.commands.forEach(function(element, index, array) {
+		if(element.syntax != null && commandSplit[0] == element.syntax.split(" ")[0]) {
+			if(element.hasOwnProperty("onCall")) {
+				if(element.hasOwnProperty("isExpMod") && element.isExpMod() && !VertexClientPE.isExpMode()) {
 					return;
 				}
 				element.onCall(cmd);
@@ -9225,12 +9107,12 @@ VertexClientPE.commandManager = function(cmd) {
 	}
 }
 
-var mpSongTitleView;
-var mpPlayButton;
-var mpCurrentPositionView;
-var mpTotalDurationView;
-var mpSeekBarView;
-var mpLayout;
+let mpSongTitleView;
+let mpPlayButton;
+let mpCurrentPositionView;
+let mpTotalDurationView;
+let mpSeekBarView;
+let mpLayout;
 
 VertexClientPE.MusicUtils = {
 	milliSecToMinString: function(mSec) {
