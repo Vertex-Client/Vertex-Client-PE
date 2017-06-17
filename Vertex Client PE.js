@@ -6866,6 +6866,296 @@ VertexClientPE.showMoreDialog = function() {
 	});
 }
 
+VertexClientPE.showHacksListManagerDialog = function() {
+	CONTEXT.runOnUiThread(new Runnable_() {
+		run: function() {
+			try {
+				//var settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
+				//settingsTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
+				var settingsTitle = clientScreenTitle("Settings", null, themeSetting);
+				var hacksListManagerTitle = clientTextView("Hacks list Manager", true);
+				hacksListManagerTitle.setGravity(Gravity_.CENTER);
+				var hacksListManagerEnter = clientTextView("");
+				var closeButton = clientButton("Close");
+				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
+				var dialogLayout = new LinearLayout_(CONTEXT);
+				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
+				var dialogScrollView = new ScrollView_(CONTEXT);
+				dialogScrollView.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - 20, display.heightPixels / 2));
+				var dialogLayout1 = new LinearLayout_(CONTEXT);
+				dialogLayout1.setBackgroundDrawable(backgroundGradient());
+				dialogLayout1.setOrientation(LinearLayout_.VERTICAL);
+				dialogLayout1.setPadding(10, 0, 10, 10);
+				dialogLayout1.addView(settingsTitle);
+				dialogLayout1.addView(hacksListManagerTitle);
+				dialogLayout1.addView(hacksListManagerEnter);
+
+				dialogScrollView.addView(dialogLayout);
+				dialogLayout1.addView(dialogScrollView);
+
+				var hacksListModeSettingFunc = new settingButton("Hacks list mode", null, null,
+					function(viewArg) {
+						hacksListModeSetting = "on";
+						hacksListModeSettingButton.setText("Normal");
+					}
+				);
+				var hacksListModeSettingButton = hacksListModeSettingFunc.getButton();
+				if(hacksListModeSetting == "on") {
+					hacksListModeSettingButton.setText("Normal");
+				} else if(hacksListModeSetting == "counter") {
+					hacksListModeSettingButton.setText("Counter");
+				} else if(hacksListModeSetting == "logo") {
+					hacksListModeSettingButton.setText("Logo");
+				} else if(hacksListModeSetting == "off") {
+					hacksListModeSettingButton.setText("Hidden");
+				}
+				hacksListModeSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(hacksListModeSetting == "off") {
+							hacksListModeSetting = "on";
+							hacksListModeSettingButton.setText("Normal");
+							VertexClientPE.saveMainSettings();
+						} else if(hacksListModeSetting == "on"){
+							hacksListModeSetting = "counter";
+							hacksListModeSettingButton.setText("Counter");
+							VertexClientPE.saveMainSettings();
+						} else if(hacksListModeSetting == "counter"){
+							hacksListModeSetting = "logo";
+							hacksListModeSettingButton.setText("Logo");
+							VertexClientPE.saveMainSettings();
+						} else if(hacksListModeSetting == "logo"){
+							hacksListModeSetting = "off";
+							hacksListModeSettingButton.setText("Hidden");
+							VertexClientPE.saveMainSettings();
+						}
+					}
+				}));
+
+				var hacksListPosSettingFunc = new settingButton("Hacks list position", null, null,
+					function(viewArg) {
+						hacksListPosSetting = "top-center";
+						hacksListPosSettingButton.setText("Top-center");
+					}
+				);
+				var hacksListPosSettingButton = hacksListPosSettingFunc.getButton();
+				if(hacksListPosSetting == "top-left") {
+					hacksListPosSettingButton.setText("Top-left");
+				} else if(hacksListPosSetting == "top-center") {
+					hacksListPosSettingButton.setText("Top-center");
+				} else if(hacksListPosSetting == "top-right") {
+					hacksListPosSettingButton.setText("Top-right");
+				}
+				hacksListPosSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(hacksListPosSetting == "top-left") {
+							hacksListPosSetting = "top-center";
+							hacksListPosSettingButton.setText("Top-center");
+						} else if(hacksListPosSetting == "top-center"){
+							hacksListPosSetting = "top-right";
+							hacksListPosSettingButton.setText("Top-right");
+						} else if(hacksListPosSetting == "top-right"){
+							hacksListPosSetting = "top-left";
+							hacksListPosSettingButton.setText("Top-left");
+						}
+						VertexClientPE.saveMainSettings();
+					}
+				}));
+
+				VertexClientPE.addView(dialogLayout, hacksListModeSettingFunc);
+				VertexClientPE.addView(dialogLayout, hacksListPosSettingFunc);
+				dialogLayout1.addView(clientTextView(""));
+				dialogLayout1.addView(closeButton);
+
+				var dialog = new Dialog_(CONTEXT);
+				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
+				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+				dialog.setContentView(dialogLayout1);
+				dialog.setTitle("Hacks list Manager");
+				dialog.setOnDismissListener(new DialogInterface_.OnDismissListener() {
+					onDismiss: function() {
+						VertexClientPE.saveMainSettings();
+					}
+				});
+				dialog.show();
+				var window = dialog.getWindow();
+				window.setLayout(display.widthPixels, display.heightPixels);
+				closeButton.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+					}
+				});
+			} catch(e) {
+				print("Error: " + e);
+				VertexClientPE.showBugReportDialog(e);
+			}
+		}
+	});
+}
+
+VertexClientPE.showMainButtonManagerDialog = function() {
+	CONTEXT.runOnUiThread(new Runnable_() {
+		run: function() {
+			try {
+				//var settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
+				//settingsTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
+				var settingsTitle = clientScreenTitle("Settings", null, themeSetting);
+				var hacksListManagerTitle = clientTextView("Main button Manager", true);
+				hacksListManagerTitle.setGravity(Gravity_.CENTER);
+				var hacksListManagerEnter = clientTextView("");
+				var closeButton = clientButton("Close");
+				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
+				var dialogLayout = new LinearLayout_(CONTEXT);
+				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
+				var dialogScrollView = new ScrollView_(CONTEXT);
+				dialogScrollView.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - 20, display.heightPixels / 2));
+				var dialogLayout1 = new LinearLayout_(CONTEXT);
+				dialogLayout1.setBackgroundDrawable(backgroundGradient());
+				dialogLayout1.setOrientation(LinearLayout_.VERTICAL);
+				dialogLayout1.setPadding(10, 0, 10, 10);
+				dialogLayout1.addView(settingsTitle);
+				dialogLayout1.addView(hacksListManagerTitle);
+				dialogLayout1.addView(hacksListManagerEnter);
+
+				dialogScrollView.addView(dialogLayout);
+				dialogLayout1.addView(dialogScrollView);
+
+				var mainButtonPositionSettingFunc = new settingButton("Main button position", "Sets the main menu's button position.", null,
+					function(viewArg) {
+						mainButtonPositionSetting = "top-left";
+						mainButtonPositionSettingButton.setText("Top-left");
+					}
+				);
+				var mainButtonPositionSettingButton = mainButtonPositionSettingFunc.getButton();
+				if(mainButtonPositionSetting == "top-right") {
+					mainButtonPositionSettingButton.setText("Top-right");
+				} else if(mainButtonPositionSetting == "top-left") {
+					mainButtonPositionSettingButton.setText("Top-left");
+				} else if(mainButtonPositionSetting == "bottom-left") {
+					mainButtonPositionSettingButton.setText("Bottom-left");
+				}
+				mainButtonPositionSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(mainButtonPositionSetting == "top-right") {
+							mainButtonPositionSetting = "top-left";
+							mainButtonPositionSettingButton.setText("Top-left");
+						} else if(mainButtonPositionSetting == "top-left") {
+							mainButtonPositionSetting = "bottom-left";
+							mainButtonPositionSettingButton.setText("Bottom-left");
+						} else if(mainButtonPositionSetting == "bottom-left") {
+							mainButtonPositionSetting = "top-right";
+							mainButtonPositionSettingButton.setText("Top-right");
+						}
+						VertexClientPE.saveMainSettings();
+					}
+				}));
+
+				var mainButtonSizeSettingFunc = new settingButton("Main button size", "Sets the main menu's button size.");
+				var mainButtonSizeSettingButton = mainButtonSizeSettingFunc.getButton();
+				mainButtonSizeSettingButton.setText("Change");
+				mainButtonSizeSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						VertexClientPE.showMainButtonSizeDialog();
+					}
+				}));
+
+				var mainButtonStyleSettingFunc = new settingButton("Main button style", "Sets the main menu's button style.", null,
+					function(viewArg) {
+						mainButtonStyleSetting = "normal";
+						mainButtonStyleSettingButton.setText("Normal");
+					}
+				);
+				var mainButtonStyleSettingButton = mainButtonStyleSettingFunc.getButton();
+				if(mainButtonStyleSetting == "normal") {
+					mainButtonStyleSettingButton.setText("Normal");
+				} else if(mainButtonStyleSetting == "global_background") {
+					mainButtonStyleSettingButton.setText("Global background (fits better)");
+				} else if(mainButtonStyleSetting == "no_background") {
+					mainButtonStyleSettingButton.setText("Invisible background");
+				} else if(mainButtonStyleSetting == "invisible_ghost") {
+					mainButtonStyleSettingButton.setText("Invisible (ghost)");
+				} else if(mainButtonStyleSetting == "classic") {
+					mainButtonStyleSettingButton.setText("Classic");
+				}
+				mainButtonStyleSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(mainButtonStyleSetting == "normal") {
+							mainButtonStyleSetting = "global_background";
+							mainButtonStyleSettingButton.setText("Global background (fits better)");
+						} else if(mainButtonStyleSetting == "global_background") {
+							mainButtonStyleSetting = "no_background";
+							mainButtonStyleSettingButton.setText("Invisible background");
+						} else if(mainButtonStyleSetting == "no_background") {
+							mainButtonStyleSetting = "invisible_ghost";
+							mainButtonStyleSettingButton.setText("Invisible (ghost)");
+						} else if(mainButtonStyleSetting == "invisible_ghost") {
+							mainButtonStyleSetting = "classic";
+							mainButtonStyleSettingButton.setText("Classic");
+						} else if(mainButtonStyleSetting == "classic") {
+							mainButtonStyleSetting = "normal";
+							mainButtonStyleSettingButton.setText("Normal");
+						}
+						VertexClientPE.saveMainSettings();
+					}
+				}));
+
+				var mainButtonTapSettingFunc = new settingButton("Main button action", "Sets the main menu's button action.", null,
+					function(viewArg) {
+						mainButtonTapSetting = "menu";
+						mainButtonTapSettingButton.setText("Menu (normal tap) | More dialog (long tap)");
+					}
+				);
+				var mainButtonTapSettingButton = mainButtonTapSettingFunc.getButton();
+				if(mainButtonTapSetting == "menu") {
+					mainButtonTapSettingButton.setText("Menu (normal tap) | More dialog (long tap)");
+				} else if(mainButtonTapSetting == "moredialog") {
+					mainButtonTapSettingButton.setText("More dialog (normal tap) | Menu (long tap)");
+				}
+				mainButtonTapSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(mainButtonTapSetting == "menu") {
+							mainButtonTapSetting = "moredialog";
+							mainButtonTapSettingButton.setText("More dialog (normal tap) | Menu (long tap)");
+						} else if(mainButtonTapSetting == "moredialog") {
+							mainButtonTapSetting = "menu";
+							mainButtonTapSettingButton.setText("Menu (normal tap) | More dialog (long tap)");
+						}
+						VertexClientPE.saveMainSettings();
+					}
+				}));
+
+				VertexClientPE.addView(dialogLayout, mainButtonPositionSettingFunc);
+				//VertexClientPE.addView(dialogLayout, mainButtonSizeSettingFunc);
+				VertexClientPE.addView(dialogLayout, mainButtonStyleSettingFunc);
+				VertexClientPE.addView(dialogLayout, mainButtonTapSettingFunc);
+				dialogLayout1.addView(clientTextView(""));
+				dialogLayout1.addView(closeButton);
+
+				var dialog = new Dialog_(CONTEXT);
+				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
+				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+				dialog.setContentView(dialogLayout1);
+				dialog.setTitle("Main button Manager");
+				dialog.setOnDismissListener(new DialogInterface_.OnDismissListener() {
+					onDismiss: function() {
+						VertexClientPE.saveMainSettings();
+					}
+				});
+				dialog.show();
+				var window = dialog.getWindow();
+				window.setLayout(display.widthPixels, display.heightPixels);
+				closeButton.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+					}
+				});
+			} catch(e) {
+				print("Error: " + e);
+				VertexClientPE.showBugReportDialog(e);
+			}
+		}
+	});
+}
+
 VertexClientPE.showShortcutManagerDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
@@ -6875,7 +7165,7 @@ VertexClientPE.showShortcutManagerDialog = function() {
 				var settingsTitle = clientScreenTitle("Settings", null, themeSetting);
 				var shortcutManagerTitle = clientTextView("Shortcut Manager", true);
 				shortcutManagerTitle.setGravity(Gravity_.CENTER);
-				var shortcutManagerEnter = clientTextView("\n");
+				var shortcutManagerEnter = clientTextView("");
 				var closeButton = clientButton("Close");
 				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
 				var dialogLayout = new LinearLayout_(CONTEXT);
@@ -7026,7 +7316,7 @@ VertexClientPE.showShortcutManagerDialog = function() {
 				VertexClientPE.addView(dialogLayout, shortcutUIModeSettingFunc);
 				VertexClientPE.addView(dialogLayout, shortcutUIPosSettingFunc);
 				VertexClientPE.addView(dialogLayout, showIconsOnTileShortcutsSettingFunc);
-				dialogLayout1.addView(clientTextView("\n"));
+				dialogLayout1.addView(clientTextView(""));
 				dialogLayout1.addView(closeButton);
 
 				var dialog = new Dialog_(CONTEXT);
@@ -14194,71 +14484,30 @@ function settingsScreen(fromDashboard) {
 
 				var generalTitle = clientSectionTitle("HUD", "theme");
 
-				var hacksListModeSettingFunc = new settingButton("Hacks list mode", null, null,
-					function(viewArg) {
-						hacksListModeSetting = "on";
-						hacksListModeSettingButton.setText("Normal");
-					}
-				);
-				var hacksListModeSettingButton = hacksListModeSettingFunc.getButton();
-				if(hacksListModeSetting == "on") {
-					hacksListModeSettingButton.setText("Normal");
-				} else if(hacksListModeSetting == "counter") {
-					hacksListModeSettingButton.setText("Counter");
-				} else if(hacksListModeSetting == "logo") {
-					hacksListModeSettingButton.setText("Logo");
-				} else if(hacksListModeSetting == "off") {
-					hacksListModeSettingButton.setText("Hidden");
-				}
-				hacksListModeSettingButton.setOnClickListener(new View_.OnClickListener({
+				var hacksListManagerSettingFunc = new settingButton("Hacks list", "Manage the hacks list.");
+				var hacksListManagerSettingButton = hacksListManagerSettingFunc.getButton();
+				hacksListManagerSettingButton.setText("Manage");
+				hacksListManagerSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
-						if(hacksListModeSetting == "off") {
-							hacksListModeSetting = "on";
-							hacksListModeSettingButton.setText("Normal");
-							VertexClientPE.saveMainSettings();
-						} else if(hacksListModeSetting == "on"){
-							hacksListModeSetting = "counter";
-							hacksListModeSettingButton.setText("Counter");
-							VertexClientPE.saveMainSettings();
-						} else if(hacksListModeSetting == "counter"){
-							hacksListModeSetting = "logo";
-							hacksListModeSettingButton.setText("Logo");
-							VertexClientPE.saveMainSettings();
-						} else if(hacksListModeSetting == "logo"){
-							hacksListModeSetting = "off";
-							hacksListModeSettingButton.setText("Hidden");
-							VertexClientPE.saveMainSettings();
-						}
+						VertexClientPE.showHacksListManagerDialog();
 					}
 				}));
-
-				var hacksListPosSettingFunc = new settingButton("Hacks list position", null, null,
-					function(viewArg) {
-						hacksListPosSetting = "top-center";
-						hacksListPosSettingButton.setText("Top-center");
-					}
-				);
-				var hacksListPosSettingButton = hacksListPosSettingFunc.getButton();
-				if(hacksListPosSetting == "top-left") {
-					hacksListPosSettingButton.setText("Top-left");
-				} else if(hacksListPosSetting == "top-center") {
-					hacksListPosSettingButton.setText("Top-center");
-				} else if(hacksListPosSetting == "top-right") {
-					hacksListPosSettingButton.setText("Top-right");
-				}
-				hacksListPosSettingButton.setOnClickListener(new View_.OnClickListener({
+				
+				var mainButtonManagerSettingFunc = new settingButton("Main button", "Manage the main button.");
+				var mainButtonManagerSettingButton = mainButtonManagerSettingFunc.getButton();
+				mainButtonManagerSettingButton.setText("Manage");
+				mainButtonManagerSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
-						if(hacksListPosSetting == "top-left") {
-							hacksListPosSetting = "top-center";
-							hacksListPosSettingButton.setText("Top-center");
-						} else if(hacksListPosSetting == "top-center"){
-							hacksListPosSetting = "top-right";
-							hacksListPosSettingButton.setText("Top-right");
-						} else if(hacksListPosSetting == "top-right"){
-							hacksListPosSetting = "top-left";
-							hacksListPosSettingButton.setText("Top-left");
-						}
-						VertexClientPE.saveMainSettings();
+						VertexClientPE.showMainButtonManagerDialog();
+					}
+				}));
+				
+				var shortcutManagerSettingFunc = new settingButton("Shortcuts", "Manage the shortcut buttons.");
+				var shortcutManagerSettingButton = shortcutManagerSettingFunc.getButton();
+				shortcutManagerSettingButton.setText("Manage");
+				shortcutManagerSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						VertexClientPE.showShortcutManagerDialog();
 					}
 				}));
 
@@ -14284,119 +14533,6 @@ function settingsScreen(fromDashboard) {
 							tabGUIModeSettingButton.setText("Shown");
 						}
 						VertexClientPE.saveMainSettings();
-					}
-				}));
-
-				var mainButtonPositionSettingFunc = new settingButton("Main button position", "Sets the main menu's button position.", null,
-					function(viewArg) {
-						mainButtonPositionSetting = "top-left";
-						mainButtonPositionSettingButton.setText("Top-left");
-					}
-				);
-				var mainButtonPositionSettingButton = mainButtonPositionSettingFunc.getButton();
-				if(mainButtonPositionSetting == "top-right") {
-					mainButtonPositionSettingButton.setText("Top-right");
-				} else if(mainButtonPositionSetting == "top-left") {
-					mainButtonPositionSettingButton.setText("Top-left");
-				} else if(mainButtonPositionSetting == "bottom-left") {
-					mainButtonPositionSettingButton.setText("Bottom-left");
-				}
-				mainButtonPositionSettingButton.setOnClickListener(new View_.OnClickListener({
-				onClick: function(viewArg) {
-					if(mainButtonPositionSetting == "top-right") {
-						mainButtonPositionSetting = "top-left";
-						mainButtonPositionSettingButton.setText("Top-left");
-					} else if(mainButtonPositionSetting == "top-left") {
-						mainButtonPositionSetting = "bottom-left";
-						mainButtonPositionSettingButton.setText("Bottom-left");
-					} else if(mainButtonPositionSetting == "bottom-left") {
-						mainButtonPositionSetting = "top-right";
-						mainButtonPositionSettingButton.setText("Top-right");
-					}
-					VertexClientPE.saveMainSettings();
-				}
-				}));
-
-				var mainButtonSizeSettingFunc = new settingButton("Main button size", "Sets the main menu's button size.");
-				var mainButtonSizeSettingButton = mainButtonSizeSettingFunc.getButton();
-				mainButtonSizeSettingButton.setText("Change");
-				mainButtonSizeSettingButton.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewArg) {
-						VertexClientPE.showMainButtonSizeDialog();
-					}
-				}));
-
-				var mainButtonStyleSettingFunc = new settingButton("Main button style", "Sets the main menu's button style.", null,
-					function(viewArg) {
-						mainButtonStyleSetting = "normal";
-						mainButtonStyleSettingButton.setText("Normal");
-					}
-				);
-				var mainButtonStyleSettingButton = mainButtonStyleSettingFunc.getButton();
-				if(mainButtonStyleSetting == "normal") {
-					mainButtonStyleSettingButton.setText("Normal");
-				} else if(mainButtonStyleSetting == "global_background") {
-					mainButtonStyleSettingButton.setText("Global background (fits better)");
-				} else if(mainButtonStyleSetting == "no_background") {
-					mainButtonStyleSettingButton.setText("Invisible background");
-				} else if(mainButtonStyleSetting == "invisible_ghost") {
-					mainButtonStyleSettingButton.setText("Invisible (ghost)");
-				} else if(mainButtonStyleSetting == "classic") {
-					mainButtonStyleSettingButton.setText("Classic");
-				}
-				mainButtonStyleSettingButton.setOnClickListener(new View_.OnClickListener({
-				onClick: function(viewArg) {
-					if(mainButtonStyleSetting == "normal") {
-						mainButtonStyleSetting = "global_background";
-						mainButtonStyleSettingButton.setText("Global background (fits better)");
-					} else if(mainButtonStyleSetting == "global_background") {
-						mainButtonStyleSetting = "no_background";
-						mainButtonStyleSettingButton.setText("Invisible background");
-					} else if(mainButtonStyleSetting == "no_background") {
-						mainButtonStyleSetting = "invisible_ghost";
-						mainButtonStyleSettingButton.setText("Invisible (ghost)");
-					} else if(mainButtonStyleSetting == "invisible_ghost") {
-						mainButtonStyleSetting = "classic";
-						mainButtonStyleSettingButton.setText("Classic");
-					} else if(mainButtonStyleSetting == "classic") {
-						mainButtonStyleSetting = "normal";
-						mainButtonStyleSettingButton.setText("Normal");
-					}
-					VertexClientPE.saveMainSettings();
-				}
-				}));
-
-				var mainButtonTapSettingFunc = new settingButton("Main button action", "Sets the main menu's button action.", null,
-					function(viewArg) {
-						mainButtonTapSetting = "menu";
-						mainButtonTapSettingButton.setText("Menu (normal tap) | More dialog (long tap)");
-					}
-				);
-				var mainButtonTapSettingButton = mainButtonTapSettingFunc.getButton();
-				if(mainButtonTapSetting == "menu") {
-					mainButtonTapSettingButton.setText("Menu (normal tap) | More dialog (long tap)");
-				} else if(mainButtonTapSetting == "moredialog") {
-					mainButtonTapSettingButton.setText("More dialog (normal tap) | Menu (long tap)");
-				}
-				mainButtonTapSettingButton.setOnClickListener(new View_.OnClickListener({
-				onClick: function(viewArg) {
-					if(mainButtonTapSetting == "menu") {
-						mainButtonTapSetting = "moredialog";
-						mainButtonTapSettingButton.setText("More dialog (normal tap) | Menu (long tap)");
-					} else if(mainButtonTapSetting == "moredialog") {
-						mainButtonTapSetting = "menu";
-						mainButtonTapSettingButton.setText("Menu (normal tap) | More dialog (long tap)");
-					}
-					VertexClientPE.saveMainSettings();
-				}
-				}));
-
-				var shortcutManagerSettingFunc = new settingButton("Shortcuts", "Manage the shortcut buttons.");
-				var shortcutManagerSettingButton = shortcutManagerSettingFunc.getButton();
-				shortcutManagerSettingButton.setText("Manage");
-				shortcutManagerSettingButton.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewArg) {
-						VertexClientPE.showShortcutManagerDialog();
 					}
 				}));
 
@@ -15190,13 +15326,10 @@ function settingsScreen(fromDashboard) {
 				}));
 
 				settingsMenuLayout.addView(generalTitle);
-				VertexClientPE.addView(settingsMenuLayout, hacksListModeSettingFunc);
-				VertexClientPE.addView(settingsMenuLayout, hacksListPosSettingFunc);
-				VertexClientPE.addView(settingsMenuLayout, tabGUIModeSettingFunc);
-				VertexClientPE.addView(settingsMenuLayout, mainButtonPositionSettingFunc);
-				VertexClientPE.addView(settingsMenuLayout, mainButtonStyleSettingFunc);
-				VertexClientPE.addView(settingsMenuLayout, mainButtonTapSettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, hacksListManagerSettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, mainButtonManagerSettingFunc);
 				VertexClientPE.addView(settingsMenuLayout, shortcutManagerSettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, tabGUIModeSettingFunc);
 				settingsMenuLayout.addView(themeTitle);
 				VertexClientPE.addView(settingsMenuLayout, themeSettingFunc);
 				VertexClientPE.addView(settingsMenuLayout, useLightThemeSettingFunc);
