@@ -5865,8 +5865,9 @@ var toggle = {
 			var commandSplit = cmd.split(" ");
 			if (cmd.substring(2, cmd.length) != null && cmd.substring(2, cmd.length) != undefined && commandSplit[1] != null) {
 				var shouldReturn = false;
+				let cmdNoPrefix = cmd.substring(2, cmd.length);
 				VertexClientPE.modules.forEach(function (element, index, array) {
-					if ((element.name.toLowerCase() == cmd.substring(2, cmd.length).toLowerCase() || VertexClientPE.getCustomModName(element.name).toLowerCase() == cmd.substring(2, cmd.length).toLowerCase()) && !shouldReturn) {
+					if ((element.name.toLowerCase() == cmdNoPrefix.toLowerCase() || VertexClientPE.getCustomModName(element.name).toLowerCase() == cmdNoPrefix.toLowerCase())) {
 						if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
 							VertexClientPE.toast("Experimental features aren't enabled!");
 							return;
@@ -5894,12 +5895,13 @@ var toggle = {
 							VertexClientPE.toast(VertexClientPE.getCustomModName(element.name) + " can't be toggled using the .t(oggle) command!");
 						*/
 						shouldReturn = true;
+						return;
 					}
 				});
 				if(shouldReturn) {
 					return;
 				}
-				VertexClientPE.toast("Module " + cmd.substring(2, cmd.length) + " can't be found/toggled!");
+				VertexClientPE.toast("Module " + cmdNoPrefix + " can't be found/toggled!");
 			} else {
 				throw new SyntaxError();
 			}
@@ -6612,6 +6614,14 @@ VertexClientPE.tempDisable = function() {
 		GUI.dismiss();
 		GUI = null;
 	}
+	if(screenUI != null && screenUI.isShowing()) {
+		screenUI.dismiss();
+		screenUI = null;
+	}
+	if(barUI != null && barUI.isShowing()) {
+		barUI.dismiss();
+		barUI = null;
+	}
 	VertexClientPE.modules.forEach(function(element, index, array) {
 		if(element.isStateMod() && element.state) {
 			element.onToggle();
@@ -6806,15 +6816,21 @@ VertexClientPE.showMoreDialog = function() {
 							if(pauseUtilitiesUI != null && pauseUtilitiesUI.isShowing()) {
 								pauseUtilitiesUI.dismiss();
 							}
+							if(accountManagerGUI != null && accountManagerGUI.isShowing()) {
+								accountManagerGUI.dismiss();
+							}
+							if(mainMenuTextList != null && mainMenuTextList.isShowing()) {
+								mainMenuTextList.dismiss();
+							}
 						} else {
 							ghostModeTitle = "Enable ";
 						}
-						//if(!VertexClientPE.menuIsShowing) { //TODO
+						if(screenUI == null || !screenUI.isShowing()) {
 							if(GUI != null && GUI.isShowing()) {
 								GUI.dismiss();
 							}
 							showMenuButton();
-						//}
+						}
 						ghostModeTitle += "ghost mode";
 						ghostModeButton.setText(ghostModeTitle);
 					}
@@ -12852,7 +12868,7 @@ VertexClientPE.showStartScreenBar = function() {
 				mainMenuListLayout.addView(twitterButton);
 				mainMenuListLayout.addView(gitHubButton);
 
-				if(currentScreen == ScreenType.start_screen) {
+				if(currentScreen == ScreenType.start_screen && !ghostModeState) {
 					if((mainMenuTextList == null || !mainMenuTextList.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
 						mainMenuTextList = new PopupWindow_(mainMenuListLayout, -2, -2);
 						if(mainButtonPositionSetting == "top-right") {
@@ -15721,24 +15737,7 @@ function christmasScreen(fromDashboard) {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function () {
 			try {
-				if (GUI != null && GUI.isShowing()) {
-					GUI.dismiss();
-				}
-				if (hacksList != null && hacksList.isShowing()) {
-					hacksList.dismiss();
-				}
-				if (tabGUI != null && tabGUI.isShowing()) {
-					tabGUI.dismiss();
-				}
-				if (shortcutGUI != null && shortcutGUI.isShowing()) {
-					shortcutGUI.dismiss();
-				}
-				if (mainMenuTextList != null && mainMenuTextList.isShowing()) {
-					mainMenuTextList.dismiss();
-				}
-				if (accountManagerGUI != null && accountManagerGUI.isShowing()) {
-					accountManagerGUI.dismiss();
-				}
+				VertexClientPE.checkGUINeedsDismiss();
 
 				var scrollView = new android.widget.HorizontalScrollView(CONTEXT),
 					layout = new LinearLayout_(CONTEXT),
@@ -17729,7 +17728,7 @@ function showAccountManagerButton() {
 	}));
 	acBtnLayout.addView(acBtn);
 
-	if(currentScreen == ScreenType.start_screen) {
+	if(currentScreen == ScreenType.start_screen && !ghostModeState) {
 		if((accountManagerGUI == null || !accountManagerGUI.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
 			accountManagerGUI = new PopupWindow_(acBtnLayout, dip2px(40), dip2px(40));
 			if(menuAnimationsSetting == "on") {
