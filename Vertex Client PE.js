@@ -2089,22 +2089,22 @@ var jsConsoleTile = {
 	}
 }
 
-var restartTile = {
-	text: "Restart",
-	color: "green",
-	icon: android.R.drawable.ic_menu_rotate,
-	forceLightColor: false,
-	shouldDismissDashboard: false,
-	onClick: function(fromDashboard) {
-		ModPE.restart();
+let launcherName;
+if(Launcher.isBlockLauncher()) {
+	launcherName = "BlockLauncher";
+} else {
+	if(Launcher.isToolbox()) {
+		launcherName = "Toolbox";
+	} else {
+		launcherName = "Launcher";
 	}
 }
 
-var shutdownTile = {
-	text: "Shutdown",
-	color: "red",
-	icon: android.R.drawable.ic_lock_power_off,
-	forceLightColor: true,
+var restartTile = {
+	text: "Restart " + launcherName,
+	color: "green",
+	icon: android.R.drawable.ic_menu_rotate,
+	forceLightColor: false,
 	shouldDismissDashboard: false,
 	onClick: function(fromDashboard) {
 		ModPE.restart();
@@ -2127,7 +2127,6 @@ VertexClientPE.registerTile(blockLauncherSettingsTile);
 VertexClientPE.registerTile(devSettingsTile);
 VertexClientPE.registerTile(jsConsoleTile);
 VertexClientPE.registerTile(restartTile);
-VertexClientPE.registerTile(shutdownTile);
 
 VertexClientPE.initMods = function(cat) {
 	if(cat != "on") {
@@ -6682,6 +6681,9 @@ var moreMenuIsOpen = false;
 
 let moreDialog;
 
+const ghostModeEnabledDrawable = android.R.drawable.checkbox_on_background;
+const ghostModeDisabledDrawable = android.R.drawable.checkbox_off_background;
+
 VertexClientPE.showMoreDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
@@ -6693,13 +6695,12 @@ VertexClientPE.showMoreDialog = function() {
 				let moreTitle = clientTextView("More", true);
 				let moreHR = clientHR();
 
-				let ghostModeTitle;
+				let ghostModeTitle = "Ghost mode | ";
 				if(ghostModeState) {
-					ghostModeTitle = "Disable ";
+					ghostModeTitle += "ON";
 				} else {
-					ghostModeTitle = "Enable ";
+					ghostModeTitle += "OFF";
 				}
-				ghostModeTitle += "ghost mode";
 
 				let dashboardButton = clientButton("Dashboard");
 				let webBrowserButton = clientButton("Webbrowser");
@@ -6715,6 +6716,11 @@ VertexClientPE.showMoreDialog = function() {
 					playerCustomizerButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.presence_online, 0, 0);
 					optiFineButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.ic_menu_zoom, 0, 0);
 					hideMenuButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.ic_menu_close_clear_cancel, 0, 0);
+					if(ghostModeState) {
+						ghostModeButton.setCompoundDrawablesWithIntrinsicBounds(0, ghostModeEnabledDrawable, 0, 0);
+					} else {
+						ghostModeButton.setCompoundDrawablesWithIntrinsicBounds(0, ghostModeDisabledDrawable, 0, 0);
+					}
 					resetPosButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.stat_notify_sync, 0, 0);
 				} else {
 					dashboardButton.setCompoundDrawablesRelativeWithIntrinsicBounds(android.R.drawable.ic_dialog_dialer, 0, 0, 0);
@@ -6722,6 +6728,11 @@ VertexClientPE.showMoreDialog = function() {
 					playerCustomizerButton.setCompoundDrawablesRelativeWithIntrinsicBounds(android.R.drawable.presence_online, 0, 0, 0);
 					optiFineButton.setCompoundDrawablesRelativeWithIntrinsicBounds(android.R.drawable.ic_menu_zoom, 0, 0, 0);
 					hideMenuButton.setCompoundDrawablesRelativeWithIntrinsicBounds(android.R.drawable.ic_menu_close_clear_cancel, 0, 0, 0);
+					if(ghostModeState) {
+						ghostModeButton.setCompoundDrawablesWithIntrinsicBounds(ghostModeEnabledDrawable, 0, 0, 0);
+					} else {
+						ghostModeButton.setCompoundDrawablesWithIntrinsicBounds(ghostModeDisabledDrawable, 0, 0, 0);
+					}
 					resetPosButton.setCompoundDrawablesRelativeWithIntrinsicBounds(android.R.drawable.stat_notify_sync, 0, 0, 0);
 				}
 
@@ -6804,7 +6815,7 @@ VertexClientPE.showMoreDialog = function() {
 					onClick: function(view) {
 						ghostModeState = !ghostModeState;
 						if(ghostModeState) {
-							ghostModeTitle = "Disable ";
+							ghostModeTitle = "Ghost mode | ON";
 							if(hacksList != null && hacksList.isShowing()) {
 								hacksList.dismiss();
 							}
@@ -6824,7 +6835,7 @@ VertexClientPE.showMoreDialog = function() {
 								mainMenuTextList.dismiss();
 							}
 						} else {
-							ghostModeTitle = "Enable ";
+							ghostModeTitle = "Ghost mode | OFF";
 						}
 						if(screenUI == null || !screenUI.isShowing()) {
 							if(GUI != null && GUI.isShowing()) {
@@ -6832,8 +6843,20 @@ VertexClientPE.showMoreDialog = function() {
 							}
 							showMenuButton();
 						}
-						ghostModeTitle += "ghost mode";
 						ghostModeButton.setText(ghostModeTitle);
+						if(buttonStyleSetting != "android") {
+							if(ghostModeState) {
+								ghostModeButton.setCompoundDrawablesWithIntrinsicBounds(0, ghostModeEnabledDrawable, 0, 0);
+							} else {
+								ghostModeButton.setCompoundDrawablesWithIntrinsicBounds(0, ghostModeDisabledDrawable, 0, 0);
+							}
+						} else {
+							if(ghostModeState) {
+								ghostModeButton.setCompoundDrawablesWithIntrinsicBounds(ghostModeEnabledDrawable, 0, 0, 0);
+							} else {
+								ghostModeButton.setCompoundDrawablesWithIntrinsicBounds(ghostModeDisabledDrawable, 0, 0, 0);
+							}
+						}
 					}
 				});
 				resetPosButton.setOnClickListener(new View_.OnClickListener() {
@@ -12653,9 +12676,9 @@ function backgroundGradient(round, style, transparent) // TextView with colored 
 		}
 
 		var dirt = dirtBackgroundClientGUI;
-		if(transparent == "on") {
+		if(transparent) {
 			dirt.setAlpha(127);
-		} else if(transparent == "off") {
+		} else {
 			dirt.setAlpha(255);
 		}
 
@@ -12668,9 +12691,9 @@ function backgroundGradient(round, style, transparent) // TextView with colored 
 		}
 
 		var rainbow = rainbowBackgroundClientGUI;
-		if(transparent == "on") {
+		if(transparent) {
 			rainbow.setAlpha(127);
-		} else if(transparent == "off") {
+		} else {
 			rainbow.setAlpha(255);
 		}
 
