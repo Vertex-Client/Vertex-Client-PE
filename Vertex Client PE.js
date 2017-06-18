@@ -1995,6 +1995,18 @@ var previewTile = {
 	}
 }
 
+var feedbackTile = {
+	text: "Feedback",
+	color: "red",
+	icon: android.R.drawable.ic_dialog_email,
+	forceLightColor: true,
+	shouldDismissDashboard: true,
+	onClick: function(fromDashboard) {
+		feedbackScreen();
+		VertexClientPE.showExitButtons(fromDashboard, this.text, this.icon);
+	}
+}
+
 var milestonesTile = {
 	text: "Milestones",
 	color: "grey",
@@ -2119,6 +2131,7 @@ VertexClientPE.registerTile(updateCenterTile);
 VertexClientPE.registerTile(musicPlayerTile);
 VertexClientPE.registerTile(christmasTile);
 VertexClientPE.registerTile(previewTile);
+VertexClientPE.registerTile(feedbackTile);
 VertexClientPE.registerTile(milestonesTile);
 VertexClientPE.registerTile(helpTile);
 VertexClientPE.registerTile(addonsTile);
@@ -15717,6 +15730,45 @@ function previewScreen(fromDashboard) {
 				screenUI.setOnDismissListener(new PopupWindow_.OnDismissListener() {
 					onDismiss: function() {
 						previewWebView.loadUrl("about:blank");
+					}
+				});
+				screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
+			} catch(error) {
+				print("An error occurred: " + error);
+			}
+		}
+	}));
+}
+
+function feedbackScreen(fromDashboard) {
+	VertexClientPE.menuIsShowing = true;
+	CONTEXT.runOnUiThread(new Runnable_({
+		run: function() {
+			try {
+				VertexClientPE.checkGUINeedsDismiss();
+
+				var feedbackMenuLayout = new LinearLayout_(CONTEXT);
+				feedbackMenuLayout.setOrientation(1);
+				feedbackMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
+
+				var feedbackWebView = new WebView_(CONTEXT);
+				var wS = feedbackWebView.getSettings();
+
+				var frameForm = "<html><body><center><iframe src='https://docs.google.com/forms/d/e/1FAIpQLSeMITAXYXh895mqS4gS4AGru0CZjCeYg1B1ClJClyKTAHEYVg/viewform?embedded=true' width='760' height='500' frameborder='0' marginheight='0' marginwidth='0'>Loading...</iframe></center></body></html>";
+
+				wS.setJavaScriptEnabled(true);
+				feedbackWebView.setWebChromeClient(new WebChromeClient_());
+				feedbackWebView.setWebViewClient(new WebViewClient_());
+
+				feedbackWebView.loadData(frameForm, "text/html", "utf-8");
+
+				feedbackMenuLayout.addView(feedbackWebView);
+
+				screenUI = new PopupWindow_(feedbackMenuLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
+				screenUI.setBackgroundDrawable(backgroundGradient());
+				screenUI.setOnDismissListener(new PopupWindow_.OnDismissListener() {
+					onDismiss: function() {
+						feedbackWebView.loadUrl("about:blank");
 					}
 				});
 				screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
