@@ -236,6 +236,7 @@ var antiAFKKeepScreenOnSetting = "on";
 var shortcutUIModeSetting = "on";
 var attackShockIntensity = 20;
 var f5ButtonModeSetting = "pause";
+var mainButtonSizeSetting = 40;
 //------------------------------------
 var antiAFKDistancePerTick = 0.25;
 //------------------------------------
@@ -6999,9 +7000,9 @@ VertexClientPE.showMainButtonManagerDialog = function() {
 				//var settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
 				//settingsTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
 				var settingsTitle = clientScreenTitle("Settings", null, themeSetting);
-				var hacksListManagerTitle = clientTextView("Main button Manager", true);
-				hacksListManagerTitle.setGravity(Gravity_.CENTER);
-				var hacksListManagerEnter = clientTextView("");
+				var mainButtonManagerTitle = clientTextView("Main button Manager", true);
+				mainButtonManagerTitle.setGravity(Gravity_.CENTER);
+				var mainButtonManagerEnter = clientTextView("");
 				var closeButton = clientButton("Close");
 				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
 				var dialogLayout = new LinearLayout_(CONTEXT);
@@ -7013,12 +7014,24 @@ VertexClientPE.showMainButtonManagerDialog = function() {
 				dialogLayout1.setOrientation(LinearLayout_.VERTICAL);
 				dialogLayout1.setPadding(10, 0, 10, 10);
 				dialogLayout1.addView(settingsTitle);
-				dialogLayout1.addView(hacksListManagerTitle);
-				dialogLayout1.addView(hacksListManagerEnter);
+				dialogLayout1.addView(mainButtonManagerTitle);
+				dialogLayout1.addView(mainButtonManagerEnter);
 
 				dialogScrollView.addView(dialogLayout);
 				dialogLayout1.addView(dialogScrollView);
 
+				var mainButtonSizeSettingTitle = clientTextView("Main button size: | " + mainButtonSizeSetting + " pixels");
+				var mainButtonSizeSettingSlider = clientSeekBar();
+				var minMainButtonSize = 20;
+				mainButtonSizeSettingSlider.setProgress(mainButtonSizeSetting - minMainButtonSize);
+				mainButtonSizeSettingSlider.setMax(100 - minMainButtonSize);
+				mainButtonSizeSettingSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
+					onProgressChanged: function() {
+						mainButtonSizeSetting = mainButtonSizeSettingSlider.getProgress() + minMainButtonSize;
+						mainButtonSizeSettingTitle.setText("Main button size: | " + mainButtonSizeSetting + " pixels");
+					}
+				});
+				
 				var mainButtonPositionSettingFunc = new settingButton("Main button position", "Sets the main menu's button position.", null,
 					function(viewArg) {
 						mainButtonPositionSetting = "top-left";
@@ -7046,15 +7059,6 @@ VertexClientPE.showMainButtonManagerDialog = function() {
 							mainButtonPositionSettingButton.setText("Top-right");
 						}
 						VertexClientPE.saveMainSettings();
-					}
-				}));
-
-				var mainButtonSizeSettingFunc = new settingButton("Main button size", "Sets the main menu's button size.");
-				var mainButtonSizeSettingButton = mainButtonSizeSettingFunc.getButton();
-				mainButtonSizeSettingButton.setText("Change");
-				mainButtonSizeSettingButton.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewArg) {
-						VertexClientPE.showMainButtonSizeDialog();
 					}
 				}));
 
@@ -7123,8 +7127,9 @@ VertexClientPE.showMainButtonManagerDialog = function() {
 					}
 				}));
 
+				dialogLayout.addView(mainButtonSizeSettingTitle);
+				dialogLayout.addView(mainButtonSizeSettingSlider);
 				VertexClientPE.addView(dialogLayout, mainButtonPositionSettingFunc);
-				//VertexClientPE.addView(dialogLayout, mainButtonSizeSettingFunc);
 				VertexClientPE.addView(dialogLayout, mainButtonStyleSettingFunc);
 				VertexClientPE.addView(dialogLayout, mainButtonTapSettingFunc);
 				dialogLayout1.addView(clientTextView(""));
@@ -10367,6 +10372,7 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + shortcutUIModeSetting.toString());
 	outWrite.append("," + attackShockIntensity.toString());
 	outWrite.append("," + f5ButtonModeSetting.toString());
+	outWrite.append("," + mainButtonSizeSetting.toString());
 
 	outWrite.close();
 
@@ -10622,6 +10628,9 @@ VertexClientPE.loadMainSettings = function () {
 		}
 		if (arr[77] != null && arr[77] != undefined) {
 			f5ButtonModeSetting = arr[77];
+		}
+		if (arr[78] != null && arr[78] != undefined) {
+			mainButtonSizeSetting = arr[78];
 		}
 		fos.close();
 		VertexClientPE.loadCustomRGBSettings();
@@ -12857,23 +12866,6 @@ VertexClientPE.clientTick = function() {
 					if(isGUIShowing) {
 						showMenuButton();
 					}
-					/* if(!VertexClientPE.playerIsInGame) {
-						if(hacksList != null) {
-							if(hacksList.isShowing()) {
-								hacksList.dismiss();
-							}
-						}
-						if(tabGUI != null) {
-							if(tabGUI.isShowing()) {
-								tabGUI.dismiss();
-							}
-						}
-						if(healthDisplayUI != null) {
-							if(healthDisplayUI.isShowing()) {
-								healthDisplayUI.dismiss();
-							}
-						}
-					} */
 				}
 			}));
 			VertexClientPE.clientTick();
@@ -15968,7 +15960,7 @@ function christmasScreen(fromDashboard) {
   * function playerCustomizerScreen()
   * @author peacestorm
   * @since v1.1
-  * @todo Models/morphing, collision size, particles?
+  * @todo Collision size?
  */
 function playerCustomizerScreen(fromDashboard, title, icon) {
 	VertexClientPE.menuIsShowing = true;
@@ -17648,7 +17640,7 @@ function showMenuButton() {
 	});
 	layout.addView(menuBtn);
 
-	GUI = new PopupWindow_(layout, dip2px(40), dip2px(40));
+	GUI = new PopupWindow_(layout, dip2px(mainButtonSizeSetting), dip2px(mainButtonSizeSetting));
 	GUI.setTouchable(false);
 	GUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 	if(menuAnimationsSetting == "on") {
@@ -17678,9 +17670,10 @@ function showMenuButton() {
 		background = new ColorDrawable_(Color_.parseColor("#1D1D1D"));
 	}
 
+	let mBPadding = mainButtonSizeSetting / 4;
 	if(mainButtonPositionSetting == "top-right") {
 		if(mainButtonStyleSetting != "classic" && mainButtonStyleSetting != "global_background") {
-			layout.setPadding(10, 0, 0, 10);
+			layout.setPadding(mBPadding, 0, 0, mBPadding);
 		} else {
 			layout.setGravity(Gravity_.CENTER);
 		}
@@ -17688,7 +17681,7 @@ function showMenuButton() {
 		GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
 	} else if(mainButtonPositionSetting == "top-left") {
 		if(mainButtonStyleSetting != "classic" && mainButtonStyleSetting != "global_background") {
-			layout.setPadding(0, 0, 10, 10);
+			layout.setPadding(0, 0, mBPadding, mBPadding);
 		} else {
 			layout.setGravity(Gravity_.CENTER);
 		}
@@ -17696,7 +17689,7 @@ function showMenuButton() {
 		GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
 	} else if(mainButtonPositionSetting == "bottom-left") {
 		if(mainButtonStyleSetting != "classic" && mainButtonStyleSetting != "global_background") {
-			layout.setPadding(0, 10, 10, 0);
+			layout.setPadding(0, mBPadding, mBPadding, 0);
 		} else {
 			layout.setGravity(Gravity_.CENTER);
 		}
@@ -17989,7 +17982,7 @@ function showHacksList() {
 						
 						// TODO
 					}
-					if(hacksList == null || !hacksList.isShowing()) {
+					if(hacksList == null || !hacksList.isShowing()) { // < Todo: remove this line?
 						hacksList = new PopupWindow_(hacksListLayout, LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT);
 						if(menuAnimationsSetting == "on") {
 							hacksList.setAnimationStyle(android.R.style.Animation_Translucent);
@@ -18331,8 +18324,15 @@ function showPauseUtilities() {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
-				if(!ghostModeState) {
-					var pauseUtilitiesLayout = new LinearLayout_(CONTEXT); //TODO: pin button
+				if(pauseUtilitiesUI != null) {
+					CONTEXT.runOnUiThread(new Runnable_({
+						run: function() {
+							pauseUtilitiesUI.dismiss();
+						}
+					}));
+				}
+				if(pauseUtilitiesUI == null || !pauseUtilitiesUI.isShowing()) {
+					var pauseUtilitiesLayout = new LinearLayout_(CONTEXT);
 					var playerViewButton = clientButton("F5");
 					playerViewButton.setOnClickListener(new View_.OnClickListener({
 						onClick: function(viewArg) {
@@ -18352,10 +18352,12 @@ function showPauseUtilities() {
 
 					pauseUtilitiesUI = new PopupWindow_(pauseUtilitiesLayout, dip2px(40), dip2px(40));
 					pauseUtilitiesUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-					if(f5ButtonModeSetting == "pause") {
-						pauseUtilitiesUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, dip2px(80));
-					} else if(f5ButtonModeSetting == "ingame") {
-						pauseUtilitiesUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
+					if(!ghostModeState) {
+						if(f5ButtonModeSetting == "pause") {
+							pauseUtilitiesUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, dip2px(80));
+						} else if(f5ButtonModeSetting == "ingame") {
+							pauseUtilitiesUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
+						}
 					}
 				}
 			} catch(exception) {
