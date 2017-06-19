@@ -15246,6 +15246,18 @@ function settingsScreen(fromDashboard) {
 							cmdPrefixButton.setText("@");
 							VertexClientPE.saveMainSettings();
 						} else if(cmdPrefix == "@") {
+							cmdPrefix = "!";
+							cmdPrefixButton.setText("!");
+							VertexClientPE.saveMainSettings();
+						} else if(cmdPrefix == "!") {
+							cmdPrefix = "-";
+							cmdPrefixButton.setText("-");
+							VertexClientPE.saveMainSettings();
+						} else if(cmdPrefix == "-") {
+							cmdPrefix = "^";
+							cmdPrefixButton.setText("^");
+							VertexClientPE.saveMainSettings();
+						} else if(cmdPrefix == "^") {
 							cmdPrefix = ".";
 							cmdPrefixButton.setText(".");
 							VertexClientPE.saveMainSettings();
@@ -15745,6 +15757,10 @@ function feedbackScreen(fromDashboard) {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
+				let display = CONTEXT.getWindowManager().getDefaultDisplay(),
+				width = display.getWidth(),
+				height = display.getHeight();
+
 				VertexClientPE.checkGUINeedsDismiss();
 
 				var feedbackMenuLayout = new LinearLayout_(CONTEXT);
@@ -15754,7 +15770,7 @@ function feedbackScreen(fromDashboard) {
 				var feedbackWebView = new WebView_(CONTEXT);
 				var wS = feedbackWebView.getSettings();
 
-				var frameForm = "<html><body><center><iframe src='https://docs.google.com/forms/d/e/1FAIpQLSeMITAXYXh895mqS4gS4AGru0CZjCeYg1B1ClJClyKTAHEYVg/viewform?embedded=true' width='760' height='500' frameborder='0' marginheight='0' marginwidth='0'>Loading...</iframe></center></body></html>";
+				var frameForm = "<html><body><center><iframe src='https://docs.google.com/forms/d/e/1FAIpQLSeMITAXYXh895mqS4gS4AGru0CZjCeYg1B1ClJClyKTAHEYVg/viewform?embedded=true' width='100%' height='800' frameborder='0' marginheight='0' marginwidth='0'>Loading...</iframe></center></body></html>";
 
 				wS.setJavaScriptEnabled(true);
 				feedbackWebView.setWebChromeClient(new WebChromeClient_());
@@ -15764,7 +15780,7 @@ function feedbackScreen(fromDashboard) {
 
 				feedbackMenuLayout.addView(feedbackWebView);
 
-				screenUI = new PopupWindow_(feedbackMenuLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
+				screenUI = new PopupWindow_(feedbackMenuLayout, width, height - barLayoutHeight);
 				screenUI.setBackgroundDrawable(backgroundGradient());
 				screenUI.setOnDismissListener(new PopupWindow_.OnDismissListener() {
 					onDismiss: function() {
