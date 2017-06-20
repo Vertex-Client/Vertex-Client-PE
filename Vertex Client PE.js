@@ -237,6 +237,8 @@ var shortcutUIModeSetting = "on";
 var attackShockIntensity = 20;
 var f5ButtonModeSetting = "pause";
 var mainButtonSizeSetting = 40;
+var powerExplosionsPowerSetting = 10;
+var preventExplosionsSetting = "off";
 //------------------------------------
 var antiAFKDistancePerTick = 0.25;
 //------------------------------------
@@ -2141,8 +2143,11 @@ VertexClientPE.registerTile(devSettingsTile);
 VertexClientPE.registerTile(jsConsoleTile);
 VertexClientPE.registerTile(restartTile);
 
-VertexClientPE.initMods = function(cat) {
-	if(cat != "on") {
+VertexClientPE.initMods = function(switchedCat) {
+	if(switchedCat == null) {
+		switchedCat = false;
+	}
+	if(switchedCat) {
 		VertexClientPE.modules.forEach(function(element, index, array) {
 			if(element.isStateMod() && element.state) {
 				if((element.pack == "Combat" && combatEnabled == "off") || (element.pack == "World" && worldEnabled == "off") || (element.pack == "Movement" && movementEnabled == "off") || (element.pack == "Player" && playerEnabled == "off") || (element.pack == "Miscellaneous" && miscEnabled == "off") || (element.singleplayerOnly && singleplayerEnabled == "off")) {
@@ -2150,7 +2155,6 @@ VertexClientPE.initMods = function(cat) {
 				}
 			}
 		});
-		delete VertexClientPE.modules;
 		VertexClientPE.modules = [];
 	}
 	try {
@@ -3060,6 +3064,9 @@ var autoSpammer = {
 	type: "Mod",
 	state: false,
 	getSettingsLayout: function() {
+		var autoSpammerMessageLayout = new LinearLayout_(CONTEXT);
+		autoSpammerMessageLayout.setOrientation(1);
+
 		var spamUseRandomMsgSettingCheckBox = clientCheckBox();
 		spamUseRandomMsgSettingCheckBox.setChecked(spamUseRandomMsgSetting=="on");
 		spamUseRandomMsgSettingCheckBox.setText("Use random messages instead of the custom message");
@@ -3070,8 +3077,6 @@ var autoSpammer = {
 			}
 		});
 
-		var autoSpammerMessageLayout = new LinearLayout_(CONTEXT);
-		autoSpammerMessageLayout.setOrientation(1);
 		var spamMessageTitle = clientTextView("Custom message:");
 		var spamMessageInput = clientEditText();
 		spamMessageInput.setText(spamMessage);
@@ -3191,6 +3196,27 @@ var powerExplosions = {
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
+	getSettingsLayout: function() {
+		var powerExplosionsLayout = new LinearLayout_(CONTEXT);
+		powerExplosionsLayout.setOrientation(1);
+
+		let powerExplosionsPowerSettingTitle = clientTextView("Power: | " + powerExplosionsPowerSetting);
+		let powerExplosionsPowerSettingSlider = clientSeekBar();
+		let minPower = 1;
+		powerExplosionsPowerSettingSlider.setProgress(powerExplosionsPowerSetting - minPower);
+		powerExplosionsPowerSettingSlider.setMax(25 - minPower);
+		powerExplosionsPowerSettingSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
+			onProgressChanged: function() {
+				powerExplosionsPowerSetting = powerExplosionsPowerSettingSlider.getProgress() + minPower;
+				powerExplosionsPowerSettingTitle.setText("Power: | " + powerExplosionsPowerSetting);
+			}
+		});
+
+		powerExplosionsLayout.addView(powerExplosionsPowerSettingTitle);
+		powerExplosionsLayout.addView(powerExplosionsPowerSettingSlider);
+
+		return powerExplosionsLayout;
+	},
 	isStateMod: function() {
 		return true;
 	},
@@ -3201,7 +3227,7 @@ var powerExplosions = {
 		if(powerExplosionsStage == 0) {
 			powerExplosionsStage = 1;
 			preventDefault();
-			Level.explode(x, y, z, 10);
+			Level.explode(x, y, z, powerExplosionsPowerSetting);
 			powerExplosionsStage = 0;
 		}
 	}
@@ -5132,10 +5158,21 @@ var prevent = {
 				VertexClientPE.saveMainSettings();
 			}
 		});
+		
+		var preventExplosionsCheckBox = clientCheckBox();
+		preventExplosionsCheckBox.setChecked(preventExplosionsSetting == "on");
+		preventExplosionsCheckBox.setText("Prevent explosions");
+		preventExplosionsCheckBox.setOnClickListener(new View_.OnClickListener() {
+			onClick: function(v) {
+				preventExplosionsSetting = v.isChecked()?"on":"off";
+				VertexClientPE.saveMainSettings();
+			}
+		});
 
 		preventSettingsLayout.addView(preventDiggingCheckBox);
 		preventSettingsLayout.addView(preventPlacingCheckBox);
 		preventSettingsLayout.addView(preventAttacksCheckBox);
+		preventSettingsLayout.addView(preventExplosionsCheckBox);
 		return preventSettingsLayout;
 	},
 	isStateMod: function() {
@@ -5746,6 +5783,10 @@ function useItem(x, y, z, itemId, blockId, side, blockDamage) {
 }
 
 function explodeHook(entity, x, y, z, power, onFire) {
+	if(preventExplosionsSetting == "on") {
+		preventDefault();
+		return;
+	}
 	VertexClientPE.modules.forEach(function(element, index, array) {
 		if(element.isStateMod() && element.state && element.hasOwnProperty("onExplode")) {
 			if(bypassState && element.hasOwnProperty("canBypassBypassMod")) {
@@ -7404,6 +7445,13 @@ VertexClientPE.showFeaturesDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
+				let lastCombatEnabled = combatEnabled;
+				let lastWorldEnabled = worldEnabled;
+				let lastMovementEnabled = movementEnabled;
+				let lastPlayerEnabled = playerEnabled;
+				let lastMiscEnabled = miscEnabled;
+				let lastSingleplayerEnabled = singleplayerEnabled;
+				
 				//var settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
 				//settingsTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
 				var settingsTitle = clientScreenTitle("Settings", null, themeSetting);
@@ -7433,9 +7481,6 @@ VertexClientPE.showFeaturesDialog = function() {
 						} else if(combatEnabled == "on") {
 							combatEnabled = "off";
 						}
-						VertexClientPE.shouldUpdateGUI = true;
-						VertexClientPE.saveFeaturesSettings();
-						VertexClientPE.initMods(combatEnabled);
 					}
 				}));
 
@@ -7449,9 +7494,6 @@ VertexClientPE.showFeaturesDialog = function() {
 						} else if(worldEnabled == "on") {
 							worldEnabled = "off";
 						}
-						VertexClientPE.shouldUpdateGUI = true;
-						VertexClientPE.saveFeaturesSettings();
-						VertexClientPE.initMods(worldEnabled);
 					}
 				}));
 
@@ -7465,9 +7507,6 @@ VertexClientPE.showFeaturesDialog = function() {
 						} else if(movementEnabled == "on") {
 							movementEnabled = "off";
 						}
-						VertexClientPE.shouldUpdateGUI = true;
-						VertexClientPE.saveFeaturesSettings();
-						VertexClientPE.initMods(movementEnabled);
 					}
 				}));
 
@@ -7481,9 +7520,6 @@ VertexClientPE.showFeaturesDialog = function() {
 						} else if(playerEnabled == "on") {
 							playerEnabled = "off";
 						}
-						VertexClientPE.shouldUpdateGUI = true;
-						VertexClientPE.saveFeaturesSettings();
-						VertexClientPE.initMods(playerEnabled);
 					}
 				}));
 
@@ -7497,9 +7533,6 @@ VertexClientPE.showFeaturesDialog = function() {
 						} else if(miscEnabled == "on") {
 							miscEnabled = "off";
 						}
-						VertexClientPE.shouldUpdateGUI = true;
-						VertexClientPE.saveFeaturesSettings();
-						VertexClientPE.initMods(miscEnabled);
 					}
 				}));
 
@@ -7513,9 +7546,6 @@ VertexClientPE.showFeaturesDialog = function() {
 						} else if(singleplayerEnabled == "on") {
 							singleplayerEnabled = "off";
 						}
-						VertexClientPE.shouldUpdateGUI = true;
-						VertexClientPE.saveFeaturesSettings();
-						VertexClientPE.initMods(singleplayerEnabled);
 					}
 				}));
 
@@ -7534,7 +7564,11 @@ VertexClientPE.showFeaturesDialog = function() {
 				dialog.setTitle("Opt in/out features");
 				dialog.setOnDismissListener(new DialogInterface_.OnDismissListener() {
 					onDismiss: function() {
-						VertexClientPE.saveMainSettings();
+						if(lastCombatEnabled != combatEnabled || lastWorldEnabled != worldEnabled || lastMovementEnabled != movementEnabled || lastPlayerEnabled != playerEnabled || lastMiscEnabled != miscEnabled || lastSingleplayerEnabled != singleplayerEnabled) {
+							VertexClientPE.shouldUpdateGUI = true;
+							VertexClientPE.saveFeaturesSettings();
+							VertexClientPE.initMods(true);
+						}
 					}
 				});
 				dialog.show();
@@ -10409,6 +10443,8 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + attackShockIntensity.toString());
 	outWrite.append("," + f5ButtonModeSetting.toString());
 	outWrite.append("," + mainButtonSizeSetting.toString());
+	outWrite.append("," + powerExplosionsPowerSetting.toString());
+	outWrite.append("," + preventExplosionsSetting.toString());
 
 	outWrite.close();
 
@@ -10667,6 +10703,12 @@ VertexClientPE.loadMainSettings = function () {
 		}
 		if (arr[78] != null && arr[78] != undefined) {
 			mainButtonSizeSetting = arr[78];
+		}
+		if (arr[79] != null && arr[79] != undefined) {
+			powerExplosionsPowerSetting = arr[79];
+		}
+		if (arr[80] != null && arr[80] != undefined) {
+			preventExplosionsSetting = arr[80];
 		}
 		fos.close();
 		VertexClientPE.loadCustomRGBSettings();
@@ -16436,7 +16478,7 @@ function modManagerScreen(fromDashboard) {
 				modManagerMenuLayout1.addView(modManagerMenuLayoutScroll);
 
 				VertexClientPE.modules.forEach(function(element, index, array) {
-					if(element.getSettingsLayout) {
+					if(element.hasOwnProperty("getSettingsLayout")) {
 						var modTitle = clientSectionTitle(VertexClientPE.getCustomModName(element.name));
 						modTitle.setTypeface(VertexClientPE.font, Typeface_.BOLD);
 						modManagerMenuLayout.addView(modTitle);
