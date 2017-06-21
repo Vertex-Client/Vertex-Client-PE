@@ -6517,31 +6517,43 @@ VertexClientPE.showBugReportDialog = function(exception) {
 		run: function() {
 			try {
 				var bugReportTitle = clientTextView("An error occurred", true);
-				var btn = clientButton("Report on GitHub");
+				var btn = clientButton("Copy error code & start a new issue on GitHub");
+				btn.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
+				btn.setMarqueeRepeatLimit(-1);
+				btn.setSingleLine();
+				btn.setHorizontallyScrolling(true);
+				btn.setSelected(true);
 				var btn1 = clientButton("Close");
-				var inputBar = clientEditText();
 				var exceptionTextView = clientTextView(exception);
 				var dialogLayout = new LinearLayout_(CONTEXT);
-				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
-				dialogLayout.setPadding(10, 10, 10, 10);
-				dialogLayout.addView(bugReportTitle);
-				dialogLayout.addView(inputBar);
+
+				var dialogScrollView = new ScrollView_(CONTEXT);
+				dialogScrollView.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.WRAP_CONTENT, display.heightPixels / 2));
+
+				var dialogLayout1 = new LinearLayout_(CONTEXT);
+				dialogLayout1.setBackgroundDrawable(backgroundGradient());
+				dialogLayout1.setOrientation(LinearLayout_.VERTICAL);
+				dialogLayout1.setPadding(10, 10, 10, 10);
+
 				dialogLayout.addView(exceptionTextView);
-				dialogLayout.addView(btn);
-				dialogLayout.addView(btn1);
+				dialogScrollView.addView(dialogLayout);
+
+				dialogLayout1.addView(bugReportTitle);
+				dialogLayout1.addView(dialogScrollView);
+				dialogLayout1.addView(btn);
+				dialogLayout1.addView(btn1);
 				var dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-				dialog.setContentView(dialogLayout);
+				dialog.setContentView(dialogLayout1);
 				dialog.setTitle("An error occurred");
-				inputBar.setHint("Title of the issue");
-				inputBar.setTextColor(Color_.WHITE);
 				dialog.show();
 				btn.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
-						reportName = inputBar.getText();
-						ModPE.goToURL("https://github.com/Vertex-Client/Vertex-Client-PE/issues/new?title=" + reportName + "&body=" + exception);
+						copyToClipboard(exception);
+						VertexClientPE.toast("Successfully copied the error message to clipboard. Paste it in the issue input.");
+						ModPE.goToURL("https://github.com/Vertex-Client/Vertex-Client-PE/issues/new");
 						dialog.dismiss();
 					}
 				});
@@ -8108,7 +8120,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
 					}
 					toggleButton.setOnClickListener(new View_.OnClickListener() {
 						onClick: function(view) {
-							if(mod.name == "Bypass" || !bypassState || (mod.canBypassBypassMod == undefined || mod.canBypassBypassMod == null || mod.canBypassBypassMod()) || (mod.isStateMod() && mod.state)) {
+							if(mod.name == "Bypass" || !bypassState || (mod.hasOwnProperty("canBypassBypassMod") && mod.canBypassBypassMod()) || (mod.isStateMod() && mod.state)) {
 								mod.onToggle();
 							} else if(bypassState && !mod.canBypassBypassMod()) {
 								if(mod.isStateMod() && !mod.state) {
