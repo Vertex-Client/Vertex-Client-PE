@@ -4211,9 +4211,9 @@ var remoteView = {
 		if(!this.state) {
 			ModPE.setCamera(getPlayerEnt());
 			if(this.targetEntity != null && remoteViewTeleportSetting == "on") {
-				var tpX = Entity.getX(this.targetEntity);
-				var tpY = Entity.getY(this.targetEntity);
-				var tpZ = Entity.getZ(this.targetEntity);
+				let tpX = Entity.getX(this.targetEntity);
+				let tpY = Entity.getY(this.targetEntity);
+				let tpZ = Entity.getZ(this.targetEntity);
 				Entity.setPosition(getPlayerEnt(), tpX, tpY + 2, tpZ);
 			}
 			this.targetEntity = null;
@@ -8490,23 +8490,26 @@ VertexClientPE.showItemGiverDialog = function() {
 		run: function() {
 			try {
 				var itemGiverTitle = clientTextView("ItemGiver", true);
+				itemGiverTitle.setTextSize(25);
 				var closeButton = clientButton("Close");
 				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
 				var dialogLayoutBase = new LinearLayout_(CONTEXT);
 				dialogLayoutBase.setOrientation(1);
+				dialogLayoutBase.setPadding(10, 10, 10, 10);
 				var dialogLayoutBody = new LinearLayout_(CONTEXT);
 				dialogLayoutBody.setOrientation(LinearLayout_.HORIZONTAL);
 				var dialogLayoutBodyLeftWrap = new LinearLayout_(CONTEXT);
 				dialogLayoutBodyLeftWrap.setOrientation(1);
+				dialogLayoutBodyLeftWrap.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels - display.widthPixels / 3 - 10, LinearLayout_.LayoutParams.WRAP_CONTENT));
+				dialogLayoutBodyLeftWrap.setPadding(0, 0, dip2px(1), 0);
 				var dialogLayoutBodyLeftScroll = new ScrollView(CONTEXT);
-				dialogLayoutBodyLeftWrap.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels - display.widthPixels / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
 				var dialogLayoutBodyRightWrap = new LinearLayout_(CONTEXT);
 				dialogLayoutBodyRightWrap.setOrientation(1);
+				dialogLayoutBodyRightWrap.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3 - 10, LinearLayout_.LayoutParams.WRAP_CONTENT));
+				dialogLayoutBodyRightWrap.setPadding(dip2px(1), 0, 0, 0);
 				var dialogLayoutBodyRightScroll = new ScrollView(CONTEXT);
-				dialogLayoutBodyRightWrap.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
 				var dialogTableLayout = new TableLayout_(CONTEXT);
 				var dialogTableRow;
-				var tempButton;
 				var itemNameText = clientTextView("Name: Unknown");
 				var itemIdInput = clientEditText();
 				itemIdInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
@@ -8520,11 +8523,12 @@ VertexClientPE.showItemGiverDialog = function() {
 
 				itemIdInput.addTextChangedListener(new TextWatcher_() {
 					onTextChanged: function() {
-						if(Item.isValidItem(itemIdInput.getText())) {
-							if(Item.getName(itemIdInput.getText()) == null) {
+						let itemId = itemIdInput.getText();
+						if(Item.isValidItem(itemId)) {
+							if(Item.getName(itemId) == null) {
 								itemName = "Unknown";
 							} else {
-								itemName = Item.getName(itemIdInput.getText());
+								itemName = Item.getName(itemId);
 							}
 							itemNameText.setText("Name: " + itemName);
 						} else {
@@ -8547,40 +8551,7 @@ VertexClientPE.showItemGiverDialog = function() {
 						}
 					}
 				});
-				itemGiverItems.forEach(function(element, index, array) {
-					if(index % 2 == 1) {
-						if(!dialogTableRow) {
-							dialogTableRow = new TableRow_(CONTEXT);
-						}
-						tempButton = clientButton(Item.getName(element.itemId.toString()));
-						tempButton.setLayoutParams(new TableRow_.LayoutParams((display.widthPixels - display.widthPixels / 3) / 2, LinearLayout_.LayoutParams.WRAP_CONTENT));
-						tempButton.setPadding(0, 0, 0, 0);
-						tempButton.setOnClickListener(new View_.OnClickListener() {
-							onClick: function(viewArg) {
-								itemIdInput.setText(element.itemId.toString());
-							}
-						});
-						dialogTableRow.addView(tempButton);
-						dialogTableLayout.addView(dialogTableRow);
-						dialogTableRow = null;
-						tempButton = null;
-					} else {
-						dialogTableRow = new TableRow_(CONTEXT);
-						tempButton = clientButton(Item.getName(element.itemId.toString()));
-						tempButton.setLayoutParams(new TableRow_.LayoutParams((display.widthPixels - display.widthPixels / 3) / 2, LinearLayout_.LayoutParams.WRAP_CONTENT));
-						tempButton.setPadding(0, 0, 0, 0);
-						tempButton.setOnClickListener(new View_.OnClickListener() {
-							onClick: function(viewArg) {
-								itemIdInput.setText(element.itemId.toString());
-							}
-						});
-						dialogTableRow.addView(tempButton);
-						tempButton = null;
-					}
-				});
-				if(dialogTableRow != null) {
-					dialogTableLayout.addView(dialogTableRow);
-				}
+
 				var dialogRightLayout = new LinearLayout_(CONTEXT);
 				dialogRightLayout.setOrientation(1);
 
@@ -8593,14 +8564,14 @@ VertexClientPE.showItemGiverDialog = function() {
 				dialogRightLayout.addView(closeButton);
 				dialogLayoutBase.setBackgroundDrawable(backgroundGradient());
 				dialogLayoutBase.addView(itemGiverTitle);
-				dialogLayoutBase.addView(dialogLayoutBody);
-				dialogLayoutBody.addView(dialogLayoutBodyLeftWrap);
-				dialogLayoutBody.addView(dialogLayoutBodyRightWrap);
-				dialogLayoutBodyLeftWrap.addView(dialogLayoutBodyLeftScroll);
-				dialogLayoutBodyRightWrap.addView(dialogLayoutBodyRightScroll);
 				dialogLayoutBodyLeftScroll.addView(dialogTableLayout);
 				dialogLayoutBodyRightScroll.addView(dialogRightLayout);
-				//dialogLayout.addView(dialogTableLayout);
+				dialogLayoutBodyLeftWrap.addView(dialogLayoutBodyLeftScroll);
+				dialogLayoutBodyRightWrap.addView(dialogLayoutBodyRightScroll);
+				dialogLayoutBody.addView(dialogLayoutBodyLeftWrap);
+				dialogLayoutBody.addView(dialogLayoutBodyRightWrap);
+				dialogLayoutBase.addView(dialogLayoutBody);
+
 				var dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
@@ -8614,6 +8585,33 @@ VertexClientPE.showItemGiverDialog = function() {
 						dialog.dismiss();
 					}
 				});
+				
+				itemGiverItems.forEach(function(element, index, array) {
+					let tempButton = clientButton(Item.getName(element.itemId.toString()));
+					tempButton.setSingleLine(true);
+					tempButton.setLayoutParams(new TableRow_.LayoutParams((display.widthPixels - display.widthPixels / 3 - 10 - dip2px(1)) / 2, LinearLayout_.LayoutParams.WRAP_CONTENT));
+					tempButton.setPadding(0, 0, 0, 0);
+					tempButton.setOnClickListener(new View_.OnClickListener() {
+						onClick: function(viewArg) {
+							itemIdInput.setText(element.itemId.toString());
+						}
+					});
+					if(index % 2 == 1) {
+						if(!dialogTableRow) {
+							dialogTableRow = new TableRow_(CONTEXT);
+						}
+						dialogTableRow.addView(tempButton);
+						dialogTableLayout.addView(dialogTableRow);
+						dialogTableRow = null;
+					} else {
+						dialogTableRow = new TableRow_(CONTEXT);
+						dialogTableRow.addView(tempButton);
+					}
+					tempButton = null;
+				});
+				if(dialogTableRow != null) {
+					dialogTableLayout.addView(dialogTableRow);
+				}
 			} catch(e) {
 				print("Error: " + e);
 				VertexClientPE.showBugReportDialog(e);
@@ -8622,27 +8620,29 @@ VertexClientPE.showItemGiverDialog = function() {
 	});
 }
 
-var tpX, tpY, tpZ, teleportName;
-
 VertexClientPE.showTeleportDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
 				var teleportTitle = clientTextView("Teleport", true);
+				teleportTitle.setTextSize(25);
 				var closeButton = clientButton("Close");
 				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
 				var dialogLayoutBase = new LinearLayout_(CONTEXT);
 				dialogLayoutBase.setOrientation(1);
+				dialogLayoutBase.setPadding(10, 10, 10, 10);
 				var dialogLayoutBody = new LinearLayout_(CONTEXT);
 				dialogLayoutBody.setOrientation(LinearLayout_.HORIZONTAL);
 				var dialogLayoutBodyLeftWrap = new LinearLayout_(CONTEXT);
 				dialogLayoutBodyLeftWrap.setOrientation(1);
+				dialogLayoutBodyLeftWrap.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels - display.widthPixels / 3 - 10, LinearLayout_.LayoutParams.WRAP_CONTENT));
+				dialogLayoutBodyLeftWrap.setPadding(0, 0, dip2px(1), 0);
 				var dialogLayoutBodyLeftScroll = new ScrollView(CONTEXT);
-				dialogLayoutBodyLeftWrap.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels - display.widthPixels / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
 				var dialogLayoutBodyRightWrap = new LinearLayout_(CONTEXT);
 				dialogLayoutBodyRightWrap.setOrientation(1);
+				dialogLayoutBodyRightWrap.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3 - 10, LinearLayout_.LayoutParams.WRAP_CONTENT));
+				dialogLayoutBodyRightWrap.setPadding(dip2px(1), 0, 0, 0);
 				var dialogLayoutBodyRightScroll = new ScrollView(CONTEXT);
-				dialogLayoutBodyRightWrap.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
 				var dialogLeftLayout = new LinearLayout_(CONTEXT);
 				dialogLeftLayout.setOrientation(1);
 				var dialogTableRow;
@@ -8660,6 +8660,7 @@ VertexClientPE.showTeleportDialog = function() {
 
 				teleportXInput.addTextChangedListener(new TextWatcher_() {
 					onTextChanged: function() {
+						let teleportName;
 						if(teleportXInput.getText() == VertexClientPE.currentWorld.deathX && teleportYInput.getText() == VertexClientPE.currentWorld.deathY && teleportZInput.getText() == VertexClientPE.currentWorld.deathZ) {
 							teleportName = "Last death";
 						} else {
@@ -8671,6 +8672,7 @@ VertexClientPE.showTeleportDialog = function() {
 
 				teleportYInput.addTextChangedListener(new TextWatcher_() {
 					onTextChanged: function() {
+						let teleportName;
 						if(teleportXInput.getText() == VertexClientPE.currentWorld.deathX && teleportYInput.getText() == VertexClientPE.currentWorld.deathY && teleportZInput.getText() == VertexClientPE.currentWorld.deathZ) {
 							teleportName = "Last death";
 						} else {
@@ -8682,6 +8684,7 @@ VertexClientPE.showTeleportDialog = function() {
 
 				teleportZInput.addTextChangedListener(new TextWatcher_() {
 					onTextChanged: function() {
+						let teleportName;
 						if(teleportXInput.getText() == VertexClientPE.currentWorld.deathX && teleportYInput.getText() == VertexClientPE.currentWorld.deathY && teleportZInput.getText() == VertexClientPE.currentWorld.deathZ) {
 							teleportName = "Last death";
 						} else {
@@ -8694,9 +8697,9 @@ VertexClientPE.showTeleportDialog = function() {
 				var teleportButton = clientButton("Teleport");
 				teleportButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(viewArg) {
-						tpX = teleportXInput.getText();
-						tpY = teleportYInput.getText();
-						tpZ = teleportZInput.getText();
+						let tpX = teleportXInput.getText();
+						let tpY = teleportYInput.getText();
+						let tpZ = teleportZInput.getText();
 						if(tpX != null && tpY != null && tpZ != null && tpX != "" && tpY != "" && tpZ != "" && !isNaN(tpX) && !isNaN(tpY) && !isNaN(tpZ)) {
 							Entity.setPosition(getPlayerEnt(), tpX,  tpY,  tpZ);
 							VertexClientPE.toast("Successfully teleported player to " + tpX + ", " + tpY + ", " + tpZ);
@@ -8708,6 +8711,7 @@ VertexClientPE.showTeleportDialog = function() {
 
 				var deathTeleportButton = clientButton("Last death");
 				deathTeleportButton.setTextColor(Color_.RED);
+				deathTeleportButton.setLayoutParams(new ViewGroup_.LayoutParams((display.widthPixels - display.widthPixels / 3 - 10 - dip2px(1)) / 2, LinearLayout_.LayoutParams.WRAP_CONTENT));
 				deathTeleportButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(viewArg) {
 						teleportXInput.setText(VertexClientPE.currentWorld.deathX.toString());
@@ -8719,7 +8723,7 @@ VertexClientPE.showTeleportDialog = function() {
 					dialogLeftLayout.addView(deathTeleportButton);
 				}
 
-				var comingSoonText = clientTextView("\nSaved teleport locations are coming soon!");
+				//var comingSoonText = clientTextView("\nSaved teleport locations are coming soon!");
 				//dialogLeftLayout.addView(comingSoonText);
 				var dialogRightLayout = new LinearLayout_(CONTEXT);
 				dialogRightLayout.setOrientation(1);
@@ -8733,13 +8737,13 @@ VertexClientPE.showTeleportDialog = function() {
 				dialogRightLayout.addView(closeButton);
 				dialogLayoutBase.setBackgroundDrawable(backgroundGradient());
 				dialogLayoutBase.addView(teleportTitle);
-				dialogLayoutBase.addView(dialogLayoutBody);
-				dialogLayoutBody.addView(dialogLayoutBodyLeftWrap);
-				dialogLayoutBody.addView(dialogLayoutBodyRightWrap);
-				dialogLayoutBodyLeftWrap.addView(dialogLayoutBodyLeftScroll);
-				dialogLayoutBodyRightWrap.addView(dialogLayoutBodyRightScroll);
 				dialogLayoutBodyLeftScroll.addView(dialogLeftLayout);
 				dialogLayoutBodyRightScroll.addView(dialogRightLayout);
+				dialogLayoutBodyLeftWrap.addView(dialogLayoutBodyLeftScroll);
+				dialogLayoutBodyRightWrap.addView(dialogLayoutBodyRightScroll);
+				dialogLayoutBody.addView(dialogLayoutBodyLeftWrap);
+				dialogLayoutBody.addView(dialogLayoutBodyRightWrap);
+				dialogLayoutBase.addView(dialogLayoutBody);
 				//dialogLayout.addView(dialogTableLayout);
 				var dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
