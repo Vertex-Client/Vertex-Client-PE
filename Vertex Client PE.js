@@ -6529,7 +6529,7 @@ VertexClientPE.showBugReportDialog = function(exception) {
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
 
 				var dialogScrollView = new ScrollView_(CONTEXT);
-				dialogScrollView.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.WRAP_CONTENT, display.heightPixels / 2));
+				dialogScrollView.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.WRAP_CONTENT, display.heightPixels / 2));
 
 				var dialogLayout1 = new LinearLayout_(CONTEXT);
 				dialogLayout1.setBackgroundDrawable(backgroundGradient());
