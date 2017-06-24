@@ -4957,8 +4957,9 @@ var target = {
 		targetPlayersCheckBox.setText("Players");
 		targetPlayersCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
-				targetPlayersSetting = v.isChecked()?"on":"off";
-				targetFriendsCheckBox.setEnabled(v.isChecked());
+				let checked = v.isChecked();
+				targetPlayersSetting = checked?"on":"off";
+				targetFriendsCheckBox.setEnabled(checked);
 				VertexClientPE.saveMainSettings();
 			}
 		});
@@ -4994,14 +4995,14 @@ var hitboxes = {
 	type: "Mod",
 	state: false,
 	getSettingsLayout: function() {
-		var hitboxesSettingsLayout = new LinearLayout_(CONTEXT);
+		let hitboxesSettingsLayout = new LinearLayout_(CONTEXT);
 		hitboxesSettingsLayout.setOrientation(1);
 
-		var minHitboxesSize = 2;
-		var maxHitboxesSize = 100;
+		let minHitboxesSize = 2;
+		let maxHitboxesSize = 100;
 
-		var hitboxesHitboxWidthTitle = clientTextView("Hitbox width: | " + hitboxesHitboxWidthSetting);
-		var hitboxesHitboxWidthSlider = clientSeekBar();
+		let hitboxesHitboxWidthTitle = clientTextView("Hitbox width: | " + hitboxesHitboxWidthSetting);
+		let hitboxesHitboxWidthSlider = clientSeekBar();
 		hitboxesHitboxWidthSlider.setProgress(hitboxesHitboxWidthSetting - minHitboxesSize);
 		hitboxesHitboxWidthSlider.setMax(maxHitboxesSize - minHitboxesSize);
 		hitboxesHitboxWidthSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
@@ -5010,15 +5011,15 @@ var hitboxes = {
 				hitboxesHitboxWidthTitle.setText("Hitbox width: | " + hitboxesHitboxWidthSetting);
 				if(hitboxesState) {
 					let players = Server.getAllPlayers();
-					for(var i = 0; i < players.length; i++) {
+					for(let i = 0; i < players.length; i++) {
 						hitboxes.updateHitboxesOnEnt(players[i]);
 					}
 				}
 			}
 		});
 
-		var hitboxesHitboxHeightTitle = clientTextView("Hitbox height: | " + hitboxesHitboxHeightSetting);
-		var hitboxesHitboxHeightSlider = clientSeekBar();
+		let hitboxesHitboxHeightTitle = clientTextView("Hitbox height: | " + hitboxesHitboxHeightSetting);
+		let hitboxesHitboxHeightSlider = clientSeekBar();
 		hitboxesHitboxHeightSlider.setProgress(hitboxesHitboxHeightSetting - minHitboxesSize);
 		hitboxesHitboxHeightSlider.setMax(maxHitboxesSize - minHitboxesSize);
 		hitboxesHitboxHeightSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
@@ -5027,7 +5028,7 @@ var hitboxes = {
 				hitboxesHitboxHeightTitle.setText("Hitbox height: | " + hitboxesHitboxHeightSetting);
 				if(hitboxesState) {
 					let players = Server.getAllPlayers();
-					for(var i = 0; i < players.length; i++) {
+					for(let i = 0; i < players.length; i++) {
 						hitboxes.updateHitboxesOnEnt(players[i]);
 					}
 				}
@@ -5053,7 +5054,7 @@ var hitboxes = {
 	onToggle: function() {
 		this.state = !this.state;
 		hitboxesState = this.state;
-		var players = Server.getAllPlayers();
+		let players = Server.getAllPlayers();
 		for(var i = 0; i < players.length; i++) {
 			this.updateHitboxesOnEnt(players[i]);
 		}
@@ -5082,40 +5083,6 @@ var elytraBoost = {
 		}
 	}
 }
-
-/* var oakTextures = ["planks", 0];
-var spruceTextures = ["planks", 1];
-var birchTextures = ["planks", 2];
-var jungleTextures = ["planks", 3];
-var darkOakTextures = ["planks", 4];
-var acaciaTextures = ["planks", 5];
-var allFencesTextures = [
-	oakTextures, oakTextures, oakTextures, oakTextures, oakTextures, oakTextures,
-	spruceTextures, spruceTextures, spruceTextures, spruceTextures, spruceTextures, spruceTextures,
-	birchTextures, birchTextures, birchTextures, birchTextures, birchTextures, birchTextures,
-	jungleTextures, jungleTextures, jungleTextures, jungleTextures, jungleTextures, jungleTextures,
-	darkOakTextures, darkOakTextures, darkOakTextures, darkOakTextures, darkOakTextures, darkOakTextures,
-	acaciaTextures, acaciaTextures, acaciaTextures, acaciaTextures, acaciaTextures, acaciaTextures
-];
-
-var fenceJump = {
-	name: "FenceJump",
-	desc: "Allows you to jump on/over fences.",
-	category: VertexClientPE.category.MOVEMENT,
-	type: "Mod",
-	state: false,
-	isStateMod: function() {
-		return true;
-	},
-	onToggle: function() {
-		this.state = !this.state;
-		if(this.state) {
-			Block.defineBlock(85, "? Fence", allFencesTextures, 0, true, 0);
-		} else {
-			Block.defineBlock(85, "? Fence", allFencesTextures, 0, true, 11);
-		}
-	}
-} */
 
 var prevent = {
 	name: "Prevent",
@@ -11258,6 +11225,9 @@ function helpSection(title, description, extraView) {
 	helpSectionLayoutLeft.addView(helpSectionDescription);
 
 	if(extraView != null) {
+		if(typeof extraView === "function") {
+			extraView = extraView();
+		}
 		helpSectionLayoutRight.addView(extraView);
 	}
 
@@ -15707,7 +15677,13 @@ function getFavoriteTutorialView() {
 
 	return tutLayout;
 }
-var helpSections = [["Where do I report issues?", "You can report issues at http://bit.ly/VertexIssues.", null], ["How can I add shortcuts?", "Tap the star button in a mod's ... dialog or long click on a tile and then tap on the favorite button to make it favorite. The mod or tile will then have its own shortcut.", getFavoriteTutorialView()], ["Where are the settings saved?", "The settings are mostly saved in the '/games/com.mojang/minecraftpe' folder. Some settings (custom mod names, if a mod is favorite, tile customizations etc.) are saved in the launcher data, though.", null], ["Website", "Our website is http://Vertex-Client.ml/.", null], ["Twitter", "Our Twitter account is @VertexHX.", null]];
+var helpSections = [
+	["Where do I report issues?", "You can report issues at http://bit.ly/VertexIssues.", null],
+	["How can I add shortcuts?", "Tap the star button in a mod's ... dialog or long click on a tile and then tap on the favorite button to make it favorite. The mod or tile will then have its own shortcut.", getFavoriteTutorialView],
+	["Where are the settings saved?", "The settings are mostly saved in the '/games/com.mojang/minecraftpe' folder. Some settings (custom mod names, if a mod is favorite, tile customizations etc.) are saved in the launcher data, though.", null],
+	["Website", "Our website is http://Vertex-Client.ml/.", null],
+	["Twitter", "Our Twitter account is @VertexHX.", null]
+];
 
 function helpScreen(fromDashboard) {
 	VertexClientPE.menuIsShowing = true;
