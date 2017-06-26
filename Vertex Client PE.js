@@ -267,54 +267,54 @@ let modButtonColorBlocked = Color_.RED;
 let modButtonColorEnabled = Color_.GREEN;
 let modButtonColorDisabled = Color_.WHITE;
 
-var bypassModButtonView;
-var panicModButtonView;
+let bypassModButtonView;
+let panicModButtonView;
 
-var display = new DisplayMetrics_();
+let display = new DisplayMetrics_();
 CONTEXT.getWindowManager().getDefaultDisplay().getMetrics(display);
-var size = new Point_();
+let size = new Point_();
 CONTEXT.getWindowManager().getDefaultDisplay().getRealSize(size);
-var screenWidth = size.x;
-var screenHeight = size.y;
+let screenWidth = size.x;
+let screenHeight = size.y;
 
-var topBarHeight = screenHeight / 10;
+let topBarHeight = screenHeight / 10;
 
-var customHeight = topBarHeight / 2;
+let customHeight = topBarHeight / 2;
 
-var sharedPref = CONTEXT.getPreferences(CONTEXT.MODE_PRIVATE);
-var editor = sharedPref.edit();
+let sharedPref = CONTEXT.getPreferences(CONTEXT.MODE_PRIVATE);
+let editor = sharedPref.edit();
 
 //MENU START
 const combattpopx_def = screenWidth / 3, combattpopy_def = 0;
-var combattpopx = combattpopx_def, combattpopy = combattpopy_def;
-var combatmX, combatmY;
-var combatdown = false;
+let combattpopx = combattpopx_def, combattpopy = combattpopy_def;
+let combatmX, combatmY;
+let combatdown = false;
 
 const worldtpopx_def = Math.floor(screenWidth / 3 + screenWidth / 3), worldtpopy_def = screenHeight / 2 - customHeight;
-var worldtpopx = worldtpopx_def, worldtpopy = worldtpopy_def;
-var worldmX, worldmY;
-var worlddown = false;
+let worldtpopx = worldtpopx_def, worldtpopy = worldtpopy_def;
+let worldmX, worldmY;
+let worlddown = false;
 
 const movementtpopx_def = screenWidth / 3, movementtpopy_def = screenHeight / 2 - customHeight;
-var movementtpopx = movementtpopx_def, movementtpopy = movementtpopy_def;
-var movementmX, movementmY;
-var movementdown = false;
+let movementtpopx = movementtpopx_def, movementtpopy = movementtpopy_def;
+let movementmX, movementmY;
+let movementdown = false;
 
 const playertpopx_def = 0, playertpopy_def = 0;
-var playertpopx = playertpopx_def, playertpopy = playertpopy_def;
-var playermX, playermY;
-var playerdown = false;
+let playertpopx = playertpopx_def, playertpopy = playertpopy_def;
+let playermX, playermY;
+let playerdown = false;
 
 const misctpopx_def = 0, misctpopy_def = screenHeight / 2 - customHeight;
-var misctpopx = misctpopx_def, misctpopy = misctpopy_def;
-var miscmX, miscmY;
-var miscdown = false;
+let misctpopx = misctpopx_def, misctpopy = misctpopy_def;
+let miscmX, miscmY;
+let miscdown = false;
 
-var combatMenuShown = false;
-var worldMenuShown = false;
-var movementMenuShown = false;
-var playerMenuShown = false;
-var miscMenuShown = false;
+let combatMenuShown = false;
+let worldMenuShown = false;
+let movementMenuShown = false;
+let playerMenuShown = false;
+let miscMenuShown = false;
 //MENU END
 
 var Launcher = {
@@ -755,7 +755,7 @@ function VectorLib() {
 	$.SnowParticle = SnowParticle;
 })(this);
 
-var currentScreen = ScreenType.start_screen;
+let currentScreen = ScreenType.start_screen;
 
 function screenChangeHook(screenName) {
 	if(screenName == ScreenType.start_screen || screenName == ScreenType.hud || screenName == ScreenType.ingame || screenName == ScreenType.pause_screen) {
@@ -1330,38 +1330,36 @@ VertexClientPE.edition = "Normal";
 VertexClientPE.latestVersion;
 VertexClientPE.latestVersionDesc;
 
-var latestPocketEditionVersion;
-var news;
+let latestPocketEditionVersion;
+let news;
 
-var movementMenuLayout;
-var menuBtn;
-var logoViewer2;
-var chestUI;
-var menuMiddleLayout;
-var menuRightLayout;
+let movementMenuLayout;
+let menuBtn;
+let logoViewer2;
+let chestUI;
+let menuMiddleLayout;
+let menuRightLayout;
 
-var ghostModeState = false;
+let ghostModeState = false;
 
-var antiAFKState = false;
-var autoSpammerState = false;
-var autoSwordState = false;
-var bypassState = false;
-var fancyChatState = false;
-var fastBreakState = false;
-var healthDisplayState = false;
-var hitboxesState = false;
-var remoteViewState = false;
-var rotationPlusState = false;
-var speedHackState = false;
-var stackDropState = false;
-var storageESPState = false;
-var timerState = false;
+let antiAFKState = false;
+let autoSpammerState = false;
+let autoSwordState = false;
+let bypassState = false;
+let fancyChatState = false;
+let fastBreakState = false;
+let healthDisplayState = false;
+let hitboxesState = false;
+let remoteViewState = false;
+let rotationPlusState = false;
+let speedHackState = false;
+let stackDropState = false;
+let storageESPState = false;
+let timerState = false;
 
-var showingMenu = false;
+let showingMenu = false;
 
-var setupColor = "green";
-
-var f = 0;
+let setupColor = "green";
 
 try {
 	VertexClientPE.defaultFont = (Build_.VERSION.SDK_INT > 16)?Typeface_.create("sans-serif-thin", Typeface_.NORMAL):Typeface_.DEFAULT;
@@ -1371,13 +1369,14 @@ try {
 	print("@" + e.lineNumber + ": " + e);
 }
 
+const MANUFACTURER = Build_.MANUFACTURER;
+const MODEL = Build_.MODEL;
+
 VertexClientPE.getDeviceName = function() {
-	var manufacturer = Build_.MANUFACTURER;
-	var model = Build_.MODEL;
-	if (model.startsWith(manufacturer)) {
-		return model;
+	if (MODEL.startsWith(MANUFACTURER)) {
+		return MODEL;
 	} else {
-		return manufacturer + " " + model;
+		return MANUFACTURER + " " + MODEL;
 	}
 }
 
@@ -1462,7 +1461,7 @@ function MinecraftButton(textSize, enableSound, customTextColor)
 	if(customTextColor == null)
 		customTextColor = MinecraftButtonLibrary.defaultButtonTextColor;
 
-	var button = new android.widget.Button(MinecraftButtonLibrary.context);
+	let button = new android.widget.Button(MinecraftButtonLibrary.context);
 	button.setTextSize(textSize);
 	button.setOnTouchListener(new android.view.View.OnTouchListener()
 	{
@@ -1605,7 +1604,7 @@ MinecraftButtonLibrary.scaleBitmapToSize = function(image, width, height, filter
 
 MinecraftButtonLibrary.deleteFile = function(path)
 {
-	var file = new java.io.File(path);
+	let file = new java.io.File(path);
 
 	if(file.isDirectory())
 	{
@@ -1631,10 +1630,10 @@ MinecraftButtonLibrary.deleteFile = function(path)
 VertexClientPE.Render = {};
 
 VertexClientPE.Render.getFloatBuffer = function(floatArray) {
-	var byteBuffer = ByteBuffer.allocateDirect(floatArray.length * 4);
+	let byteBuffer = ByteBuffer.allocateDirect(floatArray.length * 4);
 	byteBuffer.order(ByteOrder.nativeOrder());
 
-	var floatBuffer = byteBuffer.asFloatBuffer();
+	let floatBuffer = byteBuffer.asFloatBuffer();
 	floatBuffer.put(floatArray);
 	floatBuffer.position(0);
 
@@ -1659,7 +1658,7 @@ var parentView = CONTEXT.getWindow().getDecorView();
 var width, height;
 
 VertexClientPE.Render.renderer = new Renderer({
-	onSurfaceCreated : function(gl, config) {
+	onSurfaceCreated: function(gl, config) {
 		gl.glClearColor(0, 0, 0, 0);
 
 		gl.glShadeModel(GL10.GL_SMOOTH);
@@ -1672,8 +1671,7 @@ VertexClientPE.Render.renderer = new Renderer({
 
 		gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
 	},
-
-	onSurfaceChanged : function(gl, w, h) {
+	onSurfaceChanged: function(gl, w, h) {
 		width = w;
 		height = h;
 
@@ -1687,8 +1685,7 @@ VertexClientPE.Render.renderer = new Renderer({
 
 		gl.glLoadIdentity();
 	},
-
-	onDrawFrame : function(gl) {
+	onDrawFrame: function(gl) {
 
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
@@ -1797,25 +1794,26 @@ VertexClientPE.drawCubeShapedBox = function(gl, x, y, z) { //many thanks to GodS
 	gl.glTranslatef(-x, -y, -z);
 }
 
-var userIsNewToCurrentVersion = false;
+let userIsNewToCurrentVersion = false;
 
-var mainMenuTextList;
-var GUI;
-var screenUI;
-var accountManagerGUI;
-var menu;
-var fullScreenMenu;
-var exitUI;
-var exitWebBrowserUI;
-var reloadWebBrowserUI;
-var exitScreenUI;
-var pauseUtilitiesUI;
-var healthDisplayUI;
-var rotationPlusUI;
-var vertexclientpemiscmenu;
-var hacksList;
-var tabGUI;
-var shortcutGUI;
+let mainMenuTextList;
+let GUI;
+let screenUI;
+let accountManagerGUI;
+let menu;
+let fullScreenMenu;
+let tableMenu;
+let exitUI;
+let exitWebBrowserUI;
+let reloadWebBrowserUI;
+let pauseUtilitiesUI;
+let healthDisplayUI;
+let rotationPlusUI;
+let hacksList;
+let tabGUI;
+let shortcutGUI;
+
+let combatMenu, worldMenu, movementMenu, playerMenu, miscMenu;
 
 /**
  * #########
@@ -2208,9 +2206,9 @@ function registerAddon(name, desc, current_version, target_version, mods, songs,
 			scripts = ScriptManager_.scripts;
 		}
 		let scriptName;
-		for(var i = 0; i < scripts.size(); i++) {
-			var script = scripts.get(i);
-			var scope = script.scope;
+		for(let i = 0; i < scripts.size(); i++) {
+			let script = scripts.get(i);
+			let scope = script.scope;
 			if(ScriptableObject_.hasProperty(scope, "ADDON_NAME") && ScriptableObject_.hasProperty(scope, "ADDON_VERSION")) {
 				if(ScriptableObject_.getProperty(scope, "ADDON_NAME") == name && ScriptableObject_.getProperty(scope, "ADDON_VERSION") == current_version) {
 					scriptName = script.name;
@@ -2285,10 +2283,10 @@ var panic = {
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	getSettingsLayout: function() {
-		var panicSettingsLayout = new LinearLayout_(CONTEXT);
+		let panicSettingsLayout = new LinearLayout_(CONTEXT);
 		panicSettingsLayout.setOrientation(1);
 
-		var panicCombatCheckBox = clientCheckBox();
+		let panicCombatCheckBox = clientCheckBox();
 		panicCombatCheckBox.setChecked(panicCombatSetting == "on");
 		panicCombatCheckBox.setText("Combat");
 		panicCombatCheckBox.setOnClickListener(new View_.OnClickListener() {
@@ -2298,7 +2296,7 @@ var panic = {
 			}
 		});
 
-		var panicWorldCheckBox = clientCheckBox();
+		let panicWorldCheckBox = clientCheckBox();
 		panicWorldCheckBox.setChecked(panicWorldSetting == "on");
 		panicWorldCheckBox.setText("World");
 		panicWorldCheckBox.setOnClickListener(new View_.OnClickListener() {
@@ -2308,7 +2306,7 @@ var panic = {
 			}
 		});
 
-		var panicMovementCheckBox = clientCheckBox();
+		let panicMovementCheckBox = clientCheckBox();
 		panicMovementCheckBox.setChecked(panicMovementSetting == "on");
 		panicMovementCheckBox.setText("Movement");
 		panicMovementCheckBox.setOnClickListener(new View_.OnClickListener() {
@@ -2318,7 +2316,7 @@ var panic = {
 			}
 		});
 
-		var panicPlayerCheckBox = clientCheckBox();
+		let panicPlayerCheckBox = clientCheckBox();
 		panicPlayerCheckBox.setChecked(panicPlayerSetting == "on");
 		panicPlayerCheckBox.setText("Player");
 		panicPlayerCheckBox.setOnClickListener(new View_.OnClickListener() {
@@ -2328,7 +2326,7 @@ var panic = {
 			}
 		});
 
-		var panicMiscCheckBox = clientCheckBox();
+		let panicMiscCheckBox = clientCheckBox();
 		panicMiscCheckBox.setChecked(panicMiscSetting == "on");
 		panicMiscCheckBox.setText("Misc");
 		panicMiscCheckBox.setOnClickListener(new View_.OnClickListener() {
@@ -2451,10 +2449,10 @@ var switchGamemode = {
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	getSettingsLayout: function() {
-		var switchGamemodeSettingsLayout = new LinearLayout_(CONTEXT);
+		let switchGamemodeSettingsLayout = new LinearLayout_(CONTEXT);
 		switchGamemodeSettingsLayout.setOrientation(1);
 
-		var sendCommandCheckBox = clientCheckBox("Send gamemode command to server when switching gamemode");
+		let sendCommandCheckBox = clientCheckBox("Send gamemode command to server when switching gamemode");
 		sendCommandCheckBox.setChecked(switchGamemodeSendCommandSetting == "on");
 		sendCommandCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
@@ -2502,10 +2500,10 @@ var killAura = {
 	state: false,
 	singleplayerOnly: true,
 	getSettingsLayout: function() {
-		var killAuraSettingsLayout = new LinearLayout_(CONTEXT);
+		let killAuraSettingsLayout = new LinearLayout_(CONTEXT);
 		killAuraSettingsLayout.setOrientation(1);
-		var killAuraRangeTitle = clientTextView("Range: | " + killAuraRange);
-		var killAuraRangeSlider = clientSeekBar();
+		let killAuraRangeTitle = clientTextView("Range: | " + killAuraRange);
+		let killAuraRangeSlider = clientSeekBar();
 		killAuraRangeSlider.setProgress(killAuraRange);
 		killAuraRangeSlider.setMax(10);
 		killAuraRangeSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
@@ -5886,11 +5884,11 @@ var toggle = {
 				let cmdNoPrefix = cmd.substring(2, cmd.length);
 				VertexClientPE.modules.forEach(function (element, index, array) {
 					if ((element.name.toLowerCase() == cmdNoPrefix.toLowerCase() || VertexClientPE.getCustomModName(element.name).toLowerCase() == cmdNoPrefix.toLowerCase())) {
-						if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
+						if(element.hasOwnProperty("isExpMod") && element.isExpMod() && !VertexClientPE.isExpMode()) {
 							VertexClientPE.toast("Experimental features aren't enabled!");
 							return;
 						}
-						if(element.checkBeforeAdding && !element.checkBeforeAdding()) {
+						if(element.hasOwnProperty("checkBeforeAdding") && !element.checkBeforeAdding()) {
 							VertexClientPE.toast("You didn't unlock this feature yet!");
 							return;
 						}
@@ -6595,19 +6593,19 @@ VertexClientPE.showRemoteViewTargetDialog = function() {
 VertexClientPE.resetMenuPos = function() {
 	combattpopx = combattpopx_def;
 	combattpopy = combattpopy_def;
-	vertexclientpecombatmenu.update(combattpopx, combattpopy, -1, -1);
+	combatMenu.update(combattpopx, combattpopy, -1, -1);
 	worldtpopx = worldtpopx_def;
 	worldtpopy = worldtpopy_def;
-	vertexclientpeworldmenu.update(worldtpopx, worldtpopy, -1, -1);
+	worldMenu.update(worldtpopx, worldtpopy, -1, -1);
 	movementtpopx = movementtpopx_def;
 	movementtpopy = movementtpopy_def;
-	vertexclientpemovementmenu.update(movementtpopx, movementtpopy, -1, -1);
+	movementMenu.update(movementtpopx, movementtpopy, -1, -1);
 	playertpopx = playertpopx_def;
 	playertpopy = playertpopy_def;
-	vertexclientpeplayermenu.update(playertpopx, playertpopy, -1, -1);
+	playerMenu.update(playertpopx, playertpopy, -1, -1);
 	misctpopx = misctpopx_def;
 	misctpopy = misctpopy_def;
-	vertexclientpemiscmenu.update(misctpopx, misctpopy, -1, -1);
+	miscMenu.update(misctpopx, misctpopy, -1, -1);
 	VertexClientPE.saveFloatingMenus("all");
 	VertexClientPE.toast("Successfully reset all menu positions!");
 }
@@ -7599,13 +7597,17 @@ VertexClientPE.showSettingSelectorDialog = function(sRightButton, dialogTitle, s
 				var tempButton;
 
 				selectionArray.forEach(function(element, index, array) {
-					if(index % 2 == 1) {
-						if(!dialogTableRow) {
-							dialogTableRow = new TableRow_(CONTEXT);
-						}
-						tempButton = clientButton(element);
-						tempButton.setLayoutParams(new TableRow_.LayoutParams(display.widthPixels / 2.5, LinearLayout_.LayoutParams.WRAP_CONTENT));
-						tempButton.setPadding(0, 0, 0, 0);
+					tempButton = clientButton(element);
+					tempButton.setLayoutParams(new TableRow_.LayoutParams(display.widthPixels / 2.5, LinearLayout_.LayoutParams.WRAP_CONTENT));
+					tempButton.setPadding(0, 0, 0, 0);
+					if(index == 0 && customFirstOnClick != null) {
+						tempButton.setOnClickListener(new View_.OnClickListener() {
+							onClick: function(viewArg) {
+								customFirstOnClick(sRightButton, dialogTitle);
+								dialog.dismiss();
+							}
+						});
+					} else {
 						tempButton.setOnClickListener(new View_.OnClickListener() {
 							onClick: function(viewArg) {
 								eval(varToChange + " = '" + element.toLowerCase() + "'");
@@ -7614,35 +7616,19 @@ VertexClientPE.showSettingSelectorDialog = function(sRightButton, dialogTitle, s
 								dialog.dismiss();
 							}
 						});
+					}
+					if(index % 2 == 1) {
+						if(!dialogTableRow) {
+							dialogTableRow = new TableRow_(CONTEXT);
+						}
 						dialogTableRow.addView(tempButton);
 						dialogTableLayout.addView(dialogTableRow);
 						dialogTableRow = null;
-						tempButton = null;
 					} else {
 						dialogTableRow = new TableRow_(CONTEXT);
-						tempButton = clientButton(element);
-						tempButton.setLayoutParams(new TableRow_.LayoutParams(display.widthPixels / 2.5, LinearLayout_.LayoutParams.WRAP_CONTENT));
-						tempButton.setPadding(0, 0, 0, 0);
-						if(index == 0 && customFirstOnClick != null) {
-							tempButton.setOnClickListener(new View_.OnClickListener() {
-								onClick: function(viewArg) {
-									customFirstOnClick(sRightButton, dialogTitle);
-									dialog.dismiss();
-								}
-							});
-						} else {
-							tempButton.setOnClickListener(new View_.OnClickListener() {
-								onClick: function(viewArg) {
-									eval(varToChange + " = '" + element.toLowerCase() + "'");
-									sRightButton.setText(element);
-									VertexClientPE.shouldUpdateGUI = true;
-									dialog.dismiss();
-								}
-							});
-						}
 						dialogTableRow.addView(tempButton);
-						tempButton = null;
 					}
+					tempButton = null;
 				});
 				if(dialogTableRow != null) {
 					dialogTableLayout.addView(dialogTableRow);
@@ -8018,8 +8004,16 @@ VertexClientPE.showModDialog = function(mod, btn) {
 				modTitleLayout.addView(modEditButton);
 				modTitleLayout.addView(modFavButton);
 				var type = "Type: " + mod.type;
-				if(mod.singleplayerOnly) {
-					type += " (singleplayer only)";
+				let isExpMod = (mod.hasOwnProperty("isExpMod") && mod.isExpMod());
+				let isSingleplayerOnlyMod = mod.singleplayerOnly;
+				if(isSingleplayerOnlyMod && isExpMod) {
+					type += " (experimental, singleplayer only)";
+				} else {
+					if(isSingleplayerOnlyMod) {
+						type += " (singleplayer only)";
+					} else if(isExpMod) {
+						type += " (experimental)";
+					}
 				}
 				var modTypeText = clientTextView(type);
 				var modBatteryUsageText = clientTextView("Battery usage: \uD83D\uDD0B " + mod.batteryUsage + "\n");
@@ -11612,13 +11606,13 @@ function categoryTab(category) {
 
 				VertexClientPE.modules.forEach(function(element, index, array) {
 					if(VertexClientPE.category.toRealName(element.category) == currentTab && (element.type == "Mod" || element.type == "Special")) {
-						if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
+						if(element.hasOwnProperty("isExpMod") && element.isExpMod() && !VertexClientPE.isExpMode()) {
 							return;
 						}
-						if(element.checkBeforeAdding && !element.checkBeforeAdding()) {
+						if(element.hasOwnProperty("checkBeforeAdding") && !element.checkBeforeAdding()) {
 							return;
 						}
-						menuRightLayout.addView(new modButton(element));
+						menuRightLayout.addView(modButton(element));
 					}
 				});
 			}
@@ -11744,10 +11738,10 @@ function tabGUICategoryButton(category, layout, layoutToBeOpened, layoutMain) {
 					layoutToBeOpenedScrollView.addView(layoutToBeOpened1);
 					VertexClientPE.modules.forEach(function(element, index, array) {
 						if(element.category == category && (element.type == "Mod" || element.type == "Special")) {
-							if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
+							if(element.hasOwnProperty("isExpMod") && element.isExpMod() && !VertexClientPE.isExpMode()) {
 								return;
 							}
-							layoutToBeOpened1.addView(new modButton(element, true, null, true));
+							layoutToBeOpened1.addView(modButton(element, true, null, true));
 						}
 					});
 					if(VertexClientPE.isDebugMode()) {
@@ -11763,13 +11757,13 @@ function tabGUICategoryButton(category, layout, layoutToBeOpened, layoutMain) {
 					layoutToBeOpenedScrollView.addView(layoutToBeOpened1);
 					VertexClientPE.modules.forEach(function(element, index, array) {
 						if(element.category == category && (element.type == "Mod" || element.type == "Special")) {
-							if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
+							if(element.hasOwnProperty("isExpMod") && element.isExpMod() && !VertexClientPE.isExpMode()) {
 								return;
 							}
-							if(element.checkBeforeAdding && !element.checkBeforeAdding()) {
+							if(element.hasOwnProperty("checkBeforeAdding") && !element.checkBeforeAdding()) {
 								return;
 							}
-							layoutToBeOpened1.addView(new modButton(element, true, null, true));
+							layoutToBeOpened1.addView(modButton(element, true, null, true));
 						}
 					});
 					if(VertexClientPE.isDebugMode()) {
@@ -11963,6 +11957,13 @@ function clientCheckBox(text, parentBackgroundColor) {
 	let defaultCheckBox = new CheckBox_(CONTEXT);
 	defaultCheckBox.setText(text);
 
+/* 	let colorStateList = new android.content.res.ColorStateList(
+		[[-android.R.attr.state_checked], [android.R.attr.state_checked]],
+		[Color_.parseColor("#cccccc"), Color_.parseColor("#cccccc")]
+	);
+
+	defaultCheckBox.setButtonTintList(checkBox,colorStateList) */
+
 	VertexClientPE.addTextStyleToView(defaultCheckBox, parentBackgroundColor);
 
 	return defaultCheckBox;
@@ -11973,6 +11974,7 @@ function clientTextView(text, useShadow, parentBackgroundColor) //menu buttons
 	if(useShadow == null) {
 		useShadow = true;
 	}
+	
 	let defaultTextView = new TextView_(CONTEXT);
 	defaultTextView.setText(text);
 
@@ -12042,19 +12044,6 @@ function clientScreenTitle(defaultText, icon, parentBackgroundColor) {
 	defaultScreenTitle.setTextSize(25);
 	defaultScreenTitle.setGravity(Gravity_.CENTER);
 	if(icon != null) {
-		/* defaultScreenTitle = new Button_(CONTEXT);
-		defaultScreenTitle.setText(defaultText);
-		defaultScreenTitle.setTextColor(Color_.WHITE);
-		defaultScreenTitle.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-		defaultScreenTitle.setTypeface(VertexClientPE.font);
-		defaultScreenTitle.setPadding(0, 0, 0, 0);
-		defaultScreenTitle.setLineSpacing(0, 1.15);
-
-		if(fontSetting != "minecraft") {
-			defaultScreenTitle.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
-		} else {
-			MinecraftButtonLibrary.addMinecraftStyleToTextView(defaultScreenTitle);
-		} */
 		defaultScreenTitle.setCompoundDrawablesRelativeWithIntrinsicBounds(icon, 0, 0, 0);
 		defaultScreenTitle.setCompoundDrawablePadding(dip2px(10));
 	}
@@ -12174,7 +12163,7 @@ function settingButton(text, desc, parentWidth, resetFunc) {
 		settingButtonLayoutMiddle.addView(resetButton);
 	}
 
-	var defaultSettingsButton = clientButton("", desc);
+	var defaultSettingsButton = clientButton("Unknown", desc);
 	defaultSettingsButton.setLayoutParams(new LinearLayout_.LayoutParams(parentWidth / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
 	settingButtonLayoutRight.addView(defaultSettingsButton);
 
@@ -12894,7 +12883,7 @@ function gameLoop() {
 }
 
 VertexClientPE.isGUIShowing = function() {
-	return GUI != null && !GUI.isShowing() && (vertexclientpemiscmenu == null || !vertexclientpemiscmenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (screenUI == null || !screenUI.isShowing());
+	return GUI != null && !GUI.isShowing() && (miscMenu == null || !miscMenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (tableMenu == null || !tableMenu.isShowing()) && (screenUI == null || !screenUI.isShowing());
 }
 
 VertexClientPE.clientTick = function() {
@@ -13666,7 +13655,6 @@ VertexClientPE.showSetupScreen = function() {
 	}));
 }
 
-var screenUI;
 var accountManagerLayoutLeft;
 var accountManagerLayoutCenter;
 var accountManagerLayoutRight;
@@ -15012,18 +15000,26 @@ function settingsScreen(fromDashboard) {
 				var menuTypeSettingButton = menuTypeSettingFunc.getButton();
 				if(menuType == "normal") {
 					menuTypeSettingButton.setText("Normal");
+				} else if(menuType == "table") {
+					menuTypeSettingButton.setText("Table (DragOP)");
+				} else if(menuType == "fullscreen") {
+					menuTypeSettingButton.setText("Fullscreen");
 				} else if(menuType == "halfscreen") {
 					menuTypeSettingButton.setText("Tabbed (side)");
 				} else if(menuType == "halfscreen_top") {
 					menuTypeSettingButton.setText("Tabbed (top)");
 				} else if(menuType == "tabbed_fullscreen") {
 					menuTypeSettingButton.setText("Tabbed (fullscreen)");
-				} else if(menuType == "fullscreen") {
-					menuTypeSettingButton.setText("Fullscreen");
 				}
 				menuTypeSettingButton.setOnClickListener(new View_.OnClickListener({
 				onClick: function(viewArg) {
 					if(menuType == "normal") {
+						menuType = "table";
+						menuTypeSettingButton.setText("Table (DragOP)");
+					} else if(menuType == "table") {
+						menuType = "fullscreen";
+						menuTypeSettingButton.setText("Fullscreen");
+					} else if(menuType == "fullscreen") {
 						menuType = "halfscreen";
 						menuTypeSettingButton.setText("Tabbed (side)");
 					} else if(menuType == "halfscreen") {
@@ -15033,9 +15029,6 @@ function settingsScreen(fromDashboard) {
 						menuType = "tabbed_fullscreen";
 						menuTypeSettingButton.setText("Tabbed (fullscreen)");
 					} else if(menuType == "tabbed_fullscreen") {
-						menuType = "fullscreen";
-						menuTypeSettingButton.setText("Fullscreen");
-					} else if(menuType == "fullscreen") {
 						menuType = "normal";
 						menuTypeSettingButton.setText("Normal");
 					}
@@ -16541,7 +16534,7 @@ function dashboardScreen(title, icon) {
 				dashboardMenuLayout1.addView(dashboardMenuLayoutScroll);
 
 				VertexClientPE.tiles.forEach(function(element, index, array) {
-					if((element.checkBeforeAdding && element.checkBeforeAdding()) || !element.checkBeforeAdding) {
+					if((element.hasOwnProperty("checkBeforeAdding") && element.checkBeforeAdding()) || !element.hasOwnProperty("checkBeforeAdding")) {
 						dashboardMenuLayout.addView(tileButton(element, true));
 					}
 				});
@@ -16840,6 +16833,8 @@ VertexClientPE.showMenu = function() {
 		retroMenu();
 	} else if(menuType == "fullscreen") {
 		VertexClientPE.showFullScreenMenu();
+	} else if(menuType == "table") {
+		VertexClientPE.showTableMenu();
 	}
 	VertexClientPE.menuIsShowing = true;
 }
@@ -16851,42 +16846,32 @@ VertexClientPE.showMenu = function() {
 */
 VertexClientPE.closeMenu = function() {
 	if(menuType == "normal") {
-		if(vertexclientpecombatmenu != null) {
-			if(vertexclientpecombatmenu.isShowing()) {
-				vertexclientpecombatmenu.dismiss();
-			}
+		if(combatMenu != null && combatMenu.isShowing()) {
+			combatMenu.dismiss();
 		}
-		if(vertexclientpeworldmenu != null) {
-			if(vertexclientpeworldmenu.isShowing()) {
-				vertexclientpeworldmenu.dismiss();
-			}
+		if(worldMenu != null && worldMenu.isShowing()) {
+			worldMenu.dismiss();
 		}
-		if(vertexclientpemovementmenu != null) {
-			if(vertexclientpemovementmenu.isShowing()) {
-				vertexclientpemovementmenu.dismiss();
-			}
+		if(movementMenu != null && movementMenu.isShowing()) {
+			movementMenu.dismiss();
 		}
-		if(vertexclientpeplayermenu != null) {
-			if(vertexclientpeplayermenu.isShowing()) {
-				vertexclientpeplayermenu.dismiss();
-			}
+		if(playerMenu != null && playerMenu.isShowing()) {
+			playerMenu.dismiss();
 		}
-		if(vertexclientpemiscmenu != null) {
-			if(vertexclientpemiscmenu.isShowing()) {
-				vertexclientpemiscmenu.dismiss();
-			}
+		if(miscMenu != null && miscMenu.isShowing()) {
+			miscMenu.dismiss();
 		}
 	} else if(menuType == "halfscreen" || menuType == "halfscreen_top" || menuType == "tabbed_fullscreen") {
-		if(menu != null) {
-			if(menu.isShowing()) {
-				menu.dismiss();
-			}
+		if(menu != null && menu.isShowing()) {
+			menu.dismiss();
 		}
 	} else if(menuType == "fullscreen") {
-		if(fullScreenMenu != null) {
-			if(fullScreenMenu.isShowing()) {
-				fullScreenMenu.dismiss();
-			}
+		if(fullScreenMenu != null && fullScreenMenu.isShowing()) {
+			fullScreenMenu.dismiss();
+		}
+	} else if(menuType == "table") {
+		if(tableMenu != null && tableMenu.isShowing()) {
+			tableMenu.dismiss();
 		}
 	}
 	VertexClientPE.menuIsShowing = false;
@@ -17004,31 +16989,31 @@ VertexClientPE.showFullScreenMenu = function() {
 
 				VertexClientPE.modules.forEach(function (element, index, array) {
 					if (element.type == "Mod" || element.type == "Special") {
-						if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
+						if(element.hasOwnProperty("isExpMod") && element.isExpMod() && !VertexClientPE.isExpMode()) {
 							return;
 						}
-						if(element.checkBeforeAdding && !element.checkBeforeAdding()) {
+						if(element.hasOwnProperty("checkBeforeAdding") && !element.checkBeforeAdding()) {
 							return;
 						}
 						if (element.category == VertexClientPE.category.COMBAT) {
 							if(combatEnabled == "on") {
-								fullScreenMenuLayoutCombat.addView(new modButton(element));
+								fullScreenMenuLayoutCombat.addView(modButton(element));
 							}
 						} else if (element.category == VertexClientPE.category.WORLD) {
 							if(worldEnabled == "on") {
-								fullScreenMenuLayoutWorld.addView(new modButton(element));
+								fullScreenMenuLayoutWorld.addView(modButton(element));
 							}
 						} else if (element.category == VertexClientPE.category.MOVEMENT) {
 							if(movementEnabled == "on") {
-								fullScreenMenuLayoutMovement.addView(new modButton(element));
+								fullScreenMenuLayoutMovement.addView(modButton(element));
 							}
 						} else if (element.category == VertexClientPE.category.PLAYER) {
 							if(playerEnabled == "on") {
-								fullScreenMenuLayoutPlayer.addView(new modButton(element));
+								fullScreenMenuLayoutPlayer.addView(modButton(element));
 							}
 						} else if (element.category == VertexClientPE.category.MISC) {
 							if(miscEnabled == "on") {
-								fullScreenMenuLayoutMisc.addView(new modButton(element));
+								fullScreenMenuLayoutMisc.addView(modButton(element));
 							}
 						}
 					}
@@ -17048,6 +17033,77 @@ VertexClientPE.showFullScreenMenu = function() {
 						GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
 					}
 				}
+			} catch(error) {
+				print("An error occurred: " + error);
+			}
+		}
+	}));
+}
+
+/**
+ * function VertexClientPE.showTableMenu()
+ * @author peacestorm
+ * @since v2.4
+*/
+VertexClientPE.showTableMenu = function() {
+	VertexClientPE.menuIsShowing = true;
+	CONTEXT.runOnUiThread(new Runnable_({
+		run: function() {
+			try {
+				
+				var dScrollView = new ScrollView_(CONTEXT);
+				dScrollView.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT));
+				//dScrollView.setScrollBarStyle(View_.SCROLLBARS_OUTSIDE_OVERLAY);
+				//dScrollView.setFillViewport(true);
+				var dScrollInside = new LinearLayout_(CONTEXT);
+				dScrollInside.setGravity(Gravity_.CENTER);
+				dScrollInside.setOrientation(1);
+				dScrollView.addView(dScrollInside);
+
+				var mainLayout = new LinearLayout_(CONTEXT);
+				mainLayout.setGravity(Gravity_.CENTER);
+				mainLayout.setOrientation(LinearLayout_.VERTICAL);
+				//mainLayout.setPadding(10, 10, 10, 10);
+				//mainLayout.addView(settingsTitle);
+				//mainLayout.addView(dTitle);
+				mainLayout.addView(dScrollView);
+
+				var tableLayout = new TableLayout_(CONTEXT);
+				var tableRow;
+				var tempButton;
+
+				let realIndex = -1;
+				VertexClientPE.modules.forEach(function(element, index, array) {
+					if(element.hasOwnProperty("isExpMod") && element.isExpMod() && !VertexClientPE.isExpMode()) {
+						return;
+					}
+					if(element.hasOwnProperty("checkBeforeAdding") && !element.checkBeforeAdding()) {
+						return;
+					}
+					realIndex++;
+					tempButton = modButton(element);
+					if(realIndex % 2 == 1) {
+						if(!tableRow) {
+							tableRow = new TableRow_(CONTEXT);
+						}
+						tableRow.addView(tempButton);
+						tableLayout.addView(tableRow);
+						tableRow = null;
+					} else {
+						tableRow = new TableRow_(CONTEXT);
+						tableRow.addView(tempButton);
+					}
+					tempButton = null;
+				});
+				if(tableRow != null) {
+					tableLayout.addView(tableRow);
+				}
+
+				dScrollInside.addView(tableLayout);
+
+				tableMenu = new PopupWindow_(mainLayout, -2, CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+				//tableMenu.setBackgroundDrawable(backgroundSpecial());
+				tableMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.TOP, 0, 0);
 			} catch(error) {
 				print("An error occurred: " + error);
 			}
@@ -17116,13 +17172,13 @@ function retroMenu() {
 
 				VertexClientPE.modules.forEach(function(element, index, array) {
 					if(VertexClientPE.category.toRealName(element.category) == currentTab && (element.type == "Mod" || element.type == "Special")) {
-						if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
+						if(element.hasOwnProperty("isExpMod") && element.isExpMod() && !VertexClientPE.isExpMode()) {
 							return;
 						}
-						if(element.checkBeforeAdding && !element.checkBeforeAdding()) {
+						if(element.hasOwnProperty("checkBeforeAdding") && !element.checkBeforeAdding()) {
 							return;
 						}
-						menuRightLayout.addView(new modButton(element));
+						menuRightLayout.addView(modButton(element));
 					}
 				});
 
@@ -17162,25 +17218,20 @@ function retroMenu() {
 	}));
 }
 
-var vertexclientpemenu;
-var menuBtn;
-
-var vertexclientpecombatmenu, vertexclientpeworldmenu, vertexclientpemovementmenu, vertexclientpeplayermenu, vertexclientpemiscmenu;
-
 VertexClientPE.shouldUpdateGUI = false;
 
 VertexClientPE.getShouldUpdateGUI = function(popupWindow) {
 	return popupWindow == null || VertexClientPE.shouldUpdateGUI;
 }
 
-var combatMenuLayout1, worldMenuLayout1, movementMenuLayout1, playerMenuLayout1, miscMenuLayout1;
+let combatMenuLayout1, worldMenuLayout1, movementMenuLayout1, playerMenuLayout1, miscMenuLayout1;
 
 VertexClientPE.showCategoryMenus = function () {
 	CONTEXT.runOnUiThread({
 		run() {
 			try {
 
-				if(VertexClientPE.getShouldUpdateGUI(vertexclientpecombatmenu)) {
+				if(VertexClientPE.getShouldUpdateGUI(combatMenu)) {
 					let combatMenuLayout = new LinearLayout_(CONTEXT),
 						combatMenuScrollView = new ScrollView(CONTEXT),
 						combat = new categoryTitle(combatName, true),
@@ -17218,30 +17269,30 @@ VertexClientPE.showCategoryMenus = function () {
 					playerMenuLayout1 = new LinearLayout_(CONTEXT);
 					miscMenuLayout1 = new LinearLayout_(CONTEXT);
 
-					vertexclientpecombatmenu = new PopupWindow_(CONTEXT);
-					vertexclientpeworldmenu = new PopupWindow_(CONTEXT);
-					vertexclientpemovementmenu = new PopupWindow_(CONTEXT);
-					vertexclientpeplayermenu = new PopupWindow_(CONTEXT);
-					vertexclientpemiscmenu = new PopupWindow_(CONTEXT);
+					combatMenu = new PopupWindow_(CONTEXT);
+					worldMenu = new PopupWindow_(CONTEXT);
+					movementMenu = new PopupWindow_(CONTEXT);
+					playerMenu = new PopupWindow_(CONTEXT);
+					miscMenu = new PopupWindow_(CONTEXT);
 
 					VertexClientPE.modules.forEach(function (element, index, array) {
 						if (element.type == "Mod" || element.type == "Special") {
-							if(element.isExpMod && element.isExpMod() && !VertexClientPE.isExpMode()) {
+							if(element.hasOwnProperty("isExpMod") && element.isExpMod() && !VertexClientPE.isExpMode()) {
 								return;
 							}
-							if(element.checkBeforeAdding && !element.checkBeforeAdding()) {
+							if(element.hasOwnProperty("checkBeforeAdding") && !element.checkBeforeAdding()) {
 								return;
 							}
 							if (element.category == VertexClientPE.category.COMBAT) {
-								combatMenuLayout.addView(new modButton(element));
+								combatMenuLayout.addView(modButton(element));
 							} else if (element.category == VertexClientPE.category.WORLD) {
-								worldMenuLayout.addView(new modButton(element));
+								worldMenuLayout.addView(modButton(element));
 							} else if (element.category == VertexClientPE.category.MOVEMENT) {
-								movementMenuLayout.addView(new modButton(element));
+								movementMenuLayout.addView(modButton(element));
 							} else if (element.category == VertexClientPE.category.PLAYER) {
-								playerMenuLayout.addView(new modButton(element));
+								playerMenuLayout.addView(modButton(element));
 							} else if (element.category == VertexClientPE.category.MISC) {
-								miscMenuLayout.addView(new modButton(element));
+								miscMenuLayout.addView(modButton(element));
 							}
 						}
 					});
@@ -17300,7 +17351,7 @@ VertexClientPE.showCategoryMenus = function () {
 									var Y = parseInt(e.getY() - combatmY) * -1 / 10;
 									combattpopx = parseInt(combattpopx + X);
 									combattpopy = parseInt(combattpopy + Y);
-									vertexclientpecombatmenu.update(combattpopx, combattpopy, -1, -1);
+									combatMenu.update(combattpopx, combattpopy, -1, -1);
 									VertexClientPE.saveFloatingMenus("combat");
 								}
 								if (a == 1) combatdown = false;
@@ -17309,10 +17360,10 @@ VertexClientPE.showCategoryMenus = function () {
 						}
 					}));
 
-					vertexclientpecombatmenu.setContentView(combatMenuLayout1);
-					vertexclientpecombatmenu.setBackgroundDrawable(backgroundSpecial(true, "#80212121"));
+					combatMenu.setContentView(combatMenuLayout1);
+					combatMenu.setBackgroundDrawable(backgroundSpecial(true, "#80212121"));
 					if (menuAnimationsSetting == "on") {
-						vertexclientpecombatmenu.setAnimationStyle(android.R.style.Animation_Dialog);
+						combatMenu.setAnimationStyle(android.R.style.Animation_Dialog);
 					}
 
 					// World
@@ -17371,7 +17422,7 @@ VertexClientPE.showCategoryMenus = function () {
 									var Y = parseInt(e.getY() - worldmY) * -1 / 10;
 									worldtpopx = parseInt(worldtpopx + X);
 									worldtpopy = parseInt(worldtpopy + Y);
-									vertexclientpeworldmenu.update(worldtpopx, worldtpopy, -1, -1);
+									worldMenu.update(worldtpopx, worldtpopy, -1, -1);
 									VertexClientPE.saveFloatingMenus("world");
 								}
 								if (a == 1) worlddown = false;
@@ -17380,10 +17431,10 @@ VertexClientPE.showCategoryMenus = function () {
 						}
 					}));
 
-					vertexclientpeworldmenu.setContentView(worldMenuLayout1);
-					vertexclientpeworldmenu.setBackgroundDrawable(backgroundSpecial(true, "#80212121"));
+					worldMenu.setContentView(worldMenuLayout1);
+					worldMenu.setBackgroundDrawable(backgroundSpecial(true, "#80212121"));
 					if (menuAnimationsSetting == "on") {
-						vertexclientpeworldmenu.setAnimationStyle(android.R.style.Animation_Dialog);
+						worldMenu.setAnimationStyle(android.R.style.Animation_Dialog);
 					}
 
 					// Movement
@@ -17442,7 +17493,7 @@ VertexClientPE.showCategoryMenus = function () {
 									var Y = parseInt(e.getY() - movementmY) * -1 / 10;
 									movementtpopx = parseInt(movementtpopx + X);
 									movementtpopy = parseInt(movementtpopy + Y);
-									vertexclientpemovementmenu.update(movementtpopx, movementtpopy, -1, -1);
+									movementMenu.update(movementtpopx, movementtpopy, -1, -1);
 									VertexClientPE.saveFloatingMenus("movement");
 								}
 								if (a == 1) movementdown = false;
@@ -17451,10 +17502,10 @@ VertexClientPE.showCategoryMenus = function () {
 						}
 					}));
 
-					vertexclientpemovementmenu.setContentView(movementMenuLayout1);
-					vertexclientpemovementmenu.setBackgroundDrawable(backgroundSpecial(true, "#80212121"));
+					movementMenu.setContentView(movementMenuLayout1);
+					movementMenu.setBackgroundDrawable(backgroundSpecial(true, "#80212121"));
 					if (menuAnimationsSetting == "on") {
-						vertexclientpemovementmenu.setAnimationStyle(android.R.style.Animation_Dialog);
+						movementMenu.setAnimationStyle(android.R.style.Animation_Dialog);
 					}
 
 					// Player
@@ -17512,7 +17563,7 @@ VertexClientPE.showCategoryMenus = function () {
 									var Y = parseInt(e.getY() - playermY) * -1 / 10;
 									playertpopx = parseInt(playertpopx + X);
 									playertpopy = parseInt(playertpopy + Y);
-									vertexclientpeplayermenu.update(playertpopx, playertpopy, -1, -1);
+									playerMenu.update(playertpopx, playertpopy, -1, -1);
 									VertexClientPE.saveFloatingMenus("player");
 								}
 								if (a == 1) playerdown = false;
@@ -17521,10 +17572,10 @@ VertexClientPE.showCategoryMenus = function () {
 						}
 					}));
 
-					vertexclientpeplayermenu.setContentView(playerMenuLayout1);
-					vertexclientpeplayermenu.setBackgroundDrawable(backgroundSpecial(true, "#80212121"));
+					playerMenu.setContentView(playerMenuLayout1);
+					playerMenu.setBackgroundDrawable(backgroundSpecial(true, "#80212121"));
 					if (menuAnimationsSetting == "on") {
-						vertexclientpeplayermenu.setAnimationStyle(android.R.style.Animation_Dialog);
+						playerMenu.setAnimationStyle(android.R.style.Animation_Dialog);
 					}
 
 					// Misc
@@ -17583,7 +17634,7 @@ VertexClientPE.showCategoryMenus = function () {
 									var Y = parseInt(e.getY() - miscmY) * -1 / 10;
 									misctpopx = parseInt(misctpopx + X);
 									misctpopy = parseInt(misctpopy + Y);
-									vertexclientpemiscmenu.update(misctpopx, misctpopy, -1, -1);
+									miscMenu.update(misctpopx, misctpopy, -1, -1);
 									VertexClientPE.saveFloatingMenus("misc");
 								}
 								if (a == 1) miscdown = false;
@@ -17592,10 +17643,10 @@ VertexClientPE.showCategoryMenus = function () {
 						}
 					}));
 
-					vertexclientpemiscmenu.setContentView(miscMenuLayout1);
-					vertexclientpemiscmenu.setBackgroundDrawable(backgroundSpecial(true, "#80212121"));
+					miscMenu.setContentView(miscMenuLayout1);
+					miscMenu.setBackgroundDrawable(backgroundSpecial(true, "#80212121"));
 					if (menuAnimationsSetting == "on") {
-						vertexclientpemiscmenu.setAnimationStyle(android.R.style.Animation_Dialog);
+						miscMenu.setAnimationStyle(android.R.style.Animation_Dialog);
 					}
 
 					VertexClientPE.shouldUpdateGUI = false;
@@ -17603,42 +17654,42 @@ VertexClientPE.showCategoryMenus = function () {
 
 				//SHOW ALL MENUS *AFTER INITIALIZING*
 				if(combatEnabled == "on") {
-					vertexclientpecombatmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, combattpopx, combattpopy);
+					combatMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, combattpopx, combattpopy);
 					if(combatMenuShown) {
 						combatMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
-						vertexclientpecombatmenu.update();
+						combatMenu.update();
 					}
 				}
 				if(worldEnabled == "on") {
-					vertexclientpeworldmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, worldtpopx, worldtpopy);
+					worldMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, worldtpopx, worldtpopy);
 					if(worldMenuShown) {
 						worldMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
-						vertexclientpeworldmenu.update();
+						worldMenu.update();
 					}
 				}
 				if(movementEnabled == "on") {
-					vertexclientpemovementmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, movementtpopx, movementtpopy);
+					movementMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, movementtpopx, movementtpopy);
 					if(movementMenuShown) {
 						movementMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
-						vertexclientpemovementmenu.update();
+						movementMenu.update();
 					}
 				}
 				if(playerEnabled == "on") {
-					vertexclientpeplayermenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, playertpopx, playertpopy);
+					playerMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, playertpopx, playertpopy);
 					if(playerMenuShown) {
 						playerMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
-						vertexclientpeplayermenu.update();
+						playerMenu.update();
 					}
 				}
 				if(miscEnabled == "on") {
-					vertexclientpemiscmenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, misctpopx, misctpopy);
+					miscMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.BOTTOM | Gravity_.RIGHT, misctpopx, misctpopy);
 					if(miscMenuShown) {
 						miscMenuLayout1.setLayoutParams(new FrameLayout_.LayoutParams(ViewGroup_.LayoutParams.WRAP_CONTENT, screenHeight / 2 - customHeight));
-						vertexclientpemiscmenu.update();
+						miscMenu.update();
 					}
 				}
 			} catch (e) {
-				print("Error: " + e + e.lineNumber);
+				print("Error: " + e + " #" + e.lineNumber);
 				VertexClientPE.showBugReportDialog(e);
 			}
 		}
@@ -18258,7 +18309,7 @@ function showShortcuts() {
 
 					VertexClientPE.modules.forEach(function (element, index, array) {
 						if(sharedPref.getString("VertexClientPE.mods." + element.name + ".isFavorite", "false") == "true") {
-							if(element.checkBeforeAdding && !element.checkBeforeAdding()) {
+							if(element.hasOwnProperty("checkBeforeAdding") && !element.checkBeforeAdding()) {
 								return;
 							}
 							shortcutCount++;
@@ -18268,7 +18319,7 @@ function showShortcuts() {
 
 					VertexClientPE.tiles.forEach(function (element, index, array) {
 						if(sharedPref.getString("VertexClientPE.tiles." + element.text + ".isFavorite", "false") == "true") {
-							if((element.checkBeforeAdding && element.checkBeforeAdding()) || !element.checkBeforeAdding) {
+							if((element.hasOwnProperty("checkBeforeAdding") && element.checkBeforeAdding()) || !element.hasOwnProperty("checkBeforeAdding")) {
 								shortcutCount++;
 								shortcutGUILayout.addView(tileButton(element, false));
 							}
