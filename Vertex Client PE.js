@@ -114,7 +114,7 @@ const AlarmManager_ = android.app.AlarmManager,
 	CONTEXT = MainActivity_.currentMainActivity.get(),
 	GITHUB_URL = "https://github.com/Vertex-Client/Vertex-Client.github.io/raw/master/",
 	PATH = "/sdcard/games/com.mojang/";
-	
+
 /* try {
 	//getSupportActionBar().setTitle("Whatever title");
 	CONTEXT.runOnUiThread({
@@ -126,7 +126,6 @@ const AlarmManager_ = android.app.AlarmManager,
 	print(e);
 } */
 
-var ScrollView = android.widget.ScrollView;
 var EditText = android.widget.EditText;
 var KeyEvent = android.view.KeyEvent;
 var Scanner = java.util.Scanner;
@@ -138,17 +137,10 @@ var GLSurfaceView = android.opengl.GLSurfaceView;
 var Renderer = GLSurfaceView.Renderer;
 var GLU = android.opengl.GLU;
 var GL10 = javax.microedition.khronos.opengles.GL10;
-var PopupWindow = android.widget.PopupWindow;
 var RelativeLayout = android.widget.RelativeLayout;
 var Gravity = android.view.Gravity;
 
 EntityType.ENDER_PEARL = 87;
-
-/* try {
-	CONTEXT.setTitle("Vertex Client PE");
-} catch(e) {
-	print(e);
-} */
 
 /**
  * ##########
@@ -2104,8 +2096,8 @@ if(Launcher.isBlockLauncher()) {
 } else {
 	if(Launcher.isToolbox()) {
 		launcherName = "Toolbox";
-	} else {
-		launcherName = "Launcher";
+	} else if(Launcher.isMcpeMaster()) {
+		launcherName = "MCPE Master";
 	}
 }
 
@@ -5562,6 +5554,62 @@ var bunnyHop = {
 	}
 }
 
+var foodHack = {
+	name: "Foodhack",
+	desc: "Makes all items edible. Turning it off won't reset the items to their original state, though.",
+	category: VertexClientPE.category.MISC,
+	type: "Mod",
+	state: false,
+	isExpMod: function() {
+		return true;
+	},
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		if(!this.state) {
+			//show dialog
+		}
+		this.state = !this.state;
+		if(this.state) {
+			for(var i = 257; i <= 4096; i++) {
+				if(Item.isValidItem(i)) {
+					Item.setProperties(i, {
+					  "use_animation": "eat",
+					  "use_duration": 32,
+					  "food": {
+						"nutrition": 4,
+						"saturation_modifier": "low",
+						"is_meat": false
+					  }
+					});
+				}
+			}
+		} else {
+			VertexClientPE.toast("Restart to fully reset items!");
+		}
+	}
+}
+
+var antiHunger = {
+	name: "AntiHunger",
+	desc: "Automatically refills your hunger bar.",
+	category: VertexClientPE.category.PLAYER,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onTick: function() {
+		if(Player.getHunger() < 20) {
+			Player.setHunger(20);
+		}
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(aimbot);
 VertexClientPE.registerModule(antiBurn);
@@ -5629,6 +5677,7 @@ VertexClientPE.registerModule(tapRemover);
 VertexClientPE.registerModule(timer);
 //PLAYER
 VertexClientPE.registerModule(antiAFK);
+VertexClientPE.registerModule(antiHunger);
 VertexClientPE.registerModule(autoLeave);
 VertexClientPE.registerModule(autoSpammer);
 VertexClientPE.registerModule(autoSwitch);
@@ -5649,6 +5698,7 @@ VertexClientPE.registerModule(switchGamemode);
 VertexClientPE.registerModule(bypass);
 VertexClientPE.registerModule(coordsDisplay);
 VertexClientPE.registerModule(dropLocator);
+VertexClientPE.registerModule(foodHack);
 VertexClientPE.registerModule(healthDisplay);
 VertexClientPE.registerModule(letItSnow);
 VertexClientPE.registerModule(onlyDay);
@@ -6686,7 +6736,7 @@ VertexClientPE.showTempDisableDialog = function() {
 	dialogLayout1.setOrientation(LinearLayout_.VERTICAL);
 	dialogLayout1.setPadding(10, 10, 10, 10);
 
-	var dialogScrollView = new ScrollView(CONTEXT);
+	var dialogScrollView = new ScrollView_(CONTEXT);
 	var dialogLayout = new LinearLayout_(CONTEXT);
 
 	dialogLayout.addView(clientTextView("Are you sure you want to temporarily disable the client?"));
@@ -6773,7 +6823,7 @@ VertexClientPE.showMoreDialog = function() {
 				dialogLayout1.setGravity(Gravity_.CENTER);
 				var dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
-				var dialogScrollView = new ScrollView(CONTEXT);
+				var dialogScrollView = new ScrollView_(CONTEXT);
 				dialogScrollView.addView(dialogLayout);
 				dialogLayout1.addView(moreTitle);
 				dialogLayout1.addView(moreHR);
@@ -8032,9 +8082,9 @@ VertexClientPE.showModDialog = function(mod, btn) {
 				dialogLayout.addView(modBatteryUsageText);
 				dialogLayout.addView(modDescText);
 
-				var settingsLinearLayout = new ScrollView(CONTEXT);
+				var settingsLinearLayout = new ScrollView_(CONTEXT);
 				settingsLinearLayout.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels, display.heightPixels / 3));
-				var settingsScrollView = new ScrollView(CONTEXT);
+				var settingsScrollView = new ScrollView_(CONTEXT);
 
 				if(mod.hasOwnProperty("getSettingsLayout")) {
 					dialogLayout.addView(settingsLinearLayout);
@@ -8220,9 +8270,9 @@ VertexClientPE.showSongDialog = function(song, songBtn, playBar) {
 				dialogLayout.addView(songGenreText);
 				dialogLayout.addView(clientTextView("\n"));
 
-				var settingsLinearLayout = new ScrollView(CONTEXT);
+				var settingsLinearLayout = new ScrollView_(CONTEXT);
 				settingsLinearLayout.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels, display.heightPixels / 3));
-				var settingsScrollView = new ScrollView(CONTEXT);
+				var settingsScrollView = new ScrollView_(CONTEXT);
 
 				var dialogExtraLayout = new LinearLayout_(CONTEXT);
 				dialogExtraLayout.setOrientation(LinearLayout_.HORIZONTAL);
@@ -8460,12 +8510,12 @@ VertexClientPE.showItemGiverDialog = function() {
 				dialogLayoutBodyLeftWrap.setOrientation(1);
 				dialogLayoutBodyLeftWrap.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels - display.widthPixels / 3 - 10, LinearLayout_.LayoutParams.WRAP_CONTENT));
 				dialogLayoutBodyLeftWrap.setPadding(0, 0, dip2px(1), 0);
-				var dialogLayoutBodyLeftScroll = new ScrollView(CONTEXT);
+				var dialogLayoutBodyLeftScroll = new ScrollView_(CONTEXT);
 				var dialogLayoutBodyRightWrap = new LinearLayout_(CONTEXT);
 				dialogLayoutBodyRightWrap.setOrientation(1);
 				dialogLayoutBodyRightWrap.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3 - 10, LinearLayout_.LayoutParams.WRAP_CONTENT));
 				dialogLayoutBodyRightWrap.setPadding(dip2px(1), 0, 0, 0);
-				var dialogLayoutBodyRightScroll = new ScrollView(CONTEXT);
+				var dialogLayoutBodyRightScroll = new ScrollView_(CONTEXT);
 				var dialogTableLayout = new TableLayout_(CONTEXT);
 				var dialogTableRow;
 				var itemNameText = clientTextView("Name: Unknown");
@@ -8595,12 +8645,12 @@ VertexClientPE.showTeleportDialog = function() {
 				dialogLayoutBodyLeftWrap.setOrientation(1);
 				dialogLayoutBodyLeftWrap.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels - display.widthPixels / 3 - 10, LinearLayout_.LayoutParams.WRAP_CONTENT));
 				dialogLayoutBodyLeftWrap.setPadding(0, 0, dip2px(1), 0);
-				var dialogLayoutBodyLeftScroll = new ScrollView(CONTEXT);
+				var dialogLayoutBodyLeftScroll = new ScrollView_(CONTEXT);
 				var dialogLayoutBodyRightWrap = new LinearLayout_(CONTEXT);
 				dialogLayoutBodyRightWrap.setOrientation(1);
 				dialogLayoutBodyRightWrap.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3 - 10, LinearLayout_.LayoutParams.WRAP_CONTENT));
 				dialogLayoutBodyRightWrap.setPadding(dip2px(1), 0, 0, 0);
-				var dialogLayoutBodyRightScroll = new ScrollView(CONTEXT);
+				var dialogLayoutBodyRightScroll = new ScrollView_(CONTEXT);
 				var dialogLeftLayout = new LinearLayout_(CONTEXT);
 				dialogLeftLayout.setOrientation(1);
 				var dialogTableRow;
@@ -8924,7 +8974,7 @@ VertexClientPE.showBasicDialog = function(title, view, onDialogDismiss) {
 				dialogLayout1.setOrientation(LinearLayout_.VERTICAL);
 				dialogLayout1.setPadding(10, 10, 10, 10);
 
-				var dialogScrollView = new ScrollView(CONTEXT);
+				var dialogScrollView = new ScrollView_(CONTEXT);
 				var dialogLayout = new LinearLayout_(CONTEXT);
 
 				dialogLayout.addView(view);
@@ -11349,7 +11399,11 @@ function userBar() {
 }
 
 function modButton(mod, buttonOnly, customSize, shouldUpdateGUI) {
-	var modButtonName = VertexClientPE.getCustomModName(mod.name);
+	let modButtonName = "";
+	if(mod.hasOwnProperty("isExpMod") && mod.isExpMod()) {
+		modButtonName += "\u26A0 ";
+	}
+	modButtonName += VertexClientPE.getCustomModName(mod.name);
 	var modInfoButtonName = "...";
 
 	if(shouldUpdateGUI == null) {
@@ -11731,7 +11785,7 @@ function tabGUICategoryButton(category, layout, layoutToBeOpened, layoutMain) {
 			if(currentTabGUICategory != null) {
 				if(layoutMain.getChildCount() == 1) {
 					layoutMain.addView(layoutToBeOpened);
-					var layoutToBeOpenedScrollView = new ScrollView(CONTEXT);
+					var layoutToBeOpenedScrollView = new ScrollView_(CONTEXT);
 					var layoutToBeOpened1 = new LinearLayout_(CONTEXT);
 					layoutToBeOpened1.setOrientation(1);
 					layoutToBeOpened.addView(layoutToBeOpenedScrollView);
@@ -11750,7 +11804,7 @@ function tabGUICategoryButton(category, layout, layoutToBeOpened, layoutMain) {
 				} else if(layoutMain.getChildCount() == 2) {
 					//layoutToBeOpened.addView for all modButtons
 					layoutToBeOpened.removeAllViews();
-					var layoutToBeOpenedScrollView = new ScrollView(CONTEXT);
+					var layoutToBeOpenedScrollView = new ScrollView_(CONTEXT);
 					var layoutToBeOpened1 = new LinearLayout_(CONTEXT);
 					layoutToBeOpened1.setOrientation(1);
 					layoutToBeOpened.addView(layoutToBeOpenedScrollView);
@@ -11957,13 +12011,6 @@ function clientCheckBox(text, parentBackgroundColor) {
 	let defaultCheckBox = new CheckBox_(CONTEXT);
 	defaultCheckBox.setText(text);
 
-/* 	let colorStateList = new android.content.res.ColorStateList(
-		[[-android.R.attr.state_checked], [android.R.attr.state_checked]],
-		[Color_.parseColor("#cccccc"), Color_.parseColor("#cccccc")]
-	);
-
-	defaultCheckBox.setButtonTintList(checkBox,colorStateList) */
-
 	VertexClientPE.addTextStyleToView(defaultCheckBox, parentBackgroundColor);
 
 	return defaultCheckBox;
@@ -11974,7 +12021,7 @@ function clientTextView(text, useShadow, parentBackgroundColor) //menu buttons
 	if(useShadow == null) {
 		useShadow = true;
 	}
-	
+
 	let defaultTextView = new TextView_(CONTEXT);
 	defaultTextView.setText(text);
 
@@ -13847,7 +13894,7 @@ VertexClientPE.showAccountManager = function(showBackButton, title) {
 				}));
 				//accountManagerBottomLayout.addView(importAccountButton);
 
-				var accountManagerScrollView = new ScrollView(CONTEXT);
+				var accountManagerScrollView = new ScrollView_(CONTEXT);
 				accountManagerScrollView.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels, accountManagerScrollViewHeight - barLayoutHeight / 2 - accountManagerEnter.getLineHeight() / 2));
 
 				var accountManagerLayout = new LinearLayout_(CONTEXT);
@@ -13925,7 +13972,7 @@ VertexClientPE.showFriendManager = function(showBackButton, title, icon) {
 				}));
 				friendManagerBottomLayout.addView(addFriendButton);
 
-				var friendManagerScrollView = new ScrollView(CONTEXT);
+				var friendManagerScrollView = new ScrollView_(CONTEXT);
 				friendManagerScrollView.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels, friendManagerScrollViewHeight - barLayoutHeight / 2 - friendManagerEnter.getLineHeight() / 2));
 
 				var friendManagerLayout = new LinearLayout_(CONTEXT);
@@ -14512,7 +14559,7 @@ function settingsScreen(fromDashboard) {
 				settingsMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 				settingsMenuLayout.setPadding(dip2px(2), 0, dip2px(2), 0);
 
-				var settingsMenuScroll = new ScrollView(CONTEXT);
+				var settingsMenuScroll = new ScrollView_(CONTEXT);
 
 				var settingsMenuLayout1 = new LinearLayout_(CONTEXT);
 				settingsMenuLayout1.setOrientation(1);
@@ -15442,7 +15489,7 @@ function devSettingsScreen(fromDashboard) {
 				devSettingsMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 				devSettingsMenuLayout.setPadding(dip2px(2), 0, dip2px(2), 0);
 
-				var devSettingsMenuScroll = new ScrollView(CONTEXT);
+				var devSettingsMenuScroll = new ScrollView_(CONTEXT);
 
 				var devSettingsMenuLayout1 = new LinearLayout_(CONTEXT);
 				devSettingsMenuLayout1.setOrientation(1);
@@ -15533,7 +15580,7 @@ function informationScreen(fromDashboard) {
 				informationMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
 				informationMenuLayout1.setPadding(dip2px(2), 0, dip2px(2), 0);
 
-				var informationMenuScrollView = new ScrollView(CONTEXT);
+				var informationMenuScrollView = new ScrollView_(CONTEXT);
 
 				var informationMenuLayout = new LinearLayout_(CONTEXT);
 				informationMenuLayout.setOrientation(1);
@@ -15689,7 +15736,7 @@ function helpScreen(fromDashboard) {
 				helpMenuLayout.setOrientation(1);
 				helpMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-				var helpMenuLayoutScroll = new ScrollView(CONTEXT);
+				var helpMenuLayoutScroll = new ScrollView_(CONTEXT);
 
 				var helpMenuLayout1 = new LinearLayout_(CONTEXT);
 				helpMenuLayout1.setOrientation(1);
@@ -15732,7 +15779,7 @@ function previewScreen(fromDashboard) {
 				previewMenuLayout.setOrientation(1);
 				previewMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-				var previewMenuLayoutScroll = new ScrollView(CONTEXT);
+				var previewMenuLayoutScroll = new ScrollView_(CONTEXT);
 
 				var previewMenuLayout1 = new LinearLayout_(CONTEXT);
 				previewMenuLayout1.setOrientation(1);
@@ -15828,7 +15875,7 @@ function addonScreen(fromDashboard) {
 				addonMenuLayout.setOrientation(1);
 				addonMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-				var addonMenuLayoutScroll = new ScrollView(CONTEXT);
+				var addonMenuLayoutScroll = new ScrollView_(CONTEXT);
 
 				var addonMenuLayout1 = new LinearLayout_(CONTEXT);
 				addonMenuLayout1.setOrientation(1);
@@ -16094,7 +16141,7 @@ function playerCustomizerScreen(fromDashboard, title, icon) {
 				playerCustomizerLayoutLeft.setOrientation(1);
 				playerCustomizerLayoutLeft.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-				var playerCustomizerLayoutLeftScroll = new ScrollView(CONTEXT);
+				var playerCustomizerLayoutLeftScroll = new ScrollView_(CONTEXT);
 
 				var playerCustomizerLayoutLeft1 = new LinearLayout_(CONTEXT);
 				playerCustomizerLayoutLeft1.setOrientation(1);
@@ -16104,7 +16151,7 @@ function playerCustomizerScreen(fromDashboard, title, icon) {
 				playerCustomizerLayoutRight.setOrientation(1);
 				playerCustomizerLayoutRight.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-				var playerCustomizerLayoutRightScroll = new ScrollView(CONTEXT);
+				var playerCustomizerLayoutRightScroll = new ScrollView_(CONTEXT);
 
 				var playerCustomizerLayoutRight1 = new LinearLayout_(CONTEXT);
 				playerCustomizerLayoutRight1.setOrientation(1);
@@ -16114,7 +16161,7 @@ function playerCustomizerScreen(fromDashboard, title, icon) {
 				playerCustomizerLayoutBottom.setOrientation(1);
 				playerCustomizerLayoutBottom.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-				var playerCustomizerLayoutBottomScroll = new ScrollView(CONTEXT);
+				var playerCustomizerLayoutBottomScroll = new ScrollView_(CONTEXT);
 
 				var playerCustomizerLayoutBottom1 = new LinearLayout_(CONTEXT);
 				playerCustomizerLayoutBottom1.setOrientation(1);
@@ -16216,7 +16263,7 @@ function optiFineScreen(fromDashboard, title, icon) {
 				optiFineLayout.setOrientation(1);
 				optiFineLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-				var optiFineLayoutScroll = new ScrollView(CONTEXT);
+				var optiFineLayoutScroll = new ScrollView_(CONTEXT);
 
 				var optiFineLayout1 = new LinearLayout_(CONTEXT);
 				optiFineLayout1.setOrientation(1);
@@ -16279,7 +16326,7 @@ function updateCenterScreen(fromDashboard) {
 				updateCenterMenuLayout.setOrientation(1);
 				updateCenterMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-				var updateCenterMenuLayoutScroll = new ScrollView(CONTEXT);
+				var updateCenterMenuLayoutScroll = new ScrollView_(CONTEXT);
 
 				var updateCenterMenuLayout1 = new LinearLayout_(CONTEXT);
 				updateCenterMenuLayout1.setOrientation(1);
@@ -16344,7 +16391,7 @@ function musicPlayerScreen(fromDashboard) {
 				musicPlayerMenuLayout.setOrientation(1);
 				musicPlayerMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-				let musicPlayerMenuLayoutScroll = new ScrollView(CONTEXT);
+				let musicPlayerMenuLayoutScroll = new ScrollView_(CONTEXT);
 
 				let musicPlayerMenuLayout1 = new LinearLayout_(CONTEXT);
 				musicPlayerMenuLayout1.setOrientation(1);
@@ -16446,7 +16493,7 @@ function modManagerScreen(fromDashboard) {
 				modManagerMenuLayout.setOrientation(1);
 				modManagerMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-				var modManagerMenuLayoutScroll = new ScrollView(CONTEXT);
+				var modManagerMenuLayoutScroll = new ScrollView_(CONTEXT);
 
 				var modManagerMenuLayout1 = new LinearLayout_(CONTEXT);
 				modManagerMenuLayout1.setOrientation(1);
@@ -16495,7 +16542,7 @@ function dashboardScreen(title, icon) {
 				dashboardMenuLayout.setColumnCount(columnCount);
 				dashboardMenuLayout.setRowCount(rowCount);
 
-				var dashboardMenuLayoutScroll = new ScrollView(CONTEXT);
+				var dashboardMenuLayoutScroll = new ScrollView_(CONTEXT);
 
 				var dashboardMenuLayout1 = new LinearLayout_(CONTEXT);
 				dashboardMenuLayout1.setOrientation(1);
@@ -16936,11 +16983,11 @@ VertexClientPE.showFullScreenMenu = function() {
 				fullScreenMenuLayout1Player.addView(playerSectionTitle);
 				fullScreenMenuLayout1Misc.addView(miscSectionTitle);
 
-				var fullScreenMenuLayoutScrollCombat = new ScrollView(CONTEXT);
-				var fullScreenMenuLayoutScrollWorld = new ScrollView(CONTEXT);
-				var fullScreenMenuLayoutScrollMovement = new ScrollView(CONTEXT);
-				var fullScreenMenuLayoutScrollPlayer = new ScrollView(CONTEXT);
-				var fullScreenMenuLayoutScrollMisc = new ScrollView(CONTEXT);
+				var fullScreenMenuLayoutScrollCombat = new ScrollView_(CONTEXT);
+				var fullScreenMenuLayoutScrollWorld = new ScrollView_(CONTEXT);
+				var fullScreenMenuLayoutScrollMovement = new ScrollView_(CONTEXT);
+				var fullScreenMenuLayoutScrollPlayer = new ScrollView_(CONTEXT);
+				var fullScreenMenuLayoutScrollMisc = new ScrollView_(CONTEXT);
 
 				var fullScreenMenuLayoutCombat = new LinearLayout_(CONTEXT);
 				fullScreenMenuLayoutCombat.setOrientation(1);
@@ -17233,31 +17280,31 @@ VertexClientPE.showCategoryMenus = function () {
 
 				if(VertexClientPE.getShouldUpdateGUI(combatMenu)) {
 					let combatMenuLayout = new LinearLayout_(CONTEXT),
-						combatMenuScrollView = new ScrollView(CONTEXT),
+						combatMenuScrollView = new ScrollView_(CONTEXT),
 						combat = new categoryTitle(combatName, true),
 						combatSettings = combat.getLeftButton(),
 						combatTitle = combat.getMiddleButton(),
 						combatArrow = combat.getRightButton(),
 						worldMenuLayout = new LinearLayout_(CONTEXT),
-						worldMenuScrollView = new ScrollView(CONTEXT),
+						worldMenuScrollView = new ScrollView_(CONTEXT),
 						world = new categoryTitle(worldName, true);
 						worldSettings = world.getLeftButton(),
 						worldTitle = world.getMiddleButton(),
 						worldArrow = world.getRightButton(),
 						movementMenuLayout = new LinearLayout_(CONTEXT),
-						movementMenuScrollView = new ScrollView(CONTEXT),
+						movementMenuScrollView = new ScrollView_(CONTEXT),
 						movement = new categoryTitle(movementName, true),
 						movementSettings = movement.getLeftButton(),
 						movementTitle = movement.getMiddleButton(),
 						movementArrow = movement.getRightButton(),
 						playerMenuLayout = new LinearLayout_(CONTEXT),
-						playerMenuScrollView = new ScrollView(CONTEXT),
+						playerMenuScrollView = new ScrollView_(CONTEXT),
 						player = new categoryTitle(playerName, true),
 						playerSettings = player.getLeftButton(),
 						playerTitle = player.getMiddleButton(),
 						playerArrow = player.getRightButton(),
 						miscMenuLayout = new LinearLayout_(CONTEXT),
-						miscMenuScrollView = new ScrollView(CONTEXT),
+						miscMenuScrollView = new ScrollView_(CONTEXT),
 						misc = new categoryTitle(miscName, true),
 						miscSettings = misc.getLeftButton(),
 						miscTitle = misc.getMiddleButton(),
@@ -17982,12 +18029,12 @@ function showMenuButton() {
 			}
 		}
 	}
-	
+
 	if(currentScreen == ScreenType.start_screen || currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud || currentScreen == ScreenType.pause_screen) {
 		GUI.setTouchable(true);
 		GUI.update();
 	}
-	
+
 	if(!VertexClientPE.menuIsShowing) {
 		if(currentScreen == ScreenType.start_screen) {
 			if((mainMenuTextList == null || !mainMenuTextList.isShowing()) && !VertexClientPE.playerIsInGame) {
