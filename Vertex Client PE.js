@@ -1883,14 +1883,61 @@ function callVertexFunctionCallback(func, args) {
 	VertexClientPE[func].apply(this, args);
 }
 
-VertexClientPE.loadAddons = function() {
-	if(Launcher.isBlockLauncher() || Launcher.isToolbox()) {
-		ScriptManager__.callScriptMethod("addonLoadHook", []);
+let realScriptManager;
+if(Launcher.isBlockLauncher() || Launcher.isToolbox()) {
+	realScriptManager = ScriptManager__;
+}
+if(Launcher.isMcpeMaster()) {
+	realScriptManager = ScriptManager_;
+}
+
+VertexClientPE.AddonUtils = {
+	loadAddons: function() {
+		realScriptManager.callScriptMethod("addonLoadHook", []);
+	},
+	disableAddon: function(addon) {
+		let fullAddonName = addon.name + " v" + addon.current_version;
+
+		//step 1
+		VertexClientPE.modules.forEach(function(element, index, array) {
+			if(element.isStateMod() && element.state) {
+				element.onToggle();
+			}
+		});
+
+		//step 2
+		let newModuleArray = [];
+		VertexClientPE.preInitModules.forEach(function(element, index, array) {
+			if(fullAddonName != element.source) {
+				newModuleArray.push(element);
+			}
+		});
+		VertexClientPE.preInitModules = newModuleArray;
+
+		//step 3
+		VertexClientPE.initMods();
+	},
+	removeAddon: function(addon) {
+		this.disableAddon(addon);
+
+		//remove the addon from the addons array
+		let tempAddonsArray = [];
+		VertexClientPE.addons.forEach(function(element, index, array) {
+			if(element != addon) {
+				tempAddonsArray.push(element);
+			}
+		});
+		VertexClientPE.addons = tempAddonsArray;
+		tempAddonsArray = null;
+		
+		//remove the addon script from the launcher
+		let enabledScripts = realScriptManager.getEnabledScripts();
+		enabledScripts.remove(addon.scriptName);
+		realScriptManager.removeScript(addon.scriptName);
+
+		VertexClientPE.toast("Successfully removed the addon!");
 	}
-	if(Launcher.isMcpeMaster()) {
-		ScriptManager_.callScriptMethod("addonLoadHook", []);
-	}
-};
+}
 
 VertexClientPE.registerTile = function(obj) {
 	VertexClientPE.tiles.push(obj);
@@ -2150,13 +2197,11 @@ VertexClientPE.initMods = function(switchedCat) {
 	if(switchedCat) {
 		VertexClientPE.modules.forEach(function(element, index, array) {
 			if(element.isStateMod() && element.state) {
-				if((element.pack == "Combat" && combatEnabled == "off") || (element.pack == "World" && worldEnabled == "off") || (element.pack == "Movement" && movementEnabled == "off") || (element.pack == "Player" && playerEnabled == "off") || (element.pack == "Miscellaneous" && miscEnabled == "off") || (element.singleplayerOnly && singleplayerEnabled == "off")) {
-					element.onToggle();
-				}
+				element.onToggle();
 			}
 		});
-		VertexClientPE.modules = [];
 	}
+	VertexClientPE.modules = [];
 	try {
 		VertexClientPE.preInitModules.forEach(function(element, index, array) {
 			if(((element.pack == "Combat" && combatEnabled == "on") || (element.pack == "World" && worldEnabled == "on") || (element.pack == "Movement" && movementEnabled == "on") || (element.pack == "Player" && playerEnabled == "on") || (element.pack == "Miscellaneous" && miscEnabled == "on")) && !(element.singleplayerOnly && singleplayerEnabled == "off")) {
@@ -2229,9 +2274,10 @@ function registerAddon(name, desc, current_version, target_version, mods, songs,
 			target_version: target_version,
 			scriptName: scriptName
 		});
-		registerModulesFromAddon(mods);
-		registerSongsFromAddon(songs);
-		registerTilesFromAddon(tiles);
+		let fullName = name + " v" + current_version;
+		registerModulesFromAddon(fullName, mods);
+		registerSongsFromAddon(fullName, songs);
+		registerTilesFromAddon(fullName, tiles);
 	} catch(e) {
 		shouldMessage = false;
 		VertexClientPE.toast("An error occurred while loading addons: " + e);
@@ -2242,28 +2288,31 @@ function registerAddon(name, desc, current_version, target_version, mods, songs,
 	}
 }
 
-function registerModulesFromAddon(modArray) {
+function registerModulesFromAddon(fullAddonName, modArray) {
 	modArray.forEach(function (element, index, array) {
 		if(element != null) {
+			element.source = fullAddonName;
 			VertexClientPE.registerModule(element);
 		}
 	});
 }
 
-function registerSongsFromAddon(songArray) {
+function registerSongsFromAddon(fullAddonName, songArray) {
 	if(songArray != null) {
 		songArray.forEach(function (element, index, array) {
-			if(element != null && element.source != null && element.source != undefined) {
+			if(element != null) {
+				element.source = fullAddonName;
 				VertexClientPE.MusicUtils.registerSong(element, true);
 			}
 		});
 	}
 }
 
-function registerTilesFromAddon(tileArray) {
+function registerTilesFromAddon(fullAddonName, tileArray) {
 	if(tileArray != null) {
 		tileArray.forEach(function (element, index, array) {
-			if(element != null && element.source != null && element.source != undefined) {
+			if(element != null) {
+				element.source = fullAddonName;
 				VertexClientPE.registerTile(element);
 			}
 		});
@@ -5633,10 +5682,8 @@ var watermark = {
 		if(this.state && !VertexClientPE.menuIsShowing && (currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud)) {
 			showWatermark();
 		} else {
-			if(watermarkUI != null) {
-				if(watermarkUI.isShowing()) {
-					watermarkUI.dismiss();
-				}
+			if(watermarkUI != null && watermarkUI.isShowing()) {
+				watermarkUI.dismiss();
 			}
 		}
 	}
@@ -11630,7 +11677,7 @@ function modButton(mod, buttonOnly, customSize, shouldUpdateGUI) {
 
 function addonButton(addon) {
 	var addonButtonLayout = new LinearLayout_(CONTEXT);
-	addonButtonLayout.setOrientation(1);
+	addonButtonLayout.setOrientation(LinearLayout_.HORIZONTAL);
 	addonButtonLayout.setGravity(Gravity_.CENTER);
 
 	var defaultClientButton = clientButton(addon.name + " v" + addon.current_version, addon.desc);
@@ -11652,7 +11699,23 @@ function addonButton(addon) {
 		}
 	});
 
+	var removeButton = clientButton("x");
+	removeButton.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.WRAP_CONTENT, display.heightPixels / 8));
+	removeButton.setOnClickListener(new View_.OnClickListener({
+		onClick: function(viewArg) {
+			addonButtonLayout.getParent().removeView(addonButtonLayout);
+			VertexClientPE.AddonUtils.removeAddon(addon);
+		}
+	}));
+	removeButton.setOnLongClickListener(new View_.OnLongClickListener() {
+		onLongClick: function(viewArg) {
+			VertexClientPE.toast("Remove the addon");
+			return true;
+		}
+	});
+
 	addonButtonLayout.addView(defaultClientButton);
+	addonButtonLayout.addView(removeButton);
 
 	return addonButtonLayout;
 }
@@ -13517,7 +13580,7 @@ VertexClientPE.showSetupScreen = function() {
 									screenUI.dismiss();
 									showMenuButton();
 									VertexClientPE.showUpdate();
-									VertexClientPE.loadAddons();
+									VertexClientPE.AddonUtils.loadAddons();
 									VertexClientPE.loadFloatingMenus();
 									VertexClientPE.clientTick();
 									VertexClientPE.inGameTick();
@@ -14151,7 +14214,7 @@ VertexClientPE.setup = function() {
 							VertexClientPE.specialTick();
 							VertexClientPE.secondTick();
 							VertexClientPE.showUpdate();
-							VertexClientPE.loadAddons();
+							VertexClientPE.AddonUtils.loadAddons();
 							VertexClientPE.loadFloatingMenus();
 							showMenuButton();
 							VertexClientPE.initMods();
