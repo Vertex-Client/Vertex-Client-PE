@@ -231,6 +231,7 @@ var f5ButtonModeSetting = "pause";
 var mainButtonSizeSetting = 40;
 var powerExplosionsPowerSetting = 10;
 var preventExplosionsSetting = "off";
+var watermarkTextSetting = "<big><b>Bold</b> <i>Italic</i> <u>Underline</u></big>";
 //------------------------------------
 var antiAFKDistancePerTick = 0.25;
 //------------------------------------
@@ -783,6 +784,9 @@ function screenChangeHook(screenName) {
 			if(rotationPlusState) {
 				showRotationPlus();
 			}
+			if(watermarkState) {
+				showWatermark();
+			}
 			if(f5ButtonModeSetting == "ingame") {
 				showPauseUtilities();
 			}
@@ -817,6 +821,13 @@ function screenChangeHook(screenName) {
 				}
 			}));
 		}
+		if(watermarkUI != null) {
+			CONTEXT.runOnUiThread(new Runnable_({
+				run: function() {
+					watermarkUI.dismiss();
+				}
+			}));
+		} //todo: optimize this section
 		if(rotationPlusUI != null) {
 			CONTEXT.runOnUiThread(new Runnable_({
 				run: function() {
@@ -1348,6 +1359,7 @@ let speedHackState = false;
 let stackDropState = false;
 let storageESPState = false;
 let timerState = false;
+let watermarkState = false;
 
 let showingMenu = false;
 
@@ -1800,6 +1812,7 @@ let exitWebBrowserUI;
 let reloadWebBrowserUI;
 let pauseUtilitiesUI;
 let healthDisplayUI;
+let watermarkUI;
 let rotationPlusUI;
 let hacksList;
 let tabGUI;
@@ -2356,29 +2369,13 @@ var panic = {
 					VertexClientPE.closeMenu();
 					VertexClientPE.showMenu();
 				}
-				if(tabGUI != null) {
-					if(tabGUI.isShowing()) {
-						tabGUI.dismiss();
-						showTabGUI();
-					}
+				if(tabGUI != null && tabGUI.isShowing()) {
+					tabGUI.dismiss();
+					showTabGUI();
 				}
-				if(shortcutGUI != null) {
-					if(shortcutGUI.isShowing()) {
-						shortcutGUI.dismiss();
-						showShortcuts();
-					}
-				}
-				if(healthDisplayUI != null) {
-					if(healthDisplayUI.isShowing()) {
-						healthDisplayUI.dismiss();
-						showHealthDisplay();
-					}
-				}
-				if(rotationPlusUI != null) {
-					if(rotationPlusUI.isShowing()) {
-						rotationPlusUI.dismiss();
-						showRotationPlus();
-					}
+				if(shortcutGUI != null && shortcutGUI.isShowing()) {
+					shortcutGUI.dismiss();
+					showShortcuts();
 				}
 				if(hacksList != null && hacksList.isShowing()) {
 					updateHacksList();
@@ -2405,29 +2402,13 @@ var bypass = {
 			VertexClientPE.closeMenu();
 			VertexClientPE.showMenu();
 		}
-		if(tabGUI != null) {
-			if(tabGUI.isShowing()) {
-				tabGUI.dismiss();
-				showTabGUI();
-			}
+		if(tabGUI != null && tabGUI.isShowing()) {
+			tabGUI.dismiss();
+			showTabGUI();
 		}
-		if(shortcutGUI != null) {
-			if(shortcutGUI.isShowing()) {
-				shortcutGUI.dismiss();
-				showShortcuts();
-			}
-		}
-		if(healthDisplayUI != null) {
-			if(healthDisplayUI.isShowing()) {
-				healthDisplayUI.dismiss();
-				showHealthDisplay();
-			}
-		}
-		if(rotationPlusUI != null) {
-			if(rotationPlusUI.isShowing()) {
-				rotationPlusUI.dismiss();
-				showRotationPlus();
-			}
+		if(shortcutGUI != null && shortcutGUI.isShowing()) {
+			shortcutGUI.dismiss();
+			showShortcuts();
 		}
 		if(hacksList != null && hacksList.isShowing()) {
 			updateHacksList();
@@ -3050,6 +3031,9 @@ var autoSpammer = {
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
+	isStateMod: function() {
+		return true;
+	},
 	getSettingsLayout: function() {
 		var autoSpammerMessageLayout = new LinearLayout_(CONTEXT);
 		autoSpammerMessageLayout.setOrientation(1);
@@ -3065,8 +3049,7 @@ var autoSpammer = {
 		});
 
 		var spamMessageTitle = clientTextView("Custom message:");
-		var spamMessageInput = clientEditText();
-		spamMessageInput.setText(spamMessage);
+		var spamMessageInput = clientEditText(spamMessage);
 		spamMessageInput.setHint("Spam message");
 		spamMessageInput.addTextChangedListener(new TextWatcher_() {
 			onTextChanged: function() {
@@ -3092,9 +3075,6 @@ var autoSpammer = {
 		autoSpammerMessageLayout.addView(spamDelayTimeSlider);
 
 		return autoSpammerMessageLayout;
-	},
-	isStateMod: function() {
-		return true;
 	},
 	onModDialogDismiss: function() {
 		VertexClientPE.saveMainSettings();
@@ -3648,7 +3628,7 @@ var zoom = {
 var coordsDisplay = {
 	name: "CoordsDisplay",
 	desc: "Displays the player's coordinates.",
-	category: VertexClientPE.category.MISC,
+	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
 	isStateMod: function() {
@@ -5056,18 +5036,25 @@ var hitboxes = {
 
 var elytraBoost = {
 	name: "ElytraBoost",
-	desc: "Boosts elytra (Toolbox only).",
+	//desc: "Boosts elytra (Toolbox only).",
+	desc: "Boosts elytra.",
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
 	isStateMod: function() {
 		return true;
 	},
+	isExpMod: function() {
+		return true;
+	},
 	onToggle: function() {
 		this.state = !this.state;
 	},
 	onTick: function(entity) {
-		if(Entity.isGliding(Player.getEntity())) {
+		/* if(Launcher.isToolbox() && !Entity.isGliding(Player.getEntity())) {
+			return;
+		} */
+		if(Player.getArmorSlot(1) == 444) {
 			setVelX(getPlayerEnt(), 0.45);
 			setVelZ(getPlayerEnt(), 0.45);
 		}
@@ -5610,6 +5597,51 @@ var antiHunger = {
 	}
 }
 
+var watermark = {
+	name: "Watermark",
+	desc: "Shows a custom (text) watermark. Text can be formatted using HTML.",
+	category: VertexClientPE.category.MISC,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return true;
+	},
+	getSettingsLayout: function() {
+		var watermarkSettingsLayout = new LinearLayout_(CONTEXT);
+		watermarkSettingsLayout.setOrientation(1);
+
+		var watermarkTextTitle = clientTextView("Custom text (HTML):");
+		var watermarkTextInput = clientEditText(watermarkTextSetting);
+		watermarkTextInput.setHint("Custom text");
+		watermarkTextInput.addTextChangedListener(new TextWatcher_() {
+			onTextChanged: function() {
+				watermarkTextSetting = watermarkTextInput.getText();
+			}
+		});
+
+		watermarkSettingsLayout.addView(watermarkTextTitle);
+		watermarkSettingsLayout.addView(watermarkTextInput);
+
+		return watermarkSettingsLayout;
+	},
+	onModDialogDismiss: function() {
+		VertexClientPE.saveMainSettings();
+	},
+	onToggle: function() {
+		this.state = !this.state;
+		watermarkState = this.state;
+		if(this.state && !VertexClientPE.menuIsShowing && (currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud)) {
+			showWatermark();
+		} else {
+			if(watermarkUI != null) {
+				if(watermarkUI.isShowing()) {
+					watermarkUI.dismiss();
+				}
+			}
+		}
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(aimbot);
 VertexClientPE.registerModule(antiBurn);
@@ -5635,9 +5667,7 @@ VertexClientPE.registerModule(tpAura);
 //MOVEMENT
 VertexClientPE.registerModule(autoWalk);
 VertexClientPE.registerModule(bunnyHop);
-/* if(Launcher.isToolbox()) {
-	//VertexClientPE.registerModule(elytraBoost);
-} */
+VertexClientPE.registerModule(elytraBoost);
 VertexClientPE.registerModule(enderProjectiles);
 VertexClientPE.registerModule(fastBridge);
 VertexClientPE.registerModule(noFall);
@@ -5683,6 +5713,7 @@ VertexClientPE.registerModule(autoSpammer);
 VertexClientPE.registerModule(autoSwitch);
 VertexClientPE.registerModule(chatLog);
 VertexClientPE.registerModule(chatRepeat);
+VertexClientPE.registerModule(coordsDisplay);
 VertexClientPE.registerModule(derp);
 VertexClientPE.registerModule(fancyChat);
 VertexClientPE.registerModule(fastBreak);
@@ -5696,7 +5727,6 @@ VertexClientPE.registerModule(twerk);
 VertexClientPE.registerModule(panic);
 VertexClientPE.registerModule(switchGamemode);
 VertexClientPE.registerModule(bypass);
-VertexClientPE.registerModule(coordsDisplay);
 VertexClientPE.registerModule(dropLocator);
 VertexClientPE.registerModule(foodHack);
 VertexClientPE.registerModule(healthDisplay);
@@ -5710,6 +5740,7 @@ VertexClientPE.registerModule(serverInfo);
 VertexClientPE.registerModule(target);
 VertexClientPE.registerModule(teleport);
 //VertexClientPE.registerModule(tracers);
+VertexClientPE.registerModule(watermark);
 VertexClientPE.registerModule(zoom);
 
 //var autoClick = true;
@@ -10052,7 +10083,7 @@ VertexClientPE.saveAutoSpammerMessage = function() {
 	outWrite.close();
 }
 
-VertexClientPE.loadAutoSpammerSettings = function() {
+VertexClientPE.loadAutoSpammerMessage = function() {
 	if(!File_(settingsPath + "vertexclientpe_spammessage.txt").exists())
 		return;
 	var file = new File_(settingsPath + "vertexclientpe_spammessage.txt");
@@ -10063,6 +10094,32 @@ VertexClientPE.loadAutoSpammerSettings = function() {
 		str.append(Character_(ch));
 	if(str != null && str != undefined) {
 		spamMessage = str.toString();
+	}
+	fos.close();
+	return true;
+}
+
+VertexClientPE.saveWatermarkText = function() {
+	File_(settingsPath).mkdirs();
+	var newFile = new File_(settingsPath, "vertexclientpe_watermarktext.txt");
+	newFile.createNewFile();
+	var outWrite = new OutputStreamWriter_(new FileOutputStream_(newFile));
+	outWrite.append(watermarkTextSetting.toString());
+
+	outWrite.close();
+}
+
+VertexClientPE.loadWatermarkText = function() {
+	if(!File_(settingsPath + "vertexclientpe_watermarktext.txt").exists())
+		return;
+	var file = new File_(settingsPath + "vertexclientpe_watermarktext.txt");
+	var fos = new FileInputStream_(file);
+	var str = new StringBuilder_();
+	var ch;
+	while((ch = fos.read()) != -1)
+		str.append(Character_(ch));
+	if(str != null && str != undefined) {
+		watermarkTextSetting = str.toString();
 	}
 	fos.close();
 	return true;
@@ -10273,9 +10330,6 @@ VertexClientPE.saveDeathCoords = function() {
 	outWrite.append("," + VertexClientPE.currentWorld.deathZ.toString());
 
 	outWrite.close();
-
-	VertexClientPE.saveAutoSpammerMessage();
-	VertexClientPE.saveCategorySettings();
 }
 
 VertexClientPE.saveCustomRGBSettings = function() {
@@ -10473,6 +10527,7 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.close();
 
 	VertexClientPE.saveAutoSpammerMessage();
+	VertexClientPE.saveWatermarkText();
 	VertexClientPE.saveCategorySettings();
 }
 
@@ -10736,7 +10791,8 @@ VertexClientPE.loadMainSettings = function () {
 		}
 		fos.close();
 		VertexClientPE.loadCustomRGBSettings();
-		VertexClientPE.loadAutoSpammerSettings();
+		VertexClientPE.loadAutoSpammerMessage();
+		VertexClientPE.loadWatermarkText();
 		VertexClientPE.loadCategorySettings();
 		VertexClientPE.font = fontSetting=="minecraft"?Typeface_.createFromFile(new File_(PATH, "minecraft.ttf")):VertexClientPE.defaultFont;
 		MinecraftButtonLibrary.ProcessedResources.font = VertexClientPE.font;
@@ -14482,6 +14538,9 @@ function leaveGame() {
 			if(healthDisplayUI != null) {
 				healthDisplayUI.dismiss();
 			}
+			if(watermarkUI != null) {
+				watermarkUI.dismiss();
+			}
 			if(rotationPlusUI != null) {
 				rotationPlusUI.dismiss();
 			}
@@ -14523,6 +14582,11 @@ VertexClientPE.checkGUINeedsDismiss = function() {
 	if(healthDisplayUI != null) {
 		if(healthDisplayUI.isShowing()) {
 			healthDisplayUI.dismiss();
+		}
+	}
+	if(watermarkUI != null) {
+		if(watermarkUI.isShowing()) {
+			watermarkUI.dismiss();
 		}
 	}
 	if(rotationPlusUI != null) {
@@ -17763,6 +17827,9 @@ function openMenuFromMenuButton(viewArg) {
 		if(healthDisplayUI != null) {
 			healthDisplayUI.dismiss();
 		}
+		if(watermarkUI != null) {
+			watermarkUI.dismiss();
+		}
 		if(rotationPlusUI != null) {
 			rotationPlusUI.dismiss();
 		}
@@ -17781,6 +17848,9 @@ function openMenuFromMenuButton(viewArg) {
 				showShortcuts();
 				if(healthDisplayState) {
 					showHealthDisplay();
+				}
+				if(watermarkState) {
+					showWatermark();
 				}
 				if(rotationPlusState) {
 					showRotationPlus();
@@ -18022,6 +18092,9 @@ function showMenuButton() {
 				showShortcuts();
 				if(healthDisplayState) {
 					showHealthDisplay();
+				}
+				if(watermarkState) {
+					showWatermark();
 				}
 				if(rotationPlusState) {
 					showRotationPlus();
@@ -18433,10 +18506,58 @@ function showHealthDisplay() {
 	}));
 }
 
+function showWatermark() {
+	CONTEXT.runOnUiThread(new Runnable_({
+		run: function() {
+			try {
+				let rotationPlusLayout = new LinearLayout_(CONTEXT);
+				rotationPlusLayout.setOrientation(1);
+
+				let watermarkTextView = clientTextView(new Html_.fromHtml(watermarkTextSetting), true, "diff");
+				/* watermarkTextView.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						
+					}
+				})); */
+				rotationPlusLayout.addView(watermarkTextView);
+
+				/* rotationPlusMiddleCenterView.setOnTouchListener(new View_.OnTouchListener({
+					onTouch(v, e) {
+						if (!rotationdown) {
+							rotationmX = e.getX();
+							rotationmY = e.getY();
+						}
+						if (rotationdown) {
+							var a = e.getAction();
+							if (a == 2) {
+								var X = parseInt(e.getX() - rotationmX) * -1 / 10;
+								var Y = parseInt(e.getY() - rotationmY) * -1 / 10;
+								rotationtpopx = rotationtpopx + X;
+								rotationtpopy = rotationtpopy + Y;
+								rotationPlusUI.update(parseInt(rotationtpopx), parseInt(rotationtpopy), -1, -1);
+							}
+							if (a == 1) rotationdown = false;
+						}
+						return false;
+					}
+				})); */
+
+				watermarkUI = new PopupWindow_(rotationPlusLayout, -2, -2);
+				watermarkUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+				watermarkUI.setTouchable(false);
+				watermarkUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.BOTTOM, 0, dip2px(50));
+			} catch(exception) {
+				print(exception);
+				VertexClientPE.showBugReportDialog(exception);
+			}
+		}
+	}));
+}
+
 const rotationtpopx_def = 0, rotationtpopy_def = dip2px(120);
-var rotationtpopx = rotationtpopx_def, rotationtpopy = rotationtpopy_def;
-var rotationmX, rotationmY;
-var rotationdown = false;
+let rotationtpopx = rotationtpopx_def, rotationtpopy = rotationtpopy_def;
+let rotationmX, rotationmY;
+let rotationdown = false;
 
 function showRotationPlus() {
 	CONTEXT.runOnUiThread(new Runnable_({
@@ -18666,7 +18787,6 @@ VertexClientPE.showExitButtons = function(showBackButton, title, icon, extraView
 				var backScreenUILayout = new LinearLayout_(CONTEXT);
 				var backScreenUIButton = new Button_(CONTEXT);
 				backScreenUIButton.setText("<");//Text
-				//backScreenUIButton.getBackground().setColorFilter(Color_.parseColor("#00BFFF"), PorterDuff_.Mode.MULTIPLY);
 				backScreenUIButton.setBackgroundDrawable(backBg);
 				backScreenUIButton.setTextColor(Color_.WHITE);
 				backScreenUIButton.setOnTouchListener(new View_.OnTouchListener() {
@@ -18703,7 +18823,6 @@ VertexClientPE.showExitButtons = function(showBackButton, title, icon, extraView
 				var xScreenUILayout = new LinearLayout_(CONTEXT);
 				var xScreenUIButton = new Button_(CONTEXT);
 				xScreenUIButton.setText("X");//Text
-				//xScreenUIButton.getBackground().setColorFilter(Color_.parseColor("#FF0000"), PorterDuff_.Mode.MULTIPLY);
 				xScreenUIButton.setBackgroundDrawable(exitBg);
 				xScreenUIButton.setTextColor(Color_.WHITE);
 				xScreenUIButton.setOnTouchListener(new View_.OnTouchListener() {
