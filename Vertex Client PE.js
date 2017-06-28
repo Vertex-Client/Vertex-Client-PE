@@ -5563,7 +5563,7 @@ var bunnyHop = {
 		this.tick = 0;
 	},
 	onTick: function() {
-		if(Entity.isFlying(getPlayerEnt()) {
+		if(Entity.isFlying(getPlayerEnt())) {
 			this.tick = 0;
 			return;
 		}
