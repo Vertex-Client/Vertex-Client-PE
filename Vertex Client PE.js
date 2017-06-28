@@ -5550,43 +5550,39 @@ var glitchCam = {
 
 var bunnyHop = {
 	name: "BunnyHop",
-	desc: "Makes the player jump automatically while walking.",
+	desc: "Makes the player jump automatically.",
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
 	tick: 0,
-	isExpMod: function() {
-		return true;
-	},
 	isStateMod: function() {
 		return true;
 	},
 	onToggle: function() {
 		this.state = !this.state;
+		this.tick = 0;
 	},
 	onTick: function() {
-		/* if(this.tick == 0) {
-			var yaw = Entity.getYaw(getPlayerEnt()) + 90;
-			var pitch = 0;
-			yaw *= PI_CIRCLE;
-
-			var x = Math.cos(yaw) * Math.cos(pitch);
-			var z = Math.sin(yaw) * Math.cos(pitch);
-			
-			Entity.setVelX(getPlayerEnt(), x);
-			Entity.setVelY(getPlayerEnt(), 0.5);
-			Entity.setVelZ(getPlayerEnt(), z);
-		} else {
-			Entity.setVelX(getPlayerEnt(), 0);
-			Entity.setVelY(getPlayerEnt(), 0);
-			Entity.setVelZ(getPlayerEnt(), 0);
-			if(this.tick == 19) {
-				this.tick = 0;
-			} else {
-				this.tick++;
+		if(Entity.isFlying(getPlayerEnt()) {
+			this.tick = 0;
+			return;
+		}
+		if(this.tick < 9) {
+			if(this.tick == 0) {
+				Entity.setVelY(getPlayerEnt(), 0.5);
 			}
-		} */
-		
+			this.tick++;
+		} else {
+			if(this.tick < 19) {
+				if(this.tick == 9) {
+					Entity.setVelY(getPlayerEnt(), -0.5);
+				}
+				this.tick++;
+			} else if(this.tick == 19) {
+				Entity.setVelY(getPlayerEnt(), 0);
+				this.tick = 0;
+			}
+		}
 	}
 }
 
