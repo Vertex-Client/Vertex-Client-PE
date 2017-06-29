@@ -9719,7 +9719,7 @@ VertexClientPE.MusicUtils = {
 		}
 		this.tempSongList = this.songList;
 	},
-	startMusicPlayer: function(song, fromButton) {
+	startMusicPlayer: function(song) {
 		this.randomMusic = song==null?this.tempSongList[Math.floor(Math.random() * this.tempSongList.length)]:song;
 		this.mp.reset();
 		this.mp.setDataSource(this.randomMusic.url);
@@ -9772,8 +9772,8 @@ function Song(songTitle, songArtist, songUrl, songGenre) {
 }
 
 //TODO: Add Genre
-//VertexClientPE.MusicUtils.registerSong(new Song("Hello", "OMFG", "http://b1.ge.tt/gett/1a353nd2/OMFG+-+Hello.mp3?index=0&user=user-ixW6scU8M6%E2%80%A6TeP06a11F-&referrer=user-ixW6scU8M6tdtVBWuAeo7oA2hZquSTeP06a11F-&download=1"));
-//VertexClientPE.MusicUtils.registerSong(new Song("Neopolitan Dreams (Nilow Remix)", "Lisa Mitchell", "http://b1.ge.tt/gett/4WKD4nd2/Lisa+Mitchell+-+Neopolitan+Dreams+%28Nilow+Rmx?index=0&user=user-ixW6scU8M6%E2%80%A6TeP06a11F-&referrer=user-ixW6scU8M6tdtVBWuAeo7oA2hZquSTeP06a11F-&download=1"));
+VertexClientPE.MusicUtils.registerSong(new Song("Hello", "OMFG", "http://download1481.mediafireuserdownload.com/xd59md9vw2rg/gb97ihc1xl83s2b/OMFG+-+Hello.mp3", "Electronic"));
+VertexClientPE.MusicUtils.registerSong(new Song("Neopolitan Dreams (Nilow Remix)", "Lisa Mitchell", "http://download1337.mediafireuserdownload.com/xkcpwv4eewmg/5qbuk6k29uvme7m/Lisa+Mitchell+-+Neopolitan+Dreams+%28Nilow+Rmx%29.mp3"));
 VertexClientPE.MusicUtils.registerSong(new Song("Adventure (feat. Alexa Lusader)", "William Ekh", "http://files-cdn.nocopyrightsounds.co.uk/William%20Ekh%20-%20Adventure%20%28feat.%20Alexa%20Lusader%29.mp3", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("Blank [NCS Release]", "Disfigure", "http://files-cdn.nocopyrightsounds.co.uk/Disfigure%20-%20Blank.mp3", "Dubstep"));
 VertexClientPE.MusicUtils.registerSong(new Song("Can't Wait (feat. Anna Yvette) [NCS Release]", "Jim Yosef", "http://download1890.mediafireuserdownload.com/ni4dsv3d5khg/bpgdjbqy0p09biw/Jim+Yosef+-+Can%5C%27t+Wait+%28feat.+Anna+Yvette%29.mp3", "House"));
@@ -16642,6 +16642,7 @@ function musicPlayerScreen(fromDashboard) {
 					onClick: function(v) {
 						VertexClientPE.loadToast();
 						VertexClientPE.MusicUtils.loadNextSong();
+						VertexClientPE.MusicUtils.playingFirstTime = false;
 					}
 				});
 
