@@ -1805,6 +1805,7 @@ let GUI;
 let screenUI;
 let accountManagerGUI;
 let menu;
+let emptyMenu;
 let fullScreenMenu;
 let tableMenu;
 let exitUI;
@@ -7624,7 +7625,7 @@ VertexClientPE.showFeaturesDialog = function() {
 				var settingsTitle = clientScreenTitle("Settings", null, themeSetting);
 				var featuresTitle = clientTextView("Opt in/out features\n", true);
 				featuresTitle.setGravity(Gravity_.CENTER);
-				var featuresText = clientTextView("Changes on this dialog will disable and show/hide all mods in that category", true);
+				var featuresText = clientTextView("Changes on this dialog will show/hide all mods in that category and will disable all mods", true);
 				featuresText.setTextSize(8);
 				featuresText.setTypeface(null, Typeface_.ITALIC);
 				featuresText.setGravity(Gravity_.CENTER);
@@ -13115,7 +13116,7 @@ function gameLoop() {
 }
 
 VertexClientPE.isGUIShowing = function() {
-	return GUI != null && !GUI.isShowing() && (miscMenu == null || !miscMenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (tableMenu == null || !tableMenu.isShowing()) && (screenUI == null || !screenUI.isShowing());
+	return GUI != null && !GUI.isShowing() && (miscMenu == null || !miscMenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (tableMenu == null || !tableMenu.isShowing()) && (emptyMenu == null || !emptyMenu.isShowing()) && (screenUI == null || !screenUI.isShowing());
 }
 
 VertexClientPE.clientTick = function() {
@@ -13684,7 +13685,7 @@ VertexClientPE.showSetupScreen = function() {
 				var setupStep1Text = "Thanks for choosing Vertex Client PE!\nGo to the next step to choose your favourite color. :)";
 				var setupStep2Text = "You can always change the color on the settings screen.\nEven more colors are available there.";
 				var setupStep3Text = "Now you can optimize your experience by choosing the mod categories you want to use. You'll be able to change this on the settings screen anytime.";
-				var setupStep4Text = "That's it! Your experience begins here.\nHere's some additional help to get started:\n- You can open the Dashboard and some other features from the 'More' dialog,\nwhich can be opened by long tapping the menu button.";
+				var setupStep4Text = "That's it! Your experience begins here.\nHere's some additional help to get started:\n- You can open the Dashboard and some other features from the 'More' dialog,\nwhich can be opened by long tapping the menu button.\n- More help is available on the Help screen which is also accessible from the Dashboard.";
 
 				setupTextView.setText(setupStep1Text);
 
@@ -17068,16 +17069,21 @@ VertexClientPE.showMenu = function() {
 	if(mainButtonTapSetting == "menu" && mainButtonStyleSetting != "invisible_ghost" && !ghostModeState) {
 		menuBtn.setBackgroundDrawable(iconClickedClientGUI);
 	}
-	if(menuType == "normal") {
-		VertexClientPE.showCategoryMenus();
-	} else if(menuType == "halfscreen" || menuType == "halfscreen_top" || menuType == "tabbed_fullscreen") {
-		retroMenu();
-	} else if(menuType == "fullscreen") {
-		VertexClientPE.showFullScreenMenu();
-	} else if(menuType == "table") {
-		VertexClientPE.showTableMenu();
+	if(combatEnabled == "off" && worldEnabled == "off" && movementEnabled == "off" && playerEnabled == "off" && miscEnabled == "off") {
+		VertexClientPE.showEmptyMenu();
+	} else {
+		if(menuType == "normal") {
+			VertexClientPE.showCategoryMenus();
+		} else if(menuType == "halfscreen" || menuType == "halfscreen_top" || menuType == "tabbed_fullscreen") {
+			retroMenu();
+		} else if(menuType == "fullscreen") {
+			VertexClientPE.showFullScreenMenu();
+		} else if(menuType == "table") {
+			VertexClientPE.showTableMenu();
+		}
+		VertexClientPE.menuIsShowing = true;
 	}
-	VertexClientPE.menuIsShowing = true;
+	
 }
 
 /**
@@ -17086,33 +17092,37 @@ VertexClientPE.showMenu = function() {
  * @since v1.1
 */
 VertexClientPE.closeMenu = function() {
-	if(menuType == "normal") {
-		if(combatMenu != null && combatMenu.isShowing()) {
-			combatMenu.dismiss();
-		}
-		if(worldMenu != null && worldMenu.isShowing()) {
-			worldMenu.dismiss();
-		}
-		if(movementMenu != null && movementMenu.isShowing()) {
-			movementMenu.dismiss();
-		}
-		if(playerMenu != null && playerMenu.isShowing()) {
-			playerMenu.dismiss();
-		}
-		if(miscMenu != null && miscMenu.isShowing()) {
-			miscMenu.dismiss();
-		}
-	} else if(menuType == "halfscreen" || menuType == "halfscreen_top" || menuType == "tabbed_fullscreen") {
-		if(menu != null && menu.isShowing()) {
-			menu.dismiss();
-		}
-	} else if(menuType == "fullscreen") {
-		if(fullScreenMenu != null && fullScreenMenu.isShowing()) {
-			fullScreenMenu.dismiss();
-		}
-	} else if(menuType == "table") {
-		if(tableMenu != null && tableMenu.isShowing()) {
-			tableMenu.dismiss();
+	if(emptyMenu != null && emptyMenu.isShowing()) {
+		emptyMenu.dismiss();
+	} else {
+		if(menuType == "normal") {
+			if(combatMenu != null && combatMenu.isShowing()) {
+				combatMenu.dismiss();
+			}
+			if(worldMenu != null && worldMenu.isShowing()) {
+				worldMenu.dismiss();
+			}
+			if(movementMenu != null && movementMenu.isShowing()) {
+				movementMenu.dismiss();
+			}
+			if(playerMenu != null && playerMenu.isShowing()) {
+				playerMenu.dismiss();
+			}
+			if(miscMenu != null && miscMenu.isShowing()) {
+				miscMenu.dismiss();
+			}
+		} else if(menuType == "halfscreen" || menuType == "halfscreen_top" || menuType == "tabbed_fullscreen") {
+			if(menu != null && menu.isShowing()) {
+				menu.dismiss();
+			}
+		} else if(menuType == "fullscreen") {
+			if(fullScreenMenu != null && fullScreenMenu.isShowing()) {
+				fullScreenMenu.dismiss();
+			}
+		} else if(menuType == "table") {
+			if(tableMenu != null && tableMenu.isShowing()) {
+				tableMenu.dismiss();
+			}
 		}
 	}
 	VertexClientPE.menuIsShowing = false;
@@ -17127,6 +17137,52 @@ VertexClientPE.closeMenu = function() {
 			}
 		}
 	}
+}
+
+VertexClientPE.showEmptyMenu = function() {
+	VertexClientPE.menuIsShowing = true;
+
+	var emptyMenuLayout = new LinearLayout_(CONTEXT);
+	emptyMenuLayout.setOrientation(1);
+	emptyMenuLayout.setGravity(Gravity_.CENTER);
+
+	let logoViewer = new ImageView_(CONTEXT);
+	logoViewer.setImageBitmap(imgLogo);
+	logoViewer.setLayoutParams(new LinearLayout_.LayoutParams(width / 3, height / 3));
+
+	let emptyText = clientTextView("Sorry, there's nothing to see here\nas you opted out all categories.");
+	emptyText.setGravity(Gravity_.CENTER);
+
+	emptyMenuLayout.addView(logoViewer);
+	emptyMenuLayout.addView(emptyText);
+
+	let logoAnim = new android.view.animation.AlphaAnimation(0, 1);
+	logoAnim.setInterpolator(new android.view.animation.LinearInterpolator());
+	logoAnim.setRepeatCount(android.view.animation.Animation.INFINITE);
+	logoAnim.setRepeatMode(android.view.animation.Animation.REVERSE);
+	logoAnim.setDuration(1500);
+
+	emptyMenu = new PopupWindow_(emptyMenuLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+	emptyMenu.setBackgroundDrawable(backgroundSpecial());
+	emptyMenu.setOnDismissListener(new PopupWindow_.OnDismissListener() {
+		onDismiss: function() {
+			logoViewer.clearAnimation();
+		}
+	});
+	emptyMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+
+	if(GUI != null) {
+		GUI.dismiss();
+		if(mainButtonPositionSetting == "top-right") {
+			GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
+		} else if(mainButtonPositionSetting == "top-left") {
+			GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+		} else if(mainButtonPositionSetting == "bottom-left") {
+			GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
+		}
+	}
+
+	logoViewer.startAnimation(logoAnim);
 }
 
 VertexClientPE.showFullScreenMenu = function() {
