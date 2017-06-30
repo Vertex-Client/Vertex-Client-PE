@@ -325,6 +325,14 @@ var Launcher = {
 	}
 };
 
+let realScriptManager;
+if(Launcher.isBlockLauncher() || Launcher.isToolbox()) {
+	realScriptManager = ScriptManager__;
+}
+if(Launcher.isMcpeMaster()) {
+	realScriptManager = ScriptManager_;
+}
+
 var ScreenType = {
 	start_screen: "start_screen",
 	hud: "hud_screen",
@@ -1884,14 +1892,6 @@ function callVertexFunctionCallback(func, args) {
 	VertexClientPE[func].apply(this, args);
 }
 
-let realScriptManager;
-if(Launcher.isBlockLauncher() || Launcher.isToolbox()) {
-	realScriptManager = ScriptManager__;
-}
-if(Launcher.isMcpeMaster()) {
-	realScriptManager = ScriptManager_;
-}
-
 VertexClientPE.AddonUtils = {
 	loadAddons: function() {
 		realScriptManager.callScriptMethod("addonLoadHook", []);
@@ -2100,11 +2100,7 @@ var shareTile = {
 	forceLightColor: false,
 	shouldDismissDashboard: false,
 	onClick: function(fromDashboard) {
-		var sendIntent = new Intent_();
-		sendIntent.setAction(Intent_.ACTION_SEND);
-		sendIntent.putExtra(Intent_.EXTRA_TEXT, "I use Vertex Client PE! Get it yourself at http://Vertex-Client.ml/. :D");
-		sendIntent.setType("text/plain");
-		CONTEXT.startActivity(sendIntent);
+		shareText("I use Vertex Client PE! Get it yourself at http://Vertex-Client.ml/. :D");
 	}
 }
 var blockLauncherSettingsTile = {
@@ -2250,12 +2246,7 @@ const ScriptableObject_ = org.mozilla.javascript.ScriptableObject;
 function registerAddon(name, desc, current_version, target_version, mods, songs, tiles, author) {
 	var shouldMessage = true;
 	try {
-		let scripts;
-		if(Launcher.isBlockLauncher() || Launcher.isToolbox()) {
-			scripts = ScriptManager__.scripts;
-		} else {
-			scripts = ScriptManager_.scripts;
-		}
+		let scripts = realScriptManager.scripts;
 		let scriptName;
 		for(let i = 0; i < scripts.size(); i++) {
 			let script = scripts.get(i);
@@ -4611,8 +4602,9 @@ var actionLog = {
 		return false;
 	},
 	onToggle: function() {
-		var logString = "";
-		var logMessages = VertexClientPE.Utils.world.logMessages;
+		let actionLogExtraView;
+		let logString = "";
+		let logMessages = VertexClientPE.Utils.world.logMessages;
 		if(logMessages.length != 0) {
 			logMessages.forEach(function(element, index, array) {
 				if(index != 0) {
@@ -4620,10 +4612,16 @@ var actionLog = {
 				}
 				logString += element;
 			});
+			actionLogExtraView = clientButton("Export/share");
+			actionLogExtraView.setOnClickListener(new View_.OnClickListener() {
+				onClick: function(viewArg) {
+					shareText(logString);
+				}
+			});
 		} else {
 			logString = "Nothing to see here, once you attack a mob or entity or send or receive chat messages they'll be displayed here.";
 		}
-		VertexClientPE.showBasicDialog(VertexClientPE.getCustomModName(this.name) + " - Display", clientTextView(logString));
+		VertexClientPE.showBasicDialog(VertexClientPE.getCustomModName(this.name) + " - Display", clientTextView(logString), null, actionLogExtraView);
 	},
 	onChatReceive: function(message, sender) {
 		VertexClientPE.Utils.world.logMessages.push("[CHAT] <" + sender + "> " + message);
@@ -9095,7 +9093,7 @@ VertexClientPE.showAddonDialog = function(addon) {
 	});
 }
 
-VertexClientPE.showBasicDialog = function(title, view, onDialogDismiss) {
+VertexClientPE.showBasicDialog = function(title, view, onDialogDismiss, extraView) {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
@@ -9127,6 +9125,9 @@ VertexClientPE.showBasicDialog = function(title, view, onDialogDismiss) {
 
 				dialogLayout1.addView(dialogTitle);
 				dialogLayout1.addView(dialogScrollView);
+				if(extraView != null) {
+					dialogLayout1.addView(extraView);
+				}
 				dialogLayout1.addView(btn);
 
 				var dialog = new Dialog_(CONTEXT);
@@ -9774,7 +9775,7 @@ function Song(songTitle, songArtist, songUrl, songGenre) {
 
 //TODO: Add Genre
 VertexClientPE.MusicUtils.registerSong(new Song("Hello", "OMFG", "http://download1481.mediafireuserdownload.com/xd59md9vw2rg/gb97ihc1xl83s2b/OMFG+-+Hello.mp3", "Electronic"));
-VertexClientPE.MusicUtils.registerSong(new Song("Neopolitan Dreams (Nilow Remix)", "Lisa Mitchell", "http://download1337.mediafireuserdownload.com/xkcpwv4eewmg/5qbuk6k29uvme7m/Lisa+Mitchell+-+Neopolitan+Dreams+%28Nilow+Rmx%29.mp3"));
+VertexClientPE.MusicUtils.registerSong(new Song("Neopolitan Dreams (Nilow Remix)", "Lisa Mitchell", "http://download1337.mediafireuserdownload.com/xkcpwv4eewmg/5qbuk6k29uvme7m/Lisa+Mitchell+-+Neopolitan+Dreams+%28Nilow+Rmx%29.mp3", "Dubstep"));
 VertexClientPE.MusicUtils.registerSong(new Song("Adventure (feat. Alexa Lusader)", "William Ekh", "http://files-cdn.nocopyrightsounds.co.uk/William%20Ekh%20-%20Adventure%20%28feat.%20Alexa%20Lusader%29.mp3", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("Blank [NCS Release]", "Disfigure", "http://files-cdn.nocopyrightsounds.co.uk/Disfigure%20-%20Blank.mp3", "Dubstep"));
 VertexClientPE.MusicUtils.registerSong(new Song("Can't Wait (feat. Anna Yvette) [NCS Release]", "Jim Yosef", "http://download1890.mediafireuserdownload.com/ni4dsv3d5khg/bpgdjbqy0p09biw/Jim+Yosef+-+Can%5C%27t+Wait+%28feat.+Anna+Yvette%29.mp3", "House"));
@@ -11137,6 +11138,14 @@ function copyToClipboard(textToCopy) {
 	let clipboard = CONTEXT.getSystemService(CONTEXT.CLIPBOARD_SERVICE);
 	let clip = android.content.ClipData.newPlainText("label", textToCopy);
 	clipboard.setPrimaryClip(clip);
+}
+
+function shareText(text) {
+	let sendIntent = new Intent_();
+	sendIntent.setAction(Intent_.ACTION_SEND);
+	sendIntent.putExtra(Intent_.EXTRA_TEXT, text);
+	sendIntent.setType("text/plain");
+	CONTEXT.startActivity(sendIntent);
 }
 
 function drawCircle(color) {
@@ -17008,6 +17017,19 @@ function webBrowserScreen(fromDashboard) {
 	}));
 }
 
+function reshowMenuButton() {
+	if(GUI != null) {
+		GUI.dismiss();
+		if(mainButtonPositionSetting == "top-right") {
+			GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
+		} else if(mainButtonPositionSetting == "top-left") {
+			GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+		} else if(mainButtonPositionSetting == "bottom-left") {
+			GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
+		}
+	}
+}
+
 VertexClientPE.showTipBar = function() {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
@@ -17171,18 +17193,9 @@ VertexClientPE.showEmptyMenu = function() {
 	});
 	emptyMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
 
-	if(GUI != null) {
-		GUI.dismiss();
-		if(mainButtonPositionSetting == "top-right") {
-			GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
-		} else if(mainButtonPositionSetting == "top-left") {
-			GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-		} else if(mainButtonPositionSetting == "bottom-left") {
-			GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
-		}
-	}
-
 	logoViewer.startAnimation(logoAnim);
+
+	reshowMenuButton();
 }
 
 VertexClientPE.showFullScreenMenu = function() {
@@ -17320,16 +17333,7 @@ VertexClientPE.showFullScreenMenu = function() {
 				fullScreenMenu.setBackgroundDrawable(backgroundSpecial());
 				fullScreenMenu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
 
-				if(GUI != null) {
-					GUI.dismiss();
-					if(mainButtonPositionSetting == "top-right") {
-						GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
-					} else if(mainButtonPositionSetting == "top-left") {
-						GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-					} else if(mainButtonPositionSetting == "bottom-left") {
-						GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
-					}
-				}
+				reshowMenuButton();
 			} catch(error) {
 				print("An error occurred: " + error);
 			}
@@ -17497,16 +17501,7 @@ function retroMenu() {
 					}
 				} else if(menuType == "halfscreen_top" || menuType == "tabbed_fullscreen") {
 					menu.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.TOP, 0, 0);
-					if(GUI != null) {
-						GUI.dismiss();
-						if(mainButtonPositionSetting == "top-right") {
-							GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
-						} else if(mainButtonPositionSetting == "top-left") {
-							GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-						} else if(mainButtonPositionSetting == "bottom-left") {
-							GUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
-						}
-					}
+					reshowMenuButton();
 				}
 			} catch(error) {
 				print('An error occured: ' + error);
