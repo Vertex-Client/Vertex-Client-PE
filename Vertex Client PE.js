@@ -759,150 +759,96 @@ function VectorLib() {
 let currentScreen = ScreenType.start_screen;
 
 function screenChangeHook(screenName) {
-	if(screenName == ScreenType.start_screen || screenName == ScreenType.hud || screenName == ScreenType.ingame || screenName == ScreenType.pause_screen) {
-		CONTEXT.runOnUiThread(new Runnable_({
-			run: function() {
+	CONTEXT.runOnUiThread(new Runnable_({
+		run: function() {
+			if(screenName == ScreenType.start_screen || screenName == ScreenType.hud || screenName == ScreenType.ingame || screenName == ScreenType.pause_screen) {
 				if(GUI != null) {
 					GUI.setTouchable(true);
 					GUI.update();
 				}
-			}
-		}));
-	} else {
-		if(!VertexClientPE.menuIsShowing) {
-			CONTEXT.runOnUiThread(new Runnable_({
-				run: function() {
+			} else {
+				if(!VertexClientPE.menuIsShowing) {
 					if(GUI != null) {
 						GUI.setTouchable(false);
 						GUI.update();
 					}
 				}
-			}));
-		}
-	}
-	if(screenName == ScreenType.hud || screenName == ScreenType.ingame) {
-		VertexClientPE.Render.initViews();
-		if((hacksList == null || !hacksList.isShowing()) && !VertexClientPE.menuIsShowing) {
-			showHacksList();
-			showTabGUI();
-			showShortcuts();
-			if(healthDisplayState) {
-				showHealthDisplay();
 			}
-			if(rotationPlusState) {
-				showRotationPlus();
-			}
-			if(watermarkState) {
-				showWatermark();
-			}
-			if(f5ButtonModeSetting == "ingame") {
-				showPauseUtilities();
-			}
-		}
-	} else {
-		VertexClientPE.Render.deinitViews();
-		if(hacksList != null) {
-			CONTEXT.runOnUiThread(new Runnable_({
-				run: function() {
+			if(screenName == ScreenType.hud || screenName == ScreenType.ingame) {
+				VertexClientPE.Render.initViews();
+				if((hacksList == null || !hacksList.isShowing()) && !VertexClientPE.menuIsShowing) {
+					showHacksList();
+					showTabGUI();
+					showShortcuts();
+					if(healthDisplayState) {
+						showHealthDisplay();
+					}
+					if(rotationPlusState) {
+						showRotationPlus();
+					}
+					if(watermarkState) {
+						showWatermark();
+					}
+					if(f5ButtonModeSetting == "ingame") {
+						showPauseUtilities();
+					}
+				}
+			} else {
+				VertexClientPE.Render.deinitViews();
+				if(hacksList != null) {
 					hacksList.dismiss();
 				}
-			}));
-		}
-		if(tabGUI != null) {
-			CONTEXT.runOnUiThread(new Runnable_({
-				run: function() {
+				if(tabGUI != null) {
 					tabGUI.dismiss();
 				}
-			}));
-		}
-		if(shortcutGUI != null) {
-			CONTEXT.runOnUiThread(new Runnable_({
-				run: function() {
+				if(shortcutGUI != null) {
 					shortcutGUI.dismiss();
 				}
-			}));
-		}
-		if(healthDisplayUI != null) {
-			CONTEXT.runOnUiThread(new Runnable_({
-				run: function() {
+				if(healthDisplayUI != null) {
 					healthDisplayUI.dismiss();
 				}
-			}));
-		}
-		if(watermarkUI != null) {
-			CONTEXT.runOnUiThread(new Runnable_({
-				run: function() {
+				if(watermarkUI != null) {
 					watermarkUI.dismiss();
 				}
-			}));
-		} //todo: optimize this section
-		if(rotationPlusUI != null) {
-			CONTEXT.runOnUiThread(new Runnable_({
-				run: function() {
+				if(rotationPlusUI != null) {
 					rotationPlusUI.dismiss();
 				}
-			}));
-		}
-		if(pauseUtilitiesUI != null) {
-			if(pauseUtilitiesUI.isShowing()) {
-				CONTEXT.runOnUiThread(new Runnable_({
-					run: function() {
-						pauseUtilitiesUI.dismiss();
+				if(pauseUtilitiesUI != null && pauseUtilitiesUI.isShowing()) {
+					pauseUtilitiesUI.dismiss();
+				}
+				if(screenName == ScreenType.start_screen) {
+					if((mainMenuTextList == null || !mainMenuTextList.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
+						VertexClientPE.showStartScreenBar();
 					}
-				}));
-			}
-		}
-		if(screenName == ScreenType.start_screen) {
-			if((mainMenuTextList == null || !mainMenuTextList.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
-				VertexClientPE.showStartScreenBar();
-			}
-			if((accountManagerGUI == null || !accountManagerGUI.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
-				CONTEXT.runOnUiThread(new Runnable_({
-					run: function() {
+					if((accountManagerGUI == null || !accountManagerGUI.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
 						showAccountManagerButton();
 					}
-				}));
-			}
-		} else {
-			if(mainMenuTextList != null) {
-				if(mainMenuTextList.isShowing()) {
-					CONTEXT.runOnUiThread(new Runnable_({
-						run: function() {
-							mainMenuTextList.dismiss();
-						}
-					}));
+				} else {
+					if(mainMenuTextList != null && mainMenuTextList.isShowing()) {
+						mainMenuTextList.dismiss();
+					}
+					if(accountManagerGUI != null && accountManagerGUI.isShowing()) {
+						accountManagerGUI.dismiss();
+					}
 				}
 			}
-			if(accountManagerGUI != null) {
-				if(accountManagerGUI.isShowing()) {
-					CONTEXT.runOnUiThread(new Runnable_({
-						run: function() {
-							accountManagerGUI.dismiss();
-						}
-					}));
+			if(screenName == ScreenType.pause_screen) {
+				VertexClientPE.isPaused = true;
+				if(!VertexClientPE.menuIsShowing && f5ButtonModeSetting == "pause") {
+					showPauseUtilities();
 				}
-			}
-		}
-	}
-	if(screenName == ScreenType.pause_screen) {
-		VertexClientPE.isPaused = true;
-		if(!VertexClientPE.menuIsShowing && f5ButtonModeSetting == "pause") {
-			showPauseUtilities();
-		}
-	} else if(currentScreen == ScreenType.pause_screen) {
-		if(screenName != ScreenType.options_screen) {
-			VertexClientPE.isPaused = false;
-		}
-		if(pauseUtilitiesUI != null) {
-			if(pauseUtilitiesUI.isShowing()) {
-				CONTEXT.runOnUiThread(new Runnable_({
-					run: function() {
+			} else if(currentScreen == ScreenType.pause_screen) {
+				if(screenName != ScreenType.options_screen) {
+					VertexClientPE.isPaused = false;
+				}
+				if(pauseUtilitiesUI != null) {
+					if(pauseUtilitiesUI.isShowing()) {
 						pauseUtilitiesUI.dismiss();
 					}
-				}));
+				}
 			}
 		}
-	}
+	}));
 	currentScreen = screenName;
 }
 
@@ -3078,10 +3024,10 @@ var autoSpammer = {
 		return true;
 	},
 	getSettingsLayout: function() {
-		var autoSpammerMessageLayout = new LinearLayout_(CONTEXT);
+		let autoSpammerMessageLayout = new LinearLayout_(CONTEXT);
 		autoSpammerMessageLayout.setOrientation(1);
 
-		var spamUseRandomMsgSettingCheckBox = clientCheckBox();
+		let spamUseRandomMsgSettingCheckBox = clientCheckBox();
 		spamUseRandomMsgSettingCheckBox.setChecked(spamUseRandomMsgSetting=="on");
 		spamUseRandomMsgSettingCheckBox.setText("Use random messages instead of the custom message");
 		spamUseRandomMsgSettingCheckBox.setOnClickListener(new View_.OnClickListener() {
@@ -3091,8 +3037,8 @@ var autoSpammer = {
 			}
 		});
 
-		var spamMessageTitle = clientTextView("Custom message:");
-		var spamMessageInput = clientEditText(spamMessage);
+		let spamMessageTitle = clientTextView("Custom message:");
+		let spamMessageInput = clientEditText(spamMessage);
 		spamMessageInput.setHint("Spam message");
 		spamMessageInput.addTextChangedListener(new TextWatcher_() {
 			onTextChanged: function() {
@@ -3100,8 +3046,8 @@ var autoSpammer = {
 			}
 		});
 
-		var spamDelayTimeTitle = clientTextView("Delay time: | " + spamDelayTime + " seconds");
-		var spamDelayTimeSlider = clientSeekBar();
+		let spamDelayTimeTitle = clientTextView("Delay time: | " + spamDelayTime + " seconds");
+		let spamDelayTimeSlider = clientSeekBar();
 		spamDelayTimeSlider.setProgress(spamDelayTime);
 		spamDelayTimeSlider.setMax(60);
 		spamDelayTimeSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
@@ -17105,7 +17051,6 @@ VertexClientPE.showMenu = function() {
 		}
 		VertexClientPE.menuIsShowing = true;
 	}
-	
 }
 
 /**
@@ -17354,8 +17299,7 @@ VertexClientPE.showTableMenu = function() {
 				
 				var dScrollView = new ScrollView_(CONTEXT);
 				dScrollView.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT));
-				//dScrollView.setScrollBarStyle(View_.SCROLLBARS_OUTSIDE_OVERLAY);
-				//dScrollView.setFillViewport(true);
+
 				var dScrollInside = new LinearLayout_(CONTEXT);
 				dScrollInside.setGravity(Gravity_.CENTER);
 				dScrollInside.setOrientation(1);
@@ -17364,9 +17308,7 @@ VertexClientPE.showTableMenu = function() {
 				var mainLayout = new LinearLayout_(CONTEXT);
 				mainLayout.setGravity(Gravity_.CENTER);
 				mainLayout.setOrientation(LinearLayout_.VERTICAL);
-				//mainLayout.setPadding(10, 10, 10, 10);
-				//mainLayout.addView(settingsTitle);
-				//mainLayout.addView(dTitle);
+
 				mainLayout.addView(dScrollView);
 
 				var tableLayout = new TableLayout_(CONTEXT);
@@ -17632,10 +17574,6 @@ VertexClientPE.showCategoryMenus = function () {
 					});
 					combatTitle.setOnTouchListener(new View_.OnTouchListener({
 						onTouch(v, e) {
-							if (!combatdown) {
-								combatmX = e.getX();
-								combatmY = e.getY();
-							}
 							if (combatdown) {
 								var a = e.getAction();
 								if (a == 2) {
@@ -17647,6 +17585,9 @@ VertexClientPE.showCategoryMenus = function () {
 									VertexClientPE.saveFloatingMenus("combat");
 								}
 								if (a == 1) combatdown = false;
+							} else {
+								combatmX = e.getX();
+								combatmY = e.getY();
 							}
 							return false;
 						}
@@ -17703,10 +17644,6 @@ VertexClientPE.showCategoryMenus = function () {
 					});
 					worldTitle.setOnTouchListener(new View_.OnTouchListener({
 						onTouch: function (v, e) {
-							if (!worlddown) {
-								worldmX = e.getX();
-								worldmY = e.getY();
-							}
 							if (worlddown) {
 								var a = e.getAction()
 								if (a == 2) {
@@ -17718,6 +17655,9 @@ VertexClientPE.showCategoryMenus = function () {
 									VertexClientPE.saveFloatingMenus("world");
 								}
 								if (a == 1) worlddown = false;
+							} else {
+								worldmX = e.getX();
+								worldmY = e.getY();
 							}
 							return false;
 						}
@@ -17774,10 +17714,6 @@ VertexClientPE.showCategoryMenus = function () {
 					});
 					movementTitle.setOnTouchListener(new View_.OnTouchListener({
 						onTouch: function (v, e) {
-							if (!movementdown) {
-								movementmX = e.getX();
-								movementmY = e.getY();
-							}
 							if (movementdown) {
 								var a = e.getAction()
 								if (a == 2) {
@@ -17789,6 +17725,9 @@ VertexClientPE.showCategoryMenus = function () {
 									VertexClientPE.saveFloatingMenus("movement");
 								}
 								if (a == 1) movementdown = false;
+							} else {
+								movementmX = e.getX();
+								movementmY = e.getY();
 							}
 							return false;
 						}
@@ -17844,10 +17783,6 @@ VertexClientPE.showCategoryMenus = function () {
 					});
 					playerTitle.setOnTouchListener(new View_.OnTouchListener({
 						onTouch: function (v, e) {
-							if (!playerdown) {
-								playermX = e.getX();
-								playermY = e.getY();
-							}
 							if (playerdown) {
 								var a = e.getAction()
 								if (a == 2) {
@@ -17859,6 +17794,9 @@ VertexClientPE.showCategoryMenus = function () {
 									VertexClientPE.saveFloatingMenus("player");
 								}
 								if (a == 1) playerdown = false;
+							} else {
+								playermX = e.getX();
+								playermY = e.getY();
 							}
 							return false;
 						}
@@ -17915,10 +17853,6 @@ VertexClientPE.showCategoryMenus = function () {
 					});
 					miscTitle.setOnTouchListener(new View_.OnTouchListener({
 						onTouch: function (v, e) {
-							if (!miscdown) {
-								miscmX = e.getX();
-								miscmY = e.getY();
-							}
 							if (miscdown) {
 								var a = e.getAction()
 								if (a == 2) {
@@ -17930,6 +17864,9 @@ VertexClientPE.showCategoryMenus = function () {
 									VertexClientPE.saveFloatingMenus("misc");
 								}
 								if (a == 1) miscdown = false;
+							} else {
+								miscmX = e.getX();
+								miscmY = e.getY();
 							}
 							return false;
 						}
@@ -18401,7 +18338,7 @@ function showHacksList() {
 					var statesText = "";
 					VertexClientPE.modules.forEach(function (element, index, array) {
 						if(element.isStateMod() && element.state) {
-							if(bypassState && element.canBypassBypass && !element.canBypassBypass()) {
+							if(bypassState && element.hasOwnProperty("canBypassBypass") && !element.canBypassBypass()) {
 								return;
 							}
 							if(enabledHacksCounter != 0) {
@@ -18695,33 +18632,7 @@ function showWatermark() {
 				rotationPlusLayout.setOrientation(1);
 
 				let watermarkTextView = clientTextView(new Html_.fromHtml(watermarkTextSetting), true, "diff");
-				/* watermarkTextView.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewArg) {
-						
-					}
-				})); */
 				rotationPlusLayout.addView(watermarkTextView);
-
-				/* rotationPlusMiddleCenterView.setOnTouchListener(new View_.OnTouchListener({
-					onTouch(v, e) {
-						if (!rotationdown) {
-							rotationmX = e.getX();
-							rotationmY = e.getY();
-						}
-						if (rotationdown) {
-							var a = e.getAction();
-							if (a == 2) {
-								var X = parseInt(e.getX() - rotationmX) * -1 / 10;
-								var Y = parseInt(e.getY() - rotationmY) * -1 / 10;
-								rotationtpopx = rotationtpopx + X;
-								rotationtpopy = rotationtpopy + Y;
-								rotationPlusUI.update(parseInt(rotationtpopx), parseInt(rotationtpopy), -1, -1);
-							}
-							if (a == 1) rotationdown = false;
-						}
-						return false;
-					}
-				})); */
 
 				watermarkUI = new PopupWindow_(rotationPlusLayout, -2, -2);
 				watermarkUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
@@ -18787,10 +18698,6 @@ function showRotationPlus() {
 				});
 				rotationPlusMiddleCenterView.setOnTouchListener(new View_.OnTouchListener({
 					onTouch(v, e) {
-						if (!rotationdown) {
-							rotationmX = e.getX();
-							rotationmY = e.getY();
-						}
 						if (rotationdown) {
 							var a = e.getAction();
 							if (a == 2) {
@@ -18801,6 +18708,9 @@ function showRotationPlus() {
 								rotationPlusUI.update(parseInt(rotationtpopx), parseInt(rotationtpopy), -1, -1);
 							}
 							if (a == 1) rotationdown = false;
+						} else {
+							rotationmX = e.getX();
+							rotationmY = e.getY();
 						}
 						return false;
 					}
