@@ -3631,11 +3631,7 @@ var coordsDisplay = {
 		this.state = !this.state;
 	},
 	onTick: function() {
-		var x = parseInt(getPlayerX());
-		var y = parseInt(getPlayerY());
-		var z = parseInt(getPlayerZ());
-		//var fps = parseInt(VertexClientPE.Utils.fps);
-		ModPE.showTipMessage("\n\n\n" + "X: " + x + " Y: " + y + " Z: " + z);
+		ModPE.showTipMessage("\n\n\n" + "X: " + parseInt(getPlayerX()) + " Y: " + parseInt(getPlayerY()) + " Z: " + parseInt(getPlayerZ()));
 	}
 }
 
@@ -5458,7 +5454,6 @@ var noFall = {
 		this.state = !this.state;
 	},
 	onTick: function() {
-		//clientMessage(Entity.getVelY(getPlayerEnt()));
 		if(!Player.isFlying() && !VertexClientPE.Utils.Player.onGround() && Entity.getVelY(getPlayerEnt()) < -0.07840000092983246) {
 			let x = getPlayerX();
 			let y = getPlayerY();
@@ -6241,9 +6236,9 @@ var js = {
 var rename = {
 	syntax: "rename <name>",
 	onCall: function(cmd) {
-		var renameName = cmd.substring(7, cmd.length);
-		var renameSlot = Player.getSelectedSlotId();
-		var renameItem = Player.getInventorySlot(renameSlot);
+		let renameName = cmd.substring(7, cmd.length);
+		let renameSlot = Player.getSelectedSlotId();
+		let renameItem = Player.getInventorySlot(renameSlot);
 		if(renameName  != null && renameName.replaceAll(" ", "") != "" && renameItem != 0) {
 			Player.setItemCustomName(renameSlot, renameName);
 			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully renamed item to " + renameName + "!");
@@ -6258,8 +6253,8 @@ var rename = {
 var w = {
 	syntax: "w <url>",
 	onCall: function(cmd) {
-		var url = cmd.split(" ")[1];
-		if(url == null || url.replaceAll(" ") == null) {
+		let url = cmd.split(" ")[1];
+		if(url == null || url == "" || url.replaceAll(" ", "") == "") {
 			VertexClientPE.syntaxError(this.syntax);
 		} else {
 			ModPE.goToURL(url);
@@ -6316,10 +6311,10 @@ VertexClientPE.showNotification = function(eventTitle, eventText) {
 	mNM.notify(eventTitle, 0, notification);
 }
 
-var nameColor = "\u00A7b";
-var healthColor = "\u00A7c";
+let nameColor = "\u00A7b";
+let healthColor = "\u00A7c";
 
-var defaultDestroyTimeAll = [
+const defaultDestroyTimeAll = [
 	null, 1.5, 0.6, 0.5, 2, 2, 0, -1, null, null, null, null, 0.5, 0.6, 3, 3, 3, 2, 0.2, 0.6, 0.3, 3, 3, null, 0.8, null, 0.2, 0.7, null, null, 4, 0, 0, null, null, 0.8, null, 0, 0, 0, 0, 3, 5, 2, 2, 2, 0, 1.5, 2, 50, 0, 0, null, 2, 2.5, null, 3, 5, 2.5, 0, 0.6, 3.5, 3.5, 1, 3, 0.4, 0.7, 2, 1, null, null, 5, null, 3, 3, null, null, null, 0.1, 0.5, 0.2, 0.4, 0.6, 0, null, 2, 1, 0.4, 0.3, null, 1, 0.5, null, null, -1, 3, null, 1.5, null, null, 5, 0.3, 1, 0, 0, null, 2, 2, 1.5, null, null, 2, null, 2, null, null, null, null, null, null, null, null, null, null, null, null, null, 0.8, null, null, null, null, null, 2, 2, 2, null, null, 2, null, 0, 0, null, null, null, null, null, null, null, null, null, null, null, null, 0.8, 0.8, 2, 2, null, null, null, null, null, null, null, null, null, null, null, 0.5, 0.1, 5, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 0, 3.5, 50, 5, 0.6, 0.6, 5, null, null, null, null, 0
 ];
 
@@ -9719,7 +9714,6 @@ function Song(songTitle, songArtist, songUrl, songGenre) {
 	this.url = songUrl;
 }
 
-//TODO: Add Genre
 VertexClientPE.MusicUtils.registerSong(new Song("Hello", "OMFG", "http://download1481.mediafireuserdownload.com/xd59md9vw2rg/gb97ihc1xl83s2b/OMFG+-+Hello.mp3", "Electronic"));
 VertexClientPE.MusicUtils.registerSong(new Song("Neopolitan Dreams (Nilow Remix)", "Lisa Mitchell", "http://download1337.mediafireuserdownload.com/xkcpwv4eewmg/5qbuk6k29uvme7m/Lisa+Mitchell+-+Neopolitan+Dreams+%28Nilow+Rmx%29.mp3", "Dubstep"));
 VertexClientPE.MusicUtils.registerSong(new Song("Adventure (feat. Alexa Lusader)", "William Ekh", "http://files-cdn.nocopyrightsounds.co.uk/William%20Ekh%20-%20Adventure%20%28feat.%20Alexa%20Lusader%29.mp3", "House"));
@@ -18290,16 +18284,12 @@ function showHacksList() {
 	let display = CONTEXT.getWindowManager().getDefaultDisplay(),
 		width = display.getWidth(),
 		height = display.getHeight();
-	if(hacksList != null) {
-		CONTEXT.runOnUiThread(new Runnable_({
-			run: function() {
+	CONTEXT.runOnUiThread(new Runnable_({
+		run: function() {
+			if(hacksList != null) {
 				hacksList.dismiss();
 			}
-		}));
-	}
-	if(hacksList == null || !hacksList.isShowing()) {
-		CONTEXT.runOnUiThread(new Runnable_({
-			run: function() {
+			if(hacksList == null || !hacksList.isShowing()) {
 				try {
 					enabledHacksCounter = 0;
 
@@ -18345,7 +18335,7 @@ function showHacksList() {
 								statesText += " - "
 							}
 							statesText += VertexClientPE.getCustomModName(element.name);
-							if(element.getExtraInfo) {
+							if(element.hasOwnProperty("getExtraInfo")) {
 								statesText += " [" + element.getExtraInfo() + "]";
 							}
 							enabledHacksCounter++;
@@ -18415,8 +18405,8 @@ function showHacksList() {
 					VertexClientPE.showBugReportDialog(error);
 				}
 			}
-		}));
-	}
+		}
+	}));
 }
 
 function updateHacksList() {
@@ -18435,7 +18425,7 @@ function updateHacksList() {
 								statesText += " - "
 							}
 							statesText += VertexClientPE.getCustomModName(element.name);
-							if(element.getExtraInfo) {
+							if(element.hasOwnProperty("getExtraInfo")) {
 								statesText += " [" + element.getExtraInfo() + "]";
 							}
 							enabledHacksCounter++;
@@ -18463,16 +18453,12 @@ function updateHacksList() {
 }
 
 function showTabGUI() {
-	if(tabGUI != null) {
-		CONTEXT.runOnUiThread(new Runnable_({
-			run: function() {
+	CONTEXT.runOnUiThread(new Runnable_({
+		run: function() {
+			if(tabGUI != null) {
 				tabGUI.dismiss();
 			}
-		}));
-	}
-	if(tabGUI == null || !tabGUI.isShowing()) {
-		CONTEXT.runOnUiThread(new Runnable_({
-			run: function() {
+			if(tabGUI == null || !tabGUI.isShowing()) {
 				try {
 					var tabGUILayout = new LinearLayout_(CONTEXT);
 					tabGUILayout.setOrientation(LinearLayout_.HORIZONTAL);
@@ -18513,23 +18499,18 @@ function showTabGUI() {
 					VertexClientPE.showBugReportDialog(error);
 				}
 			}
-		}));
-	}
+		}
+	}));
 }
 
 function showShortcuts() {
-	if(shortcutGUI != null) {
-		CONTEXT.runOnUiThread(new Runnable_({
-			run: function() {
+	CONTEXT.runOnUiThread(new Runnable_({
+		run: function() {
+			if(shortcutGUI != null) {
 				shortcutGUI.dismiss();
 			}
-		}));
-	}
-	if(shortcutGUI == null || !shortcutGUI.isShowing()) {
-		CONTEXT.runOnUiThread(new Runnable_({
-			run: function() {
+			if(shortcutGUI == null || !shortcutGUI.isShowing()) {
 				try {
-
 					var shortcutGUILayout1 = new LinearLayout_(CONTEXT);
 					shortcutGUILayout1.setOrientation(1);
 					shortcutGUILayout1.setGravity(Gravity_.CENTER_VERTICAL);
@@ -18598,8 +18579,8 @@ function showShortcuts() {
 					VertexClientPE.showBugReportDialog(error);
 				}
 			}
-		}));
-	}
+		}
+	}));
 }
 
 var healthDisplayView;
@@ -18877,7 +18858,7 @@ VertexClientPE.showExitButtons = function(showBackButton, title, icon, extraView
 
 				var backScreenUILayout = new LinearLayout_(CONTEXT);
 				var backScreenUIButton = new Button_(CONTEXT);
-				backScreenUIButton.setText("<");//Text
+				backScreenUIButton.setText("<");
 				backScreenUIButton.setBackgroundDrawable(backBg);
 				backScreenUIButton.setTextColor(Color_.WHITE);
 				backScreenUIButton.setOnTouchListener(new View_.OnTouchListener() {
@@ -18894,12 +18875,12 @@ VertexClientPE.showExitButtons = function(showBackButton, title, icon, extraView
 				backScreenUIButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						if(title == null) {
-							backScreenUI.dismiss(); //Close
-							exitScreenUI.dismiss(); //Close
+							backScreenUI.dismiss();
+							exitScreenUI.dismiss();
 						} else {
-							barUI.dismiss(); //Close
+							barUI.dismiss();
 						}
-						screenUI.dismiss(); //Close
+						screenUI.dismiss();
 						dashboardScreen("Dashboard", android.R.drawable.ic_dialog_dialer);
 					}
 				}));
@@ -18913,7 +18894,7 @@ VertexClientPE.showExitButtons = function(showBackButton, title, icon, extraView
 
 				var xScreenUILayout = new LinearLayout_(CONTEXT);
 				var xScreenUIButton = new Button_(CONTEXT);
-				xScreenUIButton.setText("X");//Text
+				xScreenUIButton.setText("X");
 				xScreenUIButton.setBackgroundDrawable(exitBg);
 				xScreenUIButton.setTextColor(Color_.WHITE);
 				xScreenUIButton.setOnTouchListener(new View_.OnTouchListener() {
@@ -18929,8 +18910,8 @@ VertexClientPE.showExitButtons = function(showBackButton, title, icon, extraView
 				});
 				xScreenUIButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
-						barUI.dismiss(); //Close
-						screenUI.dismiss(); //Close
+						barUI.dismiss();
+						screenUI.dismiss();
 						VertexClientPE.menuIsShowing = false;
 						showMenuButton();
 					}
@@ -18970,7 +18951,7 @@ function overlayWebBrowser() {
 			try {
 				var backPageWebBrowserLayout = new LinearLayout_(CONTEXT);
 				var backPageWebBrowserButton = new Button_(CONTEXT);
-				backPageWebBrowserButton.setText("\u2190");//Text
+				backPageWebBrowserButton.setText("\u2190");
 				backPageWebBrowserButton.getBackground().setColorFilter(Color_.parseColor("#0B6138"), PorterDuff_.Mode.MULTIPLY);
 				backPageWebBrowserButton.setTextColor(Color_.WHITE);
 				backPageWebBrowserButton.setOnClickListener(new View_.OnClickListener({
@@ -18988,7 +18969,7 @@ function overlayWebBrowser() {
 
 				var forwardPageWebBrowserLayout = new LinearLayout_(CONTEXT);
 				var forwardPageWebBrowserButton = new Button_(CONTEXT);
-				forwardPageWebBrowserButton.setText("\u2192");//Text
+				forwardPageWebBrowserButton.setText("\u2192");
 				forwardPageWebBrowserButton.getBackground().setColorFilter(Color_.parseColor("#0B6138"), PorterDuff_.Mode.MULTIPLY);
 				forwardPageWebBrowserButton.setTextColor(Color_.WHITE);
 				forwardPageWebBrowserButton.setOnClickListener(new View_.OnClickListener({
@@ -19004,7 +18985,7 @@ function overlayWebBrowser() {
 
 				var reloadWebBrowserLayout = new LinearLayout_(CONTEXT);
 				var reloadWebBrowserButton = new Button_(CONTEXT);
-				reloadWebBrowserButton.setText("\u21BB");//Text
+				reloadWebBrowserButton.setText("\u21BB");
 				reloadWebBrowserButton.getBackground().setColorFilter(Color_.parseColor("#0B6138"), PorterDuff_.Mode.MULTIPLY);
 				reloadWebBrowserButton.setTextColor(Color_.WHITE);
 				reloadWebBrowserButton.setOnClickListener(new View_.OnClickListener({
@@ -19018,7 +18999,7 @@ function overlayWebBrowser() {
 
 				var urlBarWebBrowserLayout = new LinearLayout_(CONTEXT);
 				var urlBarWebBrowserButton = new Button_(CONTEXT);
-				urlBarWebBrowserButton.setText("...");//Text
+				urlBarWebBrowserButton.setText("...");
 				urlBarWebBrowserButton.getBackground().setColorFilter(Color_.parseColor("#0B6138"), PorterDuff_.Mode.MULTIPLY);
 				urlBarWebBrowserButton.setTextColor(Color_.WHITE);
 				urlBarWebBrowserButton.setOnClickListener(new View_.OnClickListener({
@@ -19030,7 +19011,7 @@ function overlayWebBrowser() {
 
 				var devWebBrowserLayout = new LinearLayout_(CONTEXT);
 				var devWebBrowserButton = new Button_(CONTEXT);
-				devWebBrowserButton.setText("F12");//Text
+				devWebBrowserButton.setText("F12");
 				devWebBrowserButton.getBackground().setColorFilter(Color_.parseColor("#0B6138"), PorterDuff_.Mode.MULTIPLY);
 				devWebBrowserButton.setTextColor(Color_.WHITE);
 				devWebBrowserButton.setOnClickListener(new View_.OnClickListener({
@@ -19043,18 +19024,18 @@ function overlayWebBrowser() {
 
 				var xWebBrowserLayout = new LinearLayout_(CONTEXT);
 				xWebBrowserButton = new Button_(CONTEXT);
-				xWebBrowserButton.setText("X");//Text
+				xWebBrowserButton.setText("X");
 				xWebBrowserButton.getBackground().setColorFilter(Color_.parseColor("#FF0000"), PorterDuff_.Mode.MULTIPLY);
 				xWebBrowserButton.setTextColor(Color_.WHITE);
 				xWebBrowserButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
-						backPageWebBrowserUI.dismiss(); //Close
-						forwardPageWebBrowserUI.dismiss(); //Close
-						reloadWebBrowserUI.dismiss(); //Close
-						urlBarWebBrowserUI.dismiss(); //Close
-						devWebBrowserUI.dismiss(); //Close
-						exitWebBrowserUI.dismiss(); //Close
-						screenUI.dismiss(); //Close
+						backPageWebBrowserUI.dismiss();
+						forwardPageWebBrowserUI.dismiss();
+						reloadWebBrowserUI.dismiss();
+						urlBarWebBrowserUI.dismiss();
+						devWebBrowserUI.dismiss();
+						exitWebBrowserUI.dismiss();
+						screenUI.dismiss();
 						VertexClientPE.menuIsShowing = false;
 						showMenuButton();
 					}
