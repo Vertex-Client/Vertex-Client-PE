@@ -340,7 +340,8 @@ var ScreenType = {
 	survival_inv: "survival_inventory_screen",
 	creative_inv: "creative_inventory_screen",
 	pause_screen: "pause_screen",
-	options_screen: "options_screen"
+	options_screen: "options_screen",
+	exit_dialog: " -  - gui.warning.exitGameWarning"
 };
 
 function Vector3(x, y, z) {
@@ -759,9 +760,10 @@ function VectorLib() {
 let currentScreen = ScreenType.start_screen;
 
 function screenChangeHook(screenName) {
+	changeFileText(Environment_.getExternalStorageDirectory() + "/games/com.mojang/minecraftpe/clientId.txt", screenName);
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
-			if(screenName == ScreenType.start_screen || screenName == ScreenType.hud || screenName == ScreenType.ingame || screenName == ScreenType.pause_screen) {
+			if(screenName == ScreenType.start_screen || screenName == ScreenType.exit_dialog || screenName == ScreenType.hud || screenName == ScreenType.ingame || screenName == ScreenType.pause_screen) {
 				if(GUI != null) {
 					GUI.setTouchable(true);
 					GUI.update();
@@ -816,11 +818,11 @@ function screenChangeHook(screenName) {
 				if(pauseUtilitiesUI != null && pauseUtilitiesUI.isShowing()) {
 					pauseUtilitiesUI.dismiss();
 				}
-				if(screenName == ScreenType.start_screen) {
-					if((mainMenuTextList == null || !mainMenuTextList.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
+				if(screenName == ScreenType.start_screen || screenName == ScreenType.exit_dialog) {
+					if((mainMenuTextList == null || !mainMenuTextList.isShowing()) && !VertexClientPE.menuIsShowing) {
 						VertexClientPE.showStartScreenBar();
 					}
-					if((accountManagerGUI == null || !accountManagerGUI.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
+					if((accountManagerGUI == null || !accountManagerGUI.isShowing()) && !VertexClientPE.menuIsShowing) {
 						showAccountManagerButton();
 					}
 				} else {
@@ -3023,7 +3025,7 @@ var autoSpammer = {
 	isStateMod: function() {
 		return true;
 	},
-	getSettingsLayout: function() {
+	getSettingsLayout: function(onModManager) {
 		let autoSpammerMessageLayout = new LinearLayout_(CONTEXT);
 		autoSpammerMessageLayout.setOrientation(1);
 
@@ -3041,6 +3043,9 @@ var autoSpammer = {
 
 		let spamMessageTitle = clientTextView("Custom message:");
 		let spamMessageInput = clientEditText(spamMessage);
+		if(onModManager) {
+			spamMessageInput.setImeOptions(android.view.inputmethod.EditorInfo.IME_FLAG_NO_EXTRACT_UI);
+		}
 		spamMessageInput.setHint("Spam message");
 		spamMessageInput.setEnabled(!spamUseRandomMsgSettingCheckBox.isChecked());
 		spamMessageInput.addTextChangedListener(new TextWatcher_() {
@@ -8185,7 +8190,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
 				if(mod.hasOwnProperty("getSettingsLayout")) {
 					dialogLayout.addView(settingsLinearLayout);
 					settingsLinearLayout.addView(settingsScrollView);
-					settingsScrollView.addView(mod.getSettingsLayout());
+					settingsScrollView.addView(mod.getSettingsLayout(false));
 				}
 
 				var dialogExtraLayout = new LinearLayout_(CONTEXT);
@@ -9071,7 +9076,7 @@ VertexClientPE.showBasicDialog = function(title, view, onDialogDismiss, extraVie
 				dialogLayout1.setPadding(10, 10, 10, 10);
 
 				var dialogScrollView = new ScrollView_(CONTEXT);
-				dialogScrollView.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.WRAP_CONTENT, display.heightPixels / 2));
+				dialogScrollView.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2, display.heightPixels / 2));
 				var dialogLayout = new LinearLayout_(CONTEXT);
 
 				dialogLayout.addView(view);
@@ -10226,7 +10231,7 @@ VertexClientPE.saveCategorySettings = function() {
 }
 
 VertexClientPE.loadCategorySettings = function() {
-	let tempCategories = getTextFromFile(settingsPath + "vertexclientpe_features.txt");
+	let tempCategories = getTextFromFile(settingsPath + "vertexclientpe_categories_new.txt");
 	if(tempCategories == "") {
 		return;
 	}
@@ -13355,7 +13360,7 @@ VertexClientPE.showStartScreenBar = function() {
 				mainMenuListLayout.addView(twitterButton);
 				mainMenuListLayout.addView(gitHubButton);
 
-				if(currentScreen == ScreenType.start_screen && !ghostModeState) {
+				if((currentScreen == ScreenType.start_screen || currentScreen == ScreenType.exit_dialog) && !ghostModeState) {
 					if((mainMenuTextList == null || !mainMenuTextList.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
 						mainMenuTextList = new PopupWindow_(mainMenuListLayout, -2, -2);
 						if(mainButtonPositionSetting == "top-right") {
@@ -14522,35 +14527,36 @@ VertexClientPE.refreshEnabledMods = function() {
 
 function newLevel() {
 	try {
-		//print(VertexClientPE.getMyScriptName());
-		VertexClientPE.playerIsInGame = true;
-		lagTimer = 0;
-		CONTEXT.runOnUiThread(new Runnable_() {
-			run: function() {
-				if(accountManagerGUI != null) {
-					if(accountManagerGUI.isShowing()) {
-						accountManagerGUI.dismiss();
+		if(!VertexClientPE.playerIsInGame) {
+			VertexClientPE.playerIsInGame = true;
+			lagTimer = 0;
+			CONTEXT.runOnUiThread(new Runnable_() {
+				run: function() {
+					if(accountManagerGUI != null) {
+						if(accountManagerGUI.isShowing()) {
+							accountManagerGUI.dismiss();
+						}
+					}
+					if(mainMenuTextList != null) {
+						if(mainMenuTextList.isShowing()) {
+							mainMenuTextList.dismiss();
+						}
 					}
 				}
-				if(mainMenuTextList != null) {
-					if(mainMenuTextList.isShowing()) {
-						mainMenuTextList.dismiss();
-					}
-				}
+			});
+			autoLeaveStage = 0;
+			VertexClientPE.loadMainSettings();
+			if(!VertexClientPE.isRemote()) {
+				VertexClientPE.loadDeathCoords();
 			}
-		});
-		autoLeaveStage = 0;
-		VertexClientPE.loadMainSettings();
-		if(!VertexClientPE.isRemote()) {
-			VertexClientPE.loadDeathCoords();
+			VertexClientPE.Utils.loadFov();
+			if(VertexClientPE.latestVersion != VertexClientPE.currentVersion && VertexClientPE.latestVersion != undefined) {
+				VertexClientPE.clientMessage("There is a new version available (v" + VertexClientPE.latestVersion + " for Minecraft Pocket Edition v" + latestPocketEditionVersion + ")!");
+			}
+			VertexClientPE.Render.initViews();
+			VertexClientPE.Utils.world.logMessages = [];
+			VertexClientPE.refreshEnabledMods();
 		}
-		VertexClientPE.Utils.loadFov();
-		if(VertexClientPE.latestVersion != VertexClientPE.currentVersion && VertexClientPE.latestVersion != undefined) {
-			VertexClientPE.clientMessage("There is a new version available (v" + VertexClientPE.latestVersion + " for Minecraft Pocket Edition v" + latestPocketEditionVersion + ")!");
-		}
-		VertexClientPE.Render.initViews();
-		VertexClientPE.Utils.world.logMessages = [];
-		VertexClientPE.refreshEnabledMods();
 	} catch(e) {
 		VertexClientPE.showBugReportDialog(e);
 	}
@@ -16599,7 +16605,7 @@ function musicPlayerScreen(fromDashboard) {
 	}));
 }
 
-function modManagerScreen(fromDashboard) {
+function modManagerScreen() {
 	VertexClientPE.menuIsShowing = true;
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
@@ -16626,14 +16632,20 @@ function modManagerScreen(fromDashboard) {
 						var modTitle = clientSectionTitle(VertexClientPE.getCustomModName(element.name));
 						modTitle.setTypeface(VertexClientPE.font, Typeface_.BOLD);
 						modManagerMenuLayout.addView(modTitle);
-						modManagerMenuLayout.addView(element.getSettingsLayout());
+						modManagerMenuLayout.addView(element.getSettingsLayout(true));
 					}
 				});
 
-				screenUI = new PopupWindow_(modManagerMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
+				screenUI = new PopupWindow_(modManagerMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight, true);
 				screenUI.setBackgroundDrawable(backgroundGradient());
 				screenUI.setOnDismissListener(new PopupWindow_.OnDismissListener() {
 					onDismiss: function() {
+						VertexClientPE.menuIsShowing = false;
+						if(barUI != null) {
+							if(barUI.isShowing()) {
+								barUI.dismiss();
+							}
+						}
 						VertexClientPE.saveMainSettings();
 					}
 				});
@@ -17065,7 +17077,7 @@ VertexClientPE.closeMenu = function() {
 			if(mainButtonTapSetting == "menu" && mainButtonStyleSetting != "invisible_ghost" && !ghostModeState) {
 				menuBtn.setBackgroundDrawable(iconClientGUI);
 			}
-			if(currentScreen != ScreenType.start_screen && currentScreen != ScreenType.ingame && currentScreen != ScreenType.hud && currentScreen != ScreenType.pause_screen) {
+			if(currentScreen != ScreenType.start_screen && currentScreen != ScreenType.exit_dialog && currentScreen != ScreenType.ingame && currentScreen != ScreenType.hud && currentScreen != ScreenType.pause_screen) {
 				GUI.setTouchable(false);
 				GUI.update();
 			}
@@ -18188,13 +18200,13 @@ function showMenuButton() {
 		}
 	}
 
-	if(currentScreen == ScreenType.start_screen || currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud || currentScreen == ScreenType.pause_screen) {
+	if(currentScreen == ScreenType.start_screen || currentScreen == ScreenType.exit_dialog || currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud || currentScreen == ScreenType.pause_screen) {
 		GUI.setTouchable(true);
 		GUI.update();
 	}
 
 	if(!VertexClientPE.menuIsShowing) {
-		if(currentScreen == ScreenType.start_screen) {
+		if(currentScreen == ScreenType.start_screen || currentScreen == ScreenType.exit_dialog) {
 			if((mainMenuTextList == null || !mainMenuTextList.isShowing()) && !VertexClientPE.playerIsInGame) {
 				VertexClientPE.showStartScreenBar();
 			}
@@ -18230,7 +18242,7 @@ function showAccountManagerButton() {
 	}));
 	acBtnLayout.addView(acBtn);
 
-	if(currentScreen == ScreenType.start_screen && !ghostModeState) {
+	if((currentScreen == ScreenType.start_screen || currentScreen == ScreenType.exit_dialog) && !ghostModeState) {
 		if((accountManagerGUI == null || !accountManagerGUI.isShowing()) && !VertexClientPE.menuIsShowing && !VertexClientPE.playerIsInGame) {
 			accountManagerGUI = new PopupWindow_(acBtnLayout, dip2px(40), dip2px(40));
 			if(menuAnimationsSetting == "on") {
@@ -18829,14 +18841,16 @@ VertexClientPE.showExitButtons = function(showBackButton, title, icon, extraView
 			try {
 				title = (title == null)?"Unknown":title;
 
-				var backScreenUILayout = new LinearLayout_(CONTEXT);
-				var backScreenUIButton = new Button_(CONTEXT);
+				let buttonClicked = false;
+
+				let backScreenUILayout = new LinearLayout_(CONTEXT);
+				let backScreenUIButton = new Button_(CONTEXT);
 				backScreenUIButton.setText("<");
 				backScreenUIButton.setBackgroundDrawable(backBg);
 				backScreenUIButton.setTextColor(Color_.WHITE);
 				backScreenUIButton.setOnTouchListener(new View_.OnTouchListener() {
 					onTouch: function(v, event) {
-						var action = event.getActionMasked();
+						let action = event.getActionMasked();
 						if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
 							backBg.setStroke(dip2px(1), Color_.parseColor("#FFFFFF"));
 						} else {
@@ -18847,12 +18861,8 @@ VertexClientPE.showExitButtons = function(showBackButton, title, icon, extraView
 				});
 				backScreenUIButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
-						if(title == null) {
-							backScreenUI.dismiss();
-							exitScreenUI.dismiss();
-						} else {
-							barUI.dismiss();
-						}
+						buttonClicked = true;
+						barUI.dismiss();
 						screenUI.dismiss();
 						dashboardScreen("Dashboard", android.R.drawable.ic_dialog_dialer);
 					}
@@ -18865,14 +18875,14 @@ VertexClientPE.showExitButtons = function(showBackButton, title, icon, extraView
 					backScreenUILayout.addView(extraView);
 				}
 
-				var xScreenUILayout = new LinearLayout_(CONTEXT);
-				var xScreenUIButton = new Button_(CONTEXT);
+				let xScreenUILayout = new LinearLayout_(CONTEXT);
+				let xScreenUIButton = new Button_(CONTEXT);
 				xScreenUIButton.setText("X");
 				xScreenUIButton.setBackgroundDrawable(exitBg);
 				xScreenUIButton.setTextColor(Color_.WHITE);
 				xScreenUIButton.setOnTouchListener(new View_.OnTouchListener() {
 					onTouch: function(v, event) {
-						var action = event.getActionMasked();
+						let action = event.getActionMasked();
 						if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
 							exitBg.setStroke(dip2px(1), Color_.parseColor("#FFFFFF"));
 						} else {
@@ -18883,6 +18893,7 @@ VertexClientPE.showExitButtons = function(showBackButton, title, icon, extraView
 				});
 				xScreenUIButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
+						buttonClicked = true;
 						barUI.dismiss();
 						screenUI.dismiss();
 						VertexClientPE.menuIsShowing = false;
@@ -18907,6 +18918,14 @@ VertexClientPE.showExitButtons = function(showBackButton, title, icon, extraView
 				barUI = new PopupWindow_(barLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), LinearLayout_.LayoutParams.WRAP_CONTENT);
 				barUI.setBackgroundDrawable(backgroundSpecial(null, "#212121|#ffffff"));
 				barUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+				barUI.setOnDismissListener(new PopupWindow_.OnDismissListener() {
+					onDismiss: function() {
+						if(!buttonClicked) {
+							showMenuButton();
+						}
+						buttonClicked = false;
+					}
+				});
 			} catch(exception) {
 				print(exception);
 				VertexClientPE.showBugReportDialog(exception);
@@ -18915,15 +18934,15 @@ VertexClientPE.showExitButtons = function(showBackButton, title, icon, extraView
 	}));
 }
 
-var xWebBrowserButton;
-var setStartPageWebBrowserButton;
+let xWebBrowserButton;
+let setStartPageWebBrowserButton;
 
 function overlayWebBrowser() {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
-				var backPageWebBrowserLayout = new LinearLayout_(CONTEXT);
-				var backPageWebBrowserButton = new Button_(CONTEXT);
+				let backPageWebBrowserLayout = new LinearLayout_(CONTEXT);
+				let backPageWebBrowserButton = new Button_(CONTEXT);
 				backPageWebBrowserButton.setText("\u2190");
 				backPageWebBrowserButton.getBackground().setColorFilter(Color_.parseColor("#0B6138"), PorterDuff_.Mode.MULTIPLY);
 				backPageWebBrowserButton.setTextColor(Color_.WHITE);
@@ -18940,8 +18959,8 @@ function overlayWebBrowser() {
 				}));
 				backPageWebBrowserLayout.addView(backPageWebBrowserButton);
 
-				var forwardPageWebBrowserLayout = new LinearLayout_(CONTEXT);
-				var forwardPageWebBrowserButton = new Button_(CONTEXT);
+				let forwardPageWebBrowserLayout = new LinearLayout_(CONTEXT);
+				let forwardPageWebBrowserButton = new Button_(CONTEXT);
 				forwardPageWebBrowserButton.setText("\u2192");
 				forwardPageWebBrowserButton.getBackground().setColorFilter(Color_.parseColor("#0B6138"), PorterDuff_.Mode.MULTIPLY);
 				forwardPageWebBrowserButton.setTextColor(Color_.WHITE);
@@ -18956,8 +18975,8 @@ function overlayWebBrowser() {
 				}));
 				forwardPageWebBrowserLayout.addView(forwardPageWebBrowserButton);
 
-				var reloadWebBrowserLayout = new LinearLayout_(CONTEXT);
-				var reloadWebBrowserButton = new Button_(CONTEXT);
+				let reloadWebBrowserLayout = new LinearLayout_(CONTEXT);
+				let reloadWebBrowserButton = new Button_(CONTEXT);
 				reloadWebBrowserButton.setText("\u21BB");
 				reloadWebBrowserButton.getBackground().setColorFilter(Color_.parseColor("#0B6138"), PorterDuff_.Mode.MULTIPLY);
 				reloadWebBrowserButton.setTextColor(Color_.WHITE);
@@ -18970,8 +18989,8 @@ function overlayWebBrowser() {
 				}));
 				reloadWebBrowserLayout.addView(reloadWebBrowserButton);
 
-				var urlBarWebBrowserLayout = new LinearLayout_(CONTEXT);
-				var urlBarWebBrowserButton = new Button_(CONTEXT);
+				let urlBarWebBrowserLayout = new LinearLayout_(CONTEXT);
+				let urlBarWebBrowserButton = new Button_(CONTEXT);
 				urlBarWebBrowserButton.setText("...");
 				urlBarWebBrowserButton.getBackground().setColorFilter(Color_.parseColor("#0B6138"), PorterDuff_.Mode.MULTIPLY);
 				urlBarWebBrowserButton.setTextColor(Color_.WHITE);
@@ -18982,8 +19001,8 @@ function overlayWebBrowser() {
 				}));
 				urlBarWebBrowserLayout.addView(urlBarWebBrowserButton);
 
-				var devWebBrowserLayout = new LinearLayout_(CONTEXT);
-				var devWebBrowserButton = new Button_(CONTEXT);
+				let devWebBrowserLayout = new LinearLayout_(CONTEXT);
+				let devWebBrowserButton = new Button_(CONTEXT);
 				devWebBrowserButton.setText("F12");
 				devWebBrowserButton.getBackground().setColorFilter(Color_.parseColor("#0B6138"), PorterDuff_.Mode.MULTIPLY);
 				devWebBrowserButton.setTextColor(Color_.WHITE);
@@ -18995,7 +19014,7 @@ function overlayWebBrowser() {
 				}));
 				devWebBrowserLayout.addView(devWebBrowserButton);
 
-				var xWebBrowserLayout = new LinearLayout_(CONTEXT);
+				let xWebBrowserLayout = new LinearLayout_(CONTEXT);
 				xWebBrowserButton = new Button_(CONTEXT);
 				xWebBrowserButton.setText("X");
 				xWebBrowserButton.getBackground().setColorFilter(Color_.parseColor("#FF0000"), PorterDuff_.Mode.MULTIPLY);
