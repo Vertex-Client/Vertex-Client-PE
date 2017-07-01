@@ -3032,7 +3032,9 @@ var autoSpammer = {
 		spamUseRandomMsgSettingCheckBox.setText("Use random messages instead of the custom message");
 		spamUseRandomMsgSettingCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
-				spamUseRandomMsgSetting = v.isChecked()?"on":"off";
+				let isChecked = v.isChecked();
+				spamUseRandomMsgSetting = isChecked?"on":"off";
+				spamMessageInput.setEnabled(!isChecked);
 				VertexClientPE.saveMainSettings();
 			}
 		});
@@ -3040,6 +3042,7 @@ var autoSpammer = {
 		let spamMessageTitle = clientTextView("Custom message:");
 		let spamMessageInput = clientEditText(spamMessage);
 		spamMessageInput.setHint("Spam message");
+		spamMessageInput.setEnabled(!spamUseRandomMsgSettingCheckBox.isChecked());
 		spamMessageInput.addTextChangedListener(new TextWatcher_() {
 			onTextChanged: function() {
 				spamMessage = spamMessageInput.getText();
@@ -6331,7 +6334,6 @@ Block.setDestroyTimeDefaultAll = function() {
 }
 
 var imgLogo = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/vertex_logo_new.png");
-//var imgProLogo = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/pro_logo.png");
 var imgIcon = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/clienticon_new.png");
 var imgIconClicked = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/clienticon_new_clicked.png");
 var imgPlayButton = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/play_button.png");
@@ -6379,10 +6381,13 @@ ModPE.getAndroidVersion = function() {
 }
 
 ModPE.getPlayerName = function() {
-	if(Launcher.isToolbox) {
-		var file = new File_(Environment_.getExternalStorageDirectory() + "/games/com.mojang/minecraftpe/options.txt");
-		var br = new BufferedReader_(new InputStreamReader_(new FileInputStream_(file)));
-		var read, username;
+	if(Launcher.isToolbox()) {
+		let file = new File_(Environment_.getExternalStorageDirectory() + "/games/com.mojang/minecraftpe/options.txt");
+		if(!file.exists()) {
+			return Player.getName(getPlayerEnt());
+		}
+		let br = new BufferedReader_(new InputStreamReader_(new FileInputStream_(file)));
+		let read, username;
 		while((read = br.readLine()) != null) {
 			if(read.split(":")[0] == "mp_username") {
 				username = read.split(":")[1];
@@ -6397,9 +6402,12 @@ ModPE.getPlayerName = function() {
 };
 
 ModPE.getFov = function() {
-	var file = new File_(Environment_.getExternalStorageDirectory() + "/games/com.mojang/minecraftpe/options.txt");
-	var br = new BufferedReader_(new InputStreamReader_(new FileInputStream_(file)));
-	var read, fov;
+	let file = new File_(Environment_.getExternalStorageDirectory() + "/games/com.mojang/minecraftpe/options.txt");
+	if(!file.exists()) {
+		return 70;
+	}
+	let br = new BufferedReader_(new InputStreamReader_(new FileInputStream_(file)));
+	let read, fov;
 	while((read = br.readLine()) != null) {
 		if(read.split(":")[0] == "gfx_field_of_view") {
 			fov = read.split(":")[1];
@@ -6415,41 +6423,52 @@ ModPE.setPlayerName = function(username) {
 }
 
 ModPE.changeClientId = function(clientId) {
-	var fileOutputStream = new FileOutputStream_(new File_(Environment_.getExternalStorageDirectory() + "/games/com.mojang/minecraftpe/clientId.txt"));
-	var outputStreamWriter = new OutputStreamWriter_(fileOutputStream);
-	outputStreamWriter.write(clientId.toString());
-	outputStreamWriter.close();
-	fileOutputStream.close();
+	changeFileText(Environment_.getExternalStorageDirectory() + "/games/com.mojang/minecraftpe/clientId.txt", clientId);
 };
 
 ModPE.getClientId = function() {
-	var file = new File_(Environment_.getExternalStorageDirectory() + "/games/com.mojang/minecraftpe/clientId.txt");
-	var br = new BufferedReader_(new InputStreamReader_(new FileInputStream_(file)));
-	var read, username;
+	return getTextFromFile(Environment_.getExternalStorageDirectory() + "/games/com.mojang/minecraftpe/clientId.txt");
+};
+
+function getTextFromFile(filePath) {//settingsPath
+	let file = new File_(filePath);
+	if(!file.exists()) {
+		return "";
+	}
+	let br = new BufferedReader_(new InputStreamReader_(new FileInputStream_(file)));
+	let read, text;
 	while((read = br.readLine()) != null) {
-		username = read;
+		text = read;
 		break;
 	}
 	br.close();
-	return username;
-};
+	return text;
+}
+
+function changeFileText(filePath, newText) {
+	let fileOutputStream = new FileOutputStream_(new File_(filePath));
+	let outputStreamWriter = new OutputStreamWriter_(fileOutputStream);
+	outputStreamWriter.write(newText.toString());
+	outputStreamWriter.close();
+	fileOutputStream.close();
+}
 
 function saveSetting(article, value) {
-	var fileInputStream = new FileInputStream_(new File_(Environment_.getExternalStorageDirectory() + "/games/com.mojang/minecraftpe/options.txt"));
-	var inputStreamReader = new InputStreamReader_(fileInputStream);
-	var bufferedReader = new BufferedReader_(inputStreamReader);
-	var tempRead, tempReadString;
-	var tempSaved = "";
+	let fileInputStream = new FileInputStream_(new File_(Environment_.getExternalStorageDirectory() + "/games/com.mojang/minecraftpe/options.txt"));
+	let inputStreamReader = new InputStreamReader_(fileInputStream);
+	let bufferedReader = new BufferedReader_(inputStreamReader);
+	let tempRead, tempReadString;
+	let tempSaved = "";
 	while ((tempRead = bufferedReader.readLine()) != null) {
-	tempReadString = tempRead.toString();
-	if (tempReadString.split(":")[0] == article) continue;
-	tempSaved += tempReadString + "\n"
+		tempReadString = tempRead.toString();
+		if (tempReadString.split(":")[0] == article) continue;
+		tempSaved += tempReadString + "\n"
 	}
 	fileInputStream.close();
 	inputStreamReader.close();
 	bufferedReader.close();
-	var fileOutputStream = new FileOutputStream_(new File_(Environment_.getExternalStorageDirectory() + "/games/com.mojang/minecraftpe/options.txt"));
-	var outputStreamWriter = new OutputStreamWriter_(fileOutputStream);
+	let fileOutputStream = new FileOutputStream_(new File_(Environment_.getExternalStorageDirectory() + "/games/com.mojang/minecraftpe/options.txt"));
+	let outputStreamWriter = new OutputStreamWriter_(fileOutputStream);
 	outputStreamWriter.write(tempSaved + article + ":" + value);
 	outputStreamWriter.close();
 	fileOutputStream.close();
@@ -6464,9 +6483,12 @@ ModPE.setSession = function(sessionId) {
 }
 
 ModPE.playerHasSplitControls = function() {
-	var file = new File_(Environment_.getExternalStorageDirectory() + "/games/com.mojang/minecraftpe/options.txt");
-	var br = new BufferedReader_(new InputStreamReader_(new FileInputStream_(file)));
-	var read, splitcontrols;
+	let file = new File_(Environment_.getExternalStorageDirectory() + "/games/com.mojang/minecraftpe/options.txt");
+	if(!file.exists()) {
+		return "0";
+	}
+	let br = new BufferedReader_(new InputStreamReader_(new FileInputStream_(file)));
+	let read, splitcontrols;
 	while((read = br.readLine()) != null) {
 		if(read.split(":")[0] == "ctrl_usetouchjoypad") {
 			splitcontrols = read.split(":")[1];
@@ -6478,9 +6500,12 @@ ModPE.playerHasSplitControls = function() {
 };
 
 ModPE.getCurrentUsedSkin = function() {
-	var file = new File_(Environment_.getExternalStorageDirectory() + "/games/com.mojang/minecraftpe/options.txt");
-	var br = new BufferedReader_(new InputStreamReader_(new FileInputStream_(file)));
-	var read, skin;
+	let file = new File_(Environment_.getExternalStorageDirectory() + "/games/com.mojang/minecraftpe/options.txt");
+	if(!file.exists()) {
+		return "";
+	}
+	let br = new BufferedReader_(new InputStreamReader_(new FileInputStream_(file)));
+	let read, skin;
 	while((read = br.readLine()) != null) {
 		if(read.split(":")[0] == "game_skintypefull") {
 			skin = read.split(":")[1];
@@ -6499,58 +6524,48 @@ VertexClientPE.Utils.getFov = function() {
 	return VertexClientPE.Utils.fov;
 }
 
-var URL = "https://www.pizzahut.co.uk/menu/pizza";
+const URL = "https://www.pizzahut.co.uk/menu/pizza";
 
-function pizzaOrderDialog(){
-
-CONTEXT.runOnUiThread(new Runnable_({
-
-run: function(){
-try{
-var wwv=new WebView_(CONTEXT);
-var wS=wwv.getSettings();
-
-wS.setJavaScriptEnabled(true);
-wwv.setWebChromeClient(new WebChromeClient_());
-wwv.setWebViewClient(new WebViewClient_());
-
-wwv.loadUrl(URL);
-
-var b=new AlertDialog_.Builder(CONTEXT);
-
-b.setTitle(URL);
-b.setView(wwv);
-b.setNegativeButton("Close",new DialogInterface_.OnClickListener(){
-
-onClick:function(di, v1){
-di.dismiss();
+function pizzaOrderDialog() {
+	CONTEXT.runOnUiThread(new Runnable_({
+		run: function () {
+			try {
+				let wwv = new WebView_(CONTEXT);
+				let wS = wwv.getSettings();
+				wS.setJavaScriptEnabled(true);
+				wwv.setWebChromeClient(new WebChromeClient_());
+				wwv.setWebViewClient(new WebViewClient_());
+				wwv.loadUrl(URL);
+				let b = new AlertDialog_.Builder(CONTEXT);
+				b.setTitle(URL);
+				b.setView(wwv);
+				b.setNegativeButton("Close", new DialogInterface_.OnClickListener() {
+					onClick: function (di, v1) {
+						di.dismiss();
+					}
+				});
+				let a = b.create();
+				a.show();
+			} catch (err) {
+				print("Cannot open window: " + err + ".")
+				VertexClientPE.showBugReportDialog(err);;
+			}
+		}
+	}));
 }
-});
-
-var a=b.create();
-a.show();
-}catch(err){
-print("Cannot open window: "+err+".")
-VertexClientPE.showBugReportDialog(err);
-;
-}
-}}));
-}
-
-var line0, line1, line2, line3;
 
 VertexClientPE.showSignEditorDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				var signEditorTitle = clientTextView("SignEditor", true);
-				var btn = clientButton("Ok");
-				var btn1 = clientButton("Cancel");
-				var inputBar = clientEditText();
-				var inputBar1 = clientEditText();
-				var inputBar2 = clientEditText();
-				var inputBar3 = clientEditText();
-				var dialogLayout = LinearLayout_(CONTEXT);
+				let signEditorTitle = clientTextView("SignEditor", true);
+				let btn = clientButton("Ok");
+				let btn1 = clientButton("Cancel");
+				let inputBar = clientEditText();
+				let inputBar1 = clientEditText();
+				let inputBar2 = clientEditText();
+				let inputBar3 = clientEditText();
+				let dialogLayout = LinearLayout_(CONTEXT);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
 				dialogLayout.setPadding(10, 10, 10, 10);
@@ -6561,7 +6576,7 @@ VertexClientPE.showSignEditorDialog = function() {
 				dialogLayout.addView(inputBar3);
 				dialogLayout.addView(btn);
 				dialogLayout.addView(btn1);
-				var dialog = new Dialog_(CONTEXT);
+				let dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
@@ -6581,10 +6596,10 @@ VertexClientPE.showSignEditorDialog = function() {
 				dialog.show();
 				btn.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
-						line0 = inputBar.getText();
-						line1 = inputBar1.getText();
-						line2 = inputBar2.getText();
-						line3 = inputBar3.getText();
+						let line0 = inputBar.getText();
+						let line1 = inputBar1.getText();
+						let line2 = inputBar2.getText();
+						let line3 = inputBar3.getText();
 						Level.setSignText(signX, signY, signZ, 0, line0);
 						Level.setSignText(signX, signY, signZ, 1, line1);
 						Level.setSignText(signX, signY, signZ, 2, line2);
@@ -6605,28 +6620,26 @@ VertexClientPE.showSignEditorDialog = function() {
 	});
 }
 
-var reportName;
-
 VertexClientPE.showBugReportDialog = function(exception) {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				var bugReportTitle = clientTextView("An error occurred", true);
-				var btn = clientButton("Copy error code & start a new issue on GitHub");
+				let bugReportTitle = clientTextView("An error occurred", true);
+				let btn = clientButton("Copy error code & start a new issue on GitHub");
 				btn.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
 				btn.setMarqueeRepeatLimit(-1);
 				btn.setSingleLine();
 				btn.setHorizontallyScrolling(true);
 				btn.setSelected(true);
-				var btn1 = clientButton("Close");
-				var exceptionTextView = clientTextView(exception);
-				var dialogLayout = new LinearLayout_(CONTEXT);
+				let btn1 = clientButton("Close");
+				let exceptionTextView = clientTextView(exception);
+				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
 
-				var dialogScrollView = new ScrollView_(CONTEXT);
-				dialogScrollView.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.WRAP_CONTENT, display.heightPixels / 2));
+				let dialogScrollView = new ScrollView_(CONTEXT);
+				dialogScrollView.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2, display.heightPixels / 2));
 
-				var dialogLayout1 = new LinearLayout_(CONTEXT);
+				let dialogLayout1 = new LinearLayout_(CONTEXT);
 				dialogLayout1.setBackgroundDrawable(backgroundGradient());
 				dialogLayout1.setOrientation(LinearLayout_.VERTICAL);
 				dialogLayout1.setPadding(10, 10, 10, 10);
@@ -6638,7 +6651,7 @@ VertexClientPE.showBugReportDialog = function(exception) {
 				dialogLayout1.addView(dialogScrollView);
 				dialogLayout1.addView(btn);
 				dialogLayout1.addView(btn1);
-				var dialog = new Dialog_(CONTEXT);
+				let dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout1);
@@ -6668,11 +6681,11 @@ VertexClientPE.showRemoteViewTargetDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				var rvTitle = clientTextView("RemoteView | Target player by username", true);
-				var btn = clientButton("Apply");
-				var btn1 = clientButton("Close");
-				var inputBar = clientEditText();
-				var dialogLayout = new LinearLayout_(CONTEXT);
+				let rvTitle = clientTextView("RemoteView | Target player by username", true);
+				let btn = clientButton("Apply");
+				let btn1 = clientButton("Close");
+				let inputBar = clientEditText();
+				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
 				dialogLayout.setPadding(10, 10, 10, 10);
@@ -6680,7 +6693,7 @@ VertexClientPE.showRemoteViewTargetDialog = function() {
 				dialogLayout.addView(inputBar);
 				dialogLayout.addView(btn);
 				dialogLayout.addView(btn1);
-				var dialog = new Dialog_(CONTEXT);
+				let dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
@@ -6689,9 +6702,9 @@ VertexClientPE.showRemoteViewTargetDialog = function() {
 				dialog.show();
 				btn.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
-						var username = inputBar.getText();
-						var players = Server.getAllPlayers();
-						var rvTargetDone = false;
+						let username = inputBar.getText();
+						let players = Server.getAllPlayers();
+						let rvTargetDone = false;
 						players.forEach(function(element, index, array) {
 							if(Player.getName(element) == username || Entity.getNameTag(element) == username) {
 								VertexClientPE.modules.forEach(function(e, i, a) {
@@ -6793,7 +6806,7 @@ VertexClientPE.tempDisable = function() {
 }
 
 VertexClientPE.showTempDisableDialog = function() {
-	var dialogTitle = clientTextView("Temporarily disable the client");
+	let dialogTitle = clientTextView("Temporarily disable the client");
 	dialogTitle.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
 	dialogTitle.setMarqueeRepeatLimit(-1);
 	dialogTitle.setSingleLine();
@@ -6814,13 +6827,13 @@ VertexClientPE.showTempDisableDialog = function() {
 		}
 	});
 
-	var dialogLayout1 = new LinearLayout_(CONTEXT);
+	let dialogLayout1 = new LinearLayout_(CONTEXT);
 	dialogLayout1.setBackgroundDrawable(backgroundGradient());
 	dialogLayout1.setOrientation(LinearLayout_.VERTICAL);
 	dialogLayout1.setPadding(10, 10, 10, 10);
 
-	var dialogScrollView = new ScrollView_(CONTEXT);
-	var dialogLayout = new LinearLayout_(CONTEXT);
+	let dialogScrollView = new ScrollView_(CONTEXT);
+	let dialogLayout = new LinearLayout_(CONTEXT);
 
 	dialogLayout.addView(clientTextView("Are you sure you want to temporarily disable the client?"));
 	dialogScrollView.addView(dialogLayout);
@@ -6830,7 +6843,7 @@ VertexClientPE.showTempDisableDialog = function() {
 	dialogLayout1.addView(yesBtn);
 	dialogLayout1.addView(noBtn);
 
-	var dialog = new Dialog_(CONTEXT);
+	let dialog = new Dialog_(CONTEXT);
 	dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 	dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 	dialog.setContentView(dialogLayout1);
@@ -6838,7 +6851,7 @@ VertexClientPE.showTempDisableDialog = function() {
 	dialog.show();
 }
 
-var moreMenuIsOpen = false;
+let moreMenuIsOpen = false;
 
 let moreDialog;
 
@@ -6904,9 +6917,9 @@ VertexClientPE.showMoreDialog = function() {
 				dialogLayout1.setOrientation(LinearLayout_.VERTICAL);
 				dialogLayout1.setPadding(10, 10, 10, 10);
 				dialogLayout1.setGravity(Gravity_.CENTER);
-				var dialogLayout = new LinearLayout_(CONTEXT);
+				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
-				var dialogScrollView = new ScrollView_(CONTEXT);
+				let dialogScrollView = new ScrollView_(CONTEXT);
 				dialogScrollView.addView(dialogLayout);
 				dialogLayout1.addView(moreTitle);
 				dialogLayout1.addView(moreHR);
@@ -7057,17 +7070,17 @@ VertexClientPE.showHacksListManagerDialog = function() {
 			try {
 				//var settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
 				//settingsTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
-				var settingsTitle = clientScreenTitle("Settings", null, themeSetting);
-				var hacksListManagerTitle = clientTextView("Hacks list Manager", true);
+				let settingsTitle = clientScreenTitle("Settings", null, themeSetting);
+				let hacksListManagerTitle = clientTextView("Hacks list Manager", true);
 				hacksListManagerTitle.setGravity(Gravity_.CENTER);
-				var hacksListManagerEnter = clientTextView("");
-				var closeButton = clientButton("Close");
+				let hacksListManagerEnter = clientTextView("");
+				let closeButton = clientButton("Close");
 				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
-				var dialogLayout = new LinearLayout_(CONTEXT);
+				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
-				var dialogScrollView = new ScrollView_(CONTEXT);
+				let dialogScrollView = new ScrollView_(CONTEXT);
 				dialogScrollView.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - 20, display.heightPixels / 2));
-				var dialogLayout1 = new LinearLayout_(CONTEXT);
+				let dialogLayout1 = new LinearLayout_(CONTEXT);
 				dialogLayout1.setBackgroundDrawable(backgroundGradient());
 				dialogLayout1.setOrientation(LinearLayout_.VERTICAL);
 				dialogLayout1.setPadding(10, 0, 10, 10);
@@ -7078,13 +7091,13 @@ VertexClientPE.showHacksListManagerDialog = function() {
 				dialogScrollView.addView(dialogLayout);
 				dialogLayout1.addView(dialogScrollView);
 
-				var hacksListModeSettingFunc = new settingButton("Hacks list mode", null, null,
+				let hacksListModeSettingFunc = new settingButton("Hacks list mode", null, null,
 					function(viewArg) {
 						hacksListModeSetting = "on";
 						hacksListModeSettingButton.setText("Normal");
 					}
 				);
-				var hacksListModeSettingButton = hacksListModeSettingFunc.getButton();
+				let hacksListModeSettingButton = hacksListModeSettingFunc.getButton();
 				if(hacksListModeSetting == "on") {
 					hacksListModeSettingButton.setText("Normal");
 				} else if(hacksListModeSetting == "counter") {
@@ -7116,13 +7129,13 @@ VertexClientPE.showHacksListManagerDialog = function() {
 					}
 				}));
 
-				var hacksListPosSettingFunc = new settingButton("Hacks list position", null, null,
+				let hacksListPosSettingFunc = new settingButton("Hacks list position", null, null,
 					function(viewArg) {
 						hacksListPosSetting = "top-center";
 						hacksListPosSettingButton.setText("Top-center");
 					}
 				);
-				var hacksListPosSettingButton = hacksListPosSettingFunc.getButton();
+				let hacksListPosSettingButton = hacksListPosSettingFunc.getButton();
 				if(hacksListPosSetting == "top-left") {
 					hacksListPosSettingButton.setText("Top-left");
 				} else if(hacksListPosSetting == "top-center") {
@@ -7151,7 +7164,7 @@ VertexClientPE.showHacksListManagerDialog = function() {
 				dialogLayout1.addView(clientTextView(""));
 				dialogLayout1.addView(closeButton);
 
-				var dialog = new Dialog_(CONTEXT);
+				let dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout1);
@@ -7162,7 +7175,7 @@ VertexClientPE.showHacksListManagerDialog = function() {
 					}
 				});
 				dialog.show();
-				var window = dialog.getWindow();
+				let window = dialog.getWindow();
 				window.setLayout(display.widthPixels, display.heightPixels);
 				closeButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
@@ -7183,17 +7196,17 @@ VertexClientPE.showMainButtonManagerDialog = function() {
 			try {
 				//var settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
 				//settingsTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
-				var settingsTitle = clientScreenTitle("Settings", null, themeSetting);
-				var mainButtonManagerTitle = clientTextView("Main button Manager", true);
+				let settingsTitle = clientScreenTitle("Settings", null, themeSetting);
+				let mainButtonManagerTitle = clientTextView("Main button Manager", true);
 				mainButtonManagerTitle.setGravity(Gravity_.CENTER);
-				var mainButtonManagerEnter = clientTextView("");
-				var closeButton = clientButton("Close");
+				let mainButtonManagerEnter = clientTextView("");
+				let closeButton = clientButton("Close");
 				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
-				var dialogLayout = new LinearLayout_(CONTEXT);
+				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
-				var dialogScrollView = new ScrollView_(CONTEXT);
+				let dialogScrollView = new ScrollView_(CONTEXT);
 				dialogScrollView.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - 20, display.heightPixels / 2));
-				var dialogLayout1 = new LinearLayout_(CONTEXT);
+				let dialogLayout1 = new LinearLayout_(CONTEXT);
 				dialogLayout1.setBackgroundDrawable(backgroundGradient());
 				dialogLayout1.setOrientation(LinearLayout_.VERTICAL);
 				dialogLayout1.setPadding(10, 0, 10, 10);
@@ -7204,9 +7217,9 @@ VertexClientPE.showMainButtonManagerDialog = function() {
 				dialogScrollView.addView(dialogLayout);
 				dialogLayout1.addView(dialogScrollView);
 
-				var mainButtonSizeSettingTitle = clientTextView("Main button size: | " + mainButtonSizeSetting + " pixels");
-				var mainButtonSizeSettingSlider = clientSeekBar();
-				var minMainButtonSize = 20;
+				let mainButtonSizeSettingTitle = clientTextView("Main button size: | " + mainButtonSizeSetting + " pixels");
+				let mainButtonSizeSettingSlider = clientSeekBar();
+				let minMainButtonSize = 20;
 				mainButtonSizeSettingSlider.setProgress(mainButtonSizeSetting - minMainButtonSize);
 				mainButtonSizeSettingSlider.setMax(100 - minMainButtonSize);
 				mainButtonSizeSettingSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
@@ -7216,13 +7229,13 @@ VertexClientPE.showMainButtonManagerDialog = function() {
 					}
 				});
 				
-				var mainButtonPositionSettingFunc = new settingButton("Main button position", "Sets the main menu's button position.", null,
+				let mainButtonPositionSettingFunc = new settingButton("Main button position", "Sets the main menu's button position.", null,
 					function(viewArg) {
 						mainButtonPositionSetting = "top-left";
 						mainButtonPositionSettingButton.setText("Top-left");
 					}
 				);
-				var mainButtonPositionSettingButton = mainButtonPositionSettingFunc.getButton();
+				let mainButtonPositionSettingButton = mainButtonPositionSettingFunc.getButton();
 				if(mainButtonPositionSetting == "top-right") {
 					mainButtonPositionSettingButton.setText("Top-right");
 				} else if(mainButtonPositionSetting == "top-left") {
@@ -7246,13 +7259,13 @@ VertexClientPE.showMainButtonManagerDialog = function() {
 					}
 				}));
 
-				var mainButtonStyleSettingFunc = new settingButton("Main button style", "Sets the main menu's button style.", null,
+				let mainButtonStyleSettingFunc = new settingButton("Main button style", "Sets the main menu's button style.", null,
 					function(viewArg) {
 						mainButtonStyleSetting = "normal";
 						mainButtonStyleSettingButton.setText("Normal");
 					}
 				);
-				var mainButtonStyleSettingButton = mainButtonStyleSettingFunc.getButton();
+				let mainButtonStyleSettingButton = mainButtonStyleSettingFunc.getButton();
 				if(mainButtonStyleSetting == "normal") {
 					mainButtonStyleSettingButton.setText("Normal");
 				} else if(mainButtonStyleSetting == "global_background") {
@@ -7286,13 +7299,13 @@ VertexClientPE.showMainButtonManagerDialog = function() {
 					}
 				}));
 
-				var mainButtonTapSettingFunc = new settingButton("Main button action", "Sets the main menu's button action.", null,
+				let mainButtonTapSettingFunc = new settingButton("Main button action", "Sets the main menu's button action.", null,
 					function(viewArg) {
 						mainButtonTapSetting = "menu";
 						mainButtonTapSettingButton.setText("Menu (normal tap) | More dialog (long tap)");
 					}
 				);
-				var mainButtonTapSettingButton = mainButtonTapSettingFunc.getButton();
+				let mainButtonTapSettingButton = mainButtonTapSettingFunc.getButton();
 				if(mainButtonTapSetting == "menu") {
 					mainButtonTapSettingButton.setText("Menu (normal tap) | More dialog (long tap)");
 				} else if(mainButtonTapSetting == "moredialog") {
@@ -7319,7 +7332,7 @@ VertexClientPE.showMainButtonManagerDialog = function() {
 				dialogLayout1.addView(clientTextView(""));
 				dialogLayout1.addView(closeButton);
 
-				var dialog = new Dialog_(CONTEXT);
+				let dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout1);
@@ -7330,7 +7343,7 @@ VertexClientPE.showMainButtonManagerDialog = function() {
 					}
 				});
 				dialog.show();
-				var window = dialog.getWindow();
+				let window = dialog.getWindow();
 				window.setLayout(display.widthPixels, display.heightPixels);
 				closeButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
@@ -7351,17 +7364,17 @@ VertexClientPE.showShortcutManagerDialog = function() {
 			try {
 				//var settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
 				//settingsTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
-				var settingsTitle = clientScreenTitle("Settings", null, themeSetting);
-				var shortcutManagerTitle = clientTextView("Shortcut Manager", true);
+				let settingsTitle = clientScreenTitle("Settings", null, themeSetting);
+				let shortcutManagerTitle = clientTextView("Shortcut Manager", true);
 				shortcutManagerTitle.setGravity(Gravity_.CENTER);
-				var shortcutManagerEnter = clientTextView("");
-				var closeButton = clientButton("Close");
+				let shortcutManagerEnter = clientTextView("");
+				let closeButton = clientButton("Close");
 				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
-				var dialogLayout = new LinearLayout_(CONTEXT);
+				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
-				var dialogScrollView = new ScrollView_(CONTEXT);
+				let dialogScrollView = new ScrollView_(CONTEXT);
 				dialogScrollView.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - 20, display.heightPixels / 2));
-				var dialogLayout1 = new LinearLayout_(CONTEXT);
+				let dialogLayout1 = new LinearLayout_(CONTEXT);
 				dialogLayout1.setBackgroundDrawable(backgroundGradient());
 				dialogLayout1.setOrientation(LinearLayout_.VERTICAL);
 				dialogLayout1.setPadding(10, 0, 10, 10);
@@ -7372,9 +7385,9 @@ VertexClientPE.showShortcutManagerDialog = function() {
 				dialogScrollView.addView(dialogLayout);
 				dialogLayout1.addView(dialogScrollView);
 
-				var shortcutSizeSettingTitle = clientTextView("Shortcut button size: | " + shortcutSizeSetting, true);
-				var shortcutSizeSettingSlider = clientSeekBar();
-				var minShortcutSize = 16;
+				let shortcutSizeSettingTitle = clientTextView("Shortcut button size: | " + shortcutSizeSetting, true);
+				let shortcutSizeSettingSlider = clientSeekBar();
+				let minShortcutSize = 16;
 				shortcutSizeSettingSlider.setProgress(shortcutSizeSetting - minShortcutSize);
 				shortcutSizeSettingSlider.setMax(64 - minShortcutSize);
 				shortcutSizeSettingSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
@@ -7384,10 +7397,10 @@ VertexClientPE.showShortcutManagerDialog = function() {
 					}
 				});
 
-				var shortcutUIHeightSettingTitle = clientTextView("Shortcut UI height: | " + shortcutUIHeightSetting + " * shortcut button size", true);
-				var shortcutUIHeightSettingSlider = clientSeekBar();
-				var minShortcutUIHeight = 1;
-				var maxShortcutUIHeight = 20;
+				let shortcutUIHeightSettingTitle = clientTextView("Shortcut UI height: | " + shortcutUIHeightSetting + " * shortcut button size", true);
+				let shortcutUIHeightSettingSlider = clientSeekBar();
+				let minShortcutUIHeight = 1;
+				let maxShortcutUIHeight = 20;
 				shortcutUIHeightSettingSlider.setProgress(shortcutUIHeightSetting - minShortcutUIHeight);
 				shortcutUIHeightSettingSlider.setMax(maxShortcutUIHeight - minShortcutUIHeight);
 				shortcutUIHeightSettingSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
@@ -7402,13 +7415,13 @@ VertexClientPE.showShortcutManagerDialog = function() {
 				dialogLayout.addView(shortcutUIHeightSettingTitle);
 				dialogLayout.addView(shortcutUIHeightSettingSlider);
 
-				var shortcutUIModeSettingFunc = new settingButton("Shortcut UI mode ", null, display.widthPixels - 20,
+				let shortcutUIModeSettingFunc = new settingButton("Shortcut UI mode ", null, display.widthPixels - 20,
 					function(viewArg) {
 						shortcutUIModeSetting = "on";
 						shortcutUIModeSettingButton.setText("Normal");
 					}
 				);
-				var shortcutUIModeSettingButton = shortcutUIModeSettingFunc.getButton();
+				let shortcutUIModeSettingButton = shortcutUIModeSettingFunc.getButton();
 				if(shortcutUIModeSetting == "off") {
 					shortcutUIModeSettingButton.setText("Hidden");
 				} else if(shortcutUIModeSetting == "on") {
@@ -7432,13 +7445,13 @@ VertexClientPE.showShortcutManagerDialog = function() {
 					}
 				}));
 
-				var shortcutUIPosSettingFunc = new settingButton("Shortcut UI position ", null, display.widthPixels - 20,
+				let shortcutUIPosSettingFunc = new settingButton("Shortcut UI position ", null, display.widthPixels - 20,
 					function(viewArg) {
 						shortcutUIPosSetting = "right-center";
 						shortcutUIPosSettingButton.setText("Right-center");
 					}
 				);
-				var shortcutUIPosSettingButton = shortcutUIPosSettingFunc.getButton();
+				let shortcutUIPosSettingButton = shortcutUIPosSettingFunc.getButton();
 				if(shortcutUIPosSetting == "left-bottom") {
 					shortcutUIPosSettingButton.setText("Left-bottom");
 				} else if(shortcutUIPosSetting == "left-center") {
@@ -7477,13 +7490,13 @@ VertexClientPE.showShortcutManagerDialog = function() {
 					}
 				}));
 
-				var showIconsOnTileShortcutsSettingFunc = new settingButton("Show icons on tile/screen shortcuts ", null, display.widthPixels - 20,
+				let showIconsOnTileShortcutsSettingFunc = new settingButton("Show icons on tile/screen shortcuts ", null, display.widthPixels - 20,
 					function(viewArg) {
 						showIconsOnTileShortcutsSetting = "on";
 						showIconsOnTileShortcutsSettingButton.setText("ON");
 					}
 				);
-				var showIconsOnTileShortcutsSettingButton = showIconsOnTileShortcutsSettingFunc.getButton();
+				let showIconsOnTileShortcutsSettingButton = showIconsOnTileShortcutsSettingFunc.getButton();
 				if(showIconsOnTileShortcutsSetting == "off") {
 					showIconsOnTileShortcutsSettingButton.setText("OFF");
 				} else if(showIconsOnTileShortcutsSetting == "on") {
@@ -7508,7 +7521,7 @@ VertexClientPE.showShortcutManagerDialog = function() {
 				dialogLayout1.addView(clientTextView(""));
 				dialogLayout1.addView(closeButton);
 
-				var dialog = new Dialog_(CONTEXT);
+				let dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout1);
@@ -7519,7 +7532,7 @@ VertexClientPE.showShortcutManagerDialog = function() {
 					}
 				});
 				dialog.show();
-				var window = dialog.getWindow();
+				let window = dialog.getWindow();
 				window.setLayout(display.widthPixels, display.heightPixels);
 				closeButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
@@ -7538,7 +7551,7 @@ function setupAndroidUI() {
 	// Set the IMMERSIVE flag.
 	// Set the content to appear under the system bars so that the content
 	// doesn't resize when the system bars hide and show.
-	var decorView = CONTEXT.getWindow().getDecorView();
+	let decorView = CONTEXT.getWindow().getDecorView();
     decorView.setSystemUiVisibility(
 			View_.SYSTEM_UI_FLAG_LAYOUT_STABLE
 			| View_.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -7561,16 +7574,16 @@ VertexClientPE.showFeaturesDialog = function() {
 				
 				//var settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
 				//settingsTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
-				var settingsTitle = clientScreenTitle("Settings", null, themeSetting);
-				var featuresTitle = clientTextView("Opt in/out features\n", true);
+				let settingsTitle = clientScreenTitle("Settings", null, themeSetting);
+				let featuresTitle = clientTextView("Opt in/out features\n", true);
 				featuresTitle.setGravity(Gravity_.CENTER);
-				var featuresText = clientTextView("Changes on this dialog will show/hide all mods in that category and will disable all mods", true);
+				let featuresText = clientTextView("Changes on this dialog will show/hide all mods in that category and will disable all mods", true);
 				featuresText.setTextSize(8);
 				featuresText.setTypeface(null, Typeface_.ITALIC);
 				featuresText.setGravity(Gravity_.CENTER);
-				var closeButton = clientButton("Close");
+				let closeButton = clientButton("Close");
 				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
-				var dialogLayout = new LinearLayout_(CONTEXT);
+				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
 				dialogLayout.setPadding(10, 10, 10, 10);
@@ -7578,7 +7591,7 @@ VertexClientPE.showFeaturesDialog = function() {
 				dialogLayout.addView(featuresTitle);
 				dialogLayout.addView(featuresText);
 
-				var combatEnabledSettingButton = clientSwitch();
+				let combatEnabledSettingButton = clientSwitch();
 				combatEnabledSettingButton.setText("Combat");
 				combatEnabledSettingButton.setChecked(combatEnabled == "on");
 				combatEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
@@ -7591,7 +7604,7 @@ VertexClientPE.showFeaturesDialog = function() {
 					}
 				}));
 
-				var worldEnabledSettingButton = clientSwitch();
+				let worldEnabledSettingButton = clientSwitch();
 				worldEnabledSettingButton.setText("World");
 				worldEnabledSettingButton.setChecked(worldEnabled == "on");
 				worldEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
@@ -7604,7 +7617,7 @@ VertexClientPE.showFeaturesDialog = function() {
 					}
 				}));
 
-				var movementEnabledSettingButton = clientSwitch();
+				let movementEnabledSettingButton = clientSwitch();
 				movementEnabledSettingButton.setText("Movement");
 				movementEnabledSettingButton.setChecked(movementEnabled == "on");
 				movementEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
@@ -7617,7 +7630,7 @@ VertexClientPE.showFeaturesDialog = function() {
 					}
 				}));
 
-				var playerEnabledSettingButton = clientSwitch();
+				let playerEnabledSettingButton = clientSwitch();
 				playerEnabledSettingButton.setText("Player");
 				playerEnabledSettingButton.setChecked(playerEnabled == "on");
 				playerEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
@@ -7630,7 +7643,7 @@ VertexClientPE.showFeaturesDialog = function() {
 					}
 				}));
 
-				var miscEnabledSettingButton = clientSwitch();
+				let miscEnabledSettingButton = clientSwitch();
 				miscEnabledSettingButton.setText("Misc");
 				miscEnabledSettingButton.setChecked(miscEnabled == "on");
 				miscEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
@@ -7643,7 +7656,7 @@ VertexClientPE.showFeaturesDialog = function() {
 					}
 				}));
 
-				var singleplayerEnabledSettingButton = clientSwitch();
+				let singleplayerEnabledSettingButton = clientSwitch();
 				singleplayerEnabledSettingButton.setText("Singleplayer Only Mods");
 				singleplayerEnabledSettingButton.setChecked(singleplayerEnabled == "on");
 				singleplayerEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
@@ -7665,7 +7678,7 @@ VertexClientPE.showFeaturesDialog = function() {
 				dialogLayout.addView(clientTextView("\n"));
 				dialogLayout.addView(closeButton);
 
-				var dialog = new Dialog_(CONTEXT);
+				let dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.setContentView(dialogLayout);
 				dialog.setTitle("Opt in/out features");
@@ -7679,7 +7692,7 @@ VertexClientPE.showFeaturesDialog = function() {
 					}
 				});
 				dialog.show();
-				var window = dialog.getWindow();
+				let window = dialog.getWindow();
 				window.setLayout(display.widthPixels, display.heightPixels);
 				closeButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
@@ -7700,23 +7713,23 @@ VertexClientPE.showSettingSelectorDialog = function(sRightButton, dialogTitle, s
 			try {
 				//var settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
 				//settingsTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
-				var settingsTitle = clientScreenTitle("Settings", null, themeSetting);
-				var dTitle = clientTextView(dialogTitle, true);
+				let settingsTitle = clientScreenTitle("Settings", null, themeSetting);
+				let dTitle = clientTextView(dialogTitle, true);
 				dTitle.setGravity(Gravity_.CENTER);
-				var closeEnter = clientTextView("\n");
-				var closeButton = clientButton("Close");
+				let closeEnter = clientTextView("\n");
+				let closeButton = clientButton("Close");
 				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
 
-				var dScrollView = new ScrollView_(CONTEXT);
+				let dScrollView = new ScrollView_(CONTEXT);
 				dScrollView.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT));
 				dScrollView.setScrollBarStyle(View_.SCROLLBARS_OUTSIDE_OVERLAY);
 				dScrollView.setFillViewport(true);
-				var dScrollInside = new LinearLayout_(CONTEXT);
+				let dScrollInside = new LinearLayout_(CONTEXT);
 				dScrollInside.setGravity(Gravity_.CENTER);
 				dScrollInside.setOrientation(1);
 				dScrollView.addView(dScrollInside);
 
-				var dialogLayout = new LinearLayout_(CONTEXT);
+				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setGravity(Gravity_.CENTER);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
@@ -7725,9 +7738,9 @@ VertexClientPE.showSettingSelectorDialog = function(sRightButton, dialogTitle, s
 				dialogLayout.addView(dTitle);
 				dialogLayout.addView(dScrollView);
 
-				var dialogTableLayout = new TableLayout_(CONTEXT);
-				var dialogTableRow;
-				var tempButton;
+				let dialogTableLayout = new TableLayout_(CONTEXT);
+				let dialogTableRow;
+				let tempButton;
 
 				selectionArray.forEach(function(element, index, array) {
 					tempButton = clientButton(element);
@@ -7771,7 +7784,7 @@ VertexClientPE.showSettingSelectorDialog = function(sRightButton, dialogTitle, s
 				//dialogLayout.addView(closeEnter);
 				//dialogLayout.addView(closeButton);
 
-				var dialog = new Dialog_(CONTEXT);
+				let dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.setContentView(dialogLayout);
 				dialog.setTitle(dialogTitle);
@@ -7781,7 +7794,7 @@ VertexClientPE.showSettingSelectorDialog = function(sRightButton, dialogTitle, s
 					}
 				});
 				dialog.show();
-				var window = dialog.getWindow();
+				let window = dialog.getWindow();
 				window.setLayout(display.widthPixels, display.heightPixels);
 				closeButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
@@ -7796,7 +7809,7 @@ VertexClientPE.showSettingSelectorDialog = function(sRightButton, dialogTitle, s
 	});
 }
 
-var newRed, newGreen, newBlue, newRedStroke, newGreenStroke, newBlueStroke;
+let newRed, newGreen, newBlue, newRedStroke, newGreenStroke, newBlueStroke;
 
 VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 	CONTEXT.runOnUiThread(new Runnable_() {
@@ -10130,61 +10143,37 @@ VertexClientPE.setupMCPEGUI = function() {
 
 VertexClientPE.saveAutoSpammerMessage = function() {
 	File_(settingsPath).mkdirs();
-	var newFile = new File_(settingsPath, "vertexclientpe_spammessage.txt");
-	newFile.createNewFile();
-	var outWrite = new OutputStreamWriter_(new FileOutputStream_(newFile));
-	outWrite.append(spamMessage.toString());
-
-	outWrite.close();
+	changeFileText(settingsPath + "vertexclientpe_spammessage.txt", spamMessage);
 }
 
 VertexClientPE.loadAutoSpammerMessage = function() {
-	if(!File_(settingsPath + "vertexclientpe_spammessage.txt").exists())
+	let tempMsg = getTextFromFile(settingsPath + "vertexclientpe_spammessage.txt");
+	if(tempMsg == "") {
 		return;
-	var file = new File_(settingsPath + "vertexclientpe_spammessage.txt");
-	var fos = new FileInputStream_(file);
-	var str = new StringBuilder_();
-	var ch;
-	while((ch = fos.read()) != -1)
-		str.append(Character_(ch));
-	if(str != null && str != undefined) {
-		spamMessage = str.toString();
 	}
-	fos.close();
+	spamMessage = tempMsg;
 	return true;
 }
 
 VertexClientPE.saveWatermarkText = function() {
 	File_(settingsPath).mkdirs();
-	var newFile = new File_(settingsPath, "vertexclientpe_watermarktext.txt");
-	newFile.createNewFile();
-	var outWrite = new OutputStreamWriter_(new FileOutputStream_(newFile));
-	outWrite.append(watermarkTextSetting.toString());
-
-	outWrite.close();
+	changeFileText(settingsPath + "vertexclientpe_watermarktext.txt", watermarkTextSetting);
 }
 
 VertexClientPE.loadWatermarkText = function() {
-	if(!File_(settingsPath + "vertexclientpe_watermarktext.txt").exists())
+	let tempText = getTextFromFile(settingsPath + "vertexclientpe_watermarktext.txt");
+	if(tempText == "") {
 		return;
-	var file = new File_(settingsPath + "vertexclientpe_watermarktext.txt");
-	var fos = new FileInputStream_(file);
-	var str = new StringBuilder_();
-	var ch;
-	while((ch = fos.read()) != -1)
-		str.append(Character_(ch));
-	if(str != null && str != undefined) {
-		watermarkTextSetting = str.toString();
 	}
-	fos.close();
+	watermarkTextSetting = tempText;
 	return true;
 }
 
 VertexClientPE.saveFeaturesSettings = function() {
 	File_(settingsPath).mkdirs();
-	var newFile = new File_(settingsPath, "vertexclientpe_features.txt");
+	let newFile = new File_(settingsPath, "vertexclientpe_features.txt");
 	newFile.createNewFile();
-	var outWrite = new OutputStreamWriter_(new FileOutputStream_(newFile));
+	let outWrite = new OutputStreamWriter_(new FileOutputStream_(newFile));
 	outWrite.append(combatEnabled.toString());
 	outWrite.append("," + worldEnabled.toString());
 	outWrite.append("," + movementEnabled.toString());
@@ -10196,37 +10185,30 @@ VertexClientPE.saveFeaturesSettings = function() {
 }
 
 VertexClientPE.loadFeaturesSettings = function() {
-	var file = new File_(settingsPath + "vertexclientpe_features.txt");
-	if (file.exists()) {
-		var fos = new FileInputStream_(file),
-			str = new StringBuilder_(),
-			ch;
-		while ((ch = fos.read()) != -1) {
-			str.append(Character_(ch));
-		}
-		var arr = str.toString().split(",");
-		if (arr[0] != null && arr[0] != undefined) {
-			combatEnabled = arr[0];
-		}
-		if (arr[1] != null && arr[1] != undefined) {
-			worldEnabled = arr[1];
-		}
-		if (arr[2] != null && arr[2] != undefined) {
-			movementEnabled = arr[2];
-		}
-		if (arr[3] != null && arr[3] != undefined) {
-			playerEnabled = arr[3];
-		}
-		if (arr[4] != null && arr[4] != undefined) {
-			miscEnabled = arr[4];
-		}
-		if (arr[5] != null && arr[5] != undefined) {
-			singleplayerEnabled = arr[5];
-		}
-		fos.close();
-
-		return true;
+	let tempFeatures = getTextFromFile(settingsPath + "vertexclientpe_features.txt");
+	if(tempFeatures == "") {
+		return;
 	}
+	let arr = tempFeatures.split(",");
+	if (arr[0] != null && arr[0] != undefined) {
+		combatEnabled = arr[0];
+	}
+	if (arr[1] != null && arr[1] != undefined) {
+		worldEnabled = arr[1];
+	}
+	if (arr[2] != null && arr[2] != undefined) {
+		movementEnabled = arr[2];
+	}
+	if (arr[3] != null && arr[3] != undefined) {
+		playerEnabled = arr[3];
+	}
+	if (arr[4] != null && arr[4] != undefined) {
+		miscEnabled = arr[4];
+	}
+	if (arr[5] != null && arr[5] != undefined) {
+		singleplayerEnabled = arr[5];
+	}
+	return true;
 }
 
 VertexClientPE.saveCategorySettings = function() {
@@ -10244,22 +10226,18 @@ VertexClientPE.saveCategorySettings = function() {
 }
 
 VertexClientPE.loadCategorySettings = function() {
-	if(!File_(settingsPath + "vertexclientpe_categories_new.txt").exists())
+	let tempCategories = getTextFromFile(settingsPath + "vertexclientpe_features.txt");
+	if(tempCategories == "") {
 		return;
-	var file = new File_(settingsPath + "vertexclientpe_categories_new.txt");
-	var fos = new FileInputStream_(file);
-	var str = new StringBuilder_();
-	var ch;
-	while((ch = fos.read()) != -1)
-		str.append(Character_(ch));
-	if(str != null && str != undefined) {
-		combatName = str.toString().split(',')[0];
-		worldName = str.toString().split(',')[1];
-		movementName = str.toString().split(',')[2];
-		playerName = str.toString().split(',')[3];
-		miscName = str.toString().split(',')[4]
 	}
-	fos.close();
+	let arr = tempCategories.split(",");
+	if(arr != null && arr != undefined) {
+		combatName = arr[0];
+		worldName = arr[1];
+		movementName = arr[2];
+		playerName = arr[3];
+		miscName = arr[4];
+	}
 	return true;
 }
 
@@ -10587,273 +10565,268 @@ VertexClientPE.saveMainSettings = function() {
 }
 
 VertexClientPE.loadMainSettings = function () {
-	var file = new File_(settingsPath + "vertexclientpenew.txt");
-	if (file.exists()) {
-		var fos = new FileInputStream_(file),
-			str = new StringBuilder_(),
-			ch;
-		while ((ch = fos.read()) != -1) {
-			str.append(Character_(ch));
-		}
-		var arr = str.toString().split(",");
-		if (arr[0] != null && arr[0] != undefined) {
-			hacksListModeSetting = arr[0]; //Here we split text by ","
-		}
-		if (arr[1] != null && arr[1] != undefined) {
-			mainButtonPositionSetting = arr[1];
-		}
-		if (arr[2] != null && arr[2] != undefined) {
-			healthTagsSetting = arr[2];
-		}
-		if (arr[3] != null && arr[3] != undefined) {
-			themeSetting = arr[3];
-		}
-		if (arr[4] != null && arr[4] != undefined) {
-			playMusicSetting = arr[4];
-		}
-		if (arr[5] != null && arr[5] != undefined) {
-			showNewsSetting = arr[5];
-		}
-		if (arr[6] != null && arr[6] != undefined) {
-			menuAnimationsSetting = arr[6];
-		}
-		if (arr[7] != null && arr[7] != undefined) {
-			nukerMode = arr[7];
-		}
-		if (arr[8] != null && arr[8] != undefined) {
-			timerSpeed = arr[8];
-		}
-		if (arr[9] != null && arr[9] != undefined) {
-			themeSetup = arr[9];
-		}
-		if (arr[10] != null && arr[10] != undefined) {
-			nukerRange = arr[10];
-		}
-		if (arr[11] != null && arr[11] != undefined) {
-			killAuraRange = arr[11];
-		}
-		if (arr[12] != null && arr[12] != undefined) {
-			spamDelayTime = arr[12];
-		}
-		if (arr[13] != null && arr[13] != undefined) {
-			normalMenuTypeSize = arr[13];
-			if (normalMenuTypeSize == "normal") {
-				customHeight = topBarHeight / 2;
-			} else if (normalMenuTypeSize == "small") {
-				customHeight = topBarHeight;
-			}
-		}
-		if (arr[14] != null && arr[14] != undefined) {
-			tapNukerRange = arr[14];
-		}
-		if (arr[15] != null && arr[15] != undefined) {
-			menuType = arr[15];
-		}
-		if (arr[16] != null && arr[16] != undefined) {
-			chestTracersRange = arr[16];
-		}
-		if (arr[17] != null && arr[17] != undefined) {
-			tabGUIModeSetting = arr[17];
-		}
-		if (arr[18] != null && arr[18] != undefined) {
-			chestTracersGroundMode = arr[18];
-		}
-		if (arr[19] != null && arr[19] != undefined) {
-			chestTracersParticle = arr[19];
-		}
-		if (arr[20] != null && arr[20] != undefined) {
-			antiLagDropRemoverSetting = arr[20];
-		}
-		if (arr[21] != null && arr[21] != undefined) {
-			useLightThemeSetting = arr[21];
-		}
-		if (arr[22] != null && arr[22] != undefined) {
-			buttonStyleSetting = arr[22];
-		}
-		if (arr[23] != null && arr[23] != undefined) {
-			mcpeGUISetting = arr[23];
-		}
-		if (arr[24] != null && arr[24] != undefined) {
-			storageESPRange = arr[24];
-		}
-		if (arr[25] != null && arr[25] != undefined) {
-			transparentBgSetting = arr[25];
-		}
-		if (arr[26] != null && arr[26] != undefined) {
-			aimbotUseKillauraRange = arr[26];
-		}
-		if (arr[27] != null && arr[27] != undefined) {
-			screenshotModeSetting = arr[27];
-		}
-		if (arr[28] != null && arr[28] != undefined) {
-			killToMorphSetting = arr[28];
-		}
-		if (arr[29] != null && arr[29] != undefined) {
-			fontSetting = arr[29];
-		}
-		if (arr[30] != null && arr[30] != undefined) {
-			mainButtonStyleSetting = arr[30];
-		}
-		if (arr[31] != null && arr[31] != undefined) {
-			webbrowserStartPageSetting = arr[31];
-		}
-		if (arr[32] != null && arr[32] != undefined) {
-			backgroundStyleSetting = arr[32];
-		}
-		if (arr[33] != null && arr[33] != undefined) {
-			modButtonColorBlockedSetting = arr[33];
-		}
-		if (arr[34] != null && arr[34] != undefined) {
-			modButtonColorEnabledSetting = arr[34];
-		}
-		if (arr[35] != null && arr[35] != undefined) {
-			modButtonColorDisabledSetting = arr[35];
-		}
-		if (arr[36] != null && arr[36] != undefined) {
-			arrowGunMode = arr[36];
-		}
-		if (arr[37] != null && arr[37] != undefined) {
-			commandsSetting = arr[37];
-		}
-		if (arr[38] != null && arr[38] != undefined) {
-			cmdPrefix = arr[38];
-		}
-		if (arr[39] != null && arr[39] != undefined) {
-			shortcutSizeSetting = arr[39];
-		}
-		if (arr[40] != null && arr[40] != undefined) {
-			aimbotRangeSetting = arr[40];
-		}
-		if (arr[41] != null && arr[41] != undefined) {
-			speedHackFriction = arr[41];
-		}
-		if (arr[42] != null && arr[42] != undefined) {
-			remoteViewTeleportSetting = arr[42];
-		}
-		if (arr[43] != null && arr[43] != undefined) {
-			switchGamemodeSendCommandSetting = arr[43];
-		}
-		if (arr[44] != null && arr[44] != undefined) {
-			betterPauseSetting = arr[44];
-		}
-		if (arr[45] != null && arr[45] != undefined) {
-			shortcutUIHeightSetting = arr[45];
-		}
-		if (arr[46] != null && arr[46] != undefined) {
-			mainButtonTapSetting = arr[46];
-		}
-		if (arr[47] != null && arr[47] != undefined) {
-			autoWalkDirection = arr[47];
-		}
-		if (arr[48] != null && arr[48] != undefined) {
-			dashboardTileSize = arr[48];
-		}
-		if (arr[49] != null && arr[49] != undefined) {
-			spamUseRandomMsgSetting = arr[49];
-		}
-		if (arr[50] != null && arr[50] != undefined) {
-			buttonStrokeThicknessSetting = arr[50];
-		}
-		if (arr[51] != null && arr[51] != undefined) {
-			hacksListPosSetting = arr[51];
-		}
-		if (arr[52] != null && arr[52] != undefined) {
-			targetMobsSetting = arr[52];
-		}
-		if (arr[53] != null && arr[53] != undefined) {
-			targetPlayersSetting = arr[53];
-		}
-		if (arr[54] != null && arr[54] != undefined) {
-			shortcutUIPosSetting = arr[54];
-		}
-		if (arr[55] != null && arr[55] != undefined) {
-			hitboxesHitboxWidthSetting = arr[55];
-		}
-		if (arr[56] != null && arr[56] != undefined) {
-			hitboxesHitboxHeightSetting = arr[56];
-		}
-		if (arr[57] != null && arr[57] != undefined) {
-			showUpdateToastsSetting = arr[57];
-		}
-		if (arr[58] != null && arr[58] != undefined) {
-			showSnowInWinterSetting = arr[58];
-		}
-		if (arr[59] != null && arr[59] != undefined) {
-			preventDiggingSetting = arr[59];
-		}
-		if (arr[60] != null && arr[60] != undefined) {
-			preventPlacingSetting = arr[60];
-		}
-		if (arr[61] != null && arr[61] != undefined) {
-			preventAttacksSetting = arr[61];
-		}
-		if (arr[62] != null && arr[62] != undefined) {
-			fastBreakDestroyTime = arr[62];
-		}
-		if (arr[63] != null && arr[63] != undefined) {
-			strafeAuraRangeSetting = arr[63];
-		}
-		if (arr[64] != null && arr[64] != undefined) {
-			strafeAuraDirectionSetting = arr[64];
-		}
-		if (arr[65] != null && arr[65] != undefined) {
-			panicCombatSetting = arr[65];
-		}
-		if (arr[66] != null && arr[66] != undefined) {
-			panicWorldSetting = arr[66];
-		}
-		if (arr[67] != null && arr[67] != undefined) {
-			panicMovementSetting = arr[67];
-		}
-		if (arr[68] != null && arr[68] != undefined) {
-			panicPlayerSetting = arr[68];
-		}
-		if (arr[69] != null && arr[69] != undefined) {
-			panicMiscSetting = arr[69];
-		}
-		if (arr[70] != null && arr[70] != undefined) {
-			buttonSoundSetting = arr[70];
-		}
-		if (arr[71] != null && arr[71] != undefined) {
-			transparentSplashScreenSetting = arr[71];
-		}
-		if (arr[72] != null && arr[72] != undefined) {
-			showIconsOnTileShortcutsSetting = arr[72];
-		}
-		if (arr[73] != null && arr[73] != undefined) {
-			targetFriendsSetting = arr[73];
-		}
-		if (arr[74] != null && arr[74] != undefined) {
-			antiAFKKeepScreenOnSetting = arr[74];
-		}
-		if (arr[75] != null && arr[75] != undefined) {
-			shortcutUIModeSetting = arr[75];
-		}
-		if (arr[76] != null && arr[76] != undefined) {
-			attackShockIntensity = arr[76];
-		}
-		if (arr[77] != null && arr[77] != undefined) {
-			f5ButtonModeSetting = arr[77];
-		}
-		if (arr[78] != null && arr[78] != undefined) {
-			mainButtonSizeSetting = arr[78];
-		}
-		if (arr[79] != null && arr[79] != undefined) {
-			powerExplosionsPowerSetting = arr[79];
-		}
-		if (arr[80] != null && arr[80] != undefined) {
-			preventExplosionsSetting = arr[80];
-		}
-		fos.close();
-		VertexClientPE.loadCustomRGBSettings();
-		VertexClientPE.loadAutoSpammerMessage();
-		VertexClientPE.loadWatermarkText();
-		VertexClientPE.loadCategorySettings();
-		VertexClientPE.font = fontSetting=="minecraft"?Typeface_.createFromFile(new File_(PATH, "minecraft.ttf")):VertexClientPE.defaultFont;
-		MinecraftButtonLibrary.ProcessedResources.font = VertexClientPE.font;
-
-		return true;
+	let fileText = getTextFromFile(settingsPath + "vertexclientpenew.txt");
+	if(fileText == "") {
+		return;
 	}
+	let arr = fileText.toString().split(",");
+	if (arr[0] != null && arr[0] != undefined) {
+		hacksListModeSetting = arr[0];
+	}
+	if (arr[1] != null && arr[1] != undefined) {
+		mainButtonPositionSetting = arr[1];
+	}
+	if (arr[2] != null && arr[2] != undefined) {
+		healthTagsSetting = arr[2];
+	}
+	if (arr[3] != null && arr[3] != undefined) {
+		themeSetting = arr[3];
+	}
+	if (arr[4] != null && arr[4] != undefined) {
+		playMusicSetting = arr[4];
+	}
+	if (arr[5] != null && arr[5] != undefined) {
+		showNewsSetting = arr[5];
+	}
+	if (arr[6] != null && arr[6] != undefined) {
+		menuAnimationsSetting = arr[6];
+	}
+	if (arr[7] != null && arr[7] != undefined) {
+		nukerMode = arr[7];
+	}
+	if (arr[8] != null && arr[8] != undefined) {
+		timerSpeed = arr[8];
+	}
+	if (arr[9] != null && arr[9] != undefined) {
+		themeSetup = arr[9];
+	}
+	if (arr[10] != null && arr[10] != undefined) {
+		nukerRange = arr[10];
+	}
+	if (arr[11] != null && arr[11] != undefined) {
+		killAuraRange = arr[11];
+	}
+	if (arr[12] != null && arr[12] != undefined) {
+		spamDelayTime = arr[12];
+	}
+	if (arr[13] != null && arr[13] != undefined) {
+		normalMenuTypeSize = arr[13];
+		if (normalMenuTypeSize == "normal") {
+			customHeight = topBarHeight / 2;
+		} else if (normalMenuTypeSize == "small") {
+			customHeight = topBarHeight;
+		}
+	}
+	if (arr[14] != null && arr[14] != undefined) {
+		tapNukerRange = arr[14];
+	}
+	if (arr[15] != null && arr[15] != undefined) {
+		menuType = arr[15];
+	}
+	if (arr[16] != null && arr[16] != undefined) {
+		chestTracersRange = arr[16];
+	}
+	if (arr[17] != null && arr[17] != undefined) {
+		tabGUIModeSetting = arr[17];
+	}
+	if (arr[18] != null && arr[18] != undefined) {
+		chestTracersGroundMode = arr[18];
+	}
+	if (arr[19] != null && arr[19] != undefined) {
+		chestTracersParticle = arr[19];
+	}
+	if (arr[20] != null && arr[20] != undefined) {
+		antiLagDropRemoverSetting = arr[20];
+	}
+	if (arr[21] != null && arr[21] != undefined) {
+		useLightThemeSetting = arr[21];
+	}
+	if (arr[22] != null && arr[22] != undefined) {
+		buttonStyleSetting = arr[22];
+	}
+	if (arr[23] != null && arr[23] != undefined) {
+		mcpeGUISetting = arr[23];
+	}
+	if (arr[24] != null && arr[24] != undefined) {
+		storageESPRange = arr[24];
+	}
+	if (arr[25] != null && arr[25] != undefined) {
+		transparentBgSetting = arr[25];
+	}
+	if (arr[26] != null && arr[26] != undefined) {
+		aimbotUseKillauraRange = arr[26];
+	}
+	if (arr[27] != null && arr[27] != undefined) {
+		screenshotModeSetting = arr[27];
+	}
+	if (arr[28] != null && arr[28] != undefined) {
+		killToMorphSetting = arr[28];
+	}
+	if (arr[29] != null && arr[29] != undefined) {
+		fontSetting = arr[29];
+	}
+	if (arr[30] != null && arr[30] != undefined) {
+		mainButtonStyleSetting = arr[30];
+	}
+	if (arr[31] != null && arr[31] != undefined) {
+		webbrowserStartPageSetting = arr[31];
+	}
+	if (arr[32] != null && arr[32] != undefined) {
+		backgroundStyleSetting = arr[32];
+	}
+	if (arr[33] != null && arr[33] != undefined) {
+		modButtonColorBlockedSetting = arr[33];
+	}
+	if (arr[34] != null && arr[34] != undefined) {
+		modButtonColorEnabledSetting = arr[34];
+	}
+	if (arr[35] != null && arr[35] != undefined) {
+		modButtonColorDisabledSetting = arr[35];
+	}
+	if (arr[36] != null && arr[36] != undefined) {
+		arrowGunMode = arr[36];
+	}
+	if (arr[37] != null && arr[37] != undefined) {
+		commandsSetting = arr[37];
+	}
+	if (arr[38] != null && arr[38] != undefined) {
+		cmdPrefix = arr[38];
+	}
+	if (arr[39] != null && arr[39] != undefined) {
+		shortcutSizeSetting = arr[39];
+	}
+	if (arr[40] != null && arr[40] != undefined) {
+		aimbotRangeSetting = arr[40];
+	}
+	if (arr[41] != null && arr[41] != undefined) {
+		speedHackFriction = arr[41];
+	}
+	if (arr[42] != null && arr[42] != undefined) {
+		remoteViewTeleportSetting = arr[42];
+	}
+	if (arr[43] != null && arr[43] != undefined) {
+		switchGamemodeSendCommandSetting = arr[43];
+	}
+	if (arr[44] != null && arr[44] != undefined) {
+		betterPauseSetting = arr[44];
+	}
+	if (arr[45] != null && arr[45] != undefined) {
+		shortcutUIHeightSetting = arr[45];
+	}
+	if (arr[46] != null && arr[46] != undefined) {
+		mainButtonTapSetting = arr[46];
+	}
+	if (arr[47] != null && arr[47] != undefined) {
+		autoWalkDirection = arr[47];
+	}
+	if (arr[48] != null && arr[48] != undefined) {
+		dashboardTileSize = arr[48];
+	}
+	if (arr[49] != null && arr[49] != undefined) {
+		spamUseRandomMsgSetting = arr[49];
+	}
+	if (arr[50] != null && arr[50] != undefined) {
+		buttonStrokeThicknessSetting = arr[50];
+	}
+	if (arr[51] != null && arr[51] != undefined) {
+		hacksListPosSetting = arr[51];
+	}
+	if (arr[52] != null && arr[52] != undefined) {
+		targetMobsSetting = arr[52];
+	}
+	if (arr[53] != null && arr[53] != undefined) {
+		targetPlayersSetting = arr[53];
+	}
+	if (arr[54] != null && arr[54] != undefined) {
+		shortcutUIPosSetting = arr[54];
+	}
+	if (arr[55] != null && arr[55] != undefined) {
+		hitboxesHitboxWidthSetting = arr[55];
+	}
+	if (arr[56] != null && arr[56] != undefined) {
+		hitboxesHitboxHeightSetting = arr[56];
+	}
+	if (arr[57] != null && arr[57] != undefined) {
+		showUpdateToastsSetting = arr[57];
+	}
+	if (arr[58] != null && arr[58] != undefined) {
+		showSnowInWinterSetting = arr[58];
+	}
+	if (arr[59] != null && arr[59] != undefined) {
+		preventDiggingSetting = arr[59];
+	}
+	if (arr[60] != null && arr[60] != undefined) {
+		preventPlacingSetting = arr[60];
+	}
+	if (arr[61] != null && arr[61] != undefined) {
+		preventAttacksSetting = arr[61];
+	}
+	if (arr[62] != null && arr[62] != undefined) {
+		fastBreakDestroyTime = arr[62];
+	}
+	if (arr[63] != null && arr[63] != undefined) {
+		strafeAuraRangeSetting = arr[63];
+	}
+	if (arr[64] != null && arr[64] != undefined) {
+		strafeAuraDirectionSetting = arr[64];
+	}
+	if (arr[65] != null && arr[65] != undefined) {
+		panicCombatSetting = arr[65];
+	}
+	if (arr[66] != null && arr[66] != undefined) {
+		panicWorldSetting = arr[66];
+	}
+	if (arr[67] != null && arr[67] != undefined) {
+		panicMovementSetting = arr[67];
+	}
+	if (arr[68] != null && arr[68] != undefined) {
+		panicPlayerSetting = arr[68];
+	}
+	if (arr[69] != null && arr[69] != undefined) {
+		panicMiscSetting = arr[69];
+	}
+	if (arr[70] != null && arr[70] != undefined) {
+		buttonSoundSetting = arr[70];
+	}
+	if (arr[71] != null && arr[71] != undefined) {
+		transparentSplashScreenSetting = arr[71];
+	}
+	if (arr[72] != null && arr[72] != undefined) {
+		showIconsOnTileShortcutsSetting = arr[72];
+	}
+	if (arr[73] != null && arr[73] != undefined) {
+		targetFriendsSetting = arr[73];
+	}
+	if (arr[74] != null && arr[74] != undefined) {
+		antiAFKKeepScreenOnSetting = arr[74];
+	}
+	if (arr[75] != null && arr[75] != undefined) {
+		shortcutUIModeSetting = arr[75];
+	}
+	if (arr[76] != null && arr[76] != undefined) {
+		attackShockIntensity = arr[76];
+	}
+	if (arr[77] != null && arr[77] != undefined) {
+		f5ButtonModeSetting = arr[77];
+	}
+	if (arr[78] != null && arr[78] != undefined) {
+		mainButtonSizeSetting = arr[78];
+	}
+	if (arr[79] != null && arr[79] != undefined) {
+		powerExplosionsPowerSetting = arr[79];
+	}
+	if (arr[80] != null && arr[80] != undefined) {
+		preventExplosionsSetting = arr[80];
+	}
+
+	VertexClientPE.loadCustomRGBSettings();
+	VertexClientPE.loadAutoSpammerMessage();
+	VertexClientPE.loadWatermarkText();
+	VertexClientPE.loadCategorySettings();
+	VertexClientPE.font = fontSetting=="minecraft"?Typeface_.createFromFile(new File_(PATH, "minecraft.ttf")):VertexClientPE.defaultFont;
+	MinecraftButtonLibrary.ProcessedResources.font = VertexClientPE.font;
+
+	return true;
 }
 
 VertexClientPE.resetData = function() {
