@@ -761,9 +761,11 @@ function VectorLib() {
 let currentScreen = ScreenType.start_screen;
 
 function screenChangeHook(screenName) {
-	changeFileText(Environment_.getExternalStorageDirectory() + "/games/com.mojang/minecraftpe/clientId.txt", screenName);
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
+			if(pauseUtilitiesUI != null && pauseUtilitiesUI.isShowing()) {
+				pauseUtilitiesUI.dismiss();
+			}
 			if(screenName == ScreenType.start_screen || screenName == ScreenType.exit_dialog || screenName == ScreenType.hud || screenName == ScreenType.ingame || screenName == ScreenType.pause_screen) {
 				if(GUI != null) {
 					GUI.setTouchable(true);
@@ -816,9 +818,6 @@ function screenChangeHook(screenName) {
 				if(rotationPlusUI != null) {
 					rotationPlusUI.dismiss();
 				}
-				if(pauseUtilitiesUI != null && pauseUtilitiesUI.isShowing()) {
-					pauseUtilitiesUI.dismiss();
-				}
 				if(screenName == ScreenType.start_screen || screenName == ScreenType.exit_dialog) {
 					if((mainMenuTextList == null || !mainMenuTextList.isShowing()) && !VertexClientPE.menuIsShowing) {
 						VertexClientPE.showStartScreenBar();
@@ -843,11 +842,6 @@ function screenChangeHook(screenName) {
 			} else if(currentScreen == ScreenType.pause_screen) {
 				if(screenName != ScreenType.options_screen) {
 					VertexClientPE.isPaused = false;
-				}
-				if(pauseUtilitiesUI != null) {
-					if(pauseUtilitiesUI.isShowing()) {
-						pauseUtilitiesUI.dismiss();
-					}
 				}
 			}
 		}
