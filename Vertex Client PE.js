@@ -70,11 +70,13 @@ const AlarmManager_ = android.app.AlarmManager,
 	WebView_ = android.webkit.WebView,
 	WebViewClient_ = android.webkit.WebViewClient,
 	Button_ = android.widget.Button,
+	EditText_ = android.widget.EditText,
 	CheckBox_ = android.widget.CheckBox,
 	CompoundButton_ = android.widget.CompoundButton,
 	FrameLayout_ = android.widget.FrameLayout,
 	GridLayout_ = android.widget.GridLayout,
 	ImageView_ = android.widget.ImageView,
+	KeyEvent_ = android.view.KeyEvent,
 	LinearLayout_ = android.widget.LinearLayout,
 	PopupWindow_ = android.widget.PopupWindow,
 	SeekBar_ = android.widget.SeekBar,
@@ -115,6 +117,7 @@ const AlarmManager_ = android.app.AlarmManager,
 	GITHUB_URL = "https://github.com/Vertex-Client/Vertex-Client.github.io/raw/master/",
 	PATH = "/sdcard/games/com.mojang/";
 
+const DENSITY = CONTEXT.getResources().getDisplayMetrics().density;
 /* try {
 	//getSupportActionBar().setTitle("Whatever title");
 	CONTEXT.runOnUiThread({
@@ -126,8 +129,6 @@ const AlarmManager_ = android.app.AlarmManager,
 	print(e);
 } */
 
-var EditText = android.widget.EditText;
-var KeyEvent = android.view.KeyEvent;
 var Scanner = java.util.Scanner;
 var ByteBuffer = java.nio.ByteBuffer;
 var FloatBuffer = java.nio.FloatBuffer;
@@ -2617,10 +2618,10 @@ var timer = {
 	type: "Mod",
 	state: false,
 	getSettingsLayout: function() {
-		var timerSettingsLayout = new LinearLayout_(CONTEXT);
+		let timerSettingsLayout = new LinearLayout_(CONTEXT);
 		timerSettingsLayout.setOrientation(1);
-		var timerSpeedTitle = clientTextView("Speed: | " + timerSpeed + " * 20 ticks");
-		var timerSpeedSlider = clientSeekBar();
+		let timerSpeedTitle = clientTextView("Speed: | " + timerSpeed + " * 20 ticks");
+		let timerSpeedSlider = clientSeekBar();
 		timerSpeedSlider.setProgress(timerSpeed);
 		timerSpeedSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
 			onProgressChanged: function() {
@@ -2662,10 +2663,10 @@ var nuker = {
 		return capitalizeFirstLetter(nukerMode);
 	},
 	getSettingsLayout: function() {
-		var nukerSettingsLayout = new LinearLayout_(CONTEXT);
+		let nukerSettingsLayout = new LinearLayout_(CONTEXT);
 		nukerSettingsLayout.setOrientation(1);
-		var nukerRangeTitle = clientTextView("Range: | " + nukerRange);
-		var nukerRangeSlider = clientSeekBar();
+		let nukerRangeTitle = clientTextView("Range: | " + nukerRange);
+		let nukerRangeSlider = clientSeekBar();
 		nukerRangeSlider.setProgress(nukerRange);
 		nukerRangeSlider.setMax(10);
 		nukerRangeSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
@@ -2674,31 +2675,30 @@ var nuker = {
 				nukerRangeTitle.setText("Range: | " + nukerRange);
 			}
 		});
-		var nukerModeTitle = clientTextView("\nMode:");
-		var nukerModeCubeButton = clientButton("Cube", "Normal mode which destroys blocks in the shape of a cube");
+		let nukerModeTitle = clientTextView("\nMode:");
+		let nukerModeCubeButton = clientButton("Cube", "Normal mode which destroys blocks in the shape of a cube");
 		nukerModeCubeButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 6 - 20 / 3, display.heightPixels / 10));
-		var nukerModeFlatButton = clientButton("Flat", "Flat mode which flats the ground");
+		let nukerModeFlatButton = clientButton("Flat", "Flat mode which flats the ground");
 		nukerModeFlatButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 6 - 20 / 3, display.heightPixels / 10));
-		var nukerModeSmashButton = clientButton("Smash", "Smash mode which only breaks blocks with a destroy time of 0");
+		let nukerModeSmashButton = clientButton("Smash", "Smash mode which only breaks blocks with a destroy time of 0");
 		nukerModeSmashButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 6 - 20 / 3, display.heightPixels / 10));
 
-		var nukerRangeTitle = clientTextView("Range: | " + nukerRange);
-		var nukerModeLayout = new LinearLayout_(CONTEXT);
+		let nukerModeLayout = new LinearLayout_(CONTEXT);
 		nukerModeLayout.setOrientation(LinearLayout_.HORIZONTAL);
 
-		var nukerModeLayoutLeft = new LinearLayout_(CONTEXT);
+		let nukerModeLayoutLeft = new LinearLayout_(CONTEXT);
 		nukerModeLayoutLeft.setOrientation(1);
 		nukerModeLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3 - 20 / 3, display.heightPixels / 10));
 		nukerModeLayoutLeft.setGravity(Gravity_.CENTER_HORIZONTAL);
 		nukerModeLayout.addView(nukerModeLayoutLeft);
 
-		var nukerModeLayoutCenter = new LinearLayout_(CONTEXT);
+		let nukerModeLayoutCenter = new LinearLayout_(CONTEXT);
 		nukerModeLayoutCenter.setOrientation(1);
 		nukerModeLayoutCenter.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3 - 20 / 3, display.heightPixels / 10));
 		nukerModeLayoutCenter.setGravity(Gravity_.CENTER_HORIZONTAL);
 		nukerModeLayout.addView(nukerModeLayoutCenter);
 
-		var nukerModeLayoutRight = new LinearLayout_(CONTEXT);
+		let nukerModeLayoutRight = new LinearLayout_(CONTEXT);
 		nukerModeLayoutRight.setOrientation(1);
 		nukerModeLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3 - 20 / 3, display.heightPixels / 10));
 		nukerModeLayoutRight.setGravity(Gravity_.CENTER_HORIZONTAL);
@@ -2709,9 +2709,9 @@ var nuker = {
 		nukerModeLayoutRight.addView(nukerModeSmashButton);
 		if(nukerMode == "cube") {
 			nukerModeCubeButton.setTextColor(Color_.GREEN);
-		}if(nukerMode == "flat") {
+		} if(nukerMode == "flat") {
 			nukerModeFlatButton.setTextColor(Color_.GREEN);
-		}if(nukerMode == "smash") {
+		} if(nukerMode == "smash") {
 			nukerModeSmashButton.setTextColor(Color_.GREEN);
 		}
 		nukerModeCubeButton.setOnClickListener(new View_.OnClickListener() {
@@ -2757,15 +2757,12 @@ var nuker = {
 		this.state = !this.state;
 	},
 	onTick: function() {
-		var x = getPlayerX();
-		var y = getPlayerY();
-		var z = getPlayerZ();
+		let x = getPlayerX();
+		let y = getPlayerY();
+		let z = getPlayerZ();
 		VertexClientPE.nuke(x, y, z, nukerRange, nukerMode);
 	}
 };
-
-var fancyChatMsg;
-var fancyChatEndChar;
 
 var fancyChat = {
 	name: "FancyChat",
@@ -2948,16 +2945,16 @@ var fastBreak = {
 	type: "Mod",
 	state: false,
 	getSettingsLayout: function() {
-		var fastBreakSettingsLayout = new LinearLayout_(CONTEXT);
+		let fastBreakSettingsLayout = new LinearLayout_(CONTEXT);
 		fastBreakSettingsLayout.setOrientation(1);
-		var fastBreakDestroyTimeTxt;
+		let fastBreakDestroyTimeTxt;
 		if(fastBreakDestroyTime == 0) {
 			fastBreakDestroyTimeTxt = "0 (instant)";
 		} else {
 			fastBreakDestroyTimeTxt = fastBreakDestroyTime;
 		}
-		var fastBreakDestroyTimeTitle = clientTextView("Destroy time: | " + fastBreakDestroyTimeTxt);
-		var fastBreakDestroyTimeSlider = clientSeekBar();
+		let fastBreakDestroyTimeTitle = clientTextView("Destroy time: | " + fastBreakDestroyTimeTxt);
+		let fastBreakDestroyTimeSlider = clientSeekBar();
 		fastBreakDestroyTimeSlider.setProgress(fastBreakDestroyTime * 100);
 		fastBreakDestroyTimeSlider.setMax(100);
 		fastBreakDestroyTimeSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
@@ -3043,16 +3040,33 @@ var autoSpammer = {
 
 		let spamMessageTitle = clientTextView("Custom message:");
 		let spamMessageInput = clientEditText(spamMessage);
-		if(onModManager) {
-			spamMessageInput.setImeOptions(android.view.inputmethod.EditorInfo.IME_FLAG_NO_EXTRACT_UI);
-		}
+		let spamMessageText;
 		spamMessageInput.setHint("Spam message");
 		spamMessageInput.setEnabled(!spamUseRandomMsgSettingCheckBox.isChecked());
 		spamMessageInput.addTextChangedListener(new TextWatcher_() {
 			onTextChanged: function() {
 				spamMessage = spamMessageInput.getText();
+				if(spamMessageText != null) {
+					spamMessageText.setText(spamMessage + " (tap to change)");
+				}
 			}
 		});
+		if(onModManager) {
+			spamMessageInput.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.MATCH_PARENT, LinearLayout_.LayoutParams.WRAP_CONTENT));
+			spamMessageText = clientTextView(spamMessage + " (tap to change)");
+			spamMessageText.setTextSize(px2dip(spamMessageInput.getTextSize()));
+			spamMessageText.setOnClickListener(new View_.OnClickListener() {
+				onClick: function(v) {
+					spamMessageInput.requestFocus();
+					VertexClientPE.showBasicDialog("AutoSpammer | Custom message", spamMessageInput,
+						function() {
+							spamMessageInput.getParent().removeView(spamMessageInput);
+							VertexClientPE.saveMainSettings();
+						}
+					);
+				}
+			});
+		}
 
 		let spamDelayTimeTitle = clientTextView("Delay time: | " + spamDelayTime + " seconds");
 		let spamDelayTimeSlider = clientSeekBar();
@@ -3067,7 +3081,12 @@ var autoSpammer = {
 
 		autoSpammerMessageLayout.addView(spamUseRandomMsgSettingCheckBox);
 		autoSpammerMessageLayout.addView(spamMessageTitle);
-		autoSpammerMessageLayout.addView(spamMessageInput);
+		if(spamMessageText == null) {
+			autoSpammerMessageLayout.addView(spamMessageInput);
+		} else {
+			autoSpammerMessageLayout.addView(spamMessageText);
+		}
+		
 		autoSpammerMessageLayout.addView(spamDelayTimeTitle);
 		autoSpammerMessageLayout.addView(spamDelayTimeSlider);
 
@@ -3162,7 +3181,7 @@ var powerExplosions = {
 	type: "Mod",
 	state: false,
 	getSettingsLayout: function() {
-		var powerExplosionsLayout = new LinearLayout_(CONTEXT);
+		let powerExplosionsLayout = new LinearLayout_(CONTEXT);
 		powerExplosionsLayout.setOrientation(1);
 
 		let powerExplosionsPowerSettingTitle = clientTextView("Power: | " + powerExplosionsPowerSetting);
@@ -3367,10 +3386,10 @@ var tapNuker = {
 	type: "Mod",
 	state: false,
 	getSettingsLayout: function() {
-		var tapNukerSettingsLayout = new LinearLayout_(CONTEXT);
+		let tapNukerSettingsLayout = new LinearLayout_(CONTEXT);
 		tapNukerSettingsLayout.setOrientation(1);
-		var tapNukerRangeTitle = clientTextView("Range: | " + tapNukerRange);
-		var tapNukerRangeSlider = clientSeekBar();
+		let tapNukerRangeTitle = clientTextView("Range: | " + tapNukerRange);
+		let tapNukerRangeSlider = clientSeekBar();
 		tapNukerRangeSlider.setProgress(tapNukerRange);
 		tapNukerRangeSlider.setMax(10);
 		tapNukerRangeSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
@@ -3518,25 +3537,25 @@ var arrowGun = {
 		return capitalizeFirstLetter(arrowGunMode);
 	},
 	getSettingsLayout: function() {
-		var arrowGunSettingsLayout = new LinearLayout_(CONTEXT);
+		let arrowGunSettingsLayout = new LinearLayout_(CONTEXT);
 		arrowGunSettingsLayout.setOrientation(1);
 
-		var arrowGunModeLayout = new LinearLayout_(CONTEXT);
+		let arrowGunModeLayout = new LinearLayout_(CONTEXT);
 		arrowGunModeLayout.setOrientation(LinearLayout_.HORIZONTAL);
 
-		var arrowGunModeTitle = clientTextView("Mode:");
-		var arrowGunModeSlowButton = clientButton("Slow", "Slow mode which shoots an arrow every second.");
+		let arrowGunModeTitle = clientTextView("Mode:");
+		let arrowGunModeSlowButton = clientButton("Slow", "Slow mode which shoots an arrow every second.");
 		arrowGunModeSlowButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
-		var arrowGunModeFastButton = clientButton("Fast", "Fast mode which shoots multiple arrows every second.");
+		let arrowGunModeFastButton = clientButton("Fast", "Fast mode which shoots multiple arrows every second.");
 		arrowGunModeFastButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
 
-		var arrowGunModeLayoutLeft = new LinearLayout_(CONTEXT);
+		let arrowGunModeLayoutLeft = new LinearLayout_(CONTEXT);
 		arrowGunModeLayoutLeft.setOrientation(1);
 		arrowGunModeLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - 5, display.heightPixels / 10));
 		arrowGunModeLayoutLeft.setGravity(Gravity_.CENTER_HORIZONTAL);
 		arrowGunModeLayout.addView(arrowGunModeLayoutLeft);
 
-		var arrowGunModeLayoutRight = new LinearLayout_(CONTEXT);
+		let arrowGunModeLayoutRight = new LinearLayout_(CONTEXT);
 		arrowGunModeLayoutRight.setOrientation(1);
 		arrowGunModeLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - 5, display.heightPixels / 10));
 		arrowGunModeLayoutRight.setGravity(Gravity_.CENTER_HORIZONTAL);
@@ -3570,12 +3589,12 @@ var arrowGun = {
 		return arrowGunSettingsLayout;
 	},
 	shootArrow: function() {
-		var p = ((Entity.getPitch(getPlayerEnt()) + 90) * Math.PI) / 180;
-		var y = ((Entity.getYaw(getPlayerEnt()) + 90) * Math.PI) / 180;
-		var xx = Math.sin(p) * Math.cos(y);
-		var yy = Math.sin(p) * Math.sin(y);
-		var zz = Math.cos(p);
-		var arrow = Level.spawnMob(getPlayerX() + xx, getPlayerY() + zz, getPlayerZ() + yy, 80);
+		let p = ((Entity.getPitch(getPlayerEnt()) + 90) * Math.PI) / 180;
+		let y = ((Entity.getYaw(getPlayerEnt()) + 90) * Math.PI) / 180;
+		let xx = Math.sin(p) * Math.cos(y);
+		let yy = Math.sin(p) * Math.sin(y);
+		let zz = Math.cos(p);
+		let arrow = Level.spawnMob(getPlayerX() + xx, getPlayerY() + zz, getPlayerZ() + yy, 80);
 		setVelX(arrow, xx);
 		setVelY(arrow, zz);
 		setVelZ(arrow, yy);
@@ -3715,25 +3734,25 @@ var autoWalk = {
 		return capitalizeFirstLetter(autoWalkDirection);
 	},
 	getSettingsLayout: function() {
-		var autoWalkSettingsLayout = new LinearLayout_(CONTEXT);
+		let autoWalkSettingsLayout = new LinearLayout_(CONTEXT);
 		autoWalkSettingsLayout.setOrientation(1);
 
-		var autoWalkDirectionLayout = new LinearLayout_(CONTEXT);
+		let autoWalkDirectionLayout = new LinearLayout_(CONTEXT);
 		autoWalkDirectionLayout.setOrientation(LinearLayout_.HORIZONTAL);
 
-		var autoWalkDirectionTitle = clientTextView("Direction:");
-		var autoWalkDirectionForwardButton = clientButton("Forward", "Makes the player move forward.");
+		let autoWalkDirectionTitle = clientTextView("Direction:");
+		let autoWalkDirectionForwardButton = clientButton("Forward", "Makes the player move forward.");
 		autoWalkDirectionForwardButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
-		var autoWalkDirectionBackwardsButton = clientButton("Backwards", "Makes the player move backwards.");
+		let autoWalkDirectionBackwardsButton = clientButton("Backwards", "Makes the player move backwards.");
 		autoWalkDirectionBackwardsButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
 
-		var autoWalkDirectionLayoutLeft = new LinearLayout_(CONTEXT);
+		let autoWalkDirectionLayoutLeft = new LinearLayout_(CONTEXT);
 		autoWalkDirectionLayoutLeft.setOrientation(1);
 		autoWalkDirectionLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - 5, display.heightPixels / 10));
 		autoWalkDirectionLayoutLeft.setGravity(Gravity_.CENTER_HORIZONTAL);
 		autoWalkDirectionLayout.addView(autoWalkDirectionLayoutLeft);
 
-		var autoWalkDirectionLayoutRight = new LinearLayout_(CONTEXT);
+		let autoWalkDirectionLayoutRight = new LinearLayout_(CONTEXT);
 		autoWalkDirectionLayoutRight.setOrientation(1);
 		autoWalkDirectionLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - 5, display.heightPixels / 10));
 		autoWalkDirectionLayoutRight.setGravity(Gravity_.CENTER_HORIZONTAL);
@@ -3945,7 +3964,7 @@ var aimbot = {
 	type: "Mod",
 	state: false,
 	getSettingsLayout: function() {
-		var aimbotSettingsLayout = new LinearLayout_(CONTEXT);
+		let aimbotSettingsLayout = new LinearLayout_(CONTEXT);
 		aimbotSettingsLayout.setOrientation(1);
 
 		useKillauraRangeCheckBox = clientCheckBox();
@@ -3959,8 +3978,8 @@ var aimbot = {
 			}
 		});
 
-		var aimbotRangeTitle = clientTextView("Range: | " + aimbotRangeSetting);
-		var aimbotRangeSlider = clientSeekBar();
+		let aimbotRangeTitle = clientTextView("Range: | " + aimbotRangeSetting);
+		let aimbotRangeSlider = clientSeekBar();
 		aimbotRangeSlider.setProgress(aimbotRangeSetting);
 		aimbotRangeSlider.setMax(10);
 		aimbotRangeSlider.setEnabled(!useKillauraRangeCheckBox.isChecked());
@@ -4014,10 +4033,10 @@ var chestTracers = {
 		return capitalizeFirstLetter(chestTracersParticle);
 	},
 	getSettingsLayout: function() {
-		var chestTracersSettingsLayout = new LinearLayout_(CONTEXT);
+		let chestTracersSettingsLayout = new LinearLayout_(CONTEXT);
 		chestTracersSettingsLayout.setOrientation(1);
-		var chestTracersRangeTitle = clientTextView("Range: | " + chestTracersRange);
-		var chestTracersRangeSlider = clientSeekBar();
+		let chestTracersRangeTitle = clientTextView("Range: | " + chestTracersRange);
+		let chestTracersRangeSlider = clientSeekBar();
 		chestTracersRangeSlider.setProgress(chestTracersRange);
 		chestTracersRangeSlider.setMax(25);
 		chestTracersRangeSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
@@ -4027,30 +4046,30 @@ var chestTracers = {
 			}
 		});
 
-		var chestTracersParticleTitle = clientTextView("\nParticle:");
-		var chestTracersFlameButton = clientButton("Flame", "Flame particles.");
+		let chestTracersParticleTitle = clientTextView("\nParticle:");
+		let chestTracersFlameButton = clientButton("Flame", "Flame particles.");
 		chestTracersFlameButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 6 - 20 / 3, display.heightPixels / 10));
-		var chestTracersRedstoneButton = clientButton("Redstone", "Redstone particles.");
+		let chestTracersRedstoneButton = clientButton("Redstone", "Redstone particles.");
 		chestTracersRedstoneButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 6 - 20 / 3, display.heightPixels / 10));
-		var chestTracersCriticalButton = clientButton("Critical", "Critical hit particles.");
+		let chestTracersCriticalButton = clientButton("Critical", "Critical hit particles.");
 		chestTracersCriticalButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 6 - 20 / 3, display.heightPixels / 10));
 
-		var chestTracersParticleLayout = new LinearLayout_(CONTEXT);
+		let chestTracersParticleLayout = new LinearLayout_(CONTEXT);
 		chestTracersParticleLayout.setOrientation(LinearLayout_.HORIZONTAL);
 
-		var chestTracersParticleLayoutLeft = new LinearLayout_(CONTEXT);
+		let chestTracersParticleLayoutLeft = new LinearLayout_(CONTEXT);
 		chestTracersParticleLayoutLeft.setOrientation(1);
 		chestTracersParticleLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3 - 20 / 3, display.heightPixels / 10));
 		chestTracersParticleLayoutLeft.setGravity(Gravity_.CENTER_HORIZONTAL);
 		chestTracersParticleLayout.addView(chestTracersParticleLayoutLeft);
 
-		var chestTracersParticleLayoutCenter = new LinearLayout_(CONTEXT);
+		let chestTracersParticleLayoutCenter = new LinearLayout_(CONTEXT);
 		chestTracersParticleLayoutCenter.setOrientation(1);
 		chestTracersParticleLayoutCenter.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3 - 20 / 3, display.heightPixels / 10));
 		chestTracersParticleLayoutCenter.setGravity(Gravity_.CENTER_HORIZONTAL);
 		chestTracersParticleLayout.addView(chestTracersParticleLayoutCenter);
 
-		var chestTracersParticleLayoutRight = new LinearLayout_(CONTEXT);
+		let chestTracersParticleLayoutRight = new LinearLayout_(CONTEXT);
 		chestTracersParticleLayoutRight.setOrientation(1);
 		chestTracersParticleLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3 - 20 / 3, display.heightPixels / 10));
 		chestTracersParticleLayoutRight.setGravity(Gravity_.CENTER_HORIZONTAL);
@@ -4058,9 +4077,9 @@ var chestTracers = {
 
 		if(chestTracersParticle == "flame") {
 			chestTracersFlameButton.setTextColor(Color_.GREEN);
-		}if(chestTracersParticle == "redstone") {
+		} if(chestTracersParticle == "redstone") {
 			chestTracersRedstoneButton.setTextColor(Color_.GREEN);
-		}if(chestTracersParticle == "critical") {
+		} if(chestTracersParticle == "critical") {
 			chestTracersCriticalButton.setTextColor(Color_.GREEN);
 		}
 		chestTracersFlameButton.setOnClickListener(new View_.OnClickListener() {
@@ -4150,10 +4169,10 @@ var remoteView = {
 	state: false,
 	targetEntity: null,
 	getSettingsLayout: function() {
-		var remoteViewSettingsLayout = new LinearLayout_(CONTEXT);
+		let remoteViewSettingsLayout = new LinearLayout_(CONTEXT);
 		remoteViewSettingsLayout.setOrientation(1);
 
-		var teleportToLocationCheckBox = clientCheckBox();
+		let teleportToLocationCheckBox = clientCheckBox();
 		teleportToLocationCheckBox.setChecked(remoteViewTeleportSetting == "on");
 		teleportToLocationCheckBox.setText("Teleport to the target entity when you disable RemoteView");
 		teleportToLocationCheckBox.setOnClickListener(new View_.OnClickListener() {
@@ -4209,10 +4228,10 @@ var antiAFK = {
 		}
 	},
 	getSettingsLayout: function() {
-		var antiAFKSettingsLayout = new LinearLayout_(CONTEXT);
+		let antiAFKSettingsLayout = new LinearLayout_(CONTEXT);
 		antiAFKSettingsLayout.setOrientation(1);
 
-		var antiAFKKeepScreenOnCheckBox = clientCheckBox();
+		let antiAFKKeepScreenOnCheckBox = clientCheckBox();
 		antiAFKKeepScreenOnCheckBox.setChecked(antiAFKKeepScreenOnSetting == "on");
 		antiAFKKeepScreenOnCheckBox.setText("Keep screen on");
 		antiAFKKeepScreenOnCheckBox.setOnClickListener(new View_.OnClickListener() {
@@ -4426,10 +4445,10 @@ var speedHack = {
 	type: "Mod",
 	state: false,
 	getSettingsLayout: function() {
-		var speedHackSettingsLayout = new LinearLayout_(CONTEXT);
+		let speedHackSettingsLayout = new LinearLayout_(CONTEXT);
 		speedHackSettingsLayout.setOrientation(1);
-		var speedHackFrictionTitle = clientTextView("Friction: | " + speedHackFriction);
-		var speedHackFrictionSlider = clientSeekBar();
+		let speedHackFrictionTitle = clientTextView("Friction: | " + speedHackFriction);
+		let speedHackFrictionSlider = clientSeekBar();
 		speedHackFrictionSlider.setProgress(speedHackFriction * 100 - 1);
 		speedHackFrictionSlider.setMax(99);
 		speedHackFrictionSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
@@ -4437,7 +4456,7 @@ var speedHack = {
 				speedHackFriction = (speedHackFrictionSlider.getProgress() + 1) / 100;
 				speedHackFrictionTitle.setText("Friction: | " + speedHackFriction);
 				if(speedHackState) {
-					for(var i = 0; i <= 255; i++) {
+					for(let i = 0; i <= 255; i++) {
 						Block.setFriction(i, speedHackFriction);
 					}
 				}
@@ -4482,10 +4501,10 @@ var storageESP = {
 	type: "Mod",
 	state: false,
 	getSettingsLayout: function() {
-		var storageESPSettingsLayout = new LinearLayout_(CONTEXT);
+		let storageESPSettingsLayout = new LinearLayout_(CONTEXT);
 		storageESPSettingsLayout.setOrientation(1);
-		var storageESPRangeTitle = clientTextView("Range: | " + storageESPRange);
-		var storageESPRangeSlider = clientSeekBar();
+		let storageESPRangeTitle = clientTextView("Range: | " + storageESPRange);
+		let storageESPRangeSlider = clientSeekBar();
 		storageESPRangeSlider.setProgress(storageESPRange);
 		storageESPRangeSlider.setMax(25);
 		storageESPRangeSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
@@ -4951,10 +4970,10 @@ var target = {
 	category: VertexClientPE.category.MISC,
 	type: "Special",
 	getSettingsLayout: function() {
-		var targetSettingsLayout = new LinearLayout_(CONTEXT);
+		let targetSettingsLayout = new LinearLayout_(CONTEXT);
 		targetSettingsLayout.setOrientation(1);
 
-		var targetMobsCheckBox = clientCheckBox();
+		let targetMobsCheckBox = clientCheckBox();
 		targetMobsCheckBox.setChecked(targetMobsSetting == "on");
 		targetMobsCheckBox.setText("Mobs");
 		targetMobsCheckBox.setOnClickListener(new View_.OnClickListener() {
@@ -4964,7 +4983,7 @@ var target = {
 			}
 		});
 
-		var targetPlayersCheckBox = clientCheckBox();
+		let targetPlayersCheckBox = clientCheckBox();
 		targetPlayersCheckBox.setChecked(targetPlayersSetting == "on");
 		targetPlayersCheckBox.setText("Players");
 		targetPlayersCheckBox.setOnClickListener(new View_.OnClickListener() {
@@ -4976,7 +4995,7 @@ var target = {
 			}
 		});
 
-		var targetFriendsCheckBox = clientCheckBox();
+		let targetFriendsCheckBox = clientCheckBox();
 		targetFriendsCheckBox.setChecked(targetFriendsSetting == "on");
 		targetFriendsCheckBox.setEnabled(targetPlayersCheckBox.isChecked());
 		targetFriendsCheckBox.setText("Friends");
@@ -5109,10 +5128,10 @@ var prevent = {
 	category: VertexClientPE.category.MISC,
 	type: "Special",
 	getSettingsLayout: function() {
-		var preventSettingsLayout = new LinearLayout_(CONTEXT);
+		let preventSettingsLayout = new LinearLayout_(CONTEXT);
 		preventSettingsLayout.setOrientation(1);
 
-		var preventDiggingCheckBox = clientCheckBox();
+		let preventDiggingCheckBox = clientCheckBox();
 		preventDiggingCheckBox.setChecked(preventDiggingSetting == "on");
 		preventDiggingCheckBox.setText("Prevent block digging");
 		preventDiggingCheckBox.setOnClickListener(new View_.OnClickListener() {
@@ -5122,7 +5141,7 @@ var prevent = {
 			}
 		});
 
-		var preventPlacingCheckBox = clientCheckBox();
+		let preventPlacingCheckBox = clientCheckBox();
 		preventPlacingCheckBox.setChecked(preventPlacingSetting == "on");
 		preventPlacingCheckBox.setText("Prevent block placing/tapping with items on blocks");
 		preventPlacingCheckBox.setOnClickListener(new View_.OnClickListener() {
@@ -5132,7 +5151,7 @@ var prevent = {
 			}
 		});
 
-		var preventAttacksCheckBox = clientCheckBox();
+		let preventAttacksCheckBox = clientCheckBox();
 		preventAttacksCheckBox.setChecked(preventAttacksSetting == "on");
 		preventAttacksCheckBox.setText("Prevent hitting other entities");
 		preventAttacksCheckBox.setOnClickListener(new View_.OnClickListener() {
@@ -5142,7 +5161,7 @@ var prevent = {
 			}
 		});
 		
-		var preventExplosionsCheckBox = clientCheckBox();
+		let preventExplosionsCheckBox = clientCheckBox();
 		preventExplosionsCheckBox.setChecked(preventExplosionsSetting == "on");
 		preventExplosionsCheckBox.setText("Prevent explosions");
 		preventExplosionsCheckBox.setOnClickListener(new View_.OnClickListener() {
@@ -5232,10 +5251,10 @@ var attackShock = {
 		return true;
 	},
 	getSettingsLayout: function() {
-		var attackShockSettingsLayout = new LinearLayout_(CONTEXT);
+		let attackShockSettingsLayout = new LinearLayout_(CONTEXT);
 		attackShockSettingsLayout.setOrientation(1);
-		var attackShockIntensityTitle = clientTextView("Intensity: | " + attackShockIntensity + " * 20");
-		var attackShockIntensitySlider = clientSeekBar();
+		let attackShockIntensityTitle = clientTextView("Intensity: | " + attackShockIntensity + " * 20");
+		let attackShockIntensitySlider = clientSeekBar();
 		attackShockIntensitySlider.setProgress(attackShockIntensity);
 		attackShockIntensitySlider.setMax(20);
 		attackShockIntensitySlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
@@ -5362,11 +5381,11 @@ var strafeAura = {
 		return capitalizeFirstLetter(strafeAuraDirectionSetting);
 	},
 	getSettingsLayout: function() {
-		var strafeAuraSettingsLayout = new LinearLayout_(CONTEXT);
+		let strafeAuraSettingsLayout = new LinearLayout_(CONTEXT);
 		strafeAuraSettingsLayout.setOrientation(1);
 
-		var strafeAuraRangeTitle = clientTextView("Range: | " + strafeAuraRangeSetting);
-		var strafeAuraRangeSlider = clientSeekBar();
+		let strafeAuraRangeTitle = clientTextView("Range: | " + strafeAuraRangeSetting);
+		let strafeAuraRangeSlider = clientSeekBar();
 		strafeAuraRangeSlider.setProgress(strafeAuraRangeSetting);
 		strafeAuraRangeSlider.setMax(10);
 		strafeAuraRangeSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
@@ -5376,22 +5395,22 @@ var strafeAura = {
 			}
 		});
 
-		var strafeAuraDirectionLayout = new LinearLayout_(CONTEXT);
+		let strafeAuraDirectionLayout = new LinearLayout_(CONTEXT);
 		strafeAuraDirectionLayout.setOrientation(LinearLayout_.HORIZONTAL);
 
-		var strafeAuraDirectionTitle = clientTextView("Direction:");
-		var strafeAuraDirectionLeftButton = clientButton("Left", "Makes the player strafe to the left.");
+		let strafeAuraDirectionTitle = clientTextView("Direction:");
+		let strafeAuraDirectionLeftButton = clientButton("Left", "Makes the player strafe to the left.");
 		strafeAuraDirectionLeftButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
-		var strafeAuraDirectionRightButton = clientButton("Right", "Makes the player strafe to the right.");
+		let strafeAuraDirectionRightButton = clientButton("Right", "Makes the player strafe to the right.");
 		strafeAuraDirectionRightButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
 
-		var strafeAuraDirectionLayoutLeft = new LinearLayout_(CONTEXT);
+		let strafeAuraDirectionLayoutLeft = new LinearLayout_(CONTEXT);
 		strafeAuraDirectionLayoutLeft.setOrientation(1);
 		strafeAuraDirectionLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - 5, display.heightPixels / 10));
 		strafeAuraDirectionLayoutLeft.setGravity(Gravity_.CENTER_HORIZONTAL);
 		strafeAuraDirectionLayout.addView(strafeAuraDirectionLayoutLeft);
 
-		var strafeAuraDirectionLayoutRight = new LinearLayout_(CONTEXT);
+		let strafeAuraDirectionLayoutRight = new LinearLayout_(CONTEXT);
 		strafeAuraDirectionLayoutRight.setOrientation(1);
 		strafeAuraDirectionLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - 5, display.heightPixels / 10));
 		strafeAuraDirectionLayoutRight.setGravity(Gravity_.CENTER_HORIZONTAL);
@@ -5668,21 +5687,45 @@ var watermark = {
 	isStateMod: function() {
 		return true;
 	},
-	getSettingsLayout: function() {
-		var watermarkSettingsLayout = new LinearLayout_(CONTEXT);
+	getSettingsLayout: function(onModManager) {
+		let watermarkSettingsLayout = new LinearLayout_(CONTEXT);
 		watermarkSettingsLayout.setOrientation(1);
 
-		var watermarkTextTitle = clientTextView("Custom text (HTML):");
-		var watermarkTextInput = clientEditText(watermarkTextSetting);
+		let watermarkTextTitle = clientTextView("Custom text (HTML):");
+		let watermarkTextInput = clientEditText(watermarkTextSetting);
+		let watermarkText;
 		watermarkTextInput.setHint("Custom text");
 		watermarkTextInput.addTextChangedListener(new TextWatcher_() {
 			onTextChanged: function() {
 				watermarkTextSetting = watermarkTextInput.getText();
+				if(watermarkText != null) {
+					watermarkText.setText(watermarkTextSetting + " (tap to change)");
+				}
 			}
 		});
+		if(onModManager) {
+			watermarkTextInput.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.MATCH_PARENT, LinearLayout_.LayoutParams.WRAP_CONTENT));
+			watermarkText = clientTextView(watermarkTextSetting + " (tap to change)");
+			watermarkText.setTextSize(px2dip(watermarkTextInput.getTextSize()));
+			watermarkText.setOnClickListener(new View_.OnClickListener() {
+				onClick: function(v) {
+					watermarkTextInput.requestFocus();
+					VertexClientPE.showBasicDialog("AutoSpammer | Custom message", watermarkTextInput,
+						function() {
+							watermarkTextInput.getParent().removeView(watermarkTextInput);
+							VertexClientPE.saveMainSettings();
+						}
+					);
+				}
+			});
+		}
 
 		watermarkSettingsLayout.addView(watermarkTextTitle);
-		watermarkSettingsLayout.addView(watermarkTextInput);
+		if(watermarkText == null) {
+			watermarkSettingsLayout.addView(watermarkTextInput);
+		} else {
+			watermarkSettingsLayout.addView(watermarkText);
+		}
 
 		return watermarkSettingsLayout;
 	},
@@ -9941,19 +9984,19 @@ VertexClientPE.nuke = function(x, y, z, range, mode) {
 	}
 }
 
-var fancyChatMsg;
-var fancyChatEndChar;
+let fancyChatMsg;
+let fancyChatEndChar = 0xFEE0;
 
 VertexClientPE.fancyChat = function(str) {
 	fancyChatMsg = new String_(str);
-	switch(fancyChatMode) {
+	/* switch(fancyChatMode) {
 		case "default":
 			fancyChatEndChar = 0xFEE0;
 			break;
 		default:
 			fancyChatEndChar = null;
 			break;
-	}
+	} */
 	var newMsg = "";
 	for(i in fancyChatMsg.toCharArray()) {
 		var chr = fancyChatMsg.toCharArray()[i];
@@ -12102,7 +12145,7 @@ function clientEditText(text, color) //menu buttons
 		text = "";
 	}
 
-	let defaultEditText = new EditText(CONTEXT);
+	let defaultEditText = new EditText_(CONTEXT);
 	defaultEditText.setText(text);
 
 	VertexClientPE.addTextStyleToView(defaultEditText, color);
@@ -16636,16 +16679,16 @@ function modManagerScreen() {
 					}
 				});
 
-				screenUI = new PopupWindow_(modManagerMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight, true);
+				screenUI = new PopupWindow_(modManagerMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
 				screenUI.setBackgroundDrawable(backgroundGradient());
 				screenUI.setOnDismissListener(new PopupWindow_.OnDismissListener() {
 					onDismiss: function() {
-						VertexClientPE.menuIsShowing = false;
+						/* VertexClientPE.menuIsShowing = false;
 						if(barUI != null) {
 							if(barUI.isShowing()) {
 								barUI.dismiss();
 							}
-						}
+						} */
 						VertexClientPE.saveMainSettings();
 					}
 				});
@@ -18255,7 +18298,11 @@ function showAccountManagerButton() {
 }
 
 function dip2px(dips){
-	return Math.ceil(dips * CONTEXT.getResources().getDisplayMetrics().density);
+	return Math.ceil(dips * DENSITY);
+}
+
+function px2dip(px){
+	return Math.floor(px / DENSITY);
 }
 
 var statesTextView;
@@ -18835,6 +18882,8 @@ exitBg.setColor(Color_.parseColor("#FF0000"));
 exitBg.setStroke(dip2px(1), Color_.parseColor("#FFFFFF"));
 exitBg.setShape(GradientDrawable_.RECTANGLE);
 
+let buttonClicked;
+
 VertexClientPE.showExitButtons = function(showBackButton, title, icon, extraView) {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
@@ -18917,15 +18966,15 @@ VertexClientPE.showExitButtons = function(showBackButton, title, icon, extraView
 
 				barUI = new PopupWindow_(barLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), LinearLayout_.LayoutParams.WRAP_CONTENT);
 				barUI.setBackgroundDrawable(backgroundSpecial(null, "#212121|#ffffff"));
-				barUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
 				barUI.setOnDismissListener(new PopupWindow_.OnDismissListener() {
 					onDismiss: function() {
-						if(!buttonClicked) {
+						if(!screenUI.isShowing() && !buttonClicked) {
 							showMenuButton();
 						}
 						buttonClicked = false;
 					}
 				});
+				barUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
 			} catch(exception) {
 				print(exception);
 				VertexClientPE.showBugReportDialog(exception);
