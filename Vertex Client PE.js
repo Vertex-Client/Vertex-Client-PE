@@ -4276,7 +4276,7 @@ var antiAFK = {
 
 var autoLeave = {
 	name: "AutoLeave",
-	desc: "Automatically makes you leave the game when your health is (below) 8.",
+	desc: "Automatically makes the game restart when your health is (below) 8.",
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -4289,6 +4289,7 @@ var autoLeave = {
 	onInterval: function() {
 		if(Entity.getHealth(getPlayerEnt()) <= 8) {
 			ModPE.restart();
+			//realScriptManager.nativeCloseScreen();
 		}
 	}
 }
@@ -6362,6 +6363,80 @@ VertexClientPE.showNotification = function(eventTitle, eventText) {
 	mNM.notify(eventTitle, 0, notification);
 }
 
+function showNotification() {
+	/* // Using RemoteViews to bind custom layouts into Notification
+	RemoteViews views = new RemoteViews(getPackageName(),
+	R.layout.status_bar);
+	RemoteViews bigViews = new RemoteViews(getPackageName(),
+	R.layout.status_bar_expanded);
+	 
+	// showing default album image
+	views.setViewVisibility(R.id.status_bar_icon, View.VISIBLE);
+	views.setViewVisibility(R.id.status_bar_album_art, View.GONE);
+	bigViews.setImageViewBitmap(R.id.status_bar_album_art,
+	Constants.getDefaultAlbumArt(this));
+	 
+	Intent notificationIntent = new Intent(this, MainActivity.class);
+	notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
+	notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+	| Intent.FLAG_ACTIVITY_CLEAR_TASK);
+	PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+	notificationIntent, 0);
+	 
+	Intent previousIntent = new Intent(this, NotificationService.class);
+	previousIntent.setAction(Constants.ACTION.PREV_ACTION);
+	PendingIntent ppreviousIntent = PendingIntent.getService(this, 0,
+	previousIntent, 0);
+	 
+	Intent playIntent = new Intent(this, NotificationService.class);
+	playIntent.setAction(Constants.ACTION.PLAY_ACTION);
+	PendingIntent pplayIntent = PendingIntent.getService(this, 0,
+	playIntent, 0);
+	 
+	Intent nextIntent = new Intent(this, NotificationService.class);
+	nextIntent.setAction(Constants.ACTION.NEXT_ACTION);
+	PendingIntent pnextIntent = PendingIntent.getService(this, 0,
+	nextIntent, 0);
+	 
+	Intent closeIntent = new Intent(this, NotificationService.class);
+	closeIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
+	PendingIntent pcloseIntent = PendingIntent.getService(this, 0,
+	closeIntent, 0);
+	 
+	views.setOnClickPendingIntent(R.id.status_bar_play, pplayIntent);
+	bigViews.setOnClickPendingIntent(R.id.status_bar_play, pplayIntent);
+	 
+	views.setOnClickPendingIntent(R.id.status_bar_next, pnextIntent);
+	bigViews.setOnClickPendingIntent(R.id.status_bar_next, pnextIntent);
+	 
+	views.setOnClickPendingIntent(R.id.status_bar_prev, ppreviousIntent);
+	bigViews.setOnClickPendingIntent(R.id.status_bar_prev, ppreviousIntent);
+	 
+	views.setOnClickPendingIntent(R.id.status_bar_collapse, pcloseIntent);
+	bigViews.setOnClickPendingIntent(R.id.status_bar_collapse, pcloseIntent);
+	 
+	views.setImageViewResource(R.id.status_bar_play,
+	R.drawable.apollo_holo_dark_pause);
+	bigViews.setImageViewResource(R.id.status_bar_play,
+	R.drawable.apollo_holo_dark_pause);
+	 
+	views.setTextViewText(R.id.status_bar_track_name, "Song Title");
+	bigViews.setTextViewText(R.id.status_bar_track_name, "Song Title");
+	 
+	views.setTextViewText(R.id.status_bar_artist_name, "Artist Name");
+	bigViews.setTextViewText(R.id.status_bar_artist_name, "Artist Name");
+	 
+	bigViews.setTextViewText(R.id.status_bar_album_name, "Album Name");
+	 
+	status = new Notification.Builder(this).build();
+	status.contentView = views;
+	status.bigContentView = bigViews;
+	status.flags = Notification.FLAG_ONGOING_EVENT;
+	status.icon = R.drawable.ic_launcher;
+	status.contentIntent = pendingIntent;
+	startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, status); */
+}
+
 let nameColor = "\u00A7b";
 let healthColor = "\u00A7c";
 
@@ -7116,9 +7191,12 @@ VertexClientPE.showHacksListManagerDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				//var settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
-				//settingsTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
-				let settingsTitle = clientScreenTitle("Settings", null, themeSetting);
+				let settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
+				let settingsTitleLayout = new LinearLayout_(CONTEXT);
+				settingsTitleLayout.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
+				settingsTitleLayout.setGravity(Gravity_.CENTER);
+				settingsTitleLayout.addView(settingsTitle);
+				//let settingsTitle = clientScreenTitle("Settings", null, themeSetting);
 				let hacksListManagerTitle = clientTextView("Hacks list Manager", true);
 				hacksListManagerTitle.setGravity(Gravity_.CENTER);
 				let hacksListManagerEnter = clientTextView("");
@@ -7131,15 +7209,16 @@ VertexClientPE.showHacksListManagerDialog = function() {
 				let dialogLayout1 = new LinearLayout_(CONTEXT);
 				dialogLayout1.setBackgroundDrawable(backgroundGradient());
 				dialogLayout1.setOrientation(LinearLayout_.VERTICAL);
+				dialogLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
 				dialogLayout1.setPadding(10, 0, 10, 10);
-				dialogLayout1.addView(settingsTitle);
+				dialogLayout1.addView(settingsTitleLayout);
 				dialogLayout1.addView(hacksListManagerTitle);
 				dialogLayout1.addView(hacksListManagerEnter);
 
 				dialogScrollView.addView(dialogLayout);
 				dialogLayout1.addView(dialogScrollView);
 
-				let hacksListModeSettingFunc = new settingButton("Hacks list mode", null, null,
+				let hacksListModeSettingFunc = new settingButton("Hacks list mode", null, display.widthPixels - 20,
 					function(viewArg) {
 						hacksListModeSetting = "on";
 						hacksListModeSettingButton.setText("Normal");
@@ -7177,7 +7256,7 @@ VertexClientPE.showHacksListManagerDialog = function() {
 					}
 				}));
 
-				let hacksListPosSettingFunc = new settingButton("Hacks list position", null, null,
+				let hacksListPosSettingFunc = new settingButton("Hacks list position", null, display.widthPixels - 20,
 					function(viewArg) {
 						hacksListPosSetting = "top-center";
 						hacksListPosSettingButton.setText("Top-center");
@@ -7242,9 +7321,11 @@ VertexClientPE.showMainButtonManagerDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				//var settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
-				//settingsTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
-				let settingsTitle = clientScreenTitle("Settings", null, themeSetting);
+				let settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
+				let settingsTitleLayout = new LinearLayout_(CONTEXT);
+				settingsTitleLayout.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
+				settingsTitleLayout.setGravity(Gravity_.CENTER);
+				settingsTitleLayout.addView(settingsTitle);
 				let mainButtonManagerTitle = clientTextView("Main button Manager", true);
 				mainButtonManagerTitle.setGravity(Gravity_.CENTER);
 				let mainButtonManagerEnter = clientTextView("");
@@ -7257,8 +7338,9 @@ VertexClientPE.showMainButtonManagerDialog = function() {
 				let dialogLayout1 = new LinearLayout_(CONTEXT);
 				dialogLayout1.setBackgroundDrawable(backgroundGradient());
 				dialogLayout1.setOrientation(LinearLayout_.VERTICAL);
+				dialogLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
 				dialogLayout1.setPadding(10, 0, 10, 10);
-				dialogLayout1.addView(settingsTitle);
+				dialogLayout1.addView(settingsTitleLayout);
 				dialogLayout1.addView(mainButtonManagerTitle);
 				dialogLayout1.addView(mainButtonManagerEnter);
 
@@ -7277,7 +7359,7 @@ VertexClientPE.showMainButtonManagerDialog = function() {
 					}
 				});
 				
-				let mainButtonPositionSettingFunc = new settingButton("Main button position", "Sets the main menu's button position.", null,
+				let mainButtonPositionSettingFunc = new settingButton("Main button position", "Sets the main menu's button position.", display.widthPixels - 20,
 					function(viewArg) {
 						mainButtonPositionSetting = "top-left";
 						mainButtonPositionSettingButton.setText("Top-left");
@@ -7307,7 +7389,7 @@ VertexClientPE.showMainButtonManagerDialog = function() {
 					}
 				}));
 
-				let mainButtonStyleSettingFunc = new settingButton("Main button style", "Sets the main menu's button style.", null,
+				let mainButtonStyleSettingFunc = new settingButton("Main button style", "Sets the main menu's button style.", display.widthPixels - 20,
 					function(viewArg) {
 						mainButtonStyleSetting = "normal";
 						mainButtonStyleSettingButton.setText("Normal");
@@ -7347,7 +7429,7 @@ VertexClientPE.showMainButtonManagerDialog = function() {
 					}
 				}));
 
-				let mainButtonTapSettingFunc = new settingButton("Main button action", "Sets the main menu's button action.", null,
+				let mainButtonTapSettingFunc = new settingButton("Main button action", "Sets the main menu's button action.", display.widthPixels - 20,
 					function(viewArg) {
 						mainButtonTapSetting = "menu";
 						mainButtonTapSettingButton.setText("Menu (normal tap) | More dialog (long tap)");
@@ -7410,9 +7492,11 @@ VertexClientPE.showShortcutManagerDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				//var settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
-				//settingsTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
-				let settingsTitle = clientScreenTitle("Settings", null, themeSetting);
+				let settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
+				let settingsTitleLayout = new LinearLayout_(CONTEXT);
+				settingsTitleLayout.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
+				settingsTitleLayout.setGravity(Gravity_.CENTER);
+				settingsTitleLayout.addView(settingsTitle);
 				let shortcutManagerTitle = clientTextView("Shortcut Manager", true);
 				shortcutManagerTitle.setGravity(Gravity_.CENTER);
 				let shortcutManagerEnter = clientTextView("");
@@ -7425,8 +7509,9 @@ VertexClientPE.showShortcutManagerDialog = function() {
 				let dialogLayout1 = new LinearLayout_(CONTEXT);
 				dialogLayout1.setBackgroundDrawable(backgroundGradient());
 				dialogLayout1.setOrientation(LinearLayout_.VERTICAL);
+				dialogLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
 				dialogLayout1.setPadding(10, 0, 10, 10);
-				dialogLayout1.addView(settingsTitle);
+				dialogLayout1.addView(settingsTitleLayout);
 				dialogLayout1.addView(shortcutManagerTitle);
 				dialogLayout1.addView(shortcutManagerEnter);
 
@@ -7620,9 +7705,11 @@ VertexClientPE.showFeaturesDialog = function() {
 				let lastMiscEnabled = miscEnabled;
 				let lastSingleplayerEnabled = singleplayerEnabled;
 				
-				//var settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
-				//settingsTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
-				let settingsTitle = clientScreenTitle("Settings", null, themeSetting);
+				let settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
+				let settingsTitleLayout = new LinearLayout_(CONTEXT);
+				settingsTitleLayout.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
+				settingsTitleLayout.setGravity(Gravity_.CENTER);
+				settingsTitleLayout.addView(settingsTitle);
 				let featuresTitle = clientTextView("Opt in/out features\n", true);
 				featuresTitle.setGravity(Gravity_.CENTER);
 				let featuresText = clientTextView("Changes on this dialog will show/hide all mods in that category and will disable all mods", true);
@@ -7634,8 +7721,9 @@ VertexClientPE.showFeaturesDialog = function() {
 				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
+				dialogLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 				dialogLayout.setPadding(10, 10, 10, 10);
-				dialogLayout.addView(settingsTitle);
+				dialogLayout.addView(settingsTitleLayout);
 				dialogLayout.addView(featuresTitle);
 				dialogLayout.addView(featuresText);
 
@@ -7759,9 +7847,11 @@ VertexClientPE.showSettingSelectorDialog = function(sRightButton, dialogTitle, s
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				//var settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
-				//settingsTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
-				let settingsTitle = clientScreenTitle("Settings", null, themeSetting);
+				let settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
+				let settingsTitleLayout = new LinearLayout_(CONTEXT);
+				settingsTitleLayout.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
+				settingsTitleLayout.setGravity(Gravity_.CENTER);
+				settingsTitleLayout.addView(settingsTitle);
 				let dTitle = clientTextView(dialogTitle, true);
 				dTitle.setGravity(Gravity_.CENTER);
 				let closeEnter = clientTextView("\n");
@@ -7781,8 +7871,9 @@ VertexClientPE.showSettingSelectorDialog = function(sRightButton, dialogTitle, s
 				dialogLayout.setGravity(Gravity_.CENTER);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
+				dialogLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 				dialogLayout.setPadding(10, 10, 10, 10);
-				dialogLayout.addView(settingsTitle);
+				dialogLayout.addView(settingsTitleLayout);
 				dialogLayout.addView(dTitle);
 				dialogLayout.addView(dScrollView);
 
@@ -7871,12 +7962,14 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 				newGreenStroke = customRGBGreenStroke;
 				newBlueStroke = customRGBBlueStroke;
 
-				//var settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
-				//settingsTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
-				var settingsTitle = clientScreenTitle("Settings", null, themeSetting);
+				let settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
+				let settingsTitleLayout = new LinearLayout_(CONTEXT);
+				settingsTitleLayout.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
+				settingsTitleLayout.setGravity(Gravity_.CENTER);
+				settingsTitleLayout.addView(settingsTitle);
 				var dTitle = clientTextView(dialogTitle, true);
 				dTitle.setGravity(Gravity_.CENTER);
-				var cancelEnter = clientTextView("\n");
+				var cancelEnter = clientTextView("");
 
 				var doneButton = clientButton("Done");
 				doneButton.setPadding(0.5, doneButton.getPaddingTop(), 0.5, doneButton.getPaddingBottom());
@@ -8014,8 +8107,9 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 				dialogLayout.setGravity(Gravity_.CENTER);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
+				dialogLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 				dialogLayout.setPadding(10, 10, 10, 10);
-				dialogLayout.addView(settingsTitle);
+				dialogLayout.addView(settingsTitleLayout);
 				dialogLayout.addView(dTitle);
 				dialogLayout.addView(dScrollView);
 
