@@ -15969,7 +15969,7 @@ function helpScreen(fromDashboard) {
 				helpMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
 				helpMenuLayout1.setPadding(10, 0, 10, 10);
 
-				var helpEnter = clientTextView("\n");
+				var helpEnter = clientTextView("");
 
 				helpMenuLayout1.addView(helpEnter);
 				helpMenuLayoutScroll.addView(helpMenuLayout);
@@ -16625,8 +16625,7 @@ function musicPlayerScreen(fromDashboard) {
 				musicPlayerMenuLayout1.setPadding(10, 0, 10, 0);
 
 				let musicPlayerEnter = new TextView_(CONTEXT);
-				musicPlayerEnter.setText("\n");
-				musicPlayerEnter.setTextSize(10);
+				musicPlayerEnter.setText("");
 
 				let musicPlayerBar = new musicBar();
 				mpSongTitleView = musicPlayerBar.getSongTitleView();
@@ -16727,7 +16726,7 @@ function modManagerScreen() {
 				modManagerMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
 				//modManagerMenuLayout1.setPadding(10, 0, 10, 0);
 
-				modManagerMenuLayout1.addView(clientTextView("\n"));
+				modManagerMenuLayout1.addView(clientTextView(""));
 				modManagerMenuLayoutScroll.addView(modManagerMenuLayout);
 				modManagerMenuLayout1.addView(modManagerMenuLayoutScroll);
 
