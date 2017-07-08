@@ -9616,10 +9616,10 @@ VertexClientPE.addonLoadToast = function(message) {
 			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message), true, "diff");
 			layout.addView(icon);
 			layout.addView(text);
-			toast = new Toast_(CONTEXT);
-			toast.setView(layout);
-			toast.setGravity(Gravity_.CENTER | Gravity_.TOP, 0, 0);
-			toast.show();
+			let addonToast = new Toast_(CONTEXT);
+			addonToast.setView(layout);
+			addonToast.setGravity(Gravity_.CENTER | Gravity_.TOP, 0, 0);
+			addonToast.show();
 		}
 	}));
 }
@@ -12126,7 +12126,7 @@ function accountButton(account, layout) {
 }
 
 function friendButton(friend, layout) {
-	var playerName = friend.toString();
+	let friendName = friend.toString();
 
 	let delButtonWidth = display.widthPixels / 3 - display.widthPixels / 4  - dip2px(10);
 
@@ -12153,7 +12153,7 @@ function friendButton(friend, layout) {
 	friendManagerAccountLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 4 + delButtonWidth, display.heightPixels / 10));
 	friendManagerAccountLayout.addView(friendManagerAccountLayoutRight);
 
-	var usernameText = clientTextView(friend);
+	var usernameText = clientTextView(friendName);
 	usernameText.setTextSize(15);
 	usernameText.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
 	usernameText.setMarqueeRepeatLimit(-1);
@@ -12166,7 +12166,7 @@ function friendButton(friend, layout) {
 	deleteButton.setLayoutParams(new LinearLayout_.LayoutParams(delButtonWidth, display.heightPixels / 10));
 	deleteButton.setOnClickListener(new View_.OnClickListener({
 		onClick: function(viewArg) {
-			VertexClientPE.removeFriend(friend.toString(), layout, friendManagerAccountLayout);
+			VertexClientPE.removeFriend(friendName, layout, friendManagerAccountLayout);
 		}
 	}));
 	friendManagerAccountLayoutRight.addView(deleteButton);
@@ -12631,9 +12631,8 @@ function getColor(part, colorString, useLightColor) {
 	if(colorString == "custom rgb") {
 		let rgbArray = colorStringToCode(colorString, useLightColor);
 		return Color_.rgb(rgbArray[0], rgbArray[1], rgbArray[2]);
-	} else {
-		return Color_.parseColor(colorStringToCode(colorString, useLightColor));
 	}
+	return Color_.parseColor(colorStringToCode(colorString, useLightColor));
 }
 
 function coloredSubTitle(subtitle) // TextView with colored background (edited by peacestorm)
@@ -12966,7 +12965,7 @@ function backgroundGradient(round, style, transparent) // TextView with colored 
 			dirtBackgroundClientGUI.setTileModeXY(android.graphics.Shader.TileMode.REPEAT, android.graphics.Shader.TileMode.REPEAT);
 		}
 
-		var dirt = dirtBackgroundClientGUI;
+		let dirt = dirtBackgroundClientGUI;
 		if(transparent) {
 			dirt.setAlpha(127);
 		} else {
@@ -12981,7 +12980,7 @@ function backgroundGradient(round, style, transparent) // TextView with colored 
 			rainbowBackgroundClientGUI = new BitmapDrawable_(android.graphics.Bitmap.createScaledBitmap(BitmapFactory_.decodeStream(inputStreamRainbow), dip2px(64), dip2px(64), false));
 		}
 
-		var rainbow = rainbowBackgroundClientGUI;
+		let rainbow = rainbowBackgroundClientGUI;
 		if(transparent) {
 			rainbow.setAlpha(127);
 		} else {
@@ -13139,12 +13138,12 @@ VertexClientPE.loadNews = function() {
 
 var _0x498b=["\x6C\x6F\x61\x64\x53\x75\x70\x70\x6F\x72\x74","\x68\x74\x74\x70\x73\x3A\x2F\x2F\x72\x61\x77\x2E\x67\x69\x74\x68\x75\x62\x75\x73\x65\x72\x63\x6F\x6E\x74\x65\x6E\x74\x2E\x63\x6F\x6D\x2F\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2F\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2D\x50\x45\x2F\x75\x70\x64\x61\x74\x65\x2F\x53\x75\x70\x70\x6F\x72\x74\x2F","\x63\x75\x72\x72\x65\x6E\x74\x56\x65\x72\x73\x69\x6F\x6E","\x2F\x73\x75\x70\x70\x6F\x72\x74","\x6E\x65\x74","\x6F\x70\x65\x6E\x43\x6F\x6E\x6E\x65\x63\x74\x69\x6F\x6E","\x67\x65\x74\x49\x6E\x70\x75\x74\x53\x74\x72\x65\x61\x6D","","\x69\x6F","\x72\x65\x61\x64\x4C\x69\x6E\x65","\x20","\x73\x70\x6C\x69\x74","\x75\x6E\x73\x75\x70\x70\x6F\x72\x74\x65\x64","\x63\x6C\x6F\x73\x65","\x56\x65\x72\x74\x65\x78\x43\x6C\x69\x65\x6E\x74\x50\x45\x2E\x69\x73\x53\x75\x70\x70\x6F\x72\x74\x65\x64\x5F","\x67\x65\x74\x53\x74\x72\x69\x6E\x67","\x66\x61\x6C\x73\x65","\x5B\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x5D\x20\x56\x65\x72\x74\x65\x78\x43\x6C\x69\x65\x6E\x74\x50\x45\x2E\x6C\x6F\x61\x64\x53\x75\x70\x70\x6F\x72\x74\x28\x29\x20\x63\x61\x75\x67\x68\x74\x20\x61\x6E\x20\x65\x72\x72\x6F\x72\x3A\x20","\x6C\x6F\x67","\x70\x75\x74\x53\x74\x72\x69\x6E\x67","\x63\x6F\x6D\x6D\x69\x74","\x53\x75\x70\x70\x6F\x72\x74","\x54\x68\x69\x73\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x69\x73\x20\x6E\x6F\x74\x20\x73\x75\x70\x70\x6F\x72\x74\x65\x64\x20\x61\x6E\x79\x6D\x6F\x72\x65\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x75\x70\x67\x72\x61\x64\x65\x20\x74\x6F\x20\x74\x68\x65\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x2E","\x73\x68\x6F\x77\x42\x61\x73\x69\x63\x44\x69\x61\x6C\x6F\x67"];VertexClientPE[_0x498b[0]]= function(){try{var _0x6663x1= new java[_0x498b[4]].URL(_0x498b[1]+ VertexClientPE[_0x498b[2]]+ _0x498b[3]);var _0x6663x2=_0x6663x1[_0x498b[5]]();supportInputStream= _0x6663x2[_0x498b[6]]();var _0x6663x3=_0x498b[7];var _0x6663x4= new java[_0x498b[8]].BufferedReader( new java[_0x498b[8]].InputStreamReader(supportInputStream));var _0x6663x5=_0x498b[7];while((_0x6663x5= _0x6663x4[_0x498b[9]]())!= null){_0x6663x3+= _0x6663x5};isSupported= _0x6663x3.toString()[_0x498b[11]](_0x498b[10])[0]== _0x498b[12]?false:true;_0x6663x4[_0x498b[13]]()}catch(err){if(sharedPref[_0x498b[15]](_0x498b[14]+ VertexClientPE[_0x498b[2]],null)== _0x498b[16]){isSupported= false}else {isSupported= true};ModPE[_0x498b[18]](_0x498b[17]+ err);return};editor[_0x498b[19]](_0x498b[14]+ VertexClientPE[_0x498b[2]],isSupported.toString());editor[_0x498b[20]]();if(!isSupported){VertexClientPE[_0x498b[23]](_0x498b[21],clientTextView(_0x498b[22]))}}
 
-var lastLoop = new Date;
+/* var lastLoop = new Date;
 function gameLoop() {
 	var thisLoop = new Date;
-	VertexClientPE.Utils.fps = 1000 / (thisLoop - lastLoop);
+	VertexClientPE.Utils.tps = 1000 / (thisLoop - lastLoop);
 	lastLoop = thisLoop;
-}
+} */
 
 VertexClientPE.isGUIShowing = function() {
 	return GUI != null && !GUI.isShowing() && (miscMenu == null || !miscMenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (tableMenu == null || !tableMenu.isShowing()) && (emptyMenu == null || !emptyMenu.isShowing()) && (screenUI == null || !screenUI.isShowing());
@@ -13194,10 +13193,8 @@ VertexClientPE.inGameTick = function() {
 			if(VertexClientPE.playerIsInGame) {
 				VertexClientPE.modules.forEach(function(element, index, array) {
 					if(element.isStateMod() && element.state && element.hasOwnProperty("onTick")) {
-						if(bypassState && element.hasOwnProperty("canBypassBypass")) {
-							if(!element.canBypassBypass()) {
-								return;
-							}
+						if(bypassState && element.hasOwnProperty("canBypassBypass") && !element.canBypassBypass()) {
+							return;
 						}
 						element.onTick();
 					}
@@ -13278,7 +13275,7 @@ VertexClientPE.secondTick = function() {
 							mpCurrentPositionView.setText(VertexClientPE.MusicUtils.milliSecToMinString(VertexClientPE.MusicUtils.mp.getCurrentPosition()));
 							mpSeekBarView.setProgress(VertexClientPE.MusicUtils.mp.getCurrentPosition());
 						} catch(e) {
-
+							print("Error: " + e);
 						}
 					}
 				}));
