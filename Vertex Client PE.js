@@ -9009,8 +9009,8 @@ VertexClientPE.showAddAccountDialog = function(showBackButton, title) {
 				accountNameInput = clientEditText();
 				accountNameInput.setSingleLine(true);
 				accountNameInput.setHint("Enter an username");
-				accountClientIdInput = clientEditText();
-				accountClientIdInput.setHint("Enter a client id (wip, added later)");
+				/* accountClientIdInput = clientEditText();
+				accountClientIdInput.setHint("Enter a client id (wip, added later)"); */
 				var okButton = clientButton("Ok");
 				var cancelButton = clientButton("Cancel");
 				var dialogLayout = new LinearLayout_(CONTEXT);
@@ -12104,11 +12104,11 @@ function accountButton(account, layout) {
 				ModPE.restart();
 				return;
 			}
-			screenUI.dismiss();
-			if(backScreenUI != null) {
-				backScreenUI.dismiss();
+			if(barUI != null) {
+				barUI.dismiss();
 			}
-			exitScreenUI.dismiss();
+			screenUI.dismiss();
+			VertexClientPE.menuIsShowing = false;
 			showMenuButton();
 		}
 	}));
@@ -14049,7 +14049,6 @@ VertexClientPE.showDirectUseAccountDialog = function() {
 
 VertexClientPE.showAccountManager = function(showBackButton, title) {
 	VertexClientPE.menuIsShowing = true;
-	VertexClientPE.loadAccounts();
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
@@ -14121,11 +14120,11 @@ VertexClientPE.showAccountManager = function(showBackButton, title) {
 				accountManagerLayout1.addView(accountManagerScrollView);
 				accountManagerLayout1.addView(accountManagerBottomLayout);
 
-				var accountsLength = VertexClientPE.accounts.length();
+				let accountsLength = VertexClientPE.accounts.length();
 				if(VertexClientPE.accounts != null && accountsLength != -1) {
-					for(var i = 0; i < accountsLength; i++) {
+					for(let i = 0; i < accountsLength; i++) {
 						//if(VertexClientPE.accounts[i].username != null && VertexClientPE.accounts[i].username != undefined && VertexClientPE.accounts[i].username != " ") {
-							var usernameLayout = accountButton(VertexClientPE.accounts.get(i), accountManagerLayout);
+							let usernameLayout = accountButton(VertexClientPE.accounts.get(i), accountManagerLayout);
 							accountManagerLayout.addView(usernameLayout);
 						//}
 					}
@@ -14289,6 +14288,7 @@ VertexClientPE.setup = function() {
 				VertexClientPE.loadUpdateDescription();
 				VertexClientPE.loadNews();
 				VertexClientPE.loadItemGiverItems();
+				VertexClientPE.loadAccounts();
 				Thread_.sleep(3000);
 			} finally {
 				CONTEXT.runOnUiThread(new Runnable_({
@@ -18900,9 +18900,6 @@ VertexClientPE.createScreen = function(layout, name, showBackButton, extraView) 
 	return;
 }
 
-let backScreenUI;
-let exitScreenUI;
-
 let barUI;
 
 let backBg = GradientDrawable_();
@@ -18926,31 +18923,32 @@ VertexClientPE.showExitButtons = function(showBackButton, title, icon, extraView
 				let buttonClicked = false;
 
 				let backScreenUILayout = new LinearLayout_(CONTEXT);
-				let backScreenUIButton = new Button_(CONTEXT);
-				backScreenUIButton.setText("<");
-				backScreenUIButton.setBackgroundDrawable(backBg);
-				backScreenUIButton.setTextColor(Color_.WHITE);
-				backScreenUIButton.setOnTouchListener(new View_.OnTouchListener() {
-					onTouch: function(v, event) {
-						let action = event.getActionMasked();
-						if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
-							backBg.setStroke(dip2px(1), Color_.parseColor("#FFFFFF"));
-						} else {
-							backBg.setStroke(dip2px(1), Color_.parseColor("#d3d3d3"));
-						}
-						return false;
-					}
-				});
-				backScreenUIButton.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewArg) {
-						buttonClicked = true;
-						barUI.dismiss();
-						screenUI.dismiss();
-						dashboardScreen("Dashboard", android.R.drawable.ic_dialog_dialer);
-					}
-				}));
+				let backScreenUIButton;
 
 				if(showBackButton) {
+					backScreenUIButton = new Button_(CONTEXT);
+					backScreenUIButton.setText("<");
+					backScreenUIButton.setBackgroundDrawable(backBg);
+					backScreenUIButton.setTextColor(Color_.WHITE);
+					backScreenUIButton.setOnTouchListener(new View_.OnTouchListener() {
+						onTouch: function(v, event) {
+							let action = event.getActionMasked();
+							if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
+								backBg.setStroke(dip2px(1), Color_.parseColor("#FFFFFF"));
+							} else {
+								backBg.setStroke(dip2px(1), Color_.parseColor("#d3d3d3"));
+							}
+							return false;
+						}
+					});
+					backScreenUIButton.setOnClickListener(new View_.OnClickListener({
+						onClick: function(viewArg) {
+							buttonClicked = true;
+							barUI.dismiss();
+							screenUI.dismiss();
+							dashboardScreen("Dashboard", android.R.drawable.ic_dialog_dialer);
+						}
+					}));
 					backScreenUILayout.addView(backScreenUIButton);
 				}
 				if(extraView != null) {
