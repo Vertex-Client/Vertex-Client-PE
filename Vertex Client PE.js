@@ -234,6 +234,7 @@ var mainButtonSizeSetting = 40;
 var powerExplosionsPowerSetting = 10;
 var preventExplosionsSetting = "off";
 var watermarkTextSetting = "<big><b>Bold</b> <i>Italic</i> <u>Underline</u></big>";
+var defaultToastPositionSetting = "bottom";
 //------------------------------------
 var antiAFKDistancePerTick = 0.25;
 //------------------------------------
@@ -1285,7 +1286,7 @@ VertexClientPE.edition = "Normal";
 VertexClientPE.latestVersion;
 VertexClientPE.latestVersionDesc;
 
-let latestPocketEditionVersion;
+VertexClientPE.latestPocketEditionVersion;
 let news;
 
 let movementMenuLayout;
@@ -9601,6 +9602,9 @@ VertexClientPE.toast = function(message, vibrate) {
 			toast = new Toast_(CONTEXT);
 			toast.setDuration(Toast_.LENGTH_LONG);
 			toast.setView(layout);
+			if(defaultToastPositionSetting == "top") {
+				toast.setGravity(Gravity_.CENTER | Gravity_.TOP, 0, 0);
+			}
 			toast.show();
 		}
 	}));
@@ -10678,6 +10682,7 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + mainButtonSizeSetting.toString());
 	outWrite.append("," + powerExplosionsPowerSetting.toString());
 	outWrite.append("," + preventExplosionsSetting.toString());
+	outWrite.append("," + defaultToastPositionSetting.toString());
 
 	outWrite.close();
 
@@ -10939,6 +10944,9 @@ VertexClientPE.loadMainSettings = function () {
 	}
 	if (arr[80] != null && arr[80] != undefined) {
 		preventExplosionsSetting = arr[80];
+	}
+	if (arr[81] != null && arr[81] != undefined) {
+		defaultToastPositionSetting = arr[81];
 	}
 
 	VertexClientPE.loadCustomRGBSettings();
@@ -13066,10 +13074,10 @@ VertexClientPE.checkForUpdates = function() {
 
 		if(loadedVersion.split(" ")[1] == "Beta" || loadedVersion.split(" ")[1] == "Alpha") {
 			VertexClientPE.latestVersion = loadedVersion.split(" ")[0] + " " + loadedVersion.split(" ")[1];
-			latestPocketEditionVersion = loadedVersion.split(" ")[2];
+			VertexClientPE.latestPocketEditionVersion = loadedVersion.split(" ")[2];
 		} else {
 			VertexClientPE.latestVersion = loadedVersion.split(" ")[0];
-			latestPocketEditionVersion = loadedVersion.split(" ")[1];
+			VertexClientPE.latestPocketEditionVersion = loadedVersion.split(" ")[1];
 		}
 
 		// close what needs to be closed
@@ -13081,7 +13089,7 @@ VertexClientPE.checkForUpdates = function() {
 		VertexClientPE.clientMessage("Can't check for updates, please check your Internet connection.");
 		ModPE.log("[Vertex Client PE] VertexClientPE.checkForUpdates() caught an error: " + err);
 		VertexClientPE.latestVersion = sharedPref.getString("VertexClientPE.latestVersion", VertexClientPE.currentVersion);
-		latestPocketEditionVersion = sharedPref.getString("VertexClientPE.latestPocketEditionVersion", VertexClientPE.targetVersion);
+		VertexClientPE.latestPocketEditionVersion = sharedPref.getString("VertexClientPE.latestPocketEditionVersion", VertexClientPE.targetVersion);
 		return;
 	}
 
@@ -13517,7 +13525,7 @@ VertexClientPE.showUpdate = function() {
 			VertexClientPE.checkForUpdates();
 			if(VertexClientPE.latestVersion != VertexClientPE.currentVersion && VertexClientPE.latestVersion != undefined) {
 				if(showUpdateToastsSetting == "on") {
-					VertexClientPE.updateToast("There is a new version available (v" + VertexClientPE.latestVersion + " for Minecraft Pocket Edition v" + latestPocketEditionVersion + ")!");
+					VertexClientPE.updateToast("There is a new version available (v" + VertexClientPE.latestVersion + " for Minecraft Pocket Edition v" + VertexClientPE.latestPocketEditionVersion + ")!");
 				}
 			} else {
 				CONTEXT.runOnUiThread(new Runnable_() {
@@ -14677,7 +14685,7 @@ function newLevel() {
 			}
 			VertexClientPE.Utils.loadFov();
 			if(VertexClientPE.latestVersion != VertexClientPE.currentVersion && VertexClientPE.latestVersion != undefined) {
-				VertexClientPE.clientMessage("There is a new version available (v" + VertexClientPE.latestVersion + " for Minecraft Pocket Edition v" + latestPocketEditionVersion + ")!");
+				VertexClientPE.clientMessage("There is a new version available (v" + VertexClientPE.latestVersion + " for Minecraft Pocket Edition v" + VertexClientPE.latestPocketEditionVersion + ")!");
 			}
 			VertexClientPE.Render.initViews();
 			VertexClientPE.Utils.world.logMessages = [];
@@ -15576,18 +15584,34 @@ function settingsScreen(fromDashboard) {
 					}
 				}));
 
-				var otherTitle = clientSectionTitle("Other", "theme");
+				var toastsTitle = clientSectionTitle("Toasts", "theme");
 
-				var featuresSettingFunc = new settingButton("Opt in/out features", "Allows you to choose what categories/mods to show.");
-				var featuresSettingButton = featuresSettingFunc.getButton();
-				featuresSettingButton.setText("Manage");
-				featuresSettingButton.setOnClickListener(new View_.OnClickListener({
+				var defaultToastPositionSettingFunc = new settingButton("Default toasts position", "Allows you to choose the position of most client toasts.", null,
+					function(viewArg) {
+						defaultToastPositionSetting = "bottom";
+						defaultToastPositionSettingButton.setText("Bottom");
+					}
+				);
+				var defaultToastPositionSettingButton = defaultToastPositionSettingFunc.getButton();
+				if(defaultToastPositionSetting == "bottom") {
+					defaultToastPositionSettingButton.setText("Bottom");
+				} else if(defaultToastPositionSetting == "top") {
+					defaultToastPositionSettingButton.setText("Top");
+				}
+				defaultToastPositionSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
-						VertexClientPE.showFeaturesDialog();
+						if(defaultToastPositionSetting == "top") {
+							defaultToastPositionSetting = "bottom";
+							defaultToastPositionSettingButton.setText("Bottom");
+						} else if(defaultToastPositionSetting == "bottom") {
+							defaultToastPositionSetting = "top";
+							defaultToastPositionSettingButton.setText("Top");
+						}
+						VertexClientPE.saveMainSettings();
 					}
 				}));
 
-				var showNewsSettingFunc = new settingButton("Show news", "Show news at start.", null,
+				var showNewsSettingFunc = new settingButton("Show news toast at start", null, null,
 					function(viewArg) {
 						showNewsSetting = "on";
 						showNewsSettingButton.setText("ON");
@@ -15609,6 +15633,17 @@ function settingsScreen(fromDashboard) {
 							showNewsSettingButton.setText("ON");
 						}
 						VertexClientPE.saveMainSettings();
+					}
+				}));
+
+				var otherTitle = clientSectionTitle("Other", "theme");
+
+				var featuresSettingFunc = new settingButton("Opt in/out features", "Allows you to choose what categories/mods to show.");
+				var featuresSettingButton = featuresSettingFunc.getButton();
+				featuresSettingButton.setText("Manage");
+				featuresSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						VertexClientPE.showFeaturesDialog();
 					}
 				}));
 
@@ -15707,9 +15742,11 @@ function settingsScreen(fromDashboard) {
 				settingsMenuLayout.addView(commandsTitle);
 				VertexClientPE.addView(settingsMenuLayout, commandsSettingFunc);
 				VertexClientPE.addView(settingsMenuLayout, cmdPrefixFunc);
+				settingsMenuLayout.addView(toastsTitle);
+				VertexClientPE.addView(settingsMenuLayout, defaultToastPositionSettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, showNewsSettingFunc);
 				settingsMenuLayout.addView(otherTitle);
 				VertexClientPE.addView(settingsMenuLayout, featuresSettingFunc);
-				VertexClientPE.addView(settingsMenuLayout, showNewsSettingFunc);
 				VertexClientPE.addView(settingsMenuLayout, showSnowInWinterSettingFunc);
 				VertexClientPE.addView(settingsMenuLayout, f5ButtonModeSettingFunc);
 				VertexClientPE.addView(settingsMenuLayout, webBrowserStartPageSettingFunc);
