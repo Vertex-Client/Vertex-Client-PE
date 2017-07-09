@@ -25,6 +25,7 @@ const AlarmManager_ = android.app.AlarmManager,
 	Notification_ = android.app.Notification,
 	PendingIntent_ = android.app.PendingIntent,
 	Context_ = android.content.Context,
+	ConnectivityManager_ = android.net.ConnectivityManager,
 	DialogInterface_ = android.content.DialogInterface,
 	Intent_ = android.content.Intent,
 	Bitmap_ = android.graphics.Bitmap,
@@ -9588,11 +9589,11 @@ VertexClientPE.toast = function(message, vibrate) {
 			if(vibrate || vibrate == null) {
 				CONTEXT.getSystemService(Context_.VIBRATOR_SERVICE).vibrate(37);
 			}
-			var layout = new LinearLayout_(CONTEXT);
+			let layout = new LinearLayout_(CONTEXT);
 			layout.setPadding(dip2px(2), dip2px(2), dip2px(2), dip2px(2));
 			layout.setBackground(backgroundGradient(null, "normal", "on"));
-			var title = VertexClientPE.getName();
-			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message));
+			let title = VertexClientPE.getName();
+			let text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message));
 			layout.addView(text);
 			if(toast != null) {
 				toast.cancel();
@@ -9608,15 +9609,16 @@ VertexClientPE.toast = function(message, vibrate) {
 VertexClientPE.addonLoadToast = function(message) {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
-			var layout = new LinearLayout_(CONTEXT);
+			let layout = new LinearLayout_(CONTEXT);
 			layout.setBackground(backgroundSpecial(true));
-			var icon = new android.widget.ImageView(CONTEXT);
+			let icon = new android.widget.ImageView(CONTEXT);
 			icon.setImageResource(android.R.drawable.ic_menu_more);
-			var title = VertexClientPE.getName();
-			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message), true, "diff");
+			let title = VertexClientPE.getName();
+			let text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message), true, "diff");
 			layout.addView(icon);
 			layout.addView(text);
 			let addonToast = new Toast_(CONTEXT);
+			addonToast.setDuration(Toast_.LENGTH_LONG);
 			addonToast.setView(layout);
 			addonToast.setGravity(Gravity_.CENTER | Gravity_.TOP, 0, 0);
 			addonToast.show();
@@ -9650,18 +9652,19 @@ VertexClientPE.loadToast = function(message) {
 VertexClientPE.updateToast = function(message) {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
-			var layout = new LinearLayout_(CONTEXT);
+			let layout = new LinearLayout_(CONTEXT);
 			layout.setBackground(backgroundSpecial(true));
-			var icon = new android.widget.ImageView(CONTEXT);
+			let icon = new android.widget.ImageView(CONTEXT);
 			icon.setImageResource(android.R.drawable.ic_menu_compass);
-			var title = VertexClientPE.getName();
-			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message), true, "diff");
+			let title = VertexClientPE.getName();
+			let text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message), true, "diff");
 			layout.addView(icon);
 			layout.addView(text);
-			toast = new Toast_(CONTEXT);
-			toast.setView(layout);
-			toast.setGravity(Gravity_.CENTER | Gravity_.TOP, 0, 0);
-			toast.show();
+			let updateToast = new Toast_(CONTEXT);
+			updateToast.setDuration(Toast_.LENGTH_LONG);
+			updateToast.setView(layout);
+			updateToast.setGravity(Gravity_.CENTER | Gravity_.TOP, 0, 0);
+			updateToast.show();
 		}
 	}));
 }
@@ -9669,20 +9672,24 @@ VertexClientPE.updateToast = function(message) {
 VertexClientPE.showChristmasToast = function(daysLeft) {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
-			var layout = new LinearLayout_(CONTEXT);
+			let layout = new LinearLayout_(CONTEXT);
 			layout.setBackground(backgroundSpecial(true));
-			var icon = new android.widget.ImageView(CONTEXT);
-			icon.setImageBitmap(imgChristmasTree);
-			icon.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(16), dip2px(16)));
-			var title = VertexClientPE.getName();
-			var cText = daysLeft == null ? "Merry Christmas!" : (daysLeft + " days left until Christmas!");
-			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + cText), true, "diff");
+			let icon = new android.widget.ImageView(CONTEXT);
+			icon.setImageResource(android.R.drawable.ic_menu_agenda);
+			let icon1 = new android.widget.ImageView(CONTEXT);
+			icon1.setImageBitmap(imgChristmasTree);
+			icon1.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(16), dip2px(16)));
+			let title = VertexClientPE.getName();
+			let cText = daysLeft == null ? "Merry Christmas!" : (daysLeft + " days left until Christmas!");
+			let text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + cText), true, "diff");
 			layout.addView(icon);
+			layout.addView(icon1);
 			layout.addView(text);
-			toast = new Toast_(CONTEXT);
-			toast.setView(layout);
-			toast.setGravity(Gravity_.CENTER | Gravity_.TOP, 0, 0);
-			toast.show();
+			let christmasToast = new Toast_(CONTEXT);
+			christmasToast.setDuration(Toast_.LENGTH_LONG);
+			christmasToast.setView(layout);
+			christmasToast.setGravity(Gravity_.CENTER | Gravity_.TOP, 0, 0);
+			christmasToast.show();
 		}
 	}));
 }
@@ -11153,6 +11160,26 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 	} else {
 		buttonView.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
 	}
+}
+
+const TYPE_WIFI = 1;
+const TYPE_MOBILE = 2;
+const TYPE_NOT_CONNECTED = 0;
+	
+	
+function getConnectivityStatus(context) {
+	let cm = context.getSystemService(Context_.CONNECTIVITY_SERVICE);
+
+	let activeNetwork = cm.getActiveNetworkInfo();
+	if (activeNetwork != null) {
+		if(activeNetwork.getType() == ConnectivityManager_.TYPE_WIFI) {
+			return TYPE_WIFI;
+		}
+		if(activeNetwork.getType() == ConnectivityManager_.TYPE_MOBILE) {
+			return TYPE_MOBILE;
+		}
+	}
+	return TYPE_NOT_CONNECTED;
 }
 
 function copyToClipboard(textToCopy) {
@@ -13053,15 +13080,13 @@ VertexClientPE.checkForUpdates = function() {
 	} catch(err) {
 		VertexClientPE.clientMessage("Can't check for updates, please check your Internet connection.");
 		ModPE.log("[Vertex Client PE] VertexClientPE.checkForUpdates() caught an error: " + err);
-		if(sharedPref.getString("VertexClientPE.latestVersion", null) != null && sharedPref.getString("VertexClientPE.latestVersion", null) != undefined) {
-			VertexClientPE.latestVersion = sharedPref.getString("VertexClientPE.latestVersion", null);
-		} else {
-			VertexClientPE.latestVersion = VertexClientPE.currentVersion;
-		}
+		VertexClientPE.latestVersion = sharedPref.getString("VertexClientPE.latestVersion", VertexClientPE.currentVersion);
+		latestPocketEditionVersion = sharedPref.getString("VertexClientPE.latestPocketEditionVersion", VertexClientPE.targetVersion);
 		return;
 	}
 
 	editor.putString("VertexClientPE.latestVersion", VertexClientPE.latestVersion);
+	editor.putString("VertexClientPE.latestPocketEditionVersion", VertexClientPE.latestPocketEditionVersion);
 	editor.commit();
 }
 
