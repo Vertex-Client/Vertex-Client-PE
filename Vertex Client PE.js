@@ -1852,13 +1852,33 @@ VertexClientPE.AddonUtils = {
 		});
 
 		//step 2
+
+		//remove addon modules
 		let newModuleArray = [];
 		VertexClientPE.preInitModules.forEach(function(element, index, array) {
-			if(fullAddonName != element.source) {
+			if(element.source == undefined || fullAddonName != element.source) {
 				newModuleArray.push(element);
 			}
 		});
 		VertexClientPE.preInitModules = newModuleArray;
+
+		//remove addon songs
+		let newSongArray = [];
+		VertexClientPE.MusicUtils.songList.forEach(function(element, index, array) {
+			if(element.source == undefined || fullAddonName != element.source) {
+				newSongArray.push(element);
+			}
+		});
+		VertexClientPE.MusicUtils.songList = newSongArray;
+
+		//remove addon tiles
+		let newTileArray = [];
+		VertexClientPE.tiles.forEach(function(element, index, array) {
+			if(element.source == undefined || fullAddonName != element.source) {
+				newTileArray.push(element);
+			}
+		});
+		VertexClientPE.tiles = newTileArray;
 
 		//step 3
 		VertexClientPE.initMods();
@@ -11595,14 +11615,6 @@ function userBar() {
 	var steveHeadView = new ImageView_(CONTEXT);
 	steveHeadView.setImageBitmap(steveHead_SCALED);
 
-	/* var defaultUserTextView = clientTextView(ModPE.getPlayerName(), true);
-	defaultUserTextView.setPadding(dip2px(8), 0, 0, 0);
-	defaultUserTextView.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
-	defaultUserTextView.setMarqueeRepeatLimit(-1);
-	defaultUserTextView.setSingleLine();
-	defaultUserTextView.setHorizontallyScrolling(true);
-	defaultUserTextView.setSelected(true); */
-
 	var bg = GradientDrawable_();
 	bg.setColor(Color_.TRANSPARENT); //Color_.parseColor("#70151515")
 	bg.setStroke(dip2px(2), Color_.parseColor("#FFFFFF"));
@@ -11629,7 +11641,6 @@ function userBar() {
 	});
 
 	defaultUserLayout.addView(steveHeadView);
-	//defaultUserLayout.addView(defaultUserTextView);
 
 	return defaultUserLayout;
 }
@@ -11651,22 +11662,33 @@ function modButton(mod, buttonOnly, customSize, shouldUpdateGUI) {
 	if(menuType != "halfscreen") {
 		modButtonLayout.setPadding(10, 5, 10, 5);
 	}
-
-	var modButtonLayoutLeft = new LinearLayout_(CONTEXT);
+	
+	/* var modButtonLayoutLeft = new LinearLayout_(CONTEXT);
 	modButtonLayoutLeft.setOrientation(1);
 	if(menuType == "halfscreen") {
-		modButtonLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2.5, display.heightPixels / 10));
+		modButtonLayoutLeft.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2.2 - display.widthPixels / 2.5, display.heightPixels / 10));
 	} else if(menuType == "halfscreen_top" || menuType == "tabbed_fullscreen") {
-		modButtonLayoutLeft.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - (display.widthPixels / 2 - display.widthPixels / 2.5) - 10, display.heightPixels / 12));
+		modButtonLayoutLeft.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2 - display.widthPixels / 2.5 - 10, display.heightPixels / 12));
 	} else {
-		modButtonLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.heightPixels / 2.5 - 10, display.heightPixels / 12));
+		modButtonLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.heightPixels / 2 - display.heightPixels / 2.5 - 10, display.heightPixels / 12));
 	}
-	modButtonLayout.addView(modButtonLayoutLeft);
+	modButtonLayout.addView(modButtonLayoutLeft); */
+
+	var modButtonLayoutCenter = new LinearLayout_(CONTEXT);
+	modButtonLayoutCenter.setOrientation(1);
+	if(menuType == "halfscreen") {
+		modButtonLayoutCenter.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2.5, display.heightPixels / 10));
+	} else if(menuType == "halfscreen_top" || menuType == "tabbed_fullscreen") {
+		modButtonLayoutCenter.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - (display.widthPixels / 2 - display.widthPixels / 2.5) - 10, display.heightPixels / 12));
+	} else {
+		modButtonLayoutCenter.setLayoutParams(new ViewGroup_.LayoutParams(display.heightPixels / 2.5 - 10, display.heightPixels / 12));
+	}
+	modButtonLayout.addView(modButtonLayoutCenter);
 
 	var modButtonLayoutRight = new LinearLayout_(CONTEXT);
 	modButtonLayoutRight.setOrientation(1);
 	if(menuType == "halfscreen") {
-		modButtonLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2.2 - display.widthPixels / 2.5, display.heightPixels / 10));
+		modButtonLayoutRight.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2.2 - display.widthPixels / 2.5, display.heightPixels / 10));
 	} else if(menuType == "halfscreen_top" || menuType == "tabbed_fullscreen") {
 		modButtonLayoutRight.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2 - display.widthPixels / 2.5 - 10, display.heightPixels / 12));
 	} else {
@@ -11684,7 +11706,7 @@ function modButton(mod, buttonOnly, customSize, shouldUpdateGUI) {
 	}
 	if(buttonOnly == null || !buttonOnly) {
 		if(menuType == "halfscreen") {
-			defaultClientButton.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2.5, display.heightPixels / 10));
+			defaultClientButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2.5, display.heightPixels / 10));
 		} else if(menuType == "halfscreen_top" || menuType == "tabbed_fullscreen") {
 			defaultClientButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - (display.widthPixels / 2 - display.widthPixels / 2.5) - 10, display.heightPixels / 12));
 		} else {
@@ -11779,12 +11801,12 @@ function modButton(mod, buttonOnly, customSize, shouldUpdateGUI) {
 	}));
 
 	if(buttonOnly == null || !buttonOnly) {
-		modButtonLayoutLeft.addView(defaultClientButton);
+		modButtonLayoutCenter.addView(defaultClientButton);
 	}
 
 	var defaultInfoButton = clientButton(modInfoButtonName, mod.name + " info and settings", null, "right");
 	if(menuType == "halfscreen") {
-		defaultInfoButton.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2.2 - display.widthPixels / 2.5, display.heightPixels / 10));
+		defaultInfoButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2.2 - display.widthPixels / 2.5, display.heightPixels / 10));
 	} else if(menuType == "halfscreen_top" || menuType == "tabbed_fullscreen") {
 		defaultInfoButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2 - display.widthPixels / 2.5 - 10, display.heightPixels / 12));
 	} else {
@@ -11799,9 +11821,6 @@ function modButton(mod, buttonOnly, customSize, shouldUpdateGUI) {
 	modButtonLayoutRight.addView(defaultInfoButton);
 
 	if(buttonOnly == null || !buttonOnly) {
-		/* if(sharedPref.getString("VertexClientPE.mods." + mod.name + ".isFavorite", "false") == "true") {
-			modButtonLayout.setBackgroundColor(Color_.RED);
-		} */
 		return modButtonLayout;
 	} else if(buttonOnly) {
 		return defaultClientButton;
@@ -15586,7 +15605,7 @@ function settingsScreen(fromDashboard) {
 
 				var toastsTitle = clientSectionTitle("Toasts", "theme");
 
-				var defaultToastPositionSettingFunc = new settingButton("Default toasts position", "Allows you to choose the position of most client toasts.", null,
+				var defaultToastPositionSettingFunc = new settingButton("Default toast position", "Allows you to choose the position of most client toasts.", null,
 					function(viewArg) {
 						defaultToastPositionSetting = "bottom";
 						defaultToastPositionSettingButton.setText("Bottom");
