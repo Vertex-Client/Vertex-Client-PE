@@ -1850,6 +1850,14 @@ VertexClientPE.AddonUtils = {
 				element.onToggle();
 			}
 		});
+		
+		let newTempSongArray = [];
+		VertexClientPE.MusicUtils.tempSongList.forEach(function(element, index, array) {
+			if(element.source == undefined || fullAddonName != element.source) {
+				newTempSongArray.push(element);
+			}
+		});
+		VertexClientPE.MusicUtils.tempSongList = newTempSongArray;
 
 		//step 2
 
