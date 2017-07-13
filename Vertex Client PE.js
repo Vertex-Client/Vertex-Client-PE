@@ -14205,7 +14205,6 @@ VertexClientPE.showAccountManager = function(showBackButton, title) {
 
 VertexClientPE.showFriendManager = function(showBackButton, title, icon) {
 	VertexClientPE.menuIsShowing = true;
-	VertexClientPE.loadFriends();
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
@@ -14350,6 +14349,7 @@ VertexClientPE.setup = function() {
 				VertexClientPE.loadNews();
 				VertexClientPE.loadItemGiverItems();
 				VertexClientPE.loadAccounts();
+				VertexClientPE.loadFriends();
 				Thread_.sleep(3000);
 			} finally {
 				CONTEXT.runOnUiThread(new Runnable_({
@@ -14426,7 +14426,7 @@ function downloadFile(path, url, showNotification, replace) {
 };
 
 (function checkFiles() {
-	var res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png", "github_button.png", "github_button_clicked.png", "vertex_logo_new.png", "stevehead.png", "minecraft.ttf", "christmas_tree.png", "dirt_background.png", "rainbow_background.png"],
+	let res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png", "github_button.png", "github_button_clicked.png", "vertex_logo_new.png", "stevehead.png", "minecraft.ttf", "christmas_tree.png", "dirt_background.png", "rainbow_background.png"],
 		isExisting = true;
 	for (var i = res.length; i--;) {
 		if (!new File_(PATH, res[i]).exists()) {
@@ -14443,7 +14443,7 @@ function downloadFile(path, url, showNotification, replace) {
 				VertexClientPE.toast("Downloading resource files...");
 				while (!isExisting) {
 					Thread_.sleep(1000);
-					for (var i = res.length; i--;) {
+					for (let i = res.length; i--;) {
 						if (!new File_(PATH, res[i]).exists()) {
 							isExisting = false;
 							break;
@@ -14460,12 +14460,12 @@ function downloadFile(path, url, showNotification, replace) {
 	}
 })();
 
-var coordsButton;
+let coordsButton;
 
 VertexClientPE.getHighestBlockDifference = function() {
-	var x = getPlayerX();
-	var y = getPlayerY();
-	var z = getPlayerZ();
+	let x = getPlayerX();
+	let y = getPlayerY();
+	let z = getPlayerZ();
 	while(getTile(x, y, z) == 0) {
 		y--;
 	}
@@ -14474,13 +14474,13 @@ VertexClientPE.getHighestBlockDifference = function() {
 	}
 }
 
-var trailsModes = [
+const trailsModes = [
 	["off", "OFF"],
 	["flame", "Flame"],
 	["redstone", "Redstone"]
 ];
 
-var renderTypes = [
+const renderTypes = [
 	EntityRenderType.arrow,
 	EntityRenderType.bat,
 	EntityRenderType.blaze,
