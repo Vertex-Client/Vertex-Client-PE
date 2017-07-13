@@ -2773,10 +2773,7 @@ var nuker = {
 		this.state = !this.state;
 	},
 	onTick: function() {
-		let x = getPlayerX();
-		let y = getPlayerY();
-		let z = getPlayerZ();
-		VertexClientPE.nuke(x, y, z, nukerRange, nukerMode);
+		VertexClientPE.nuke(getPlayerX(), getPlayerY(), getPlayerZ(), nukerRange, nukerMode);
 	}
 };
 
@@ -3250,8 +3247,6 @@ var tapExplosion = {
 	}
 }
 
-var signX, signY, signZ;
-
 var signEditor = {
 	name: "SignEditor",
 	desc: "Allows you to edit signs.",
@@ -3268,10 +3263,7 @@ var signEditor = {
 	onUseItem: function(x, y, z, itemId, blockId, side, blockDamage) {
 		if(blockId == 63 || blockId == 68) {
 			preventDefault();
-			signX = x;
-			signY = y;
-			signZ = z;
-			VertexClientPE.showSignEditorDialog();
+			VertexClientPE.showSignEditorDialog(x, y, z);
 		}
 	}
 }
@@ -6693,7 +6685,7 @@ function pizzaOrderDialog() {
 	}));
 }
 
-VertexClientPE.showSignEditorDialog = function() {
+VertexClientPE.showSignEditorDialog = function(signX, signY, signZ) {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
@@ -11447,52 +11439,64 @@ function updatePaneButton(updateVersion, updateDesc, isDev) {
 	VertexClientPE.addTextStyleToView(updatePaneDescText, "diff");
 	updatePaneLayoutLeft.addView(updatePaneText);
 	updatePaneLayoutLeft.addView(updatePaneDescText);
-	var updatePaneDownloadButton = clientButton(isDev?"Copy URL":"Download");
-	updatePaneDownloadButton.setCompoundDrawablesWithIntrinsicBounds(isDev?android.R.drawable.ic_input_get:android.R.drawable.stat_sys_download, 0, 0, 0);
+	var updatePaneDownloadButton = clientButton("Download");
+	updatePaneDownloadButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.stat_sys_download, 0, 0, 0);
 	updatePaneDownloadButton.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.MATCH_PARENT, display.heightPixels / 8));
 	updatePaneDownloadButton.setOnClickListener(new View_.OnClickListener() {
-		onClick: function(v) {
-			if(isDev) {
-				copyToClipboard("https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/master/Vertex%20Client%20PE.js");
-				VertexClientPE.toast("Copied dev link to clipboard!");
-			} else {
-				var updateGithubVersion = updateVersion;
-				if(updateGithubVersion.indexOf("Alpha") != -1 || updateGithubVersion.indexOf("Beta") != -1) {
-					updateGithubVersion = updateGithubVersion.split(" ")[0] + "-" + updateGithubVersion.split(" ")[1];
-				}
-				VertexClientPE.toast("Started downloading...");
-				if(!isDev) {
-					downloadFile(Environment_.getExternalStorageDirectory() + "/Download/Vertex_Client_PE.modpkg", "https://github.com/Vertex-Client/Vertex-Client-PE/releases/download/v" + updateGithubVersion + "/Vertex_Client_PE.modpkg", true);
-				} else {
-					downloadFile(Environment_.getExternalStorageDirectory() + "/Download/Vertex_Client_PE_Dev.js", "https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/master/Vertex Client PE.js", true);
-				}
-			}
-		}
-	});
-	var updatePaneInformationButton = clientButton("Info");
-	updatePaneInformationButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_menu_info_details, 0, 0, 0);
-	updatePaneInformationButton.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.MATCH_PARENT, display.heightPixels / 8));
-	updatePaneInformationButton.setOnClickListener(new View_.OnClickListener() {
 		onClick: function(v) {
 			var updateGithubVersion = updateVersion;
 			if(updateGithubVersion.indexOf("Alpha") != -1 || updateGithubVersion.indexOf("Beta") != -1) {
 				updateGithubVersion = updateGithubVersion.split(" ")[0] + "-" + updateGithubVersion.split(" ")[1];
 			}
-			ModPE.goToURL("https://github.com/Vertex-Client/Vertex-Client-PE/releases/tag/v" + updateGithubVersion);
+			let dest;
+			if(isDev) {
+				dest = "/sdcard/Download/Vertex_Client_PE_Dev.js";
+				downloadFile(dest, "https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/master/Vertex%20Client%20PE.js", true, true);
+			} else {
+				dest ="/sdcard/Download/Vertex_Client_PE.modpkg";
+				downloadFile(dest, "https://github.com/Vertex-Client/Vertex-Client-PE/releases/download/v" + updateGithubVersion + "/Vertex_Client_PE.modpkg", true, true);
+			}
+			VertexClientPE.toast("Started downloading to \'" + dest + "\'...");
 		}
 	});
+	if(isDev) {
+		var updatePaneCopyButton = clientButton("Copy URL");
+		updatePaneCopyButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_input_get, 0, 0, 0);
+		updatePaneCopyButton.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.MATCH_PARENT, display.heightPixels / 8));
+		updatePaneCopyButton.setOnClickListener(new View_.OnClickListener() {
+			onClick: function(v) {
+				copyToClipboard("https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/master/Vertex%20Client%20PE.js");
+				VertexClientPE.toast("Copied dev link to clipboard!");
+			}
+		});
+	} else {
+		var updatePaneInformationButton = clientButton("Info");
+		updatePaneInformationButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_menu_info_details, 0, 0, 0);
+		updatePaneInformationButton.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.MATCH_PARENT, display.heightPixels / 8));
+		updatePaneInformationButton.setOnClickListener(new View_.OnClickListener() {
+			onClick: function(v) {
+				var updateGithubVersion = updateVersion;
+				if(updateGithubVersion.indexOf("Alpha") != -1 || updateGithubVersion.indexOf("Beta") != -1) {
+					updateGithubVersion = updateGithubVersion.split(" ")[0] + "-" + updateGithubVersion.split(" ")[1];
+				}
+				ModPE.goToURL("https://github.com/Vertex-Client/Vertex-Client-PE/releases/tag/v" + updateGithubVersion);
+			}
+		});
+	}
 
 	var support = isSupported?"supported":"unsupported";
 	var updatePaneTypeText = clientTextView("Current (" + support + ")");
 	VertexClientPE.addTextStyleToView(updatePaneTypeText, "diff");
 
-	if(updateVersion != VertexClientPE.currentVersion) {
+	if(updateVersion != VertexClientPE.currentVersion || isDev) {
 		updatePaneLayoutRight.addView(updatePaneDownloadButton);
 	} else {
 		updatePaneLayoutRight.addView(updatePaneTypeText);
 	}
-
-	if(!isDev) {
+	
+	if(isDev) {
+		updatePaneLayoutRight.addView(updatePaneCopyButton);
+	} else {
 		updatePaneLayoutRight.addView(updatePaneInformationButton);
 	}
 
@@ -14392,11 +14396,15 @@ VertexClientPE.setup = function() {
 	})).start();
 }
 
-function downloadFile(path, url, showNotification) {
+function downloadFile(path, url, showNotification, replace) {
 	try {
 		showNotification = showNotification || false;
-		var file = new File_(path),
-			filename = file.getName(),
+		replace = replace || false;
+		let file = new File_(path);
+		if(replace && file.exists()) {
+			file.delete();
+		}
+		let filename = file.getName(),
 			downloadManager = new DownloadManager_.Request(new Uri_.parse(url));
 		downloadManager.setTitle(filename);
 		if(!showNotification) {
@@ -14452,7 +14460,8 @@ VertexClientPE.getHighestBlockDifference = function() {
 	var z = getPlayerZ();
 	while(getTile(x, y, z) == 0) {
 		y--;
-	} if(getTile(x, y, z) != 0) {
+	}
+	if(getTile(x, y, z) != 0) {
 		return getPlayerY() - 2 - y;
 	}
 }
