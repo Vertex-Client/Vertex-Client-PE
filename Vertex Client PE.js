@@ -2193,6 +2193,12 @@ VertexClientPE.registerModule = function(obj) {
 	if(obj.batteryUsage == undefined || obj.batteryUsage == null) {
 		obj.batteryUsage = "Normal";
 	}
+	if(obj.singleplayerOnly == undefined || obj.singleplayerOnly == null) {
+		obj.singleplayerOnly = false;
+	}
+	if(obj.multiplayerOnly == undefined || obj.multiplayerOnly == null) {
+		obj.multiplayerOnly = false;
+	}
 	VertexClientPE.preInitModules.push(obj);
 };
 
@@ -2512,7 +2518,7 @@ var killAura = {
 	isStateMod: function() {
 		return true;
 	},
-	canBypassBypass: function() {
+	canBypassBypassMod: function() {
 		return false;
 	},
 	onToggle: function() {
@@ -2559,7 +2565,7 @@ var freezeAura = {
 	isStateMod: function() {
 		return true;
 	},
-	canBypassBypass: function() {
+	canBypassBypassMod: function() {
 		return false;
 	},
 	onToggle: function() {
@@ -2583,7 +2589,7 @@ var fireAura = {
 	isStateMod: function() {
 		return true;
 	},
-	canBypassBypass: function() {
+	canBypassBypassMod: function() {
 		return false;
 	},
 	onToggle: function() {
@@ -4513,7 +4519,7 @@ var speedHack = {
 
 var storageESP = {
 	name: "StorageESP",
-	desc: "Allows you to find chests easily by showing boxes around them.",
+	desc: "Allows you to find chests, dispensers and droppers easily by showing boxes around them.",
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
@@ -5310,6 +5316,7 @@ var serverInfo = {
 	checkBeforeAdding: function() {
 		return VertexClientPE.isRemote();
 	},
+	multiplayerOnly: true,
 	isStateMod: function() {
 		return false;
 	},
@@ -5348,14 +5355,14 @@ var switchAimbot = {
 		this.state = !this.state;
 	},
 	onTick: function() {
-		var range = Level.getGameMode()==1?9:7;
-		var mobs = Entity.getAll();
-		var players = Server.getAllPlayers();
+		let range = Level.getGameMode()==1?9:7;
+		let mobs = Entity.getAll();
+		let players = Server.getAllPlayers();
 		if(targetMobsSetting == "on") {
 			if(this.mobTargetNum >= mobs.length) {
 				this.mobTargetNum = 0;
 			}
-			var cMob = mobs[this.mobTargetNum];
+			let cMob = mobs[this.mobTargetNum];
 			if(cMob != null && cMob != undefined) {
 				var x = Entity.getX(cMob) - getPlayerX();
 				var y = Entity.getY(cMob) - getPlayerY();
@@ -5372,7 +5379,7 @@ var switchAimbot = {
 			if(this.playerTargetNum >= mobs.length) {
 				this.playerTargetNum = 0;
 			}
-			var cPlayer = players[this.playerTargetNum];
+			let cPlayer = players[this.playerTargetNum];
 			if(cPlayer != null && cPlayer != undefined && !(targetFriendsSetting == "off" && VertexClientPE.Utils.Player.isFriend(cMob))) {
 				var x = Entity.getX(cPlayer) - getPlayerX();
 				var y = Entity.getY(cPlayer) - getPlayerY();
@@ -5874,8 +5881,8 @@ function attackHook(a, v) {
 	}
 	VertexClientPE.modules.forEach(function(element, index, array) {
 		if(element.hasOwnProperty("onAttack")) {
-			if(bypassState && element.hasOwnProperty("canBypassBypass")) {
-				if(!element.canBypassBypass()) {
+			if(bypassState && element.hasOwnProperty("canBypassBypassMod")) {
+				if(!element.canBypassBypassMod()) {
 					return;
 				}
 			}
@@ -5887,8 +5894,8 @@ function attackHook(a, v) {
 function entityHurtHook(a, v) {
 	VertexClientPE.modules.forEach(function(element, index, array) {
 		if(element.isStateMod() && element.state && element.hasOwnProperty("onHurt")) {
-			if(bypassState && element.hasOwnProperty("canBypassBypass")) {
-				if(!element.canBypassBypass()) {
+			if(bypassState && element.hasOwnProperty("canBypassBypassMod")) {
+				if(!element.canBypassBypassMod()) {
 					return;
 				}
 			}
@@ -5900,8 +5907,8 @@ function entityHurtHook(a, v) {
 function entityAddedHook(entity) {
 	VertexClientPE.modules.forEach(function(element, index, array) {
 		if(element.isStateMod() && element.state && element.hasOwnProperty("onEntityAdded")) {
-			if(bypassState && element.hasOwnProperty("canBypassBypass")) {
-				if(!element.canBypassBypass()) {
+			if(bypassState && element.hasOwnProperty("canBypassBypassMod")) {
+				if(!element.canBypassBypassMod()) {
 					return;
 				}
 			}
@@ -5916,8 +5923,8 @@ function useItem(x, y, z, itemId, blockId, side, blockDamage) {
 	}
 	VertexClientPE.modules.forEach(function(element, index, array) {
 		if(element.isStateMod() && element.state && element.hasOwnProperty("onUseItem")) {
-			if(bypassState && element.hasOwnProperty("canBypassBypass")) {
-				if(!element.canBypassBypass()) {
+			if(bypassState && element.hasOwnProperty("canBypassBypassMod")) {
+				if(!element.canBypassBypassMod()) {
 					return;
 				}
 			}
@@ -5952,8 +5959,8 @@ function explodeHook(entity, x, y, z, power, onFire) {
 	}
 	VertexClientPE.modules.forEach(function(element, index, array) {
 		if(element.isStateMod() && element.state && element.hasOwnProperty("onExplode")) {
-			if(bypassState && element.hasOwnProperty("canBypassBypass")) {
-				if(!element.canBypassBypass()) {
+			if(bypassState && element.hasOwnProperty("canBypassBypassMod")) {
+				if(!element.canBypassBypassMod()) {
 					return;
 				}
 			}
@@ -5965,8 +5972,8 @@ function explodeHook(entity, x, y, z, power, onFire) {
 function projectileHitBlockHook(projectile, blockX, blockY, blockZ, side) {
 	VertexClientPE.modules.forEach(function(element, index, array) {
 		if(element.isStateMod() && element.state && element.hasOwnProperty("onProjectileHitBlock")) {
-			if(bypassState && element.hasOwnProperty("canBypassBypass")) {
-				if(!element.canBypassBypass()) {
+			if(bypassState && element.hasOwnProperty("canBypassBypassMod")) {
+				if(!element.canBypassBypassMod()) {
 					return;
 				}
 			}
@@ -5978,8 +5985,8 @@ function projectileHitBlockHook(projectile, blockX, blockY, blockZ, side) {
 function chatReceiveHook(text, sender) {
 	VertexClientPE.modules.forEach(function(element, index, array) {
 		if(element.hasOwnProperty("onChatReceive")) {
-			if(bypassState && element.hasOwnProperty("canBypassBypass")) {
-				if(!element.canBypassBypass()) {
+			if(bypassState && element.hasOwnProperty("canBypassBypassMod")) {
+				if(!element.canBypassBypassMod()) {
 					return;
 				}
 			}
@@ -5994,8 +6001,8 @@ function textPacketReceiveHook(type, sender, message) {
 	if(type != 0) {
 		VertexClientPE.modules.forEach(function(element, index, array) {
 			if(element.onChatReceive) {
-				if(bypassState && element.hasOwnProperty("canBypassBypass")) {
-					if(!element.canBypassBypass()) {
+				if(bypassState && element.hasOwnProperty("canBypassBypassMod")) {
+					if(!element.canBypassBypassMod()) {
 						return;
 					}
 				}
@@ -6017,7 +6024,7 @@ function chatHook(text) {
 		if(text.charAt(0) != "/") {
 			VertexClientPE.modules.forEach(function(element, index, array) {
 				if(element.isStateMod() && element.state && element.onChat) {
-					if(bypassState && element.hasOwnProperty("canBypassBypass") && !element.canBypassBypass()) {
+					if(bypassState && element.hasOwnProperty("canBypassBypassMod") && !element.canBypassBypassMod()) {
 						//This command can't bypass/is blocked by Bypass
 						return;
 					}
@@ -6093,10 +6100,10 @@ var toggle = {
 							VertexClientPE.toast("You didn't unlock this feature yet!");
 							return;
 						}
-						if(element.name == "Bypass" || !bypassState || (element.canBypassBypass == undefined || element.canBypassBypass == null || element.canBypassBypass()) || (element.isStateMod() && element.state)) {
+						if(element.name == "Bypass" || !bypassState || (element.canBypassBypassMod == undefined || element.canBypassBypassMod == null || element.canBypassBypassMod()) || (element.isStateMod() && element.state)) {
 							element.onToggle(true);
 							VertexClientPE.shouldUpdateGUI = true;
-						} else if(bypassState && !element.canBypassBypass()) {
+						} else if(bypassState && !element.canBypassBypassMod()) {
 							if(element.isStateMod() && !element.state) {
 								element.state = true;
 								VertexClientPE.shouldUpdateGUI = true;
@@ -6362,6 +6369,7 @@ VertexClientPE.registerCommand(website);
 
 VertexClientPE.createScreen = function() {
 	var popupWindow = new PopupWindow_();
+	return popupWindow;
 }
 
 VertexClientPE.showNotification = function(eventTitle, eventText) {
@@ -6568,6 +6576,38 @@ ModPE.changeClientId = function(clientId) {
 ModPE.getClientId = function() {
 	return getTextFromFile(Environment_.getExternalStorageDirectory() + "/games/com.mojang/minecraftpe/clientId.txt");
 };
+
+function getTextFromUrl(urlToUse) {
+	try {
+		let text;
+
+		// download content
+		var url = new URL_(urlToUse);
+		var connection = url.openConnection();
+
+		// get content
+		let inputStream = connection.getInputStream();
+
+		// read result
+		var loadedText = "";
+		var bufferedTextReader = new BufferedReader_(new InputStreamReader_(inputStream));
+		var rowText = "";
+		while((rowText = bufferedTextReader.readLine()) != null) {
+			loadedText += rowText;
+		}
+		text = loadedText.toString();
+
+		// close what needs to be closed
+		bufferedTextReader.close();
+
+		// test
+		//clientMessage(VertexClientPE.getVersion("current"); + " " + latestVersion);
+	} catch(err) {
+		ModPE.log("[Vertex Client PE] getTextFromUrl() caught an error: " + err);
+	} finally {
+		return text;
+	}
+}
 
 function getTextFromFile(filePath) {//settingsPath
 	let file = new File_(filePath);
@@ -8300,13 +8340,22 @@ VertexClientPE.showModDialog = function(mod, btn) {
 				var type = "Type: " + mod.type;
 				let isExpMod = (mod.hasOwnProperty("isExpMod") && mod.isExpMod());
 				let isSingleplayerOnlyMod = mod.singleplayerOnly;
+				let isMultiplayerOnlyMod = mod.multiplayerOnly;
 				if(isSingleplayerOnlyMod && isExpMod) {
 					type += " (experimental, singleplayer only)";
 				} else {
 					if(isSingleplayerOnlyMod) {
 						type += " (singleplayer only)";
-					} else if(isExpMod) {
-						type += " (experimental)";
+					} else {
+						if(isMultiplayerOnlyMod && isExpMod) {
+							type += " (experimental, multiplayer only)";
+						} else {
+							if(isMultiplayerOnlyMod) {
+								type += " (multiplayer only)";
+							} else if(isExpMod) {
+								type += " (experimental)";
+							}
+						}
 					}
 				}
 				var modTypeText = clientTextView(type);
@@ -8358,7 +8407,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
 					if(mod.isStateMod()) {
 						if(mod.state) {
 							toggleButton.setText("Disable");
-							if(bypassState && mod.hasOwnProperty("canBypassBypass") && !mod.canBypassBypass()) {
+							if(bypassState && mod.hasOwnProperty("canBypassBypassMod") && !mod.canBypassBypassMod()) {
 								toggleButton.setTextColor(modButtonColorBlocked);
 							} else {
 								toggleButton.setTextColor(modButtonColorEnabled);
@@ -8372,9 +8421,9 @@ VertexClientPE.showModDialog = function(mod, btn) {
 					}
 					toggleButton.setOnClickListener(new View_.OnClickListener() {
 						onClick: function(view) {
-							if(mod.name == "Bypass" || !bypassState || (mod.hasOwnProperty("canBypassBypass") && mod.canBypassBypass()) || (mod.isStateMod() && mod.state)) {
+							if(mod.name == "Bypass" || !bypassState || (mod.hasOwnProperty("canBypassBypassMod") && mod.canBypassBypassMod()) || (mod.isStateMod() && mod.state)) {
 								mod.onToggle();
-							} else if(bypassState && !mod.canBypassBypass()) {
+							} else if(bypassState && !mod.canBypassBypassMod()) {
 								if(mod.isStateMod() && !mod.state) {
 									mod.state = true;
 								} else if(!mod.isStateMod()) {
@@ -8384,7 +8433,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
 							if(mod.isStateMod()) {
 								if(mod.state) {
 									toggleButton.setText("Disable");
-									if(bypassState && mod.hasOwnProperty("canBypassBypass") && !mod.canBypassBypass()) {
+									if(bypassState && mod.hasOwnProperty("canBypassBypassMod") && !mod.canBypassBypassMod()) {
 										toggleButton.setTextColor(modButtonColorBlocked);
 										btn.setTextColor(modButtonColorBlocked);
 									} else {
@@ -11736,7 +11785,7 @@ function modButton(mod, buttonOnly, customSize, shouldUpdateGUI) {
 	defaultClientButton.setHorizontallyScrolling(true);
 	defaultClientButton.setSelected(true);
 	if(mod.isStateMod && mod.isStateMod() && mod.state) {
-		if(bypassState && mod.canBypassBypass && !mod.canBypassBypass()) {
+		if(bypassState && mod.canBypassBypassMod && !mod.canBypassBypassMod()) {
 			defaultClientButton.setTextColor(modButtonColorBlocked);
 		} else {
 			defaultClientButton.setTextColor(modButtonColorEnabled);
@@ -11756,9 +11805,9 @@ function modButton(mod, buttonOnly, customSize, shouldUpdateGUI) {
 			} else {
 				if(!bypassState) {
 					mod.onToggle();
-				} else if(bypassState && mod.canBypassBypass == undefined || mod.canBypassBypass == null) {
+				} else if(bypassState && mod.canBypassBypassMod == undefined || mod.canBypassBypassMod == null) {
 					mod.onToggle();
-				} else if(bypassState && mod.canBypassBypass && !mod.canBypassBypass()) {
+				} else if(bypassState && mod.canBypassBypassMod && !mod.canBypassBypassMod()) {
 					if(mod.isStateMod() && mod.state) {
 						mod.onToggle();
 					} else if(mod.isStateMod() && !mod.state) {
@@ -11771,7 +11820,7 @@ function modButton(mod, buttonOnly, customSize, shouldUpdateGUI) {
 			}
 			if(mod.isStateMod()) {
 				if(mod.state) {
-					if(bypassState && mod.canBypassBypass && !mod.canBypassBypass()) {
+					if(bypassState && mod.canBypassBypassMod && !mod.canBypassBypassMod()) {
 						defaultClientButton.setTextColor(modButtonColorBlocked);
 					} else {
 						defaultClientButton.setTextColor(modButtonColorEnabled);
@@ -13169,27 +13218,7 @@ VertexClientPE.loadUpdateDescription = function() {
 
 VertexClientPE.loadNews = function() {
 	try {
-		// download content
-		var url = new URL_("https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/news/News");
-		var connection = url.openConnection();
-
-		// get content
-		newsInputStream = connection.getInputStream();
-
-		// read result
-		var loadedNews = "";
-		var bufferedNewsReader = new BufferedReader_(new InputStreamReader_(newsInputStream));
-		var rowNews = "";
-		while((rowNews = bufferedNewsReader.readLine()) != null) {
-			loadedNews += rowNews;
-		}
-		news = loadedNews.toString();
-
-		// close what needs to be closed
-		bufferedNewsReader.close();
-
-		// test
-		//clientMessage(VertexClientPE.getVersion("current"); + " " + latestVersion);
+		news = getTextFromUrl("https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/news/News");
 	} catch(err) {
 		news = "News couldn't be loaded";
 		ModPE.log("[Vertex Client PE] VertexClientPE.loadNews() caught an error: " + err);
@@ -13257,7 +13286,7 @@ VertexClientPE.inGameTick = function() {
 			if(VertexClientPE.playerIsInGame) {
 				VertexClientPE.modules.forEach(function(element, index, array) {
 					if(element.isStateMod() && element.state && element.hasOwnProperty("onTick")) {
-						if(bypassState && element.hasOwnProperty("canBypassBypass") && !element.canBypassBypass()) {
+						if(bypassState && element.hasOwnProperty("canBypassBypassMod") && !element.canBypassBypassMod()) {
 							return;
 						}
 						element.onTick();
@@ -14683,7 +14712,7 @@ VertexClientPE.refreshEnabledMods = function() {
 	VertexClientPE.modules.forEach(function(element, index, array) {
 		if(element.hasOwnProperty("isStateMod") && element.isStateMod()) {
 			if(element.state) {
-				if(element.name == "Bypass" || !bypassState || (element.canBypassBypass == undefined || element.canBypassBypass == null || element.canBypassBypass())) {
+				if(element.name == "Bypass" || !bypassState || (element.canBypassBypassMod == undefined || element.canBypassBypassMod == null || element.canBypassBypassMod())) {
 					for(let i = 0; i <= 1; i++) {
 						element.onToggle();
 					}
@@ -18488,7 +18517,7 @@ function showHacksList() {
 					var statesText = "";
 					VertexClientPE.modules.forEach(function (element, index, array) {
 						if(element.isStateMod() && element.state) {
-							if(bypassState && element.hasOwnProperty("canBypassBypass") && !element.canBypassBypass()) {
+							if(bypassState && element.hasOwnProperty("canBypassBypassMod") && !element.canBypassBypassMod()) {
 								return;
 							}
 							if(enabledHacksCounter != 0) {
@@ -18578,7 +18607,7 @@ function updateHacksList() {
 					var statesText = "";
 					VertexClientPE.modules.forEach(function (element, index, array) {
 						if(element.isStateMod() && element.state) {
-							if(bypassState && element.hasOwnProperty("canBypassBypass") && !element.canBypassBypass()) {
+							if(bypassState && element.hasOwnProperty("canBypassBypassMod") && !element.canBypassBypassMod()) {
 								return;
 							}
 							if(enabledHacksCounter != 0) {
