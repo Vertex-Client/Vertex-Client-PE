@@ -841,14 +841,14 @@ function screenChangeHook(screenName) {
 				if(!VertexClientPE.menuIsShowing && f5ButtonModeSetting == "pause") {
 					showPauseUtilities();
 				}
-			} else if(currentScreen == ScreenType.pause_screen) {
+			} else {
 				if(screenName != ScreenType.options_screen) {
 					VertexClientPE.isPaused = false;
 				}
 			}
+			currentScreen = screenName;
 		}
 	}));
-	currentScreen = screenName;
 }
 
 /* function keyEvent(par1, par2) {
@@ -914,9 +914,9 @@ ModPE.getFromUrl = function(url, errs){
 * http://github.edroidthedev.com/?repo=ModPEAddon/ModPE/JSON.js
 */
 ModPE.JSON = {
-  parse: function(str){
-	return Function("return " + str)();
-  }
+	parse: function(str){
+		return Function("return " + str)();
+	}
 };
 
 var myServerStatus = {
@@ -928,9 +928,9 @@ var myServerStatus = {
 		return this;
 	},
 	update: function(){
-	  if(this.ip !== null && this.port !== null){
-		this.connect();
-	  }
+		if(this.ip !== null && this.port !== null){
+			this.connect();
+		}
 	},
 	connect: function(){
 		var data = ModPE.getFromUrl("http://serverstatus.ml/info.php?address=" + this.ip + ":" + this.port);
@@ -6042,13 +6042,10 @@ function chatHook(text) {
  */
 
 VertexClientPE.getHighestHelpPageNumber = function() {
-	var i = 0;
-	var page = 1;
-	while(VertexClientPE.commands[i] != null) {
-		i++;
-		while(i > 8*page) {
-			page++;
-		}
+	let length = VertexClientPE.commands.length;
+	let page = 1;
+	while(8 * page < length) {
+		page++;
 	}
 	return page;
 }
@@ -7793,6 +7790,7 @@ VertexClientPE.showFeaturesDialog = function() {
 						} else if(combatEnabled == "on") {
 							combatEnabled = "off";
 						}
+						VertexClientPE.saveFeaturesSettings();
 					}
 				}));
 
@@ -7806,6 +7804,7 @@ VertexClientPE.showFeaturesDialog = function() {
 						} else if(worldEnabled == "on") {
 							worldEnabled = "off";
 						}
+						VertexClientPE.saveFeaturesSettings();
 					}
 				}));
 
@@ -7819,6 +7818,7 @@ VertexClientPE.showFeaturesDialog = function() {
 						} else if(movementEnabled == "on") {
 							movementEnabled = "off";
 						}
+						VertexClientPE.saveFeaturesSettings();
 					}
 				}));
 
@@ -7832,6 +7832,7 @@ VertexClientPE.showFeaturesDialog = function() {
 						} else if(playerEnabled == "on") {
 							playerEnabled = "off";
 						}
+						VertexClientPE.saveFeaturesSettings();
 					}
 				}));
 
@@ -7845,11 +7846,12 @@ VertexClientPE.showFeaturesDialog = function() {
 						} else if(miscEnabled == "on") {
 							miscEnabled = "off";
 						}
+						VertexClientPE.saveFeaturesSettings();
 					}
 				}));
 
 				let singleplayerEnabledSettingButton = clientSwitch();
-				singleplayerEnabledSettingButton.setText("Singleplayer Only Mods");
+				singleplayerEnabledSettingButton.setText("Singleplayer only mods");
 				singleplayerEnabledSettingButton.setChecked(singleplayerEnabled == "on");
 				singleplayerEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
 					onCheckedChanged: function() {
@@ -7858,6 +7860,7 @@ VertexClientPE.showFeaturesDialog = function() {
 						} else if(singleplayerEnabled == "on") {
 							singleplayerEnabled = "off";
 						}
+						VertexClientPE.saveFeaturesSettings();
 					}
 				}));
 
@@ -7878,7 +7881,6 @@ VertexClientPE.showFeaturesDialog = function() {
 					onDismiss: function() {
 						if(lastCombatEnabled != combatEnabled || lastWorldEnabled != worldEnabled || lastMovementEnabled != movementEnabled || lastPlayerEnabled != playerEnabled || lastMiscEnabled != miscEnabled || lastSingleplayerEnabled != singleplayerEnabled) {
 							VertexClientPE.shouldUpdateGUI = true;
-							VertexClientPE.saveFeaturesSettings();
 							VertexClientPE.initMods(true);
 						}
 					}
@@ -13937,7 +13939,7 @@ VertexClientPE.showSetupScreen = function() {
 				}));
 
 				var singleplayerEnabledSettingButton = clientSwitch();
-				singleplayerEnabledSettingButton.setText("Singleplayer Only Mods");
+				singleplayerEnabledSettingButton.setText("Singleplayer only mods");
 				singleplayerEnabledSettingButton.setChecked(singleplayerEnabled == "on");
 				singleplayerEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
 					onCheckedChanged: function() {
@@ -16277,7 +16279,8 @@ function milestonesScreen(fromDashboard) {
 					["100 Twitter followers", "Reached in May 2016."],
 					["50k downloads", "Reached in July 2016."],
 					["300 Twitter followers", "Reached in September 2016."],
-					["100k downloads", "Reached in October 2016."]
+					["100k downloads", "Reached in October 2016."],
+					["150k downloads", "Reached in July 2017."]
 				];
 
 				var scrollView = new android.widget.HorizontalScrollView(CONTEXT),
@@ -16618,6 +16621,7 @@ function optiFineScreen(fromDashboard, title, icon) {
 				var optiFineLayout1 = new LinearLayout_(CONTEXT);
 				optiFineLayout1.setOrientation(1);
 				optiFineLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
+				optiFineLayout1.setPadding(10, 0, 10, 10);
 
 				optiFineLayoutScroll.addView(optiFineLayout);
 				optiFineLayout1.addView(optiFineLayoutScroll);
@@ -17327,39 +17331,39 @@ VertexClientPE.showFullScreenMenu = function() {
 			try {
 				VertexClientPE.checkGUINeedsDismiss();
 
-				var fullScreenMenuLayoutScroll = new android.widget.HorizontalScrollView(CONTEXT);
+				let fullScreenMenuLayoutScroll = new android.widget.HorizontalScrollView(CONTEXT);
 
-				var fullScreenMenuLayout = new LinearLayout_(CONTEXT);
+				let fullScreenMenuLayout = new LinearLayout_(CONTEXT);
 				fullScreenMenuLayout.setOrientation(LinearLayout_.HORIZONTAL);
 				fullScreenMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 
 				fullScreenMenuLayoutScroll.addView(fullScreenMenuLayout);
 
-				var fullScreenMenuLayout1Combat = new LinearLayout_(CONTEXT);
+				let fullScreenMenuLayout1Combat = new LinearLayout_(CONTEXT);
 				fullScreenMenuLayout1Combat.setOrientation(1);
 				fullScreenMenuLayout1Combat.setGravity(Gravity_.CENTER_HORIZONTAL);
-				var fullScreenMenuLayout1World = new LinearLayout_(CONTEXT);
+				let fullScreenMenuLayout1World = new LinearLayout_(CONTEXT);
 				fullScreenMenuLayout1World.setOrientation(1);
 				fullScreenMenuLayout1World.setGravity(Gravity_.CENTER_HORIZONTAL);
-				var fullScreenMenuLayout1Movement = new LinearLayout_(CONTEXT);
+				let fullScreenMenuLayout1Movement = new LinearLayout_(CONTEXT);
 				fullScreenMenuLayout1Movement.setOrientation(1);
 				fullScreenMenuLayout1Movement.setGravity(Gravity_.CENTER_HORIZONTAL);
-				var fullScreenMenuLayout1Player = new LinearLayout_(CONTEXT);
+				let fullScreenMenuLayout1Player = new LinearLayout_(CONTEXT);
 				fullScreenMenuLayout1Player.setOrientation(1);
 				fullScreenMenuLayout1Player.setGravity(Gravity_.CENTER_HORIZONTAL);
-				var fullScreenMenuLayout1Misc = new LinearLayout_(CONTEXT);
+				let fullScreenMenuLayout1Misc = new LinearLayout_(CONTEXT);
 				fullScreenMenuLayout1Misc.setOrientation(1);
 				fullScreenMenuLayout1Misc.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-				var combatSectionTitle = coloredSubTitle(combatName);
+				let combatSectionTitle = coloredSubTitle(combatName);
 				combatSectionTitle.setGravity(Gravity_.CENTER);
-				var worldSectionTitle = coloredSubTitle(worldName);
+				let worldSectionTitle = coloredSubTitle(worldName);
 				worldSectionTitle.setGravity(Gravity_.CENTER);
-				var movementSectionTitle = coloredSubTitle(movementName);
+				let movementSectionTitle = coloredSubTitle(movementName);
 				movementSectionTitle.setGravity(Gravity_.CENTER);
-				var playerSectionTitle = coloredSubTitle(playerName);
+				let playerSectionTitle = coloredSubTitle(playerName);
 				playerSectionTitle.setGravity(Gravity_.CENTER);
-				var miscSectionTitle = coloredSubTitle(miscName);
+				let miscSectionTitle = coloredSubTitle(miscName);
 				miscSectionTitle.setGravity(Gravity_.CENTER);
 
 				fullScreenMenuLayout1Combat.addView(combatSectionTitle);
@@ -17368,21 +17372,21 @@ VertexClientPE.showFullScreenMenu = function() {
 				fullScreenMenuLayout1Player.addView(playerSectionTitle);
 				fullScreenMenuLayout1Misc.addView(miscSectionTitle);
 
-				var fullScreenMenuLayoutScrollCombat = new ScrollView_(CONTEXT);
-				var fullScreenMenuLayoutScrollWorld = new ScrollView_(CONTEXT);
-				var fullScreenMenuLayoutScrollMovement = new ScrollView_(CONTEXT);
-				var fullScreenMenuLayoutScrollPlayer = new ScrollView_(CONTEXT);
-				var fullScreenMenuLayoutScrollMisc = new ScrollView_(CONTEXT);
+				let fullScreenMenuLayoutScrollCombat = new ScrollView_(CONTEXT);
+				let fullScreenMenuLayoutScrollWorld = new ScrollView_(CONTEXT);
+				let fullScreenMenuLayoutScrollMovement = new ScrollView_(CONTEXT);
+				let fullScreenMenuLayoutScrollPlayer = new ScrollView_(CONTEXT);
+				let fullScreenMenuLayoutScrollMisc = new ScrollView_(CONTEXT);
 
-				var fullScreenMenuLayoutCombat = new LinearLayout_(CONTEXT);
+				let fullScreenMenuLayoutCombat = new LinearLayout_(CONTEXT);
 				fullScreenMenuLayoutCombat.setOrientation(1);
-				var fullScreenMenuLayoutWorld = new LinearLayout_(CONTEXT);
+				let fullScreenMenuLayoutWorld = new LinearLayout_(CONTEXT);
 				fullScreenMenuLayoutWorld.setOrientation(1);
-				var fullScreenMenuLayoutMovement = new LinearLayout_(CONTEXT);
+				let fullScreenMenuLayoutMovement = new LinearLayout_(CONTEXT);
 				fullScreenMenuLayoutMovement.setOrientation(1);
-				var fullScreenMenuLayoutPlayer = new LinearLayout_(CONTEXT);
+				let fullScreenMenuLayoutPlayer = new LinearLayout_(CONTEXT);
 				fullScreenMenuLayoutPlayer.setOrientation(1);
-				var fullScreenMenuLayoutMisc = new LinearLayout_(CONTEXT);
+				let fullScreenMenuLayoutMisc = new LinearLayout_(CONTEXT);
 				fullScreenMenuLayoutMisc.setOrientation(1);
 
 				fullScreenMenuLayoutScrollCombat.addView(fullScreenMenuLayoutCombat);
@@ -17474,23 +17478,23 @@ VertexClientPE.showTableMenu = function() {
 		run: function() {
 			try {
 				
-				var dScrollView = new ScrollView_(CONTEXT);
+				let dScrollView = new ScrollView_(CONTEXT);
 				dScrollView.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT));
 
-				var dScrollInside = new LinearLayout_(CONTEXT);
+				let dScrollInside = new LinearLayout_(CONTEXT);
 				dScrollInside.setGravity(Gravity_.CENTER);
 				dScrollInside.setOrientation(1);
 				dScrollView.addView(dScrollInside);
 
-				var mainLayout = new LinearLayout_(CONTEXT);
+				let mainLayout = new LinearLayout_(CONTEXT);
 				mainLayout.setGravity(Gravity_.CENTER);
 				mainLayout.setOrientation(LinearLayout_.VERTICAL);
 
 				mainLayout.addView(dScrollView);
 
-				var tableLayout = new TableLayout_(CONTEXT);
-				var tableRow;
-				var tempButton;
+				let tableLayout = new TableLayout_(CONTEXT);
+				let tableRow;
+				let tempButton;
 
 				let realIndex = -1;
 				VertexClientPE.modules.forEach(function(element, index, array) {
@@ -18976,9 +18980,9 @@ VertexClientPE.stealChestContent = function(x, y, z) {
 	new Handler_()
 		.postDelayed(new Runnable_({
 			run: function() {
-				var itemId = Level.getChestSlot(x, y, z, itemSlot);
-				var itemCount = Level.getChestSlotCount(x, y, z, itemSlot);
-				var itemData = Level.getChestSlotData(x, y, z, itemSlot);
+				let itemId = Level.getChestSlot(x, y, z, itemSlot);
+				let itemCount = Level.getChestSlotCount(x, y, z, itemSlot);
+				let itemData = Level.getChestSlotData(x, y, z, itemSlot);
 				if(itemId != 0 && isChestOpen) {
 					Level.setChestSlot(x, y, z, itemSlot, 0, 0, 0);
 					Player.addItemInventory(itemId, itemCount, itemData);
@@ -18995,19 +18999,19 @@ VertexClientPE.stealChestContent = function(x, y, z) {
 
 VertexClientPE.showChestUI = function(x, y, z) {
 	CONTEXT.runOnUiThread(new Runnable_({
-			run: function() {
-				var chestLayout = new LinearLayout_(CONTEXT);
-				var chestStealButton = clientButton("Steal");
-				chestStealButton.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewArg) {
-						hasPushed = true;
-					}
-				}));
-				chestLayout.addView(chestStealButton);
-				chestUI = new PopupWindow_(chestLayout, dip2px(40), dip2px(40));
-				chestUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-				chestUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-			}
+		run: function() {
+			let chestLayout = new LinearLayout_(CONTEXT);
+			let chestStealButton = clientButton("Steal");
+			chestStealButton.setOnClickListener(new View_.OnClickListener({
+				onClick: function(viewArg) {
+					hasPushed = true;
+				}
+			}));
+			chestLayout.addView(chestStealButton);
+			chestUI = new PopupWindow_(chestLayout, dip2px(40), dip2px(40));
+			chestUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+			chestUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+		}
 	 }));
 }
 
