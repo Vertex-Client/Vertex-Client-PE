@@ -5558,53 +5558,29 @@ var glitchCam = {
 	onTick: function() {
 		this.newYaw = Entity.getYaw(getPlayerEnt());
 		this.newPitch = Entity.getPitch(getPlayerEnt());
-		if(this.oldYaw != null) {
-			let yawDiff;
-			if(this.newYaw > this.oldYaw) {
-				yawDiff = this.newYaw - this.oldYaw;
-				Entity.setRot(getPlayerEnt(), this.newYaw - yawDiff / 2, Entity.getPitch(getPlayerEnt()));
-			}
-			if(this.newYaw < this.oldYaw) {
-				yawDiff = this.oldYaw - this.newYaw;
-				Entity.setRot(getPlayerEnt(), this.oldYaw - yawDiff / 2, Entity.getPitch(getPlayerEnt()));
-			}
-		}
-		if(this.oldPitch != null) {
-			let pitchDiff;
-			if(this.newPitch > this.oldPitch) {
-				pitchDiff = this.newPitch - this.oldPitch;
-				Entity.setRot(getPlayerEnt(), Entity.getYaw(getPlayerEnt()), this.newPitch - pitchDiff / 2);
-			}
-			if(this.newPitch < this.oldPitch) {
-				pitchDiff = this.oldPitch - this.newPitch;
-				Entity.setRot(getPlayerEnt(), Entity.getYaw(getPlayerEnt()), this.oldPitch - pitchDiff / 2);
-			}
-		}
-		this.oldYaw = Entity.getYaw(getPlayerEnt());
-		this.oldPitch = Entity.getPitch(getPlayerEnt());
-		/* this.newYaw = Entity.getYaw(getPlayerEnt());
-		this.newPitch = Entity.getPitch(getPlayerEnt());
-		let realYaw;
-		let realPitch;
+		let realYaw = this.newYaw;
+		let realPitch = this.newPitch;
 		if(this.oldYaw != null) {
 			if(this.newYaw > this.oldYaw) {
-				realYaw = this.newYaw - ((this.newYaw - this.oldYaw) / 2);
+				realYaw = this.newYaw - (this.newYaw - this.oldYaw) / 2;
 			}
 			if(this.newYaw < this.oldYaw) {
-				realYaw = this.oldYaw - ((this.oldYaw - this.newYaw) / 2);
+				realYaw = this.oldYaw - (this.oldYaw - this.newYaw) / 2;
 			}
 		}
 		if(this.oldPitch != null) {
 			if(this.newPitch > this.oldPitch) {
-				realPitch = this.newPitch - ((this.newPitch - this.oldPitch) / 2);
+				realPitch = this.newPitch - (this.newPitch - this.oldPitch) / 2;
 			}
 			if(this.newPitch < this.oldPitch) {
-				realPitch = this.oldPitch - ((this.oldPitch - this.newPitch) / 2);
+				realPitch = this.oldPitch - (this.oldPitch - this.newPitch) / 2;
 			}
+		}
+		if(this.oldYaw != this.newYaw || this.oldPitch != this.newPitch) {
 			Entity.setRot(getPlayerEnt(), realYaw, realPitch);
 		}
 		this.oldYaw = Entity.getYaw(getPlayerEnt());
-		this.oldPitch = Entity.getPitch(getPlayerEnt()); */
+		this.oldPitch = Entity.getPitch(getPlayerEnt());
 	}
 }
 
@@ -12565,32 +12541,33 @@ function settingButton(text, desc, parentWidth, resetFunc) {
 function settingSelector(text, desc, dialogTitle, selectionArray, currentSelection, varToChange, customFirstOnClick) {
 	let parentWidth = display.widthPixels - dip2px(4);
 
-	var settingButtonLayout = new LinearLayout_(CONTEXT);
+	let settingButtonLayout = new LinearLayout_(CONTEXT);
 	settingButtonLayout.setOrientation(LinearLayout_.HORIZONTAL);
 
-	var settingButtonLayoutLeft = new LinearLayout_(CONTEXT);
+	let settingButtonLayoutLeft = new LinearLayout_(CONTEXT);
 	settingButtonLayoutLeft.setOrientation(1);
 	settingButtonLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(parentWidth / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
 	settingButtonLayout.addView(settingButtonLayoutLeft);
 
-	var settingButtonLayoutMiddle = new LinearLayout_(CONTEXT);
+	let settingButtonLayoutMiddle = new LinearLayout_(CONTEXT);
 	settingButtonLayoutMiddle.setOrientation(1);
 	settingButtonLayoutMiddle.setLayoutParams(new ViewGroup_.LayoutParams(parentWidth / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
 	settingButtonLayout.addView(settingButtonLayoutMiddle);
 
-	var settingButtonLayoutRight = new LinearLayout_(CONTEXT);
+	let settingButtonLayoutRight = new LinearLayout_(CONTEXT);
 	settingButtonLayoutRight.setOrientation(1);
 	settingButtonLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(parentWidth / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
 	settingButtonLayout.addView(settingButtonLayoutRight);
 
-	var defaultTitle = clientTextView(text, true);
+	let defaultTitle = clientTextView(text, true);
 	defaultTitle.setLayoutParams(new LinearLayout_.LayoutParams(parentWidth / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
 	defaultTitle.setGravity(Gravity_.CENTER_VERTICAL);
 
 	settingButtonLayoutLeft.addView(defaultTitle);
-	var defaultSettingsButton = clientButton(currentSelection, desc);
+
+	let defaultSettingsButton = clientButton(currentSelection, desc);
 	defaultSettingsButton.setLayoutParams(new LinearLayout_.LayoutParams(parentWidth / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
-	//defaultSettingsButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, android.R.layout.simple_spinner_dropdown_item, 0);
+	//defaultSettingsButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, android.R.layout.view_spinner_item, 0);
 
 	settingButtonLayoutRight.addView(defaultSettingsButton);
 
@@ -13410,17 +13387,17 @@ VertexClientPE.showSplashScreen = function () {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function () {
 			try {
-				var splashScreenLayout = new LinearLayout_(CONTEXT);
+				let splashScreenLayout = new LinearLayout_(CONTEXT);
 				splashScreenLayout.setOrientation(1);
 				splashScreenLayout.setGravity(Gravity_.CENTER);
 				splashScreenLayout.setBackgroundDrawable(backgroundGradient(null, "normal_nostrokes", transparentSplashScreenSetting));
 
-				var logoViewer5 = new ImageView_(CONTEXT);
+				let logoViewer5 = new ImageView_(CONTEXT);
 				logoViewer5.setPadding(0, dip2px(16), 0, dip2px(16));
 				logoViewer5.setImageBitmap(imgLogo);
 				logoViewer5.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 4, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16 + dip2px(32)));
 
-				var splashProg = new android.widget.ProgressBar(CONTEXT);
+				let splashProg = new android.widget.ProgressBar(CONTEXT);
 				splashProg.setIndeterminate(true);
 				splashProg.getIndeterminateDrawable().setColorFilter(getColor("stroke"), android.graphics.PorterDuff.Mode.SRC_IN);
 
@@ -13464,7 +13441,7 @@ VertexClientPE.showStartScreenBar = function(screen) {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
-				var snowEffect = new SnowEffect();
+				let snowEffect = new SnowEffect();
 				if(showSnowInWinterSetting == "on" && (VertexClientPE.Utils.month == java.util.Calendar.DECEMBER || VertexClientPE.Utils.month == java.util.Calendar.JANUARY || (VertexClientPE.Utils.month == java.util.Calendar.FEBRUARY && VertexClientPE.Utils.day <= 28))) {
 					snowEffect.start();
 				}
@@ -13482,19 +13459,19 @@ VertexClientPE.showStartScreenBar = function(screen) {
 					hasShownDialog = true;
 				}
 
-				var mainMenuListLayout = new LinearLayout_(CONTEXT);
+				let mainMenuListLayout = new LinearLayout_(CONTEXT);
 				mainMenuListLayout.setOrientation(LinearLayout_.HORIZONTAL);
 				mainMenuListLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 				mainMenuListLayout.setPadding(dip2px(8),dip2px(8),dip2px(8),dip2px(8));
 
-				var youTubeButton = new Button_(CONTEXT);
+				let youTubeButton = new Button_(CONTEXT);
 				youTubeButton.setBackground(splashYouTubeButtonClientGUI);
 				youTubeButton.setGravity(Gravity_.CENTER);
 				youTubeButton.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(42), dip2px(42)));
 				youTubeButton.setOnTouchListener(new View_.OnTouchListener() {
 					onTouch: function(v, event) {
 						youTubeButton.setSoundEffectsEnabled(false);
-						var action = event.getActionMasked();
+						let action = event.getActionMasked();
 						if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
 							var bNP = splashYouTubeButtonClientGUI;
 							bNP.setFilterBitmap(false);
@@ -13510,21 +13487,21 @@ VertexClientPE.showStartScreenBar = function(screen) {
 					}
 				});
 
-				var twitterButton = new Button_(CONTEXT);
+				let twitterButton = new Button_(CONTEXT);
 				twitterButton.setBackgroundDrawable(splashTwitterButtonClientGUI);
 				twitterButton.setGravity(Gravity_.CENTER);
 				twitterButton.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(42), dip2px(42)));
 				twitterButton.setOnTouchListener(new View_.OnTouchListener() {
 					onTouch: function(v, event) {
 						twitterButton.setSoundEffectsEnabled(false);
-						var action = event.getActionMasked();
+						let action = event.getActionMasked();
 						if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
-							var bNP = splashTwitterButtonClientGUI;
+							let bNP = splashTwitterButtonClientGUI;
 							bNP.setFilterBitmap(false);
 							bNP.setAntiAlias(false);
 							twitterButton.setBackgroundDrawable(bNP);
 						} else {
-							var bNP = splashTwitterButtonClickedClientGUI;
+							let bNP = splashTwitterButtonClickedClientGUI;
 							bNP.setFilterBitmap(false);
 							bNP.setAntiAlias(false);
 							twitterButton.setBackgroundDrawable(bNP);
@@ -13533,21 +13510,21 @@ VertexClientPE.showStartScreenBar = function(screen) {
 					}
 				});
 
-				var gitHubButton = new Button_(CONTEXT);
+				let gitHubButton = new Button_(CONTEXT);
 				gitHubButton.setBackgroundDrawable(splashGitHubButtonClientGUI);
 				gitHubButton.setGravity(Gravity_.CENTER);
 				gitHubButton.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(42), dip2px(42)));
 				gitHubButton.setOnTouchListener(new View_.OnTouchListener() {
 					onTouch: function(v, event) {
 						gitHubButton.setSoundEffectsEnabled(false);
-						var action = event.getActionMasked();
+						let action = event.getActionMasked();
 						if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
-							var bNP = splashGitHubButtonClientGUI;
+							let bNP = splashGitHubButtonClientGUI;
 							bNP.setFilterBitmap(false);
 							bNP.setAntiAlias(false);
 							gitHubButton.setBackgroundDrawable(bNP);
 						} else {
-							var bNP = splashGitHubButtonClickedClientGUI;
+							let bNP = splashGitHubButtonClickedClientGUI;
 							bNP.setFilterBitmap(false);
 							bNP.setAntiAlias(false);
 							gitHubButton.setBackgroundDrawable(bNP);
@@ -13628,45 +13605,45 @@ VertexClientPE.showSetupScreen = function() {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
-				var setupScreenLayout = new LinearLayout_(CONTEXT);
+				let setupScreenLayout = new LinearLayout_(CONTEXT);
 				setupScreenLayout.setOrientation(1);
 				setupScreenLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-				var setupScreenLayoutBottom = new LinearLayout_(CONTEXT);
+				let setupScreenLayoutBottom = new LinearLayout_(CONTEXT);
 				setupScreenLayoutBottom.setOrientation(LinearLayout_.HORIZONTAL);
 
-				var setupScreenLayoutBottomLeft = new LinearLayout_(CONTEXT);
+				let setupScreenLayoutBottomLeft = new LinearLayout_(CONTEXT);
 				setupScreenLayoutBottomLeft.setOrientation(1);
 				setupScreenLayoutBottomLeft.setGravity(Gravity_.CENTER_HORIZONTAL);
 				setupScreenLayoutBottomLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 4, LinearLayout_.LayoutParams.WRAP_CONTENT));
 
-				var setupScreenLayoutBottomCenter = new LinearLayout_(CONTEXT);
+				let setupScreenLayoutBottomCenter = new LinearLayout_(CONTEXT);
 				setupScreenLayoutBottomCenter.setOrientation(1);
 				setupScreenLayoutBottomCenter.setGravity(Gravity_.CENTER_HORIZONTAL);
 				setupScreenLayoutBottomCenter.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 4, LinearLayout_.LayoutParams.WRAP_CONTENT));
 
-				var setupScreenLayoutBottomCenter1 = new LinearLayout_(CONTEXT);
+				let setupScreenLayoutBottomCenter1 = new LinearLayout_(CONTEXT);
 				setupScreenLayoutBottomCenter1.setOrientation(1);
 				setupScreenLayoutBottomCenter1.setGravity(Gravity_.CENTER_HORIZONTAL);
 				setupScreenLayoutBottomCenter1.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 4, LinearLayout_.LayoutParams.WRAP_CONTENT));
 
-				var setupScreenLayoutBottomRight = new LinearLayout_(CONTEXT);
+				let setupScreenLayoutBottomRight = new LinearLayout_(CONTEXT);
 				setupScreenLayoutBottomRight.setOrientation(1);
 				setupScreenLayoutBottomRight.setGravity(Gravity_.CENTER_HORIZONTAL);
 				setupScreenLayoutBottomRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 4, LinearLayout_.LayoutParams.WRAP_CONTENT));
 
-				var logoViewer3 = new ImageView_(CONTEXT);
+				let logoViewer3 = new ImageView_(CONTEXT);
 				logoViewer3.setPadding(0, dip2px(16), 0, dip2px(16));
 				logoViewer3.setImageBitmap(imgLogo);
 				logoViewer3.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 4, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16 + dip2px(32)));
 				setupScreenLayout.addView(logoViewer3);
 
-				var setupStepRow = new LinearLayout_(CONTEXT);
+				let setupStepRow = new LinearLayout_(CONTEXT);
 				setupStepRow.setOrientation(LinearLayout_.HORIZONTAL);
 				setupStepRow.setGravity(Gravity_.CENTER);
 				setupScreenLayout.addView(setupStepRow);
 
-				var step1Button = new Button_(CONTEXT);
+				let step1Button = new Button_(CONTEXT);
 				step1Button.setBackgroundDrawable(drawCircle(Color_.parseColor("#80ffffff")));
 				step1Button.setText("1");
 				step1Button.setTextColor(Color_.parseColor("#0080FF"));
@@ -13694,7 +13671,7 @@ VertexClientPE.showSetupScreen = function() {
 						}
 					}
 				});
-				var step2Button = new Button_(CONTEXT);
+				let step2Button = new Button_(CONTEXT);
 				step2Button.setBackgroundDrawable(drawCircle(Color_.parseColor("#80ffffff")));
 				step2Button.setText("2");
 				step2Button.setTextColor(Color_.WHITE);
@@ -13726,7 +13703,7 @@ VertexClientPE.showSetupScreen = function() {
 						}
 					}
 				});
-				var step3Button = new Button_(CONTEXT);
+				let step3Button = new Button_(CONTEXT);
 				step3Button.setBackgroundDrawable(drawCircle(Color_.parseColor("#80ffffff")));
 				step3Button.setText("3");
 				step3Button.setTextColor(Color_.WHITE);
@@ -13760,7 +13737,7 @@ VertexClientPE.showSetupScreen = function() {
 						}
 					}
 				});
-				var step4Button = new Button_(CONTEXT);
+				let step4Button = new Button_(CONTEXT);
 				step4Button.setBackgroundDrawable(drawCircle(Color_.parseColor("#80ffffff")));
 				step4Button.setText("4");
 				step4Button.setTextColor(Color_.WHITE);
@@ -13804,13 +13781,13 @@ VertexClientPE.showSetupScreen = function() {
 					}
 				});
 
-				var space1 = new TextView_(CONTEXT);
+				let space1 = new TextView_(CONTEXT);
 				space1.setBackgroundDrawable(new ColorDrawable_(Color_.WHITE));
 
-				var space2 = new TextView_(CONTEXT);
+				let space2 = new TextView_(CONTEXT);
 				space2.setBackgroundDrawable(new ColorDrawable_(Color_.WHITE));
 
-				var space3 = new TextView_(CONTEXT);
+				let space3 = new TextView_(CONTEXT);
 				space3.setBackgroundDrawable(new ColorDrawable_(Color_.WHITE));
 
 				setupStepRow.addView(step1Button);
@@ -13821,14 +13798,14 @@ VertexClientPE.showSetupScreen = function() {
 				setupStepRow.addView(space3, dip2px(8), dip2px(1));
 				setupStepRow.addView(step4Button);
 
-				var setupTextView = clientTextView("");
+				let setupTextView = clientTextView("");
 				setupTextView.setGravity(Gravity_.CENTER);
 				setupScreenLayout.addView(setupTextView);
 
-				var setupStep1Text = "Thanks for choosing Vertex Client PE!\nGo to the next step to choose your favourite color. :)";
-				var setupStep2Text = "You can always change the color on the settings screen.\nEven more colors are available there.";
-				var setupStep3Text = "Now you can optimize your experience by choosing the mod categories you want to use. You'll be able to change this on the settings screen anytime.";
-				var setupStep4Text = "That's it! Your experience begins here.\nHere's some additional help to get started:\n- You can open the Dashboard and some other features from the 'More' dialog,\nwhich can be opened by long tapping the menu button.\n- More help is available on the Help screen which is also accessible from the Dashboard.";
+				let setupStep1Text = "Thanks for choosing Vertex Client PE!\nGo to the next step to choose your favourite color. :)";
+				let setupStep2Text = "You can always change the color on the settings screen.\nEven more colors are available there.";
+				let setupStep3Text = "Now you can optimize your experience by choosing the mod categories you want to use. You'll be able to change this on the settings screen anytime.";
+				let setupStep4Text = "That's it! Your experience begins here.\nHere's some additional help to get started:\n- You can open the Dashboard and some other features from the 'More' dialog,\nwhich can be opened by long tapping the menu button.\n- More help is available on the Help screen which is also accessible from the Dashboard.";
 
 				setupTextView.setText(setupStep1Text);
 
@@ -13839,7 +13816,7 @@ VertexClientPE.showSetupScreen = function() {
 
 				setupScreenLayout.addView(setupScreenLayoutBottom);
 
-				var setupButtonGreen = clientButton("Green", null, "green");
+				let setupButtonGreen = clientButton("Green", null, "green");
 				setupButtonGreen.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
 				setupButtonGreen.setTextColor(Color_.GREEN);
 				setupButtonGreen.setOnClickListener(new View_.OnClickListener({
@@ -13852,7 +13829,7 @@ VertexClientPE.showSetupScreen = function() {
 					}
 				}));
 
-				var setupButtonRed = clientButton("Red", null, "red");
+				let setupButtonRed = clientButton("Red", null, "red");
 				setupButtonRed.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
 				setupButtonRed.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
@@ -13864,7 +13841,7 @@ VertexClientPE.showSetupScreen = function() {
 					}
 				}));
 
-				var setupButtonBlue = clientButton("Blue", null, "blue");
+				let setupButtonBlue = clientButton("Blue", null, "blue");
 				setupButtonBlue.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
 				setupButtonBlue.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
@@ -13876,7 +13853,7 @@ VertexClientPE.showSetupScreen = function() {
 					}
 				}));
 
-				var setupButtonPurple = clientButton("Purple", null, "purple");
+				let setupButtonPurple = clientButton("Purple", null, "purple");
 				setupButtonPurple.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
 				setupButtonPurple.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
@@ -13888,7 +13865,7 @@ VertexClientPE.showSetupScreen = function() {
 					}
 				}));
 
-				var combatEnabledSettingButton = clientSwitch();
+				let combatEnabledSettingButton = clientSwitch();
 				combatEnabledSettingButton.setText("Combat");
 				combatEnabledSettingButton.setChecked(combatEnabled == "on");
 				combatEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
@@ -13902,7 +13879,7 @@ VertexClientPE.showSetupScreen = function() {
 					}
 				}));
 
-				var worldEnabledSettingButton = clientSwitch();
+				let worldEnabledSettingButton = clientSwitch();
 				worldEnabledSettingButton.setText("World");
 				worldEnabledSettingButton.setChecked(worldEnabled == "on");
 				worldEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
@@ -13916,7 +13893,7 @@ VertexClientPE.showSetupScreen = function() {
 					}
 				}));
 
-				var movementEnabledSettingButton = clientSwitch();
+				let movementEnabledSettingButton = clientSwitch();
 				movementEnabledSettingButton.setText("Movement");
 				movementEnabledSettingButton.setChecked(movementEnabled == "on");
 				movementEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
@@ -13930,7 +13907,7 @@ VertexClientPE.showSetupScreen = function() {
 					}
 				}));
 
-				var playerEnabledSettingButton = clientSwitch();
+				let playerEnabledSettingButton = clientSwitch();
 				playerEnabledSettingButton.setText("Player");
 				playerEnabledSettingButton.setChecked(playerEnabled == "on");
 				playerEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
@@ -13944,7 +13921,7 @@ VertexClientPE.showSetupScreen = function() {
 					}
 				}));
 
-				var miscEnabledSettingButton = clientSwitch();
+				let miscEnabledSettingButton = clientSwitch();
 				miscEnabledSettingButton.setText("Misc");
 				miscEnabledSettingButton.setChecked(miscEnabled == "on");
 				miscEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
@@ -13958,7 +13935,7 @@ VertexClientPE.showSetupScreen = function() {
 					}
 				}));
 
-				var singleplayerEnabledSettingButton = clientSwitch();
+				let singleplayerEnabledSettingButton = clientSwitch();
 				singleplayerEnabledSettingButton.setText("Singleplayer only mods");
 				singleplayerEnabledSettingButton.setChecked(singleplayerEnabled == "on");
 				singleplayerEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
@@ -13972,8 +13949,8 @@ VertexClientPE.showSetupScreen = function() {
 					}
 				}));
 
-				var doneLayout = new LinearLayout_(CONTEXT);
-				var doneButton = new Button_(CONTEXT);
+				let doneLayout = new LinearLayout_(CONTEXT);
+				let doneButton = new Button_(CONTEXT);
 				doneButton.setBackgroundDrawable(drawQuarterCircle(Color_.parseColor("#80ffffff"), dip2px(60)));
 				doneButton.setGravity(Gravity_.RIGHT | Gravity_.TOP);
 				doneButton.setPadding(0, dip2px(8), dip2px(8), 0);
@@ -13994,7 +13971,7 @@ VertexClientPE.showSetupScreen = function() {
 				//set animation after being shown, because the animation is for when it dismisses.
 				//screenUI.setAnimationStyle(android.R.style.Animation_Dialog);
 
-				var logoAnim = new android.view.animation.AlphaAnimation(0, 1);
+				let logoAnim = new android.view.animation.AlphaAnimation(0, 1);
 				logoAnim.setInterpolator(new android.view.animation.LinearInterpolator());
 				logoAnim.setRepeatCount(android.view.animation.Animation.INFINITE);
 				logoAnim.setRepeatMode(android.view.animation.Animation.REVERSE);
@@ -14002,7 +13979,7 @@ VertexClientPE.showSetupScreen = function() {
 
 				logoViewer3.startAnimation(logoAnim);
 
-				var textAnim = new android.view.animation.AlphaAnimation(0, 1);
+				let textAnim = new android.view.animation.AlphaAnimation(0, 1);
 				textAnim.setInterpolator(new android.view.animation.LinearInterpolator());
 				textAnim.setRepeatCount(android.view.animation.Animation.INFINITE);
 				textAnim.setDuration(1500);
@@ -14031,13 +14008,13 @@ VertexClientPE.showSetupScreen = function() {
 	}));
 }
 
-var accountManagerLayoutLeft;
-var accountManagerLayoutCenter;
-var accountManagerLayoutRight;
+let accountManagerLayoutLeft;
+let accountManagerLayoutCenter;
+let accountManagerLayoutRight;
 
 ModPE.restart = function () {
 	try {
-		var alarmManager = CONTEXT.getSystemService("alarm"),
+		let alarmManager = CONTEXT.getSystemService("alarm"),
 			intent = CONTEXT.getPackageManager().getLaunchIntentForPackage(CONTEXT.getPackageName());
 		intent.addFlags(335544320);
 		alarmManager.set(3, SystemClock_.elapsedRealtime() + 500, PendingIntent_.getActivity(CONTEXT, 0, intent, 0));
@@ -14056,8 +14033,8 @@ ModPE.restart = function () {
 
 VertexClientPE.removeAccount = function(str, layout, view) {
 	if(VertexClientPE.accounts.length() != null) {
-		var tempAccounts = new JSONArray_();
-		for(var i = 0; i < VertexClientPE.accounts.length(); i++) {
+		let tempAccounts = new JSONArray_();
+		for(let i = 0; i < VertexClientPE.accounts.length(); i++) {
 			if(VertexClientPE.accounts.get(i) != str) {
 				tempAccounts.put(VertexClientPE.accounts.get(i));
 			}
@@ -14076,8 +14053,8 @@ VertexClientPE.removeAccount = function(str, layout, view) {
 
 VertexClientPE.removeFriend = function(str, layout, view) {
 	if(VertexClientPE.friends.length() != null) {
-		var tempAccounts = new JSONArray_();
-		for(var i = 0; i < VertexClientPE.friends.length(); i++) {
+		let tempAccounts = new JSONArray_();
+		for(let i = 0; i < VertexClientPE.friends.length(); i++) {
 			if(VertexClientPE.friends.get(i) != str) {
 				tempAccounts.put(VertexClientPE.friends.get(i));
 			}
@@ -14098,15 +14075,15 @@ VertexClientPE.showDirectUseAccountDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				var accountTitle = clientTextView("Direct use account", true);
-				var accountNameInput = clientEditText();
+				let accountTitle = clientTextView("Direct use account", true);
+				let accountNameInput = clientEditText();
 				accountNameInput.setSingleLine(true);
 				accountNameInput.setHint("Enter an username");
-				var accountClientIdInput = clientEditText();
+				let accountClientIdInput = clientEditText();
 				accountClientIdInput.setHint("Enter a client id (leave blank for random)");
-				var okButton = clientButton("Ok");
-				var cancelButton = clientButton("Cancel");
-				var dialogLayout = new LinearLayout_(CONTEXT);
+				let okButton = clientButton("Ok");
+				let cancelButton = clientButton("Cancel");
+				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
 				dialogLayout.setPadding(10, 10, 10, 10);
@@ -14115,7 +14092,7 @@ VertexClientPE.showDirectUseAccountDialog = function() {
 				dialogLayout.addView(accountClientIdInput);
 				dialogLayout.addView(okButton);
 				dialogLayout.addView(cancelButton);
-				var dialog = new Dialog_(CONTEXT);
+				let dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
@@ -14123,8 +14100,8 @@ VertexClientPE.showDirectUseAccountDialog = function() {
 				dialog.show();
 				okButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
-						var accountName = accountNameInput.getText().toString();
-						var clientId = accountClientIdInput.getText().toString();
+						let accountName = accountNameInput.getText().toString();
+						let clientId = accountClientIdInput.getText().toString();
 						if(accountName == null || accountName == "" || accountName.replaceAll(" ", "") == "") {
 							VertexClientPE.toast("Enter an username!");
 							return;
@@ -14132,7 +14109,7 @@ VertexClientPE.showDirectUseAccountDialog = function() {
 						if(clientId == null || clientId == "" || clientId.replaceAll(" ", "") == "") {
 							clientId = getRandomInt(100, 999999999).toString();
 						}
-						var shouldRestart = false;
+						let shouldRestart = false;
 						if(accountName != ModPE.getPlayerName()) {
 							ModPE.setPlayerName(accountName);
 							shouldRestart = true;
@@ -14180,21 +14157,21 @@ VertexClientPE.showAccountManager = function(showBackButton, title) {
 					}
 				}
 
-				var accountManagerLayout1 = new LinearLayout_(CONTEXT);
+				let accountManagerLayout1 = new LinearLayout_(CONTEXT);
 				accountManagerLayout1.setOrientation(1);
 				accountManagerLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-				var accountManagerEnter = clientTextView("\n");
+				let accountManagerEnter = clientTextView("\n");
 				accountManagerLayout1.addView(accountManagerEnter);
 
-				var accountManagerScrollViewHeight = (display.heightPixels / 3) * 2;
+				let accountManagerScrollViewHeight = (display.heightPixels / 3) * 2;
 
-				var accountManagerBottomLayout = new LinearLayout_(CONTEXT);
+				let accountManagerBottomLayout = new LinearLayout_(CONTEXT);
 				accountManagerBottomLayout.setOrientation(LinearLayout_.HORIZONTAL);
 				accountManagerBottomLayout.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels, display.heightPixels - accountManagerScrollViewHeight - barLayoutHeight / 2 - accountManagerEnter.getLineHeight() / 2));
 				accountManagerBottomLayout.setGravity(Gravity_.CENTER);
 
-				var addAccountButton = clientButton("Add account");
+				let addAccountButton = clientButton("Add account");
 				addAccountButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
 				addAccountButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
@@ -14204,7 +14181,7 @@ VertexClientPE.showAccountManager = function(showBackButton, title) {
 				}));
 				accountManagerBottomLayout.addView(addAccountButton);
 
-				var directUseAccountButton = clientButton("Direct use");
+				let directUseAccountButton = clientButton("Direct use");
 				directUseAccountButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
 				directUseAccountButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
@@ -14213,7 +14190,7 @@ VertexClientPE.showAccountManager = function(showBackButton, title) {
 				}));
 				accountManagerBottomLayout.addView(directUseAccountButton);
 
-				var importAccountButton = clientButton("Import");
+				let importAccountButton = clientButton("Import");
 				importAccountButton.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.WRAP_CONTENT, display.heightPixels / 10));
 				importAccountButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
@@ -14222,10 +14199,10 @@ VertexClientPE.showAccountManager = function(showBackButton, title) {
 				}));
 				//accountManagerBottomLayout.addView(importAccountButton);
 
-				var accountManagerScrollView = new ScrollView_(CONTEXT);
+				let accountManagerScrollView = new ScrollView_(CONTEXT);
 				accountManagerScrollView.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels, accountManagerScrollViewHeight - barLayoutHeight / 2 - accountManagerEnter.getLineHeight() / 2));
 
-				var accountManagerLayout = new LinearLayout_(CONTEXT);
+				let accountManagerLayout = new LinearLayout_(CONTEXT);
 				accountManagerLayout.setOrientation(1);
 
 				accountManagerScrollView.addView(accountManagerLayout);
@@ -14275,21 +14252,21 @@ VertexClientPE.showFriendManager = function(showBackButton, title, icon) {
 					}
 				}
 
-				var friendManagerLayout1 = new LinearLayout_(CONTEXT);
+				let friendManagerLayout1 = new LinearLayout_(CONTEXT);
 				friendManagerLayout1.setOrientation(1);
 				friendManagerLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-				var friendManagerEnter = clientTextView("\n");
+				let friendManagerEnter = clientTextView("\n");
 				friendManagerLayout1.addView(friendManagerEnter);
 
-				var friendManagerScrollViewHeight = (display.heightPixels / 3) * 2;
+				let friendManagerScrollViewHeight = (display.heightPixels / 3) * 2;
 
-				var friendManagerBottomLayout = new LinearLayout_(CONTEXT);
+				let friendManagerBottomLayout = new LinearLayout_(CONTEXT);
 				friendManagerBottomLayout.setOrientation(LinearLayout_.HORIZONTAL);
 				friendManagerBottomLayout.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels, display.heightPixels - friendManagerScrollViewHeight - barLayoutHeight / 2 - friendManagerEnter.getLineHeight() / 2));
 				friendManagerBottomLayout.setGravity(Gravity_.CENTER);
 
-				var addFriendButton = clientButton("Add friend");
+				let addFriendButton = clientButton("Add friend");
 				addFriendButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
 				addFriendButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
@@ -14299,20 +14276,20 @@ VertexClientPE.showFriendManager = function(showBackButton, title, icon) {
 				}));
 				friendManagerBottomLayout.addView(addFriendButton);
 
-				var friendManagerScrollView = new ScrollView_(CONTEXT);
+				let friendManagerScrollView = new ScrollView_(CONTEXT);
 				friendManagerScrollView.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels, friendManagerScrollViewHeight - barLayoutHeight / 2 - friendManagerEnter.getLineHeight() / 2));
 
-				var friendManagerLayout = new LinearLayout_(CONTEXT);
+				let friendManagerLayout = new LinearLayout_(CONTEXT);
 				friendManagerLayout.setOrientation(1);
 
 				friendManagerScrollView.addView(friendManagerLayout);
 				friendManagerLayout1.addView(friendManagerScrollView);
 				friendManagerLayout1.addView(friendManagerBottomLayout);
 
-				var friendsLength = VertexClientPE.friends.length();
+				let friendsLength = VertexClientPE.friends.length();
 				if(VertexClientPE.friends != null && friendsLength != -1) {
-					for(var i = 0; i < friendsLength; i++) {
-						var friendLayout = friendButton(VertexClientPE.friends.get(i), friendManagerLayout);
+					for(let i = 0; i < friendsLength; i++) {
+						let friendLayout = friendButton(VertexClientPE.friends.get(i), friendManagerLayout);
 						friendManagerLayout.addView(friendLayout);
 					}
 				}
@@ -16204,14 +16181,14 @@ function feedbackScreen(fromDashboard) {
 
 				VertexClientPE.checkGUINeedsDismiss();
 
-				var feedbackMenuLayout = new LinearLayout_(CONTEXT);
+				let feedbackMenuLayout = new LinearLayout_(CONTEXT);
 				feedbackMenuLayout.setOrientation(1);
 				feedbackMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-				var feedbackWebView = new WebView_(CONTEXT);
-				var wS = feedbackWebView.getSettings();
+				let feedbackWebView = new WebView_(CONTEXT);
+				let wS = feedbackWebView.getSettings();
 
-				var frameForm = "<html><body><center><iframe src='https://docs.google.com/forms/d/e/1FAIpQLSeMITAXYXh895mqS4gS4AGru0CZjCeYg1B1ClJClyKTAHEYVg/viewform?embedded=true' width='100%' height='800' frameborder='0' marginheight='0' marginwidth='0'>Loading...</iframe></center></body></html>";
+				let frameForm = "<html><body><center><iframe src='https://docs.google.com/forms/d/e/1FAIpQLSeMITAXYXh895mqS4gS4AGru0CZjCeYg1B1ClJClyKTAHEYVg/viewform?embedded=true' width='100%' height='800' frameborder='0' marginheight='0' marginwidth='0'>Loading...</iframe></center></body></html>";
 
 				wS.setJavaScriptEnabled(true);
 				feedbackWebView.setWebChromeClient(new WebChromeClient_());
@@ -16243,17 +16220,17 @@ function addonScreen(fromDashboard) {
 			try {
 				VertexClientPE.checkGUINeedsDismiss();
 
-				var addonMenuLayout = new LinearLayout_(CONTEXT);
+				let addonMenuLayout = new LinearLayout_(CONTEXT);
 				addonMenuLayout.setOrientation(1);
 				addonMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-				var addonMenuLayoutScroll = new ScrollView_(CONTEXT);
+				let addonMenuLayoutScroll = new ScrollView_(CONTEXT);
 
-				var addonMenuLayout1 = new LinearLayout_(CONTEXT);
+				let addonMenuLayout1 = new LinearLayout_(CONTEXT);
 				addonMenuLayout1.setOrientation(1);
 				addonMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-				var addonDownloadTextView = clientTextView("Download addons");
+				let addonDownloadTextView = clientTextView("Download addons");
 				addonDownloadTextView.setGravity(Gravity_.CENTER);
 				addonDownloadTextView.setPaintFlags(addonDownloadTextView.getPaintFlags() | Paint_.UNDERLINE_TEXT_FLAG);
 				addonDownloadTextView.setOnClickListener(new View_.OnClickListener() {
@@ -16268,7 +16245,7 @@ function addonScreen(fromDashboard) {
 				addonMenuLayout1.addView(addonMenuLayoutScroll);
 
 				if(VertexClientPE.addons.length == 0) {
-					var noAddonsText = clientTextView("You either don't have any addons or you should restart to load them!");
+					let noAddonsText = clientTextView("You either don't have any addons or you should restart to load them!");
 					noAddonsText.setGravity(Gravity_.CENTER);
 					addonMenuLayout.addView(noAddonsText);
 				}
@@ -16294,7 +16271,7 @@ function milestonesScreen(fromDashboard) {
 			try {
 				VertexClientPE.checkGUINeedsDismiss();
 
-				var milestones = [
+				let milestones = [
 					["Release of v1.0 Alpha", "Released on 24th January 2016."],
 					["100 Twitter followers", "Reached in May 2016."],
 					["50k downloads", "Reached in July 2016."],
@@ -16303,7 +16280,7 @@ function milestonesScreen(fromDashboard) {
 					["150k downloads", "Reached in July 2017."]
 				];
 
-				var scrollView = new android.widget.HorizontalScrollView(CONTEXT),
+				let scrollView = new android.widget.HorizontalScrollView(CONTEXT),
 					layout = new LinearLayout_(CONTEXT),
 					frameLayout = new FrameLayout_(CONTEXT),
 					backgroundParams = new LinearLayout_.LayoutParams(-1, dip2px(2)),
@@ -16324,7 +16301,7 @@ function milestonesScreen(fromDashboard) {
 
 				foregroundLayout.setGravity(Gravity_.CENTER | Gravity_.LEFT);
 
-				for (var i = 0, len = milestones.length; i < len; i++) {
+				for (let i = 0, len = milestones.length; i < len; i++) {
 					circleSize = i === (len - 1) ? dip2px(48) : dip2px(32);
 					foregroundParams = new LinearLayout_.LayoutParams(dip2px(circleSize), dip2px(circleSize));
 					foregroundParams.setMargins(i === 0 ? 0 : dip2px(32), 0, 0, 0);
@@ -16345,7 +16322,7 @@ function milestonesScreen(fromDashboard) {
 
 					circleButton.setOnClickListener(new View_.OnClickListener({
 						onClick(v) {
-							var id = v.getId();
+							let id = v.getId();
 							VertexClientPE.showBasicDialog(milestones[id][0], clientTextView(milestones[id][1]));
 						}
 					}));
@@ -16397,7 +16374,7 @@ function christmasScreen(fromDashboard) {
 			try {
 				VertexClientPE.checkGUINeedsDismiss();
 
-				var scrollView = new android.widget.HorizontalScrollView(CONTEXT),
+				let scrollView = new android.widget.HorizontalScrollView(CONTEXT),
 					layout = new LinearLayout_(CONTEXT),
 					frameLayout = new FrameLayout_(CONTEXT),
 					backgroundParams = new LinearLayout_.LayoutParams(-1, dip2px(2)),
@@ -16502,53 +16479,53 @@ function playerCustomizerScreen(fromDashboard, title, icon) {
 			try {
 				VertexClientPE.checkGUINeedsDismiss();
 
-				var playerCustomizerLayout1 = new LinearLayout_(CONTEXT);
+				let playerCustomizerLayout1 = new LinearLayout_(CONTEXT);
 				playerCustomizerLayout1.setOrientation(1);
 				playerCustomizerLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-				var playerCustomizerLayout = new LinearLayout_(CONTEXT);
+				let playerCustomizerLayout = new LinearLayout_(CONTEXT);
 				playerCustomizerLayout.setOrientation(LinearLayout_.HORIZONTAL);
 				playerCustomizerLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-				var playerCustomizerLayoutLeft = new LinearLayout_(CONTEXT);
+				let playerCustomizerLayoutLeft = new LinearLayout_(CONTEXT);
 				playerCustomizerLayoutLeft.setOrientation(1);
 				playerCustomizerLayoutLeft.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-				var playerCustomizerLayoutLeftScroll = new ScrollView_(CONTEXT);
+				let playerCustomizerLayoutLeftScroll = new ScrollView_(CONTEXT);
 
-				var playerCustomizerLayoutLeft1 = new LinearLayout_(CONTEXT);
+				let playerCustomizerLayoutLeft1 = new LinearLayout_(CONTEXT);
 				playerCustomizerLayoutLeft1.setOrientation(1);
 				playerCustomizerLayoutLeft1.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2, display.heightPixels / 2 - barLayoutHeight / 2));
 
-				var playerCustomizerLayoutRight = new LinearLayout_(CONTEXT);
+				let playerCustomizerLayoutRight = new LinearLayout_(CONTEXT);
 				playerCustomizerLayoutRight.setOrientation(1);
 				playerCustomizerLayoutRight.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-				var playerCustomizerLayoutRightScroll = new ScrollView_(CONTEXT);
+				let playerCustomizerLayoutRightScroll = new ScrollView_(CONTEXT);
 
-				var playerCustomizerLayoutRight1 = new LinearLayout_(CONTEXT);
+				let playerCustomizerLayoutRight1 = new LinearLayout_(CONTEXT);
 				playerCustomizerLayoutRight1.setOrientation(1);
 				playerCustomizerLayoutRight1.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2, display.heightPixels / 2 - barLayoutHeight / 2));
 
-				var playerCustomizerLayoutBottom = new LinearLayout_(CONTEXT);
+				let playerCustomizerLayoutBottom = new LinearLayout_(CONTEXT);
 				playerCustomizerLayoutBottom.setOrientation(1);
 				playerCustomizerLayoutBottom.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-				var playerCustomizerLayoutBottomScroll = new ScrollView_(CONTEXT);
+				let playerCustomizerLayoutBottomScroll = new ScrollView_(CONTEXT);
 
-				var playerCustomizerLayoutBottom1 = new LinearLayout_(CONTEXT);
+				let playerCustomizerLayoutBottom1 = new LinearLayout_(CONTEXT);
 				playerCustomizerLayoutBottom1.setOrientation(1);
 				playerCustomizerLayoutBottom1.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels, display.heightPixels / 2 - barLayoutHeight / 2));
 
-				var playerCustomizerLeftTitle = clientTextView("Morphing", true);
+				let playerCustomizerLeftTitle = clientTextView("Morphing", true);
 				playerCustomizerLeftTitle.setGravity(Gravity_.CENTER);
 				playerCustomizerLeftTitle.setBackgroundDrawable(backgroundSpecial(null, themeSetting));
 
-				var playerCustomizerRightTitle = clientTextView("Trails", true);
+				let playerCustomizerRightTitle = clientTextView("Trails", true);
 				playerCustomizerRightTitle.setGravity(Gravity_.CENTER);
 				playerCustomizerRightTitle.setBackgroundDrawable(backgroundSpecial(null, themeSetting));
 
-				var playerCustomizerBottomTitle = clientTextView("Options", true);
+				let playerCustomizerBottomTitle = clientTextView("Options", true);
 				playerCustomizerBottomTitle.setGravity(Gravity_.CENTER);
 				playerCustomizerBottomTitle.setBackgroundDrawable(backgroundSpecial(null, themeSetting));
 
@@ -16564,7 +16541,7 @@ function playerCustomizerScreen(fromDashboard, title, icon) {
 				playerCustomizerLayoutBottom1.addView(playerCustomizerBottomTitle);
 				playerCustomizerLayoutBottom1.addView(playerCustomizerLayoutBottomScroll);
 
-				var killToMorphSettingButton = clientSwitch();
+				let killToMorphSettingButton = clientSwitch();
 				killToMorphSettingButton.setText("Automatically morph when killing entities");
 				killToMorphSettingButton.setChecked(killToMorphSetting == "on");
 				killToMorphSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
@@ -16586,7 +16563,7 @@ function playerCustomizerScreen(fromDashboard, title, icon) {
 				playerCustomizerLayout1.addView(playerCustomizerLayoutBottom1);
 
 				renderTypes.forEach(function(element, index, array) {
-					var rTButton = clientButton(Entity.renderTypeToName(element));
+					let rTButton = clientButton(Entity.renderTypeToName(element));
 					if(element == Entity.getRenderType(getPlayerEnt())) {
 						rTButton.setTextColor(Color_.GREEN);
 					}
@@ -16601,7 +16578,7 @@ function playerCustomizerScreen(fromDashboard, title, icon) {
 				});
 
 				trailsModes.forEach(function(element, index, array) {
-					var trailButton = clientButton(element[1]);
+					let trailButton = clientButton(element[1]);
 					if(element[0] == VertexClientPE.trailsMode) {
 						trailButton.setTextColor(Color_.GREEN);
 					}
@@ -16632,13 +16609,13 @@ function optiFineScreen(fromDashboard, title, icon) {
 			try {
 				VertexClientPE.checkGUINeedsDismiss();
 
-				var optiFineLayout = new LinearLayout_(CONTEXT);
+				let optiFineLayout = new LinearLayout_(CONTEXT);
 				optiFineLayout.setOrientation(1);
 				optiFineLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-				var optiFineLayoutScroll = new ScrollView_(CONTEXT);
+				let optiFineLayoutScroll = new ScrollView_(CONTEXT);
 
-				var optiFineLayout1 = new LinearLayout_(CONTEXT);
+				let optiFineLayout1 = new LinearLayout_(CONTEXT);
 				optiFineLayout1.setOrientation(1);
 				optiFineLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
 				optiFineLayout1.setPadding(10, 0, 10, 10);
@@ -16646,7 +16623,7 @@ function optiFineScreen(fromDashboard, title, icon) {
 				optiFineLayoutScroll.addView(optiFineLayout);
 				optiFineLayout1.addView(optiFineLayoutScroll);
 
-				var antiLagDropRemoverButton = clientSwitch();
+				let antiLagDropRemoverButton = clientSwitch();
 				antiLagDropRemoverButton.setText("Automatically remove dropped items to reduce lag");
 				antiLagDropRemoverButton.setChecked(antiLagDropRemoverSetting == "on");
 				antiLagDropRemoverButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
@@ -16662,7 +16639,7 @@ function optiFineScreen(fromDashboard, title, icon) {
 				}));
 				optiFineLayout.addView(antiLagDropRemoverButton);
 
-				var betterPauseButton = clientSwitch();
+				let betterPauseButton = clientSwitch();
 				betterPauseButton.setText("Better pause (don't move while paused on multiplayer)");
 				betterPauseButton.setChecked(betterPauseSetting == "on");
 				betterPauseButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
@@ -16696,18 +16673,18 @@ function updateCenterScreen(fromDashboard) {
 			try {
 				VertexClientPE.checkGUINeedsDismiss();
 
-				var updateCenterMenuLayout = new LinearLayout_(CONTEXT);
+				let updateCenterMenuLayout = new LinearLayout_(CONTEXT);
 				updateCenterMenuLayout.setOrientation(1);
 				updateCenterMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-				var updateCenterMenuLayoutScroll = new ScrollView_(CONTEXT);
+				let updateCenterMenuLayoutScroll = new ScrollView_(CONTEXT);
 
-				var updateCenterMenuLayout1 = new LinearLayout_(CONTEXT);
+				let updateCenterMenuLayout1 = new LinearLayout_(CONTEXT);
 				updateCenterMenuLayout1.setOrientation(1);
 				updateCenterMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
 				updateCenterMenuLayout1.setPadding(10, 0, 10, 10);
 
-				var showUpdateToastsSettingSwitch = clientSwitch();
+				let showUpdateToastsSettingSwitch = clientSwitch();
 				showUpdateToastsSettingSwitch.setText("Show update toasts on start");
 				showUpdateToastsSettingSwitch.setChecked(showUpdateToastsSetting == "on");
 				showUpdateToastsSettingSwitch.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
@@ -16726,13 +16703,13 @@ function updateCenterScreen(fromDashboard) {
 				updateCenterMenuLayoutScroll.addView(updateCenterMenuLayout);
 				updateCenterMenuLayout1.addView(updateCenterMenuLayoutScroll);
 
-				var devUpdateView = updatePaneButton("Latest dev version", "http://bit.ly/VertexDev", true);
-				var updateDevEnterView = new TextView_(CONTEXT);
+				let devUpdateView = updatePaneButton("Latest dev version", "http://bit.ly/VertexDev", true);
+				let updateDevEnterView = new TextView_(CONTEXT);
 				updateDevEnterView.setText("\n");
-				var latestUpdateView = updatePaneButton(VertexClientPE.latestVersion, VertexClientPE.latestVersionDesc);
-				var updateEnterView = new TextView_(CONTEXT);
+				let latestUpdateView = updatePaneButton(VertexClientPE.latestVersion, VertexClientPE.latestVersionDesc);
+				let updateEnterView = new TextView_(CONTEXT);
 				updateEnterView.setText("\n");
-				var currentUpdateView = updatePaneButton(VertexClientPE.currentVersion, VertexClientPE.currentVersionDesc);
+				let currentUpdateView = updatePaneButton(VertexClientPE.currentVersion, VertexClientPE.currentVersionDesc);
 
 				if(VertexClientPE.isDevMode()) {
 					updateCenterMenuLayout.addView(devUpdateView);
@@ -16863,13 +16840,13 @@ function modManagerScreen() {
 			try {
 				VertexClientPE.checkGUINeedsDismiss();
 
-				var modManagerMenuLayout = new LinearLayout_(CONTEXT);
+				let modManagerMenuLayout = new LinearLayout_(CONTEXT);
 				modManagerMenuLayout.setOrientation(1);
 				modManagerMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-				var modManagerMenuLayoutScroll = new ScrollView_(CONTEXT);
+				let modManagerMenuLayoutScroll = new ScrollView_(CONTEXT);
 
-				var modManagerMenuLayout1 = new LinearLayout_(CONTEXT);
+				let modManagerMenuLayout1 = new LinearLayout_(CONTEXT);
 				modManagerMenuLayout1.setOrientation(1);
 				modManagerMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
 				//modManagerMenuLayout1.setPadding(10, 0, 10, 0);
@@ -16880,7 +16857,7 @@ function modManagerScreen() {
 
 				VertexClientPE.modules.forEach(function(element, index, array) {
 					if(element.hasOwnProperty("getSettingsLayout")) {
-						var modTitle = clientSectionTitle(VertexClientPE.getCustomModName(element.name));
+						let modTitle = clientSectionTitle(VertexClientPE.getCustomModName(element.name));
 						modTitle.setTypeface(VertexClientPE.font, Typeface_.BOLD);
 						modManagerMenuLayout.addView(modTitle);
 						modManagerMenuLayout.addView(element.getSettingsLayout(true));
@@ -16918,13 +16895,13 @@ function dashboardScreen(title, icon) {
 				let columnCount = dashboardTileSize;
 				let rowCount = Math.ceil(VertexClientPE.tiles.length / dashboardTileSize);
 
-				var dashboardMenuLayout = new GridLayout_(CONTEXT);
+				let dashboardMenuLayout = new GridLayout_(CONTEXT);
 				dashboardMenuLayout.setColumnCount(columnCount);
 				dashboardMenuLayout.setRowCount(rowCount);
 
-				var dashboardMenuLayoutScroll = new ScrollView_(CONTEXT);
+				let dashboardMenuLayoutScroll = new ScrollView_(CONTEXT);
 
-				var dashboardMenuLayout1 = new LinearLayout_(CONTEXT);
+				let dashboardMenuLayout1 = new LinearLayout_(CONTEXT);
 				dashboardMenuLayout1.setOrientation(1);
 				dashboardMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
 
@@ -16953,7 +16930,7 @@ VertexClientPE.createScreen = function() {
 
 }
 
-var webBrowserWebView;
+let webBrowserWebView;
 
 VertexClientPE.showURLBarDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
@@ -16962,17 +16939,17 @@ VertexClientPE.showURLBarDialog = function() {
 				if(webBrowserWebView == null || webBrowserWebView == undefined) {
 					throw new Error("webBrowserWebView is not defined!");
 				}
-				var urlBarDialogTitle = clientTextView("Enter an URL", true);
-				var btn = clientButton("Done");
-				var inputBar = clientEditText(webBrowserWebView.getUrl());
-				var dialogLayout = new LinearLayout_(CONTEXT);
+				let urlBarDialogTitle = clientTextView("Enter an URL", true);
+				let btn = clientButton("Done");
+				let inputBar = clientEditText(webBrowserWebView.getUrl());
+				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
 				dialogLayout.setPadding(10, 10, 10, 10);
 				dialogLayout.addView(urlBarDialogTitle);
 				dialogLayout.addView(inputBar);
 				dialogLayout.addView(btn);
-				var dialog = new Dialog_(CONTEXT);
+				let dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
@@ -16981,7 +16958,7 @@ VertexClientPE.showURLBarDialog = function() {
 				dialog.show();
 				btn.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
-						var newUrl = inputBar.getText().toString();
+						let newUrl = inputBar.getText().toString();
 						webBrowserWebView.loadUrl(newUrl);
 						if(newUrl.contains("porn")) {
 							VertexClientPE.toast("Eww, you nasty kid!");
@@ -17123,17 +17100,17 @@ function webBrowserScreen(fromDashboard) {
 			try {
 				VertexClientPE.checkGUINeedsDismiss();
 
-				var webBrowserMenuLayout = new LinearLayout_(CONTEXT);
+				let webBrowserMenuLayout = new LinearLayout_(CONTEXT);
 				webBrowserMenuLayout.setOrientation(1);
 				webBrowserMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-				var webBrowserTitle = clientTextView("Webbrowser", true);
+				let webBrowserTitle = clientTextView("Webbrowser", true);
 				webBrowserTitle.setTextSize(25);
 				webBrowserTitle.setGravity(Gravity_.CENTER);
 				webBrowserMenuLayout.addView(webBrowserTitle);
 
 				webBrowserWebView = new WebView_(CONTEXT);
-				var wS = webBrowserWebView.getSettings();
+				let wS = webBrowserWebView.getSettings();
 
 				wS.setJavaScriptEnabled(true);
 				webBrowserWebView.setWebChromeClient(new WebChromeClient_());
@@ -17566,9 +17543,9 @@ function retroMenu() {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
-				var menuLayout = new LinearLayout_(CONTEXT);
-				var menuMiddleScroll = new ScrollView_(CONTEXT);
-				var menuRightScroll = new ScrollView_(CONTEXT);
+				let menuLayout = new LinearLayout_(CONTEXT);
+				let menuMiddleScroll = new ScrollView_(CONTEXT);
+				let menuRightScroll = new ScrollView_(CONTEXT);
 				menuMiddleLayout = new LinearLayout_(CONTEXT);
 				menuRightLayout = new LinearLayout_(CONTEXT);
 				menuRightLayout.setGravity(Gravity_.CENTER);
@@ -18490,12 +18467,12 @@ function px2dip(px){
 	return Math.floor(px / DENSITY);
 }
 
-var statesTextView;
-var musicTextView;
+let statesTextView;
+let musicTextView;
 
-var enabledHacksCounter = 0;
+let enabledHacksCounter = 0;
 
-var musicText = "None";
+let musicText = "None";
 
 function showHacksList() {
 	let display = CONTEXT.getWindowManager().getDefaultDisplay(),
@@ -18510,17 +18487,17 @@ function showHacksList() {
 				try {
 					enabledHacksCounter = 0;
 
-					var hacksListLayout = new LinearLayout_(CONTEXT);
+					let hacksListLayout = new LinearLayout_(CONTEXT);
 					hacksListLayout.setOrientation(LinearLayout_.HORIZONTAL);
 					hacksListLayout.setGravity(Gravity_.CENTER_VERTICAL);
 
-					var hacksListLayoutLeft = new LinearLayout_(CONTEXT);
+					let hacksListLayoutLeft = new LinearLayout_(CONTEXT);
 					hacksListLayoutLeft.setOrientation(1);
 					hacksListLayoutLeft.setGravity(Gravity_.CENTER);
 					hacksListLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(width / 8, width / 15));
 					hacksListLayout.addView(hacksListLayoutLeft);
 
-					var hacksListLayoutRight = new LinearLayout_(CONTEXT);
+					let hacksListLayoutRight = new LinearLayout_(CONTEXT);
 					hacksListLayoutRight.setOrientation(1);
 					hacksListLayoutRight.setGravity(Gravity_.CENTER);
 					if(hacksListModeSetting != "logo") {
@@ -18535,14 +18512,14 @@ function showHacksList() {
 					logoViewer2.setImageBitmap(imgLogo);
 					logoViewer2.setLayoutParams(new LinearLayout_.LayoutParams(width / 8, width / 16));
 
-					var versionText = clientTextView("v" + VertexClientPE.currentVersion, true);
+					let versionText = clientTextView("v" + VertexClientPE.currentVersion, true);
 					versionText.setGravity(android.view.Gravity.CENTER);
 
-					var proText = clientTextView("Pro", true);
+					let proText = clientTextView("Pro", true);
 					proText.setGravity(android.view.Gravity.CENTER);
 					proText.setTextColor(Color_.parseColor("#DAA520"));
 
-					var statesText = "";
+					let statesText = "";
 					VertexClientPE.modules.forEach(function (element, index, array) {
 						if(element.isStateMod() && element.state) {
 							if(bypassState && element.hasOwnProperty("canBypassBypassMod") && !element.canBypassBypassMod()) {
@@ -18632,7 +18609,7 @@ function updateHacksList() {
 				try {
 					enabledHacksCounter = 0;
 
-					var statesText = "";
+					let statesText = "";
 					VertexClientPE.modules.forEach(function (element, index, array) {
 						if(element.isStateMod() && element.state) {
 							if(bypassState && element.hasOwnProperty("canBypassBypassMod") && !element.canBypassBypassMod()) {
@@ -18677,23 +18654,23 @@ function showTabGUI() {
 			}
 			if(tabGUI == null || !tabGUI.isShowing()) {
 				try {
-					var tabGUILayout = new LinearLayout_(CONTEXT);
+					let tabGUILayout = new LinearLayout_(CONTEXT);
 					tabGUILayout.setOrientation(LinearLayout_.HORIZONTAL);
 					tabGUILayout.setGravity(Gravity_.CENTER_VERTICAL);
 
-					var tabGUILayoutLeft = new LinearLayout_(CONTEXT);
+					let tabGUILayoutLeft = new LinearLayout_(CONTEXT);
 					tabGUILayoutLeft.setOrientation(1);
 					tabGUILayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 6, ViewGroup_.LayoutParams.WRAP_CONTENT));
 					tabGUILayout.addView(tabGUILayoutLeft);
 
-					var tabGUILayoutRight = new LinearLayout_(CONTEXT);
+					let tabGUILayoutRight = new LinearLayout_(CONTEXT);
 					tabGUILayoutRight.setOrientation(1);
 					tabGUILayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 6, ViewGroup_.LayoutParams.WRAP_CONTENT));
 					if(currentTabGUICategory != null) {
 						tabGUILayout.addView(tabGUILayoutRight);
 					}
 
-					var categories = [VertexClientPE.category.COMBAT, VertexClientPE.category.WORLD, VertexClientPE.category.MOVEMENT, VertexClientPE.category.PLAYER, VertexClientPE.category.MISC];
+					let categories = [VertexClientPE.category.COMBAT, VertexClientPE.category.WORLD, VertexClientPE.category.MOVEMENT, VertexClientPE.category.PLAYER, VertexClientPE.category.MISC];
 
 					categories.forEach(function (element, index, array) {
 						if((index == 0 && combatEnabled == "on") || (index == 1 && worldEnabled == "on") || (index == 2 && movementEnabled == "on") || (index == 3 && playerEnabled == "on") || (index == 4 && miscEnabled == "on")) {
@@ -18728,20 +18705,20 @@ function showShortcuts() {
 			}
 			if(shortcutGUI == null || !shortcutGUI.isShowing()) {
 				try {
-					var shortcutGUILayout1 = new LinearLayout_(CONTEXT);
+					let shortcutGUILayout1 = new LinearLayout_(CONTEXT);
 					shortcutGUILayout1.setOrientation(1);
 					shortcutGUILayout1.setGravity(Gravity_.CENTER_VERTICAL);
 
-					var shortcutGUILayoutScroll = new ScrollView_(CONTEXT);
+					let shortcutGUILayoutScroll = new ScrollView_(CONTEXT);
 
-					var shortcutGUILayout = new LinearLayout_(CONTEXT);
+					let shortcutGUILayout = new LinearLayout_(CONTEXT);
 					shortcutGUILayout.setOrientation(1);
 					shortcutGUILayout.setGravity(Gravity_.CENTER_VERTICAL);
 
 					shortcutGUILayoutScroll.addView(shortcutGUILayout);
 					shortcutGUILayout1.addView(shortcutGUILayoutScroll);
 
-					var shortcutCount = 0;
+					let shortcutCount = 0;
 
 					VertexClientPE.modules.forEach(function (element, index, array) {
 						if(sharedPref.getString("VertexClientPE.mods." + element.name + ".isFavorite", "false") == "true") {
@@ -18762,7 +18739,7 @@ function showShortcuts() {
 						}
 					});
 
-					var shortcutLayoutHeight;
+					let shortcutLayoutHeight;
 					if(shortcutCount < shortcutUIHeightSetting) {
 						shortcutLayoutHeight = dip2px(shortcutSizeSetting * shortcutCount);
 					} else {
@@ -18996,9 +18973,9 @@ function showPauseUtilities() {
 	}));
 }
 
-var itemSlot = 0;
-var hasPushed = 0;
-var isChestOpen = false;
+let itemSlot = 0;
+let hasPushed = 0;
+let isChestOpen = false;
 
 VertexClientPE.stealChestContent = function(x, y, z) {
 	new Handler_()
