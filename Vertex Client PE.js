@@ -1186,9 +1186,9 @@ var VertexClientPE = {
 		aimAtEnt: function(ent) {
 			// Credits to Godsoft0329 aka the developer of DragOP
 			if(Entity.getEntityTypeId(ent) == EntityType.PLAYER && Entity.getNameTag(ent) == "") return;
-			var x = Entity.getX(ent);
-			var y = Entity.getEntityTypeId(ent) == EntityType.PLAYER ? Entity.getY(ent) : Entity.getY(ent) + 1;
-			var z = Entity.getZ(ent);
+			let x = Entity.getX(ent);
+			let y = Entity.getEntityTypeId(ent) == EntityType.PLAYER ? Entity.getY(ent) : Entity.getY(ent) + 1;
+			let z = Entity.getZ(ent);
 			this.aimAt(x, y, z);
 		},
 		aimAtBlock: function(x, y, z) {
@@ -1198,8 +1198,8 @@ var VertexClientPE = {
 		strafeAroundEnt: function(ent, direction) {
 			direction = direction || "left";
 			this.aimAtEnt(ent);
-			var xVel = Math.cos(PI_CIRCLE * (getYaw() + 5)) * 0.2;
-			var zVel = Math.sin(PI_CIRCLE * (getYaw() + 5)) * 0.2;
+			let xVel = Math.cos(PI_CIRCLE * (getYaw() + 5)) * 0.2;
+			let zVel = Math.sin(PI_CIRCLE * (getYaw() + 5)) * 0.2;
 			if(direction == "right") {
 				xVel *= -1;
 				zVel *= -1;
@@ -5363,10 +5363,10 @@ var switchAimbot = {
 				this.mobTargetNum = 0;
 			}
 			let cMob = mobs[this.mobTargetNum];
-			if(cMob != null && cMob != undefined) {
-				var x = Entity.getX(cMob) - getPlayerX();
-				var y = Entity.getY(cMob) - getPlayerY();
-				var z = Entity.getZ(cMob) - getPlayerZ();
+			if(cMob != undefined && cMob != null) {
+				let x = Entity.getX(cMob) - getPlayerX();
+				let y = Entity.getY(cMob) - getPlayerY();
+				let z = Entity.getZ(cMob) - getPlayerZ();
 				if(x*x+y*y+z*z <= range*range) {
 					if(Entity.getEntityTypeId(cMob) != EntityType.ARROW && Entity.getEntityTypeId(cMob) != EntityType.BOAT && Entity.getEntityTypeId(cMob) != EntityType.EGG && Entity.getEntityTypeId(cMob) != EntityType.ENDER_PEARL && Entity.getEntityTypeId(cMob) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(cMob) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(cMob) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(cMob) != EntityType.FIREBALL && Entity.getEntityTypeId(cMob) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(cMob) != EntityType.ITEM && Entity.getEntityTypeId(cMob) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(cMob) != EntityType.MINECART && Entity.getEntityTypeId(cMob) != EntityType.PAINTING && Entity.getEntityTypeId(cMob) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(cMob) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(cMob) != EntityType.SNOWBALL && Entity.getEntityTypeId(cMob) != EntityType.THROWN_POTION && cMob != getPlayerEnt()) {
 						VertexClientPE.CombatUtils.aimAtEnt(cMob);
@@ -5380,10 +5380,10 @@ var switchAimbot = {
 				this.playerTargetNum = 0;
 			}
 			let cPlayer = players[this.playerTargetNum];
-			if(cPlayer != null && cPlayer != undefined && !(targetFriendsSetting == "off" && VertexClientPE.Utils.Player.isFriend(cMob))) {
-				var x = Entity.getX(cPlayer) - getPlayerX();
-				var y = Entity.getY(cPlayer) - getPlayerY();
-				var z = Entity.getZ(cPlayer) - getPlayerZ();
+			if(cPlayer != undefined && cPlayer != null && !(targetFriendsSetting == "off" && VertexClientPE.Utils.Player.isFriend(cMob))) {
+				let x = Entity.getX(cPlayer) - getPlayerX();
+				let y = Entity.getY(cPlayer) - getPlayerY();
+				let z = Entity.getZ(cPlayer) - getPlayerZ();
 				if(x*x+y*y+z*z <= range*range) {
 					if(cPlayer != getPlayerEnt()) {
 						VertexClientPE.CombatUtils.aimAtEnt(cPlayer);
@@ -9955,118 +9955,119 @@ VertexClientPE.healthTags = function() {
 		/* now the variable "mobs" is now "mobs[i]",
 		if you are asking why they are they now like this, it is because we split all gotten entities as their own, that means you can personalize them, (that is very useful when you are using Entity.get() scripts. So I can give all entities a personalized (as example) nametag which shows their own health. */
 
-		let xq = Entity.getX(mobs[i]) - getPlayerX();
-		let yq = Entity.getY(mobs[i]) - getPlayerY();
-		let zq = Entity.getZ(mobs[i]) - getPlayerZ();
+		let mob = mobs[i];
+		let xq = Entity.getX(mob) - getPlayerX();
+		let yq = Entity.getY(mob) - getPlayerY();
+		let zq = Entity.getZ(mob) - getPlayerZ();
 
 
 
-		if(xq * xq + yq * yq + zq * zq <= 14 * 14 && mobs[i] != getPlayerEnt()) {
+		if(xq * xq + yq * yq + zq * zq <= 14 * 14 && mob != getPlayerEnt()) {
 
 			/* the 14 stands for, that the entities you want to give (as example) a nametag need to be in a radius of 14 blocks */
 
 			/* You can disable it by removing the above script. */
-			if(Entity.getEntityTypeId(mobs[i]) == 10) {
-				Entity.setNameTag(mobs[i], nameColor + "Chicken " + healthColor + Entity.getHealth(mobs[i]) + "/4");
+			if(Entity.getEntityTypeId(mob) == 10) {
+				Entity.setNameTag(mob, nameColor + "Chicken " + healthColor + Entity.getHealth(mob) + "/4");
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 11) {
-				Entity.setNameTag(mobs[i], nameColor + "Cow " + healthColor + Entity.getHealth(mobs[i]) + "/10");
+			if(Entity.getEntityTypeId(mob) == 11) {
+				Entity.setNameTag(mob, nameColor + "Cow " + healthColor + Entity.getHealth(mob) + "/10");
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 12) {
-				Entity.setNameTag(mobs[i], nameColor + "Pig " + healthColor + Entity.getHealth(mobs[i]) + "/10");
+			if(Entity.getEntityTypeId(mob) == 12) {
+				Entity.setNameTag(mob, nameColor + "Pig " + healthColor + Entity.getHealth(mob) + "/10");
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 13) {
-				Entity.setNameTag(mobs[i], nameColor + "Sheep " + healthColor + Entity.getHealth(mobs[i]) + "/8");
+			if(Entity.getEntityTypeId(mob) == 13) {
+				Entity.setNameTag(mob, nameColor + "Sheep " + healthColor + Entity.getHealth(mob) + "/8");
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 14) {
-				Entity.setNameTag(mobs[i], nameColor + "Wolf " + healthColor + Entity.getHealth(mobs[i]) + "/8");
+			if(Entity.getEntityTypeId(mob) == 14) {
+				Entity.setNameTag(mob, nameColor + "Wolf " + healthColor + Entity.getHealth(mob) + "/8");
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 15) {
-				Entity.setNameTag(mobs[i], nameColor + "Villager " + healthColor + Entity.getHealth(mobs[i]) + "/20");
+			if(Entity.getEntityTypeId(mob) == 15) {
+				Entity.setNameTag(mob, nameColor + "Villager " + healthColor + Entity.getHealth(mob) + "/20");
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 16) {
-				Entity.setNameTag(mobs[i], nameColor + "Mooshroom " + healthColor + Entity.getHealth(mobs[i]) + "/10");
+			if(Entity.getEntityTypeId(mob) == 16) {
+				Entity.setNameTag(mob, nameColor + "Mooshroom " + healthColor + Entity.getHealth(mob) + "/10");
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 17) {
-				Entity.setNameTag(mobs[i], nameColor + "Squid " + healthColor + Entity.getHealth(mobs[i]) + "/10");
+			if(Entity.getEntityTypeId(mob) == 17) {
+				Entity.setNameTag(mob, nameColor + "Squid " + healthColor + Entity.getHealth(mob) + "/10");
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 18) {
-				Entity.setNameTag(mobs[i], nameColor + "Rabbit " + healthColor + Entity.getHealth(mobs[i]) + "/3");
+			if(Entity.getEntityTypeId(mob) == 18) {
+				Entity.setNameTag(mob, nameColor + "Rabbit " + healthColor + Entity.getHealth(mob) + "/3");
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 19) {
-				Entity.setNameTag(mobs[i], nameColor + "Bat " + healthColor + Entity.getHealth(mobs[i]) + "/6");
+			if(Entity.getEntityTypeId(mob) == 19) {
+				Entity.setNameTag(mob, nameColor + "Bat " + healthColor + Entity.getHealth(mob) + "/6");
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 20) {
-				Entity.setNameTag(mobs[i], nameColor + "Iron Golem " + healthColor + Entity.getHealth(mobs[i]) + "/100");
+			if(Entity.getEntityTypeId(mob) == 20) {
+				Entity.setNameTag(mob, nameColor + "Iron Golem " + healthColor + Entity.getHealth(mob) + "/100");
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 21) {
-				Entity.setNameTag(mobs[i], nameColor + "Snow Golem " + healthColor + Entity.getHealth(mobs[i]) + "/10");
+			if(Entity.getEntityTypeId(mob) == 21) {
+				Entity.setNameTag(mob, nameColor + "Snow Golem " + healthColor + Entity.getHealth(mob) + "/10");
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 22) {
-				Entity.setNameTag(mobs[i], nameColor + "Ocelot " + healthColor + Entity.getHealth(mobs[i]) + "/10");
+			if(Entity.getEntityTypeId(mob) == 22) {
+				Entity.setNameTag(mob, nameColor + "Ocelot " + healthColor + Entity.getHealth(mob) + "/10");
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 23) {
-				Entity.setNameTag(mobs[i], nameColor + "Horse " + healthColor + Entity.getHealth(mobs[i]) + "/10");
+			if(Entity.getEntityTypeId(mob) == 23) {
+				Entity.setNameTag(mob, nameColor + "Horse " + healthColor + Entity.getHealth(mob) + "/" + Entity.getMaxHealth(mob));
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 24) {
-				Entity.setNameTag(mobs[i], nameColor + "Donkey " + healthColor + Entity.getHealth(mobs[i]) + "/10"); //TODO: CHANGE HORSE MAX HEALTH
+			if(Entity.getEntityTypeId(mob) == 24) {
+				Entity.setNameTag(mob, nameColor + "Donkey " + healthColor + Entity.getHealth(mob) + "/" + Entity.getMaxHealth(mob));
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 25) {
-				Entity.setNameTag(mobs[i], nameColor + "Mule " + healthColor + Entity.getHealth(mobs[i]) + "/10");
+			if(Entity.getEntityTypeId(mob) == 25) {
+				Entity.setNameTag(mob, nameColor + "Mule " + healthColor + Entity.getHealth(mob) + "/" + Entity.getMaxHealth(mob));
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 26) {
-				Entity.setNameTag(mobs[i], nameColor + "Skeleton Horse " + healthColor + Entity.getHealth(mobs[i]) + "/10");
+			if(Entity.getEntityTypeId(mob) == 26) {
+				Entity.setNameTag(mob, nameColor + "Skeleton Horse " + healthColor + Entity.getHealth(mob) + "/" + Entity.getMaxHealth(mob));
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 27) {
-				Entity.setNameTag(mobs[i], nameColor + "Zombie Horse " + healthColor + Entity.getHealth(mobs[i]) + "/10");
+			if(Entity.getEntityTypeId(mob) == 27) {
+				Entity.setNameTag(mob, nameColor + "Zombie Horse " + healthColor + Entity.getHealth(mob) + "/" + Entity.getMaxHealth(mob));
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 32) {
-				Entity.setNameTag(mobs[i], nameColor + "Zombie " + healthColor + Entity.getHealth(mobs[i]) + "/20");
+			if(Entity.getEntityTypeId(mob) == 32) {
+				Entity.setNameTag(mob, nameColor + "Zombie " + healthColor + Entity.getHealth(mob) + "/20");
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 33) {
-				Entity.setNameTag(mobs[i], nameColor + "Creeper " + healthColor + Entity.getHealth(mobs[i]) + "/20");
+			if(Entity.getEntityTypeId(mob) == 33) {
+				Entity.setNameTag(mob, nameColor + "Creeper " + healthColor + Entity.getHealth(mob) + "/20");
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 34) {
-				Entity.setNameTag(mobs[i], nameColor + "Skeleton " + healthColor + Entity.getHealth(mobs[i]) + "/20");
+			if(Entity.getEntityTypeId(mob) == 34) {
+				Entity.setNameTag(mob, nameColor + "Skeleton " + healthColor + Entity.getHealth(mob) + "/20");
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 35) {
-				Entity.setNameTag(mobs[i], nameColor + "Spider " + healthColor + Entity.getHealth(mobs[i]) + "/16");
+			if(Entity.getEntityTypeId(mob) == 35) {
+				Entity.setNameTag(mob, nameColor + "Spider " + healthColor + Entity.getHealth(mob) + "/16");
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 36) {
-				Entity.setNameTag(mobs[i], nameColor + "Zombie Pigman " + healthColor + Entity.getHealth(mobs[i]) + "/20");
+			if(Entity.getEntityTypeId(mob) == 36) {
+				Entity.setNameTag(mob, nameColor + "Zombie Pigman " + healthColor + Entity.getHealth(mob) + "/20");
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 37) {
-				Entity.setNameTag(mobs[i], nameColor + "Slime " + healthColor + Entity.getHealth(mobs[i]) + "/16");
+			if(Entity.getEntityTypeId(mob) == 37) {
+				Entity.setNameTag(mob, nameColor + "Slime " + healthColor + Entity.getHealth(mob) + "/16");
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 38) {
-				Entity.setNameTag(mobs[i], nameColor + "Enderman " + healthColor + Entity.getHealth(mobs[i]) + "/40");
+			if(Entity.getEntityTypeId(mob) == 38) {
+				Entity.setNameTag(mob, nameColor + "Enderman " + healthColor + Entity.getHealth(mob) + "/40");
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 39) {
-				Entity.setNameTag(mobs[i], nameColor + "Silverfish " + healthColor + Entity.getHealth(mobs[i]) + "/8");
+			if(Entity.getEntityTypeId(mob) == 39) {
+				Entity.setNameTag(mob, nameColor + "Silverfish " + healthColor + Entity.getHealth(mob) + "/8");
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 40) {
-				Entity.setNameTag(mobs[i], nameColor + "Cave Spider " + healthColor + Entity.getHealth(mobs[i]) + "/12");
+			if(Entity.getEntityTypeId(mob) == 40) {
+				Entity.setNameTag(mob, nameColor + "Cave Spider " + healthColor + Entity.getHealth(mob) + "/12");
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 41) {
-				Entity.setNameTag(mobs[i], nameColor + "Ghast " + healthColor + Entity.getHealth(mobs[i]) + "/10");
+			if(Entity.getEntityTypeId(mob) == 41) {
+				Entity.setNameTag(mob, nameColor + "Ghast " + healthColor + Entity.getHealth(mob) + "/10");
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 42) {
-				Entity.setNameTag(mobs[i], nameColor + "Magma Cube " + healthColor + Entity.getHealth(mobs[i]) + "/16");
+			if(Entity.getEntityTypeId(mob) == 42) {
+				Entity.setNameTag(mob, nameColor + "Magma Cube " + healthColor + Entity.getHealth(mob) + "/16");
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 43) {
-				Entity.setNameTag(mobs[i], nameColor + "Blaze " + healthColor + Entity.getHealth(mobs[i]) + "/20");
+			if(Entity.getEntityTypeId(mob) == 43) {
+				Entity.setNameTag(mob, nameColor + "Blaze " + healthColor + Entity.getHealth(mob) + "/20");
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 44) {
-				Entity.setNameTag(mobs[i], nameColor + "Zombie Villager " + healthColor + Entity.getHealth(mobs[i]) + "/20");
+			if(Entity.getEntityTypeId(mob) == 44) {
+				Entity.setNameTag(mob, nameColor + "Zombie Villager " + healthColor + Entity.getHealth(mob) + "/20");
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 45) {
-				Entity.setNameTag(mobs[i], nameColor + "Witch " + healthColor + Entity.getHealth(mobs[i]) + "/26");
+			if(Entity.getEntityTypeId(mob) == 45) {
+				Entity.setNameTag(mob, nameColor + "Witch " + healthColor + Entity.getHealth(mob) + "/26");
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 46) {
-				Entity.setNameTag(mobs[i], nameColor + "Stray " + healthColor + Entity.getHealth(mobs[i]) + "/20");
+			if(Entity.getEntityTypeId(mob) == 46) {
+				Entity.setNameTag(mob, nameColor + "Stray " + healthColor + Entity.getHealth(mob) + "/20");
 			}
-			if(Entity.getEntityTypeId(mobs[i]) == 47) {
-				Entity.setNameTag(mobs[i], nameColor + "Husk " + healthColor + Entity.getHealth(mobs[i]) + "/20");
+			if(Entity.getEntityTypeId(mob) == 47) {
+				Entity.setNameTag(mob, nameColor + "Husk " + healthColor + Entity.getHealth(mob) + "/20");
 			}
 		}
 	}
