@@ -2176,8 +2176,9 @@ VertexClientPE.initMods = function(switchedCat) {
 		//if(bypass enabled in save data) toggle bypass on
 		/* if(VertexClientPE.getSavedModState("Bypass")) {
 			
-		} */
+		}
 		if(sharedPref.get)
+		*/
 		VertexClientPE.preInitModules.forEach(function(element, index, array) {
 			if(((element.pack == "Combat" && combatEnabled == "on") || (element.pack == "World" && worldEnabled == "on") || (element.pack == "Movement" && movementEnabled == "on") || (element.pack == "Player" && playerEnabled == "on") || (element.pack == "Miscellaneous" && miscEnabled == "on")) && !(element.singleplayerOnly && singleplayerEnabled == "off")) {
 				// TODO: toggle mods on if enabled in save data
