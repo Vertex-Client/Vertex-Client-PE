@@ -1,7 +1,7 @@
 /**
  * ##################################################################################################
  * @name Vertex Client PE
- * @version v2.4
+ * @version v2.5
  * @author peacestorm (@AgameR_Modder)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36, AutoGrind, TimmyIsDa
  *
@@ -235,6 +235,7 @@ var powerExplosionsPowerSetting = 10;
 var preventExplosionsSetting = "off";
 var watermarkTextSetting = "<big><b>Bold</b> <i>Italic</i> <u>Underline</u></big>";
 var defaultToastPositionSetting = "bottom";
+var tapAimbotStayAimedSetting = 40;
 //------------------------------------
 var antiAFKDistancePerTick = 0.25;
 //------------------------------------
@@ -1278,9 +1279,9 @@ VertexClientPE.isRemote = function() {
 
 VertexClientPE.playerIsInGame = false;
 
-VertexClientPE.currentVersion = "2.4";
-VertexClientPE.currentVersionDesc = "The Debug Update";
-VertexClientPE.targetVersion = "MCPE v1.0.x alpha";
+VertexClientPE.currentVersion = "2.5";
+VertexClientPE.currentVersionDesc = "The Combat Update";
+VertexClientPE.targetVersion = "MCPE v1.0.x";
 VertexClientPE.minVersion = "1.0.0";
 VertexClientPE.edition = "Normal";
 VertexClientPE.latestVersion;
@@ -2173,8 +2174,15 @@ VertexClientPE.initMods = function(switchedCat) {
 	}
 	VertexClientPE.modules = [];
 	try {
+		//if(bypass enabled in save data) toggle bypass on
+		/* if(VertexClientPE.getSavedModState("Bypass")) {
+			
+		} */
+		if(sharedPref.get)
 		VertexClientPE.preInitModules.forEach(function(element, index, array) {
 			if(((element.pack == "Combat" && combatEnabled == "on") || (element.pack == "World" && worldEnabled == "on") || (element.pack == "Movement" && movementEnabled == "on") || (element.pack == "Player" && playerEnabled == "on") || (element.pack == "Miscellaneous" && miscEnabled == "on")) && !(element.singleplayerOnly && singleplayerEnabled == "off")) {
+				// TODO: toggle mods on if enabled in save data
+				//if(mod is not bypass) ^^
 				VertexClientPE.modules.push(element);
 			}
 		});
@@ -3227,6 +3235,9 @@ var powerExplosions = {
 		powerExplosionsLayout.addView(powerExplosionsPowerSettingSlider);
 
 		return powerExplosionsLayout;
+	},
+	onModDialogDismiss: function() {
+		VertexClientPE.saveMainSettings();
 	},
 	isStateMod: function() {
 		return true;
@@ -4743,6 +4754,30 @@ var tapAimbot = {
 	state: false,
 	timer: 0,
 	targetEnt: null,
+	getSettingsLayout: function() {
+		let tapAimbotLayout = new LinearLayout_(CONTEXT);
+		tapAimbotLayout.setOrientation(1);
+
+		let tapAimbotStayAimedSettingTitle = clientTextView("Stay aimed for: | " + tapAimbotStayAimedSetting + " tick(s)");
+		let tapAimbotStayAimedSettingSlider = clientSeekBar();
+		let minStayAimed = 1;
+		tapAimbotStayAimedSettingSlider.setProgress(tapAimbotStayAimedSetting - minStayAimed);
+		tapAimbotStayAimedSettingSlider.setMax(200 - minStayAimed);
+		tapAimbotStayAimedSettingSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
+			onProgressChanged: function() {
+				tapAimbotStayAimedSetting = tapAimbotStayAimedSettingSlider.getProgress() + minStayAimed;
+				tapAimbotStayAimedSettingTitle.setText("Stay aimed for: | " + tapAimbotStayAimedSetting + " tick(s)");
+			}
+		});
+
+		tapAimbotLayout.addView(tapAimbotStayAimedSettingTitle);
+		tapAimbotLayout.addView(tapAimbotStayAimedSettingSlider);
+
+		return tapAimbotLayout;
+	},
+	onModDialogDismiss: function() {
+		VertexClientPE.saveMainSettings();
+	},
 	isStateMod: function() {
 		return true;
 	},
@@ -4757,7 +4792,7 @@ var tapAimbot = {
 		}
 	},
 	onTick: function() {
-		if(this.targetEnt != null && this.timer <= 40) {
+		if(this.targetEnt != null && this.timer < tapAimbotStayAimedSetting) {
 			VertexClientPE.CombatUtils.aimAtEnt(this.targetEnt);
 			this.timer++;
 		} else {
@@ -8270,6 +8305,10 @@ VertexClientPE.getCustomModName = function(defaultName) {
 	return sharedPref.getString("VertexClientPE.mods." + defaultName + ".name", defaultName);
 }
 
+VertexClientPE.getSavedModState = function(defaultName) {
+	return sharedPref.getBoolean("VertexClientPE.mods." + defaultName + ".state", false);
+}
+
 var modDialogShowing = false;
 
 VertexClientPE.showModDialog = function(mod, btn) {
@@ -8280,11 +8319,11 @@ VertexClientPE.showModDialog = function(mod, btn) {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				var modTitleLayout = new LinearLayout_(CONTEXT);
+				let modTitleLayout = new LinearLayout_(CONTEXT);
 				modTitleLayout.setOrientation(LinearLayout_.HORIZONTAL);
-				var modTitle = clientTextView(VertexClientPE.getCustomModName(mod.name), true);
+				let modTitle = clientTextView(VertexClientPE.getCustomModName(mod.name), true);
 				modTitle.setTextSize(20);
-				var modEditButton = new Button_(CONTEXT);
+				let modEditButton = new Button_(CONTEXT);
 				modEditButton.setLayoutParams(new LinearLayout_.LayoutParams(64, 64));
 				modEditButton.setBackgroundDrawable(CONTEXT.getResources().getDrawable(android.R.drawable.ic_menu_edit));
 				modEditButton.setOnClickListener(new View_.OnClickListener() {
@@ -8292,7 +8331,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
 						VertexClientPE.showModEditorDialog(mod.name, modTitle, btn);
 					}
 				});
-				var modFavButton = new Button_(CONTEXT);
+				let modFavButton = new Button_(CONTEXT);
 				modFavButton.setLayoutParams(new LinearLayout_.LayoutParams(64, 64));
 				if(sharedPref.getString("VertexClientPE.mods." + mod.name + ".isFavorite", "false") == "true") {
 					modFavButton.setBackgroundDrawable(CONTEXT.getResources().getDrawable(android.R.drawable.btn_star_big_on));
@@ -8336,12 +8375,16 @@ VertexClientPE.showModDialog = function(mod, btn) {
 						}
 					}
 				}
-				var modTypeText = clientTextView(type);
-				var modBatteryUsageText = clientTextView("Battery usage: \uD83D\uDD0B " + mod.batteryUsage + "\n");
-				var modDescText = clientTextView("Description:\n" + mod.desc + "\n");
-				var closeButton = clientButton("Close");
+				let modTypeText = clientTextView(type);
+				let modCreditsText;
+				if(mod.credits != undefined) {
+					modCreditsText = clientTextView("Credits: " + mod.credits + "\n");
+				}
+				let modBatteryUsageText = clientTextView("Battery usage: \uD83D\uDD0B " + mod.batteryUsage + "\n");
+				let modDescText = clientTextView("Description:\n" + mod.desc + "\n");
+				let closeButton = clientButton("Close");
 				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
-				var dialogLayout = new LinearLayout_(CONTEXT);
+				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
 				dialogLayout.setPadding(10, 10, 10, 10);
@@ -8350,12 +8393,15 @@ VertexClientPE.showModDialog = function(mod, btn) {
 					dialogLayout.addView(clientTextView("Source: " + mod.source + "\n"));
 				}
 				dialogLayout.addView(modTypeText);
+				if(modCreditsText != null) {
+					dialogLayout.addView(modCreditsText);
+				}
 				dialogLayout.addView(modBatteryUsageText);
 				dialogLayout.addView(modDescText);
 
-				var settingsLinearLayout = new ScrollView_(CONTEXT);
+				let settingsLinearLayout = new ScrollView_(CONTEXT);
 				settingsLinearLayout.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels, display.heightPixels / 3));
-				var settingsScrollView = new ScrollView_(CONTEXT);
+				let settingsScrollView = new ScrollView_(CONTEXT);
 
 				if(mod.hasOwnProperty("getSettingsLayout")) {
 					dialogLayout.addView(settingsLinearLayout);
@@ -8379,7 +8425,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
 					dialogExtraLayout.addView(dialogExtraLayoutRight);
 					closeButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 3 - 10, display.heightPixels / 10));
 					dialogExtraLayoutLeft.addView(closeButton);
-					var toggleButton = clientButton("Toggle");
+					let toggleButton = clientButton("Toggle");
 					toggleButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 3 - 10, display.heightPixels / 10));
 					toggleButton.setTextColor(modButtonColorDisabled);
 					if(mod.isStateMod()) {
@@ -8463,7 +8509,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
 					}
 				});
 				dialog.show();
-				var window = dialog.getWindow();
+				let window = dialog.getWindow();
 				window.setLayout(display.widthPixels, display.heightPixels);
 				closeButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
@@ -10731,6 +10777,7 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + powerExplosionsPowerSetting.toString());
 	outWrite.append("," + preventExplosionsSetting.toString());
 	outWrite.append("," + defaultToastPositionSetting.toString());
+	outWrite.append("," + tapAimbotStayAimedSetting.toString());
 
 	outWrite.close();
 
@@ -10995,6 +11042,9 @@ VertexClientPE.loadMainSettings = function () {
 	}
 	if (arr[81] != null && arr[81] != undefined) {
 		defaultToastPositionSetting = arr[81];
+	}
+	if (arr[82] != null && arr[82] != undefined) {
+		tapAimbotStayAimedSetting = arr[82];
 	}
 
 	VertexClientPE.loadCustomRGBSettings();
