@@ -1762,7 +1762,6 @@ let menu;
 let emptyMenu;
 let fullScreenMenu;
 let tableMenu;
-let exitUI;
 let exitWebBrowserUI;
 let reloadWebBrowserUI;
 let pauseUtilitiesUI;
@@ -10013,107 +10012,112 @@ VertexClientPE.healthTags = function() {
 			/* the 14 stands for, that the entities you want to give (as example) a nametag need to be in a radius of 14 blocks */
 
 			/* You can disable it by removing the above script. */
+			let mobName;
+
 			if(Entity.getEntityTypeId(mob) == 10) {
-				Entity.setNameTag(mob, nameColor + "Chicken " + healthColor + Entity.getHealth(mob) + "/4");
+				mobName = "Chicken";
 			}
 			if(Entity.getEntityTypeId(mob) == 11) {
-				Entity.setNameTag(mob, nameColor + "Cow " + healthColor + Entity.getHealth(mob) + "/10");
+				mobName = "Cow";
 			}
 			if(Entity.getEntityTypeId(mob) == 12) {
-				Entity.setNameTag(mob, nameColor + "Pig " + healthColor + Entity.getHealth(mob) + "/10");
+				mobName = "Pig";
 			}
 			if(Entity.getEntityTypeId(mob) == 13) {
-				Entity.setNameTag(mob, nameColor + "Sheep " + healthColor + Entity.getHealth(mob) + "/8");
+				mobName = "Sheep";
 			}
 			if(Entity.getEntityTypeId(mob) == 14) {
-				Entity.setNameTag(mob, nameColor + "Wolf " + healthColor + Entity.getHealth(mob) + "/8");
+				mobName = "Wolf";
 			}
 			if(Entity.getEntityTypeId(mob) == 15) {
-				Entity.setNameTag(mob, nameColor + "Villager " + healthColor + Entity.getHealth(mob) + "/20");
+				mobName = "Villager";
 			}
 			if(Entity.getEntityTypeId(mob) == 16) {
-				Entity.setNameTag(mob, nameColor + "Mooshroom " + healthColor + Entity.getHealth(mob) + "/10");
+				mobName = "Mooshroom";
 			}
 			if(Entity.getEntityTypeId(mob) == 17) {
-				Entity.setNameTag(mob, nameColor + "Squid " + healthColor + Entity.getHealth(mob) + "/10");
+				mobName = "Squid";
 			}
 			if(Entity.getEntityTypeId(mob) == 18) {
-				Entity.setNameTag(mob, nameColor + "Rabbit " + healthColor + Entity.getHealth(mob) + "/3");
+				mobName = "Rabbit";
 			}
 			if(Entity.getEntityTypeId(mob) == 19) {
-				Entity.setNameTag(mob, nameColor + "Bat " + healthColor + Entity.getHealth(mob) + "/6");
+				mobName = "Bat";
 			}
 			if(Entity.getEntityTypeId(mob) == 20) {
-				Entity.setNameTag(mob, nameColor + "Iron Golem " + healthColor + Entity.getHealth(mob) + "/100");
+				mobName = "Iron Golem";
 			}
 			if(Entity.getEntityTypeId(mob) == 21) {
-				Entity.setNameTag(mob, nameColor + "Snow Golem " + healthColor + Entity.getHealth(mob) + "/10");
+				mobName = "Snow Golem";
 			}
 			if(Entity.getEntityTypeId(mob) == 22) {
-				Entity.setNameTag(mob, nameColor + "Ocelot " + healthColor + Entity.getHealth(mob) + "/10");
+				mobName = "Ocelot";
 			}
 			if(Entity.getEntityTypeId(mob) == 23) {
-				Entity.setNameTag(mob, nameColor + "Horse " + healthColor + Entity.getHealth(mob) + "/" + Entity.getMaxHealth(mob));
+				mobName = "Horse";
 			}
 			if(Entity.getEntityTypeId(mob) == 24) {
-				Entity.setNameTag(mob, nameColor + "Donkey " + healthColor + Entity.getHealth(mob) + "/" + Entity.getMaxHealth(mob));
+				mobName = "Donkey";
 			}
 			if(Entity.getEntityTypeId(mob) == 25) {
-				Entity.setNameTag(mob, nameColor + "Mule " + healthColor + Entity.getHealth(mob) + "/" + Entity.getMaxHealth(mob));
+				mobName = "Mule";
 			}
 			if(Entity.getEntityTypeId(mob) == 26) {
-				Entity.setNameTag(mob, nameColor + "Skeleton Horse " + healthColor + Entity.getHealth(mob) + "/" + Entity.getMaxHealth(mob));
+				mobName = "Skeleton Horse";
 			}
 			if(Entity.getEntityTypeId(mob) == 27) {
-				Entity.setNameTag(mob, nameColor + "Zombie Horse " + healthColor + Entity.getHealth(mob) + "/" + Entity.getMaxHealth(mob));
+				mobName = "Zombie Horse";
 			}
 			if(Entity.getEntityTypeId(mob) == 32) {
-				Entity.setNameTag(mob, nameColor + "Zombie " + healthColor + Entity.getHealth(mob) + "/20");
+				mobName = "Zombie";
 			}
 			if(Entity.getEntityTypeId(mob) == 33) {
-				Entity.setNameTag(mob, nameColor + "Creeper " + healthColor + Entity.getHealth(mob) + "/20");
+				mobName = "Creeper";
 			}
 			if(Entity.getEntityTypeId(mob) == 34) {
-				Entity.setNameTag(mob, nameColor + "Skeleton " + healthColor + Entity.getHealth(mob) + "/20");
+				mobName = "Skeleton";
 			}
 			if(Entity.getEntityTypeId(mob) == 35) {
-				Entity.setNameTag(mob, nameColor + "Spider " + healthColor + Entity.getHealth(mob) + "/16");
+				mobName = "Spider";
 			}
 			if(Entity.getEntityTypeId(mob) == 36) {
-				Entity.setNameTag(mob, nameColor + "Zombie Pigman " + healthColor + Entity.getHealth(mob) + "/20");
+				mobName = "Zombie Pigman";
 			}
 			if(Entity.getEntityTypeId(mob) == 37) {
-				Entity.setNameTag(mob, nameColor + "Slime " + healthColor + Entity.getHealth(mob) + "/16");
+				mobName = "Slime";
 			}
 			if(Entity.getEntityTypeId(mob) == 38) {
-				Entity.setNameTag(mob, nameColor + "Enderman " + healthColor + Entity.getHealth(mob) + "/40");
+				mobName = "Enderman";
 			}
 			if(Entity.getEntityTypeId(mob) == 39) {
-				Entity.setNameTag(mob, nameColor + "Silverfish " + healthColor + Entity.getHealth(mob) + "/8");
+				mobName = "Silverfish";
 			}
 			if(Entity.getEntityTypeId(mob) == 40) {
-				Entity.setNameTag(mob, nameColor + "Cave Spider " + healthColor + Entity.getHealth(mob) + "/12");
+				mobName = "Cave Spider";
 			}
 			if(Entity.getEntityTypeId(mob) == 41) {
-				Entity.setNameTag(mob, nameColor + "Ghast " + healthColor + Entity.getHealth(mob) + "/10");
+				mobName = "Ghast";
 			}
 			if(Entity.getEntityTypeId(mob) == 42) {
-				Entity.setNameTag(mob, nameColor + "Magma Cube " + healthColor + Entity.getHealth(mob) + "/16");
+				mobName = "Magma Cube";
 			}
 			if(Entity.getEntityTypeId(mob) == 43) {
-				Entity.setNameTag(mob, nameColor + "Blaze " + healthColor + Entity.getHealth(mob) + "/20");
+				mobName = "Blaze";
 			}
 			if(Entity.getEntityTypeId(mob) == 44) {
-				Entity.setNameTag(mob, nameColor + "Zombie Villager " + healthColor + Entity.getHealth(mob) + "/20");
+				mobName = "Zombie Villager";
 			}
 			if(Entity.getEntityTypeId(mob) == 45) {
-				Entity.setNameTag(mob, nameColor + "Witch " + healthColor + Entity.getHealth(mob) + "/26");
+				mobName = "Witch";
 			}
 			if(Entity.getEntityTypeId(mob) == 46) {
-				Entity.setNameTag(mob, nameColor + "Stray " + healthColor + Entity.getHealth(mob) + "/20");
+				mobName = "Stray";
 			}
 			if(Entity.getEntityTypeId(mob) == 47) {
-				Entity.setNameTag(mob, nameColor + "Husk " + healthColor + Entity.getHealth(mob) + "/20");
+				mobName = "Husk";
+			}
+			if(mobName != null) {
+				Entity.setNameTag(mob, nameColor + mobName + " " + healthColor + Entity.getHealth(mob) + "/" + Entity.getMaxHealth(mob));
 			}
 		}
 	}
@@ -10122,8 +10126,8 @@ VertexClientPE.healthTags = function() {
 VertexClientPE.nuke = function(x, y, z, range, mode) {
 	mode = (mode==null)?"cube":mode;
 	range = (range==null)?3:range;
-	var destroyFunction = bypassState?Level.destroyBlock:setTile;
-	var destroyLastParam = bypassState?false:0;
+	let destroyFunction = bypassState?Level.destroyBlock:setTile;
+	let destroyLastParam = bypassState?false:0;
 	if(mode == "cube") {
 		for(var blockX = - range; blockX <= range; blockX++) {
 			for(var blockY = - range; blockY <= range; blockY++) {
@@ -16175,13 +16179,13 @@ function previewScreen(fromDashboard) {
 			try {
 				VertexClientPE.checkGUINeedsDismiss();
 
-				var previewMenuLayout = new LinearLayout_(CONTEXT);
+				let previewMenuLayout = new LinearLayout_(CONTEXT);
 				previewMenuLayout.setOrientation(1);
 				previewMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-				var previewMenuLayoutScroll = new ScrollView_(CONTEXT);
+				let previewMenuLayoutScroll = new ScrollView_(CONTEXT);
 
-				var previewMenuLayout1 = new LinearLayout_(CONTEXT);
+				let previewMenuLayout1 = new LinearLayout_(CONTEXT);
 				previewMenuLayout1.setOrientation(1);
 				previewMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
 				previewMenuLayout1.setPadding(10, 0, 10, 0);
@@ -16189,13 +16193,11 @@ function previewScreen(fromDashboard) {
 				previewMenuLayoutScroll.addView(previewMenuLayout);
 				previewMenuLayout1.addView(previewMenuLayoutScroll);
 
-				//Webview: set url to latest preview vid
+				let previewWebView = new WebView_(CONTEXT);
+				let wS = previewWebView.getSettings();
 
-				var previewWebView = new WebView_(CONTEXT);
-				var wS = previewWebView.getSettings();
-
-				var previewLatestUrl = "http://bit.ly/VertexListEmbed";
-				var frameVideo = "<html><body><center><iframe width=\"420\" height=\"315\" src=\"" + previewLatestUrl + "\" frameborder=\"0\" allowfullscreen></iframe></center></body></html>";
+				let previewLatestUrl = "http://bit.ly/VertexListEmbed";
+				let frameVideo = "<html><body><center><iframe width=\"420\" height=\"315\" src=\"" + previewLatestUrl + "\" frameborder=\"0\" allowfullscreen></iframe></center></body></html>";
 
 				wS.setJavaScriptEnabled(true);
 				previewWebView.setBackgroundColor(0x00000000);
@@ -16211,6 +16213,56 @@ function previewScreen(fromDashboard) {
 				screenUI.setOnDismissListener(new PopupWindow_.OnDismissListener() {
 					onDismiss: function() {
 						previewWebView.loadUrl("about:blank");
+					}
+				});
+				screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
+			} catch(error) {
+				print("An error occurred: " + error);
+			}
+		}
+	}));
+}
+
+let chatWebView;
+
+function chatScreen(fromDashboard) {
+	VertexClientPE.menuIsShowing = true;
+	CONTEXT.runOnUiThread(new Runnable_({
+		run: function() {
+			try {
+				let display = CONTEXT.getWindowManager().getDefaultDisplay(),
+				width = display.getWidth(),
+				height = display.getHeight();
+
+				VertexClientPE.checkGUINeedsDismiss();
+
+				let chatMenuLayout = new LinearLayout_(CONTEXT);
+				chatMenuLayout.setOrientation(1);
+				chatMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
+
+				if(chatWebView == null) {
+					chatWebView = new WebView_(CONTEXT);
+					let wS = chatWebView.getSettings();
+
+					let frameChat = "<html><body><center><iframe src='https://docs.google.com/forms/d/e/1FAIpQLSeMITAXYXh895mqS4gS4AGru0CZjCeYg1B1ClJClyKTAHEYVg/viewform?embedded=true' width='100%' height='800' frameborder='0' marginheight='0' marginwidth='0'>Loading...</iframe></center></body></html>";
+
+					wS.setJavaScriptEnabled(true);
+					chatWebView.setWebChromeClient(new WebChromeClient_());
+					chatWebView.setWebViewClient(new WebViewClient_());
+
+					chatWebView.loadData(frameChat, "text/html", "utf-8");
+				}
+
+				chatMenuLayout.addView(chatWebView);
+
+				screenUI = new PopupWindow_(chatMenuLayout, width, height - barLayoutHeight, true);
+				screenUI.setBackgroundDrawable(backgroundGradient());
+				screenUI.setOnDismissListener(new PopupWindow_.OnDismissListener() {
+					onDismiss: function() {
+						if(barUI != null && barUI.isShowing()) {
+							barUI.dismiss();
+						}
+						chatMenuLayout.removeView(chatWebView);
 					}
 				});
 				screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
@@ -16460,12 +16512,12 @@ function christmasScreen(fromDashboard) {
 				circleButton.setSelected(true);
 				circleButton.setSingleLine();
 
-				var daysLeft;
+				let daysLeft;
 				if(VertexClientPE.Utils.day <= 25) {
 					daysLeft = 25 - VertexClientPE.Utils.day;
 				}
 
-				var circleText;
+				let circleText;
 				if(daysLeft != null && daysLeft != 0) {
 					circleText = daysLeft.toString() + " days left until Christmas!";
 				} else if(daysLeft == 0) {
