@@ -10069,6 +10069,12 @@ VertexClientPE.healthTags = function() {
 			if(Entity.getEntityTypeId(mob) == 27) {
 				mobName = "Zombie Horse";
 			}
+			if(Entity.getEntityTypeId(mob) == 28) {
+				mobName = "Polar Bear";
+			}
+			if(Entity.getEntityTypeId(mob) == 29) {
+				mobName = "Llama";
+			}
 			if(Entity.getEntityTypeId(mob) == 32) {
 				mobName = "Zombie";
 			}
@@ -10116,6 +10122,24 @@ VertexClientPE.healthTags = function() {
 			}
 			if(Entity.getEntityTypeId(mob) == 47) {
 				mobName = "Husk";
+			}
+			if(Entity.getEntityTypeId(mob) == 49) {
+				mobName = "Guardian";
+			}
+			if(Entity.getEntityTypeId(mob) == 50) {
+				mobName = "Elder Guardian";
+			}
+			if(Entity.getEntityTypeId(mob) == 54) {
+				mobName = "Shulker";
+			}
+			if(Entity.getEntityTypeId(mob) == 57) {
+				mobName = "Vindicator";
+			}
+			if(Entity.getEntityTypeId(mob) == 104) {
+				mobName = "Evoker";
+			}
+			if(Entity.getEntityTypeId(mob) == 105) {
+				mobName = "Vex";
 			}
 			if(mobName != null) {
 				Entity.setNameTag(mob, nameColor + mobName + " " + healthColor + Entity.getHealth(mob) + "/" + Entity.getMaxHealth(mob));
