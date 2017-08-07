@@ -3144,6 +3144,7 @@ var tpAura = {
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
+	credits: "GodSoft029",
 	isStateMod: function() {
 		return true;
 	},
@@ -3996,6 +3997,7 @@ var aimbot = {
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
+	credits: "GodSoft029",
 	getSettingsLayout: function() {
 		let aimbotSettingsLayout = new LinearLayout_(CONTEXT);
 		aimbotSettingsLayout.setOrientation(1);
@@ -7275,7 +7277,6 @@ VertexClientPE.showHacksListManagerDialog = function() {
 				settingsTitleLayout.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
 				settingsTitleLayout.setGravity(Gravity_.CENTER);
 				settingsTitleLayout.addView(settingsTitle);
-				//let settingsTitle = clientScreenTitle("Settings", null, themeSetting);
 				let hacksListManagerTitle = clientTextView("Hacks list Manager", true);
 				hacksListManagerTitle.setGravity(Gravity_.CENTER);
 				let hacksListManagerEnter = clientTextView("");
@@ -8324,7 +8325,7 @@ VertexClientPE.getSavedModState = function(defaultName) {
 	return sharedPref.getBoolean("VertexClientPE.mods." + defaultName + ".state", false);
 }
 
-var modDialogShowing = false;
+let modDialogShowing = false;
 
 VertexClientPE.showModDialog = function(mod, btn) {
 	if(modDialogShowing) {
@@ -8369,7 +8370,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
 				modTitleLayout.addView(modTitle);
 				modTitleLayout.addView(modEditButton);
 				modTitleLayout.addView(modFavButton);
-				var type = "Type: " + mod.type;
+				let type = "Type: " + mod.type;
 				let isExpMod = (mod.hasOwnProperty("isExpMod") && mod.isExpMod());
 				let isSingleplayerOnlyMod = mod.singleplayerOnly;
 				let isMultiplayerOnlyMod = mod.multiplayerOnly;
@@ -8543,12 +8544,12 @@ VertexClientPE.showSongDialog = function(song, songBtn, playBar) {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				var songLayout = songBtn.getParent().getParent();
-				var songTitleLayout = new LinearLayout_(CONTEXT);
+				let songLayout = songBtn.getParent().getParent();
+				let songTitleLayout = new LinearLayout_(CONTEXT);
 				songTitleLayout.setOrientation(LinearLayout_.HORIZONTAL);
-				var songTitle = clientTextView(song.title, true);
+				let songTitle = clientTextView(song.title, true);
 				songTitle.setTextSize(20);
-				var songFavButton = new Button_(CONTEXT);
+				let songFavButton = new Button_(CONTEXT);
 				songFavButton.setLayoutParams(new LinearLayout_.LayoutParams(64, 64));
 				if(sharedPref.getString("VertexClientPE.songs." + song.title + ".isFavorite", "false") == "true") {
 					songFavButton.setBackgroundDrawable(CONTEXT.getResources().getDrawable(android.R.drawable.btn_star_big_on));
@@ -8581,16 +8582,16 @@ VertexClientPE.showSongDialog = function(song, songBtn, playBar) {
 				songTitleLayout.addView(songTitle);
 				songTitleLayout.addView(songFavButton);
 
-				var songArtistText = clientTextView("Artist: " + song.artist);
-				var songGenreText = clientTextView("Genre: " + song.genre + "\n");
-				var closeButton = clientButton("Close");
+				let songArtistText = clientTextView("Artist: " + song.artist);
+				let songGenreText = clientTextView("Genre: " + song.genre + "\n");
+				let closeButton = clientButton("Close");
 				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
 				closeButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
 						songDialog.dismiss();
 					}
 				});
-				var dialogLayout = new LinearLayout_(CONTEXT);
+				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
 				dialogLayout.setPadding(10, 10, 10, 10);
@@ -8602,11 +8603,11 @@ VertexClientPE.showSongDialog = function(song, songBtn, playBar) {
 				dialogLayout.addView(songGenreText);
 				dialogLayout.addView(clientTextView("\n"));
 
-				var settingsLinearLayout = new ScrollView_(CONTEXT);
+				let settingsLinearLayout = new ScrollView_(CONTEXT);
 				settingsLinearLayout.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels, display.heightPixels / 3));
-				var settingsScrollView = new ScrollView_(CONTEXT);
+				let settingsScrollView = new ScrollView_(CONTEXT);
 
-				var dialogExtraLayout = new LinearLayout_(CONTEXT);
+				let dialogExtraLayout = new LinearLayout_(CONTEXT);
 				dialogExtraLayout.setOrientation(LinearLayout_.HORIZONTAL);
 				dialogLayout.addView(dialogExtraLayout);
 				dialogExtraLayoutLeft = new LinearLayout_(CONTEXT);
@@ -8621,7 +8622,7 @@ VertexClientPE.showSongDialog = function(song, songBtn, playBar) {
 				dialogExtraLayout.addView(dialogExtraLayoutRight);
 				closeButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 3, display.heightPixels / 10));
 				dialogExtraLayoutLeft.addView(closeButton);
-				var downloadButton = clientButton("Download");
+				let downloadButton = clientButton("Download");
 				downloadButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 3, display.heightPixels / 10));
 				downloadButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
@@ -8641,7 +8642,7 @@ VertexClientPE.showSongDialog = function(song, songBtn, playBar) {
 					}
 				});
 				songDialog.show();
-				var window = songDialog.getWindow();
+				let window = songDialog.getWindow();
 				window.setLayout(display.widthPixels, display.heightPixels);
 			} catch(e) {
 				print("Error: " + e);
@@ -8674,16 +8675,16 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 	try {
 		CONTEXT.runOnUiThread(new Runnable_() {
 			run: function() {
-				var tileDropDownLayout = new LinearLayout_(CONTEXT);
+				let tileDropDownLayout = new LinearLayout_(CONTEXT);
 				tileDropDownLayout.setPadding(10, 10, 10, 10);
 				tileDropDownLayout.setOrientation(1);
 				tileDropDownLayout.setGravity(android.view.Gravity.CENTER);
 
-				var currentName = sharedPref.getString("VertexClientPE.tiles." + defaultName + ".name", defaultName);
-				var currentColor = sharedPref.getString("VertexClientPE.tiles." + defaultName + ".color", defaultColor);
-				var currentUseLightColor = sharedPref.getBoolean("VertexClientPE.tiles." + defaultName + ".useLightColor", defaultUseLightColor);
+				let currentName = sharedPref.getString("VertexClientPE.tiles." + defaultName + ".name", defaultName);
+				let currentColor = sharedPref.getString("VertexClientPE.tiles." + defaultName + ".color", defaultColor);
+				let currentUseLightColor = sharedPref.getBoolean("VertexClientPE.tiles." + defaultName + ".useLightColor", defaultUseLightColor);
 
-				var tileDropDownEditText = clientEditText(currentName, "diff");
+				let tileDropDownEditText = clientEditText(currentName, "diff");
 				tileDropDownEditText.setInputType(InputType_.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 				tileDropDownEditText.addTextChangedListener(new TextWatcher_() {
 					afterTextChanged: function() {
@@ -8694,7 +8695,7 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 					}
 				});
 
-				var tileFavButton = new clientButton("Favorite");
+				let tileFavButton = new clientButton("Favorite");
 				if(sharedPref.getString("VertexClientPE.tiles." + defaultName + ".isFavorite", "false") == "true") {
 					tileFavButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.btn_star_big_on, 0, 0, 0);
 				} else {
@@ -8714,7 +8715,7 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 					}
 				});
 
-				var tileDropDownCurrentColorButton = clientButton(capitalizeColorString(currentColor));
+				let tileDropDownCurrentColorButton = clientButton(capitalizeColorString(currentColor));
 				tileDropDownCurrentColorButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(v) {
 						if(currentColor == "green") {
@@ -8758,7 +8759,7 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 					}
 				}));
 
-				var tileDropDownUseLightColorCheckBox = clientCheckBox("Lighter color", "diff");
+				let tileDropDownUseLightColorCheckBox = clientCheckBox("Lighter color", "diff");
 				tileDropDownUseLightColorCheckBox.setChecked(currentUseLightColor);
 				tileDropDownUseLightColorCheckBox.setEnabled(!(currentColor != "green" && currentColor != "red" && currentColor != "blue"));
 				tileDropDownUseLightColorCheckBox.setOnClickListener(new View_.OnClickListener() {
@@ -8770,8 +8771,8 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 					}
 				});
 
-				var tileDropDownResetButton = clientButton("Reset");
-				tileDropDownResetButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.stat_notify_sync, 0  , 0, 0);
+				let tileDropDownResetButton = clientButton("Reset");
+				tileDropDownResetButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.stat_notify_sync, 0, 0, 0);
 				tileDropDownResetButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(v) {
 						currentName = defaultName;
@@ -8791,15 +8792,14 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 
 				tileDropDownLayout.addView(tileDropDownEditText);
 				if(tile.source) {
-					var tileSourceTextView = clientTextView("Source: " + tile.source);
-					tileDropDownLayout.addView(tileSourceTextView);
+					tileDropDownLayout.addView(clientTextView("Source: " + tile.source));
 				}
 				tileDropDownLayout.addView(tileFavButton);
 				tileDropDownLayout.addView(tileDropDownCurrentColorButton);
 				tileDropDownLayout.addView(tileDropDownUseLightColorCheckBox);
 				tileDropDownLayout.addView(tileDropDownResetButton);
 
-				var tileDropDown = new PopupWindow_(tileDropDownLayout, LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT, true);
+				let tileDropDown = new PopupWindow_(tileDropDownLayout, LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT, true);
 				tileDropDown.setWidth(LinearLayout_.LayoutParams.WRAP_CONTENT);
 				tileDropDown.setHeight(LinearLayout_.LayoutParams.WRAP_CONTENT);
 				tileDropDown.setBackgroundDrawable(backgroundSpecial(null, "#212121|#ffffff"));
@@ -8813,8 +8813,6 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 					}
 				});
 
-				//sharedPref.getString("VertexClientPE.tiles." + tileText + ".color", tileColor)
-
 				tileDropDown.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.CENTER, 0, 0);
 			}
 		});
@@ -8827,35 +8825,35 @@ VertexClientPE.showItemGiverDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				var itemGiverTitle = clientTextView("ItemGiver", true);
+				let itemGiverTitle = clientTextView("ItemGiver", true);
 				itemGiverTitle.setTextSize(25);
-				var closeButton = clientButton("Close");
+				let closeButton = clientButton("Close");
 				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
-				var dialogLayoutBase = new LinearLayout_(CONTEXT);
+				let dialogLayoutBase = new LinearLayout_(CONTEXT);
 				dialogLayoutBase.setOrientation(1);
 				dialogLayoutBase.setPadding(10, 10, 10, 10);
-				var dialogLayoutBody = new LinearLayout_(CONTEXT);
+				let dialogLayoutBody = new LinearLayout_(CONTEXT);
 				dialogLayoutBody.setOrientation(LinearLayout_.HORIZONTAL);
-				var dialogLayoutBodyLeftWrap = new LinearLayout_(CONTEXT);
+				let dialogLayoutBodyLeftWrap = new LinearLayout_(CONTEXT);
 				dialogLayoutBodyLeftWrap.setOrientation(1);
 				dialogLayoutBodyLeftWrap.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels - display.widthPixels / 3 - 10, LinearLayout_.LayoutParams.WRAP_CONTENT));
 				dialogLayoutBodyLeftWrap.setPadding(0, 0, dip2px(1), 0);
-				var dialogLayoutBodyLeftScroll = new ScrollView_(CONTEXT);
-				var dialogLayoutBodyRightWrap = new LinearLayout_(CONTEXT);
+				let dialogLayoutBodyLeftScroll = new ScrollView_(CONTEXT);
+				let dialogLayoutBodyRightWrap = new LinearLayout_(CONTEXT);
 				dialogLayoutBodyRightWrap.setOrientation(1);
 				dialogLayoutBodyRightWrap.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3 - 10, LinearLayout_.LayoutParams.WRAP_CONTENT));
 				dialogLayoutBodyRightWrap.setPadding(dip2px(1), 0, 0, 0);
-				var dialogLayoutBodyRightScroll = new ScrollView_(CONTEXT);
-				var dialogTableLayout = new TableLayout_(CONTEXT);
-				var dialogTableRow;
-				var itemNameText = clientTextView("Name: Unknown");
-				var itemIdInput = clientEditText();
+				let dialogLayoutBodyRightScroll = new ScrollView_(CONTEXT);
+				let dialogTableLayout = new TableLayout_(CONTEXT);
+				let dialogTableRow;
+				let itemNameText = clientTextView("Name: Unknown");
+				let itemIdInput = clientEditText();
 				itemIdInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
 				itemIdInput.setHint("Id");
-				var itemAmountInput = clientEditText();
+				let itemAmountInput = clientEditText();
 				itemAmountInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
 				itemAmountInput.setHint("Amount");
-				var itemDataInput = clientEditText();
+				let itemDataInput = clientEditText();
 				itemDataInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
 				itemDataInput.setHint("Data");
 
@@ -8876,7 +8874,7 @@ VertexClientPE.showItemGiverDialog = function() {
 					}
 				});
 
-				var itemGiveButton = clientButton("Give");
+				let itemGiveButton = clientButton("Give");
 				itemGiveButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(viewArg) {
 						let itemId = itemIdInput.getText();
@@ -8891,7 +8889,7 @@ VertexClientPE.showItemGiverDialog = function() {
 					}
 				});
 
-				var dialogRightLayout = new LinearLayout_(CONTEXT);
+				let dialogRightLayout = new LinearLayout_(CONTEXT);
 				dialogRightLayout.setOrientation(1);
 
 				dialogRightLayout.addView(itemNameText);
@@ -8911,13 +8909,13 @@ VertexClientPE.showItemGiverDialog = function() {
 				dialogLayoutBody.addView(dialogLayoutBodyRightWrap);
 				dialogLayoutBase.addView(dialogLayoutBody);
 
-				var dialog = new Dialog_(CONTEXT);
+				let dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayoutBase);
 				dialog.setTitle("ItemGiver");
 				dialog.show();
-				var window = dialog.getWindow();
+				let window = dialog.getWindow();
 				window.setLayout(display.widthPixels, display.heightPixels);
 				closeButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
@@ -8966,36 +8964,36 @@ VertexClientPE.showEnchantItDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				var enchantItTitle = clientTextView("EnchantIt", true);
+				let enchantItTitle = clientTextView("EnchantIt", true);
 				enchantItTitle.setTextSize(25);
-				var closeButton = clientButton("Close");
+				let closeButton = clientButton("Close");
 				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
-				var dialogLayoutBase = new LinearLayout_(CONTEXT);
+				let dialogLayoutBase = new LinearLayout_(CONTEXT);
 				dialogLayoutBase.setOrientation(1);
 				dialogLayoutBase.setPadding(10, 10, 10, 10);
-				var dialogLayoutBody = new LinearLayout_(CONTEXT);
+				let dialogLayoutBody = new LinearLayout_(CONTEXT);
 				dialogLayoutBody.setOrientation(LinearLayout_.HORIZONTAL);
-				var dialogLayoutBodyLeftWrap = new LinearLayout_(CONTEXT);
+				let dialogLayoutBodyLeftWrap = new LinearLayout_(CONTEXT);
 				dialogLayoutBodyLeftWrap.setOrientation(1);
 				dialogLayoutBodyLeftWrap.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels - display.widthPixels / 3 - 10, LinearLayout_.LayoutParams.WRAP_CONTENT));
 				dialogLayoutBodyLeftWrap.setPadding(0, 0, dip2px(1), 0);
-				var dialogLayoutBodyLeftScroll = new ScrollView_(CONTEXT);
-				var dialogLayoutBodyRightWrap = new LinearLayout_(CONTEXT);
+				let dialogLayoutBodyLeftScroll = new ScrollView_(CONTEXT);
+				let dialogLayoutBodyRightWrap = new LinearLayout_(CONTEXT);
 				dialogLayoutBodyRightWrap.setOrientation(1);
 				dialogLayoutBodyRightWrap.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3 - 10, LinearLayout_.LayoutParams.WRAP_CONTENT));
 				dialogLayoutBodyRightWrap.setPadding(dip2px(1), 0, 0, 0);
-				var dialogLayoutBodyRightScroll = new ScrollView_(CONTEXT);
-				var dialogTableLayout = new TableLayout_(CONTEXT);
-				var dialogTableRow;
-				var enchantmentNameText = clientTextView("Enchantment: " + selectedEnchantment[0]);
-				var slotInput = clientEditText();
+				let dialogLayoutBodyRightScroll = new ScrollView_(CONTEXT);
+				let dialogTableLayout = new TableLayout_(CONTEXT);
+				let dialogTableRow;
+				let enchantmentNameText = clientTextView("Enchantment: " + selectedEnchantment[0]);
+				let slotInput = clientEditText();
 				slotInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
 				slotInput.setHint("Slot");
-				var levelInput = clientEditText();
+				let levelInput = clientEditText();
 				levelInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
 				levelInput.setHint("Level");
 
-				var enchantmentAddButton = clientButton("Add enchantment");
+				let enchantmentAddButton = clientButton("Add enchantment");
 				enchantmentAddButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(viewArg) {
 						let slot = slotInput.getText();
@@ -9023,7 +9021,7 @@ VertexClientPE.showEnchantItDialog = function() {
 					}
 				});
 
-				var dialogRightLayout = new LinearLayout_(CONTEXT);
+				let dialogRightLayout = new LinearLayout_(CONTEXT);
 				dialogRightLayout.setOrientation(1);
 
 				dialogRightLayout.addView(enchantmentNameText);
@@ -9042,13 +9040,13 @@ VertexClientPE.showEnchantItDialog = function() {
 				dialogLayoutBody.addView(dialogLayoutBodyRightWrap);
 				dialogLayoutBase.addView(dialogLayoutBody);
 
-				var dialog = new Dialog_(CONTEXT);
+				let dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayoutBase);
 				dialog.setTitle("EnchantIt");
 				dialog.show();
-				var window = dialog.getWindow();
+				let window = dialog.getWindow();
 				window.setLayout(display.widthPixels, display.heightPixels);
 				closeButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
@@ -9095,37 +9093,37 @@ VertexClientPE.showTeleportDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				var teleportTitle = clientTextView("Teleport", true);
+				let teleportTitle = clientTextView("Teleport", true);
 				teleportTitle.setTextSize(25);
-				var closeButton = clientButton("Close");
+				let closeButton = clientButton("Close");
 				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
-				var dialogLayoutBase = new LinearLayout_(CONTEXT);
+				let dialogLayoutBase = new LinearLayout_(CONTEXT);
 				dialogLayoutBase.setOrientation(1);
 				dialogLayoutBase.setPadding(10, 10, 10, 10);
-				var dialogLayoutBody = new LinearLayout_(CONTEXT);
+				let dialogLayoutBody = new LinearLayout_(CONTEXT);
 				dialogLayoutBody.setOrientation(LinearLayout_.HORIZONTAL);
-				var dialogLayoutBodyLeftWrap = new LinearLayout_(CONTEXT);
+				let dialogLayoutBodyLeftWrap = new LinearLayout_(CONTEXT);
 				dialogLayoutBodyLeftWrap.setOrientation(1);
 				dialogLayoutBodyLeftWrap.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels - display.widthPixels / 3 - 10, LinearLayout_.LayoutParams.WRAP_CONTENT));
 				dialogLayoutBodyLeftWrap.setPadding(0, 0, dip2px(1), 0);
-				var dialogLayoutBodyLeftScroll = new ScrollView_(CONTEXT);
-				var dialogLayoutBodyRightWrap = new LinearLayout_(CONTEXT);
+				let dialogLayoutBodyLeftScroll = new ScrollView_(CONTEXT);
+				let dialogLayoutBodyRightWrap = new LinearLayout_(CONTEXT);
 				dialogLayoutBodyRightWrap.setOrientation(1);
 				dialogLayoutBodyRightWrap.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3 - 10, LinearLayout_.LayoutParams.WRAP_CONTENT));
 				dialogLayoutBodyRightWrap.setPadding(dip2px(1), 0, 0, 0);
-				var dialogLayoutBodyRightScroll = new ScrollView_(CONTEXT);
-				var dialogLeftLayout = new LinearLayout_(CONTEXT);
+				let dialogLayoutBodyRightScroll = new ScrollView_(CONTEXT);
+				let dialogLeftLayout = new LinearLayout_(CONTEXT);
 				dialogLeftLayout.setOrientation(1);
-				var dialogTableRow;
-				var tempButton;
-				var teleportNameText = clientTextView("Teleport location: Unknown");
-				var teleportXInput = clientEditText();
+				let dialogTableRow;
+				let tempButton;
+				let teleportNameText = clientTextView("Teleport location: Unknown");
+				let teleportXInput = clientEditText();
 				teleportXInput.setInputType(InputType_.TYPE_CLASS_NUMBER | InputType_.TYPE_NUMBER_FLAG_SIGNED);
 				teleportXInput.setHint("X");
-				var teleportYInput = clientEditText();
+				let teleportYInput = clientEditText();
 				teleportYInput.setInputType(InputType_.TYPE_CLASS_NUMBER | InputType_.TYPE_NUMBER_FLAG_SIGNED);
 				teleportYInput.setHint("Y");
-				var teleportZInput = clientEditText();
+				let teleportZInput = clientEditText();
 				teleportZInput.setInputType(InputType_.TYPE_CLASS_NUMBER | InputType_.TYPE_NUMBER_FLAG_SIGNED);
 				teleportZInput.setHint("Z");
 
@@ -9165,7 +9163,7 @@ VertexClientPE.showTeleportDialog = function() {
 					}
 				});
 
-				var teleportButton = clientButton("Teleport");
+				let teleportButton = clientButton("Teleport");
 				teleportButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(viewArg) {
 						let tpX = teleportXInput.getText();
@@ -9180,7 +9178,7 @@ VertexClientPE.showTeleportDialog = function() {
 					}
 				});
 
-				var deathTeleportButton = clientButton("Last death");
+				let deathTeleportButton = clientButton("Last death");
 				deathTeleportButton.setTextColor(Color_.RED);
 				deathTeleportButton.setLayoutParams(new ViewGroup_.LayoutParams((display.widthPixels - display.widthPixels / 3 - 10 - dip2px(1)) / 2, LinearLayout_.LayoutParams.WRAP_CONTENT));
 				deathTeleportButton.setOnClickListener(new View_.OnClickListener() {
@@ -9196,7 +9194,7 @@ VertexClientPE.showTeleportDialog = function() {
 
 				//var comingSoonText = clientTextView("\nSaved teleport locations are coming soon!");
 				//dialogLeftLayout.addView(comingSoonText);
-				var dialogRightLayout = new LinearLayout_(CONTEXT);
+				let dialogRightLayout = new LinearLayout_(CONTEXT);
 				dialogRightLayout.setOrientation(1);
 
 				dialogRightLayout.addView(teleportNameText);
@@ -9216,13 +9214,13 @@ VertexClientPE.showTeleportDialog = function() {
 				dialogLayoutBody.addView(dialogLayoutBodyRightWrap);
 				dialogLayoutBase.addView(dialogLayoutBody);
 				//dialogLayout.addView(dialogTableLayout);
-				var dialog = new Dialog_(CONTEXT);
+				let dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayoutBase);
 				dialog.setTitle("Teleport");
 				dialog.show();
-				var window = dialog.getWindow();
+				let window = dialog.getWindow();
 				window.setLayout(display.widthPixels, display.heightPixels);
 				closeButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
@@ -9237,24 +9235,24 @@ VertexClientPE.showTeleportDialog = function() {
 	});
 }
 
-var accountNameInput;
-var accountClientIdInput;
-var accountName = "unknown";
-var accountClientId = "unknown";
+let accountNameInput;
+let accountClientIdInput;
+let accountName = "unknown";
+let accountClientId = "unknown";
 
 VertexClientPE.showAddAccountDialog = function(showBackButton, title) {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				var accountTitle = clientTextView("Add account", true);
+				let accountTitle = clientTextView("Add account", true);
 				accountNameInput = clientEditText();
 				accountNameInput.setSingleLine(true);
 				accountNameInput.setHint("Enter an username");
 				/* accountClientIdInput = clientEditText();
 				accountClientIdInput.setHint("Enter a client id (wip, added later)"); */
-				var okButton = clientButton("Ok");
-				var cancelButton = clientButton("Cancel");
-				var dialogLayout = new LinearLayout_(CONTEXT);
+				let okButton = clientButton("Ok");
+				let cancelButton = clientButton("Cancel");
+				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
 				dialogLayout.setPadding(10, 10, 10, 10);
@@ -9263,7 +9261,7 @@ VertexClientPE.showAddAccountDialog = function(showBackButton, title) {
 				//dialogLayout.addView(accountClientIdInput);
 				dialogLayout.addView(okButton);
 				dialogLayout.addView(cancelButton);
-				var dialog = new Dialog_(CONTEXT);
+				let dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
@@ -9311,22 +9309,21 @@ VertexClientPE.showAddFriendDialog = function(showBackButton, title, icon) {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				var friendTitle = clientTextView("Add friend", true);
+				let friendTitle = clientTextView("Add friend", true);
 				friendNameInput = clientEditText();
 				friendNameInput.setSingleLine(true);
 				friendNameInput.setHint("Enter an username");
-				var okButton = clientButton("Ok");
-				var cancelButton = clientButton("Cancel");
-				var dialogLayout = new LinearLayout_(CONTEXT);
+				let okButton = clientButton("Ok");
+				let cancelButton = clientButton("Cancel");
+				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
 				dialogLayout.setPadding(10, 10, 10, 10);
 				dialogLayout.addView(friendTitle);
 				dialogLayout.addView(friendNameInput);
-				//dialogLayout.addView(accountClientIdInput);
 				dialogLayout.addView(okButton);
 				dialogLayout.addView(cancelButton);
-				var dialog = new Dialog_(CONTEXT);
+				let dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
@@ -9339,7 +9336,6 @@ VertexClientPE.showAddFriendDialog = function(showBackButton, title, icon) {
 							VertexClientPE.toast("Enter an username!");
 							return;
 						}
-						//accountClientId = accountClientIdInput.getText().toString();
 						if(VertexClientPE.friends.length() != undefined && VertexClientPE.friends.length() != undefined) {
 							for(var i = 0; i < VertexClientPE.friends.length(); i++) {
 								if(VertexClientPE.friends.get(i) == friendName) {
@@ -9374,11 +9370,11 @@ VertexClientPE.showAddonDialog = function(addon) {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				var dialogTitle = clientTextView(addon.name);
+				let dialogTitle = clientTextView(addon.name);
 				dialogTitle.setTextSize(25);
-				var dialogTargetVersion = clientTextView("Target version: " + addon.target_version);
-				var btn = clientButton("Close");
-				var dialogLayout = new LinearLayout_(CONTEXT);
+				let dialogTargetVersion = clientTextView("Target version: " + addon.target_version);
+				let btn = clientButton("Close");
+				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
 				dialogLayout.setPadding(10, 10, 10, 10);
@@ -9395,7 +9391,7 @@ VertexClientPE.showAddonDialog = function(addon) {
 				dialogLayout.addView(dialogTargetVersion);
 				dialogLayout.addView(clientTextView("File name: " + addon.scriptName + "\n"));
 				dialogLayout.addView(btn);
-				var dialog = new Dialog_(CONTEXT);
+				let dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
@@ -9418,28 +9414,28 @@ VertexClientPE.showBasicDialog = function(title, view, onDialogDismiss, extraVie
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				var dialogTitle = clientTextView(title);
+				let dialogTitle = clientTextView(title);
 				dialogTitle.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
 				dialogTitle.setMarqueeRepeatLimit(-1);
 				dialogTitle.setSingleLine();
 				dialogTitle.setHorizontallyScrolling(true);
 				dialogTitle.setSelected(true);
 				dialogTitle.setTextSize(25);
-				var btn = clientButton("Close");
+				let btn = clientButton("Close");
 				btn.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
 						dialog.dismiss();
 					}
 				});
 
-				var dialogLayout1 = new LinearLayout_(CONTEXT);
+				let dialogLayout1 = new LinearLayout_(CONTEXT);
 				dialogLayout1.setBackgroundDrawable(backgroundGradient());
 				dialogLayout1.setOrientation(LinearLayout_.VERTICAL);
 				dialogLayout1.setPadding(10, 10, 10, 10);
 
-				var dialogScrollView = new ScrollView_(CONTEXT);
+				let dialogScrollView = new ScrollView_(CONTEXT);
 				dialogScrollView.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2, display.heightPixels / 2));
-				var dialogLayout = new LinearLayout_(CONTEXT);
+				let dialogLayout = new LinearLayout_(CONTEXT);
 
 				dialogLayout.addView(view);
 				dialogScrollView.addView(dialogLayout);
@@ -9451,7 +9447,7 @@ VertexClientPE.showBasicDialog = function(title, view, onDialogDismiss, extraVie
 				}
 				dialogLayout1.addView(btn);
 
-				var dialog = new Dialog_(CONTEXT);
+				let dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout1);
@@ -9510,11 +9506,11 @@ VertexClientPE.showJavascriptConsoleDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				var javascriptConsoleTitle = clientTextView("Javascript Console", true);
-				var btn = clientButton("Send");
-				var btn1 = clientButton("Cancel");
-				var inputBar = clientEditText();
-				var dialogLayout = new LinearLayout_(CONTEXT);
+				let javascriptConsoleTitle = clientTextView("Javascript Console", true);
+				let btn = clientButton("Send");
+				let btn1 = clientButton("Cancel");
+				let inputBar = clientEditText();
+				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
 				dialogLayout.setPadding(10, 10, 10, 10);
@@ -9522,46 +9518,67 @@ VertexClientPE.showJavascriptConsoleDialog = function() {
 				dialogLayout.addView(inputBar);
 				dialogLayout.addView(btn);
 				dialogLayout.addView(btn1);
-				var dialog = new Dialog_(CONTEXT);
+				let dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
-				dialog.setTitle("Javascript Console");
-				inputBar.setHint("Javascript input");
+				dialog.setTitle("JavaScript Console");
+				inputBar.setHint("JavaScript input");
 				dialog.show();
 				btn.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
 						consoleInput = "js " + inputBar.getText();
-						var jsLine,
+						let jsLine,
 							funcResult,
 							jsRex = /(?:^js(?:\s+)(.*)$)|(?:^js$)/,
 							matches;
 
 						if(jsRex.test(consoleInput)) {
-
 							matches = jsRex.exec(consoleInput);
 
 							if(matches[1] === undefined || matches[1] === '') {
-							  print('Usage: js <JavaScript code>');
-							}
-							else {
-							  jsLine = matches[1];
-							  // Evaluate the second part of the command as a JavaScript snippet and collect the result
-							  try {
-								funcResult = eval(jsLine);
-							  }
-							  catch(e) {
-								clientMessage('JavaScript Error: ' + e.message);
-							  }
+								print('Usage: js <JavaScript code>');
+							} else {
+								jsLine = matches[1];
+								// Evaluate the second part of the command as a JavaScript snippet and collect the result
+								try {
+									funcResult = eval(jsLine);
+								} catch(e) {
+									clientMessage('JavaScript Error: ' + e.message);
+								}
 
-							  // If a value was returned, post it on the PE chat console
-							  if(funcResult != null) {
-								clientMessage(funcResult.toString());
-							  }
+								// If a value was returned, post it on the PE chat console
+								if(funcResult != null) {
+									clientMessage(funcResult.toString());
+								}
 							}
 						}
 					}
 				});
+				/*
+				btn.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(view) {
+						let jsLine = inputBar.getText(),
+							funcResult;
+
+						if(jsLine === undefined || jsLine.replaceAll(" ", "") == "") {
+							print("Usage: <JavaScript code>");
+						} else {
+							// Evaluate it as a JavaScript snippet and collect the result
+							try {
+								funcResult = eval(jsLine);
+							} catch(e) {
+								clientMessage("JavaScript Error: " + e.message);
+							}
+
+							// If a value was returned, post it on the PE chat console
+							if(funcResult != null) {
+								clientMessage(funcResult.toString());
+							}
+						}
+					}
+				});
+				*/
 				btn1.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
 						dialog.dismiss();
@@ -9582,17 +9599,17 @@ VertexClientPE.showCategoryDialog = function(titleView, currentName, categoryId)
 				if(titleView.getMiddleButton) {
 					titleView = titleView.getMiddleButton();
 				}
-				var categoryDialogTitle = clientTextView("Rename category \'" + currentName + "\'", true);
-				var btn = clientButton("Close");
-				var inputBar = clientEditText();
-				var dialogLayout = new LinearLayout_(CONTEXT);
+				let categoryDialogTitle = clientTextView("Rename category \'" + currentName + "\'", true);
+				let btn = clientButton("Close");
+				let inputBar = clientEditText();
+				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
 				dialogLayout.setPadding(10, 10, 10, 10);
 				dialogLayout.addView(categoryDialogTitle);
 				dialogLayout.addView(inputBar);
 				dialogLayout.addView(btn);
-				var dialog = new Dialog_(CONTEXT);
+				let dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
@@ -9648,12 +9665,12 @@ VertexClientPE.showButtonStrokeThicknessDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				var buttonStrokeThicknessDialogTitle = clientTextView("Change button stroke thickness", true);
-				var btn = clientButton("Close");
-				var buttonStrokeThicknessSettingDialogTitle = clientTextView("Button stroke thickness: | " + buttonStrokeThicknessSetting + " pixel(s)");
-				var buttonStrokeThicknessSettingDialogSlider = clientSeekBar();
-				var minButtonStrokeThickness = 1;
-				var maxButtonStrokeThickness = 10;
+				let buttonStrokeThicknessDialogTitle = clientTextView("Change button stroke thickness", true);
+				let btn = clientButton("Close");
+				let buttonStrokeThicknessSettingDialogTitle = clientTextView("Button stroke thickness: | " + buttonStrokeThicknessSetting + " pixel(s)");
+				let buttonStrokeThicknessSettingDialogSlider = clientSeekBar();
+				let minButtonStrokeThickness = 1;
+				let maxButtonStrokeThickness = 10;
 				buttonStrokeThicknessSettingDialogSlider.setProgress(buttonStrokeThicknessSetting - minButtonStrokeThickness);
 				buttonStrokeThicknessSettingDialogSlider.setMax(maxButtonStrokeThickness - minButtonStrokeThickness);
 				buttonStrokeThicknessSettingDialogSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
@@ -9662,7 +9679,7 @@ VertexClientPE.showButtonStrokeThicknessDialog = function() {
 						buttonStrokeThicknessSettingDialogTitle.setText("Button stroke thickness: | " + buttonStrokeThicknessSetting + " pixel(s)");
 					}
 				});
-				var dialogLayout = new LinearLayout_(CONTEXT);
+				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
 				dialogLayout.setPadding(10, 10, 10, 10);
@@ -9671,7 +9688,7 @@ VertexClientPE.showButtonStrokeThicknessDialog = function() {
 				dialogLayout.addView(buttonStrokeThicknessSettingDialogTitle);
 				dialogLayout.addView(buttonStrokeThicknessSettingDialogSlider);
 				dialogLayout.addView(btn);
-				var dialog = new Dialog_(CONTEXT);
+				let dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setTitle("Change button stroke thickness");
@@ -9700,11 +9717,11 @@ VertexClientPE.showDashboardTileSizeDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				var dashboardTileSizeDialogTitle = clientTextView("Change Dashboard tile size", true);
-				var btn = clientButton("Close");
-				var dashboardTileSizeSettingTitle = clientTextView("Dashboard tile size: | Screen width / " + dashboardTileSize);
-				var dashboardTileSizeSettingSlider = clientSeekBar();
-				var minDashboardTileSize = 1;
+				let dashboardTileSizeDialogTitle = clientTextView("Change Dashboard tile size", true);
+				let btn = clientButton("Close");
+				let dashboardTileSizeSettingTitle = clientTextView("Dashboard tile size: | Screen width / " + dashboardTileSize);
+				let dashboardTileSizeSettingSlider = clientSeekBar();
+				let minDashboardTileSize = 1;
 				dashboardTileSizeSettingSlider.setProgress(dashboardTileSize - minDashboardTileSize);
 				dashboardTileSizeSettingSlider.setMax(10 - minDashboardTileSize);
 				dashboardTileSizeSettingSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
@@ -9713,7 +9730,7 @@ VertexClientPE.showDashboardTileSizeDialog = function() {
 						dashboardTileSizeSettingTitle.setText("Dashboard tile size: | Screen width / " + dashboardTileSize);
 					}
 				});
-				var dialogLayout = new LinearLayout_(CONTEXT);
+				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
 				dialogLayout.setPadding(10, 10, 10, 10);
@@ -9722,7 +9739,7 @@ VertexClientPE.showDashboardTileSizeDialog = function() {
 				dialogLayout.addView(dashboardTileSizeSettingTitle);
 				dialogLayout.addView(dashboardTileSizeSettingSlider);
 				dialogLayout.addView(btn);
-				var dialog = new Dialog_(CONTEXT);
+				let dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setTitle("Change Dashboard tile size");
@@ -9750,17 +9767,17 @@ VertexClientPE.showWebbrowserStartPageDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				var webBrowserStartPageDialogTitle = clientTextView("Change Webbrowser startpage", true);
-				var btn = clientButton("Close");
-				var inputBar = clientEditText();
-				var dialogLayout = new LinearLayout_(CONTEXT);
+				let webBrowserStartPageDialogTitle = clientTextView("Change Webbrowser startpage", true);
+				let btn = clientButton("Close");
+				let inputBar = clientEditText();
+				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
 				dialogLayout.setPadding(10, 10, 10, 10);
 				dialogLayout.addView(webBrowserStartPageDialogTitle);
 				dialogLayout.addView(inputBar);
 				dialogLayout.addView(btn);
-				var dialog = new Dialog_(CONTEXT);
+				let dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
@@ -9797,18 +9814,6 @@ VertexClientPE.switchGameMode = function() {
 	} else if(Level.getGameMode() == 1) {
 		Level.setGameMode(0);
 	}
-}
-
-VertexClientPE.spectate = function(playerName) {
-	var entities = Entity.getAll();
-	for(var i in entities) {
-		if(Player.getName(entities[i])  == playerName || Entity.getNameTag(entities[i]) == playerName) {
-			ModPE.setCamera(entities[i]);
-			VertexClientPE.clientMessage("You're now spectating " + playerName + "!");
-			return;
-		}
-	}
-	VertexClientPE.clientMessage("Can't find player " + playerName + "!");
 }
 
 VertexClientPE.clientMessage = function(message) {
@@ -10355,9 +10360,9 @@ VertexClientPE.fancyChat = function(str) {
 			fancyChatEndChar = null;
 			break;
 	} */
-	var newMsg = "";
+	let newMsg = "";
 	for(i in fancyChatMsg.toCharArray()) {
-		var chr = fancyChatMsg.toCharArray()[i];
+		let chr = fancyChatMsg.toCharArray()[i];
 		if(chr >= 0x21 && chr <= 0x80) {
 			newMsg += new String_(Character_.toChars(chr + fancyChatEndChar));
 		} else {
@@ -10619,9 +10624,9 @@ VertexClientPE.loadFeaturesSettings = function() {
 
 VertexClientPE.saveCategorySettings = function() {
 	File_(settingsPath).mkdirs();
-	var newFile = new File_(settingsPath, "vertexclientpe_categories_new.txt");
+	let newFile = new File_(settingsPath, "vertexclientpe_categories_new.txt");
 	newFile.createNewFile();
-	var outWrite = new OutputStreamWriter_(new FileOutputStream_(newFile));
+	let outWrite = new OutputStreamWriter_(new FileOutputStream_(newFile));
 	outWrite.append(combatName.toString());
 	outWrite.append("," + worldName.toString());
 	outWrite.append("," + movementName.toString());
@@ -10649,9 +10654,9 @@ VertexClientPE.loadCategorySettings = function() {
 
 VertexClientPE.saveAccounts = function() {
 	File_(settingsPath).mkdirs();
-	var newFile = new File_(settingsPath, "vertexclientpe_accounts.dat");
+	let newFile = new File_(settingsPath, "vertexclientpe_accounts.dat");
 	newFile.createNewFile();
-	var stream = new FileOutputStream_(newFile);
+	let stream = new FileOutputStream_(newFile);
 	try {
 		stream.write(VertexClientPE.accounts.toString().getBytes());
 	} finally {
@@ -10661,9 +10666,9 @@ VertexClientPE.saveAccounts = function() {
 
 VertexClientPE.saveFriends = function() {
 	File_(settingsPath).mkdirs();
-	var newFile = new File_(settingsPath, "vertexclientpe_friends.dat");
+	let newFile = new File_(settingsPath, "vertexclientpe_friends.dat");
 	newFile.createNewFile();
-	var stream = new FileOutputStream_(newFile);
+	let stream = new FileOutputStream_(newFile);
 	try {
 		stream.write(VertexClientPE.friends.toString().getBytes());
 	} finally {
@@ -10675,10 +10680,10 @@ VertexClientPE.loadAccounts = function() {
 	try {
 		if(!File_(settingsPath + "vertexclientpe_accounts.dat").exists())
 			return;
-		var file = new File_(settingsPath + "vertexclientpe_accounts.dat");
-		var readed = (new BufferedReader_(new FileReader_(file)));
-		var data = new StringBuilder_();
-		var string;
+		let file = new File_(settingsPath + "vertexclientpe_accounts.dat");
+		let readed = (new BufferedReader_(new FileReader_(file)));
+		let data = new StringBuilder_();
+		let string;
 		while((string = readed.readLine()) != null) {
 			data.append(string);
 			data.append("\n");
@@ -10693,10 +10698,10 @@ VertexClientPE.loadFriends = function() {
 	try {
 		if(!File_(settingsPath + "vertexclientpe_friends.dat").exists())
 			return;
-		var file = new File_(settingsPath + "vertexclientpe_friends.dat");
-		var readed = (new BufferedReader_(new FileReader_(file)));
-		var data = new StringBuilder_();
-		var string;
+		let file = new File_(settingsPath + "vertexclientpe_friends.dat");
+		let readed = (new BufferedReader_(new FileReader_(file)));
+		let data = new StringBuilder_();
+		let string;
 		while((string = readed.readLine()) != null) {
 			data.append(string);
 			data.append("\n");
@@ -11298,14 +11303,14 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 	let rgbArray = [customRGBRed, customRGBGreen, customRGBBlue, customRGBRedStroke, customRGBGreenStroke, customRGBBlueStroke];
 
 	if(style != "android" && style != "invisible") {
-		var bg = GradientDrawable_();
+		let bg = GradientDrawable_();
 		if(round == true) {
 			bg.setCornerRadius(10);
 		} else if(round != false && round != null) {
-			var radiiFloatArray = Array_.newInstance(Float_.TYPE, 9);
-			var radius = 0;
+			let radiiFloatArray = Array_.newInstance(Float_.TYPE, 9);
+			let radius = 0;
 			if(round == "left") {
-				for(var i = 0; i <= 7; i++) {
+				for(let i = 0; i <= 7; i++) {
 					if(i == 0 || i == 1 || i == 6 || i == 7) {
 						radiiFloatArray[i] = 8;
 					} else {
@@ -11313,7 +11318,7 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 					}
 				}
 			} if(round == "right") {
-				for(var i = 0; i <= 7; i++) {
+				for(let i = 0; i <= 7; i++) {
 					if(i == 2 || i == 3 || i == 4 || i == 5) {
 						radiiFloatArray[i] = 8;
 					} else {
@@ -11321,7 +11326,7 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 					}
 				}
 			} if(round == "left_half") {
-				for(var i = 0; i <= 7; i++) {
+				for(let i = 0; i <= 7; i++) {
 					if(i == 0 || i == 1 || i == 6 || i == 7) {
 						radiiFloatArray[i] = 90;
 					} else {
@@ -11329,7 +11334,7 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 					}
 				}
 			} if(round == "right_half") {
-				for(var i = 0; i <= 7; i++) {
+				for(let i = 0; i <= 7; i++) {
 					if(i == 2 || i == 3 || i == 4 || i == 5) {
 						radiiFloatArray[i] = 90;
 					} else {
@@ -11478,35 +11483,35 @@ function shareText(text) {
 }
 
 function drawCircle(color) {
-	var drawable = GradientDrawable_();
+	let drawable = GradientDrawable_();
 	drawable.setColor(color);
 	drawable.setShape(1);
 	return drawable;
 }
 
 function drawQuarterCircle(color, radius) {
-	var drawable = GradientDrawable_();
+	let drawable = GradientDrawable_();
 	drawable.setColor(color);
 	drawable.setCornerRadii([0, 0, 0, 0, 0, 0, radius, radius]);
 	return drawable;
 }
 
 function fadeIn(duration) {
-	var animation = new AlphaAnimation_(0, 1);
+	let animation = new AlphaAnimation_(0, 1);
 	animation.setDuration(duration);
 	animation.setInterpolator(new DecelerateInterpolator_());
 	return animation;
 }
 
 function fadeOut(duration) {
-	var animation = new AlphaAnimation_(1, 0);
+	let animation = new AlphaAnimation_(1, 0);
 	animation.setDuration(duration);
 	animation.setInterpolator(new DecelerateInterpolator_());
 	return animation;
 }
 
 function rotate(duration, fromDegrees, toDegrees) {
-	var animation = new RotateAnimation_(fromDegrees, toDegrees);
+	let animation = new RotateAnimation_(fromDegrees, toDegrees);
 	animation.setDuration(duration);
 	animation.setInterpolator(new LinearInterpolator_());
 	return animation;
@@ -11527,7 +11532,7 @@ function clientButton(text, desc, color, round, forceLightColor, style, thicknes
 		thickness = dip2px(buttonStrokeThicknessSetting);
 	}
 
-	var defaultButton = new Button_(CONTEXT);
+	let defaultButton = new Button_(CONTEXT);
 	defaultButton.setTypeface(VertexClientPE.font);
 	if(desc != null && desc != undefined) {
 		defaultButton.setOnLongClickListener(new View_.OnLongClickListener() {
@@ -11554,11 +11559,11 @@ function clientButton(text, desc, color, round, forceLightColor, style, thicknes
 }
 
 function songButton(song, barLayout) {
-	var songButtonText = song.artist + " - " + song.title;
-	var songLayout = new LinearLayout_(CONTEXT);
+	let songButtonText = song.artist + " - " + song.title;
+	let songLayout = new LinearLayout_(CONTEXT);
 	songLayout.setOrientation(LinearLayout_.HORIZONTAL);
-	var songLeftWidth = display.widthPixels;
-	var songClientButton = clientButton(songButtonText);
+	let songLeftWidth = display.widthPixels;
+	let songClientButton = clientButton(songButtonText);
 	songClientButton.setLayoutParams(new LinearLayout_.LayoutParams(songLeftWidth - dip2px(10) - dip2px(50), LinearLayout_.LayoutParams.WRAP_CONTENT));
 	songClientButton.setOnClickListener(new View_.OnClickListener() {
 		onClick: function(v) {
@@ -11573,7 +11578,7 @@ function songButton(song, barLayout) {
 		}
 	});
 
-	var songRightButton = clientButton("...");
+	let songRightButton = clientButton("...");
 	songRightButton.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(50), LinearLayout_.LayoutParams.WRAP_CONTENT));
 	songRightButton.setOnClickListener(new View_.OnClickListener() {
 		onClick: function(v) {
@@ -11587,26 +11592,26 @@ function songButton(song, barLayout) {
 }
 
 function musicBar() {
-	var musicBarLayout1 = new LinearLayout_(CONTEXT);
+	let musicBarLayout1 = new LinearLayout_(CONTEXT);
 	musicBarLayout1.setOrientation(1);
-	var musicBarLayout = new LinearLayout_(CONTEXT);
+	let musicBarLayout = new LinearLayout_(CONTEXT);
 	musicBarLayout.setBackgroundDrawable(backgroundSpecial());
 	musicBarLayout.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels, LinearLayout_.LayoutParams.WRAP_CONTENT));
 	musicBarLayout.setOrientation(LinearLayout_.HORIZONTAL);
 	musicBarLayout.setGravity(Gravity_.CENTER);
-	var musicBarLayoutLeft = new LinearLayout_(CONTEXT);
+	let musicBarLayoutLeft = new LinearLayout_(CONTEXT);
 	musicBarLayoutLeft.setOrientation(LinearLayout_.HORIZONTAL);
 	musicBarLayoutLeft.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 8, LinearLayout_.LayoutParams.WRAP_CONTENT));
-	var musicBarLayoutMiddle = new LinearLayout_(CONTEXT);
+	let musicBarLayoutMiddle = new LinearLayout_(CONTEXT);
 	musicBarLayoutMiddle.setOrientation(LinearLayout_.HORIZONTAL);
 	musicBarLayoutMiddle.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - (display.widthPixels / 8) * 2, LinearLayout_.LayoutParams.WRAP_CONTENT));
-	var musicBarLayoutRight = new LinearLayout_(CONTEXT);
+	let musicBarLayoutRight = new LinearLayout_(CONTEXT);
 	musicBarLayoutMiddle.setOrientation(LinearLayout_.HORIZONTAL);
 	musicBarLayoutRight.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 8, LinearLayout_.LayoutParams.WRAP_CONTENT));
 	musicBarLayout.addView(musicBarLayoutLeft);
 	musicBarLayout.addView(musicBarLayoutMiddle);
 	musicBarLayout.addView(musicBarLayoutRight);
-	var musicBarSongTitleView = new clientTextView(musicText);
+	let musicBarSongTitleView = new clientTextView(musicText);
 	musicBarSongTitleView.setBackgroundDrawable(backgroundSpecial("top", themeSetting));
 	musicBarSongTitleView.setGravity(Gravity_.CENTER);
 	musicBarSongTitleView.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
@@ -11614,20 +11619,20 @@ function musicBar() {
 	musicBarSongTitleView.setSingleLine();
 	musicBarSongTitleView.setHorizontallyScrolling(true);
 	musicBarSongTitleView.setSelected(true);
-	var musicBarSeekBar = clientSeekBar();
+	let musicBarSeekBar = clientSeekBar();
 	musicBarSeekBar.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.MATCH_PARENT, LinearLayout_.LayoutParams.WRAP_CONTENT, 1));
-	var musicBarPlayButton = new Button_(CONTEXT);
+	let musicBarPlayButton = new Button_(CONTEXT);
 	musicBarPlayButton.setPadding(0, 0, 0, 0);
 	musicBarPlayButton.setBackgroundResource(android.R.drawable.ic_media_play);
 	musicBarPlayButton.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(36), dip2px(36)));
 	musicBarPlayButton.setText("");
-	var musicBarLeftTimeView = new TextView_(CONTEXT);
+	let musicBarLeftTimeView = new TextView_(CONTEXT);
 	musicBarLeftTimeView.setText("0:00");
 	musicBarLeftTimeView.setTextColor(Color_.WHITE);
-	var musicBarRightTimeView = new TextView_(CONTEXT);
+	let musicBarRightTimeView = new TextView_(CONTEXT);
 	musicBarRightTimeView.setText("0:00");
 	musicBarRightTimeView.setTextColor(Color_.WHITE);
-	var musicBarNextButton = new Button_(CONTEXT);
+	let musicBarNextButton = new Button_(CONTEXT);
 	musicBarNextButton.setPadding(0, 0, 0, 0);
 	musicBarNextButton.setBackgroundResource(android.R.drawable.ic_media_next);
 	musicBarNextButton.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(36), dip2px(36)));
@@ -11674,21 +11679,21 @@ function musicBar() {
 function updatePaneButton(updateVersion, updateDesc, isDev) {
 	isDev = isDev || false;
 
-	var updatePaneLayout = new LinearLayout_(CONTEXT);
+	let updatePaneLayout = new LinearLayout_(CONTEXT);
 	updatePaneLayout.setOrientation(LinearLayout_.HORIZONTAL);
 	updatePaneLayout.setGravity(Gravity_.CENTER);
 	updatePaneLayout.setBackground(backgroundSpecial(true));
-	var updatePaneLayoutLeft = new LinearLayout_(CONTEXT);
+	let updatePaneLayoutLeft = new LinearLayout_(CONTEXT);
 	updatePaneLayoutLeft.setOrientation(1);
 	updatePaneLayoutLeft.setGravity(Gravity_.CENTER);
 	updatePaneLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - dip2px(10), display.heightPixels / 4));
-	var updatePaneLayoutRight = new LinearLayout_(CONTEXT);
+	let updatePaneLayoutRight = new LinearLayout_(CONTEXT);
 	updatePaneLayoutRight.setOrientation(1);
 	updatePaneLayoutRight.setGravity(Gravity_.CENTER);
 	updatePaneLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - dip2px(10), display.heightPixels / 4));
 	updatePaneLayout.addView(updatePaneLayoutLeft);
 	updatePaneLayout.addView(updatePaneLayoutRight);
-	var updatePaneText;
+	let updatePaneText;
 	if(isDev) {
 		updatePaneText = clientTextView(updateVersion);
 	} else {
@@ -11696,16 +11701,16 @@ function updatePaneButton(updateVersion, updateDesc, isDev) {
 	}
 	VertexClientPE.addTextStyleToView(updatePaneText, "diff");
 	updatePaneText.setTypeface(VertexClientPE.font, Typeface_.BOLD);
-	var updatePaneDescText = clientTextView(updateDesc);
+	let updatePaneDescText = clientTextView(updateDesc);
 	VertexClientPE.addTextStyleToView(updatePaneDescText, "diff");
 	updatePaneLayoutLeft.addView(updatePaneText);
 	updatePaneLayoutLeft.addView(updatePaneDescText);
-	var updatePaneDownloadButton = clientButton("Download");
+	let updatePaneDownloadButton = clientButton("Download");
 	updatePaneDownloadButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.stat_sys_download, 0, 0, 0);
 	updatePaneDownloadButton.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.MATCH_PARENT, display.heightPixels / 8));
 	updatePaneDownloadButton.setOnClickListener(new View_.OnClickListener() {
 		onClick: function(v) {
-			var updateGithubVersion = updateVersion;
+			let updateGithubVersion = updateVersion;
 			if(updateGithubVersion.indexOf("Alpha") != -1 || updateGithubVersion.indexOf("Beta") != -1) {
 				updateGithubVersion = updateGithubVersion.split(" ")[0] + "-" + updateGithubVersion.split(" ")[1];
 			}
@@ -11721,7 +11726,7 @@ function updatePaneButton(updateVersion, updateDesc, isDev) {
 		}
 	});
 	if(isDev) {
-		var updatePaneCopyButton = clientButton("Copy URL");
+		let updatePaneCopyButton = clientButton("Copy URL");
 		updatePaneCopyButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_input_get, 0, 0, 0);
 		updatePaneCopyButton.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.MATCH_PARENT, display.heightPixels / 8));
 		updatePaneCopyButton.setOnClickListener(new View_.OnClickListener() {
@@ -11731,12 +11736,12 @@ function updatePaneButton(updateVersion, updateDesc, isDev) {
 			}
 		});
 	} else {
-		var updatePaneInformationButton = clientButton("Info");
+		let updatePaneInformationButton = clientButton("Info");
 		updatePaneInformationButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_menu_info_details, 0, 0, 0);
 		updatePaneInformationButton.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.MATCH_PARENT, display.heightPixels / 8));
 		updatePaneInformationButton.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
-				var updateGithubVersion = updateVersion;
+				let updateGithubVersion = updateVersion;
 				if(updateGithubVersion.indexOf("Alpha") != -1 || updateGithubVersion.indexOf("Beta") != -1) {
 					updateGithubVersion = updateGithubVersion.split(" ")[0] + "-" + updateGithubVersion.split(" ")[1];
 				}
@@ -11745,8 +11750,8 @@ function updatePaneButton(updateVersion, updateDesc, isDev) {
 		});
 	}
 
-	var support = isSupported?"supported":"unsupported";
-	var updatePaneTypeText = clientTextView("Current (" + support + ")");
+	let support = isSupported?"supported":"unsupported";
+	let updatePaneTypeText = clientTextView("Current (" + support + ")");
 	VertexClientPE.addTextStyleToView(updatePaneTypeText, "diff");
 
 	if(updateVersion != VertexClientPE.currentVersion || isDev) {
