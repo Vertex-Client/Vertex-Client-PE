@@ -5780,6 +5780,20 @@ var watermark = {
 	}
 }
 
+var enchantIt = {
+	name: "EnchantIt",
+	desc: "Adds enchantments to items in your inventory.",
+	category: VertexClientPE.category.PLAYER,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return false;
+	},
+	onToggle: function() {
+		VertexClientPE.showEnchantItDialog();
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(aimbot);
 VertexClientPE.registerModule(antiBurn);
@@ -5853,6 +5867,7 @@ VertexClientPE.registerModule(autoSwitch);
 VertexClientPE.registerModule(chatRepeat);
 VertexClientPE.registerModule(coordsDisplay);
 VertexClientPE.registerModule(derp);
+VertexClientPE.registerModule(enchantIt);
 VertexClientPE.registerModule(fancyChat);
 VertexClientPE.registerModule(fastBreak);
 VertexClientPE.registerModule(glitchCam);
@@ -8808,8 +8823,6 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 	}
 }
 
-var itemName, itemId, amount, data;
-
 VertexClientPE.showItemGiverDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
@@ -8849,6 +8862,7 @@ VertexClientPE.showItemGiverDialog = function() {
 				itemIdInput.addTextChangedListener(new TextWatcher_() {
 					onTextChanged: function() {
 						let itemId = itemIdInput.getText();
+						let itemName;
 						if(Item.isValidItem(itemId)) {
 							if(Item.getName(itemId) == null) {
 								itemName = "Unknown";
@@ -8865,9 +8879,9 @@ VertexClientPE.showItemGiverDialog = function() {
 				var itemGiveButton = clientButton("Give");
 				itemGiveButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(viewArg) {
-						itemId = itemIdInput.getText();
-						amount = itemAmountInput.getText();
-						data = itemDataInput.getText();
+						let itemId = itemIdInput.getText();
+						let amount = itemAmountInput.getText();
+						let data = itemDataInput.getText();
 						if(Item.isValidItem(itemId)) {
 							Player.addItemInventory(itemId, amount, data);
 							VertexClientPE.toast("Successfully added item " + itemId);
@@ -8919,6 +8933,138 @@ VertexClientPE.showItemGiverDialog = function() {
 					tempButton.setOnClickListener(new View_.OnClickListener() {
 						onClick: function(viewArg) {
 							itemIdInput.setText(element.toString());
+						}
+					});
+					if(index % 2 == 1) {
+						if(!dialogTableRow) {
+							dialogTableRow = new TableRow_(CONTEXT);
+						}
+						dialogTableRow.addView(tempButton);
+						dialogTableLayout.addView(dialogTableRow);
+						dialogTableRow = null;
+					} else {
+						dialogTableRow = new TableRow_(CONTEXT);
+						dialogTableRow.addView(tempButton);
+					}
+					tempButton = null;
+				});
+				if(dialogTableRow != null) {
+					dialogTableLayout.addView(dialogTableRow);
+				}
+			} catch(e) {
+				print("Error: " + e);
+				VertexClientPE.showBugReportDialog(e);
+			}
+		}
+	});
+}
+
+const enchantItArray = [["Aqua Affinity", Enchantment.AQUA_AFFINITY], ["Bane of Arthropods", Enchantment.BANE_OF_ARTHROPODS], ["Blast Protection", Enchantment.BLAST_PROTECTION], ["Depth Strider", Enchantment.DEPTH_STRIDER], ["Efficiency", Enchantment.EFFICIENCY], ["Feather Falling", Enchantment.FEATHER_FALLING], ["Fire Aspect", Enchantment.FIRE_ASPECT], ["Fire Protection", Enchantment.FIRE_PROTECTION], ["Flame", Enchantment.FLAME], ["Fortune", Enchantment.FORTUNE], ["Infinity", Enchantment.INFINITY], ["Knockback", Enchantment.KNOCKBACK], ["Looting", Enchantment.LOOTING], ["Luck of the Sea", Enchantment.LUCK_OF_THE_SEA], ["Lure", Enchantment.LURE], ["Power", Enchantment.POWER], ["Projectile Protection", Enchantment.PROJECTILE_PROTECTION], ["Protection", Enchantment.PROTECTION], ["Punch", Enchantment.PUNCH], ["Respiration", Enchantment.RESPIRATION], ["Sharpness", Enchantment.SHARPNESS], ["Silk Touch", Enchantment.SILK_TOUCH], ["Smite", Enchantment.SMITE], ["Thorns", Enchantment.THORNS], ["Unbreaking", Enchantment.UNBREAKING]];
+
+let selectedEnchantment = ["None", null];
+VertexClientPE.showEnchantItDialog = function() {
+	CONTEXT.runOnUiThread(new Runnable_() {
+		run: function() {
+			try {
+				var enchantItTitle = clientTextView("EnchantIt", true);
+				enchantItTitle.setTextSize(25);
+				var closeButton = clientButton("Close");
+				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
+				var dialogLayoutBase = new LinearLayout_(CONTEXT);
+				dialogLayoutBase.setOrientation(1);
+				dialogLayoutBase.setPadding(10, 10, 10, 10);
+				var dialogLayoutBody = new LinearLayout_(CONTEXT);
+				dialogLayoutBody.setOrientation(LinearLayout_.HORIZONTAL);
+				var dialogLayoutBodyLeftWrap = new LinearLayout_(CONTEXT);
+				dialogLayoutBodyLeftWrap.setOrientation(1);
+				dialogLayoutBodyLeftWrap.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels - display.widthPixels / 3 - 10, LinearLayout_.LayoutParams.WRAP_CONTENT));
+				dialogLayoutBodyLeftWrap.setPadding(0, 0, dip2px(1), 0);
+				var dialogLayoutBodyLeftScroll = new ScrollView_(CONTEXT);
+				var dialogLayoutBodyRightWrap = new LinearLayout_(CONTEXT);
+				dialogLayoutBodyRightWrap.setOrientation(1);
+				dialogLayoutBodyRightWrap.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3 - 10, LinearLayout_.LayoutParams.WRAP_CONTENT));
+				dialogLayoutBodyRightWrap.setPadding(dip2px(1), 0, 0, 0);
+				var dialogLayoutBodyRightScroll = new ScrollView_(CONTEXT);
+				var dialogTableLayout = new TableLayout_(CONTEXT);
+				var dialogTableRow;
+				var enchantmentNameText = clientTextView("Enchantment: " + selectedEnchantment[0]);
+				var slotInput = clientEditText();
+				slotInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
+				slotInput.setHint("Slot");
+				var levelInput = clientEditText();
+				levelInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
+				levelInput.setHint("Level");
+
+				var enchantmentAddButton = clientButton("Add enchantment");
+				enchantmentAddButton.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(viewArg) {
+						let slot = slotInput.getText();
+						let level = levelInput.getText();
+						if(selectedEnchantment[0] == "None") {
+							VertexClientPE.toast("No enchantment selected!");
+							return;
+						}
+						if(slot < 1) {
+							VertexClientPE.toast("Slot too low!");
+							return;
+						} else if(slot > 9) {
+							VertexClientPE.toast("Slot too high!");
+							return;
+						}
+						if(level < 1) {
+							VertexClientPE.toast("Level too low!");
+							return;
+						}
+						if(Player.enchant(slot - 1, selectedEnchantment[1], level)) {
+							VertexClientPE.toast("Successfully added " + selectedEnchantment[0] + " (level " + level + ") enchantment to the item in slot " + slot + "!");
+						} else {
+							VertexClientPE.toast("Failed to add " + selectedEnchantment[0] + " (level " + level + ") enchantment to the item in slot " + slot + "!");
+						}
+					}
+				});
+
+				var dialogRightLayout = new LinearLayout_(CONTEXT);
+				dialogRightLayout.setOrientation(1);
+
+				dialogRightLayout.addView(enchantmentNameText);
+				dialogRightLayout.addView(slotInput);
+				dialogRightLayout.addView(levelInput);
+				dialogRightLayout.addView(enchantmentAddButton);
+				dialogRightLayout.addView(clientTextView("\n"));
+				dialogRightLayout.addView(closeButton);
+				dialogLayoutBase.setBackgroundDrawable(backgroundGradient());
+				dialogLayoutBase.addView(enchantItTitle);
+				dialogLayoutBodyLeftScroll.addView(dialogTableLayout);
+				dialogLayoutBodyRightScroll.addView(dialogRightLayout);
+				dialogLayoutBodyLeftWrap.addView(dialogLayoutBodyLeftScroll);
+				dialogLayoutBodyRightWrap.addView(dialogLayoutBodyRightScroll);
+				dialogLayoutBody.addView(dialogLayoutBodyLeftWrap);
+				dialogLayoutBody.addView(dialogLayoutBodyRightWrap);
+				dialogLayoutBase.addView(dialogLayoutBody);
+
+				var dialog = new Dialog_(CONTEXT);
+				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
+				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+				dialog.setContentView(dialogLayoutBase);
+				dialog.setTitle("EnchantIt");
+				dialog.show();
+				var window = dialog.getWindow();
+				window.setLayout(display.widthPixels, display.heightPixels);
+				closeButton.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+					}
+				});
+				
+				enchantItArray.forEach(function(element, index, array) {
+					let tempButton = clientButton(element[0].toString());
+					tempButton.setSingleLine(true);
+					tempButton.setLayoutParams(new TableRow_.LayoutParams((display.widthPixels - display.widthPixels / 3 - 10 - dip2px(1)) / 2, LinearLayout_.LayoutParams.WRAP_CONTENT));
+					tempButton.setPadding(0, 0, 0, 0);
+					tempButton.setOnClickListener(new View_.OnClickListener() {
+						onClick: function(viewArg) {
+							selectedEnchantment = element;
+							enchantmentNameText.setText("Enchantment: " + selectedEnchantment[0].toString());
 						}
 					});
 					if(index % 2 == 1) {
