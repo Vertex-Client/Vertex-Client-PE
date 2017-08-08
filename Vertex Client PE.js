@@ -2173,17 +2173,22 @@ VertexClientPE.initMods = function(switchedCat) {
 	}
 	VertexClientPE.modules = [];
 	try {
-		//if(bypass enabled in save data) toggle bypass on
-		/* if(VertexClientPE.getSavedModState("Bypass")) {
-			
-		}
-		if(sharedPref.get)
-		*/
+		let tempBypassState = VertexClientPE.getSavedModState("Bypass");
 		VertexClientPE.preInitModules.forEach(function(element, index, array) {
 			if(((element.pack == "Combat" && combatEnabled == "on") || (element.pack == "World" && worldEnabled == "on") || (element.pack == "Movement" && movementEnabled == "on") || (element.pack == "Player" && playerEnabled == "on") || (element.pack == "Miscellaneous" && miscEnabled == "on")) && !(element.singleplayerOnly && singleplayerEnabled == "off")) {
 				// TODO: toggle mods on if enabled in save data
-				//if(mod is not bypass) ^^
-				VertexClientPE.modules.push(element);
+				let tempElement = element;
+				if(VertexClientPE.getSavedModState(tempElement.name)) {
+					//toggle mod
+					if(tempElement.name == "Bypass" || !tempBypassState || !tempElement.hasOwnProperty("canBypassBypassMod") || (tempElement.hasOwnProperty("canBypassBypassMod") && tempElement.canBypassBypassMod())) {
+						tempElement.onToggle();
+					} else if(tempBypassState && !tempElement.canBypassBypassMod()) {
+						if(tempElement.isStateMod()) {
+							tempElement.state = true;
+						}
+					}
+				}
+				VertexClientPE.modules.push(tempElement);
 			}
 		});
 	} catch(e) {
@@ -8461,7 +8466,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
 					}
 					toggleButton.setOnClickListener(new View_.OnClickListener() {
 						onClick: function(view) {
-							if(mod.name == "Bypass" || !bypassState || (mod.hasOwnProperty("canBypassBypassMod") && mod.canBypassBypassMod()) || (mod.isStateMod() && mod.state)) {
+							if(mod.name == "Bypass" || !bypassState || !mod.hasOwnProperty("canBypassBypassMod") || (mod.hasOwnProperty("canBypassBypassMod") && mod.canBypassBypassMod()) || (mod.isStateMod() && mod.state)) {
 								mod.onToggle();
 							} else if(bypassState && !mod.canBypassBypassMod()) {
 								if(mod.isStateMod() && !mod.state) {
@@ -12012,22 +12017,14 @@ function modButton(mod, buttonOnly, customSize, shouldUpdateGUI, cornerEnabled) 
 		onClick: function(viewArg) {
 			let _0xff55=["\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x6F\x75\x74\x64\x61\x74\x65\x64\x2C\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C","\x74\x6F\x61\x73\x74","\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C"];if(!isAuthorized){if(!isSupported){VertexClientPE[_0xff55[1]](_0xff55[0])}else {VertexClientPE[_0xff55[1]](_0xff55[2])};return}
 			let tempShouldUpdate = shouldUpdateGUI;
-			if(mod.name == "Bypass") {
+			if(mod.name == "Bypass" || !bypassState || !mod.hasOwnProperty("canBypassBypassMod") || (mod.hasOwnProperty("canBypassBypassMod") && mod.canBypassBypassMod()) || (mod.isStateMod() && mod.state)) {
 				mod.onToggle();
-			} else {
-				if(!bypassState) {
-					mod.onToggle();
-				} else if(bypassState && mod.canBypassBypassMod == undefined || mod.canBypassBypassMod == null) {
-					mod.onToggle();
-				} else if(bypassState && mod.canBypassBypassMod && !mod.canBypassBypassMod()) {
-					if(mod.isStateMod() && mod.state) {
-						mod.onToggle();
-					} else if(mod.isStateMod() && !mod.state) {
-						mod.state = true;
-					} else if(!mod.isStateMod()) {
-						VertexClientPE.toast("This mod is blocked by Bypass!");
-						tempShouldUpdate = false;
-					}
+			} else if(bypassState && mod.hasOwnProperty("canBypassBypassMod") && !mod.canBypassBypassMod()) {
+				if(mod.isStateMod() && !mod.state) {
+					mod.state = true;
+				} else if(!mod.isStateMod()) {
+					VertexClientPE.toast("This mod is blocked by Bypass!");
+					tempShouldUpdate = false;
 				}
 			}
 			if(mod.isStateMod()) {
@@ -14942,7 +14939,7 @@ VertexClientPE.refreshEnabledMods = function() {
 	VertexClientPE.modules.forEach(function(element, index, array) {
 		if(element.hasOwnProperty("isStateMod") && element.isStateMod()) {
 			if(element.state) {
-				if(element.name == "Bypass" || !bypassState || (element.canBypassBypassMod == undefined || element.canBypassBypassMod == null || element.canBypassBypassMod())) {
+				if(element.name == "Bypass" || !bypassState || !element.hasOwnProperty("canBypassBypassMod") || (element.hasOwnProperty("canBypassBypassMod") && element.canBypassBypassMod())) {
 					for(let i = 0; i <= 1; i++) {
 						element.onToggle();
 					}
