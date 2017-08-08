@@ -2391,6 +2391,7 @@ var panic = {
 			if(element.isStateMod() && element.state) {
 				if((element.category == VertexClientPE.category.COMBAT && panicCombatSetting == "on") || (element.category == VertexClientPE.category.WORLD && panicWorldSetting == "on") || (element.category == VertexClientPE.category.MOVEMENT && panicMovementSetting == "on") || (element.category == VertexClientPE.category.PLAYER && panicPlayerSetting == "on") || (element.category == VertexClientPE.category.MISC && panicMiscSetting == "on")) {
 					element.onToggle();
+					VertexClientPE.setSavedModState(element.name, false);
 					success = true;
 				}
 			}
@@ -6141,6 +6142,7 @@ var toggle = {
 								VertexClientPE.toast("This mod is blocked by " + VertexClientPE.getCustomModName("Bypass") + "!");
 							}
 						}
+						VertexClientPE.setSavedModState(element.name, element.state);
 						if(hacksList != null && hacksList.isShowing()) {
 							updateHacksList();
 						}
@@ -7797,7 +7799,7 @@ VertexClientPE.showFeaturesDialog = function() {
 				settingsTitleLayout.addView(settingsTitle);
 				let featuresTitle = clientTextView("Opt in/out features\n", true);
 				featuresTitle.setGravity(Gravity_.CENTER);
-				let featuresText = clientTextView("Changes on this dialog will show/hide all mods in that category and will disable all mods", true);
+				let featuresText = clientTextView("Changes on this dialog will show/hide all mods in that category", true);
 				featuresText.setTextSize(8);
 				featuresText.setTypeface(null, Typeface_.ITALIC);
 				featuresText.setGravity(Gravity_.CENTER);
@@ -8330,6 +8332,11 @@ VertexClientPE.getSavedModState = function(defaultName) {
 	return sharedPref.getBoolean("VertexClientPE.mods." + defaultName + ".state", false);
 }
 
+VertexClientPE.setSavedModState = function(defaultName, state) {
+	editor.putBoolean("VertexClientPE.mods." + defaultName + ".state", state);
+	editor.commit();
+}
+
 let modDialogShowing = false;
 
 VertexClientPE.showModDialog = function(mod, btn) {
@@ -8507,6 +8514,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
 										}
 									}
 								}
+								VertexClientPE.setSavedModState(mod.name, mod.state);
 							}
 						}
 					});
@@ -12049,6 +12057,7 @@ function modButton(mod, buttonOnly, customSize, shouldUpdateGUI, cornerEnabled) 
 						}
 					}
 				}
+				VertexClientPE.setSavedModState(mod.name, mod.state);
 			}
 			updateHacksList();
 			if(buttonOnly) {
