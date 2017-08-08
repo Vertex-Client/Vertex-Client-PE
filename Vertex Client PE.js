@@ -119,16 +119,6 @@ const AlarmManager_ = android.app.AlarmManager,
 	PATH = "/sdcard/games/com.mojang/";
 
 const DENSITY = CONTEXT.getResources().getDisplayMetrics().density;
-/* try {
-	//getSupportActionBar().setTitle("Whatever title");
-	CONTEXT.runOnUiThread({
-		run: function () {
-			CONTEXT.setTitle("Whatever title");
-		}
-	});
-} catch(e) {
-	print(e);
-} */
 
 var Scanner = java.util.Scanner;
 var ByteBuffer = java.nio.ByteBuffer;
@@ -236,6 +226,9 @@ var preventExplosionsSetting = "off";
 var watermarkTextSetting = "<big><b>Bold</b> <i>Italic</i> <u>Underline</u></big>";
 var defaultToastPositionSetting = "bottom";
 var tapAimbotStayAimedSetting = 40;
+var healthTagsNameSetting = "aqua";
+var healthTagsHealthSetting = "red";
+var healthTagsShowHeartSetting = "on";
 //------------------------------------
 var antiAFKDistancePerTick = 0.25;
 //------------------------------------
@@ -3722,6 +3715,142 @@ var healthTags = {
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
+	getSettingsLayout: function(onModManager) {
+		let healthTagsLayout = new LinearLayout_(CONTEXT);
+		healthTagsLayout.setOrientation(1);
+
+		let width = onModManager?display.widthPixels:(display.widthPixels - 20);
+		let healthTagsNameSettingFunc = new settingButton("Mob name color on nametag", null, width,
+			function(viewArg) {
+				healthTagsNameSetting = "aqua";
+				healthTagsNameSettingButton.setText("Aqua");
+				VertexClientPE.initHealthTags();
+			}
+		);
+		let healthTagsNameSettingButton = healthTagsNameSettingFunc.getButton();
+		if(healthTagsNameSetting == "blue") {
+			healthTagsNameSettingButton.setText("Blue");
+		} else if(healthTagsNameSetting == "green") {
+			healthTagsNameSettingButton.setText("Green");
+		} else if(healthTagsNameSetting == "aqua") {
+			healthTagsNameSettingButton.setText("Aqua");
+		} else if(healthTagsNameSetting == "red") {
+			healthTagsNameSettingButton.setText("Red");
+		} else if(healthTagsNameSetting == "light_purple") {
+			healthTagsNameSettingButton.setText("Light Purple");
+		} else if(healthTagsNameSetting == "yellow") {
+			healthTagsNameSettingButton.setText("Yellow");
+		}
+		healthTagsNameSettingButton.setOnClickListener(new View_.OnClickListener({
+			onClick: function(viewArg) {
+				if(healthTagsNameSetting == "white") {
+					healthTagsNameSetting = "blue";
+					healthTagsNameSettingButton.setText("Blue");
+				} else if(healthTagsNameSetting == "blue") {
+					healthTagsNameSetting = "green";
+					healthTagsNameSettingButton.setText("Green");
+				} else if(healthTagsNameSetting == "green") {
+					healthTagsNameSetting = "aqua";
+					healthTagsNameSettingButton.setText("Aqua");
+				} else if(healthTagsNameSetting == "aqua") {
+					healthTagsNameSetting = "red";
+					healthTagsNameSettingButton.setText("Red");
+				} else if(healthTagsNameSetting == "red") {
+					healthTagsNameSetting = "light_purple";
+					healthTagsNameSettingButton.setText("Light Purple");
+				} else if(healthTagsNameSetting == "light_purple") {
+					healthTagsNameSetting = "yellow";
+					healthTagsNameSettingButton.setText("Yellow");
+				} else if(healthTagsNameSetting == "yellow") {
+					healthTagsNameSetting = "white";
+					healthTagsNameSettingButton.setText("White");
+				}
+				VertexClientPE.saveMainSettings();
+				VertexClientPE.initHealthTags();
+			}
+		}));
+
+		let healthTagsHealthSettingFunc = new settingButton("Mob health color on nametag", null, width,
+			function(viewArg) {
+				healthTagsHealthSetting = "red";
+				healthTagsHealthSettingButton.setText("Red");
+				VertexClientPE.initHealthTags();
+			}
+		);
+		let healthTagsHealthSettingButton = healthTagsHealthSettingFunc.getButton();
+		if(healthTagsHealthSetting == "blue") {
+			healthTagsHealthSettingButton.setText("Blue");
+		} else if(healthTagsHealthSetting == "green") {
+			healthTagsHealthSettingButton.setText("Green");
+		} else if(healthTagsHealthSetting == "aqua") {
+			healthTagsHealthSettingButton.setText("Aqua");
+		} else if(healthTagsHealthSetting == "red") {
+			healthTagsHealthSettingButton.setText("Red");
+		} else if(healthTagsHealthSetting == "light_purple") {
+			healthTagsHealthSettingButton.setText("Light Purple");
+		} else if(healthTagsHealthSetting == "yellow") {
+			healthTagsHealthSettingButton.setText("Yellow");
+		}
+		healthTagsHealthSettingButton.setOnClickListener(new View_.OnClickListener({
+			onClick: function(viewArg) {
+				if(healthTagsHealthSetting == "white") {
+					healthTagsHealthSetting = "blue";
+					healthTagsHealthSettingButton.setText("Blue");
+				} else if(healthTagsHealthSetting == "blue") {
+					healthTagsHealthSetting = "green";
+					healthTagsHealthSettingButton.setText("Green");
+				} else if(healthTagsHealthSetting == "green") {
+					healthTagsHealthSetting = "aqua";
+					healthTagsHealthSettingButton.setText("Aqua");
+				} else if(healthTagsHealthSetting == "aqua") {
+					healthTagsHealthSetting = "red";
+					healthTagsHealthSettingButton.setText("Red");
+				} else if(healthTagsHealthSetting == "red") {
+					healthTagsHealthSetting = "light_purple";
+					healthTagsHealthSettingButton.setText("Light Purple");
+				} else if(healthTagsHealthSetting == "light_purple") {
+					healthTagsHealthSetting = "yellow";
+					healthTagsHealthSettingButton.setText("Yellow");
+				} else if(healthTagsHealthSetting == "yellow") {
+					healthTagsHealthSetting = "white";
+					healthTagsHealthSettingButton.setText("White");
+				}
+				VertexClientPE.saveMainSettings();
+				VertexClientPE.initHealthTags();
+			}
+		}));
+		
+		let healthTagsShowHeartSettingFunc = new settingButton("Show heart icon on nametag", null, width,
+			function(viewArg) {
+				healthTagsShowHeartSetting = "on";
+				healthTagsShowHeartSettingButton.setText("ON");
+			}
+		);
+		let healthTagsShowHeartSettingButton = healthTagsShowHeartSettingFunc.getButton();
+		if(healthTagsShowHeartSetting == "on") {
+			healthTagsShowHeartSettingButton.setText("ON");
+		} else if(healthTagsShowHeartSetting == "off") {
+			healthTagsShowHeartSettingButton.setText("OFF");
+		}
+		healthTagsShowHeartSettingButton.setOnClickListener(new View_.OnClickListener({
+			onClick: function(viewArg) {
+				if(healthTagsShowHeartSetting == "on") {
+					healthTagsShowHeartSetting = "off";
+					healthTagsShowHeartSettingButton.setText("OFF");
+				} else if(healthTagsShowHeartSetting == "off") {
+					healthTagsShowHeartSetting = "on";
+					healthTagsShowHeartSettingButton.setText("ON");
+				}
+				VertexClientPE.saveMainSettings();
+			}
+		}));
+
+		VertexClientPE.addView(healthTagsLayout, healthTagsNameSettingFunc);
+		VertexClientPE.addView(healthTagsLayout, healthTagsHealthSettingFunc);
+		VertexClientPE.addView(healthTagsLayout, healthTagsShowHeartSettingFunc);
+		
+		return healthTagsLayout;
+	},
 	isStateMod: function() {
 		return true;
 	},
@@ -7635,7 +7764,7 @@ VertexClientPE.showShortcutManagerDialog = function() {
 				dialogLayout.addView(shortcutUIHeightSettingTitle);
 				dialogLayout.addView(shortcutUIHeightSettingSlider);
 
-				let shortcutUIModeSettingFunc = new settingButton("Shortcut UI mode ", null, display.widthPixels - 20,
+				let shortcutUIModeSettingFunc = new settingButton("Shortcut UI mode", null, display.widthPixels - 20,
 					function(viewArg) {
 						shortcutUIModeSetting = "on";
 						shortcutUIModeSettingButton.setText("Normal");
@@ -7665,7 +7794,7 @@ VertexClientPE.showShortcutManagerDialog = function() {
 					}
 				}));
 
-				let shortcutUIPosSettingFunc = new settingButton("Shortcut UI position ", null, display.widthPixels - 20,
+				let shortcutUIPosSettingFunc = new settingButton("Shortcut UI position", null, display.widthPixels - 20,
 					function(viewArg) {
 						shortcutUIPosSetting = "right-center";
 						shortcutUIPosSettingButton.setText("Right-center");
@@ -7710,7 +7839,7 @@ VertexClientPE.showShortcutManagerDialog = function() {
 					}
 				}));
 
-				let showIconsOnTileShortcutsSettingFunc = new settingButton("Show icons on tile/screen shortcuts ", null, display.widthPixels - 20,
+				let showIconsOnTileShortcutsSettingFunc = new settingButton("Show icons on tile/screen shortcuts", null, display.widthPixels - 20,
 					function(viewArg) {
 						showIconsOnTileShortcutsSetting = "on";
 						showIconsOnTileShortcutsSettingButton.setText("ON");
@@ -8406,7 +8535,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
 				let modTypeText = clientTextView(type);
 				let modCreditsText;
 				if(mod.credits != undefined) {
-					modCreditsText = clientTextView("Credits: " + mod.credits + "\n");
+					modCreditsText = clientTextView("Credits: " + mod.credits);
 				}
 				let modBatteryUsageText = clientTextView("Battery usage: \uD83D\uDD0B " + mod.batteryUsage + "\n");
 				let modDescText = clientTextView("Description:\n" + mod.desc + "\n");
@@ -8433,8 +8562,9 @@ VertexClientPE.showModDialog = function(mod, btn) {
 
 				if(mod.hasOwnProperty("getSettingsLayout")) {
 					dialogLayout.addView(settingsLinearLayout);
-					settingsLinearLayout.addView(settingsScrollView);
 					settingsScrollView.addView(mod.getSettingsLayout(false));
+					settingsLinearLayout.addView(settingsScrollView);
+					dialogLayout.addView(clientTextView(""));
 				}
 
 				var dialogExtraLayout = new LinearLayout_(CONTEXT);
@@ -10157,6 +10287,40 @@ VertexClientPE.MusicUtils.registerSong(new Song("Time Leap [NCS Release]", "Aero
 VertexClientPE.MusicUtils.registerSong(new Song("Tropic Love [NCS Release]", "Diviners feat. Contacreast", "http://files-cdn.nocopyrightsounds.co.uk/Diviners%20ft.%20Contacreast%20-%20Tropic%20Love%20%28Original%20Mix%29.mp3", "House"));
 //VertexClientPE.MusicUtils.registerSong(new Song("", "", ""));
 
+VertexClientPE.initHealthTags = function() {
+	if(healthTagsNameSetting == "blue") {
+		nameColor = "\u00A79";
+	} else if(healthTagsNameSetting == "green") {
+		nameColor = "\u00A7a";
+	} else if(healthTagsNameSetting == "aqua") {
+		nameColor = "\u00A7b";
+	} else if(healthTagsNameSetting == "red") {
+		nameColor = "\u00A7c";
+	} else if(healthTagsNameSetting == "light_purple") {
+		nameColor = "\u00A7d";
+	} else if(healthTagsNameSetting == "yellow") {
+		nameColor = "\u00A7e";
+	} else if(healthTagsNameSetting == "white") {
+		nameColor = "\u00A7f";
+	}
+
+	if(healthTagsHealthSetting == "blue") {
+		healthColor = "\u00A79";
+	} else if(healthTagsHealthSetting == "green") {
+		healthColor = "\u00A7a";
+	} else if(healthTagsHealthSetting == "aqua") {
+		healthColor = "\u00A7b";
+	} else if(healthTagsHealthSetting == "red") {
+		healthColor = "\u00A7c";
+	} else if(healthTagsHealthSetting == "light_purple") {
+		healthColor = "\u00A7d";
+	} else if(healthTagsHealthSetting == "yellow") {
+		healthColor = "\u00A7e";
+	} else if(healthTagsHealthSetting == "white") {
+		healthColor = "\u00A7f";
+	}
+}
+
 VertexClientPE.healthTags = function() {
 	let mobs = Entity.getAll();
 
@@ -10305,8 +10469,16 @@ VertexClientPE.healthTags = function() {
 			if(Entity.getEntityTypeId(mob) == 105) {
 				mobName = "Vex";
 			}
+
+			let divider;
+			if(healthTagsShowHeartSetting == "on") {
+				divider = " \u2661";
+			} else {
+				divider = " ";
+			}
+
 			if(mobName != null) {
-				Entity.setNameTag(mob, nameColor + mobName + " " + healthColor + Entity.getHealth(mob) + "/" + Entity.getMaxHealth(mob));
+				Entity.setNameTag(mob, nameColor + mobName + healthColor + divider + Entity.getHealth(mob) + "/" + Entity.getMaxHealth(mob));
 			}
 		}
 	}
@@ -10725,36 +10897,6 @@ VertexClientPE.loadFriends = function() {
 	}
 }
 
-/* VertexClientPE.saveTiles = function() {
-	File_(settingsPath).mkdirs();
-	var newFile = new File_(settingsPath, "vertexclientpe_customtiles.dat");
-	newFile.createNewFile();
-	var stream = new FileOutputStream_(newFile);
-	try {
-		stream.write(VertexClientPE.customTiles.toString().getBytes());
-	} finally {
-		stream.close();
-	}
-} */
-
-/* VertexClientPE.loadTiles = function() {
-	try {
-		if(!File_(settingsPath + "vertexclientpe_customtiles.dat").exists())
-			return;
-		var file = new File_(settingsPath + "vertexclientpe_customtiles.dat");
-		var readed = (new BufferedReader_(new FileReader_(file)));
-		var data = new StringBuilder_();
-		var string;
-		while((string = readed.readLine()) != null) {
-			data.append(string);
-			data.append("\n");
-		}
-		VertexClientPE.customTiles = new JSONArray_(data.toString());
-	} catch(e) {
-		//error
-	}
-} */
-
 VertexClientPE.loadDeathCoords = function() {
 	let fileText = getTextFromFile(worldsPath + Level.getWorldDir() + "/" + "death.dat");
 	if(fileText == "") {
@@ -10971,6 +11113,9 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + preventExplosionsSetting.toString());
 	outWrite.append("," + defaultToastPositionSetting.toString());
 	outWrite.append("," + tapAimbotStayAimedSetting.toString());
+	outWrite.append("," + healthTagsNameSetting.toString());
+	outWrite.append("," + healthTagsHealthSetting.toString());
+	outWrite.append("," + healthTagsShowHeartSetting.toString());
 
 	outWrite.close();
 
@@ -11239,11 +11384,22 @@ VertexClientPE.loadMainSettings = function () {
 	if (arr[82] != null && arr[82] != undefined) {
 		tapAimbotStayAimedSetting = arr[82];
 	}
+	if (arr[83] != null && arr[83] != undefined) {
+		healthTagsNameSetting = arr[83];
+	}
+	if (arr[84] != null && arr[84] != undefined) {
+		healthTagsHealthSetting = arr[84];
+	}
+	if (arr[85] != null && arr[85] != undefined) {
+		healthTagsShowHeartSetting = arr[85];
+	}
 
 	VertexClientPE.loadCustomRGBSettings();
 	VertexClientPE.loadAutoSpammerMessage();
 	VertexClientPE.loadWatermarkText();
 	VertexClientPE.loadCategorySettings();
+	VertexClientPE.initHealthTags();
+
 	VertexClientPE.font = fontSetting=="minecraft"?Typeface_.createFromFile(new File_(PATH, "minecraft.ttf")):VertexClientPE.defaultFont;
 	MinecraftButtonLibrary.ProcessedResources.font = VertexClientPE.font;
 
@@ -12650,7 +12806,11 @@ function clientHR() {//horizontal divider
 	return defaultView;
 }
 
-function categoryTitle(text) {
+function categoryTitle(text, editOnly) {
+	if(editOnly == null) {
+		editOnly = false;
+	}
+	
 	var categoryTitleLayout = new LinearLayout_(CONTEXT);
 	categoryTitleLayout.setOrientation(LinearLayout_.HORIZONTAL);
 
@@ -12675,14 +12835,20 @@ function categoryTitle(text) {
 	categoryTitleLayoutLeft.addView(defaultSettingsButton);
 
 	var defaultTitle = coloredSubTitle(text);
-	defaultTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.heightPixels / 3, display.heightPixels / 20));
+	if(editOnly) {
+		defaultTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.heightPixels / 3 + display.heightPixels / 4, display.heightPixels / 20));
+	} else {
+		defaultTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.heightPixels / 3, display.heightPixels / 20));
+	}
 	defaultTitle.setGravity(Gravity_.CENTER);
 	categoryTitleLayoutMiddle.addView(defaultTitle);
 
 	var defaultArrowButton = clientButton("\u25BD", null, null, "right", null, true, dip2px(2));
 	defaultArrowButton.setLayoutParams(new LinearLayout_.LayoutParams(display.heightPixels / 3 - display.heightPixels / 4, display.heightPixels / 20));
 	defaultArrowButton.setAlpha(0.54);
-	categoryTitleLayoutRight.addView(defaultArrowButton);
+	if(!editOnly) {
+		categoryTitleLayoutRight.addView(defaultArrowButton);
+	}
 
 	this.getName = function() {
 		return text;
@@ -14622,10 +14788,6 @@ VertexClientPE.setup = function() {
 						if(!VertexClientPE.getHasUsedCurrentVersion()) {
 							userIsNewToCurrentVersion = true;
 						}
-
-						/* if(Launcher.isToolbox()) {
-							setupAndroidUI();
-						} */
 
 						VertexClientPE.setupModButtonColors();
 
@@ -17647,7 +17809,48 @@ VertexClientPE.showFullScreenMenu = function() {
 				playerSectionTitle.setGravity(Gravity_.CENTER);
 				let miscSectionTitle = coloredSubTitle(miscName);
 				miscSectionTitle.setGravity(Gravity_.CENTER);
+				/* let combatSectionTitle = new categoryTitle(combatName, true);
+				let combatSettings = combatSectionTitle.getLeftButton();
+				let worldSectionTitle = new categoryTitle(worldName, true);
+				let worldSettings = worldSectionTitle.getLeftButton();
+				let movementSectionTitle = new categoryTitle(movementName, true);
+				let movementSettings = movementSectionTitle.getLeftButton();
+				let playerSectionTitle = new categoryTitle(playerName, true);
+				let playerSettings = playerSectionTitle.getLeftButton();
+				let miscSectionTitle = new categoryTitle(miscName, true);
+				let miscSettings = miscSectionTitle.getLeftButton();
+				combatSettings.setOnClickListener(new View_.OnClickListener({
+					onClick() {
+						VertexClientPE.showCategoryDialog(combatSectionTitle, combatName, 0);
+					}
+				}));
+				worldSettings.setOnClickListener(new View_.OnClickListener({
+					onClick() {
+						VertexClientPE.showCategoryDialog(worldSectionTitle, worldName, 1);
+					}
+				}));
+				movementSettings.setOnClickListener(new View_.OnClickListener({
+					onClick() {
+						VertexClientPE.showCategoryDialog(movementSectionTitle, movementName, 2);
+					}
+				}));
+				playerSettings.setOnClickListener(new View_.OnClickListener({
+					onClick() {
+						VertexClientPE.showCategoryDialog(playerSectionTitle, playerName, 3);
+					}
+				}));
+				miscSettings.setOnClickListener(new View_.OnClickListener({
+					onClick() {
+						VertexClientPE.showCategoryDialog(miscSectionTitle, miscName, 4);
+					}
+				}));
 
+				VertexClientPE.addView(fullScreenMenuLayout1Combat, combatSectionTitle);
+				VertexClientPE.addView(fullScreenMenuLayout1World, worldSectionTitle);
+				VertexClientPE.addView(fullScreenMenuLayout1Movement, movementSectionTitle);
+				VertexClientPE.addView(fullScreenMenuLayout1Player, playerSectionTitle);
+				VertexClientPE.addView(fullScreenMenuLayout1Misc, miscSectionTitle); */
+				
 				fullScreenMenuLayout1Combat.addView(combatSectionTitle);
 				fullScreenMenuLayout1World.addView(worldSectionTitle);
 				fullScreenMenuLayout1Movement.addView(movementSectionTitle);
