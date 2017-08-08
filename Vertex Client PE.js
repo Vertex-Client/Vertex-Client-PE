@@ -1969,6 +1969,17 @@ var updateCenterTile = {
 	}
 }
 
+var chatTile = {
+	text: "Chat",
+	color: "grey",
+	icon: android.R.drawable.sym_action_chat,
+	forceLightColor: false,
+	shouldDismissDashboard: false,
+	onClick: function(fromDashboard) {
+		VertexClientPE.showChatDialog();
+	}
+}
+
 var musicPlayerTile = {
 	text: "Music Player",
 	color: "blue",
@@ -2140,6 +2151,7 @@ VertexClientPE.registerTile(modManagerTile);
 VertexClientPE.registerTile(friendManagerTile);
 VertexClientPE.registerTile(informationTile);
 VertexClientPE.registerTile(updateCenterTile);
+VertexClientPE.registerTile(chatTile);
 VertexClientPE.registerTile(musicPlayerTile);
 VertexClientPE.registerTile(christmasTile);
 VertexClientPE.registerTile(previewTile);
@@ -7896,6 +7908,76 @@ VertexClientPE.showShortcutManagerDialog = function() {
 	});
 }
 
+VertexClientPE.showChatDialog = function() {
+	CONTEXT.runOnUiThread(new Runnable_() {
+		run: function() {
+			try {
+				let chatTitle = clientScreenTitle("Chat", chatTile.icon, themeSetting);
+				let chatTitleLayout = new LinearLayout_(CONTEXT);
+				chatTitleLayout.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
+				chatTitleLayout.setGravity(Gravity_.CENTER);
+				chatTitleLayout.addView(chatTitle);
+				let closeButton = clientButton("Close");
+				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
+				let dialogLayout = new LinearLayout_(CONTEXT);
+				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
+				let dialogScrollView = new ScrollView_(CONTEXT);
+				dialogScrollView.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - 20, display.heightPixels / 2));
+				let dialogLayout1 = new LinearLayout_(CONTEXT);
+				dialogLayout1.setBackgroundDrawable(backgroundGradient());
+				dialogLayout1.setOrientation(LinearLayout_.VERTICAL);
+				dialogLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
+				dialogLayout1.setPadding(10, 0, 10, 10);
+				dialogLayout1.addView(chatTitleLayout);
+				dialogLayout1.addView(clientTextView(""));
+
+				dialogScrollView.addView(dialogLayout);
+				dialogLayout1.addView(dialogScrollView);
+
+				if(chatWebView == null) {
+					chatWebView = new WebView_(CONTEXT);
+					let wS = chatWebView.getSettings();
+
+					let frameChat = '<html><body><script id="cid0020000162779744876" data-cfasync="false" async src="http://st.chatango.com/js/gz/emb.js" style="width: 100%;height: 100%;">{"handle":"vertex-client","arch":"js","styles":{"a":"0084ef","b":100,"c":"FFFFFF","d":"FFFFFF","k":"0084ef","l":"0084ef","m":"0084ef","n":"FFFFFF","p":"10","q":"0084ef","r":100}}</script></body></html>';
+
+					wS.setJavaScriptEnabled(true);
+					wS.setDomStorageEnabled(true);
+					chatWebView.setWebChromeClient(new WebChromeClient_());
+					chatWebView.setWebViewClient(new WebViewClient_());
+
+					chatWebView.loadData(frameChat, "text/html", "utf-8");
+				}
+
+				dialogLayout.addView(chatWebView);
+				dialogLayout1.addView(clientTextView(""));
+				dialogLayout1.addView(closeButton);
+
+				let dialog = new Dialog_(CONTEXT);
+				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
+				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+				dialog.setContentView(dialogLayout1);
+				dialog.setTitle("Chat");
+				dialog.setOnDismissListener(new DialogInterface_.OnDismissListener() {
+					onDismiss: function() {
+						dialogLayout.removeView(chatWebView);
+					}
+				});
+				dialog.show();
+				let window = dialog.getWindow();
+				window.setLayout(display.widthPixels, display.heightPixels);
+				closeButton.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+					}
+				});
+			} catch(e) {
+				print("Error: " + e);
+				VertexClientPE.showBugReportDialog(e);
+			}
+		}
+	});
+}
+
 function setupAndroidUI() {
 	// Set the IMMERSIVE flag.
 	// Set the content to appear under the system bars so that the content
@@ -11894,8 +11976,10 @@ function updatePaneButton(updateVersion, updateDesc, isDev) {
 			VertexClientPE.toast("Started downloading to \'" + dest + "\'...");
 		}
 	});
+	let updatePaneCopyButton;
+	let updatePaneInformationButton;
 	if(isDev) {
-		let updatePaneCopyButton = clientButton("Copy URL");
+		updatePaneCopyButton = clientButton("Copy URL");
 		updatePaneCopyButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_input_get, 0, 0, 0);
 		updatePaneCopyButton.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.MATCH_PARENT, display.heightPixels / 8));
 		updatePaneCopyButton.setOnClickListener(new View_.OnClickListener() {
@@ -11905,7 +11989,7 @@ function updatePaneButton(updateVersion, updateDesc, isDev) {
 			}
 		});
 	} else {
-		let updatePaneInformationButton = clientButton("Info");
+		updatePaneInformationButton = clientButton("Info");
 		updatePaneInformationButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_menu_info_details, 0, 0, 0);
 		updatePaneInformationButton.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.MATCH_PARENT, display.heightPixels / 8));
 		updatePaneInformationButton.setOnClickListener(new View_.OnClickListener() {
