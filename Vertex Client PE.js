@@ -3385,7 +3385,7 @@ var glide = {
 
 var autoMine = {
 	name: "AutoMine",
-	desc: "Automatically mines the block you're looking at.",
+	desc: i18n("Automatically mines the block you're looking at."),
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
@@ -3444,7 +3444,7 @@ var follow = {
 
 var tapNuker = {
 	name: "TapNuker",
-	desc: "Destroys blocks wherever you tap.",
+	desc: i18n("Destroys blocks wherever you tap."),
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
@@ -3482,7 +3482,7 @@ var tapNuker = {
 
 var tapRemover = {
 	name: "TapRemover",
-	desc: "Removes blocks and entities on tap.",
+	desc: i18n("Removes blocks and entities on tap."),
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
@@ -3508,7 +3508,7 @@ var tapRemover = {
 
 var autoPlace = {
 	name: "AutoPlace",
-	desc: "Automatically places the block you're holding wherever you look.",
+	desc: i18n("Automatically places the block you're holding wherever you look."),
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
@@ -3536,7 +3536,7 @@ var autoPlace = {
 
 var regen = {
 	name: "Regen",
-	desc: "Instantly refills your health.",
+	desc: i18n("Instantly refills your health."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -3555,7 +3555,7 @@ var regen = {
 
 var godMode = {
 	name: "God Mode",
-	desc: "Gives you many hearts.",
+	desc: i18n("Gives you many hearts."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -3573,7 +3573,7 @@ var godMode = {
 
 var criticals = {
 	name: "Criticals",
-	desc: "Automatically jumps to make the second attack critical, make sure you attack again after hitting an entity and before hitting the ground to make it work.",
+	desc: i18n("Automatically jumps to make the second attack critical, make sure you attack again after hitting an entity and before hitting the ground to make it work."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -3591,7 +3591,7 @@ var criticals = {
 
 var arrowGun = {
 	name: "ArrowGun",
-	desc: "Automatically shoots arrows wherever you look.",
+	desc: i18n("Automatically shoots arrows wherever you look."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -3682,7 +3682,7 @@ var arrowGun = {
 
 var orderAPizza = {
 	name: "Order a Pizza",
-	desc: "Order a pizza of Pizza Hut.",
+	desc: i18n("Order a pizza of Pizza Hut."),
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	isStateMod: function() {
@@ -3695,7 +3695,7 @@ var orderAPizza = {
 
 var zoom = {
 	name: "Zoom",
-	desc: "Changes the FOV to zoom in.",
+	desc: i18n("Changes the FOV to zoom in."),
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	state: false,
@@ -3710,7 +3710,7 @@ var zoom = {
 
 var coordsDisplay = {
 	name: "CoordsDisplay",
-	desc: "Displays the player's coordinates.",
+	desc: i18n("Displays the player's coordinates."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -3727,7 +3727,7 @@ var coordsDisplay = {
 
 var itemGiver = {
 	name: "ItemGiver",
-	desc: "Adds items to your inventory.",
+	desc: i18n("Adds items to your inventory."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -3741,7 +3741,7 @@ var itemGiver = {
 
 var healthTags = {
 	name: "HealthTags",
-	desc: "Displays an entity's name and health in its nametag.",
+	desc: i18n("Displays an entity's name and health in its nametag."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -3894,7 +3894,7 @@ var healthTags = {
 
 var autoSwitch = {
 	name: "AutoSwitch",
-	desc: "Switches the item in your hand all the time.",
+	desc: i18n("Switches the item in your hand all the time."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -3925,7 +3925,7 @@ var playerWalkSpeed = 0.2;
 
 var autoWalk = {
 	name: "AutoWalk",
-	desc: "Makes your player walk automatically.",
+	desc: i18n("Makes your player walk automatically."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -4011,7 +4011,7 @@ var autoWalk = {
 
 var enderProjectiles = {
 	name: "EnderProjectiles",
-	desc: "Turns every projectile into an Ender Pearl.",
+	desc: i18n("Turns every projectile into an Ender Pearl."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -4031,7 +4031,7 @@ var enderProjectiles = {
 
 var stackDrop = {
 	name: "StackDrop",
-	desc: "Makes every block drop itself 64 times.",
+	desc: i18n("Makes every block drop itself 64 times."),
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
@@ -4046,7 +4046,7 @@ var stackDrop = {
 
 var liquidWalk = {
 	name: "LiquidWalk",
-	desc: "Makes you able to walk on liquids.",
+	desc: i18n("Makes you able to walk on liquids."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -4070,7 +4070,7 @@ var liquidWalk = {
 
 var highJump = {
 	name: "HighJump",
-	desc: "Allows you to jump 2 blocks high.",
+	desc: i18n("Allows you to jump 2 blocks high."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -4122,7 +4122,7 @@ let zDiff;
 
 var fastWalk = {
 	name: "FastWalk",
-	desc: "Makes you walk faster.",
+	desc: i18n("Makes you walk faster."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -4158,7 +4158,7 @@ let useKillauraRangeCheckBox;
 
 var aimbot = {
 	name: "Aimbot",
-	desc: "Makes you point at entities.",
+	desc: i18n("Makes you point at entities."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -4225,7 +4225,7 @@ var aimbot = {
 
 var chestTracers = {
 	name: "ChestTracers",
-	desc: "Allows you to find chests more easily by moving particles from the chest to underneath you.",
+	desc: i18n("Allows you to find chests more easily by moving particles from the chest to underneath you."),
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
@@ -4363,7 +4363,7 @@ var chestTracers = {
 
 var remoteView = {
 	name: "RemoteView",
-	desc: "Allows you to see the world as someone else (an entity).",
+	desc: i18n("Allows you to see the world as someone else (an entity)."),
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	state: false,
@@ -4414,7 +4414,7 @@ var remoteView = {
 
 var antiAFK = {
 	name: "AntiAFK",
-	desc: "Makes the player walk around to prevent you from getting disconnected. Also keeps the screen on as long as the 'Keep screen on' checkbox is checked.",
+	desc: i18n("Makes the player walk around to prevent you from getting disconnected. Also keeps the screen on as long as the 'Keep screen on' checkbox is checked."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	batteryUsage: "Normal (high when 'Keep screen on' is enabled)",
@@ -4476,7 +4476,7 @@ var antiAFK = {
 
 var autoLeave = {
 	name: "AutoLeave",
-	desc: "Automatically makes the game restart when your health is (below) 8.",
+	desc: i18n("Automatically makes the game restart when your health is (below) 8."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -4496,7 +4496,7 @@ var autoLeave = {
 
 var noDownGlide = {
 	name: "NoDownGlide",
-	desc: "Prevents you from flying upwards and downwards (and falling).",
+	desc: i18n("Prevents you from flying upwards and downwards (and falling)."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -4516,7 +4516,7 @@ var noDownGlide = {
 
 var teleport = {
 	name: "Teleport",
-	desc: "Teleports you to the given coordinates.",
+	desc: i18n("Teleports you to the given coordinates."),
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	isStateMod: function() {
@@ -4529,7 +4529,7 @@ var teleport = {
 
 var antiKnockback = {
 	name: "AntiKnockback",
-	desc: "Prevents you from getting knockback while being attacked.",
+	desc: i18n("Prevents you from getting knockback while being attacked."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -4563,7 +4563,7 @@ var antiKnockback = {
 
 var antiBurn = {
 	name: "AntiBurn",
-	desc: "Prevents you from getting burned down.",
+	desc: i18n("Prevents you from getting burned down."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -4595,7 +4595,7 @@ var antiBurn = {
 
 var lifeSaver = {
 	name: "LifeSaver",
-	desc: "Prevents you from getting in touch with dangerous blocks.",
+	desc: i18n("Prevents you from getting in touch with dangerous blocks."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -4621,7 +4621,7 @@ var lifeSaver = {
 
 var autoBuild = {
 	name: "AutoBuild",
-	desc: "Automatically build structures.",
+	desc: i18n("Automatically build structures."),
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
@@ -4641,7 +4641,7 @@ var autoBuild = {
 
 var speedHack = {
 	name: "SpeedHack",
-	desc: "Allows you to walk really fast on the ground.",
+	desc: i18n("Allows you to walk really fast on the ground."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -4697,7 +4697,7 @@ var speedHack = {
 
 var storageESP = {
 	name: "StorageESP",
-	desc: "Allows you to find chests, dispensers and droppers easily by showing boxes around them.",
+	desc: i18n("Allows you to find chests, dispensers and droppers easily by showing boxes around them."),
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
@@ -4742,7 +4742,7 @@ var storageESP = {
 
 var twerk = {
 	name: "Twerk",
-	desc: "Automatically makes you twerk all the time.",
+	desc: i18n("Automatically makes you twerk all the time."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -4765,7 +4765,7 @@ var twerk = {
 
 var actionLog = {
 	name: "ActionLog",
-	desc: "Automatically logs your actions (attacks and chat messages).",
+	desc: i18n("Automatically logs your actions (attacks and chat messages)."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Special",
 	isStateMod: function() {
@@ -4836,7 +4836,7 @@ var actionLog = {
 
 var fastBridge = {
 	name: "FastBridge",
-	desc: "Automatically teleports you on top of placed blocks.",
+	desc: i18n("Automatically teleports you on top of placed blocks."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -4865,7 +4865,7 @@ var fastBridge = {
 
 var noInvisBedrock = {
 	name: "NoInvisBedrock",
-	desc: "Allows you to walk through invisible bedrock.",
+	desc: i18n("Allows you to walk through invisible bedrock."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -4882,7 +4882,7 @@ var noInvisBedrock = {
 
 var tapJumpRun = {
 	name: "TapJumpRun",
-	desc: "Allows you to walk and jump to a block automatically on tap.",
+	desc: i18n("Allows you to walk and jump to a block automatically on tap."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -4915,7 +4915,7 @@ var tapJumpRun = {
 
 var tapAimbot = {
 	name: "TapAimbot",
-	desc: "Makes you aim at entities on tap.",
+	desc: i18n("Makes you aim at entities on tap."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -4971,7 +4971,7 @@ var tapAimbot = {
 
 var randomTP = {
 	name: "RandomTP",
-	desc: "Teleports you to a random entity when tapping the ground.",
+	desc: i18n("Teleports you to a random entity when tapping the ground."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -5005,7 +5005,7 @@ var randomTP = {
 
 var fullBright = {
 	name: "Fullbright",
-	desc: "Makes air light up.",
+	desc: i18n("Makes air light up."),
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
@@ -5024,7 +5024,7 @@ var fullBright = {
 
 var step = {
 	name: "Step",
-	desc: "Similar to MCPE's built-in Auto jump, except that it works on multiple heights.",
+	desc: i18n("Similar to MCPE's built-in Auto jump, except that it works on multiple heights."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -5045,7 +5045,7 @@ var foundItems = false;
 
 var dropLocator = {
 	name: "DropLocator",
-	desc: "Locates dropped items and experience.",
+	desc: i18n("Locates dropped items and experience."),
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	isStateMod: function() {
@@ -5084,7 +5084,7 @@ var dropLocator = {
 
 var playerLocator = {
 	name: "PlayerLocator",
-	desc: "Locates players.",
+	desc: i18n("Locates players."),
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	isStateMod: function() {
@@ -5115,7 +5115,7 @@ var playerLocator = {
 
 var safeWalk = {
 	name: "SafeWalk",
-	desc: "Automatically sneaks when you're at the edge of a block so that you can still move with normal speed.",
+	desc: i18n("Automatically sneaks when you're at the edge of a block so that you can still move with normal speed."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -5135,7 +5135,7 @@ var safeWalk = {
 
 var letItSnow = {
 	name: "LetItSnow",
-	desc: "Makes snowballs spawn above you.",
+	desc: i18n("Makes snowballs spawn above you."),
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	state: false,
@@ -5161,7 +5161,7 @@ var letItSnow = {
 
 var frostWalk = {
 	name: "FrostWalk",
-	desc: "Turns water blocks into ice blocks and lava blocks into cobblestone blocks when you step on them.",
+	desc: i18n("Turns water blocks into ice blocks and lava blocks into cobblestone blocks when you step on them."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -5191,7 +5191,7 @@ var frostWalk = {
 
 var target = {
 	name: "Target",
-	desc: "Allows you to choose if you want to target mobs, players or both in modules like Aimbot.",
+	desc: i18n("Allows you to choose if you want to target mobs, players or both in modules like Aimbot."),
 	category: VertexClientPE.category.MISC,
 	type: "Special",
 	getSettingsLayout: function() {
@@ -5246,7 +5246,7 @@ var target = {
 
 var hitboxes = {
 	name: "Hitboxes",
-	desc: "Increases collision sizes of other players so that you can hit them easily.",
+	desc: i18n("Increases collision sizes of other players so that you can hit them easily."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -5322,8 +5322,8 @@ var hitboxes = {
 
 var elytraBoost = {
 	name: "ElytraBoost",
-	//desc: "Boosts elytra (Toolbox only).",
-	desc: "Boosts elytra.",
+	//desc: i18n("Boosts elytra (Toolbox only)."),
+	desc: i18n("Boosts elytra."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -5349,7 +5349,7 @@ var elytraBoost = {
 
 var prevent = {
 	name: "Prevent",
-	desc: "Prevent user interaction (you can't prevent incoming attacks though).",
+	desc: i18n("Prevent user interaction (you can't prevent incoming attacks though)."),
 	category: VertexClientPE.category.MISC,
 	type: "Special",
 	getSettingsLayout: function() {
@@ -5412,7 +5412,7 @@ var prevent = {
 
 var attackTeleport = {
 	name: "AttackTeleport",
-	desc: "Teleports you to an entity when hitting it.",
+	desc: i18n("Teleports you to an entity when hitting it."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -5432,7 +5432,7 @@ var attackTeleport = {
 
 var healthDisplay = {
 	name: "HealthDisplay",
-	desc: "Shows your health in the bottom left corner.",
+	desc: i18n("Shows your health in the bottom left corner."),
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	state: false,
@@ -5467,7 +5467,7 @@ var healthDisplay = {
 
 var attackShock = {
 	name: "AttackShock",
-	desc: "Makes your device vibrate when hitting an entity.",
+	desc: i18n("Makes your device vibrate when hitting an entity."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	batteryUsage: "High",
@@ -5511,7 +5511,7 @@ var serverInfoStage = 0;
 
 var serverInfo = {
 	name: "ServerInfo",
-	desc: "Shows information about the server you're on.",
+	desc: i18n("Shows information about the server you're on."),
 	category: VertexClientPE.category.MISC,
 	type: "Special",
 	state: false,
@@ -5544,7 +5544,7 @@ var serverInfo = {
 
 var switchAimbot = {
 	name: "SwitchAimbot",
-	desc: "Makes you point at entities but changes target all the time.",
+	desc: i18n("Makes you point at entities but changes target all the time."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -5599,7 +5599,7 @@ var switchAimbot = {
 
 var strafeAura = {
 	name: "StrafeAura",
-	desc: "Makes you walk around entities.",
+	desc: i18n("Makes you walk around entities."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -5696,7 +5696,7 @@ var strafeAura = {
 
 var noFall = {
 	name: "NoFall",
-	desc: "Immediately teleports you to the first (non-air) block underneath yourself when falling (and blocks fall damage by doing so).",
+	desc: i18n("Immediately teleports you to the first (non-air) block underneath yourself when falling (and blocks fall damage by doing so)."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -5721,7 +5721,7 @@ var noFall = {
 
 var rotationPlus = {
 	name: "Rotation+",
-	desc: "Shows an additional D-pad, but for rotation instead of movement.",
+	desc: i18n("Shows an additional D-pad, but for rotation instead of movement."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -5745,7 +5745,7 @@ var rotationPlus = {
 
 var glitchCam = {
 	name: "GlitchCam",
-	desc: "Reduces the camera movement speed and makes it look dizzy.",
+	desc: i18n("Reduces the camera movement speed and makes it look dizzy."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -5788,7 +5788,7 @@ var glitchCam = {
 
 var bunnyHop = {
 	name: "BunnyHop",
-	desc: "Makes the player jump automatically.",
+	desc: i18n("Makes the player jump automatically."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -5826,7 +5826,7 @@ var bunnyHop = {
 
 var foodHack = {
 	name: "Foodhack",
-	desc: "Makes all items edible. Turning it off won't reset the items to their original state, though.",
+	desc: i18n("Makes all items edible. Turning it off won't reset the items to their original state, though."),
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	state: false,
@@ -5863,7 +5863,7 @@ var foodHack = {
 
 var antiHunger = {
 	name: "AntiHunger",
-	desc: "Automatically refills your hunger bar.",
+	desc: i18n("Automatically refills your hunger bar."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -5882,7 +5882,7 @@ var antiHunger = {
 
 var watermark = {
 	name: "Watermark",
-	desc: "Shows a custom (text) watermark. Text can be formatted using HTML.",
+	desc: i18n("Shows a custom (text) watermark. Text can be formatted using HTML."),
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	state: false,
@@ -5949,7 +5949,7 @@ var watermark = {
 
 var enchantIt = {
 	name: "EnchantIt",
-	desc: "Adds enchantments to items in your inventory.",
+	desc: i18n("Adds enchantments to items in your inventory."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
