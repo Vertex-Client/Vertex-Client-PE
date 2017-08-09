@@ -137,14 +137,18 @@ EntityType.ENDER_PEARL = 87;
 // Internationalization: Language Support
 const i18n = (function () {
     const lang = CONTEXT.getResources().getConfiguration().locale.getLanguage(),
-        langPath = settingsPath + "/lang/" + lang + ".json";
+        langPath = PATH + "/lang/" + lang + ".json";
     if (new File_(langPath).exists()) {
         const langObj = JSON.parse(getTextFromFile(langPath));
-        return function (text) {
+        return function (text, args) {
             if (text in langObj) {
-                return langObj[text];
+                return langObj[text].replace(/(\{%\d+\})/g, function ($1) {
+                    return $1[args.match(/\{%(\d+)\}/)[1]];
+                });
             }
-            return text;
+            return text.replace(/(\{%\d+\})/g, function ($1) {
+                return args[$1.match(/\{%(\d+)\}/)[1]];
+            });
         };
     }
     return function (text) {
@@ -14956,10 +14960,17 @@ function downloadFile(path, url, showNotification, replace) {
 
 (function checkFiles() {
 	let res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png", "github_button.png", "github_button_clicked.png", "vertex_logo_new.png", "stevehead.png", "minecraft.ttf", "christmas_tree.png", "dirt_background.png", "rainbow_background.png"],
+		langs = ['en'],
 		isExisting = true;
 	for (var i = res.length; i--;) {
 		if (!new File_(PATH, res[i]).exists()) {
 			downloadFile(PATH + res[i], GITHUB_URL + "bootstrap/img/" + res[i]);
+			isExisting = false;
+		}
+	}
+	for (var i = langs.length; i--;) {
+		if (!new File_(PATH + "/lang/", langs[i]).exists()) {
+			downloadFile(PATH + "/lang/" + langs[i], GITHUB_URL + "https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/feature/i18n/lang/" + langs[i] + ".json");
 			isExisting = false;
 		}
 	}
