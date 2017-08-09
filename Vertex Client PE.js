@@ -134,6 +134,24 @@ var Gravity = android.view.Gravity;
 
 EntityType.ENDER_PEARL = 87;
 
+// Internationalization: Language Support
+const i18n = (function () {
+    const lang = CONTEXT.getResources().getConfiguration().locale.getLanguage(),
+        langPath = settingsPath + "/lang/" + lang + ".json";
+    if (new File_(langPath).exists()) {
+        const langObj = JSON.parse(getTextFromFile(langPath));
+        return function (text) {
+            if (text in langObj) {
+                return langObj[text];
+            }
+            return text;
+        };
+    }
+    return function (text) {
+        return text;
+    };
+})();
+
 /**
  * ##########
  *  SETTINGS
@@ -2322,7 +2340,7 @@ VertexClientPE.getFeatureCount = function() {
 
 var panic = {
 	name: "Panic",
-	desc: "Disables all modules of the selected categories at once.",
+	desc: i18n("Disables all modules of the selected categories at once."),
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	getSettingsLayout: function() {
@@ -2426,7 +2444,7 @@ var panic = {
 
 var bypass = {
 	name: "Bypass",
-	desc: "Blocks mods that cannot bypass common anti cheat plugins.",
+	desc: i18n("Blocks mods that cannot bypass common anti cheat plugins."),
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	state: false,
@@ -2457,7 +2475,7 @@ var bypass = {
 
 var switchGamemode = {
 	name: "Switch Gamemode",
-	desc: "Switches your gamemode.",
+	desc: i18n("Switches your gamemode."),
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	getSettingsLayout: function() {
@@ -2506,7 +2524,7 @@ var switchGamemode = {
 
 var killAura = {
 	name: "Killaura",
-	desc: "Automatically kills all the near entities.",
+	desc: i18n("Automatically kills all the near entities."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -2576,7 +2594,7 @@ var killAura = {
 
 var freezeAura = {
 	name: "FreezeAura",
-	desc: "Automatically freezes all the near entities.",
+	desc: i18n("Automatically freezes all the near entities."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -2600,7 +2618,7 @@ var freezeAura = {
 
 var fireAura = {
 	name: "FireAura",
-	desc: "Sets all the near entities on fire.",
+	desc: i18n("Sets all the near entities on fire."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -2624,7 +2642,7 @@ var fireAura = {
 
 var autoSword = {
 	name: "AutoSword",
-	desc: "Automatically selects the best sword for you when attacking entities if available.",
+	desc: i18n("Automatically selects the best sword for you when attacking entities if available."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -2643,7 +2661,7 @@ var autoSword = {
 
 var homeCommand = {
 	name: "/home",
-	desc: "Runs the /home command if the server or world you're on has it.",
+	desc: i18n("Runs the /home command if the server or world you're on has it."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -2662,7 +2680,7 @@ var homeCommand = {
 
 var timer = {
 	name: "Timer",
-	desc: "Makes the speed of the game faster.",
+	desc: i18n("Makes the speed of the game faster."),
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
@@ -2704,7 +2722,7 @@ var timer = {
 
 var nuker = {
 	name: "Nuker",
-	desc: "Automatically destroys blocks around you. Can be used on servers when Bypass is enabled.",
+	desc: i18n("Automatically destroys blocks around you. Can be used on servers when Bypass is enabled."),
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
@@ -2812,7 +2830,7 @@ var nuker = {
 
 var fancyChat = {
 	name: "FancyChat",
-	desc: "Replaces characters in sent chat messages by fancy unicode characters. Can be used to bypass curse word filters on some servers.",
+	desc: i18n("Replaces characters in sent chat messages by fancy unicode characters. Can be used to bypass curse word filters on some servers."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -2838,7 +2856,7 @@ var fancyChat = {
 
 var noHurt = {
 	name: "NoHurt",
-	desc: "Prevents you from getting hurt.",
+	desc: i18n("Prevents you from getting hurt."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -2858,7 +2876,7 @@ var noHurt = {
 
 var ride = {
 	name: "Ride",
-	desc: "Automatically makes you ride an entity on tap.",
+	desc: i18n("Automatically makes you ride an entity on tap."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -2879,7 +2897,7 @@ var ride = {
 
 var onlyDay = {
 	name: "OnlyDay",
-	desc: "Sets the time to day all the time.",
+	desc: i18n("Sets the time to day all the time."),
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	state: false,
@@ -2896,7 +2914,7 @@ var onlyDay = {
 
 var flight = {
 	name: "Flight",
-	desc: "Makes you able to fly, even when you're in survival.",
+	desc: i18n("Makes you able to fly, even when you're in survival."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -2932,7 +2950,7 @@ var flight = {
 
 var pointTeleport = {
 	name: "PointTeleport",
-	desc: "Teleports you to the block you're pointing at.",
+	desc: i18n("Teleports you to the block you're pointing at."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -2951,7 +2969,7 @@ var pointTeleport = {
 
 var tapTeleport = {
 	name: "TapTeleport",
-	desc: "Teleports you wherever you tap.",
+	desc: i18n("Teleports you wherever you tap."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -2971,7 +2989,7 @@ var tapTeleport = {
 
 var phase = {
 	name: "Phase",
-	desc: "Makes you able to walk through walls.",
+	desc: i18n("Makes you able to walk through walls."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -2986,7 +3004,7 @@ var phase = {
 
 var fastBreak = {
 	name: "FastBreak",
-	desc: "Allows you to decrease block destroy times.",
+	desc: i18n("Allows you to decrease block destroy times."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -3039,7 +3057,7 @@ var chatRepeatStage = 0;
 
 var chatRepeat = {
 	name: "ChatRepeat",
-	desc: "Automatically repeats all the received chat messages. Can be very annoying.",
+	desc: i18n("Automatically repeats all the received chat messages. Can be very annoying."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -3061,7 +3079,7 @@ var chatRepeat = {
 
 var autoSpammer = {
 	name: "AutoSpammer",
-	desc: "Automatically spams the player.",
+	desc: i18n("Automatically spams the player."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -3151,7 +3169,7 @@ var tpAuraStage = 0;
 
 var tpAura = {
 	name: "TP-Aura",
-	desc: "Automatically teleports you behind entities to prevent you from getting hurt by others.",
+	desc: i18n("Automatically teleports you behind entities to prevent you from getting hurt by others."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -3223,7 +3241,7 @@ var powerExplosionsStage = 0;
 
 var powerExplosions = {
 	name: "PowerExplosions",
-	desc: "Makes explosions more powerful.",
+	desc: i18n("Makes explosions more powerful."),
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
@@ -3269,7 +3287,7 @@ var powerExplosions = {
 
 var tapExplosion = {
 	name: "TapExplosion",
-	desc: "Makes blocks explode wherever you tap.",
+	desc: i18n("Makes blocks explode wherever you tap."),
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
@@ -3286,7 +3304,7 @@ var tapExplosion = {
 
 var signEditor = {
 	name: "SignEditor",
-	desc: "Allows you to edit signs.",
+	desc: i18n("Allows you to edit signs."),
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
@@ -3307,7 +3325,7 @@ var signEditor = {
 
 var instaKill = {
 	name: "InstaKill",
-	desc: "Makes you able to kill an entity in one hit.",
+	desc: i18n("Makes you able to kill an entity in one hit."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -3328,7 +3346,7 @@ var instaKill = {
 
 var derp = {
 	name: "Derp",
-	desc: "Rotates the player all the time.",
+	desc: i18n("Rotates the player all the time."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -3348,7 +3366,7 @@ var derp = {
 
 var glide = {
 	name: "Glide",
-	desc: "Reduces fall damage by slowing the player down when falling.",
+	desc: i18n("Reduces fall damage by slowing the player down when falling."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -3388,7 +3406,7 @@ var followStage = 0;
 
 var follow = {
 	name: "Follow",
-	desc: "Automatically follow nearby entities.",
+	desc: i18n("Automatically follow nearby entities."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
