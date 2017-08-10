@@ -1843,7 +1843,7 @@ VertexClientPE.AddonUtils = {
 				element.onToggle();
 			}
 		});
-		
+
 		let newTempSongArray = [];
 		VertexClientPE.MusicUtils.tempSongList.forEach(function(element, index, array) {
 			if(element.source == undefined || fullAddonName != element.source) {
@@ -1896,7 +1896,7 @@ VertexClientPE.AddonUtils = {
 		});
 		VertexClientPE.addons = tempAddonsArray;
 		tempAddonsArray = null;
-		
+
 		//remove the addon script from the launcher
 		let enabledScripts = realScriptManager.getEnabledScripts();
 		enabledScripts.remove(addon.scriptName);
@@ -3132,7 +3132,7 @@ var autoSpammer = {
 		} else {
 			autoSpammerMessageLayout.addView(spamMessageText);
 		}
-		
+
 		autoSpammerMessageLayout.addView(spamDelayTimeTitle);
 		autoSpammerMessageLayout.addView(spamDelayTimeSlider);
 
@@ -3831,7 +3831,7 @@ var healthTags = {
 				VertexClientPE.initHealthTags();
 			}
 		}));
-		
+
 		let healthTagsShowHeartSettingFunc = new settingButton("Show heart icon on nametag", null, width,
 			function(viewArg) {
 				healthTagsShowHeartSetting = "on";
@@ -3860,7 +3860,7 @@ var healthTags = {
 		VertexClientPE.addView(healthTagsLayout, healthTagsNameSettingFunc);
 		VertexClientPE.addView(healthTagsLayout, healthTagsHealthSettingFunc);
 		VertexClientPE.addView(healthTagsLayout, healthTagsShowHeartSettingFunc);
-		
+
 		return healthTagsLayout;
 	},
 	isStateMod: function() {
@@ -5367,7 +5367,7 @@ var prevent = {
 				VertexClientPE.saveMainSettings();
 			}
 		});
-		
+
 		let preventExplosionsCheckBox = clientCheckBox();
 		preventExplosionsCheckBox.setChecked(preventExplosionsSetting == "on");
 		preventExplosionsCheckBox.setText("Prevent explosions");
@@ -7586,7 +7586,7 @@ VertexClientPE.showMainButtonManagerDialog = function() {
 						mainButtonSizeSettingTitle.setText("Main button size: | " + mainButtonSizeSetting + " pixels");
 					}
 				});
-				
+
 				let mainButtonPositionSettingFunc = new settingButton("Main button position", "Sets the main menu's button position.", display.widthPixels - 20,
 					function(viewArg) {
 						mainButtonPositionSetting = "top-left";
@@ -8002,7 +8002,7 @@ VertexClientPE.showFeaturesDialog = function() {
 				let lastPlayerEnabled = playerEnabled;
 				let lastMiscEnabled = miscEnabled;
 				let lastSingleplayerEnabled = singleplayerEnabled;
-				
+
 				let settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
 				let settingsTitleLayout = new LinearLayout_(CONTEXT);
 				settingsTitleLayout.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
@@ -9147,7 +9147,7 @@ VertexClientPE.showItemGiverDialog = function() {
 						dialog.dismiss();
 					}
 				});
-				
+
 				itemGiverItems.forEach(function(element, index, array) {
 					let tempButton = clientButton(Item.getName(element.toString()));
 					tempButton.setSingleLine(true);
@@ -9278,7 +9278,7 @@ VertexClientPE.showEnchantItDialog = function() {
 						dialog.dismiss();
 					}
 				});
-				
+
 				enchantItArray.forEach(function(element, index, array) {
 					let tempButton = clientButton(element[0].toString());
 					tempButton.setSingleLine(true);
@@ -11702,8 +11702,8 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 const TYPE_WIFI = 1;
 const TYPE_MOBILE = 2;
 const TYPE_NOT_CONNECTED = 0;
-	
-	
+
+
 function getConnectivityStatus(context) {
 	let cm = context.getSystemService(Context_.CONNECTIVITY_SERVICE);
 
@@ -12012,7 +12012,7 @@ function updatePaneButton(updateVersion, updateDesc, isDev) {
 	} else {
 		updatePaneLayoutRight.addView(updatePaneTypeText);
 	}
-	
+
 	if(isDev) {
 		updatePaneLayoutRight.addView(updatePaneCopyButton);
 	} else {
@@ -12189,7 +12189,7 @@ function modButton(mod, buttonOnly, customSize, shouldUpdateGUI, cornerEnabled) 
 	if(menuType != "halfscreen") {
 		modButtonLayout.setPadding(10, 5, 10, 5);
 	}
-	
+
 	/* let modButtonLayoutLeft = new LinearLayout_(CONTEXT);
 	modButtonLayoutLeft.setOrientation(1);
 	if(menuType == "halfscreen") {
@@ -12894,7 +12894,7 @@ function categoryTitle(text, editOnly) {
 	if(editOnly == null) {
 		editOnly = false;
 	}
-	
+
 	var categoryTitleLayout = new LinearLayout_(CONTEXT);
 	categoryTitleLayout.setOrientation(LinearLayout_.HORIZONTAL);
 
@@ -15381,7 +15381,7 @@ function settingsScreen(fromDashboard) {
 						VertexClientPE.showHacksListManagerDialog();
 					}
 				}));
-				
+
 				var mainButtonManagerSettingFunc = new settingButton("Main button", "Manage the main button.");
 				var mainButtonManagerSettingButton = mainButtonManagerSettingFunc.getButton();
 				mainButtonManagerSettingButton.setText("Manage");
@@ -15390,7 +15390,7 @@ function settingsScreen(fromDashboard) {
 						VertexClientPE.showMainButtonManagerDialog();
 					}
 				}));
-				
+
 				var shortcutManagerSettingFunc = new settingButton("Shortcuts", "Manage the shortcut buttons.");
 				var shortcutManagerSettingButton = shortcutManagerSettingFunc.getButton();
 				shortcutManagerSettingButton.setText("Manage");
@@ -16218,7 +16218,7 @@ function settingsScreen(fromDashboard) {
 						VertexClientPE.saveMainSettings();
 					}
 				}));
-				
+
 				var f5ButtonModeSettingFunc = new settingButton("F5 button mode", null, null,
 					function(viewArg) {
 						f5ButtonModeSetting = "pause";
@@ -16404,7 +16404,7 @@ function informationScreen(fromDashboard) {
 				var display = CONTEXT.getWindowManager().getDefaultDisplay(),
 				width = display.getWidth(),
 				height = display.getHeight();
-				
+
 				VertexClientPE.checkGUINeedsDismiss();
 
 				var informationMenuLayout1 = new LinearLayout_(CONTEXT);
@@ -16425,7 +16425,7 @@ function informationScreen(fromDashboard) {
 				let logoViewer = new ImageView_(CONTEXT);
 				logoViewer.setImageBitmap(imgLogo);
 				logoViewer.setLayoutParams(new LinearLayout_.LayoutParams(width / 3, height / 3));
-				
+
 				let descText = new TextView_(CONTEXT);
 				descText.setText(VertexClientPE.currentVersionDesc.toUpperCase());
 				descText.setGravity(Gravity_.CENTER);
@@ -17885,56 +17885,45 @@ VertexClientPE.showFullScreenMenu = function() {
 
 				let combatSectionTitle = coloredSubTitle(combatName);
 				combatSectionTitle.setGravity(Gravity_.CENTER);
+				combatSectionTitle.setOnLongClickListener(new View_.OnLongClickListener({
+					onLongClick: function(v, t) {
+						VertexClientPE.showCategoryDialog(combatSectionTitle, combatName, 0);
+						return true;
+					}
+				}));
 				let worldSectionTitle = coloredSubTitle(worldName);
 				worldSectionTitle.setGravity(Gravity_.CENTER);
+				worldSectionTitle.setOnLongClickListener(new View_.OnLongClickListener({
+					onLongClick: function(v, t) {
+						VertexClientPE.showCategoryDialog(worldSectionTitle, worldName, 1);
+						return true;
+					}
+				}));
 				let movementSectionTitle = coloredSubTitle(movementName);
 				movementSectionTitle.setGravity(Gravity_.CENTER);
+				movementSectionTitle.setOnLongClickListener(new View_.OnLongClickListener({
+					onLongClick: function(v, t) {
+						VertexClientPE.showCategoryDialog(movementSectionTitle, movementName, 2);
+						return true;
+					}
+				}));
 				let playerSectionTitle = coloredSubTitle(playerName);
 				playerSectionTitle.setGravity(Gravity_.CENTER);
+				playerSectionTitle.setOnLongClickListener(new View_.OnLongClickListener({
+					onLongClick: function(v, t) {
+						VertexClientPE.showCategoryDialog(playerSectionTitle, playerName, 3);
+						return true;
+					}
+				}));
 				let miscSectionTitle = coloredSubTitle(miscName);
 				miscSectionTitle.setGravity(Gravity_.CENTER);
-				/* let combatSectionTitle = new categoryTitle(combatName, true);
-				let combatSettings = combatSectionTitle.getLeftButton();
-				let worldSectionTitle = new categoryTitle(worldName, true);
-				let worldSettings = worldSectionTitle.getLeftButton();
-				let movementSectionTitle = new categoryTitle(movementName, true);
-				let movementSettings = movementSectionTitle.getLeftButton();
-				let playerSectionTitle = new categoryTitle(playerName, true);
-				let playerSettings = playerSectionTitle.getLeftButton();
-				let miscSectionTitle = new categoryTitle(miscName, true);
-				let miscSettings = miscSectionTitle.getLeftButton();
-				combatSettings.setOnClickListener(new View_.OnClickListener({
-					onClick() {
-						VertexClientPE.showCategoryDialog(combatSectionTitle, combatName, 0);
-					}
-				}));
-				worldSettings.setOnClickListener(new View_.OnClickListener({
-					onClick() {
-						VertexClientPE.showCategoryDialog(worldSectionTitle, worldName, 1);
-					}
-				}));
-				movementSettings.setOnClickListener(new View_.OnClickListener({
-					onClick() {
-						VertexClientPE.showCategoryDialog(movementSectionTitle, movementName, 2);
-					}
-				}));
-				playerSettings.setOnClickListener(new View_.OnClickListener({
-					onClick() {
-						VertexClientPE.showCategoryDialog(playerSectionTitle, playerName, 3);
-					}
-				}));
-				miscSettings.setOnClickListener(new View_.OnClickListener({
-					onClick() {
+				miscSectionTitle.setOnLongClickListener(new View_.OnLongClickListener({
+					onLongClick: function(v, t) {
 						VertexClientPE.showCategoryDialog(miscSectionTitle, miscName, 4);
+						return true;
 					}
 				}));
 
-				VertexClientPE.addView(fullScreenMenuLayout1Combat, combatSectionTitle);
-				VertexClientPE.addView(fullScreenMenuLayout1World, worldSectionTitle);
-				VertexClientPE.addView(fullScreenMenuLayout1Movement, movementSectionTitle);
-				VertexClientPE.addView(fullScreenMenuLayout1Player, playerSectionTitle);
-				VertexClientPE.addView(fullScreenMenuLayout1Misc, miscSectionTitle); */
-				
 				fullScreenMenuLayout1Combat.addView(combatSectionTitle);
 				fullScreenMenuLayout1World.addView(worldSectionTitle);
 				fullScreenMenuLayout1Movement.addView(movementSectionTitle);
@@ -18046,7 +18035,6 @@ VertexClientPE.showTableMenu = function() {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
-				
 				let dScrollView = new ScrollView_(CONTEXT);
 				dScrollView.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT));
 
@@ -18148,14 +18136,8 @@ function retroMenu() {
 					menuLayout.addView(menuRightScroll);
 					menuRightScroll.addView(menuRightLayout);
 				}
-				//--------Add Title--------//
-				var tabTitle = new TextView_(CONTEXT);
-				tabTitle.setText(currentTab);
-				tabTitle.setTextSize(20);
-				tabTitle.setGravity(Gravity_.CENTER);
-				//menuRightLayout.addView(tabTitle);
 
-				var categories = [VertexClientPE.category.COMBAT, VertexClientPE.category.WORLD, VertexClientPE.category.MOVEMENT, VertexClientPE.category.PLAYER, VertexClientPE.category.MISC];
+				let categories = [VertexClientPE.category.COMBAT, VertexClientPE.category.WORLD, VertexClientPE.category.MOVEMENT, VertexClientPE.category.PLAYER, VertexClientPE.category.MISC];
 
 				categories.forEach(function(element, index, array) {
 					if((index == 0 && combatEnabled == "on") || (index == 1 && worldEnabled == "on") || (index == 2 && movementEnabled == "on") || (index == 3 && playerEnabled == "on") || (index == 4 && miscEnabled == "on")) {
@@ -19144,7 +19126,6 @@ function showHacksList() {
 						hacksListLayoutRight.addView(musicTextView);
 					} else {
 						hacksListLayoutRight.addView(versionText);
-						
 						// TODO
 					}
 					if(hacksList == null || !hacksList.isShowing()) { // < Todo: remove this line?
