@@ -229,6 +229,7 @@ let tapAimbotStayAimedSetting = 40;
 let healthTagsNameSetting = "aqua";
 let healthTagsHealthSetting = "red";
 let healthTagsShowHeartSetting = "on";
+let modsStayEnabledSetting = "on";
 //------------------------------------
 let antiAFKDistancePerTick = 0.25;
 //------------------------------------
@@ -307,7 +308,7 @@ let playerMenuShown = false;
 let miscMenuShown = false;
 //MENU END
 
-var Launcher = {
+let Launcher = {
 	isBlockLauncher: function() {
 		return (CONTEXT.getPackageName() == "net.zhuoweizhang.mcpelauncher" || CONTEXT.getPackageName() == "net.zhuoweizhang.mcpelauncher.pro");
 	},
@@ -330,7 +331,7 @@ if(Launcher.isMcpeMaster()) {
 	realScriptManager = ScriptManager_;
 }
 
-var ScreenType = {
+let ScreenType = {
 	start_screen: "start_screen",
 	hud: "hud_screen",
 	ingame: "in_game_play_screen",
@@ -2165,9 +2166,12 @@ VertexClientPE.registerTile(devSettingsTile);
 VertexClientPE.registerTile(jsConsoleTile);
 VertexClientPE.registerTile(restartTile);
 
-VertexClientPE.initMods = function(switchedCat) {
+VertexClientPE.initMods = function(switchedCat, shouldLoadModStates) {
 	if(switchedCat == null) {
 		switchedCat = false;
+	}
+	if(shouldLoadModStates == null) {
+		shouldLoadModStates = true;
 	}
 	if(switchedCat) {
 		VertexClientPE.modules.forEach(function(element, index, array) {
@@ -2178,24 +2182,33 @@ VertexClientPE.initMods = function(switchedCat) {
 	}
 	VertexClientPE.modules = [];
 	try {
-		let tempBypassState = VertexClientPE.getSavedModState("Bypass");
-		VertexClientPE.preInitModules.forEach(function(element, index, array) {
-			if(((element.pack == "Combat" && combatEnabled == "on") || (element.pack == "World" && worldEnabled == "on") || (element.pack == "Movement" && movementEnabled == "on") || (element.pack == "Player" && playerEnabled == "on") || (element.pack == "Miscellaneous" && miscEnabled == "on")) && !(element.singleplayerOnly && singleplayerEnabled == "off")) {
-				// TODO: toggle mods on if enabled in save data
-				let tempElement = element;
-				if(VertexClientPE.getSavedModState(tempElement.name)) {
-					//toggle mod
-					if(tempElement.name == "Bypass" || !tempBypassState || !tempElement.hasOwnProperty("canBypassBypassMod") || (tempElement.hasOwnProperty("canBypassBypassMod") && tempElement.canBypassBypassMod())) {
-						tempElement.onToggle();
-					} else if(tempBypassState && !tempElement.canBypassBypassMod()) {
-						if(tempElement.isStateMod()) {
-							tempElement.state = true;
+		if(shouldLoadModStates) {
+			let tempBypassState = VertexClientPE.getSavedModState("Bypass");
+			VertexClientPE.preInitModules.forEach(function(element, index, array) {
+				if(((element.pack == "Combat" && combatEnabled == "on") || (element.pack == "World" && worldEnabled == "on") || (element.pack == "Movement" && movementEnabled == "on") || (element.pack == "Player" && playerEnabled == "on") || (element.pack == "Miscellaneous" && miscEnabled == "on")) && !(element.singleplayerOnly && singleplayerEnabled == "off")) {
+					// toggle mods on if enabled in save data
+					let tempElement = element;
+					if(VertexClientPE.getSavedModState(tempElement.name)) {
+						//toggle mod
+						if(tempElement.name == "Bypass" || !tempBypassState || !tempElement.hasOwnProperty("canBypassBypassMod") || (tempElement.hasOwnProperty("canBypassBypassMod") && tempElement.canBypassBypassMod())) {
+							tempElement.onToggle();
+						} else if(tempBypassState && !tempElement.canBypassBypassMod()) {
+							if(tempElement.isStateMod()) {
+								tempElement.state = true;
+							}
 						}
 					}
+					VertexClientPE.modules.push(tempElement);
 				}
-				VertexClientPE.modules.push(tempElement);
-			}
-		});
+			});
+		} else {
+			VertexClientPE.preInitModules.forEach(function(element, index, array) {
+				VertexClientPE.setSavedModState(element.name, false);
+				if(((element.pack == "Combat" && combatEnabled == "on") || (element.pack == "World" && worldEnabled == "on") || (element.pack == "Movement" && movementEnabled == "on") || (element.pack == "Player" && playerEnabled == "on") || (element.pack == "Miscellaneous" && miscEnabled == "on")) && !(element.singleplayerOnly && singleplayerEnabled == "off")) {
+					VertexClientPE.modules.push(element);
+				}
+			});
+		}
 	} catch(e) {
 		VertexClientPE.showBugReportDialog(e);
 	}
@@ -11191,6 +11204,7 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + healthTagsNameSetting.toString());
 	outWrite.append("," + healthTagsHealthSetting.toString());
 	outWrite.append("," + healthTagsShowHeartSetting.toString());
+	outWrite.append("," + modsStayEnabledSetting.toString());
 
 	outWrite.close();
 
@@ -11468,6 +11482,9 @@ VertexClientPE.loadMainSettings = function () {
 	if (arr[85] != null && arr[85] != undefined) {
 		healthTagsShowHeartSetting = arr[85];
 	}
+	if (arr[86] != null && arr[86] != undefined) {
+		modsStayEnabledSetting = arr[86];
+	}
 
 	VertexClientPE.loadCustomRGBSettings();
 	VertexClientPE.loadAutoSpammerMessage();
@@ -11549,7 +11566,7 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 	if(style != "android" && style != "invisible") {
 		let bg = GradientDrawable_();
 		if(round == true) {
-			bg.setCornerRadius(10);
+			bg.setCornerRadius(10); //TODO: check if corner radius is right?
 		} else if(round != false && round != null) {
 			let radiiFloatArray = Array_.newInstance(Float_.TYPE, 9);
 			let radius = 0;
@@ -13368,7 +13385,7 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
 		if (color.indexOf("|") < 0) {
 			bg.setColor(Color_.parseColor(color));
 		} else {
-			var arr = color.split("|");
+			let arr = color.split("|");
 			bg.setColor(Color_.parseColor(arr[0]));
 			bg.setStroke(dip2px(1), Color_.parseColor(arr[1]));
 		}
@@ -13390,7 +13407,7 @@ VertexClientPE.setupGradient = function(gradientDrawable, color, strokeColor, rg
 	if(style == "normal_noinner") {
 		gradientDrawable.setColor(Color_.TRANSPARENT);
 	}
-	var preset = transparent?"#70":"#";
+	let preset = transparent?"#70":"#";
 	if(rgbArray == null) {
 		if(style != "normal_noinner") {
 			gradientDrawable.setColor(Color_.parseColor(preset + color));
@@ -14068,7 +14085,7 @@ VertexClientPE.showUpdate = function() {
 	}).start();
 }
 
-var currentStep = 1;
+let currentStep = 1;
 
 VertexClientPE.showSetupScreen = function() {
 	CONTEXT.runOnUiThread(new Runnable_({
@@ -14243,7 +14260,7 @@ VertexClientPE.showSetupScreen = function() {
 									VertexClientPE.specialTick();
 									VertexClientPE.secondTick();
 									VertexClientPE.setupMCPEGUI();
-									VertexClientPE.initMods();
+									VertexClientPE.initMods(null, false);
 								}
 							}));
 						}
@@ -14869,7 +14886,7 @@ VertexClientPE.setup = function() {
 							VertexClientPE.AddonUtils.loadAddons();
 							VertexClientPE.loadFloatingMenus();
 							showMenuButton();
-							VertexClientPE.initMods();
+							VertexClientPE.initMods(null, modsStayEnabledSetting=="on");
 						}
 
 						if(ModPE.getMinecraftVersion() < VertexClientPE.minVersion) {
@@ -16175,6 +16192,31 @@ function settingsScreen(fromDashboard) {
 						VertexClientPE.showFeaturesDialog();
 					}
 				}));
+				
+				let modsStayEnabledSettingFunc = new settingButton("Enabled mods stay enabled when restarting the launcher", null, null,
+					function(viewArg) {
+						modsStayEnabledSetting = "on";
+						modsStayEnabledSettingButton.setText("ON");
+					}
+				);
+				let modsStayEnabledSettingButton = modsStayEnabledSettingFunc.getButton();
+				if(modsStayEnabledSetting == "on") {
+					modsStayEnabledSettingButton.setText("ON");
+				} else if(modsStayEnabledSetting == "off") {
+					modsStayEnabledSettingButton.setText("OFF");
+				}
+				modsStayEnabledSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(modsStayEnabledSetting == "off") {
+							modsStayEnabledSetting = "on";
+							modsStayEnabledSettingButton.setText("ON");
+						} else if(modsStayEnabledSetting == "on") {
+							modsStayEnabledSetting = "off";
+							modsStayEnabledSettingButton.setText("OFF");
+						}
+						VertexClientPE.saveMainSettings();
+					}
+				}));
 
 				let showSnowInWinterSettingFunc = new settingButton("Show snowflakes on the start screen in the winter", null, null,
 					function(viewArg) {
@@ -16276,6 +16318,7 @@ function settingsScreen(fromDashboard) {
 				VertexClientPE.addView(settingsMenuLayout, showNewsSettingFunc);
 				settingsMenuLayout.addView(otherTitle);
 				VertexClientPE.addView(settingsMenuLayout, featuresSettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, modsStayEnabledSettingFunc);
 				VertexClientPE.addView(settingsMenuLayout, showSnowInWinterSettingFunc);
 				VertexClientPE.addView(settingsMenuLayout, f5ButtonModeSettingFunc);
 				VertexClientPE.addView(settingsMenuLayout, webBrowserStartPageSettingFunc);
