@@ -6311,7 +6311,7 @@ var toggle = {
 			}
 		} catch(e) {
 			if(e instanceof SyntaxError) {
-				VertexClientPE.syntaxError(".toggle <module>");
+				VertexClientPE.syntaxError(cmdPrefix + this.syntax);
 			} else {
 				VertexClientPE.showBugReportDialog(e);
 			}
@@ -6339,25 +6339,21 @@ var say = {
 }
 
 var drop = {
-	syntax: "drop [infinite]",
+	syntax: "drop",
 	onCall: function(cmd) {
 		let commandSplit = cmd.split(" ");
 		try {
-			if(commandSplit[1] == null || commandSplit[1] == undefined || commandSplit[1] == "infinite") {
-				for(let i = 0; i <= 512; i++) {
-					p = ((Entity.getPitch(getPlayerEnt()) + 90) * Math.PI) / 180;
-					y = ((Entity.getYaw(getPlayerEnt()) + 90) * Math.PI) / 180;
-					xx = Math.sin(p) * Math.cos(y);
-					yy = Math.sin(p) * Math.sin(y);
-					zz = Math.cos(p);
-					Level.dropItem(getPlayerX() + xx, getPlayerY() + zz, getPlayerZ() + yy, 1, i, 1);
-				}
-			} else {
-				throw new SyntaxError();
+			for(let i = 0; i <= 512; i++) {
+				let p = ((Entity.getPitch(getPlayerEnt()) + 90) * Math.PI) / 180;
+				let y = ((Entity.getYaw(getPlayerEnt()) + 90) * Math.PI) / 180;
+				let xx = Math.sin(p) * Math.cos(y);
+				let yy = Math.sin(p) * Math.sin(y);
+				let zz = Math.cos(p);
+				Level.dropItem(getPlayerX() + xx, getPlayerY() + zz, getPlayerZ() + yy, 1, i, 1);
 			}
 		} catch(e) {
 			if(e instanceof SyntaxError) {
-				VertexClientPE.syntaxError(".drop [infinite]");
+				VertexClientPE.syntaxError(cmdPrefix + this.syntax);
 			} else {
 				VertexClientPE.showBugReportDialog(e);
 			}
@@ -6510,7 +6506,7 @@ var w = {
 	onCall: function(cmd) {
 		let url = cmd.split(" ")[1];
 		if(url == null || url == "" || url.replaceAll(" ", "") == "") {
-			VertexClientPE.syntaxError(this.syntax);
+			VertexClientPE.syntaxError(cmdPrefix + this.syntax);
 		} else {
 			ModPE.goToURL(url);
 		}
