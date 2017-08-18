@@ -230,6 +230,7 @@ let healthTagsNameSetting = "aqua";
 let healthTagsHealthSetting = "red";
 let healthTagsShowHeartSetting = "on";
 let modsStayEnabledSetting = "on";
+let itemGiverModeSetting = "fast";
 //------------------------------------
 let antiAFKDistancePerTick = 0.25;
 //------------------------------------
@@ -957,7 +958,7 @@ const PI_CIRCLE = Math.PI / 180;
 
 let songDialog;
 
-var VertexClientPE = {
+let VertexClientPE = {
 	name: "Vertex Client PE",
 	getName: function() {
 		return VertexClientPE.name;
@@ -1003,9 +1004,9 @@ var VertexClientPE = {
 			logMessages: []
 		},
 		takeScreenshot: function(mode) {
-			var now = new java.util.Date();
+			let now = new java.util.Date();
 			android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
-			var mPath = Environment_.getExternalStorageDirectory().toString() + "/" + now;
+			let mPath = Environment_.getExternalStorageDirectory().toString() + "/" + now;
 
 			switch(mode) {
 				case "noGui": {
@@ -3209,11 +3210,11 @@ var tpAura = {
 	onAttack: function(a, v) {
 		if(!this.state) return;
 		if(a == getPlayerEnt()) {
-			var x = Entity.getX(v) - getPlayerX();
-			var z = Entity.getZ(v) - getPlayerZ();
-			var playerPos = new Array(getPlayerX(), getPlayerY() + 0.5, getPlayerZ());
-			var victimPos = new Array(Entity.getX(v), Entity.getY(v), Entity.getZ(v));
-			var diffPos = new Array(victimPos[0] - playerPos[0], null, victimPos[2] - playerPos[2]);
+			let x = Entity.getX(v) - getPlayerX();
+			let z = Entity.getZ(v) - getPlayerZ();
+			let playerPos = new Array(getPlayerX(), getPlayerY() + 0.5, getPlayerZ());
+			let victimPos = new Array(Entity.getX(v), Entity.getY(v), Entity.getZ(v));
+			let diffPos = new Array(victimPos[0] - playerPos[0], null, victimPos[2] - playerPos[2]);
 			playerPos[0] += diffPos[0] * 2;
 			playerPos[2] += diffPos[2] * 2;
 
@@ -3226,7 +3227,7 @@ var tpAura = {
 	}
 }
 
-var powerExplosionsStage = 0;
+let powerExplosionsStage = 0;
 
 var powerExplosions = {
 	name: "PowerExplosions",
@@ -3391,7 +3392,7 @@ var autoMine = {
 	}
 }
 
-var followStage = 0;
+let followStage = 0;
 
 var follow = {
 	name: "Follow",
@@ -3408,8 +3409,8 @@ var follow = {
 	onTick: function() {
 		if(followStage == 0) {
 			followStage = 1;
-			var mob = VertexClientPE.Utils.Player.getNearestMob(10, 2);
-			var player = VertexClientPE.Utils.Player.getNearestPlayer(10, 2);
+			let mob = VertexClientPE.Utils.Player.getNearestMob(10, 2);
+			let player = VertexClientPE.Utils.Player.getNearestPlayer(10, 2);
 			if(mob != null) {
 				let x = Entity.getX(mob) - getPlayerX();
 				let y = Entity.getY(mob) - getPlayerY();
@@ -3509,12 +3510,12 @@ var autoPlace = {
 		this.state = !this.state;
 	},
 	onTick: function() {
-		var x = Player.getPointedBlockX();
-		var y = Player.getPointedBlockY();
-		var z = Player.getPointedBlockZ();
-		var side = Player.getPointedBlockSide();
-		var blockId = Player.getCarriedItem();
-		var blockData = Player.getCarriedItemData();
+		let x = Player.getPointedBlockX();
+		let y = Player.getPointedBlockY();
+		let z = Player.getPointedBlockZ();
+		let side = Player.getPointedBlockSide();
+		let blockId = Player.getCarriedItem();
+		let blockData = Player.getCarriedItemData();
 		if(getTile(x, y, z) != 0) {
 			if(blockId <= 256) {
 				setTile(x-(side==4?1:0)+(side==5?1:0)+0.5,y-(side==0?1:0)+(side==1?1:0)+0.5,z-(side==2?1:0)+(side==3?1:0)+0.5, blockId, blockData);
@@ -3720,6 +3721,60 @@ var itemGiver = {
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
+	getSettingsLayout: function() {
+		let itemGiverSettingsLayout = new LinearLayout_(CONTEXT);
+		itemGiverSettingsLayout.setOrientation(1);
+
+		let itemGiverModeTitle = clientTextView("Mode:");
+		let itemGiverFastButton = clientButton("Fast", "Fast mode with custom input only.");
+		itemGiverFastButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4 - 20 / 2, display.heightPixels / 10));
+		let itemGiverAdvancedButton = clientButton("Advanced", "Advanced mode with item presets and custom input.");
+		itemGiverAdvancedButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4 - 20 / 2, display.heightPixels / 10));
+
+		let itemGiverModeLayout = new LinearLayout_(CONTEXT);
+		itemGiverModeLayout.setOrientation(LinearLayout_.HORIZONTAL);
+
+		let itemGiverModeLayoutLeft = new LinearLayout_(CONTEXT);
+		itemGiverModeLayoutLeft.setOrientation(1);
+		itemGiverModeLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - 20 / 2, display.heightPixels / 10));
+		itemGiverModeLayoutLeft.setGravity(Gravity_.CENTER_HORIZONTAL);
+		itemGiverModeLayout.addView(itemGiverModeLayoutLeft);
+
+		let itemGiverModeLayoutRight = new LinearLayout_(CONTEXT);
+		itemGiverModeLayoutRight.setOrientation(1);
+		itemGiverModeLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - 20 / 2, display.heightPixels / 10));
+		itemGiverModeLayoutRight.setGravity(Gravity_.CENTER_HORIZONTAL);
+		itemGiverModeLayout.addView(itemGiverModeLayoutRight);
+
+		if(itemGiverModeSetting == "fast") {
+			itemGiverFastButton.setTextColor(Color_.GREEN);
+		} else if(itemGiverModeSetting == "advanced") {
+			itemGiverAdvancedButton.setTextColor(Color_.GREEN);
+		}
+		itemGiverFastButton.setOnClickListener(new View_.OnClickListener() {
+			onClick: function(view) {
+				itemGiverModeSetting = "fast";
+				itemGiverFastButton.setTextColor(Color_.GREEN);
+				VertexClientPE.addTextStyleToView(itemGiverAdvancedButton);
+				VertexClientPE.saveMainSettings();
+			}
+		});
+		itemGiverAdvancedButton.setOnClickListener(new View_.OnClickListener() {
+			onClick: function(view) {
+				itemGiverModeSetting = "advanced";
+				VertexClientPE.addTextStyleToView(itemGiverFastButton);
+				itemGiverAdvancedButton.setTextColor(Color_.GREEN);
+				VertexClientPE.saveMainSettings();
+			}
+		});
+
+		itemGiverModeLayoutLeft.addView(itemGiverFastButton);
+		itemGiverModeLayoutRight.addView(itemGiverAdvancedButton);
+
+		itemGiverSettingsLayout.addView(itemGiverModeTitle);
+		itemGiverSettingsLayout.addView(itemGiverModeLayout);
+		return itemGiverSettingsLayout;
+	},
 	isStateMod: function() {
 		return false;
 	},
@@ -3908,9 +3963,9 @@ function toDirectionalVector(vector, yaw, pitch) { //some parts of this function
 	vector[2] = Math.sin(yaw) * Math.cos(0);
 }
 
-var playerDir = [0, 0, 0];
-var DEG_TO_RAD = PI_CIRCLE;
-var playerWalkSpeed = 0.2;
+let playerDir = [0, 0, 0];
+let DEG_TO_RAD = PI_CIRCLE;
+let playerWalkSpeed = 0.2;
 
 var autoWalk = {
 	name: "AutoWalk",
@@ -4303,7 +4358,7 @@ var chestTracers = {
 		chestTracersParticleLayoutCenter.addView(chestTracersRedstoneButton);
 		chestTracersParticleLayoutRight.addView(chestTracersCriticalButton);
 
-		var groundModeCheckBox = clientCheckBox();
+		let groundModeCheckBox = clientCheckBox();
 		groundModeCheckBox.setChecked(chestTracersGroundMode == "on");
 		groundModeCheckBox.setText("Ground Mode");
 		groundModeCheckBox.setOnClickListener(new View_.OnClickListener() {
@@ -4313,7 +4368,7 @@ var chestTracers = {
 			}
 		});
 
-		var space = clientTextView("\n");
+		let space = clientTextView("");
 		chestTracersSettingsLayout.addView(chestTracersRangeTitle);
 		chestTracersSettingsLayout.addView(chestTracersRangeSlider);
 		chestTracersSettingsLayout.addView(chestTracersParticleTitle);
@@ -4332,12 +4387,12 @@ var chestTracers = {
 		this.state = !this.state;
 	},
 	onInterval: function() {
-		var x = getPlayerX();
-		var y = getPlayerY();
-		var z = getPlayerZ();
-		for(var blockX = - chestTracersRange; blockX <= chestTracersRange; blockX++) {
-			for(var blockY = - chestTracersRange; blockY <= chestTracersRange; blockY++) {
-				for(var blockZ = - chestTracersRange; blockZ <= chestTracersRange; blockZ++) {
+		let x = getPlayerX();
+		let y = getPlayerY();
+		let z = getPlayerZ();
+		for(let blockX = - chestTracersRange; blockX <= chestTracersRange; blockX++) {
+			for(let blockY = - chestTracersRange; blockY <= chestTracersRange; blockY++) {
+				for(let blockZ = - chestTracersRange; blockZ <= chestTracersRange; blockZ++) {
 					let newX = Math.floor(x + blockX);
 					let newY = Math.floor(y + blockY);
 					let newZ = Math.floor(z + blockZ);
@@ -4566,9 +4621,9 @@ var antiBurn = {
 		this.state = !this.state;
 	},
 	onTick: function() {
-		var x = getPlayerX();
-		var y = getPlayerY();
-		var z = getPlayerZ();
+		let x = getPlayerX();
+		let y = getPlayerY();
+		let z = getPlayerZ();
 		/* var blockOne = getTile(x, y, z);
 		var blockTwo = getTile(x, y - 1, z);
 		var blockThree = getTile(x, y - 2, z);
@@ -4578,7 +4633,7 @@ var antiBurn = {
 		setTile(x, y, z, blockOne);
 		setTile(x, y - 1, z, blockTwo);
 		setTile(x, y - 2, z, blockThree); */
-		Entity.setFireTicks(getPlayerEnt(), -1);
+		Entity.setFireTicks(getPlayerEnt(), 1);
 	}
 }
 
@@ -4668,14 +4723,14 @@ var speedHack = {
 		this.state = !this.state;
 		speedHackState = this.state;
 		if(this.state) {
-			for(var i = 0; i <= 255; i++) {
+			for(let i = 0; i <= 255; i++) {
 				if(this.frictionArray[i] == null || this.frictionArray[i] == undefined) {
 					this.frictionArray[i] = Block.getFriction(i);
 				}
 				Block.setFriction(i, speedHackFriction);
 			}
 		} else {
-			for(var i = 0; i <= 255; i++) {
+			for(let i = 0; i <= 255; i++) {
 				if(this.frictionArray[i] != null && this.frictionArray[i] != undefined) {
 					Block.setFriction(i, this.frictionArray[i]);
 				}
@@ -4837,7 +4892,7 @@ var fastBridge = {
 	},
 	onUseItem: function(x, y, z, itemId, blockId, side, blockDamage) {
 		if(itemId != 0 && itemId <= 256) {
-			var fastBridgeVector = new Vector3(x-(side==4?1:0)+(side==5?1:0)+0.5,y-(side==0?1:0)+(side==1?1:0)+2,z-(side==2?1:0)+(side==3?1:0)+0.5);
+			let fastBridgeVector = new Vector3(x-(side==4?1:0)+(side==5?1:0)+0.5,y-(side==0?1:0)+(side==1?1:0)+2,z-(side==2?1:0)+(side==3?1:0)+0.5);
 			new Thread_(new Runnable_() {
 				run: function() {
 					if(fastBridgeVector.y <= getPlayerY()) {
@@ -9049,7 +9104,7 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 	}
 }
 
-VertexClientPE.showItemGiverDialog = function() {
+VertexClientPE.showItemGiverDialog = function() { //TODO: make faster, less layouts
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
@@ -9057,6 +9112,11 @@ VertexClientPE.showItemGiverDialog = function() {
 				itemGiverTitle.setTextSize(25);
 				let closeButton = clientButton("Close");
 				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
+				closeButton.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+					}
+				});
 				let dialogLayoutBase = new LinearLayout_(CONTEXT);
 				dialogLayoutBase.setOrientation(1);
 				dialogLayoutBase.setPadding(10, 10, 10, 10);
@@ -9125,15 +9185,23 @@ VertexClientPE.showItemGiverDialog = function() {
 				dialogRightLayout.addView(itemAmountInput);
 				dialogRightLayout.addView(itemDataInput);
 				dialogRightLayout.addView(itemGiveButton);
-				dialogRightLayout.addView(clientTextView("\n"));
+				if(itemGiverModeSetting == "advanced") {
+					dialogRightLayout.addView(clientTextView("\n"));
+				}
 				dialogRightLayout.addView(closeButton);
 				dialogLayoutBase.setBackgroundDrawable(backgroundGradient());
 				dialogLayoutBase.addView(itemGiverTitle);
-				dialogLayoutBodyLeftScroll.addView(dialogTableLayout);
+
+				if(itemGiverModeSetting == "advanced") {
+					dialogLayoutBodyLeftScroll.addView(dialogTableLayout);
+					dialogLayoutBodyLeftWrap.addView(dialogLayoutBodyLeftScroll);
+					dialogLayoutBody.addView(dialogLayoutBodyLeftWrap);
+				} else {
+					dialogLayoutBase.setGravity(Gravity_.CENTER);
+				}
+
 				dialogLayoutBodyRightScroll.addView(dialogRightLayout);
-				dialogLayoutBodyLeftWrap.addView(dialogLayoutBodyLeftScroll);
 				dialogLayoutBodyRightWrap.addView(dialogLayoutBodyRightScroll);
-				dialogLayoutBody.addView(dialogLayoutBodyLeftWrap);
 				dialogLayoutBody.addView(dialogLayoutBodyRightWrap);
 				dialogLayoutBase.addView(dialogLayoutBody);
 
@@ -9143,39 +9211,37 @@ VertexClientPE.showItemGiverDialog = function() {
 				dialog.setContentView(dialogLayoutBase);
 				dialog.setTitle("ItemGiver");
 				dialog.show();
-				let window = dialog.getWindow();
-				window.setLayout(display.widthPixels, display.heightPixels);
-				closeButton.setOnClickListener(new View_.OnClickListener() {
-					onClick: function(view) {
-						dialog.dismiss();
-					}
-				});
 
-				itemGiverItems.forEach(function(element, index, array) {
-					let tempButton = clientButton(Item.getName(element.toString()));
-					tempButton.setSingleLine(true);
-					tempButton.setLayoutParams(new TableRow_.LayoutParams((display.widthPixels - display.widthPixels / 3 - 10 - dip2px(1)) / 2, LinearLayout_.LayoutParams.WRAP_CONTENT));
-					tempButton.setPadding(0, 0, 0, 0);
-					tempButton.setOnClickListener(new View_.OnClickListener() {
-						onClick: function(viewArg) {
-							itemIdInput.setText(element.toString());
-						}
-					});
-					if(index % 2 == 1) {
-						if(!dialogTableRow) {
+				if(itemGiverModeSetting == "advanced") {
+					let window = dialog.getWindow();
+					window.setLayout(display.widthPixels, display.heightPixels);
+
+					itemGiverItems.forEach(function(element, index, array) {
+						let tempButton = clientButton(Item.getName(element.toString()));
+						tempButton.setSingleLine(true);
+						tempButton.setLayoutParams(new TableRow_.LayoutParams((display.widthPixels - display.widthPixels / 3 - 10 - dip2px(1)) / 2, LinearLayout_.LayoutParams.WRAP_CONTENT));
+						tempButton.setPadding(0, 0, 0, 0);
+						tempButton.setOnClickListener(new View_.OnClickListener() {
+							onClick: function(viewArg) {
+								itemIdInput.setText(element.toString());
+							}
+						});
+						if(index % 2 == 1) {
+							if(!dialogTableRow) {
+								dialogTableRow = new TableRow_(CONTEXT);
+							}
+							dialogTableRow.addView(tempButton);
+							dialogTableLayout.addView(dialogTableRow);
+							dialogTableRow = null;
+						} else {
 							dialogTableRow = new TableRow_(CONTEXT);
+							dialogTableRow.addView(tempButton);
 						}
-						dialogTableRow.addView(tempButton);
+						tempButton = null;
+					});
+					if(dialogTableRow != null) {
 						dialogTableLayout.addView(dialogTableRow);
-						dialogTableRow = null;
-					} else {
-						dialogTableRow = new TableRow_(CONTEXT);
-						dialogTableRow.addView(tempButton);
 					}
-					tempButton = null;
-				});
-				if(dialogTableRow != null) {
-					dialogTableLayout.addView(dialogTableRow);
 				}
 			} catch(e) {
 				print("Error: " + e);
@@ -10335,8 +10401,6 @@ function Song(songTitle, songArtist, songUrl, songGenre) {
 	this.url = songUrl;
 }
 
-VertexClientPE.MusicUtils.registerSong(new Song("Hello", "OMFG", "http://download1481.mediafireuserdownload.com/xd59md9vw2rg/gb97ihc1xl83s2b/OMFG+-+Hello.mp3", "Electronic"));
-VertexClientPE.MusicUtils.registerSong(new Song("Neopolitan Dreams (Nilow Remix)", "Lisa Mitchell", "http://download1337.mediafireuserdownload.com/xkcpwv4eewmg/5qbuk6k29uvme7m/Lisa+Mitchell+-+Neopolitan+Dreams+%28Nilow+Rmx%29.mp3", "Dubstep"));
 VertexClientPE.MusicUtils.registerSong(new Song("Adventure (feat. Alexa Lusader)", "William Ekh", "http://files-cdn.nocopyrightsounds.co.uk/William%20Ekh%20-%20Adventure%20%28feat.%20Alexa%20Lusader%29.mp3", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("Blank [NCS Release]", "Disfigure", "http://files-cdn.nocopyrightsounds.co.uk/Disfigure%20-%20Blank.mp3", "Dubstep"));
 VertexClientPE.MusicUtils.registerSong(new Song("Can't Wait (feat. Anna Yvette) [NCS Release]", "Jim Yosef", "http://download1890.mediafireuserdownload.com/ni4dsv3d5khg/bpgdjbqy0p09biw/Jim+Yosef+-+Can%5C%27t+Wait+%28feat.+Anna+Yvette%29.mp3", "House"));
@@ -10357,19 +10421,22 @@ VertexClientPE.MusicUtils.registerSong(new Song("Get Up Again (feat. Axol) [NCS 
 VertexClientPE.MusicUtils.registerSong(new Song("Gravity (feat. Liz Kretschmer) [NCS Release]", "Umpire", "http://files-cdn.nocopyrightsounds.co.uk/Umpire%20-%20Gravity%20%28feat.%20Liz%20Kretschmer%29.mp3", "Chillstep"));
 VertexClientPE.MusicUtils.registerSong(new Song("Halcyon [NCS Release]", "JJD", "http://download936.mediafireuserdownload.com/rtgmmhaa2rag/7a8m5f4mwhv468j/JJD+-+Halcyon.mp3", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("Happy Accidents [NCS Release]", "Inukshuk", "http://files-cdn.nocopyrightsounds.co.uk/Inukshuk%20-%20Happy%20Accidents.mp3", "Electronic"));
+VertexClientPE.MusicUtils.registerSong(new Song("Hello", "OMFG", "http://download1481.mediafireuserdownload.com/xd59md9vw2rg/gb97ihc1xl83s2b/OMFG+-+Hello.mp3", "Electronic"));
 VertexClientPE.MusicUtils.registerSong(new Song("Hollah! [NCS Release]", "Disfigure", "http://files-cdn.nocopyrightsounds.co.uk/Disfigure%20-%20Hollah%21.mp3", "Chillstep"));
 VertexClientPE.MusicUtils.registerSong(new Song("Invincible [NCS Release]", "DEAF KEV", "http://files-cdn.nocopyrightsounds.co.uk/DEAF%20KEV%20-%20Invincible.mp3", "Trap"));
 VertexClientPE.MusicUtils.registerSong(new Song("Lights [NCS Release]", "Jim Yosef", "http://files-cdn.nocopyrightsounds.co.uk/Jim%20Yosef%20-%20Lights.mp3", "House"));
+VertexClientPE.MusicUtils.registerSong(new Song("Make Me Move (feat. Karra) [NCS Release]", "Culture Code", "http://download1327.mediafireuserdownload.com/th2ftl28fozg/e9esqtbevi25ud3/Culture+Code+-+Make+Me+Move+%28feat.+Karra%29.mp3", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("Moments [NCS Release]", "Alex Skrindo & Stahl!", "http://files-cdn.nocopyrightsounds.co.uk/Alex%20Skrindo%20%26%20Stahl%21%20-%20Moments.mp3", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("My Heart [NCS Release]", "Different Heaven & EH!DE", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20%26%20EH%21DE%20-%20My%20Heart.mp3", "Drumstep"));
 VertexClientPE.MusicUtils.registerSong(new Song("Nekozilla", "Different Heaven", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20-%20Nekozilla.mp3", "Electronic"));
+VertexClientPE.MusicUtils.registerSong(new Song("Neopolitan Dreams (Nilow Remix)", "Lisa Mitchell", "http://download1337.mediafireuserdownload.com/xkcpwv4eewmg/5qbuk6k29uvme7m/Lisa+Mitchell+-+Neopolitan+Dreams+%28Nilow+Rmx%29.mp3", "Dubstep"));
 VertexClientPE.MusicUtils.registerSong(new Song("Nova [NCS Release]", "Ahrix", "http://files-cdn.nocopyrightsounds.co.uk/Ahrix%20-%20Nova.mp3", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("Puzzle [NCS Release]", "RetroVision", "http://download1289.mediafireuserdownload.com/634st8i63zrg/2puhc3ijy7uyy0p/RetroVision+-+Puzzle.mp3", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("Roots [NCS Release]", "Tobu", "http://download1498.mediafireuserdownload.com/xxywxedjxgdg/gqya3cgqc40iwjx/Tobu+-+Roots.mp3", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("Savannah (feat. Philly K) [NCS Release]", "Diviners", "http://download1496.mediafireuserdownload.com/3ftt3otfxmkg/ft25eqaforf51ee/Diviners+-+Savannah+%28ft.+Philly+K%29.mp3", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("Time Leap [NCS Release]", "Aero Chord", "http://files-cdn.nocopyrightsounds.co.uk/Aero%20Chord%20-%20Time%20Leap.mp3", "Drum&Bass"));
 VertexClientPE.MusicUtils.registerSong(new Song("Tropic Love [NCS Release]", "Diviners feat. Contacreast", "http://files-cdn.nocopyrightsounds.co.uk/Diviners%20ft.%20Contacreast%20-%20Tropic%20Love%20%28Original%20Mix%29.mp3", "House"));
-//VertexClientPE.MusicUtils.registerSong(new Song("", "", ""));
+//VertexClientPE.MusicUtils.registerSong(new Song(String name, String artist, String url, String genre));
 
 VertexClientPE.initHealthTags = function() {
 	if(healthTagsNameSetting == "blue") {
@@ -11201,6 +11268,7 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + healthTagsHealthSetting.toString());
 	outWrite.append("," + healthTagsShowHeartSetting.toString());
 	outWrite.append("," + modsStayEnabledSetting.toString());
+	outWrite.append("," + itemGiverModeSetting.toString());
 
 	outWrite.close();
 
@@ -11480,6 +11548,9 @@ VertexClientPE.loadMainSettings = function () {
 	}
 	if (arr[86] != null && arr[86] != undefined) {
 		modsStayEnabledSetting = arr[86];
+	}
+	if (arr[87] != null && arr[87] != undefined) {
+		itemGiverModeSetting = arr[87];
 	}
 
 	VertexClientPE.loadCustomRGBSettings();
@@ -12891,10 +12962,7 @@ function clientHR() {//horizontal divider
 	return defaultView;
 }
 
-function categoryTitle(text, editOnly) {
-	if(editOnly == null) {
-		editOnly = false;
-	}
+function categoryTitle(text) {
 
 	let categoryTitleLayout = new LinearLayout_(CONTEXT);
 	categoryTitleLayout.setOrientation(LinearLayout_.HORIZONTAL);
@@ -12920,20 +12988,14 @@ function categoryTitle(text, editOnly) {
 	categoryTitleLayoutLeft.addView(defaultSettingsButton);
 
 	let defaultTitle = coloredSubTitle(text);
-	if(editOnly) {
-		defaultTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.heightPixels / 3 + display.heightPixels / 4, display.heightPixels / 20));
-	} else {
-		defaultTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.heightPixels / 3, display.heightPixels / 20));
-	}
+	defaultTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.heightPixels / 3, display.heightPixels / 20));
 	defaultTitle.setGravity(Gravity_.CENTER);
 	categoryTitleLayoutMiddle.addView(defaultTitle);
 
 	let defaultArrowButton = clientButton("\u25BD", null, null, "right", null, true, dip2px(2));
 	defaultArrowButton.setLayoutParams(new LinearLayout_.LayoutParams(display.heightPixels / 3 - display.heightPixels / 4, display.heightPixels / 20));
 	defaultArrowButton.setAlpha(0.54);
-	if(!editOnly) {
-		categoryTitleLayoutRight.addView(defaultArrowButton);
-	}
+	categoryTitleLayoutRight.addView(defaultArrowButton);
 
 	this.getName = function() {
 		return text;
@@ -18214,31 +18276,31 @@ VertexClientPE.showCategoryMenus = function () {
 				if(VertexClientPE.getShouldUpdateGUI(combatMenu)) {
 					let combatMenuLayout = new LinearLayout_(CONTEXT),
 						combatMenuScrollView = new ScrollView_(CONTEXT),
-						combat = new categoryTitle(combatName, true),
+						combat = new categoryTitle(combatName),
 						combatSettings = combat.getLeftButton(),
 						combatTitle = combat.getMiddleButton(),
 						combatArrow = combat.getRightButton(),
 						worldMenuLayout = new LinearLayout_(CONTEXT),
 						worldMenuScrollView = new ScrollView_(CONTEXT),
-						world = new categoryTitle(worldName, true);
+						world = new categoryTitle(worldName);
 						worldSettings = world.getLeftButton(),
 						worldTitle = world.getMiddleButton(),
 						worldArrow = world.getRightButton(),
 						movementMenuLayout = new LinearLayout_(CONTEXT),
 						movementMenuScrollView = new ScrollView_(CONTEXT),
-						movement = new categoryTitle(movementName, true),
+						movement = new categoryTitle(movementName),
 						movementSettings = movement.getLeftButton(),
 						movementTitle = movement.getMiddleButton(),
 						movementArrow = movement.getRightButton(),
 						playerMenuLayout = new LinearLayout_(CONTEXT),
 						playerMenuScrollView = new ScrollView_(CONTEXT),
-						player = new categoryTitle(playerName, true),
+						player = new categoryTitle(playerName),
 						playerSettings = player.getLeftButton(),
 						playerTitle = player.getMiddleButton(),
 						playerArrow = player.getRightButton(),
 						miscMenuLayout = new LinearLayout_(CONTEXT),
 						miscMenuScrollView = new ScrollView_(CONTEXT),
-						misc = new categoryTitle(miscName, true),
+						misc = new categoryTitle(miscName),
 						miscSettings = misc.getLeftButton(),
 						miscTitle = misc.getMiddleButton(),
 						miscArrow = misc.getRightButton();
