@@ -2337,9 +2337,8 @@ var panic = {
 		let panicSettingsLayout = new LinearLayout_(CONTEXT);
 		panicSettingsLayout.setOrientation(1);
 
-		let panicCombatCheckBox = clientCheckBox();
+		let panicCombatCheckBox = clientCheckBox("Combat");
 		panicCombatCheckBox.setChecked(panicCombatSetting == "on");
-		panicCombatCheckBox.setText("Combat");
 		panicCombatCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				panicCombatSetting = v.isChecked()?"on":"off";
@@ -2347,9 +2346,8 @@ var panic = {
 			}
 		});
 
-		let panicWorldCheckBox = clientCheckBox();
+		let panicWorldCheckBox = clientCheckBox("World");
 		panicWorldCheckBox.setChecked(panicWorldSetting == "on");
-		panicWorldCheckBox.setText("World");
 		panicWorldCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				panicWorldSetting = v.isChecked()?"on":"off";
@@ -2357,9 +2355,8 @@ var panic = {
 			}
 		});
 
-		let panicMovementCheckBox = clientCheckBox();
+		let panicMovementCheckBox = clientCheckBox("Movement");
 		panicMovementCheckBox.setChecked(panicMovementSetting == "on");
-		panicMovementCheckBox.setText("Movement");
 		panicMovementCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				panicMovementSetting = v.isChecked()?"on":"off";
@@ -2367,9 +2364,8 @@ var panic = {
 			}
 		});
 
-		let panicPlayerCheckBox = clientCheckBox();
+		let panicPlayerCheckBox = clientCheckBox("Player");
 		panicPlayerCheckBox.setChecked(panicPlayerSetting == "on");
-		panicPlayerCheckBox.setText("Player");
 		panicPlayerCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				panicPlayerSetting = v.isChecked()?"on":"off";
@@ -2377,9 +2373,8 @@ var panic = {
 			}
 		});
 
-		let panicMiscCheckBox = clientCheckBox();
+		let panicMiscCheckBox = clientCheckBox("Misc");
 		panicMiscCheckBox.setChecked(panicMiscSetting == "on");
-		panicMiscCheckBox.setText("Misc");
 		panicMiscCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				panicMiscSetting = v.isChecked()?"on":"off";
@@ -3080,9 +3075,8 @@ var autoSpammer = {
 		let autoSpammerMessageLayout = new LinearLayout_(CONTEXT);
 		autoSpammerMessageLayout.setOrientation(1);
 
-		let spamUseRandomMsgSettingCheckBox = clientCheckBox();
+		let spamUseRandomMsgSettingCheckBox = clientCheckBox("Use random messages instead of the custom message");
 		spamUseRandomMsgSettingCheckBox.setChecked(spamUseRandomMsgSetting=="on");
-		spamUseRandomMsgSettingCheckBox.setText("Use random messages instead of the custom message");
 		spamUseRandomMsgSettingCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				let isChecked = v.isChecked();
@@ -4211,9 +4205,8 @@ var aimbot = {
 		let aimbotSettingsLayout = new LinearLayout_(CONTEXT);
 		aimbotSettingsLayout.setOrientation(1);
 
-		useKillauraRangeCheckBox = clientCheckBox();
+		useKillauraRangeCheckBox = clientCheckBox("Use same range as Killaura (" + killAuraRange + ")");
 		useKillauraRangeCheckBox.setChecked(aimbotUseKillauraRange == "on");
-		useKillauraRangeCheckBox.setText("Use same range as Killaura (" + killAuraRange + ")");
 		useKillauraRangeCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				aimbotUseKillauraRange = v.isChecked()?"on":"off";
@@ -4358,9 +4351,8 @@ var chestTracers = {
 		chestTracersParticleLayoutCenter.addView(chestTracersRedstoneButton);
 		chestTracersParticleLayoutRight.addView(chestTracersCriticalButton);
 
-		let groundModeCheckBox = clientCheckBox();
+		let groundModeCheckBox = clientCheckBox("Ground Mode");
 		groundModeCheckBox.setChecked(chestTracersGroundMode == "on");
-		groundModeCheckBox.setText("Ground Mode");
 		groundModeCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				chestTracersGroundMode = v.isChecked()?"on":"off";
@@ -4416,9 +4408,8 @@ var remoteView = {
 		let remoteViewSettingsLayout = new LinearLayout_(CONTEXT);
 		remoteViewSettingsLayout.setOrientation(1);
 
-		let teleportToLocationCheckBox = clientCheckBox();
+		let teleportToLocationCheckBox = clientCheckBox("Teleport to the target entity when you disable RemoteView");
 		teleportToLocationCheckBox.setChecked(remoteViewTeleportSetting == "on");
-		teleportToLocationCheckBox.setText("Teleport to the target entity when you disable RemoteView");
 		teleportToLocationCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				remoteViewTeleportSetting = v.isChecked()?"on":"off";
@@ -5096,13 +5087,13 @@ var dropLocator = {
 		return false;
 	},
 	onToggle: function() {
-		var items = Entity.getAll();
-		if(items != null && items != undefined && items.length != -1) {
-			new Thread_(new Runnable_({
-				run: function() {
-					for(var i = 0; i < items.length; i++) {
-						var type = Entity.getEntityTypeId(items[i]);
-						var name;
+		let items = Entity.getAll();
+		new Thread_(new Runnable_({
+			run: function() {
+				if(items != null && items != undefined && items.length != -1) {
+					for(let i = 0; i < items.length; i++) {
+						let type = Entity.getEntityTypeId(items[i]);
+						let name;
 						if(type == EntityType.ITEM) {
 							name = "item"
 						}
@@ -5118,11 +5109,11 @@ var dropLocator = {
 						}
 					}
 				}
-			})).start();
-		}
-		if(!foundItems) {
-			VertexClientPE.clientMessage("We couldn't locate any drops.");
-		}
+				if(!foundItems) {
+					VertexClientPE.clientMessage("We couldn't locate any drops.");
+				}
+			}
+		})).start();
 	}
 }
 
@@ -5400,9 +5391,8 @@ var prevent = {
 		let preventSettingsLayout = new LinearLayout_(CONTEXT);
 		preventSettingsLayout.setOrientation(1);
 
-		let preventDiggingCheckBox = clientCheckBox();
+		let preventDiggingCheckBox = clientCheckBox("Prevent block digging");
 		preventDiggingCheckBox.setChecked(preventDiggingSetting == "on");
-		preventDiggingCheckBox.setText("Prevent block digging");
 		preventDiggingCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				preventDiggingSetting = v.isChecked()?"on":"off";
@@ -5410,9 +5400,8 @@ var prevent = {
 			}
 		});
 
-		let preventPlacingCheckBox = clientCheckBox();
+		let preventPlacingCheckBox = clientCheckBox("Prevent block placing/tapping with items on blocks");
 		preventPlacingCheckBox.setChecked(preventPlacingSetting == "on");
-		preventPlacingCheckBox.setText("Prevent block placing/tapping with items on blocks");
 		preventPlacingCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				preventPlacingSetting = v.isChecked()?"on":"off";
@@ -5420,9 +5409,8 @@ var prevent = {
 			}
 		});
 
-		let preventAttacksCheckBox = clientCheckBox();
+		let preventAttacksCheckBox = clientCheckBox("Prevent hitting other entities");
 		preventAttacksCheckBox.setChecked(preventAttacksSetting == "on");
-		preventAttacksCheckBox.setText("Prevent hitting other entities");
 		preventAttacksCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				preventAttacksSetting = v.isChecked()?"on":"off";
@@ -5430,9 +5418,8 @@ var prevent = {
 			}
 		});
 
-		let preventExplosionsCheckBox = clientCheckBox();
+		let preventExplosionsCheckBox = clientCheckBox("Prevent explosions");
 		preventExplosionsCheckBox.setChecked(preventExplosionsSetting == "on");
-		preventExplosionsCheckBox.setText("Prevent explosions");
 		preventExplosionsCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				preventExplosionsSetting = v.isChecked()?"on":"off";
@@ -5996,12 +5983,70 @@ var enchantIt = {
 	desc: "Adds enchantments to items in your inventory.",
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
-	state: false,
 	isStateMod: function() {
 		return false;
 	},
 	onToggle: function() {
 		VertexClientPE.showEnchantItDialog();
+	}
+}
+
+var effectGiver = {
+	name: "EffectGiver",
+	desc: "Allows you to give yourself effects.",
+	category: VertexClientPE.category.PLAYER,
+	type: "Mod",
+	isStateMod: function() {
+		return false;
+	},
+	onToggle: function() {
+		VertexClientPE.showEffectGiverDialog();
+		VertexClientPE.toast("[WIP]");
+	}
+}
+
+var scaffoldWalk = {
+	name: "ScaffoldWalk",
+	desc: "Automatically places blocks underneath you. Hold a block while using this mod.",
+	category: VertexClientPE.category.PLAYER,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onTick: function() {
+		let selectedSlot = Player.getSelectedSlotId();
+		let heldTile = Player.getInventorySlot(selectedSlot);
+		if(heldTile <= 256) {
+			let heldTileData = Player.getInventorySlotData(selectedSlot);
+			let y = getPlayerY() - 2;
+			let tile = getTile(getPlayerX(), y, getPlayerZ());
+			if(tile == 0) {
+				setTile(getPlayerX(), y, getPlayerZ(), heldTile, heldTileData);
+			}
+		}
+	}
+}
+
+var fastLadder = {
+	name: "FastLadder",
+	desc: "Allows you to climb ladders faster.",
+	category: VertexClientPE.category.PLAYER,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onTick: function() {
+		if(!Player.isFlying() && !Entity.isSneaking(getPlayerEnt()) && !(Entity.getVelY(getPlayerEnt()) <= -0.07840000092983246) && (getTile(getPlayerX(), getPlayerY(), getPlayerZ()) == 65 || getTile(getPlayerX(), getPlayerY() + 1, getPlayerZ()) == 65)) {
+			setVelY(getPlayerEnt(), 0.5);
+		}
 	}
 }
 
@@ -6034,6 +6079,7 @@ VertexClientPE.registerModule(elytraBoost);
 VertexClientPE.registerModule(enderProjectiles);
 VertexClientPE.registerModule(fastBridge);
 VertexClientPE.registerModule(noFall);
+VertexClientPE.registerModule(fastLadder);
 VertexClientPE.registerModule(fastWalk);
 //VertexClientPE.registerModule(fenceJump);
 VertexClientPE.registerModule(flight);
@@ -6049,6 +6095,7 @@ VertexClientPE.registerModule(pointTeleport);
 VertexClientPE.registerModule(randomTP);
 VertexClientPE.registerModule(ride);
 VertexClientPE.registerModule(safeWalk);
+VertexClientPE.registerModule(scaffoldWalk);
 VertexClientPE.registerModule(speedHack);
 VertexClientPE.registerModule(step);
 VertexClientPE.registerModule(tapJumpRun);
@@ -6078,6 +6125,7 @@ VertexClientPE.registerModule(autoSwitch);
 VertexClientPE.registerModule(chatRepeat);
 VertexClientPE.registerModule(coordsDisplay);
 VertexClientPE.registerModule(derp);
+VertexClientPE.registerModule(effectGiver);
 VertexClientPE.registerModule(enchantIt);
 VertexClientPE.registerModule(fancyChat);
 VertexClientPE.registerModule(fastBreak);
@@ -9357,6 +9405,151 @@ VertexClientPE.showEnchantItDialog = function() {
 						onClick: function(viewArg) {
 							selectedEnchantment = element;
 							enchantmentNameText.setText("Enchantment: " + selectedEnchantment[0].toString());
+						}
+					});
+					if(index % 2 == 1) {
+						if(!dialogTableRow) {
+							dialogTableRow = new TableRow_(CONTEXT);
+						}
+						dialogTableRow.addView(tempButton);
+						dialogTableLayout.addView(dialogTableRow);
+						dialogTableRow = null;
+					} else {
+						dialogTableRow = new TableRow_(CONTEXT);
+						dialogTableRow.addView(tempButton);
+					}
+					tempButton = null;
+				});
+				if(dialogTableRow != null) {
+					dialogTableLayout.addView(dialogTableRow);
+				}
+			} catch(e) {
+				print("Error: " + e);
+				VertexClientPE.showBugReportDialog(e);
+			}
+		}
+	});
+}
+
+const nausea = 9
+const levitation = 25;
+const effectGiverArray = [["Absorption", MobEffect.absorption], ["Blindness", MobEffect.blindness], ["Confusion", MobEffect.confusion], ["Strength", MobEffect.damageBoost], ["Resistance", MobEffect.damageResistance], ["Mining Fatigue", MobEffect.digSlowdown], ["Haste", MobEffect.digSpeed], ["Fire Resistance", MobEffect.fireResistance], ["Instant Damage (Harm)", MobEffect.harm], ["Instant Health (Heal)", MobEffect.heal], ["Health Boost", MobEffect.healthBoost], ["Hunger", MobEffect.hunger], ["Invisibility", MobEffect.invisibility], ["Jump Boost", MobEffect.jump], /*["Levitation", levitation], */["Slowness", MobEffect.movementSlowdown], ["Speed", MobEffect.movementSpeed], /*["Nausea", nausea]*/, ["Night Vision", MobEffect.nightVision], ["Poison", MobEffect.poison], ["Regeneration", MobEffect.regeneration], ["Saturation", MobEffect.saturation], ["Water Breathing", MobEffect.waterBreathing], ["Weakness", MobEffect.weakness], ["Wither", MobEffect.wither]]; //todo: nausea, levitation
+
+let selectedEffect = ["None", null];
+VertexClientPE.showEffectGiverDialog = function() {
+	CONTEXT.runOnUiThread(new Runnable_() {
+		run: function() {
+			try {
+				let effectGiverTitle = clientTextView("EffectGiver", true);
+				effectGiverTitle.setTextSize(25);
+				let closeButton = clientButton("Close");
+				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
+				let dialogLayoutBase = new LinearLayout_(CONTEXT);
+				dialogLayoutBase.setOrientation(1);
+				dialogLayoutBase.setPadding(10, 10, 10, 10);
+				let dialogLayoutBody = new LinearLayout_(CONTEXT);
+				dialogLayoutBody.setOrientation(LinearLayout_.HORIZONTAL);
+				let dialogLayoutBodyLeftWrap = new LinearLayout_(CONTEXT);
+				dialogLayoutBodyLeftWrap.setOrientation(1);
+				dialogLayoutBodyLeftWrap.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels - display.widthPixels / 3 - 10, LinearLayout_.LayoutParams.WRAP_CONTENT));
+				dialogLayoutBodyLeftWrap.setPadding(0, 0, dip2px(1), 0);
+				let dialogLayoutBodyLeftScroll = new ScrollView_(CONTEXT);
+				let dialogLayoutBodyRightWrap = new LinearLayout_(CONTEXT);
+				dialogLayoutBodyRightWrap.setOrientation(1);
+				dialogLayoutBodyRightWrap.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3 - 10, LinearLayout_.LayoutParams.WRAP_CONTENT));
+				dialogLayoutBodyRightWrap.setPadding(dip2px(1), 0, 0, 0);
+				let dialogLayoutBodyRightScroll = new ScrollView_(CONTEXT);
+				let dialogTableLayout = new TableLayout_(CONTEXT);
+				let dialogTableRow;
+				let effectNameText = clientTextView("Effect: " + selectedEffect[0]);
+				let durationInput = clientEditText();
+				durationInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
+				durationInput.setHint("Duration (seconds)");
+				let amplificationInput = clientEditText();
+				amplificationInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
+				amplificationInput.setHint("Amplification/level");
+				let showParticlesCheckBox = clientCheckBox("Show particles");
+
+				let effectAddButton = clientButton("Add effect");
+				effectAddButton.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(viewArg) {
+						let duration = parseInt(durationInput.getText()) * 20;
+						let amplification = parseInt(amplificationInput.getText());
+						let showParticles = showParticlesCheckBox.isChecked();
+						if(selectedEffect[0] == "None") {
+							VertexClientPE.toast("No effect selected!");
+							return;
+						}
+						if(duration < 1) {
+							VertexClientPE.toast("Duration too low!");
+							return;
+						}
+						if(amplification < 1) {
+							VertexClientPE.toast("Amplification/level too low!");
+							return;
+						}
+						if(amplification > 32) {
+							VertexClientPE.toast("Amplification/level too high!");
+							return;
+						}
+						Entity.addEffect(getPlayerEnt(), selectedEffect[1], duration, amplification - 1, false, showParticles);
+						VertexClientPE.toast("Successfully given " + selectedEffect[0] + " (amplification: " + amplification + ", duration: " + duration + " ticks) effect!");
+						//VertexClientPE.toast("Failed to give " + selectedEffect[0] + " (amplification: " + amplification + ", duration: " + duration + " ticks) effect!");
+					}
+				});
+
+				let removeAllEffectsButton = clientButton("Remove all effects");
+				removeAllEffectsButton.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(viewArg) {
+						Entity.removeAllEffects(getPlayerEnt());
+						VertexClientPE.toast("Successfully removed all effects!");
+					}
+				});
+
+				let dialogRightLayout = new LinearLayout_(CONTEXT);
+				dialogRightLayout.setOrientation(1); //TODO: Remove all effects button
+
+				dialogRightLayout.addView(effectNameText);
+				dialogRightLayout.addView(durationInput);
+				//dialogRightLayout.addView(amplificationInput);
+				//dialogRightLayout.addView(showParticlesCheckBox);
+				dialogRightLayout.addView(effectAddButton);
+				dialogRightLayout.addView(removeAllEffectsButton);
+				dialogRightLayout.addView(clientTextView("\n"));
+				dialogRightLayout.addView(closeButton);
+				dialogLayoutBase.setBackgroundDrawable(backgroundGradient());
+				dialogLayoutBase.addView(effectGiverTitle);
+				dialogLayoutBodyLeftScroll.addView(dialogTableLayout);
+				dialogLayoutBodyRightScroll.addView(dialogRightLayout);
+				dialogLayoutBodyLeftWrap.addView(dialogLayoutBodyLeftScroll);
+				dialogLayoutBodyRightWrap.addView(dialogLayoutBodyRightScroll);
+				dialogLayoutBody.addView(dialogLayoutBodyLeftWrap);
+				dialogLayoutBody.addView(dialogLayoutBodyRightWrap);
+				dialogLayoutBase.addView(dialogLayoutBody);
+
+				let dialog = new Dialog_(CONTEXT);
+				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
+				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+				dialog.setContentView(dialogLayoutBase);
+				dialog.setTitle("EffectGiver");
+				dialog.show();
+				let window = dialog.getWindow();
+				window.setLayout(display.widthPixels, display.heightPixels);
+				closeButton.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+					}
+				});
+
+				effectGiverArray.forEach(function(element, index, array) {
+					let tempButton = clientButton(element[0].toString());
+					tempButton.setSingleLine(true);
+					tempButton.setLayoutParams(new TableRow_.LayoutParams((display.widthPixels - display.widthPixels / 3 - 10 - dip2px(1)) / 2, LinearLayout_.LayoutParams.WRAP_CONTENT));
+					tempButton.setPadding(0, 0, 0, 0);
+					tempButton.setOnClickListener(new View_.OnClickListener() {
+						onClick: function(viewArg) {
+							selectedEffect = element;
+							effectNameText.setText("Effect: " + selectedEffect[0].toString());
 						}
 					});
 					if(index % 2 == 1) {
