@@ -5162,7 +5162,7 @@ var safeWalk = {
 		this.state = !this.state;
 	},
 	onTick: function() {
-		if(VertexClientPE.Utils.Player.isAtEdge()) {
+		if(VertexClientPE.Utils.Player.isAtEdge() && Entity.getVelY(getPlayerEnt() == -0.07840000092983246)) {
 			Entity.setSneaking(getPlayerEnt(), true);
 		}
 	}
@@ -5181,12 +5181,12 @@ var letItSnow = {
 		this.state = !this.state;
 	},
 	onTick: function() {
-		var x = getPlayerX();
-		var y = getPlayerY();
-		var z = getPlayerZ();
-		for(var xI = -2; xI <= 2; xI++) {
-			for(var yI = 0; yI <= 2; yI++) {
-				for(var zI = -2; zI <= 2; zI++) {
+		let x = getPlayerX();
+		let y = getPlayerY();
+		let z = getPlayerZ();
+		for(let xI = -2; xI <= 2; xI++) {
+			for(let yI = 0; yI <= 2; yI++) {
+				for(let zI = -2; zI <= 2; zI++) {
 					Level.addParticle(ParticleType.snowballpoof, x + xI, y + yI, z + zI, 0, getPlayerY() - (y + yI), 0, 2);
 				}
 			}
@@ -5207,8 +5207,8 @@ var frostWalk = {
 		this.state = !this.state;
 	},
 	onTick: function() {
-		var tile = getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ());
-		var tileTwo = getTile(getPlayerX(), getPlayerY() - 1, getPlayerZ());
+		let tile = getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ());
+		let tileTwo = getTile(getPlayerX(), getPlayerY() - 1, getPlayerZ());
 		if(tile == 8 || tile == 9) {
 			setTile(getPlayerX(), getPlayerY() - 2, getPlayerZ(), 79);
 		} else if(tile == 10 || tile == 11) {
