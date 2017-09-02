@@ -2153,7 +2153,7 @@ VertexClientPE.registerTile(modManagerTile);
 VertexClientPE.registerTile(friendManagerTile);
 VertexClientPE.registerTile(informationTile);
 VertexClientPE.registerTile(updateCenterTile);
-VertexClientPE.registerTile(chatTile);
+//VertexClientPE.registerTile(chatTile);
 VertexClientPE.registerTile(musicPlayerTile);
 VertexClientPE.registerTile(christmasTile);
 VertexClientPE.registerTile(previewTile);
@@ -6008,7 +6008,7 @@ var effectGiver = {
 var scaffoldWalk = {
 	name: "ScaffoldWalk",
 	desc: "Automatically places blocks underneath you. Hold a block while using this mod.",
-	category: VertexClientPE.category.PLAYER,
+	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
 	isStateMod: function() {
@@ -6034,7 +6034,7 @@ var scaffoldWalk = {
 var fastLadder = {
 	name: "FastLadder",
 	desc: "Allows you to climb ladders faster.",
-	category: VertexClientPE.category.PLAYER,
+	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
 	isStateMod: function() {
@@ -6888,7 +6888,7 @@ function getTextFromUrl(urlToUse) { //let test = new getTextFromUrl(URL); test.r
 	}
 }
 
-function getTextFromFile(filePath) {//settingsPath
+function getTextFromFile(filePath) {
 	let file = new File_(filePath);
 	if(!file.exists()) {
 		return "";
@@ -9183,15 +9183,18 @@ VertexClientPE.showItemGiverDialog = function() { //TODO: make faster, less layo
 				let dialogTableLayout = new TableLayout_(CONTEXT);
 				let dialogTableRow;
 				let itemNameText = clientTextView("Name: Unknown");
+				let itemIdText = clientTextView("Id:");
 				let itemIdInput = clientEditText();
 				itemIdInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
-				itemIdInput.setHint("Id");
+				itemIdInput.setHint("Id (number (0-4096))");
+				let itemAmountText = clientTextView("Amount:");
 				let itemAmountInput = clientEditText();
 				itemAmountInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
-				itemAmountInput.setHint("Amount");
+				itemAmountInput.setHint("Amount (number)");
+				let itemDataText = clientTextView("Data:");
 				let itemDataInput = clientEditText();
 				itemDataInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
-				itemDataInput.setHint("Data");
+				itemDataInput.setHint("Data (number)");
 
 				itemIdInput.addTextChangedListener(new TextWatcher_() {
 					onTextChanged: function() {
@@ -9229,13 +9232,13 @@ VertexClientPE.showItemGiverDialog = function() { //TODO: make faster, less layo
 				dialogRightLayout.setOrientation(1);
 
 				dialogRightLayout.addView(itemNameText);
+				dialogRightLayout.addView(itemIdText);
 				dialogRightLayout.addView(itemIdInput);
+				dialogRightLayout.addView(itemAmountText);
 				dialogRightLayout.addView(itemAmountInput);
+				dialogRightLayout.addView(itemDataText);
 				dialogRightLayout.addView(itemDataInput);
 				dialogRightLayout.addView(itemGiveButton);
-				if(itemGiverModeSetting == "advanced") {
-					dialogRightLayout.addView(clientTextView("\n"));
-				}
 				dialogRightLayout.addView(closeButton);
 				dialogLayoutBase.setBackgroundDrawable(backgroundGradient());
 				dialogLayoutBase.addView(itemGiverTitle);
@@ -9328,12 +9331,14 @@ VertexClientPE.showEnchantItDialog = function() {
 				let dialogTableLayout = new TableLayout_(CONTEXT);
 				let dialogTableRow;
 				let enchantmentNameText = clientTextView("Enchantment: " + selectedEnchantment[0]);
+				let slotText = clientTextView("Slot:");
 				let slotInput = clientEditText();
 				slotInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
-				slotInput.setHint("Slot");
+				slotInput.setHint("Slot (number (1-9))");
+				let levelText = clientTextView("Level:");
 				let levelInput = clientEditText();
 				levelInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
-				levelInput.setHint("Level");
+				levelInput.setHint("Level (number)");
 
 				let enchantmentAddButton = clientButton("Add enchantment");
 				enchantmentAddButton.setOnClickListener(new View_.OnClickListener() {
@@ -9367,10 +9372,11 @@ VertexClientPE.showEnchantItDialog = function() {
 				dialogRightLayout.setOrientation(1);
 
 				dialogRightLayout.addView(enchantmentNameText);
+				dialogRightLayout.addView(slotText);
 				dialogRightLayout.addView(slotInput);
+				dialogRightLayout.addView(levelText);
 				dialogRightLayout.addView(levelInput);
 				dialogRightLayout.addView(enchantmentAddButton);
-				dialogRightLayout.addView(clientTextView("\n"));
 				dialogRightLayout.addView(closeButton);
 				dialogLayoutBase.setBackgroundDrawable(backgroundGradient());
 				dialogLayoutBase.addView(enchantItTitle);
@@ -9462,12 +9468,14 @@ VertexClientPE.showEffectGiverDialog = function() {
 				let dialogTableLayout = new TableLayout_(CONTEXT);
 				let dialogTableRow;
 				let effectNameText = clientTextView("Effect: " + selectedEffect[0]);
+				let durationText = clientTextView("Duration:");
 				let durationInput = clientEditText();
 				durationInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
-				durationInput.setHint("Duration (seconds)");
+				durationInput.setHint("Duration (number (seconds))");
+				let amplificationText = clientTextView("Amplification:");
 				let amplificationInput = clientEditText();
 				amplificationInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
-				amplificationInput.setHint("Amplification/level");
+				amplificationInput.setHint("Amplification (number)");
 				let showParticlesCheckBox = clientCheckBox("Show particles");
 
 				let effectAddButton = clientButton("Add effect");
@@ -9485,11 +9493,11 @@ VertexClientPE.showEffectGiverDialog = function() {
 							return;
 						}
 						if(amplification < 1) {
-							VertexClientPE.toast("Amplification/level too low!");
+							VertexClientPE.toast("Amplification too low!");
 							return;
 						}
 						if(amplification > 32) {
-							VertexClientPE.toast("Amplification/level too high!");
+							VertexClientPE.toast("Amplification too high!");
 							return;
 						}
 						Entity.addEffect(getPlayerEnt(), selectedEffect[1], duration, amplification - 1, false, showParticles);
@@ -9507,15 +9515,16 @@ VertexClientPE.showEffectGiverDialog = function() {
 				});
 
 				let dialogRightLayout = new LinearLayout_(CONTEXT);
-				dialogRightLayout.setOrientation(1); //TODO: Remove all effects button
+				dialogRightLayout.setOrientation(1);
 
 				dialogRightLayout.addView(effectNameText);
+				dialogRightLayout.addView(durationText);
 				dialogRightLayout.addView(durationInput);
-				//dialogRightLayout.addView(amplificationInput);
+				dialogRightLayout.addView(amplificationText);
+				dialogRightLayout.addView(amplificationInput);
 				//dialogRightLayout.addView(showParticlesCheckBox);
 				dialogRightLayout.addView(effectAddButton);
 				dialogRightLayout.addView(removeAllEffectsButton);
-				dialogRightLayout.addView(clientTextView("\n"));
 				dialogRightLayout.addView(closeButton);
 				dialogLayoutBase.setBackgroundDrawable(backgroundGradient());
 				dialogLayoutBase.addView(effectGiverTitle);
@@ -9604,15 +9613,18 @@ VertexClientPE.showTeleportDialog = function() {
 				let dialogTableRow;
 				let tempButton;
 				let teleportNameText = clientTextView("Teleport location: Unknown");
+				let teleportXText = clientTextView("X:");
 				let teleportXInput = clientEditText();
 				teleportXInput.setInputType(InputType_.TYPE_CLASS_NUMBER | InputType_.TYPE_NUMBER_FLAG_SIGNED);
-				teleportXInput.setHint("X");
+				teleportXInput.setHint("X (number)");
+				let teleportYText = clientTextView("Y:");
 				let teleportYInput = clientEditText();
 				teleportYInput.setInputType(InputType_.TYPE_CLASS_NUMBER | InputType_.TYPE_NUMBER_FLAG_SIGNED);
-				teleportYInput.setHint("Y");
+				teleportYInput.setHint("Y (number)");
+				let teleportZText = clientTextView("Z:");
 				let teleportZInput = clientEditText();
 				teleportZInput.setInputType(InputType_.TYPE_CLASS_NUMBER | InputType_.TYPE_NUMBER_FLAG_SIGNED);
-				teleportZInput.setHint("Z");
+				teleportZInput.setHint("Z (number)");
 
 				teleportXInput.addTextChangedListener(new TextWatcher_() {
 					onTextChanged: function() {
@@ -9685,11 +9697,13 @@ VertexClientPE.showTeleportDialog = function() {
 				dialogRightLayout.setOrientation(1);
 
 				dialogRightLayout.addView(teleportNameText);
+				dialogRightLayout.addView(teleportXText);
 				dialogRightLayout.addView(teleportXInput);
+				dialogRightLayout.addView(teleportYText);
 				dialogRightLayout.addView(teleportYInput);
+				dialogRightLayout.addView(teleportZText);
 				dialogRightLayout.addView(teleportZInput);
 				dialogRightLayout.addView(teleportButton);
-				dialogRightLayout.addView(clientTextView("\n"));
 				dialogRightLayout.addView(closeButton);
 				dialogLayoutBase.setBackgroundDrawable(backgroundGradient());
 				dialogLayoutBase.addView(teleportTitle);
@@ -10344,10 +10358,11 @@ VertexClientPE.addonLoadToast = function(message) {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			let layout = new LinearLayout_(CONTEXT);
-			layout.setBackground(backgroundSpecial(true));
+			layout.setBackground(backgroundSpecial(true, "#70212121|#70ffffff"));
+			layout.setGravity(Gravity_.CENTER);
 			let icon = new android.widget.ImageView(CONTEXT);
 			icon.setImageResource(android.R.drawable.ic_menu_more);
-			let title = VertexClientPE.getName();
+			let title = "Addons";
 			let text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message), true, "diff");
 			layout.addView(icon);
 			layout.addView(text);
@@ -10387,10 +10402,11 @@ VertexClientPE.updateToast = function(message) {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			let layout = new LinearLayout_(CONTEXT);
-			layout.setBackground(backgroundSpecial(true));
+			layout.setBackground(backgroundSpecial(true, "#70212121|#70ffffff"));
+			layout.setGravity(Gravity_.CENTER);
 			let icon = new android.widget.ImageView(CONTEXT);
 			icon.setImageResource(android.R.drawable.ic_menu_compass);
-			let title = VertexClientPE.getName();
+			let title = "Update Center";
 			let text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message), true, "diff");
 			layout.addView(icon);
 			layout.addView(text);
@@ -10407,13 +10423,14 @@ VertexClientPE.showChristmasToast = function(daysLeft) {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			let layout = new LinearLayout_(CONTEXT);
-			layout.setBackground(backgroundSpecial(true));
+			layout.setBackground(backgroundSpecial(true, "#70212121|#70ffffff"));
+			layout.setGravity(Gravity_.CENTER);
 			let icon = new android.widget.ImageView(CONTEXT);
 			icon.setImageResource(android.R.drawable.ic_menu_agenda);
 			let icon1 = new android.widget.ImageView(CONTEXT);
 			icon1.setImageBitmap(imgChristmasTree);
 			icon1.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(16), dip2px(16)));
-			let title = VertexClientPE.getName();
+			let title = "Christmas";
 			let cText = daysLeft == null ? "Merry Christmas!" : (daysLeft + " days left until Christmas!");
 			let text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + cText), true, "diff");
 			layout.addView(icon);
