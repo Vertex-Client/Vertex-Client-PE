@@ -6001,7 +6001,6 @@ var effectGiver = {
 	},
 	onToggle: function() {
 		VertexClientPE.showEffectGiverDialog();
-		VertexClientPE.toast("[WIP]");
 	}
 }
 
@@ -9148,7 +9147,7 @@ VertexClientPE.showItemGiverDialog = function() { //TODO: make faster, less layo
 				let itemIdText = clientTextView("Id:");
 				let itemIdInput = clientEditText();
 				itemIdInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
-				itemIdInput.setHint("Id (number (0-4096))");
+				itemIdInput.setHint("Id (0-4096)");
 				let itemAmountText = clientTextView("Amount:");
 				let itemAmountInput = clientEditText();
 				itemAmountInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
@@ -9296,7 +9295,7 @@ VertexClientPE.showEnchantItDialog = function() {
 				let slotText = clientTextView("Slot:");
 				let slotInput = clientEditText();
 				slotInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
-				slotInput.setHint("Slot (number (1-9))");
+				slotInput.setHint("Slot (1-9)");
 				let levelText = clientTextView("Level:");
 				let levelInput = clientEditText();
 				levelInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
@@ -9401,7 +9400,7 @@ VertexClientPE.showEnchantItDialog = function() {
 
 const nausea = 9
 const levitation = 25;
-const effectGiverArray = [["Absorption", MobEffect.absorption], ["Blindness", MobEffect.blindness], ["Confusion", MobEffect.confusion], ["Strength", MobEffect.damageBoost], ["Resistance", MobEffect.damageResistance], ["Mining Fatigue", MobEffect.digSlowdown], ["Haste", MobEffect.digSpeed], ["Fire Resistance", MobEffect.fireResistance], ["Instant Damage (Harm)", MobEffect.harm], ["Instant Health (Heal)", MobEffect.heal], ["Health Boost", MobEffect.healthBoost], ["Hunger", MobEffect.hunger], ["Invisibility", MobEffect.invisibility], ["Jump Boost", MobEffect.jump], /*["Levitation", levitation], */["Slowness", MobEffect.movementSlowdown], ["Speed", MobEffect.movementSpeed], /*["Nausea", nausea]*/, ["Night Vision", MobEffect.nightVision], ["Poison", MobEffect.poison], ["Regeneration", MobEffect.regeneration], ["Saturation", MobEffect.saturation], ["Water Breathing", MobEffect.waterBreathing], ["Weakness", MobEffect.weakness], ["Wither", MobEffect.wither]]; //todo: nausea, levitation
+const effectGiverArray = [["Absorption", MobEffect.absorption], ["Blindness", MobEffect.blindness], ["Confusion", MobEffect.confusion], ["Strength", MobEffect.damageBoost], ["Resistance", MobEffect.damageResistance], ["Mining Fatigue", MobEffect.digSlowdown], ["Haste", MobEffect.digSpeed], ["Fire Resistance", MobEffect.fireResistance], ["Instant Damage (Harm)", MobEffect.harm], ["Instant Health (Heal)", MobEffect.heal], ["Health Boost", MobEffect.healthBoost], ["Hunger", MobEffect.hunger], ["Invisibility", MobEffect.invisibility], ["Jump Boost", MobEffect.jump], /*["Levitation", levitation], */["Slowness", MobEffect.movementSlowdown], ["Speed", MobEffect.movementSpeed], /*["Nausea", nausea],*/ ["Night Vision", MobEffect.nightVision], ["Poison", MobEffect.poison], ["Regeneration", MobEffect.regeneration], ["Saturation", MobEffect.saturation], ["Water Breathing", MobEffect.waterBreathing], ["Weakness", MobEffect.weakness], ["Wither", MobEffect.wither]]; //todo: nausea, levitation
 
 let selectedEffect = ["None", null];
 VertexClientPE.showEffectGiverDialog = function() {
@@ -9433,11 +9432,11 @@ VertexClientPE.showEffectGiverDialog = function() {
 				let durationText = clientTextView("Duration:");
 				let durationInput = clientEditText();
 				durationInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
-				durationInput.setHint("Duration (number (seconds))");
+				durationInput.setHint("Duration (seconds)");
 				let amplificationText = clientTextView("Amplification:");
 				let amplificationInput = clientEditText();
 				amplificationInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
-				amplificationInput.setHint("Amplification (number)");
+				amplificationInput.setHint("Amplification (1-256)");
 				let showParticlesCheckBox = clientCheckBox("Show particles");
 
 				let effectAddButton = clientButton("Add effect");
@@ -9450,6 +9449,14 @@ VertexClientPE.showEffectGiverDialog = function() {
 							VertexClientPE.toast("No effect selected!");
 							return;
 						}
+						if(duration == "") {
+							VertexClientPE.toast("No duration chosen!");
+							return;
+						}
+						if(amplification == "") {
+							VertexClientPE.toast("No amplification chosen!");
+							return;
+						}
 						if(duration < 1) {
 							VertexClientPE.toast("Duration too low!");
 							return;
@@ -9458,7 +9465,7 @@ VertexClientPE.showEffectGiverDialog = function() {
 							VertexClientPE.toast("Amplification too low!");
 							return;
 						}
-						if(amplification > 32) {
+						if(amplification > 256) {
 							VertexClientPE.toast("Amplification too high!");
 							return;
 						}
@@ -10001,7 +10008,7 @@ VertexClientPE.showTipDialog = function() {
 		openText = "click on the main button";
 	}
 
-	VertexClientPE.showBasicDialog("Shortcuts", clientTextView("Are there any mods you use regularly? Have you tried out Shortcuts yet? The Shortcuts allow you to toggle mods and tiles faster than ever! Please go to the Help screen (" + openText + " --> Dashboard --> Help) to find out how to add them."),
+	VertexClientPE.showBasicDialog("Shortcuts", clientTextView("Are there any mods you use regularly? Have you tried out shortcuts yet? The shortcuts allow you to toggle mods and tiles faster than ever! Please go to the Help screen (" + openText + " --> Dashboard --> Help) to find out how to add them."),
 		function() {
 			VertexClientPE.setHasShownTipDialog(true);
 		}
