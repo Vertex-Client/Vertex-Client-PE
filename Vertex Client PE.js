@@ -7264,49 +7264,11 @@ VertexClientPE.tempDisable = function() {
 }
 
 VertexClientPE.showTempDisableDialog = function() {
-	let dialogTitle = clientTextView("Temporarily disable the client");
-	dialogTitle.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
-	dialogTitle.setMarqueeRepeatLimit(-1);
-	dialogTitle.setSingleLine();
-	dialogTitle.setHorizontallyScrolling(true);
-	dialogTitle.setSelected(true);
-	dialogTitle.setTextSize(25);
-	let yesBtn = clientButton("Yes");
-	yesBtn.setOnClickListener(new View_.OnClickListener() {
-		onClick: function(view) {
-			dialog.dismiss();
+	VertexClientPE.showConfirmDialog("Temporarily disable the client", "Are you sure you want to temporarily disable the client?", null,
+		function() {
 			VertexClientPE.tempDisable();
 		}
-	});
-	let noBtn = clientButton("No");
-	noBtn.setOnClickListener(new View_.OnClickListener() {
-		onClick: function(view) {
-			dialog.dismiss();
-		}
-	});
-
-	let dialogLayout1 = new LinearLayout_(CONTEXT);
-	dialogLayout1.setBackgroundDrawable(backgroundGradient());
-	dialogLayout1.setOrientation(LinearLayout_.VERTICAL);
-	dialogLayout1.setPadding(10, 10, 10, 10);
-
-	let dialogScrollView = new ScrollView_(CONTEXT);
-	let dialogLayout = new LinearLayout_(CONTEXT);
-
-	dialogLayout.addView(clientTextView("Are you sure you want to temporarily disable the client?"));
-	dialogScrollView.addView(dialogLayout);
-
-	dialogLayout1.addView(dialogTitle);
-	dialogLayout1.addView(dialogScrollView);
-	dialogLayout1.addView(yesBtn);
-	dialogLayout1.addView(noBtn);
-
-	let dialog = new Dialog_(CONTEXT);
-	dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
-	dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-	dialog.setContentView(dialogLayout1);
-	dialog.setTitle("Temporarily disable the client");
-	dialog.show();
+	);
 }
 
 let moreMenuIsOpen = false;
@@ -9969,6 +9931,59 @@ VertexClientPE.showBasicDialog = function(title, view, onDialogDismiss, extraVie
 	});
 }
 
+VertexClientPE.showConfirmDialog = function(title, question, onDialogDismiss, onYesClick) {
+	let dialogTitle = clientTextView(title);
+	dialogTitle.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
+	dialogTitle.setMarqueeRepeatLimit(-1);
+	dialogTitle.setSingleLine();
+	dialogTitle.setHorizontallyScrolling(true);
+	dialogTitle.setSelected(true);
+	dialogTitle.setTextSize(25);
+	let yesBtn = clientButton("Yes");
+	yesBtn.setOnClickListener(new View_.OnClickListener() {
+		onClick: function(view) {
+			dialog.dismiss();
+			onYesClick();
+		}
+	});
+	let noBtn = clientButton("No");
+	noBtn.setOnClickListener(new View_.OnClickListener() {
+		onClick: function(view) {
+			dialog.dismiss();
+		}
+	});
+
+	let dialogLayout1 = new LinearLayout_(CONTEXT);
+	dialogLayout1.setBackgroundDrawable(backgroundGradient());
+	dialogLayout1.setOrientation(LinearLayout_.VERTICAL);
+	dialogLayout1.setPadding(10, 10, 10, 10);
+
+	let dialogScrollView = new ScrollView_(CONTEXT);
+	let dialogLayout = new LinearLayout_(CONTEXT);
+
+	dialogLayout.addView(clientTextView(question));
+	dialogScrollView.addView(dialogLayout);
+
+	dialogLayout1.addView(dialogTitle);
+	dialogLayout1.addView(dialogScrollView);
+	dialogLayout1.addView(yesBtn);
+	dialogLayout1.addView(noBtn);
+
+	let dialog = new Dialog_(CONTEXT);
+	dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
+	dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+	dialog.setContentView(dialogLayout1);
+	dialog.setTitle(title);
+	dialog.setOnDismissListener(new DialogInterface_.OnDismissListener() {
+		onDismiss: function() {
+			if(onDialogDismiss != null) {
+				onDialogDismiss();
+			}
+		}
+	});
+	dialog.show();
+}
+
 VertexClientPE.showWhatsNewDialog = function() {
 	VertexClientPE.showBasicDialog("What's New", clientTextView("Thanks for upgrading to v" + VertexClientPE.currentVersion + "!\nTo see what's new, please go to the Update Center.\nThe Update Center can by accessed from the 'More' dialog, which can be opened by tapping and holding the menu button."),
 		function() {
@@ -10354,27 +10369,6 @@ VertexClientPE.toast = function(message, vibrate) {
 	}));
 }
 
-VertexClientPE.addonLoadToast = function(message) {
-	CONTEXT.runOnUiThread(new Runnable_({
-		run: function() {
-			let layout = new LinearLayout_(CONTEXT);
-			layout.setBackground(backgroundSpecial(true, "#70212121|#70ffffff"));
-			layout.setGravity(Gravity_.CENTER);
-			let icon = new android.widget.ImageView(CONTEXT);
-			icon.setImageResource(android.R.drawable.ic_menu_more);
-			let title = "Addons";
-			let text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message), true, "diff");
-			layout.addView(icon);
-			layout.addView(text);
-			let addonToast = new Toast_(CONTEXT);
-			addonToast.setDuration(Toast_.LENGTH_LONG);
-			addonToast.setView(layout);
-			addonToast.setGravity(Gravity_.CENTER | Gravity_.TOP, 0, 0);
-			addonToast.show();
-		}
-	}));
-}
-
 VertexClientPE.loadToast = function(message) {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
@@ -10398,25 +10392,32 @@ VertexClientPE.loadToast = function(message) {
 	}));
 }
 
-VertexClientPE.updateToast = function(message) {
+VertexClientPE.screenToast = function(screenIcon, screenName, text) {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			let layout = new LinearLayout_(CONTEXT);
 			layout.setBackground(backgroundSpecial(true, "#70212121|#70ffffff"));
 			layout.setGravity(Gravity_.CENTER);
 			let icon = new android.widget.ImageView(CONTEXT);
-			icon.setImageResource(android.R.drawable.ic_menu_compass);
-			let title = "Update Center";
-			let text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message), true, "diff");
+			icon.setImageResource(screenIcon);
+			let textView = clientTextView(new Html_.fromHtml("<b>" + screenName + "</b> " + text), true, "diff");
 			layout.addView(icon);
-			layout.addView(text);
-			let updateToast = new Toast_(CONTEXT);
-			updateToast.setDuration(Toast_.LENGTH_LONG);
-			updateToast.setView(layout);
-			updateToast.setGravity(Gravity_.CENTER | Gravity_.TOP, 0, 0);
-			updateToast.show();
+			layout.addView(textView);
+			let screenToast = new Toast_(CONTEXT);
+			screenToast.setDuration(Toast_.LENGTH_LONG);
+			screenToast.setView(layout);
+			screenToast.setGravity(Gravity_.CENTER | Gravity_.TOP, 0, 0);
+			screenToast.show();
 		}
 	}));
+}
+
+VertexClientPE.addonLoadToast = function(message) {
+	VertexClientPE.screenToast(android.R.drawable.ic_menu_more, "Addons", message);
+}
+
+VertexClientPE.updateToast = function(message) {
+	VertexClientPE.screenToast(android.R.drawable.ic_menu_compass, "Update Center", message);
 }
 
 VertexClientPE.showChristmasToast = function(daysLeft) {
@@ -16663,12 +16664,27 @@ function devSettingsScreen(fromDashboard) {
 
 				let dataTitle = clientSectionTitle("Data", "theme");
 
-				let resetDataSettingFunc = new settingButton("Reset all data", "Resets all data (including Pro).");
+				let resetDataSettingFunc = new settingButton("Reset all launcher data", "Resets all launcher data.");
 				let resetDataSettingButton = resetDataSettingFunc.getButton();
 				resetDataSettingButton.setText("Reset");
 				resetDataSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
-						VertexClientPE.resetData();
+						VertexClientPE.showConfirmDialog("Reset all launcher data", "Are you sure you want to reset all launcher data?", null,
+							function() {
+								VertexClientPE.resetData();
+							}
+						);
+					}
+				}));
+				
+				let uiTestTitle = clientSectionTitle("UI test", "theme");
+				
+				let showTestToastFunc = new settingButton("Show test screen toast", "Shows a screen toast. Useful for testing.");
+				let showTestToastButton = showTestToastFunc.getButton();
+				showTestToastButton.setText("Show");
+				showTestToastButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						VertexClientPE.screenToast(android.R.drawable.ic_menu_report_image, "Developer Settings", "Test");
 					}
 				}));
 
@@ -16677,6 +16693,8 @@ function devSettingsScreen(fromDashboard) {
 				VertexClientPE.addView(devSettingsMenuLayout, expModeSettingFunc);
 				devSettingsMenuLayout.addView(dataTitle);
 				VertexClientPE.addView(devSettingsMenuLayout, resetDataSettingFunc);
+				devSettingsMenuLayout.addView(uiTestTitle);
+				VertexClientPE.addView(devSettingsMenuLayout, showTestToastFunc);
 
 				screenUI = new PopupWindow_(devSettingsMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
 				screenUI.setBackgroundDrawable(backgroundGradient());
