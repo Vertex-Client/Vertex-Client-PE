@@ -3715,6 +3715,7 @@ var itemGiver = {
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
+	credits: "Katie Heart (@CtrlAltCuteness)",
 	getSettingsLayout: function() {
 		let itemGiverSettingsLayout = new LinearLayout_(CONTEXT);
 		itemGiverSettingsLayout.setOrientation(1);
@@ -9156,7 +9157,6 @@ VertexClientPE.showItemGiverDialog = function() { //TODO: make faster, less layo
 				let itemDataInput = clientEditText();
 				itemDataInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
 				itemDataInput.setHint("Data (number)");
-
 				itemIdInput.addTextChangedListener(new TextWatcher_() {
 					onTextChanged: function() {
 						let itemId = itemIdInput.getText();
@@ -15117,10 +15117,15 @@ VertexClientPE.Utils.year = VertexClientPE.Utils.cal.get(java.util.Calendar.YEAR
 
 let itemGiverItems = [];
 
+const match_technical_tile = /^tile\.[0-9]+\.name$/;
+
 VertexClientPE.loadItemGiverItems = function() {
 	for(let i = 1; i <= 4096; i++) {
 		if(Item.isValidItem(i)) {
-			itemGiverItems.push(i);
+			let name = Item.getName(i);
+			if(!(name === Item.getName(i, null, true) && match_technical_tile.test(name)) && name != undefined) {
+				itemGiverItems.push(i);
+			}
 		}
 	}
 }
