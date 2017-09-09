@@ -12110,7 +12110,7 @@ function songButton(song, barLayout) {
 	songLayout.setOrientation(LinearLayout_.HORIZONTAL);
 	let songLeftWidth = display.widthPixels;
 	let songClientButton = clientButton(songButtonText);
-	songClientButton.setLayoutParams(new LinearLayout_.LayoutParams(songLeftWidth - dip2px(10) - dip2px(50), LinearLayout_.LayoutParams.WRAP_CONTENT));
+	songClientButton.setLayoutParams(new LinearLayout_.LayoutParams(songLeftWidth - 20 - dip2px(50), LinearLayout_.LayoutParams.WRAP_CONTENT));
 	songClientButton.setOnClickListener(new View_.OnClickListener() {
 		onClick: function(v) {
 			VertexClientPE.loadToast();
@@ -12772,7 +12772,7 @@ function musicPlayerTab(name, tabLayout, songLayout, playBar) {
 
 	let defaultClientButton = clientButton(name);
 	defaultClientButton.setAlpha(0.54);
-	defaultClientButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2 - dip2px(5), LinearLayout_.LayoutParams.WRAP_CONTENT));
+	defaultClientButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2 - 10, LinearLayout_.LayoutParams.WRAP_CONTENT));
 	if(currentMPTab == name) {
 		defaultClientButton.setTextColor(Color_.GREEN);
 		if(fontSetting != "minecraft") {
@@ -18020,7 +18020,7 @@ VertexClientPE.showTipBar = function() {
 
 				tipBarLayout.addView(tipBarTextView);
 
-				tipBar = new PopupWindow_(tipBarLayout, tipBarWidth, screenHeight / 20);
+				tipBar = new PopupWindow_(tipBarLayout, tipBarWidth, LinearLayout_.LayoutParams.WRAP_CONTENT);
 				tipBar.setBackgroundDrawable(backgroundSpecial("bottom"));
 				tipBar.setTouchable(false);
 				tipBar.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.TOP, 0, 0);
