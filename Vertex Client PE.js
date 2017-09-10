@@ -3165,9 +3165,9 @@ var tpAura = {
 		this.state = !this.state;
 	},
 	findPos: function(entity) {
-		var playerPos = new Array(getPlayerX(), getPlayerY() + 0.5, getPlayerZ());
-		var victimPos = new Array(Entity.getX(entity), Entity.getY(entity), Entity.getZ(entity));
-		var diffPos = new Array(victimPos[0] - playerPos[0], null, victimPos[2] - playerPos[2]);
+		let playerPos = new Array(getPlayerX(), getPlayerY() + 0.5, getPlayerZ());
+		let victimPos = new Array(Entity.getX(entity), Entity.getY(entity), Entity.getZ(entity));
+		let diffPos = new Array(victimPos[0] - playerPos[0], null, victimPos[2] - playerPos[2]);
 		playerPos[0] += diffPos[0] * 2;
 		playerPos[2] += diffPos[2] * 2;
 		return playerPos;
@@ -3176,7 +3176,7 @@ var tpAura = {
 		if(tpAuraStage == 0) {
 			tpAuraStage = 1;
 
-			let mob = VertexClientPE.Utils.getNearestMob(4);
+			let mob = VertexClientPE.Utils.Player.getNearestMob(4);
 			if(mob != null) {
 				let playerPos = this.findPos(mob);
 
@@ -3187,7 +3187,7 @@ var tpAura = {
 				VertexClientPE.CombatUtils.aimAtEnt(mob);
 			}
 
-			let player = VertexClientPE.Utils.getNearestPlayer(4);
+			let player = VertexClientPE.Utils.Player.getNearestPlayer(4);
 			if(player != null) {
 				let playerPos = this.findPos(player);
 
@@ -18503,7 +18503,7 @@ function retroMenu() {
 VertexClientPE.shouldUpdateGUI = false;
 
 VertexClientPE.getShouldUpdateGUI = function(popupWindow) {
-	return popupWindow == null || VertexClientPE.shouldUpdateGUI;
+	return popupWindow == null || popupWindow == undefined || VertexClientPE.shouldUpdateGUI;
 }
 
 let combatMenuLayout1, worldMenuLayout1, movementMenuLayout1, playerMenuLayout1, miscMenuLayout1;
