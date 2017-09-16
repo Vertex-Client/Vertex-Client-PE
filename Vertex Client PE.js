@@ -5477,10 +5477,8 @@ var healthDisplay = {
 		if(this.state && !VertexClientPE.menuIsShowing && (currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud)) {
 			showHealthDisplay();
 		} else {
-			if(healthDisplayUI != null) {
-				if(healthDisplayUI.isShowing()) {
-					healthDisplayUI.dismiss();
-				}
+			if(healthDisplayUI != null && healthDisplayUI.isShowing()) {
+				healthDisplayUI.dismiss();
 			}
 		}
 	},
@@ -5766,10 +5764,8 @@ var rotationPlus = {
 		if(this.state && !VertexClientPE.menuIsShowing && (currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud)) {
 			showRotationPlus();
 		} else {
-			if(rotationPlusUI != null) {
-				if(rotationPlusUI.isShowing()) {
-					rotationPlusUI.dismiss();
-				}
+			if(rotationPlusUI != null && rotationPlusUI.isShowing()) {
+				rotationPlusUI.dismiss();
 			}
 		}
 	}
@@ -11344,25 +11340,21 @@ VertexClientPE.saveFloatingMenus = function(category) {
 		editor.putFloat("VertexClientPE.combattpopy", parseInt(combattpopy));
 		editor.putBoolean("VertexClientPE.combatMenuShown", combatMenuShown);
 	}
-	//---
 	if(category == "world" || category == "all") {
 		editor.putFloat("VertexClientPE.worldtpopx", parseInt(worldtpopx));
 		editor.putFloat("VertexClientPE.worldtpopy", parseInt(worldtpopy));
 		editor.putBoolean("VertexClientPE.worldMenuShown", worldMenuShown);
 	}
-	//---
 	if(category == "movement" || category == "all") {
 		editor.putFloat("VertexClientPE.movementtpopx", parseInt(movementtpopx));
 		editor.putFloat("VertexClientPE.movementtpopy", parseInt(movementtpopy));
 		editor.putBoolean("VertexClientPE.movementMenuShown", movementMenuShown);
 	}
-	//---
 	if(category == "player" || category == "all") {
 		editor.putFloat("VertexClientPE.playertpopx", parseInt(playertpopx));
 		editor.putFloat("VertexClientPE.playertpopy", parseInt(playertpopy));
 		editor.putBoolean("VertexClientPE.playerMenuShown", playerMenuShown);
 	}
-	//---
 	if(category == "misc" || category == "all") {
 		editor.putFloat("VertexClientPE.misctpopx", parseInt(misctpopx));
 		editor.putFloat("VertexClientPE.misctpopy", parseInt(misctpopy));
@@ -14349,13 +14341,9 @@ VertexClientPE.showUpdate = function() {
 					VertexClientPE.updateToast("There is a new version available (v" + VertexClientPE.latestVersion + " for Minecraft Pocket Edition v" + VertexClientPE.latestPocketEditionVersion + ")!");
 				}
 			} else {
-				CONTEXT.runOnUiThread(new Runnable_() {
-					run: function() {
-						if(showUpdateToastsSetting == "on") {
-							VertexClientPE.updateToast("You have the latest version");
-						}
-					}
-				});
+				if(showUpdateToastsSetting == "on") {
+					VertexClientPE.updateToast("You have the latest version");
+				}
 			}
 		}
 	}).start();
@@ -14903,20 +14891,14 @@ VertexClientPE.showAccountManager = function(showBackButton, title) {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
-				if(GUI != null) {
-					if(GUI.isShowing()) {
-						GUI.dismiss();
-					}
+				if(GUI != null && GUI.isShowing()) {
+					GUI.dismiss();
 				}
-				if(accountManagerGUI != null) {
-					if(accountManagerGUI.isShowing()) {
-						accountManagerGUI.dismiss();
-					}
+				if(accountManagerGUI != null && accountManagerGUI.isShowing()) {
+					accountManagerGUI.dismiss();
 				}
-				if(mainMenuTextList != null) {
-					if(mainMenuTextList.isShowing()) {
-						mainMenuTextList.dismiss();
-					}
+				if(mainMenuTextList != null && mainMenuTextList.isShowing()) {
+					mainMenuTextList.dismiss();
 				}
 
 				let accountManagerLayout1 = new LinearLayout_(CONTEXT);
@@ -14998,21 +14980,7 @@ VertexClientPE.showFriendManager = function(showBackButton, title, icon) {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
-				if(GUI != null) {
-					if(GUI.isShowing()) {
-						GUI.dismiss();
-					}
-				}
-				if(accountManagerGUI != null) {
-					if(accountManagerGUI.isShowing()) {
-						accountManagerGUI.dismiss();
-					}
-				}
-				if(mainMenuTextList != null) {
-					if(mainMenuTextList.isShowing()) {
-						mainMenuTextList.dismiss();
-					}
-				}
+				VertexClientPE.checkGUINeedsDismiss();
 
 				let friendManagerLayout1 = new LinearLayout_(CONTEXT);
 				friendManagerLayout1.setOrientation(1);
@@ -15149,15 +15117,15 @@ VertexClientPE.setup = function() {
 			} finally {
 				CONTEXT.runOnUiThread(new Runnable_({
 					run: function() {
-						if(!VertexClientPE.getHasUsedCurrentVersion()) {
-							userIsNewToCurrentVersion = true;
-						}
-
 						VertexClientPE.setupModButtonColors();
-
 						if(VertexClientPE.loadMainSettings() == null) {
+							VertexClientPE.setHasUsedCurrentVersion(true);
+							userIsNewToCurrentVersion = false;
 							VertexClientPE.showSetupScreen();
 						} else {
+							if(!VertexClientPE.getHasUsedCurrentVersion()) {
+								userIsNewToCurrentVersion = true;
+							}
 							VertexClientPE.editCopyrightText();
 							VertexClientPE.clientTick();
 							VertexClientPE.inGameTick();
@@ -15493,15 +15461,11 @@ function newLevel() {
 			lagTimer = 0;
 			CONTEXT.runOnUiThread(new Runnable_() {
 				run: function() {
-					if(accountManagerGUI != null) {
-						if(accountManagerGUI.isShowing()) {
-							accountManagerGUI.dismiss();
-						}
+					if(accountManagerGUI != null && accountManagerGUI.isShowing()) {
+						accountManagerGUI.dismiss();
 					}
-					if(mainMenuTextList != null) {
-						if(mainMenuTextList.isShowing()) {
-							mainMenuTextList.dismiss();
-						}
+					if(mainMenuTextList != null && mainMenuTextList.isShowing()) {
+						mainMenuTextList.dismiss();
 					}
 				}
 			});
@@ -15593,40 +15557,26 @@ VertexClientPE.checkGUINeedsDismiss = function() {
 	if(tabGUI != null && tabGUI.isShowing()) {
 		tabGUI.dismiss();
 	}
-	if(shortcutGUI != null) {
-		if(shortcutGUI.isShowing()) {
-			shortcutGUI.dismiss();
-		}
+	if(shortcutGUI != null && shortcutGUI.isShowing()) {
+		shortcutGUI.dismiss();
 	}
-	if(healthDisplayUI != null) {
-		if(healthDisplayUI.isShowing()) {
-			healthDisplayUI.dismiss();
-		}
+	if(healthDisplayUI != null && healthDisplayUI.isShowing()) {
+		healthDisplayUI.dismiss();
 	}
-	if(watermarkUI != null) {
-		if(watermarkUI.isShowing()) {
-			watermarkUI.dismiss();
-		}
+	if(watermarkUI != null && watermarkUI.isShowing()) {
+		watermarkUI.dismiss();
 	}
-	if(rotationPlusUI != null) {
-		if(rotationPlusUI.isShowing()) {
-			rotationPlusUI.dismiss();
-		}
+	if(rotationPlusUI != null && rotationPlusUI.isShowing()) {
+		rotationPlusUI.dismiss();
 	}
-	if(mainMenuTextList != null) {
-		if(mainMenuTextList.isShowing()) {
-			mainMenuTextList.dismiss();
-		}
+	if(mainMenuTextList != null && mainMenuTextList.isShowing()) {
+		mainMenuTextList.dismiss();
 	}
-	if(accountManagerGUI != null) {
-		if(accountManagerGUI.isShowing()) {
-			accountManagerGUI.dismiss();
-		}
+	if(accountManagerGUI != null && accountManagerGUI.isShowing()) {
+		accountManagerGUI.dismiss();
 	}
-	if(pauseUtilitiesUI != null) {
-		if(pauseUtilitiesUI.isShowing()) {
-			pauseUtilitiesUI.dismiss();
-		}
+	if(pauseUtilitiesUI != null && pauseUtilitiesUI.isShowing()) {
+		pauseUtilitiesUI.dismiss();
 	}
 }
 
@@ -16699,6 +16649,25 @@ function devSettingsScreen(fromDashboard) {
 						VertexClientPE.screenToast(android.R.drawable.ic_menu_report_image, "Developer Settings", "Test");
 					}
 				}));
+				
+				let editFloatingWindowCoordsFunc = new settingButton("Normal menu style coordinates", "Useful for debugging.");
+				let editFloatingWindowCoordsButton = editFloatingWindowCoordsFunc.getButton();
+				editFloatingWindowCoordsButton.setText("Set all to 0");
+				editFloatingWindowCoordsButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						combattpopx = 0;
+						combattpopy = 0;
+						worldtpopx = 0;
+						worldtpopy = 0;
+						movementtpopx = 0;
+						movementtpopy = 0;
+						playertpopx = 0;
+						playertpopy = 0;
+						misctpopx = 0;
+						misctpopy = 0;
+						VertexClientPE.saveFloatingMenus("all");
+					}
+				}));
 
 				devSettingsMenuLayout.addView(generalTitle);
 				VertexClientPE.addView(devSettingsMenuLayout, debugModeSettingFunc);
@@ -16707,6 +16676,7 @@ function devSettingsScreen(fromDashboard) {
 				VertexClientPE.addView(devSettingsMenuLayout, resetDataSettingFunc);
 				devSettingsMenuLayout.addView(uiTestTitle);
 				VertexClientPE.addView(devSettingsMenuLayout, showTestToastFunc);
+				VertexClientPE.addView(devSettingsMenuLayout, editFloatingWindowCoordsFunc);
 
 				screenUI = new PopupWindow_(devSettingsMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
 				screenUI.setBackgroundDrawable(backgroundGradient());
@@ -17714,10 +17684,8 @@ function modManagerScreen() {
 				screenUI.setOnDismissListener(new PopupWindow_.OnDismissListener() {
 					onDismiss: function() {
 						/* VertexClientPE.menuIsShowing = false;
-						if(barUI != null) {
-							if(barUI.isShowing()) {
-								barUI.dismiss();
-							}
+						if(barUI != null && barUI.isShowing()) {
+							barUI.dismiss();
 						} */
 						VertexClientPE.saveMainSettings();
 					}
@@ -17971,10 +17939,8 @@ function webBrowserScreen(fromDashboard) {
 				screenUI.setOnDismissListener(new PopupWindow_.OnDismissListener() {
 					onDismiss: function() {
 						webBrowserWebView.loadUrl("about:blank");
-						if(exitWebBrowserUI != null) {
-							if(exitWebBrowserUI.isShowing()) {
-								xWebBrowserButton.performClick();
-							}
+						if(exitWebBrowserUI != null && exitWebBrowserUI.isShowing()) {
+							xWebBrowserButton.performClick();
 						}
 						webbrowserFullOutputText = null;
 					}
@@ -18117,15 +18083,13 @@ VertexClientPE.closeMenu = function() {
 		}
 	}
 	VertexClientPE.menuIsShowing = false;
-	if(GUI != null) {
-		if(GUI.isShowing()) {
-			if(mainButtonTapSetting == "menu" && mainButtonStyleSetting != "invisible_ghost" && !ghostModeState) {
-				menuBtn.setBackgroundDrawable(iconClientGUI);
-			}
-			if(currentScreen != ScreenType.start_screen && currentScreen != ScreenType.exit_dialog && currentScreen != ScreenType.ingame && currentScreen != ScreenType.hud && currentScreen != ScreenType.pause_screen) {
-				GUI.setTouchable(false);
-				GUI.update();
-			}
+	if(GUI != null && GUI.isShowing()) {
+		if(mainButtonTapSetting == "menu" && mainButtonStyleSetting != "invisible_ghost" && !ghostModeState) {
+			menuBtn.setBackgroundDrawable(iconClientGUI);
+		}
+		if(currentScreen != ScreenType.start_screen && currentScreen != ScreenType.exit_dialog && currentScreen != ScreenType.ingame && currentScreen != ScreenType.hud && currentScreen != ScreenType.pause_screen) {
+			GUI.setTouchable(false);
+			GUI.update();
 		}
 	}
 }
@@ -18552,10 +18516,20 @@ VertexClientPE.showCategoryMenus = function () {
 					miscMenuLayout1 = new LinearLayout_(CONTEXT);
 
 					combatMenu = new PopupWindow_(CONTEXT);
+					combatMenu.setWidth(ViewGroup_.LayoutParams.WRAP_CONTENT);
+					combatMenu.setHeight(ViewGroup_.LayoutParams.WRAP_CONTENT);
 					worldMenu = new PopupWindow_(CONTEXT);
+					worldMenu.setWidth(ViewGroup_.LayoutParams.WRAP_CONTENT);
+					worldMenu.setHeight(ViewGroup_.LayoutParams.WRAP_CONTENT);
 					movementMenu = new PopupWindow_(CONTEXT);
+					movementMenu.setWidth(ViewGroup_.LayoutParams.WRAP_CONTENT);
+					movementMenu.setHeight(ViewGroup_.LayoutParams.WRAP_CONTENT);
 					playerMenu = new PopupWindow_(CONTEXT);
+					playerMenu.setWidth(ViewGroup_.LayoutParams.WRAP_CONTENT);
+					playerMenu.setHeight(ViewGroup_.LayoutParams.WRAP_CONTENT);
 					miscMenu = new PopupWindow_(CONTEXT);
+					miscMenu.setWidth(ViewGroup_.LayoutParams.WRAP_CONTENT);
+					miscMenu.setHeight(ViewGroup_.LayoutParams.WRAP_CONTENT);
 
 					VertexClientPE.modules.forEach(function (element, index, array) {
 						if (element.type == "Mod" || element.type == "Special") {
