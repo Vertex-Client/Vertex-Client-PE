@@ -1815,7 +1815,7 @@ VertexClientPE.category = {
 			case this.PLAYER:
 				return "Player";
 			case this.MISC:
-				return "Miscellaneous";
+				return "Misc";
 		}
 	}
 };
@@ -8460,7 +8460,7 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 				dScrollInside.addView(blueStrokeSlider);
 				dScrollInside.addView(pickerButton1);
 
-				var dialogLayout = new LinearLayout_(CONTEXT);
+				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setGravity(Gravity_.CENTER);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
@@ -10507,6 +10507,11 @@ let mpTotalDurationView;
 let mpSeekBarView;
 let mpLayout;
 
+/*
+var log1 = (Math.log(maxVolume-currVolume)/Math.log(maxVolume));
+yourMediaPlayer.setVolume(1-log1);
+*/
+
 VertexClientPE.MusicUtils = {
 	milliSecToMinString: function(mSec) {
 		let minutes = parseInt(((mSec / (1000*60)) % 60)).toString();
@@ -10521,6 +10526,13 @@ VertexClientPE.MusicUtils = {
 			seconds = "00";
 		}
 		return minutes + ":" + seconds;
+	},
+	getVolume: function() {
+		
+	},
+	setVolume: function(currVolume) {
+		let log1 = (Math.log(maxVolume-currVolume)/Math.log(maxVolume));
+		this.mp.setVolume(1-log1);
 	},
 	songList: [],
 	tempSongList: [],
@@ -10585,11 +10597,15 @@ VertexClientPE.MusicUtils = {
 				if(mpPlayButton != null) {
 					mpPlayButton.setBackgroundResource(android.R.drawable.ic_media_pause);
 				}
+				mp.start();
 				if(playMusicSetting != "shuffle" && song == null && VertexClientPE.MusicUtils.playingFirstTime) {
-					mp.pause();
-					VertexClientPE.MusicUtils.isPaused = true;
-				} else {
-					mp.start();
+					let musicHandler = new Handler_();
+					musicHandler.postDelayed(new Runnable() {
+						run: function() {
+							mp.pause();
+							VertexClientPE.MusicUtils.isPaused = true;
+						}
+					}, 1500);
 				}
 			}
 		});
@@ -10597,7 +10613,7 @@ VertexClientPE.MusicUtils = {
 			onBufferingUpdate: function(arg0) {
 				//onBufferingUpdate
 			}
-		})
+		});
 		this.mp.setOnCompletionListener(new MediaPlayer_.OnCompletionListener() {
 			onCompletion: function(arg0) {
 				VertexClientPE.MusicUtils.loadNextSong();
@@ -10615,7 +10631,7 @@ function Song(songTitle, songArtist, songUrl, songGenre) {
 	this.url = songUrl;
 }
 
-VertexClientPE.MusicUtils.registerSong(new Song("Adventure (feat. Alexa Lusader)", "William Ekh", "http://files-cdn.nocopyrightsounds.co.uk/William%20Ekh%20-%20Adventure%20%28feat.%20Alexa%20Lusader%29.mp3", "House"));
+/* VertexClientPE.MusicUtils.registerSong(new Song("Adventure (feat. Alexa Lusader)", "William Ekh", "http://files-cdn.nocopyrightsounds.co.uk/William%20Ekh%20-%20Adventure%20%28feat.%20Alexa%20Lusader%29.mp3", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("Blank [NCS Release]", "Disfigure", "http://files-cdn.nocopyrightsounds.co.uk/Disfigure%20-%20Blank.mp3", "Dubstep"));
 VertexClientPE.MusicUtils.registerSong(new Song("Can't Wait (feat. Anna Yvette) [NCS Release]", "Jim Yosef", "http://download1890.mediafireuserdownload.com/ni4dsv3d5khg/bpgdjbqy0p09biw/Jim+Yosef+-+Can%5C%27t+Wait+%28feat.+Anna+Yvette%29.mp3", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("Candyland [NCS Release]", "Tobu", "http://files-cdn.nocopyrightsounds.co.uk/Tobu%20-%20Candyland.mp3", "House"));
@@ -10649,7 +10665,8 @@ VertexClientPE.MusicUtils.registerSong(new Song("Puzzle [NCS Release]", "RetroVi
 VertexClientPE.MusicUtils.registerSong(new Song("Roots [NCS Release]", "Tobu", "http://download1498.mediafireuserdownload.com/xxywxedjxgdg/gqya3cgqc40iwjx/Tobu+-+Roots.mp3", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("Savannah (feat. Philly K) [NCS Release]", "Diviners", "http://download1496.mediafireuserdownload.com/3ftt3otfxmkg/ft25eqaforf51ee/Diviners+-+Savannah+%28ft.+Philly+K%29.mp3", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("Time Leap [NCS Release]", "Aero Chord", "http://files-cdn.nocopyrightsounds.co.uk/Aero%20Chord%20-%20Time%20Leap.mp3", "Drum&Bass"));
-VertexClientPE.MusicUtils.registerSong(new Song("Tropic Love [NCS Release]", "Diviners feat. Contacreast", "http://files-cdn.nocopyrightsounds.co.uk/Diviners%20ft.%20Contacreast%20-%20Tropic%20Love%20%28Original%20Mix%29.mp3", "House"));
+VertexClientPE.MusicUtils.registerSong(new Song("Tropic Love [NCS Release]", "Diviners feat. Contacreast", "http://files-cdn.nocopyrightsounds.co.uk/Diviners%20ft.%20Contacreast%20-%20Tropic%20Love%20%28Original%20Mix%29.mp3", "House")); */
+VertexClientPE.MusicUtils.registerSong(new Song("Dummy Song", "Example", "http://example.org/", "Unknown"));
 //VertexClientPE.MusicUtils.registerSong(new Song(String name, String artist, String url, String genre));
 
 VertexClientPE.initHealthTags = function() {
@@ -17592,6 +17609,7 @@ function musicPlayerScreen(fromDashboard) {
 				}
 				mpPlayButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(v) {
+						VertexClientPE.MusicUtils.playingFirstTime = false;
 						if(VertexClientPE.MusicUtils.mp.isPlaying()) {
 							VertexClientPE.MusicUtils.mp.pause();
 							VertexClientPE.MusicUtils.isPaused = true;
@@ -17601,7 +17619,6 @@ function musicPlayerScreen(fromDashboard) {
 							VertexClientPE.MusicUtils.isPaused = false;
 							mpPlayButton.setBackgroundResource(android.R.drawable.ic_media_pause);
 						}
-						VertexClientPE.MusicUtils.playingFirstTime = false;
 					}
 				});
 				mpSeekBarView.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
@@ -17613,8 +17630,8 @@ function musicPlayerScreen(fromDashboard) {
 				mpNextButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(v) {
 						VertexClientPE.loadToast();
-						VertexClientPE.MusicUtils.loadNextSong();
 						VertexClientPE.MusicUtils.playingFirstTime = false;
+						VertexClientPE.MusicUtils.loadNextSong();
 					}
 				});
 
