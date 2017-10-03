@@ -143,7 +143,7 @@ const i18n = (function () {
         return function (text, args) {
             if (text in langObj) {
                 return langObj[text].replace(/(\{%\d+\})/g, function ($1) {
-                    return $1[args.match(/\{%(\d+)\}/)[1]];
+                    return args[$1.match(/\{%(\d+)\}/)[1]];
                 });
             }
             return text.replace(/(\{%\d+\})/g, function ($1) {
@@ -6248,7 +6248,7 @@ VertexClientPE.getHighestHelpPageNumber = function() {
 }
 
 VertexClientPE.showHelpPage = function(page) {
-	VertexClientPE.clientMessage("Showing help page " + page + "/" + VertexClientPE.getHighestHelpPageNumber());
+	VertexClientPE.clientMessage(i18n("Showing help page %0/%1", [page, VertexClientPE.getHighestHelpPageNumber()]));
 	VertexClientPE.commands.forEach(function(element, index, array) {
 		if(element.syntax != null) {
 			if(index >= 8*(page-1) && index <= 8*page-1) {
@@ -6268,9 +6268,9 @@ var help = {
 			if(commandSplit[1] != "1" && commandSplit[1] > 1 && commandSplit[1] <= VertexClientPE.getHighestHelpPageNumber()) {
 				VertexClientPE.showHelpPage(commandSplit[1]);
 			} else if(commandSplit[1] <= 0) {
-				VertexClientPE.clientMessage(ChatColor.RED + "Error: page number is too low!");
+				VertexClientPE.clientMessage(ChatColor.RED + i18n("Error: page number is too low!"));
 			} else {
-				VertexClientPE.clientMessage(ChatColor.RED + "Error: page number is too high!");
+				VertexClientPE.clientMessage(ChatColor.RED + i18n("Error: page number is too high!"));
 			}
 		}
 	}
@@ -6287,11 +6287,11 @@ var toggle = {
 				VertexClientPE.modules.forEach(function (element, index, array) {
 					if ((element.name.toLowerCase() == cmdNoPrefix.toLowerCase() || VertexClientPE.getCustomModName(element.name).toLowerCase() == cmdNoPrefix.toLowerCase())) {
 						if(element.hasOwnProperty("isExpMod") && element.isExpMod() && !VertexClientPE.isExpMode()) {
-							VertexClientPE.toast("Experimental features aren't enabled!");
+							VertexClientPE.toast(i18n("Experimental features aren't enabled!"));
 							return;
 						}
 						if(element.hasOwnProperty("checkBeforeAdding") && !element.checkBeforeAdding()) {
-							VertexClientPE.toast("You didn't unlock this feature yet!");
+							VertexClientPE.toast(i18n("You didn't unlock this feature yet!"));
 							return;
 						}
 						if(element.name == "Bypass" || !bypassState || (element.canBypassBypassMod == undefined || element.canBypassBypassMod == null || element.canBypassBypassMod()) || (element.isStateMod() && element.state)) {
@@ -6302,14 +6302,14 @@ var toggle = {
 								element.state = true;
 								VertexClientPE.shouldUpdateGUI = true;
 							} else if(!element.isStateMod()) {
-								VertexClientPE.toast("This mod is blocked by " + VertexClientPE.getCustomModName("Bypass") + "!");
+								VertexClientPE.toast(i18n("This mod is blocked by %0!", [VertexClientPE.getCustomModName("Bypass")]));
 							}
 						}
 						VertexClientPE.setSavedModState(element.name, element.state);
 						if(hacksList != null && hacksList.isShowing()) {
 							updateHacksList();
 						}
-						VertexClientPE.toast("Sucessfully toggled module " + VertexClientPE.getCustomModName(element.name));
+						VertexClientPE.toast(i18n("Sucessfully toggled module %0", [VertexClientPE.getCustomModName(element.name)]));
 						/*
 							VertexClientPE.toast(VertexClientPE.getCustomModName(element.name) + " can't be toggled using the .t(oggle) command!");
 						*/
@@ -6320,7 +6320,7 @@ var toggle = {
 				if(shouldReturn) {
 					return;
 				}
-				VertexClientPE.toast("Module " + cmdNoPrefix + " can't be found/toggled!");
+				VertexClientPE.toast(i18n("Module %0 can't be found/toggled!", [cmdNoPrefix]));
 			} else {
 				throw new SyntaxError();
 			}
@@ -6441,7 +6441,7 @@ var tp = {
 			}
 			if(getTile(x, y, z) != null) {
 				Entity.setPosition(getPlayerEnt(), x, y, z);
-				VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully teleported player to " + x + ", " + y + ", " + z + "!");
+				VertexClientPE.clientMessage(ChatColor.GREEN + i18n("Successfully teleported player to %0, %1, %2!", [x, y, z]));
 			} else {
 				VertexClientPE.syntaxError(cmdPrefix + this.syntax);
 			}
@@ -6485,7 +6485,7 @@ var gamemode = {
 	syntax: "gamemode",
 	onCall: function(cmd) {
 		VertexClientPE.switchGameMode();
-		VertexClientPE.clientMessage("Your gamemode has been updated!");
+		VertexClientPE.clientMessage(i18n("Your gamemode has been updated!"));
 	}
 }
 
@@ -6511,11 +6511,11 @@ var rename = {
 		let renameItem = Player.getInventorySlot(renameSlot);
 		if(renameName  != null && renameName.replaceAll(" ", "") != "" && renameItem != 0) {
 			Player.setItemCustomName(renameSlot, renameName);
-			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully renamed item to " + renameName + "!");
+			VertexClientPE.clientMessage(ChatColor.GREEN + i18n("Successfully renamed item to %0!", [renameName]));
 		} else if(renameName.replaceAll(" ", "") == "") {
-			VertexClientPE.clientMessage(ChatColor.RED + "Error: please enter a valid name!");
+			VertexClientPE.clientMessage(ChatColor.RED + i18n("Error: please enter a valid name!"));
 		} else if(renameItem == 0) {
-			VertexClientPE.clientMessage(ChatColor.RED + "Error: the selected inventory slot is empty!");
+			VertexClientPE.clientMessage(ChatColor.RED + i18n("Error: the selected inventory slot is empty!"));
 		}
 	}
 }
@@ -6913,7 +6913,7 @@ function pizzaOrderDialog() {
 				let b = new AlertDialog_.Builder(CONTEXT);
 				b.setTitle(URL);
 				b.setView(wwv);
-				b.setNegativeButton("Close", new DialogInterface_.OnClickListener() {
+				b.setNegativeButton(i18n("Close"), new DialogInterface_.OnClickListener() {
 					onClick: function (di, v1) {
 						di.dismiss();
 					}
@@ -6921,7 +6921,7 @@ function pizzaOrderDialog() {
 				let a = b.create();
 				a.show();
 			} catch (err) {
-				print("Cannot open window: " + err + ".")
+				print(i18n("Cannot open window: ") + err + ".")
 				VertexClientPE.showBugReportDialog(err);;
 			}
 		}
@@ -6932,9 +6932,9 @@ VertexClientPE.showSignEditorDialog = function(signX, signY, signZ) {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				let signEditorTitle = clientTextView("SignEditor", true);
-				let btn = clientButton("Ok");
-				let btn1 = clientButton("Cancel");
+				let signEditorTitle = clientTextView(i18n("SignEditor"), true);
+				let btn = clientButton(i18n("Ok"));
+				let btn1 = clientButton(i18n("Cancel"));
 				let inputBar = clientEditText();
 				let inputBar1 = clientEditText();
 				let inputBar2 = clientEditText();
@@ -6954,17 +6954,17 @@ VertexClientPE.showSignEditorDialog = function(signX, signY, signZ) {
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
-				dialog.setTitle("SignEditor");
-				inputBar.setHint("Line 1");
+				dialog.setTitle(i18n("SignEditor"));
+				inputBar.setHint(i18n("Line 1"));
 				inputBar.setText(Level.getSignText(signX, signY, signZ, 0));
 				inputBar.setTextColor(Color_.WHITE);
-				inputBar1.setHint("Line 2");
+				inputBar1.setHint(i18n("Line 2"));
 				inputBar1.setText(Level.getSignText(signX, signY, signZ, 1));
 				inputBar1.setTextColor(Color_.WHITE);
-				inputBar2.setHint("Line 3");
+				inputBar2.setHint(i18n("Line 3"));
 				inputBar2.setText(Level.getSignText(signX, signY, signZ, 2));
 				inputBar2.setTextColor(Color_.WHITE);
-				inputBar3.setHint("Line 4");
+				inputBar3.setHint(i18n("Line 4"));
 				inputBar3.setText(Level.getSignText(signX, signY, signZ, 3));
 				inputBar3.setTextColor(Color_.WHITE);
 				dialog.show();
@@ -6998,14 +6998,14 @@ VertexClientPE.showBugReportDialog = function(exception) {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				let bugReportTitle = clientTextView("An error occurred", true);
-				let btn = clientButton("Copy error code & start a new issue on GitHub");
+				let bugReportTitle = clientTextView(i18n("An error occurred"), true);
+				let btn = clientButton(i18n("Copy error code & start a new issue on GitHub"));
 				btn.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
 				btn.setMarqueeRepeatLimit(-1);
 				btn.setSingleLine();
 				btn.setHorizontallyScrolling(true);
 				btn.setSelected(true);
-				let btn1 = clientButton("Close");
+				let btn1 = clientButton(i18n("Close"));
 				let exceptionTextView = clientTextView(exception);
 				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
@@ -7029,12 +7029,12 @@ VertexClientPE.showBugReportDialog = function(exception) {
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout1);
-				dialog.setTitle("An error occurred");
+				dialog.setTitle(i18n("An error occurred"));
 				dialog.show();
 				btn.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
 						copyToClipboard(exception);
-						VertexClientPE.toast("Successfully copied the error message to clipboard. Paste it in the issue input.");
+						VertexClientPE.toast(i18n("Successfully copied the error message to clipboard. Paste it in the issue input."));
 						ModPE.goToURL("https://github.com/Vertex-Client/Vertex-Client-PE/issues/new");
 						dialog.dismiss();
 					}
@@ -7055,9 +7055,9 @@ VertexClientPE.showRemoteViewTargetDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				let rvTitle = clientTextView("RemoteView | Target player by username", true);
-				let btn = clientButton("Apply");
-				let btn1 = clientButton("Close");
+				let rvTitle = clientTextView(i18n("RemoteView | Target player by username"), true);
+				let btn = clientButton(i18n("Apply"));
+				let btn1 = clientButton(i18n("Close"));
 				let inputBar = clientEditText();
 				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
@@ -7071,8 +7071,8 @@ VertexClientPE.showRemoteViewTargetDialog = function() {
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
-				dialog.setTitle("RemoteView | Target by username");
-				inputBar.setHint("Username");
+				dialog.setTitle(i18n("RemoteView | Target by username"));
+				inputBar.setHint(i18n("Username"));
 				dialog.show();
 				btn.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
@@ -7092,9 +7092,9 @@ VertexClientPE.showRemoteViewTargetDialog = function() {
 							}
 						});
 						if(rvTargetDone) {
-							VertexClientPE.toast("Your new RemoteView target is " + username + "!");
+							VertexClientPE.toast(i18n("Your new RemoteView target is %0!", [username]));
 						} else {
-							VertexClientPE.toast(username + " couldn't be found!");
+							VertexClientPE.toast(i18n("%0 couldn't be found!", [username]));
 						}
 					}
 				});
@@ -7126,8 +7126,8 @@ VertexClientPE.resetMenuPos = function() {
 	misctpopx = misctpopx_def;
 	misctpopy = misctpopy_def;
 	miscMenu.update(misctpopx, misctpopy, -1, -1);
-	VertexClientPE.saveFloatingMenus("all");
-	VertexClientPE.toast("Successfully reset all menu positions!");
+	VertexClientPE.saveFloatingMenus(i18n("all"));
+	VertexClientPE.toast(i18n("Successfully reset all menu positions!"));
 }
 
 VertexClientPE.tempDisable = function() {
@@ -7176,25 +7176,25 @@ VertexClientPE.tempDisable = function() {
 		}
 	});
 	VertexClientPE.modules = [];
-	VertexClientPE.toast("Successfully disabled Vertex Client PE! Restart to get the functionality back.");
+	VertexClientPE.toast(i18n("Successfully disabled Vertex Client PE! Restart to get the functionality back."));
 }
 
 VertexClientPE.showTempDisableDialog = function() {
-	let dialogTitle = clientTextView("Temporarily disable the client");
+	let dialogTitle = clientTextView(i18n("Temporarily disable the client"));
 	dialogTitle.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
 	dialogTitle.setMarqueeRepeatLimit(-1);
 	dialogTitle.setSingleLine();
 	dialogTitle.setHorizontallyScrolling(true);
 	dialogTitle.setSelected(true);
 	dialogTitle.setTextSize(25);
-	let yesBtn = clientButton("Yes");
+	let yesBtn = clientButton(i18n("Yes"));
 	yesBtn.setOnClickListener(new View_.OnClickListener() {
 		onClick: function(view) {
 			dialog.dismiss();
 			VertexClientPE.tempDisable();
 		}
 	});
-	let noBtn = clientButton("No");
+	let noBtn = clientButton(i18n("No"));
 	noBtn.setOnClickListener(new View_.OnClickListener() {
 		onClick: function(view) {
 			dialog.dismiss();
@@ -7209,7 +7209,7 @@ VertexClientPE.showTempDisableDialog = function() {
 	let dialogScrollView = new ScrollView_(CONTEXT);
 	let dialogLayout = new LinearLayout_(CONTEXT);
 
-	dialogLayout.addView(clientTextView("Are you sure you want to temporarily disable the client?"));
+	dialogLayout.addView(clientTextView(i18n("Are you sure you want to temporarily disable the client?")));
 	dialogScrollView.addView(dialogLayout);
 
 	dialogLayout1.addView(dialogTitle);
@@ -7221,7 +7221,7 @@ VertexClientPE.showTempDisableDialog = function() {
 	dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 	dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 	dialog.setContentView(dialogLayout1);
-	dialog.setTitle("Temporarily disable the client");
+	dialog.setTitle(i18n("Temporarily disable the client"));
 	dialog.show();
 }
 
@@ -7240,23 +7240,23 @@ VertexClientPE.showMoreDialog = function() {
 					return;
 				}
 				moreMenuIsOpen = true;
-				let moreTitle = clientTextView("More", true);
+				let moreTitle = clientTextView(i18n("More"), true);
 				let moreHR = clientHR();
 
-				let ghostModeTitle = "Ghost mode | ";
+				let ghostModeTitle = i18n("Ghost mode | ");
 				if(ghostModeState) {
-					ghostModeTitle += "ON";
+					ghostModeTitle += i18n("ON");
 				} else {
-					ghostModeTitle += "OFF";
+					ghostModeTitle += i18n("OFF");
 				}
 
-				let dashboardButton = clientButton("Dashboard");
-				let webBrowserButton = clientButton("Webbrowser");
-				let playerCustomizerButton = clientButton("Player Customizer");
-				let optiFineButton = clientButton("OptiFine");
-				let hideMenuButton = clientButton("Temporarily disable the client");
+				let dashboardButton = clientButton(i18n("Dashboard"));
+				let webBrowserButton = clientButton(i18n("Webbrowser"));
+				let playerCustomizerButton = clientButton(i18n("Player Customizer"));
+				let optiFineButton = clientButton(i18n("OptiFine"));
+				let hideMenuButton = clientButton(i18n("Temporarily disable the client"));
 				let ghostModeButton = clientButton(ghostModeTitle);
-				let resetPosButton = clientButton("Reset moveable menu positions");
+				let resetPosButton = clientButton(i18n("Reset moveable menu positions"));
 
 				if(buttonStyleSetting != "android") {
 					dashboardButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.ic_dialog_dialer, 0, 0);
@@ -7284,8 +7284,8 @@ VertexClientPE.showMoreDialog = function() {
 					resetPosButton.setCompoundDrawablesRelativeWithIntrinsicBounds(android.R.drawable.stat_notify_sync, 0, 0, 0);
 				}
 
-				let screenshotButton = clientButton("Take a screenshot");
-				let rvTargetButton = clientButton("RemoteView | Target player by username");
+				let screenshotButton = clientButton(i18n("Take a screenshot"));
+				let rvTargetButton = clientButton(i18n("RemoteView | Target player by username"));
 				let dialogLayout1 = new LinearLayout_(CONTEXT);
 				dialogLayout1.setBackgroundDrawable(backgroundGradient());
 				dialogLayout1.setOrientation(LinearLayout_.VERTICAL);
@@ -7317,7 +7317,7 @@ VertexClientPE.showMoreDialog = function() {
 				moreDialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				moreDialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				moreDialog.setContentView(dialogLayout1);
-				moreDialog.setTitle("More");
+				moreDialog.setTitle(i18n("More"));
 				moreDialog.setOnDismissListener(new DialogInterface_.OnDismissListener() {
 					onDismiss: function() {
 						moreMenuIsOpen = false;
@@ -7328,7 +7328,7 @@ VertexClientPE.showMoreDialog = function() {
 					onClick: function(view) {
 						moreDialog.dismiss();
 						VertexClientPE.closeMenu();
-						dashboardScreen("Dashboard", android.R.drawable.ic_dialog_dialer);
+						dashboardScreen(i18n("Dashboard"), android.R.drawable.ic_dialog_dialer);
 					}
 				});
 				webBrowserButton.setOnClickListener(new View_.OnClickListener() {
@@ -7343,14 +7343,14 @@ VertexClientPE.showMoreDialog = function() {
 					onClick: function(view) {
 						moreDialog.dismiss();
 						VertexClientPE.closeMenu();
-						playerCustomizerScreen(false, "Player Customizer", android.R.drawable.presence_online);
+						playerCustomizerScreen(false, i18n("Player Customizer"), android.R.drawable.presence_online);
 					}
 				});
 				optiFineButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
 						moreDialog.dismiss();
 						VertexClientPE.closeMenu();
-						optiFineScreen(false, "OptiFine", android.R.drawable.ic_menu_zoom);
+						optiFineScreen(false, i18n("OptiFine"), android.R.drawable.ic_menu_zoom);
 					}
 				});
 				hideMenuButton.setOnClickListener(new View_.OnClickListener() {
@@ -7363,7 +7363,7 @@ VertexClientPE.showMoreDialog = function() {
 					onClick: function(view) {
 						ghostModeState = !ghostModeState;
 						if(ghostModeState) {
-							ghostModeTitle = "Ghost mode | ON";
+							ghostModeTitle = i18n("Ghost mode | ON");
 							if(hacksList != null && hacksList.isShowing()) {
 								hacksList.dismiss();
 							}
@@ -7383,7 +7383,7 @@ VertexClientPE.showMoreDialog = function() {
 								mainMenuTextList.dismiss();
 							}
 						} else {
-							ghostModeTitle = "Ghost mode | OFF";
+							ghostModeTitle = i18n("Ghost mode | OFF");
 						}
 						if(screenUI == null || !screenUI.isShowing()) {
 							if(GUI != null && GUI.isShowing()) {
@@ -7447,10 +7447,10 @@ VertexClientPE.showHacksListManagerDialog = function() {
 				settingsTitleLayout.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
 				settingsTitleLayout.setGravity(Gravity_.CENTER);
 				settingsTitleLayout.addView(settingsTitle);
-				let hacksListManagerTitle = clientTextView("Hacks list Manager", true);
+				let hacksListManagerTitle = clientTextView(i18n("Hacks list Manager"), true);
 				hacksListManagerTitle.setGravity(Gravity_.CENTER);
 				let hacksListManagerEnter = clientTextView("");
-				let closeButton = clientButton("Close");
+				let closeButton = clientButton(i18n("Close"));
 				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
 				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
@@ -7468,69 +7468,69 @@ VertexClientPE.showHacksListManagerDialog = function() {
 				dialogScrollView.addView(dialogLayout);
 				dialogLayout1.addView(dialogScrollView);
 
-				let hacksListModeSettingFunc = new settingButton("Hacks list mode", null, display.widthPixels - 20,
+				let hacksListModeSettingFunc = new settingButton(i18n("Hacks list mode"), null, display.widthPixels - 20,
 					function(viewArg) {
 						hacksListModeSetting = "on";
-						hacksListModeSettingButton.setText("Normal");
+						hacksListModeSettingButton.setText(i18n("Normal"));
 					}
 				);
 				let hacksListModeSettingButton = hacksListModeSettingFunc.getButton();
 				if(hacksListModeSetting == "on") {
-					hacksListModeSettingButton.setText("Normal");
+					hacksListModeSettingButton.setText(i18n("Normal"));
 				} else if(hacksListModeSetting == "counter") {
-					hacksListModeSettingButton.setText("Counter");
+					hacksListModeSettingButton.setText(i18n("Counter"));
 				} else if(hacksListModeSetting == "logo") {
-					hacksListModeSettingButton.setText("Logo");
+					hacksListModeSettingButton.setText(i18n("Logo"));
 				} else if(hacksListModeSetting == "off") {
-					hacksListModeSettingButton.setText("Hidden");
+					hacksListModeSettingButton.setText(i18n("Hidden"));
 				}
 				hacksListModeSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						if(hacksListModeSetting == "off") {
 							hacksListModeSetting = "on";
-							hacksListModeSettingButton.setText("Normal");
+							hacksListModeSettingButton.setText(i18n("Normal"));
 							VertexClientPE.saveMainSettings();
 						} else if(hacksListModeSetting == "on"){
 							hacksListModeSetting = "counter";
-							hacksListModeSettingButton.setText("Counter");
+							hacksListModeSettingButton.setText(i18n("Counter"));
 							VertexClientPE.saveMainSettings();
 						} else if(hacksListModeSetting == "counter"){
 							hacksListModeSetting = "logo";
-							hacksListModeSettingButton.setText("Logo");
+							hacksListModeSettingButton.setText(i18n("Logo"));
 							VertexClientPE.saveMainSettings();
 						} else if(hacksListModeSetting == "logo"){
 							hacksListModeSetting = "off";
-							hacksListModeSettingButton.setText("Hidden");
+							hacksListModeSettingButton.setText(i18n("Hidden"));
 							VertexClientPE.saveMainSettings();
 						}
 					}
 				}));
 
-				let hacksListPosSettingFunc = new settingButton("Hacks list position", null, display.widthPixels - 20,
+				let hacksListPosSettingFunc = new settingButton(i18n("Hacks list position"), null, display.widthPixels - 20,
 					function(viewArg) {
 						hacksListPosSetting = "top-center";
-						hacksListPosSettingButton.setText("Top-center");
+						hacksListPosSettingButton.setText(i18n("Top-center"));
 					}
 				);
 				let hacksListPosSettingButton = hacksListPosSettingFunc.getButton();
 				if(hacksListPosSetting == "top-left") {
-					hacksListPosSettingButton.setText("Top-left");
+					hacksListPosSettingButton.setText(i18n("Top-left"));
 				} else if(hacksListPosSetting == "top-center") {
-					hacksListPosSettingButton.setText("Top-center");
+					hacksListPosSettingButton.setText(i18n("Top-center"));
 				} else if(hacksListPosSetting == "top-right") {
-					hacksListPosSettingButton.setText("Top-right");
+					hacksListPosSettingButton.setText(i18n("Top-right"));
 				}
 				hacksListPosSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						if(hacksListPosSetting == "top-left") {
 							hacksListPosSetting = "top-center";
-							hacksListPosSettingButton.setText("Top-center");
+							hacksListPosSettingButton.setText(i18n("Top-center"));
 						} else if(hacksListPosSetting == "top-center"){
 							hacksListPosSetting = "top-right";
-							hacksListPosSettingButton.setText("Top-right");
+							hacksListPosSettingButton.setText(i18n("Top-right"));
 						} else if(hacksListPosSetting == "top-right"){
 							hacksListPosSetting = "top-left";
-							hacksListPosSettingButton.setText("Top-left");
+							hacksListPosSettingButton.setText(i18n("Top-left"));
 						}
 						VertexClientPE.saveMainSettings();
 					}
@@ -7545,7 +7545,7 @@ VertexClientPE.showHacksListManagerDialog = function() {
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout1);
-				dialog.setTitle("Hacks list Manager");
+				dialog.setTitle(i18n("Hacks list Manager"));
 				dialog.setOnDismissListener(new DialogInterface_.OnDismissListener() {
 					onDismiss: function() {
 						VertexClientPE.saveMainSettings();

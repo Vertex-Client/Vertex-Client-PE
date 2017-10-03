@@ -93,5 +93,77 @@
     "Makes all items edible. Turning it off won't reset the items to their original state, though.": "Makes all items edible. Turning it off won't reset the items to their original state, though.",
     "Automatically refills your hunger bar.": "Automatically refills your hunger bar.",
     "Shows a custom (text) watermark. Text can be formatted using HTML.": "Shows a custom (text) watermark. Text can be formatted using HTML.",
-    "Adds enchantments to items in your inventory.": "Adds enchantments to items in your inventory."
+    "Adds enchantments to items in your inventory.": "Adds enchantments to items in your inventory.",
+    "Showing help page %0/%1": "Showing help page %0/%1",
+    "Error: page number is too low!": "Error: page number is too low!",
+    "Error: page number is too high!": "Error: page number is too high!",
+    "Experimental features aren't enabled!": "Experimental features aren't enabled!",
+    "You didn't unlock this feature yet!": "You didn't unlock this feature yet!",
+    "This mod is blocked by %0!": "This mod is blocked by %0!",
+    "Module %0 can't be found/toggled!": "Module %0 can't be found/toggled!",
+    "Successfully teleported player to %0, %1, %2!": "Successfully teleported player to %0, %1, %2!",
+    "Your gamemode has been updated!": "Your gamemode has been updated!",
+    "Successfully renamed item to %0!": "Successfully renamed item to %0!",
+    "Error: please enter a valid name!": "Error: please enter a valid name!",
+    "Error: the selected inventory slot is empty!": "Error: the selected inventory slot is empty!",
+    "Close": "Close",
+    "Cannot open window: ": "Cannot open window: ",
+    "SignEditor": "SignEditor",
+    "Ok": "Ok",
+    "Cancel": "Cancel",
+    "Line 1": "Line 1",
+    "Line 2": "Line 2",
+    "Line 3": "Line 3",
+    "Line 4": "Line 4",
+    "An error occurred": "An error occurred",
+    "Copy error code & start a new issue on GitHub": "Copy error code & start a new issue on GitHub",
+    "Successfully copied the error message to clipboard. Paste it in the issue input.": "Successfully copied the error message to clipboard. Paste it in the issue input.",
+    "RemoteView | Target player by username": "RemoteView | Target player by username",
+    "Apply": "Apply",
+    "RemoteView | Target by username": "RemoteView | Target by username",
+    "Username": "Username",
+    "Your new RemoteView target is %0!": "Your new RemoteView target is %0!",
+    "%0 couldn't be found!": "%0 couldn't be found!",
+    "all": "all",
+    "Successfully reset all menu positions!": "Successfully reset all menu positions!",
+    "Successfully disabled Vertex Client PE! Restart to get the functionality back.": "Successfully disabled Vertex Client PE! Restart to get the functionality back.",
+    "Temporarily disable the client": "Temporarily disable the client",
+    "Yes": "Yes",
+    "No": "No",
+    "Are you sure you want to temporarily disable the client?": "Are you sure you want to temporarily disable the client?",
+    "More": "More",
+    "Ghost mode | ": "Ghost mode | ",
+    "ON": "ON",
+    "OFF": "OFF",
+    "Dashboard": "Dashboard",
+    "Webbrowser": "Webbrowser",
+    "Player Customizer": "Player Customizer",
+    "OptiFine": "OptiFine",
+    "Reset moveable menu positions": "Reset moveable menu positions",
+    "Take a screenshot": "Take a screenshot",
+    "Ghost mode | ON": "Ghost mode | ON",
+    "Ghost mode | OFF": "Ghost mode | OFF",
+    "Settings": "Settings",
+    "Hacks list Manager": "Hacks list Manager",
+    "Hacks list mode": "Hacks list mode",
+    "Normal": "Normal",
+    "Counter": "Counter",
+    "Logo": "Logo",
+    "Hidden": "Hidden",
+    "Hacks list position": "Hacks list position",
+    "Top-center": "Top-center",
+    "Top-left": "Top-left",
+    "Top-right": "Top-right"
+    // i18n from line 2301 to line 7568
+    /* 
+     * I need help please!
+     * You can find the string, cover the i18n function and add the string in this file.
+     * such as:
+     * .js
+     * print("Hello World"); -> print(i18n("Hello World"));
+     * .json
+     * {
+     *   "Hello World": "Hello World"
+     * }
+     */
 }
