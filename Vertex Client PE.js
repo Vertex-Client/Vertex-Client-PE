@@ -7126,7 +7126,7 @@ VertexClientPE.resetMenuPos = function() {
 	misctpopx = misctpopx_def;
 	misctpopy = misctpopy_def;
 	miscMenu.update(misctpopx, misctpopy, -1, -1);
-	VertexClientPE.saveFloatingMenus(i18n("all"));
+	VertexClientPE.saveFloatingMenus("all"); //don't add translation as this is a parameter
 	VertexClientPE.toast(i18n("Successfully reset all menu positions!"));
 }
 
