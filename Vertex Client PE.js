@@ -14960,7 +14960,7 @@ function downloadFile(path, url, showNotification, replace) {
 
 (function checkFiles() {
 	let res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png", "github_button.png", "github_button_clicked.png", "vertex_logo_new.png", "stevehead.png", "minecraft.ttf", "christmas_tree.png", "dirt_background.png", "rainbow_background.png"],
-		langs = ["en"],
+		langs = ["en", "ko"],
 		isExisting = true;
 	for (var i = res.length; i--;) {
 		if (!new File_(PATH, res[i]).exists()) {
@@ -14969,8 +14969,8 @@ function downloadFile(path, url, showNotification, replace) {
 		}
 	}
 	for (var i = langs.length; i--;) {
-		if (!new File_(PATH + "/lang/", langs[i]).exists()) {
-			downloadFile(PATH + "/lang/" + langs[i], "https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/feature/i18n/lang/" + langs[i] + ".json");
+		if (!new File_(PATH + "/lang/", langs[i] + ".json").exists()) {
+			downloadFile(PATH + "/lang/" + langs[i] + ".json", "https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/feature/i18n/lang/" + langs[i] + ".json");
 			isExisting = false;
 		}
 	}
