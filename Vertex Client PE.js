@@ -1050,7 +1050,12 @@ let VertexClientPE = {
 			isTeamMember: function(entity) {
 				let myName = Entity.getNameTag(getPlayerEnt());
 				let otherName = Entity.getNameTag(entity);
-				//myName.charAt(0)
+				if(myName.charAt(0) != "§" || otherName.charAt(0) != "§") {
+					return false;
+				}
+				if(myName.charAt(1) == otherName.charAt(1)) {
+					return true;
+				}
 				return false;
 			},
 			shouldTarget: function(entity) {
@@ -5291,7 +5296,7 @@ var target = {
 		targetSettingsLayout.addView(targetMobsCheckBox);
 		targetSettingsLayout.addView(targetPlayersCheckBox);
 		targetSettingsLayout.addView(targetFriendsCheckBox);
-		//targetSettingsLayout.addView(targetMyTeamCheckBox);
+		targetSettingsLayout.addView(targetMyTeamCheckBox);
 
 		return targetSettingsLayout;
 	},
