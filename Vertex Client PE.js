@@ -1047,6 +1047,15 @@ let VertexClientPE = {
 				}
 				return false;
 			},
+			isTeamMember: function(entity) {
+				let myName = Entity.getNameTag(getPlayerEnt());
+				let otherName = Entity.getNameTag(entity);
+				//myName.charAt(0)
+				return false;
+			},
+			shouldTarget: function(entity) {
+				return !(targetFriendsSetting == "off" && VertexClientPE.Utils.Player.isFriend(entity)) && !(targetMyTeamSetting == "off" && VertexClientPE.Utils.Player.isTeamMember(entity));
+			}
 			isInWater: function () {
 				if(VertexClientPE.Utils.Block.isLiquid(getTile(getPlayerX() + 0.5, getPlayerY() - 1.5, getPlayerZ() + 0.5))) return true;
 				return false;
@@ -1138,7 +1147,7 @@ let VertexClientPE = {
 								continue;
 							}
 						}
-						if(targetFriendsSetting == "off" && VertexClientPE.Utils.Player.isFriend(ent)) {
+						if(!VertexClientPE.Utils.Player.shouldTarget(ent)) {
 							continue;
 						}
 						if(ent != getPlayerEnt()) {
@@ -5252,6 +5261,7 @@ var target = {
 				let checked = v.isChecked();
 				targetPlayersSetting = checked?"on":"off";
 				targetFriendsCheckBox.setEnabled(checked);
+				targetMyTeamCheckBox.setEnabled(checked);
 				VertexClientPE.saveMainSettings();
 			}
 		});
@@ -5266,10 +5276,23 @@ var target = {
 				VertexClientPE.saveMainSettings();
 			}
 		});
+		
+		let targetMyTeamCheckBox = clientCheckBox();
+		targetMyTeamCheckBox.setChecked(targetMyTeamSetting == "on");
+		targetMyTeamCheckBox.setEnabled(targetPlayersCheckBox.isChecked());
+		targetMyTeamCheckBox.setText("My team");
+		targetMyTeamCheckBox.setOnClickListener(new View_.OnClickListener() {
+			onClick: function(v) {
+				targetMyTeamSetting = v.isChecked()?"on":"off";
+				VertexClientPE.saveMainSettings();
+			}
+		});
 
 		targetSettingsLayout.addView(targetMobsCheckBox);
 		targetSettingsLayout.addView(targetPlayersCheckBox);
 		targetSettingsLayout.addView(targetFriendsCheckBox);
+		//targetSettingsLayout.addView(targetMyTeamCheckBox);
+
 		return targetSettingsLayout;
 	},
 	isStateMod: function() {
@@ -5612,7 +5635,7 @@ var switchAimbot = {
 				this.playerTargetNum = 0;
 			}
 			let cPlayer = players[this.playerTargetNum];
-			if(cPlayer != undefined && cPlayer != null && !(targetFriendsSetting == "off" && VertexClientPE.Utils.Player.isFriend(cMob))) {
+			if(cPlayer != undefined && cPlayer != null && VertexClientPE.Utils.Player.shouldTarget(cPlayer)) {
 				let x = Entity.getX(cPlayer) - getPlayerX();
 				let y = Entity.getY(cPlayer) - getPlayerY();
 				let z = Entity.getZ(cPlayer) - getPlayerZ();
@@ -11496,6 +11519,7 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + healthTagsShowHeartSetting.toString());
 	outWrite.append("," + modsStayEnabledSetting.toString());
 	outWrite.append("," + itemGiverModeSetting.toString());
+	outWrite.append("," + targetMyTeamSetting.toString());
 
 	outWrite.close();
 
@@ -11778,6 +11802,9 @@ VertexClientPE.loadMainSettings = function () {
 	}
 	if (arr[87] != null && arr[87] != undefined) {
 		itemGiverModeSetting = arr[87];
+	}
+	if (arr[88] != null && arr[88] != undefined) {
+		targetMyTeamSetting = arr[88];
 	}
 
 	VertexClientPE.loadCustomRGBSettings();
