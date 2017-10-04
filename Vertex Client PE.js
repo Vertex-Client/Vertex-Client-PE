@@ -1057,7 +1057,7 @@ let VertexClientPE = {
 			},
 			shouldTarget: function(entity) {
 				return !(targetFriendsSetting == "off" && VertexClientPE.Utils.Player.isFriend(entity)) && !(targetMyTeamSetting == "off" && VertexClientPE.Utils.Player.isTeamMember(entity));
-			}
+			},
 			isInWater: function () {
 				if(VertexClientPE.Utils.Block.isLiquid(getTile(getPlayerX() + 0.5, getPlayerY() - 1.5, getPlayerZ() + 0.5))) return true;
 				return false;
