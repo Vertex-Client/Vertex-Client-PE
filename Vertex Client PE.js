@@ -1050,10 +1050,7 @@ let VertexClientPE = {
 			isTeamMember: function(entity) {
 				let myName = Entity.getNameTag(getPlayerEnt());
 				let otherName = Entity.getNameTag(entity);
-				if(myName.charAt(0) != "§" || otherName.charAt(0) != "§") {
-					return false;
-				}
-				if(myName.charAt(1) == otherName.charAt(1)) {
+				if(!(myName.charAt(0) != "\u00A7" || otherName.charAt(0) != "\u00A7") && myName.charAt(1) == otherName.charAt(1)) {
 					return true;
 				}
 				return false;
@@ -5515,7 +5512,7 @@ var healthDisplay = {
 			if(healthDisplayUI != null && healthDisplayUI.isShowing()) {
 				CONTEXT.runOnUiThread(new Runnable_({
 					run: function() {
-						healthDisplayView.setText(Entity.getHealth(getPlayerEnt()) + "/" + Entity.getMaxHealth(getPlayerEnt()) + " ❤");
+						healthDisplayView.setText(Entity.getHealth(getPlayerEnt()) + "/" + Entity.getMaxHealth(getPlayerEnt()) + " \u2764");
 					}
 				}));
 			}
@@ -14182,7 +14179,7 @@ VertexClientPE.secondTick = function() {
 			if(healthDisplayUI != null && healthDisplayUI.isShowing()) {
 				CONTEXT.runOnUiThread(new Runnable_({
 					run: function() {
-						healthDisplayView.setText(Entity.getHealth(getPlayerEnt()) + "/" + Entity.getMaxHealth(getPlayerEnt()) + " ❤");
+						healthDisplayView.setText(Entity.getHealth(getPlayerEnt()) + "/" + Entity.getMaxHealth(getPlayerEnt()) + " \u2764");
 					}
 				}));
 			}
@@ -19675,7 +19672,7 @@ function showHealthDisplay() {
 		run: function() {
 			try {
 				let healthDisplayLayout = new LinearLayout_(CONTEXT);
-				healthDisplayView = clientTextView(Entity.getHealth(getPlayerEnt()) + "/" + Entity.getMaxHealth(getPlayerEnt()) + " ❤", true);
+				healthDisplayView = clientTextView(Entity.getHealth(getPlayerEnt()) + "/" + Entity.getMaxHealth(getPlayerEnt()) + " \u2764", true);
 				healthDisplayLayout.addView(healthDisplayView);
 
 				healthDisplayUI = new PopupWindow_(healthDisplayLayout, dip2px(40), dip2px(40));
