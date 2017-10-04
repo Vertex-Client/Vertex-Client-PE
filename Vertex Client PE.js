@@ -231,6 +231,7 @@ let healthTagsHealthSetting = "red";
 let healthTagsShowHeartSetting = "on";
 let modsStayEnabledSetting = "on";
 let itemGiverModeSetting = "fast";
+let targetMyTeamSetting = "off";
 //------------------------------------
 let antiAFKDistancePerTick = 0.25;
 //------------------------------------
@@ -2197,7 +2198,7 @@ VertexClientPE.initMods = function(switchedCat, shouldLoadModStates) {
 		if(shouldLoadModStates) {
 			let tempBypassState = VertexClientPE.getSavedModState("Bypass");
 			VertexClientPE.preInitModules.forEach(function(element, index, array) {
-				if(((element.pack == "Combat" && combatEnabled == "on") || (element.pack == "World" && worldEnabled == "on") || (element.pack == "Movement" && movementEnabled == "on") || (element.pack == "Player" && playerEnabled == "on") || (element.pack == "Miscellaneous" && miscEnabled == "on")) && !(element.singleplayerOnly && singleplayerEnabled == "off")) {
+				if(((element.pack == "Combat" && combatEnabled == "on") || (element.pack == "World" && worldEnabled == "on") || (element.pack == "Movement" && movementEnabled == "on") || (element.pack == "Player" && playerEnabled == "on") || (element.pack == "Misc" && miscEnabled == "on")) && !(element.singleplayerOnly && singleplayerEnabled == "off")) {
 					// toggle mods on if enabled in save data
 					let tempElement = element;
 					if(VertexClientPE.getSavedModState(tempElement.name)) {
@@ -2216,7 +2217,7 @@ VertexClientPE.initMods = function(switchedCat, shouldLoadModStates) {
 		} else {
 			VertexClientPE.preInitModules.forEach(function(element, index, array) {
 				VertexClientPE.setSavedModState(element.name, false);
-				if(((element.pack == "Combat" && combatEnabled == "on") || (element.pack == "World" && worldEnabled == "on") || (element.pack == "Movement" && movementEnabled == "on") || (element.pack == "Player" && playerEnabled == "on") || (element.pack == "Miscellaneous" && miscEnabled == "on")) && !(element.singleplayerOnly && singleplayerEnabled == "off")) {
+				if(((element.pack == "Combat" && combatEnabled == "on") || (element.pack == "World" && worldEnabled == "on") || (element.pack == "Movement" && movementEnabled == "on") || (element.pack == "Player" && playerEnabled == "on") || (element.pack == "Misc" && miscEnabled == "on")) && !(element.singleplayerOnly && singleplayerEnabled == "off")) {
 					VertexClientPE.modules.push(element);
 				}
 			});
