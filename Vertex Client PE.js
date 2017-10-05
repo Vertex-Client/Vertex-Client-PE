@@ -6432,7 +6432,7 @@ var toggle = {
 							return;
 						}
 						if(element.hasOwnProperty("shouldAdd") && !element.shouldAdd()) {
-							VertexClientPE.toast("You didn't unlock this feature yet!");
+							VertexClientPE.toast(i18n("You haven't unlocked this feature yet!"));
 							return;
 						}
 						if(element.name == "Bypass" || !bypassState || (element.canBypassBypassMod == undefined || element.canBypassBypassMod == null || element.canBypassBypassMod()) || (element.isStateMod() && element.state)) {
@@ -7092,17 +7092,17 @@ VertexClientPE.showSignEditorDialog = function(signX, signY, signZ) {
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
-				dialog.setTitle(i18n("SignEditor"));
-				inputBar.setHint(i18n("Line 1"));
+				dialog.setTitle("SignEditor");
+				inputBar.setHint(i18n("Line %0", ["1"]));
 				inputBar.setText(Level.getSignText(signX, signY, signZ, 0));
 				inputBar.setTextColor(Color_.WHITE);
-				inputBar1.setHint(i18n("Line 2"));
+				inputBar1.setHint(i18n("Line %0", ["2"]));
 				inputBar1.setText(Level.getSignText(signX, signY, signZ, 1));
 				inputBar1.setTextColor(Color_.WHITE);
-				inputBar2.setHint(i18n("Line 3"));
+				inputBar2.setHint(i18n("Line %0", ["3"]));
 				inputBar2.setText(Level.getSignText(signX, signY, signZ, 2));
 				inputBar2.setTextColor(Color_.WHITE);
-				inputBar3.setHint(i18n("Line 4"));
+				inputBar3.setHint(i18n("Line %0", ["4"]));
 				inputBar3.setText(Level.getSignText(signX, signY, signZ, 3));
 				inputBar3.setTextColor(Color_.WHITE);
 				dialog.show();
