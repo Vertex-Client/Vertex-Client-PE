@@ -1303,7 +1303,7 @@ VertexClientPE.Utils.loadChests = function() {
 	} catch(e) {
 		//an error occured
 	} finally {
-		VertexClientPE.toast("Successfully (re)loaded storage blocks!");
+		VertexClientPE.toast(i18n("Successfully (re)loaded storage blocks!"));
 	}
 }
 
@@ -1947,7 +1947,7 @@ VertexClientPE.AddonUtils = {
 		enabledScripts.remove(addon.scriptName);
 		realScriptManager.removeScript(addon.scriptName);
 
-		VertexClientPE.toast("Successfully removed the addon!");
+		VertexClientPE.toast(i18n("Successfully removed the addon!"));
 	}
 }
 
@@ -2328,7 +2328,7 @@ function registerAddon(name, desc, current_version, target_version, mods, songs,
 	}
 
 	if(shouldMessage) {
-		VertexClientPE.addonLoadToast("Successfully loaded the " + name + " addon!");
+		VertexClientPE.addonLoadToast(i18n("Successfully loaded the %0 addon!", [name]));
 	}
 }
 
@@ -5614,7 +5614,7 @@ var serverInfo = {
 			serverInfoStage = 1;
 			new Thread_(new Runnable_({
 				run: function() {
-					VertexClientPE.toast("Loading...");
+					VertexClientPE.toast(i18n("Loading..."));
 					let serverInfo = myServerStatus.set(Server.getAddress(), parseInt(Server.getPort()));
 					Thread_.sleep(3000);
 					let serverString = "Name: " + serverInfo.name;
@@ -6047,7 +6047,7 @@ var enchantIt = {
 
 var effectGiver = {
 	name: "EffectGiver",
-	desc: "Allows you to give yourself effects.",
+	desc: i18n("Allows you to give yourself effects."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	isStateMod: function() {
@@ -6060,7 +6060,7 @@ var effectGiver = {
 
 var scaffoldWalk = {
 	name: "ScaffoldWalk",
-	desc: "Automatically places blocks underneath you. Hold a block while using this mod.",
+	desc: i18n("Automatically places blocks underneath you. Hold a block while using this mod."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -6086,7 +6086,7 @@ var scaffoldWalk = {
 
 var fastLadder = {
 	name: "FastLadder",
-	desc: "Allows you to climb ladders faster.",
+	desc: i18n("Allows you to climb ladders faster."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -6277,7 +6277,7 @@ function useItem(x, y, z, itemId, blockId, side, blockDamage) {
 		if((itemId == 23 || itemId == 54 || itemId == 125) && ((blockId != 23 && blockId != 54 && blockId != 58 && blockId != 125) || Entity.isSneaking(getPlayerEnt()))) {
 			new Thread_(new Runnable_({
 				run: function() {
-					VertexClientPE.toast("Adding storage block to storage block list...");
+					VertexClientPE.toast(i18n("Adding storage block to storage block list..."));
 					let storageESPVector = new Vector3(x-(side==4?1:0)+(side==5?1:0),y-(side==0?1:0)+(side==1?1:0),z-(side==2?1:0)+(side==3?1:0));
 					VertexClientPE.Utils.chests.push({
 						x: storageESPVector.x,
@@ -8623,7 +8623,7 @@ VertexClientPE.showModEditorDialog = function(defaultName, modTitleView, modButt
 							currentName = defaultName;
 							modTitleView.setText(currentName);
 							modButtonView.setText(currentName);
-							VertexClientPE.toast("You can't give a mod an empty name!");
+							VertexClientPE.toast(i18n("You can't give a mod an empty name!"));
 						} else {
 							let lowerCasedCurrentName = currentName.toLowerCase();
 							VertexClientPE.modules.forEach(function(element, index, array) {
@@ -8632,7 +8632,7 @@ VertexClientPE.showModEditorDialog = function(defaultName, modTitleView, modButt
 									currentName = defaultName;
 									modTitleView.setText(currentName);
 									modButtonView.setText(currentName);
-									VertexClientPE.toast("There's already a mod with that (default or custom) name!");
+									VertexClientPE.toast(i18n("There's already a mod with that (default or custom) name!"));
 									return;
 								}
 							});
@@ -8813,7 +8813,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
 								if(mod.isStateMod() && !mod.state) {
 									mod.state = true;
 								} else if(!mod.isStateMod()) {
-									VertexClientPE.toast("This mod is blocked by " + VertexClientPE.getCustomModName("Bypass") + "!");
+									VertexClientPE.toast(i18n("This mod is blocked by %0!", [VertexClientPE.getCustomModName("Bypass")]));
 								}
 							}
 							if(mod.isStateMod()) {
@@ -9236,9 +9236,9 @@ VertexClientPE.showItemGiverDialog = function() { //TODO: make faster, less layo
 						let data = itemDataInput.getText();
 						if(Item.isValidItem(itemId)) {
 							Player.addItemInventory(itemId, amount, data);
-							VertexClientPE.toast("Successfully added item " + itemId);
+							VertexClientPE.toast(i18n("Successfully added item with id %0.", [itemId]));
 						} else {
-							VertexClientPE.toast("Item doesn't exist!");
+							VertexClientPE.toast(i18n("Item doesn't exist!"));
 						}
 					}
 				});
