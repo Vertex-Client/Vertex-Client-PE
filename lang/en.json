@@ -1,4 +1,7 @@
 {
+    "Successfully (re)loaded storage blocks!": "Successfully (re)loaded storage blocks!",
+    "Successfully removed the addon!": "Successfully removed the addon!",
+    "Successfully loaded the %0 addon!": "Successfully loaded the %0 addon!",
     "Disables all modules of the selected categories at once.": "Disables all modules of the selected categories at once.",
     "Blocks mods that cannot bypass common anti cheat plugins.": "Blocks mods that cannot bypass common anti cheat plugins.",
     "Switches your gamemode.": "Switches your gamemode.",
@@ -84,6 +87,7 @@
     "Shows your health in the bottom left corner.": "Shows your health in the bottom left corner.",
     "Makes your device vibrate when hitting an entity.": "Makes your device vibrate when hitting an entity.",
     "Shows information about the server you're on.": "Shows information about the server you're on.",
+    "Loading...": "Loading...",
     "Makes you point at entities but changes target all the time.": "Makes you point at entities but changes target all the time.",
     "Makes you walk around entities.": "Makes you walk around entities.",
     "Immediately teleports you to the first (non-air) block underneath yourself when falling (and blocks fall damage by doing so).": "Immediately teleports you to the first (non-air) block underneath yourself when falling (and blocks fall damage by doing so).",
@@ -94,6 +98,10 @@
     "Automatically refills your hunger bar.": "Automatically refills your hunger bar.",
     "Shows a custom (text) watermark. Text can be formatted using HTML.": "Shows a custom (text) watermark. Text can be formatted using HTML.",
     "Adds enchantments to items in your inventory.": "Adds enchantments to items in your inventory.",
+    "Allows you to give yourself effects.": "Allows you to give yourself effects.",
+    "Automatically places blocks underneath you. Hold a block while using this mod.": "Automatically places blocks underneath you. Hold a block while using this mod.",
+    "Allows you to climb ladders faster.": "Allows you to climb ladders faster.",
+    "Adding storage block to storage block list...": "Adding storage block to storage block list...",
     "Showing help page %0/%1": "Showing help page %0/%1",
     "Error: page number is too low!": "Error: page number is too low!",
     "Error: page number is too high!": "Error: page number is too high!",
@@ -152,5 +160,10 @@
     "Hacks list position": "Hacks list position",
     "Top-center": "Top-center",
     "Top-left": "Top-left",
-    "Top-right": "Top-right"
+    "Top-right": "Top-right",
+    "You can't give a mod an empty name!": "You can't give a mod an empty name!",
+    "There's already a mod with that (default or custom) name!": "There's already a mod with that (default or custom) name!",
+    "This mod is blocked by %0!": "This mod is blocked by %0!",
+    "Successfully added item with id %0.": "Successfully added item with id %0.",
+    "Item doesn't exist!": "Item doesn't exist!"
 }
