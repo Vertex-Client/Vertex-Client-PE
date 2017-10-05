@@ -136,8 +136,8 @@ EntityType.ENDER_PEARL = 87;
 
 /**
  * Internationalization: Language Support
- * Thanks for testing i18n function: NenkaLab <nenka@naver.com>
- * @author Astro36 <astr36@naver.com>
+ * Thanks for testing i18n function: NenkaLab<nenka@naver.com>, and ManDongI<boomingsky@naver.com>
+ * @author Astro36<astr36@naver.com>
  * @function i18n
  * @memberOf global
  * @param {String} text
@@ -6819,9 +6819,10 @@ function getTextFromFile(filePath) {//settingsPath
 		return "";
 	}
 	let br = new BufferedReader_(new InputStreamReader_(new FileInputStream_(file)));
-	let read, text;
+	let read,
+		text = "";
 	while((read = br.readLine()) != null) {
-		text = read;
+		text += read;
 		break;
 	}
 	br.close();

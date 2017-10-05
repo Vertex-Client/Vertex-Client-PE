@@ -153,16 +153,4 @@
     "Top-center": "Top-center",
     "Top-left": "Top-left",
     "Top-right": "Top-right"
-    // i18n from line 2301 to line 7568
-    /* 
-     * I need help please!
-     * You can find the string, cover the i18n function and add the string in this file.
-     * such as:
-     * .js
-     * print("Hello World"); -> print(i18n("Hello World"));
-     * .json
-     * {
-     *   "Hello World": "Hello World"
-     * }
-     */
 }
