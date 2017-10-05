@@ -120,17 +120,17 @@ const AlarmManager_ = android.app.AlarmManager,
 
 const DENSITY = CONTEXT.getResources().getDisplayMetrics().density;
 
-var Scanner = java.util.Scanner;
-var ByteBuffer = java.nio.ByteBuffer;
-var FloatBuffer = java.nio.FloatBuffer;
-var ByteOrder = java.nio.ByteOrder;
-var ShortBuffer = java.nio.ShortBuffer;
-var GLSurfaceView = android.opengl.GLSurfaceView;
-var Renderer = GLSurfaceView.Renderer;
-var GLU = android.opengl.GLU;
-var GL10 = javax.microedition.khronos.opengles.GL10;
-var RelativeLayout = android.widget.RelativeLayout;
-var Gravity = android.view.Gravity;
+let Scanner = java.util.Scanner;
+let ByteBuffer = java.nio.ByteBuffer;
+let FloatBuffer = java.nio.FloatBuffer;
+let ByteOrder = java.nio.ByteOrder;
+let ShortBuffer = java.nio.ShortBuffer;
+let GLSurfaceView = android.opengl.GLSurfaceView;
+let Renderer = GLSurfaceView.Renderer;
+let GLU = android.opengl.GLU;
+let GL10 = javax.microedition.khronos.opengles.GL10;
+let RelativeLayout = android.widget.RelativeLayout;
+let Gravity = android.view.Gravity;
 
 EntityType.ENDER_PEARL = 87;
 
@@ -171,117 +171,120 @@ const i18n = (function () {
  * ##########
  */
 
-var hacksListModeSetting = "on";
-var mainButtonPositionSetting = "top-left";
-var healthTagsSetting = "off";
-var themeSetting = "green";
-var spamMessage = "Spam!!!!!";
-var showNewsSetting = "on";
-var menuAnimationsSetting = "on";
-var nukerMode = "cube";
-var playMusicSetting = "off";
-var timerSpeed = 2;
-var themeSetup = "off";
-var nukerRange = 3;
-var killAuraRange = 4;
-var spamDelayTime = 3;
-var normalMenuTypeSize = "normal";
-var fancyChatMode = "default";
-var tapNukerRange = 3;
-var menuType = "normal";
-var chestTracersRange = 10;
-var tabGUIModeSetting = "off";
-var chestTracersGroundMode = "on";
-var chestTracersParticle = "flame";
-var antiLagDropRemoverSetting = "off";
-var useLightThemeSetting = "off";
-var buttonStyleSetting = "normal";
-var mcpeGUISetting = "default";
-var storageESPRange = 25;
-var transparentBgSetting = "on";
-var aimbotUseKillauraRange = "off";
-var screenshotModeSetting = "default";
-var killToMorphSetting = "off";
-var fontSetting = "default";
-var mainButtonStyleSetting = "normal";
-var webBrowserStartPageSetting = "https://google.com/";
-var backgroundStyleSetting = "normal";
-var modButtonColorBlockedSetting = "red";
-var modButtonColorEnabledSetting = "green";
-var modButtonColorDisabledSetting = "white";
-var arrowGunMode = "slow";
-var cmdPrefix = ".";
-var commandsSetting = "on";
-var shortcutSizeSetting = 32;
-var aimbotRangeSetting = 4;
-var speedHackFriction = 0.1;
-var remoteViewTeleportSetting = "off";
-var switchGamemodeSendCommandSetting = "off";
-var betterPauseSetting = "off";
-var shortcutUIHeightSetting = 3;
-var mainButtonTapSetting = "menu";
-var autoWalkDirection = "forward";
-var dashboardTileSize = 5;
-var spamUseRandomMsgSetting = "off";
-var buttonStrokeThicknessSetting = 2;
-var hacksListPosSetting = "top-center";
-var targetMobsSetting = "on";
-var targetPlayersSetting = "on";
-var shortcutUIPosSetting = "right-center";
-var hitboxesHitboxWidthSetting = 10;
-var hitboxesHitboxHeightSetting = 10;
-var showUpdateToastsSetting = "on";
-var showSnowInWinterSetting = "off";
-var preventDiggingSetting = "off";
-var preventPlacingSetting = "off";
-var preventAttacksSetting = "off";
-var fastBreakDestroyTime = 0;
-var strafeAuraRangeSetting = 5;
-var strafeAuraDirectionSetting = "left";
-var panicCombatSetting = "on";
-var panicWorldSetting = "on";
-var panicMovementSetting = "on";
-var panicPlayerSetting = "on";
-var panicMiscSetting = "on";
-var buttonSoundSetting = "system";
-var transparentSplashScreenSetting = "off";
-var showIconsOnTileShortcutsSetting = "on";
-var targetFriendsSetting = "off";
-var antiAFKKeepScreenOnSetting = "on";
-var shortcutUIModeSetting = "on";
-var attackShockIntensity = 20;
-var f5ButtonModeSetting = "pause";
-var mainButtonSizeSetting = 40;
-var powerExplosionsPowerSetting = 10;
-var preventExplosionsSetting = "off";
-var watermarkTextSetting = "<big><b>Bold</b> <i>Italic</i> <u>Underline</u></big>";
-var defaultToastPositionSetting = "bottom";
-var tapAimbotStayAimedSetting = 40;
-var healthTagsNameSetting = "aqua";
-var healthTagsHealthSetting = "red";
-var healthTagsShowHeartSetting = "on";
+let hacksListModeSetting = "on";
+let mainButtonPositionSetting = "top-left";
+let healthTagsSetting = "off";
+let themeSetting = "green";
+let spamMessage = "Spam!!!!!";
+let showNewsSetting = "on";
+let menuAnimationsSetting = "on";
+let nukerMode = "cube";
+let playMusicSetting = "off";
+let timerSpeed = 2;
+let themeSetup = "off";
+let nukerRange = 3;
+let killAuraRange = 4;
+let spamDelayTime = 3;
+let normalMenuTypeSize = "normal";
+let fancyChatMode = "default";
+let tapNukerRange = 3;
+let menuType = "normal";
+let chestTracersRange = 10;
+let tabGUIModeSetting = "off";
+let chestTracersGroundMode = "on";
+let chestTracersParticle = "flame";
+let antiLagDropRemoverSetting = "off";
+let useLightThemeSetting = "off";
+let buttonStyleSetting = "normal";
+let mcpeGUISetting = "default";
+let storageESPRange = 25;
+let transparentBgSetting = "on";
+let aimbotUseKillauraRange = "off";
+let screenshotModeSetting = "default";
+let killToMorphSetting = "off";
+let fontSetting = "default";
+let mainButtonStyleSetting = "normal";
+let webBrowserStartPageSetting = "https://google.com/";
+let backgroundStyleSetting = "normal";
+let modButtonColorBlockedSetting = "red";
+let modButtonColorEnabledSetting = "green";
+let modButtonColorDisabledSetting = "white";
+let arrowGunMode = "slow";
+let cmdPrefix = ".";
+let commandsSetting = "on";
+let shortcutSizeSetting = 32;
+let aimbotRangeSetting = 4;
+let speedHackFriction = 0.1;
+let remoteViewTeleportSetting = "off";
+let switchGamemodeSendCommandSetting = "off";
+let betterPauseSetting = "off";
+let shortcutUIHeightSetting = 3;
+let mainButtonTapSetting = "menu";
+let autoWalkDirection = "forward";
+let dashboardTileSize = 5;
+let spamUseRandomMsgSetting = "off";
+let buttonStrokeThicknessSetting = 2;
+let hacksListPosSetting = "top-center";
+let targetMobsSetting = "on";
+let targetPlayersSetting = "on";
+let shortcutUIPosSetting = "right-center";
+let hitboxesHitboxWidthSetting = 10;
+let hitboxesHitboxHeightSetting = 10;
+let showUpdateToastsSetting = "on";
+let showSnowInWinterSetting = "off";
+let preventDiggingSetting = "off";
+let preventPlacingSetting = "off";
+let preventAttacksSetting = "off";
+let fastBreakDestroyTime = 0;
+let strafeAuraRangeSetting = 5;
+let strafeAuraDirectionSetting = "left";
+let panicCombatSetting = "on";
+let panicWorldSetting = "on";
+let panicMovementSetting = "on";
+let panicPlayerSetting = "on";
+let panicMiscSetting = "on";
+let buttonSoundSetting = "system";
+let transparentSplashScreenSetting = "off";
+let showIconsOnTileShortcutsSetting = "on";
+let targetFriendsSetting = "off";
+let antiAFKKeepScreenOnSetting = "on";
+let shortcutUIModeSetting = "on";
+let attackShockIntensity = 20;
+let f5ButtonModeSetting = "pause";
+let mainButtonSizeSetting = 40;
+let powerExplosionsPowerSetting = 10;
+let preventExplosionsSetting = "off";
+let watermarkTextSetting = "<big><b>Bold</b> <i>Italic</i> <u>Underline</u></big>";
+let defaultToastPositionSetting = "bottom";
+let tapAimbotStayAimedSetting = 40;
+let healthTagsNameSetting = "aqua";
+let healthTagsHealthSetting = "red";
+let healthTagsShowHeartSetting = "on";
+let modsStayEnabledSetting = "on";
+let itemGiverModeSetting = "fast";
+let targetMyTeamSetting = "off";
 //------------------------------------
-var antiAFKDistancePerTick = 0.25;
+let antiAFKDistancePerTick = 0.25;
 //------------------------------------
-var combatName = "Combat";
-var worldName = "World";
-var movementName = "Movement";
-var playerName = "Player";
-var miscName = "Misc";
+let combatName = "Combat";
+let worldName = "World";
+let movementName = "Movement";
+let playerName = "Player";
+let miscName = "Misc";
 //------------------------------------
-var customRGBRed = 0;
-var customRGBGreen = 0;
-var customRGBBlue = 0;
-var customRGBRedStroke = 0;
-var customRGBGreenStroke = 0;
-var customRGBBlueStroke = 0;
+let customRGBRed = 0;
+let customRGBGreen = 0;
+let customRGBBlue = 0;
+let customRGBRedStroke = 0;
+let customRGBGreenStroke = 0;
+let customRGBBlueStroke = 0;
 //------------------------------------
-var combatEnabled = "on";
-var worldEnabled = "on";
-var movementEnabled = "on";
-var playerEnabled = "on";
-var miscEnabled = "on";
-var singleplayerEnabled = "on";
+let combatEnabled = "on";
+let worldEnabled = "on";
+let movementEnabled = "on";
+let playerEnabled = "on";
+let miscEnabled = "on";
+let singleplayerEnabled = "on";
 //End of settings
 
 let modButtonColorBlocked = Color_.RED;
@@ -338,7 +341,7 @@ let playerMenuShown = false;
 let miscMenuShown = false;
 //MENU END
 
-var Launcher = {
+let Launcher = {
 	isBlockLauncher: function() {
 		return (CONTEXT.getPackageName() == "net.zhuoweizhang.mcpelauncher" || CONTEXT.getPackageName() == "net.zhuoweizhang.mcpelauncher.pro");
 	},
@@ -361,7 +364,7 @@ if(Launcher.isMcpeMaster()) {
 	realScriptManager = ScriptManager_;
 }
 
-var ScreenType = {
+let ScreenType = {
 	start_screen: "start_screen",
 	hud: "hud_screen",
 	ingame: "in_game_play_screen",
@@ -977,17 +980,17 @@ var myServerStatus = {
 	}
 };
 
-var isSupported = true;
-var isAuthorized = true;
+let isSupported = true;
+let isAuthorized = true;
 
-var oldYaw = 0;
-var newYaw = 0;
+let oldYaw = 0;
+let newYaw = 0;
 
 const PI_CIRCLE = Math.PI / 180;
 
 let songDialog;
 
-var VertexClientPE = {
+let VertexClientPE = {
 	name: "Vertex Client PE",
 	getName: function() {
 		return VertexClientPE.name;
@@ -1033,9 +1036,9 @@ var VertexClientPE = {
 			logMessages: []
 		},
 		takeScreenshot: function(mode) {
-			var now = new java.util.Date();
+			let now = new java.util.Date();
 			android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
-			var mPath = Environment_.getExternalStorageDirectory().toString() + "/" + now;
+			let mPath = Environment_.getExternalStorageDirectory().toString() + "/" + now;
 
 			switch(mode) {
 				case "noGui": {
@@ -1068,13 +1071,24 @@ var VertexClientPE = {
 				let friendsLength = VertexClientPE.friends.length();
 				let username = Entity.getNameTag(entity);
 				if(VertexClientPE.friends != null && friendsLength != -1) {
-					for(var i = 0; i < friendsLength; i++) {
+					for(let i = 0; i < friendsLength; i++) {
 						if(username == VertexClientPE.friends.get(i)) {
 							return true;
 						}
 					}
 				}
 				return false;
+			},
+			isTeamMember: function(entity) {
+				let myName = Entity.getNameTag(getPlayerEnt());
+				let otherName = Entity.getNameTag(entity);
+				if(!(myName.charAt(0) != "\u00A7" || otherName.charAt(0) != "\u00A7") && myName.charAt(1) == otherName.charAt(1)) {
+					return true;
+				}
+				return false;
+			},
+			shouldTarget: function(entity) {
+				return !(targetFriendsSetting == "off" && VertexClientPE.Utils.Player.isFriend(entity)) && !(targetMyTeamSetting == "off" && VertexClientPE.Utils.Player.isTeamMember(entity));
 			},
 			isInWater: function () {
 				if(VertexClientPE.Utils.Block.isLiquid(getTile(getPlayerX() + 0.5, getPlayerY() - 1.5, getPlayerZ() + 0.5))) return true;
@@ -1167,7 +1181,7 @@ var VertexClientPE = {
 								continue;
 							}
 						}
-						if(targetFriendsSetting == "off" && VertexClientPE.Utils.Player.isFriend(ent)) {
+						if(!VertexClientPE.Utils.Player.shouldTarget(ent)) {
 							continue;
 						}
 						if(ent != getPlayerEnt()) {
@@ -1182,15 +1196,15 @@ var VertexClientPE = {
 	CombatUtils: {
 		aimAt: function(x, y, z) {
 			// Credits to Godsoft0329 aka the developer of DragOP
-			var velocity = 1;
-			var posX = x - getPlayerX();
-			var posY = y - getPlayerY();
-			var posZ = z - getPlayerZ();
-			var realYaw = (Math.atan2(posZ, posX) * 180 / Math.PI) - 90;
-			var y2 = Math.sqrt(posX * posX + posZ * posZ);
-			var g = 0.007;
-			var tmp = (velocity * velocity * velocity * velocity - g * (g * (y2 * y2) + 2 * posY * (velocity * velocity)));
-			var pitch = -(180 / Math.PI) * (Math.atan((velocity * velocity - Math.sqrt(tmp)) / (g * y2)));
+			let velocity = 1;
+			let posX = x - getPlayerX();
+			let posY = y - getPlayerY();
+			let posZ = z - getPlayerZ();
+			let realYaw = (Math.atan2(posZ, posX) * 180 / Math.PI) - 90;
+			let y2 = Math.sqrt(posX * posX + posZ * posZ);
+			let g = 0.007;
+			let tmp = (velocity * velocity * velocity * velocity - g * (g * (y2 * y2) + 2 * posY * (velocity * velocity)));
+			let pitch = -(180 / Math.PI) * (Math.atan((velocity * velocity - Math.sqrt(tmp)) / (g * y2)));
 
 			if(pitch < 89 && pitch > -89) {
 
@@ -1199,9 +1213,9 @@ var VertexClientPE = {
 				oldYaw = newYaw;
 				newYaw = realYaw;
 
-				var dist = Math.sqrt(Math.pow(posX, 2) + Math.pow(posY, 2) + Math.pow(posZ, 2));
+				let dist = Math.sqrt(Math.pow(posX, 2) + Math.pow(posY, 2) + Math.pow(posZ, 2));
 
-				yaw = realYaw+(newYaw - oldYaw) * (dist*dist/dist)/(120/45);
+				let yaw = realYaw+(newYaw - oldYaw) * (dist*dist/dist)/(120/45);
 
 				Entity.setRot(getPlayerEnt(), yaw, pitch);
 
@@ -1242,7 +1256,7 @@ function getEditedFunction(func, newBegin, newEnd) {
 	if(newEnd == null) {
 		newEnd = "";
 	}
-	var temp = func.toString();
+	let temp = func.toString();
 	temp = newBegin + temp + newEnd;
 
 	// now replace the original function
@@ -1623,21 +1637,21 @@ VertexClientPE.Render.getFloatBuffer = function(floatArray) {
 }
 
 VertexClientPE.Render.getShortBuffer = function(shortArray) {
-	var byteBuffer = ByteBuffer.allocateDirect(shortArray.length * 2);
+	let byteBuffer = ByteBuffer.allocateDirect(shortArray.length * 2);
 	byteBuffer.order(ByteOrder.nativeOrder());
 
-	var shortBuffer = byteBuffer.asShortBuffer();
+	let shortBuffer = byteBuffer.asShortBuffer();
 	shortBuffer.put(shortArray);
 	shortBuffer.position(0);
 
 	return shortBuffer;
 }
 
-var virtualWorldView;
+let virtualWorldView;
 
-var parentView = CONTEXT.getWindow().getDecorView();
+let parentView = CONTEXT.getWindow().getDecorView();
 
-var width, height;
+let width, height;
 
 VertexClientPE.Render.renderer = new Renderer({
 	onSurfaceCreated: function(gl, config) {
@@ -1675,20 +1689,20 @@ VertexClientPE.Render.renderer = new Renderer({
 
 		gl.glDisable(GL10.GL_LIGHTING);
 
-		var yaw = getYaw() % 360;
-		var pitch = getPitch() % 360;
+		let yaw = getYaw() % 360;
+		let pitch = getPitch() % 360;
 
-		var eyeX = getPlayerX(0);
-		var eyeY = getPlayerY(1) + 1;
-		var eyeZ = getPlayerZ(2);
+		let eyeX = getPlayerX(0);
+		let eyeY = getPlayerY(1) + 1;
+		let eyeZ = getPlayerZ(2);
 
-		var dCenterX = Math.sin(yaw / 180 * Math.PI);
-		var dCenterZ = Math.cos(yaw / 180 * Math.PI);
-		var dCenterY = Math.sqrt(dCenterX * dCenterX + dCenterZ * dCenterZ) * Math.tan((pitch - 180) / 180 * Math.PI);
+		let dCenterX = Math.sin(yaw / 180 * Math.PI);
+		let dCenterZ = Math.cos(yaw / 180 * Math.PI);
+		let dCenterY = Math.sqrt(dCenterX * dCenterX + dCenterZ * dCenterZ) * Math.tan((pitch - 180) / 180 * Math.PI);
 
-		var centerX = eyeX - dCenterX;
-		var centerZ = eyeZ + dCenterZ;
-		var centerY = eyeY - dCenterY;
+		let centerX = eyeX - dCenterX;
+		let centerZ = eyeZ + dCenterZ;
+		let centerY = eyeY - dCenterY;
 
 		GLU.gluLookAt(gl, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, 0, 1, 0);
 
@@ -1844,7 +1858,7 @@ VertexClientPE.category = {
 			case this.PLAYER:
 				return "Player";
 			case this.MISC:
-				return "Miscellaneous";
+				return "Misc";
 		}
 	}
 };
@@ -1874,7 +1888,7 @@ VertexClientPE.AddonUtils = {
 				element.onToggle();
 			}
 		});
-		
+
 		let newTempSongArray = [];
 		VertexClientPE.MusicUtils.tempSongList.forEach(function(element, index, array) {
 			if(element.source == undefined || fullAddonName != element.source) {
@@ -1927,7 +1941,7 @@ VertexClientPE.AddonUtils = {
 		});
 		VertexClientPE.addons = tempAddonsArray;
 		tempAddonsArray = null;
-		
+
 		//remove the addon script from the launcher
 		let enabledScripts = realScriptManager.getEnabledScripts();
 		enabledScripts.remove(addon.scriptName);
@@ -1941,7 +1955,7 @@ VertexClientPE.registerTile = function(obj) {
 	VertexClientPE.tiles.push(obj);
 };
 
-var settingsTile = {
+let settingsTile = {
 	text: "Settings",
 	color: "green",
 	icon: android.R.drawable.ic_menu_preferences,
@@ -1953,7 +1967,7 @@ var settingsTile = {
 	}
 }
 
-var modManagerTile = {
+let modManagerTile = {
 	text: "Mod Manager",
 	color: "orange",
 	icon: android.R.drawable.ic_menu_manage,
@@ -1965,7 +1979,7 @@ var modManagerTile = {
 	}
 }
 
-var friendManagerTile = {
+let friendManagerTile = {
 	text: "Friend Manager",
 	color: "black",
 	icon: android.R.drawable.ic_menu_manage,
@@ -1976,7 +1990,7 @@ var friendManagerTile = {
 	}
 }
 
-var informationTile = {
+let informationTile = {
 	text: "Information",
 	color: "yellow",
 	icon: android.R.drawable.ic_menu_info_details,
@@ -1988,7 +2002,7 @@ var informationTile = {
 	}
 }
 
-var updateCenterTile = {
+let updateCenterTile = {
 	text: "Update Center",
 	color: "white",
 	icon: android.R.drawable.ic_menu_compass,
@@ -2000,7 +2014,7 @@ var updateCenterTile = {
 	}
 }
 
-var chatTile = {
+let chatTile = {
 	text: "Chat",
 	color: "grey",
 	icon: android.R.drawable.sym_action_chat,
@@ -2011,7 +2025,7 @@ var chatTile = {
 	}
 }
 
-var musicPlayerTile = {
+let musicPlayerTile = {
 	text: "Music Player",
 	color: "blue",
 	icon: android.R.drawable.ic_media_play,
@@ -2023,7 +2037,7 @@ var musicPlayerTile = {
 	}
 }
 
-var christmasTile = {
+let christmasTile = {
 	text: "Christmas",
 	color: "red",
 	icon: android.R.drawable.ic_menu_agenda,
@@ -2032,7 +2046,7 @@ var christmasTile = {
 	usesCustomDrawable: function() {
 		return false;
 	},
-	checkBeforeAdding: function() {
+	shouldAdd: function() {
 		return VertexClientPE.Utils.month == java.util.Calendar.DECEMBER;
 	},
 	onClick: function(fromDashboard) {
@@ -2041,7 +2055,7 @@ var christmasTile = {
 	}
 }
 
-var previewTile = {
+let previewTile = {
 	text: "Preview",
 	color: "violet",
 	icon: android.R.drawable.ic_menu_gallery,
@@ -2053,7 +2067,7 @@ var previewTile = {
 	}
 }
 
-var feedbackTile = {
+let feedbackTile = {
 	text: "Feedback",
 	color: "red",
 	icon: android.R.drawable.ic_dialog_email,
@@ -2065,7 +2079,7 @@ var feedbackTile = {
 	}
 }
 
-var milestonesTile = {
+let milestonesTile = {
 	text: "Milestones",
 	color: "grey",
 	icon: android.R.drawable.ic_menu_agenda,
@@ -2077,7 +2091,7 @@ var milestonesTile = {
 	}
 }
 
-var helpTile = {
+let helpTile = {
 	text: "Help",
 	color: "purple",
 	icon: android.R.drawable.ic_menu_help,
@@ -2089,7 +2103,7 @@ var helpTile = {
 	}
 }
 
-var addonsTile = {
+let addonsTile = {
 	text: "Addons",
 	color: "blue",
 	icon: android.R.drawable.ic_menu_more,
@@ -2101,7 +2115,7 @@ var addonsTile = {
 	}
 }
 
-var shareTile = {
+let shareTile = {
 	text: "Share",
 	color: "brown",
 	icon: android.R.drawable.ic_menu_share,
@@ -2111,28 +2125,28 @@ var shareTile = {
 		shareText("I use Vertex Client PE! Get it yourself at http://Vertex-Client.ml/. :D");
 	}
 }
-var blockLauncherSettingsTile = {
+let blockLauncherSettingsTile = {
 	text: "BlockLauncher Settings",
 	color: "black",
 	icon: net.zhuoweizhang.mcpelauncher.R.drawable.ic_menu_settings_holo_light,
 	forceLightColor: false,
 	shouldDismissDashboard: false,
-	checkBeforeAdding: function() {
+	shouldAdd: function() {
 		return Launcher.isBlockLauncher();
 	},
 	onClick: function(fromDashboard) {
-		var blIntent = new Intent_(CONTEXT, MainMenuOptionsActivity_);
+		let blIntent = new Intent_(CONTEXT, MainMenuOptionsActivity_);
 		CONTEXT.startActivity(blIntent);
 	}
 }
 
-var devSettingsTile = {
+let devSettingsTile = {
 	text: "Developer Settings",
 	color: "orange",
 	icon: android.R.drawable.ic_menu_report_image,
 	forceLightColor: false,
 	shouldDismissDashboard: true,
-	checkBeforeAdding: function() {
+	shouldAdd: function() {
 		return VertexClientPE.isDevMode();
 	},
 	onClick: function(fromDashboard) {
@@ -2141,13 +2155,13 @@ var devSettingsTile = {
 	}
 }
 
-var jsConsoleTile = {
+let jsConsoleTile = {
 	text: "JavaScript Console",
 	color: "orange",
 	icon: android.R.drawable.ic_menu_report_image,
 	forceLightColor: false,
 	shouldDismissDashboard: false,
-	checkBeforeAdding: function() {
+	shouldAdd: function() {
 		return VertexClientPE.isDevMode();
 	},
 	onClick: function(fromDashboard) {
@@ -2166,7 +2180,7 @@ if(Launcher.isBlockLauncher()) {
 	}
 }
 
-var restartTile = {
+let restartTile = {
 	text: "Restart " + launcherName,
 	color: "green",
 	icon: android.R.drawable.ic_menu_rotate,
@@ -2182,7 +2196,7 @@ VertexClientPE.registerTile(modManagerTile);
 VertexClientPE.registerTile(friendManagerTile);
 VertexClientPE.registerTile(informationTile);
 VertexClientPE.registerTile(updateCenterTile);
-VertexClientPE.registerTile(chatTile);
+//VertexClientPE.registerTile(chatTile);
 VertexClientPE.registerTile(musicPlayerTile);
 VertexClientPE.registerTile(christmasTile);
 VertexClientPE.registerTile(previewTile);
@@ -2196,9 +2210,12 @@ VertexClientPE.registerTile(devSettingsTile);
 VertexClientPE.registerTile(jsConsoleTile);
 VertexClientPE.registerTile(restartTile);
 
-VertexClientPE.initMods = function(switchedCat) {
+VertexClientPE.initMods = function(switchedCat, shouldLoadModStates) {
 	if(switchedCat == null) {
 		switchedCat = false;
+	}
+	if(shouldLoadModStates == null) {
+		shouldLoadModStates = true;
 	}
 	if(switchedCat) {
 		VertexClientPE.modules.forEach(function(element, index, array) {
@@ -2209,24 +2226,33 @@ VertexClientPE.initMods = function(switchedCat) {
 	}
 	VertexClientPE.modules = [];
 	try {
-		let tempBypassState = VertexClientPE.getSavedModState("Bypass");
-		VertexClientPE.preInitModules.forEach(function(element, index, array) {
-			if(((element.pack == "Combat" && combatEnabled == "on") || (element.pack == "World" && worldEnabled == "on") || (element.pack == "Movement" && movementEnabled == "on") || (element.pack == "Player" && playerEnabled == "on") || (element.pack == "Miscellaneous" && miscEnabled == "on")) && !(element.singleplayerOnly && singleplayerEnabled == "off")) {
-				// TODO: toggle mods on if enabled in save data
-				let tempElement = element;
-				if(VertexClientPE.getSavedModState(tempElement.name)) {
-					//toggle mod
-					if(tempElement.name == "Bypass" || !tempBypassState || !tempElement.hasOwnProperty("canBypassBypassMod") || (tempElement.hasOwnProperty("canBypassBypassMod") && tempElement.canBypassBypassMod())) {
-						tempElement.onToggle();
-					} else if(tempBypassState && !tempElement.canBypassBypassMod()) {
-						if(tempElement.isStateMod()) {
-							tempElement.state = true;
+		if(shouldLoadModStates) {
+			let tempBypassState = VertexClientPE.getSavedModState("Bypass");
+			VertexClientPE.preInitModules.forEach(function(element, index, array) {
+				if(((element.pack == "Combat" && combatEnabled == "on") || (element.pack == "World" && worldEnabled == "on") || (element.pack == "Movement" && movementEnabled == "on") || (element.pack == "Player" && playerEnabled == "on") || (element.pack == "Misc" && miscEnabled == "on")) && !(element.singleplayerOnly && singleplayerEnabled == "off")) {
+					// toggle mods on if enabled in save data
+					let tempElement = element;
+					if(VertexClientPE.getSavedModState(tempElement.name)) {
+						//toggle mod
+						if(tempElement.name == "Bypass" || !tempBypassState || !tempElement.hasOwnProperty("canBypassBypassMod") || (tempElement.hasOwnProperty("canBypassBypassMod") && tempElement.canBypassBypassMod())) {
+							tempElement.onToggle();
+						} else if(tempBypassState && !tempElement.canBypassBypassMod()) {
+							if(tempElement.isStateMod()) {
+								tempElement.state = true;
+							}
 						}
 					}
+					VertexClientPE.modules.push(tempElement);
 				}
-				VertexClientPE.modules.push(tempElement);
-			}
-		});
+			});
+		} else {
+			VertexClientPE.preInitModules.forEach(function(element, index, array) {
+				VertexClientPE.setSavedModState(element.name, false);
+				if(((element.pack == "Combat" && combatEnabled == "on") || (element.pack == "World" && worldEnabled == "on") || (element.pack == "Movement" && movementEnabled == "on") || (element.pack == "Player" && playerEnabled == "on") || (element.pack == "Misc" && miscEnabled == "on")) && !(element.singleplayerOnly && singleplayerEnabled == "off")) {
+					VertexClientPE.modules.push(element);
+				}
+			});
+		}
 	} catch(e) {
 		VertexClientPE.showBugReportDialog(e);
 	}
@@ -2256,23 +2282,21 @@ VertexClientPE.registerCommand = function(obj) {
 };
 
 VertexClientPE.drawTracer = function(x, y, z, groundMode, particleName) {
-	var particleType = ParticleType.flame;
+	let particleType = ParticleType.flame;
 	if(particleName == "redstone") {
 		particleType = ParticleType.redstone;
 	} else if(particleName == "critical") {
 		particleType = ParticleType.crit;
 	}
-	for(var count = 0; count <= 25; count++) {
+	for(let count = 0; count <= 25; count++) {
 		Level.addParticle(particleType, x, y, z, (getPlayerX() - x) / count, groundMode?0:((getPlayerY() - y) / count), (getPlayerZ() - z) / count, 2);
 	}
 };
 
-var shownAddonProDialog = false;
-
 const ScriptableObject_ = org.mozilla.javascript.ScriptableObject;
 
 function registerAddon(name, desc, current_version, target_version, mods, songs, tiles, author) {
-	var shouldMessage = true;
+	let shouldMessage = true;
 	try {
 		let scripts = realScriptManager.scripts;
 		let scriptName;
@@ -2340,11 +2364,7 @@ function registerTilesFromAddon(fullAddonName, tileArray) {
 }
 
 VertexClientPE.getCommandCount = function() {
-	var commandCount = 0;
-	VertexClientPE.commands.forEach(function(element, index, array) {
-		commandCount++;
-	});
-	return commandCount;
+	return VertexClientPE.commands.length;
 };
 
 VertexClientPE.getFeatureCount = function() {
@@ -2360,9 +2380,8 @@ var panic = {
 		let panicSettingsLayout = new LinearLayout_(CONTEXT);
 		panicSettingsLayout.setOrientation(1);
 
-		let panicCombatCheckBox = clientCheckBox();
+		let panicCombatCheckBox = clientCheckBox("Combat");
 		panicCombatCheckBox.setChecked(panicCombatSetting == "on");
-		panicCombatCheckBox.setText("Combat");
 		panicCombatCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				panicCombatSetting = v.isChecked()?"on":"off";
@@ -2370,9 +2389,8 @@ var panic = {
 			}
 		});
 
-		let panicWorldCheckBox = clientCheckBox();
+		let panicWorldCheckBox = clientCheckBox("World");
 		panicWorldCheckBox.setChecked(panicWorldSetting == "on");
-		panicWorldCheckBox.setText("World");
 		panicWorldCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				panicWorldSetting = v.isChecked()?"on":"off";
@@ -2380,9 +2398,8 @@ var panic = {
 			}
 		});
 
-		let panicMovementCheckBox = clientCheckBox();
+		let panicMovementCheckBox = clientCheckBox("Movement");
 		panicMovementCheckBox.setChecked(panicMovementSetting == "on");
-		panicMovementCheckBox.setText("Movement");
 		panicMovementCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				panicMovementSetting = v.isChecked()?"on":"off";
@@ -2390,9 +2407,8 @@ var panic = {
 			}
 		});
 
-		let panicPlayerCheckBox = clientCheckBox();
+		let panicPlayerCheckBox = clientCheckBox("Player");
 		panicPlayerCheckBox.setChecked(panicPlayerSetting == "on");
-		panicPlayerCheckBox.setText("Player");
 		panicPlayerCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				panicPlayerSetting = v.isChecked()?"on":"off";
@@ -2400,9 +2416,8 @@ var panic = {
 			}
 		});
 
-		let panicMiscCheckBox = clientCheckBox();
+		let panicMiscCheckBox = clientCheckBox("Misc");
 		panicMiscCheckBox.setChecked(panicMiscSetting == "on");
-		panicMiscCheckBox.setText("Misc");
 		panicMiscCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				panicMiscSetting = v.isChecked()?"on":"off";
@@ -3103,9 +3118,8 @@ var autoSpammer = {
 		let autoSpammerMessageLayout = new LinearLayout_(CONTEXT);
 		autoSpammerMessageLayout.setOrientation(1);
 
-		let spamUseRandomMsgSettingCheckBox = clientCheckBox();
+		let spamUseRandomMsgSettingCheckBox = clientCheckBox("Use random messages instead of the custom message");
 		spamUseRandomMsgSettingCheckBox.setChecked(spamUseRandomMsgSetting=="on");
-		spamUseRandomMsgSettingCheckBox.setText("Use random messages instead of the custom message");
 		spamUseRandomMsgSettingCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				let isChecked = v.isChecked();
@@ -3163,7 +3177,7 @@ var autoSpammer = {
 		} else {
 			autoSpammerMessageLayout.addView(spamMessageText);
 		}
-		
+
 		autoSpammerMessageLayout.addView(spamDelayTimeTitle);
 		autoSpammerMessageLayout.addView(spamDelayTimeSlider);
 
@@ -3194,9 +3208,9 @@ var tpAura = {
 		this.state = !this.state;
 	},
 	findPos: function(entity) {
-		var playerPos = new Array(getPlayerX(), getPlayerY() + 0.5, getPlayerZ());
-		var victimPos = new Array(Entity.getX(entity), Entity.getY(entity), Entity.getZ(entity));
-		var diffPos = new Array(victimPos[0] - playerPos[0], null, victimPos[2] - playerPos[2]);
+		let playerPos = new Array(getPlayerX(), getPlayerY() + 0.5, getPlayerZ());
+		let victimPos = new Array(Entity.getX(entity), Entity.getY(entity), Entity.getZ(entity));
+		let diffPos = new Array(victimPos[0] - playerPos[0], null, victimPos[2] - playerPos[2]);
 		playerPos[0] += diffPos[0] * 2;
 		playerPos[2] += diffPos[2] * 2;
 		return playerPos;
@@ -3205,7 +3219,7 @@ var tpAura = {
 		if(tpAuraStage == 0) {
 			tpAuraStage = 1;
 
-			let mob = VertexClientPE.Utils.getNearestMob(4);
+			let mob = VertexClientPE.Utils.Player.getNearestMob(4);
 			if(mob != null) {
 				let playerPos = this.findPos(mob);
 
@@ -3216,7 +3230,7 @@ var tpAura = {
 				VertexClientPE.CombatUtils.aimAtEnt(mob);
 			}
 
-			let player = VertexClientPE.Utils.getNearestPlayer(4);
+			let player = VertexClientPE.Utils.Player.getNearestPlayer(4);
 			if(player != null) {
 				let playerPos = this.findPos(player);
 
@@ -3233,11 +3247,11 @@ var tpAura = {
 	onAttack: function(a, v) {
 		if(!this.state) return;
 		if(a == getPlayerEnt()) {
-			var x = Entity.getX(v) - getPlayerX();
-			var z = Entity.getZ(v) - getPlayerZ();
-			var playerPos = new Array(getPlayerX(), getPlayerY() + 0.5, getPlayerZ());
-			var victimPos = new Array(Entity.getX(v), Entity.getY(v), Entity.getZ(v));
-			var diffPos = new Array(victimPos[0] - playerPos[0], null, victimPos[2] - playerPos[2]);
+			let x = Entity.getX(v) - getPlayerX();
+			let z = Entity.getZ(v) - getPlayerZ();
+			let playerPos = new Array(getPlayerX(), getPlayerY() + 0.5, getPlayerZ());
+			let victimPos = new Array(Entity.getX(v), Entity.getY(v), Entity.getZ(v));
+			let diffPos = new Array(victimPos[0] - playerPos[0], null, victimPos[2] - playerPos[2]);
 			playerPos[0] += diffPos[0] * 2;
 			playerPos[2] += diffPos[2] * 2;
 
@@ -3250,7 +3264,7 @@ var tpAura = {
 	}
 }
 
-var powerExplosionsStage = 0;
+let powerExplosionsStage = 0;
 
 var powerExplosions = {
 	name: "PowerExplosions",
@@ -3415,7 +3429,7 @@ var autoMine = {
 	}
 }
 
-var followStage = 0;
+let followStage = 0;
 
 var follow = {
 	name: "Follow",
@@ -3432,8 +3446,8 @@ var follow = {
 	onTick: function() {
 		if(followStage == 0) {
 			followStage = 1;
-			var mob = VertexClientPE.Utils.Player.getNearestMob(10, 2);
-			var player = VertexClientPE.Utils.Player.getNearestPlayer(10, 2);
+			let mob = VertexClientPE.Utils.Player.getNearestMob(10, 2);
+			let player = VertexClientPE.Utils.Player.getNearestPlayer(10, 2);
 			if(mob != null) {
 				let x = Entity.getX(mob) - getPlayerX();
 				let y = Entity.getY(mob) - getPlayerY();
@@ -3533,12 +3547,12 @@ var autoPlace = {
 		this.state = !this.state;
 	},
 	onTick: function() {
-		var x = Player.getPointedBlockX();
-		var y = Player.getPointedBlockY();
-		var z = Player.getPointedBlockZ();
-		var side = Player.getPointedBlockSide();
-		var blockId = Player.getCarriedItem();
-		var blockData = Player.getCarriedItemData();
+		let x = Player.getPointedBlockX();
+		let y = Player.getPointedBlockY();
+		let z = Player.getPointedBlockZ();
+		let side = Player.getPointedBlockSide();
+		let blockId = Player.getCarriedItem();
+		let blockData = Player.getCarriedItemData();
 		if(getTile(x, y, z) != 0) {
 			if(blockId <= 256) {
 				setTile(x-(side==4?1:0)+(side==5?1:0)+0.5,y-(side==0?1:0)+(side==1?1:0)+0.5,z-(side==2?1:0)+(side==3?1:0)+0.5, blockId, blockData);
@@ -3744,6 +3758,61 @@ var itemGiver = {
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
+	credits: "Katie Heart (@CtrlAltCuteness)",
+	getSettingsLayout: function() {
+		let itemGiverSettingsLayout = new LinearLayout_(CONTEXT);
+		itemGiverSettingsLayout.setOrientation(1);
+
+		let itemGiverModeTitle = clientTextView("Mode:");
+		let itemGiverFastButton = clientButton("Fast", "Fast mode with custom input only.");
+		itemGiverFastButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4 - 20 / 2, display.heightPixels / 10));
+		let itemGiverAdvancedButton = clientButton("Advanced", "Advanced mode with item presets and custom input.");
+		itemGiverAdvancedButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4 - 20 / 2, display.heightPixels / 10));
+
+		let itemGiverModeLayout = new LinearLayout_(CONTEXT);
+		itemGiverModeLayout.setOrientation(LinearLayout_.HORIZONTAL);
+
+		let itemGiverModeLayoutLeft = new LinearLayout_(CONTEXT);
+		itemGiverModeLayoutLeft.setOrientation(1);
+		itemGiverModeLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - 20 / 2, display.heightPixels / 10));
+		itemGiverModeLayoutLeft.setGravity(Gravity_.CENTER_HORIZONTAL);
+		itemGiverModeLayout.addView(itemGiverModeLayoutLeft);
+
+		let itemGiverModeLayoutRight = new LinearLayout_(CONTEXT);
+		itemGiverModeLayoutRight.setOrientation(1);
+		itemGiverModeLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - 20 / 2, display.heightPixels / 10));
+		itemGiverModeLayoutRight.setGravity(Gravity_.CENTER_HORIZONTAL);
+		itemGiverModeLayout.addView(itemGiverModeLayoutRight);
+
+		if(itemGiverModeSetting == "fast") {
+			itemGiverFastButton.setTextColor(Color_.GREEN);
+		} else if(itemGiverModeSetting == "advanced") {
+			itemGiverAdvancedButton.setTextColor(Color_.GREEN);
+		}
+		itemGiverFastButton.setOnClickListener(new View_.OnClickListener() {
+			onClick: function(view) {
+				itemGiverModeSetting = "fast";
+				itemGiverFastButton.setTextColor(Color_.GREEN);
+				VertexClientPE.addTextStyleToView(itemGiverAdvancedButton);
+				VertexClientPE.saveMainSettings();
+			}
+		});
+		itemGiverAdvancedButton.setOnClickListener(new View_.OnClickListener() {
+			onClick: function(view) {
+				itemGiverModeSetting = "advanced";
+				VertexClientPE.addTextStyleToView(itemGiverFastButton);
+				itemGiverAdvancedButton.setTextColor(Color_.GREEN);
+				VertexClientPE.saveMainSettings();
+			}
+		});
+
+		itemGiverModeLayoutLeft.addView(itemGiverFastButton);
+		itemGiverModeLayoutRight.addView(itemGiverAdvancedButton);
+
+		itemGiverSettingsLayout.addView(itemGiverModeTitle);
+		itemGiverSettingsLayout.addView(itemGiverModeLayout);
+		return itemGiverSettingsLayout;
+	},
 	isStateMod: function() {
 		return false;
 	},
@@ -3862,7 +3931,7 @@ var healthTags = {
 				VertexClientPE.initHealthTags();
 			}
 		}));
-		
+
 		let healthTagsShowHeartSettingFunc = new settingButton("Show heart icon on nametag", null, width,
 			function(viewArg) {
 				healthTagsShowHeartSetting = "on";
@@ -3891,7 +3960,7 @@ var healthTags = {
 		VertexClientPE.addView(healthTagsLayout, healthTagsNameSettingFunc);
 		VertexClientPE.addView(healthTagsLayout, healthTagsHealthSettingFunc);
 		VertexClientPE.addView(healthTagsLayout, healthTagsShowHeartSettingFunc);
-		
+
 		return healthTagsLayout;
 	},
 	isStateMod: function() {
@@ -3932,9 +4001,9 @@ function toDirectionalVector(vector, yaw, pitch) { //some parts of this function
 	vector[2] = Math.sin(yaw) * Math.cos(0);
 }
 
-var playerDir = [0, 0, 0];
-var DEG_TO_RAD = PI_CIRCLE;
-var playerWalkSpeed = 0.2;
+let playerDir = [0, 0, 0];
+let DEG_TO_RAD = PI_CIRCLE;
+let playerWalkSpeed = 0.2;
 
 var autoWalk = {
 	name: "AutoWalk",
@@ -4180,9 +4249,8 @@ var aimbot = {
 		let aimbotSettingsLayout = new LinearLayout_(CONTEXT);
 		aimbotSettingsLayout.setOrientation(1);
 
-		useKillauraRangeCheckBox = clientCheckBox();
+		useKillauraRangeCheckBox = clientCheckBox("Use same range as Killaura (" + killAuraRange + ")");
 		useKillauraRangeCheckBox.setChecked(aimbotUseKillauraRange == "on");
-		useKillauraRangeCheckBox.setText("Use same range as Killaura (" + killAuraRange + ")");
 		useKillauraRangeCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				aimbotUseKillauraRange = v.isChecked()?"on":"off";
@@ -4327,9 +4395,8 @@ var chestTracers = {
 		chestTracersParticleLayoutCenter.addView(chestTracersRedstoneButton);
 		chestTracersParticleLayoutRight.addView(chestTracersCriticalButton);
 
-		var groundModeCheckBox = clientCheckBox();
+		let groundModeCheckBox = clientCheckBox("Ground Mode");
 		groundModeCheckBox.setChecked(chestTracersGroundMode == "on");
-		groundModeCheckBox.setText("Ground Mode");
 		groundModeCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				chestTracersGroundMode = v.isChecked()?"on":"off";
@@ -4337,7 +4404,7 @@ var chestTracers = {
 			}
 		});
 
-		var space = clientTextView("\n");
+		let space = clientTextView("");
 		chestTracersSettingsLayout.addView(chestTracersRangeTitle);
 		chestTracersSettingsLayout.addView(chestTracersRangeSlider);
 		chestTracersSettingsLayout.addView(chestTracersParticleTitle);
@@ -4356,12 +4423,12 @@ var chestTracers = {
 		this.state = !this.state;
 	},
 	onInterval: function() {
-		var x = getPlayerX();
-		var y = getPlayerY();
-		var z = getPlayerZ();
-		for(var blockX = - chestTracersRange; blockX <= chestTracersRange; blockX++) {
-			for(var blockY = - chestTracersRange; blockY <= chestTracersRange; blockY++) {
-				for(var blockZ = - chestTracersRange; blockZ <= chestTracersRange; blockZ++) {
+		let x = getPlayerX();
+		let y = getPlayerY();
+		let z = getPlayerZ();
+		for(let blockX = - chestTracersRange; blockX <= chestTracersRange; blockX++) {
+			for(let blockY = - chestTracersRange; blockY <= chestTracersRange; blockY++) {
+				for(let blockZ = - chestTracersRange; blockZ <= chestTracersRange; blockZ++) {
 					let newX = Math.floor(x + blockX);
 					let newY = Math.floor(y + blockY);
 					let newZ = Math.floor(z + blockZ);
@@ -4385,9 +4452,8 @@ var remoteView = {
 		let remoteViewSettingsLayout = new LinearLayout_(CONTEXT);
 		remoteViewSettingsLayout.setOrientation(1);
 
-		let teleportToLocationCheckBox = clientCheckBox();
+		let teleportToLocationCheckBox = clientCheckBox("Teleport to the target entity when you disable RemoteView");
 		teleportToLocationCheckBox.setChecked(remoteViewTeleportSetting == "on");
-		teleportToLocationCheckBox.setText("Teleport to the target entity when you disable RemoteView");
 		teleportToLocationCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				remoteViewTeleportSetting = v.isChecked()?"on":"off";
@@ -4590,9 +4656,9 @@ var antiBurn = {
 		this.state = !this.state;
 	},
 	onTick: function() {
-		var x = getPlayerX();
-		var y = getPlayerY();
-		var z = getPlayerZ();
+		let x = getPlayerX();
+		let y = getPlayerY();
+		let z = getPlayerZ();
 		/* var blockOne = getTile(x, y, z);
 		var blockTwo = getTile(x, y - 1, z);
 		var blockThree = getTile(x, y - 2, z);
@@ -4602,7 +4668,7 @@ var antiBurn = {
 		setTile(x, y, z, blockOne);
 		setTile(x, y - 1, z, blockTwo);
 		setTile(x, y - 2, z, blockThree); */
-		Entity.setFireTicks(getPlayerEnt(), -1);
+		Entity.setFireTicks(getPlayerEnt(), 1);
 	}
 }
 
@@ -4692,14 +4758,14 @@ var speedHack = {
 		this.state = !this.state;
 		speedHackState = this.state;
 		if(this.state) {
-			for(var i = 0; i <= 255; i++) {
+			for(let i = 0; i <= 255; i++) {
 				if(this.frictionArray[i] == null || this.frictionArray[i] == undefined) {
 					this.frictionArray[i] = Block.getFriction(i);
 				}
 				Block.setFriction(i, speedHackFriction);
 			}
 		} else {
-			for(var i = 0; i <= 255; i++) {
+			for(let i = 0; i <= 255; i++) {
 				if(this.frictionArray[i] != null && this.frictionArray[i] != undefined) {
 					Block.setFriction(i, this.frictionArray[i]);
 				}
@@ -4861,7 +4927,7 @@ var fastBridge = {
 	},
 	onUseItem: function(x, y, z, itemId, blockId, side, blockDamage) {
 		if(itemId != 0 && itemId <= 256) {
-			var fastBridgeVector = new Vector3(x-(side==4?1:0)+(side==5?1:0)+0.5,y-(side==0?1:0)+(side==1?1:0)+2,z-(side==2?1:0)+(side==3?1:0)+0.5);
+			let fastBridgeVector = new Vector3(x-(side==4?1:0)+(side==5?1:0)+0.5,y-(side==0?1:0)+(side==1?1:0)+2,z-(side==2?1:0)+(side==3?1:0)+0.5);
 			new Thread_(new Runnable_() {
 				run: function() {
 					if(fastBridgeVector.y <= getPlayerY()) {
@@ -5065,13 +5131,13 @@ var dropLocator = {
 		return false;
 	},
 	onToggle: function() {
-		var items = Entity.getAll();
-		if(items != null && items != undefined && items.length != -1) {
-			new Thread_(new Runnable_({
-				run: function() {
-					for(var i = 0; i < items.length; i++) {
-						var type = Entity.getEntityTypeId(items[i]);
-						var name;
+		let items = Entity.getAll();
+		new Thread_(new Runnable_({
+			run: function() {
+				if(items != null && items != undefined && items.length != -1) {
+					for(let i = 0; i < items.length; i++) {
+						let type = Entity.getEntityTypeId(items[i]);
+						let name;
 						if(type == EntityType.ITEM) {
 							name = "item"
 						}
@@ -5087,11 +5153,11 @@ var dropLocator = {
 						}
 					}
 				}
-			})).start();
-		}
-		if(!foundItems) {
-			VertexClientPE.clientMessage("We couldn't locate any drops.");
-		}
+				if(!foundItems) {
+					VertexClientPE.clientMessage("We couldn't locate any drops.");
+				}
+			}
+		})).start();
 	}
 }
 
@@ -5140,7 +5206,7 @@ var safeWalk = {
 		this.state = !this.state;
 	},
 	onTick: function() {
-		if(VertexClientPE.Utils.Player.isAtEdge()) {
+		if(VertexClientPE.Utils.Player.isAtEdge() && Entity.getVelY(getPlayerEnt() == -0.07840000092983246)) {
 			Entity.setSneaking(getPlayerEnt(), true);
 		}
 	}
@@ -5159,12 +5225,12 @@ var letItSnow = {
 		this.state = !this.state;
 	},
 	onTick: function() {
-		var x = getPlayerX();
-		var y = getPlayerY();
-		var z = getPlayerZ();
-		for(var xI = -2; xI <= 2; xI++) {
-			for(var yI = 0; yI <= 2; yI++) {
-				for(var zI = -2; zI <= 2; zI++) {
+		let x = getPlayerX();
+		let y = getPlayerY();
+		let z = getPlayerZ();
+		for(let xI = -2; xI <= 2; xI++) {
+			for(let yI = 0; yI <= 2; yI++) {
+				for(let zI = -2; zI <= 2; zI++) {
 					Level.addParticle(ParticleType.snowballpoof, x + xI, y + yI, z + zI, 0, getPlayerY() - (y + yI), 0, 2);
 				}
 			}
@@ -5185,8 +5251,8 @@ var frostWalk = {
 		this.state = !this.state;
 	},
 	onTick: function() {
-		var tile = getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ());
-		var tileTwo = getTile(getPlayerX(), getPlayerY() - 1, getPlayerZ());
+		let tile = getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ());
+		let tileTwo = getTile(getPlayerX(), getPlayerY() - 1, getPlayerZ());
 		if(tile == 8 || tile == 9) {
 			setTile(getPlayerX(), getPlayerY() - 2, getPlayerZ(), 79);
 		} else if(tile == 10 || tile == 11) {
@@ -5229,6 +5295,7 @@ var target = {
 				let checked = v.isChecked();
 				targetPlayersSetting = checked?"on":"off";
 				targetFriendsCheckBox.setEnabled(checked);
+				targetMyTeamCheckBox.setEnabled(checked);
 				VertexClientPE.saveMainSettings();
 			}
 		});
@@ -5243,10 +5310,23 @@ var target = {
 				VertexClientPE.saveMainSettings();
 			}
 		});
+		
+		let targetMyTeamCheckBox = clientCheckBox();
+		targetMyTeamCheckBox.setChecked(targetMyTeamSetting == "on");
+		targetMyTeamCheckBox.setEnabled(targetPlayersCheckBox.isChecked());
+		targetMyTeamCheckBox.setText("My team");
+		targetMyTeamCheckBox.setOnClickListener(new View_.OnClickListener() {
+			onClick: function(v) {
+				targetMyTeamSetting = v.isChecked()?"on":"off";
+				VertexClientPE.saveMainSettings();
+			}
+		});
 
 		targetSettingsLayout.addView(targetMobsCheckBox);
 		targetSettingsLayout.addView(targetPlayersCheckBox);
 		targetSettingsLayout.addView(targetFriendsCheckBox);
+		targetSettingsLayout.addView(targetMyTeamCheckBox);
+
 		return targetSettingsLayout;
 	},
 	isStateMod: function() {
@@ -5324,7 +5404,7 @@ var hitboxes = {
 		this.state = !this.state;
 		hitboxesState = this.state;
 		let players = Server.getAllPlayers();
-		for(var i = 0; i < players.length; i++) {
+		for(let i = 0; i < players.length; i++) {
 			this.updateHitboxesOnEnt(players[i]);
 		}
 	},
@@ -5369,9 +5449,8 @@ var prevent = {
 		let preventSettingsLayout = new LinearLayout_(CONTEXT);
 		preventSettingsLayout.setOrientation(1);
 
-		let preventDiggingCheckBox = clientCheckBox();
+		let preventDiggingCheckBox = clientCheckBox("Prevent block digging");
 		preventDiggingCheckBox.setChecked(preventDiggingSetting == "on");
-		preventDiggingCheckBox.setText("Prevent block digging");
 		preventDiggingCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				preventDiggingSetting = v.isChecked()?"on":"off";
@@ -5379,9 +5458,8 @@ var prevent = {
 			}
 		});
 
-		let preventPlacingCheckBox = clientCheckBox();
+		let preventPlacingCheckBox = clientCheckBox("Prevent block placing/tapping with items on blocks");
 		preventPlacingCheckBox.setChecked(preventPlacingSetting == "on");
-		preventPlacingCheckBox.setText("Prevent block placing/tapping with items on blocks");
 		preventPlacingCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				preventPlacingSetting = v.isChecked()?"on":"off";
@@ -5389,19 +5467,17 @@ var prevent = {
 			}
 		});
 
-		let preventAttacksCheckBox = clientCheckBox();
+		let preventAttacksCheckBox = clientCheckBox("Prevent hitting other entities");
 		preventAttacksCheckBox.setChecked(preventAttacksSetting == "on");
-		preventAttacksCheckBox.setText("Prevent hitting other entities");
 		preventAttacksCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				preventAttacksSetting = v.isChecked()?"on":"off";
 				VertexClientPE.saveMainSettings();
 			}
 		});
-		
-		let preventExplosionsCheckBox = clientCheckBox();
+
+		let preventExplosionsCheckBox = clientCheckBox("Prevent explosions");
 		preventExplosionsCheckBox.setChecked(preventExplosionsSetting == "on");
-		preventExplosionsCheckBox.setText("Prevent explosions");
 		preventExplosionsCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				preventExplosionsSetting = v.isChecked()?"on":"off";
@@ -5458,10 +5534,8 @@ var healthDisplay = {
 		if(this.state && !VertexClientPE.menuIsShowing && (currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud)) {
 			showHealthDisplay();
 		} else {
-			if(healthDisplayUI != null) {
-				if(healthDisplayUI.isShowing()) {
-					healthDisplayUI.dismiss();
-				}
+			if(healthDisplayUI != null && healthDisplayUI.isShowing()) {
+				healthDisplayUI.dismiss();
 			}
 		}
 	},
@@ -5470,7 +5544,7 @@ var healthDisplay = {
 			if(healthDisplayUI != null && healthDisplayUI.isShowing()) {
 				CONTEXT.runOnUiThread(new Runnable_({
 					run: function() {
-						healthDisplayView.setText(Entity.getHealth(getPlayerEnt()) + "/" + Entity.getMaxHealth(getPlayerEnt()) + " ❤");
+						healthDisplayView.setText(Entity.getHealth(getPlayerEnt()) + "/" + Entity.getMaxHealth(getPlayerEnt()) + " \u2764");
 					}
 				}));
 			}
@@ -5520,7 +5594,7 @@ var attackShock = {
 	}
 }
 
-var serverInfoStage = 0;
+let serverInfoStage = 0;
 
 var serverInfo = {
 	name: "ServerInfo",
@@ -5528,7 +5602,7 @@ var serverInfo = {
 	category: VertexClientPE.category.MISC,
 	type: "Special",
 	state: false,
-	checkBeforeAdding: function() {
+	shouldAdd: function() {
 		return VertexClientPE.isRemote();
 	},
 	multiplayerOnly: true,
@@ -5541,9 +5615,9 @@ var serverInfo = {
 			new Thread_(new Runnable_({
 				run: function() {
 					VertexClientPE.toast("Loading...");
-					var serverInfo = myServerStatus.set(Server.getAddress(), parseInt(Server.getPort()));
+					let serverInfo = myServerStatus.set(Server.getAddress(), parseInt(Server.getPort()));
 					Thread_.sleep(3000);
-					var serverString = "Name: " + serverInfo.name;
+					let serverString = "Name: " + serverInfo.name;
 					serverString += "\nAddress: " + serverInfo.address;
 					serverString += "\nSoftware: " + serverInfo.software;
 					serverString += "\nPlugins: " + serverInfo.plugins;
@@ -5595,7 +5669,7 @@ var switchAimbot = {
 				this.playerTargetNum = 0;
 			}
 			let cPlayer = players[this.playerTargetNum];
-			if(cPlayer != undefined && cPlayer != null && !(targetFriendsSetting == "off" && VertexClientPE.Utils.Player.isFriend(cMob))) {
+			if(cPlayer != undefined && cPlayer != null && VertexClientPE.Utils.Player.shouldTarget(cPlayer)) {
 				let x = Entity.getX(cPlayer) - getPlayerX();
 				let y = Entity.getY(cPlayer) - getPlayerY();
 				let z = Entity.getZ(cPlayer) - getPlayerZ();
@@ -5747,10 +5821,8 @@ var rotationPlus = {
 		if(this.state && !VertexClientPE.menuIsShowing && (currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud)) {
 			showRotationPlus();
 		} else {
-			if(rotationPlusUI != null) {
-				if(rotationPlusUI.isShowing()) {
-					rotationPlusUI.dismiss();
-				}
+			if(rotationPlusUI != null && rotationPlusUI.isShowing()) {
+				rotationPlusUI.dismiss();
 			}
 		}
 	}
@@ -5855,7 +5927,7 @@ var foodHack = {
 		}
 		this.state = !this.state;
 		if(this.state) {
-			for(var i = 257; i <= 4096; i++) {
+			for(let i = 257; i <= 4096; i++) {
 				if(Item.isValidItem(i)) {
 					Item.setProperties(i, {
 					  "use_animation": "eat",
@@ -5965,12 +6037,69 @@ var enchantIt = {
 	desc: i18n("Adds enchantments to items in your inventory."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
-	state: false,
 	isStateMod: function() {
 		return false;
 	},
 	onToggle: function() {
 		VertexClientPE.showEnchantItDialog();
+	}
+}
+
+var effectGiver = {
+	name: "EffectGiver",
+	desc: "Allows you to give yourself effects.",
+	category: VertexClientPE.category.PLAYER,
+	type: "Mod",
+	isStateMod: function() {
+		return false;
+	},
+	onToggle: function() {
+		VertexClientPE.showEffectGiverDialog();
+	}
+}
+
+var scaffoldWalk = {
+	name: "ScaffoldWalk",
+	desc: "Automatically places blocks underneath you. Hold a block while using this mod.",
+	category: VertexClientPE.category.MOVEMENT,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onTick: function() {
+		let selectedSlot = Player.getSelectedSlotId();
+		let heldTile = Player.getInventorySlot(selectedSlot);
+		if(heldTile <= 256) {
+			let heldTileData = Player.getInventorySlotData(selectedSlot);
+			let y = getPlayerY() - 2;
+			let tile = getTile(getPlayerX(), y, getPlayerZ());
+			if(tile == 0) {
+				setTile(getPlayerX(), y, getPlayerZ(), heldTile, heldTileData);
+			}
+		}
+	}
+}
+
+var fastLadder = {
+	name: "FastLadder",
+	desc: "Allows you to climb ladders faster.",
+	category: VertexClientPE.category.MOVEMENT,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onTick: function() {
+		if(!Player.isFlying() && !Entity.isSneaking(getPlayerEnt()) && !(Entity.getVelY(getPlayerEnt()) <= -0.07840000092983246) && (getTile(getPlayerX(), getPlayerY(), getPlayerZ()) == 65 || getTile(getPlayerX(), getPlayerY() + 1, getPlayerZ()) == 65)) {
+			setVelY(getPlayerEnt(), 0.5);
+		}
 	}
 }
 
@@ -6003,6 +6132,7 @@ VertexClientPE.registerModule(elytraBoost);
 VertexClientPE.registerModule(enderProjectiles);
 VertexClientPE.registerModule(fastBridge);
 VertexClientPE.registerModule(noFall);
+VertexClientPE.registerModule(fastLadder);
 VertexClientPE.registerModule(fastWalk);
 //VertexClientPE.registerModule(fenceJump);
 VertexClientPE.registerModule(flight);
@@ -6018,6 +6148,7 @@ VertexClientPE.registerModule(pointTeleport);
 VertexClientPE.registerModule(randomTP);
 VertexClientPE.registerModule(ride);
 VertexClientPE.registerModule(safeWalk);
+VertexClientPE.registerModule(scaffoldWalk);
 VertexClientPE.registerModule(speedHack);
 VertexClientPE.registerModule(step);
 VertexClientPE.registerModule(tapJumpRun);
@@ -6047,6 +6178,7 @@ VertexClientPE.registerModule(autoSwitch);
 VertexClientPE.registerModule(chatRepeat);
 VertexClientPE.registerModule(coordsDisplay);
 VertexClientPE.registerModule(derp);
+VertexClientPE.registerModule(effectGiver);
 VertexClientPE.registerModule(enchantIt);
 VertexClientPE.registerModule(fancyChat);
 VertexClientPE.registerModule(fastBreak);
@@ -6248,7 +6380,7 @@ function chatHook(text) {
  */
 
 VertexClientPE.getHighestHelpPageNumber = function() {
-	let length = VertexClientPE.commands.length;
+	let length = VertexClientPE.getCommandCount();
 	let page = 1;
 	while(8 * page < length) {
 		page++;
@@ -6270,7 +6402,7 @@ VertexClientPE.showHelpPage = function(page) {
 var help = {
 	syntax: "help <page>",
 	onCall: function(cmd) {
-		var commandSplit = cmd.split(" ");
+		let commandSplit = cmd.split(" ");
 		if(commandSplit[1] == undefined || commandSplit[1] == null || commandSplit[1] == "1") {
 			VertexClientPE.showHelpPage("1");
 		} else {
@@ -6289,9 +6421,9 @@ var toggle = {
 	syntax: "toggle <module>",
 	onCall: function(cmd) {
 		try {
-			var commandSplit = cmd.split(" ");
+			let commandSplit = cmd.split(" ");
 			if (cmd.substring(2, cmd.length) != null && cmd.substring(2, cmd.length) != undefined && commandSplit[1] != null) {
-				var shouldReturn = false;
+				let shouldReturn = false;
 				let cmdNoPrefix = cmd.substring(2, cmd.length);
 				VertexClientPE.modules.forEach(function (element, index, array) {
 					if ((element.name.toLowerCase() == cmdNoPrefix.toLowerCase() || VertexClientPE.getCustomModName(element.name).toLowerCase() == cmdNoPrefix.toLowerCase())) {
@@ -6299,8 +6431,8 @@ var toggle = {
 							VertexClientPE.toast(i18n("Experimental features aren't enabled!"));
 							return;
 						}
-						if(element.hasOwnProperty("checkBeforeAdding") && !element.checkBeforeAdding()) {
-							VertexClientPE.toast(i18n("You didn't unlock this feature yet!"));
+						if(element.hasOwnProperty("shouldAdd") && !element.shouldAdd()) {
+							VertexClientPE.toast("You didn't unlock this feature yet!");
 							return;
 						}
 						if(element.name == "Bypass" || !bypassState || (element.canBypassBypassMod == undefined || element.canBypassBypassMod == null || element.canBypassBypassMod()) || (element.isStateMod() && element.state)) {
@@ -6335,7 +6467,7 @@ var toggle = {
 			}
 		} catch(e) {
 			if(e instanceof SyntaxError) {
-				VertexClientPE.syntaxError(".toggle <module>");
+				VertexClientPE.syntaxError(cmdPrefix + this.syntax);
 			} else {
 				VertexClientPE.showBugReportDialog(e);
 			}
@@ -6363,25 +6495,21 @@ var say = {
 }
 
 var drop = {
-	syntax: "drop [infinite]",
+	syntax: "drop",
 	onCall: function(cmd) {
-		var commandSplit = cmd.split(" ");
+		let commandSplit = cmd.split(" ");
 		try {
-			if(commandSplit[1] == null || commandSplit[1] == undefined || commandSplit[1] == "infinite") {
-				for(var i = 0; i <= 512; i++) {
-					p = ((Entity.getPitch(getPlayerEnt()) + 90) * Math.PI) / 180;
-					y = ((Entity.getYaw(getPlayerEnt()) + 90) * Math.PI) / 180;
-					xx = Math.sin(p) * Math.cos(y);
-					yy = Math.sin(p) * Math.sin(y);
-					zz = Math.cos(p);
-					Level.dropItem(getPlayerX() + xx, getPlayerY() + zz, getPlayerZ() + yy, 1, i, 1);
-				}
-			} else {
-				throw new SyntaxError();
+			for(let i = 0; i <= 512; i++) {
+				let p = ((Entity.getPitch(getPlayerEnt()) + 90) * Math.PI) / 180;
+				let y = ((Entity.getYaw(getPlayerEnt()) + 90) * Math.PI) / 180;
+				let xx = Math.sin(p) * Math.cos(y);
+				let yy = Math.sin(p) * Math.sin(y);
+				let zz = Math.cos(p);
+				Level.dropItem(getPlayerX() + xx, getPlayerY() + zz, getPlayerZ() + yy, 1, i, 1);
 			}
 		} catch(e) {
 			if(e instanceof SyntaxError) {
-				VertexClientPE.syntaxError(".drop [infinite]");
+				VertexClientPE.syntaxError(cmdPrefix + this.syntax);
 			} else {
 				VertexClientPE.showBugReportDialog(e);
 			}
@@ -6392,7 +6520,7 @@ var drop = {
 var give = {
 	syntax: "give (<item_name|item_id>) [<amount>] [<data>]",
 	onCall: function(cmd) {
-		var commandSplit = cmd.split(" ");
+		let commandSplit = cmd.split(" ");
 		try {
 			if(commandSplit[1] != null) {
 				if(Item.internalNameToId(commandSplit[1]) != null) {
@@ -6428,7 +6556,7 @@ var give = {
 var tp = {
 	syntax: "tp <x> <y> <z>",
 	onCall: function(cmd) {
-		var commandSplit = cmd.split(" ");
+		let commandSplit = cmd.split(" ");
 		try {
 			if(commandSplit[1] != null) {
 				var x = commandSplit[1];
@@ -6463,7 +6591,7 @@ var tp = {
 var version = {
 	syntax: "version <current|target|latest>",
 	onCall: function(cmd) {
-		var commandSplit = cmd.split(" ");
+		let commandSplit = cmd.split(" ");
 		try {
 			if(typeof VertexClientPE.getVersion(commandSplit[1]) !== "undefined") {
 				VertexClientPE.clientMessage(VertexClientPE.getVersion(commandSplit[1]));
@@ -6534,7 +6662,7 @@ var w = {
 	onCall: function(cmd) {
 		let url = cmd.split(" ")[1];
 		if(url == null || url == "" || url.replaceAll(" ", "") == "") {
-			VertexClientPE.syntaxError(this.syntax);
+			VertexClientPE.syntaxError(cmdPrefix + this.syntax);
 		} else {
 			ModPE.goToURL(url);
 		}
@@ -6577,12 +6705,12 @@ VertexClientPE.createScreen = function() {
 }
 
 VertexClientPE.showNotification = function(eventTitle, eventText) {
-	var mNM = CONTEXT.getSystemService(Context_.NOTIFICATION_SERVICE);
-	var notification = new Notification_(android.R.drawable.ic_menu_edit, eventText, System_.currentTimeMillis());
+	let mNM = CONTEXT.getSystemService(Context_.NOTIFICATION_SERVICE);
+	let notification = new Notification_(android.R.drawable.ic_menu_edit, eventText, System_.currentTimeMillis());
 
 	// The PendingIntent to launch our activity if the user selects this
 	// notification
-	var contentIntent = PendingIntent_.getActivity(CONTEXT, 0, new Intent_(CONTEXT), 0);
+	let contentIntent = PendingIntent_.getActivity(CONTEXT, 0, new Intent_(CONTEXT), 0);
 
 	// Set the info for the views that show in the notification panel.
 	notification.setLatestEventInfo(CONTEXT, eventTitle, eventText, contentIntent);
@@ -6684,46 +6812,46 @@ Block.setDestroyTimeDefaultAll = function() {
 	}
 }
 
-var imgLogo = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/vertex_logo_new.png");
-var imgIcon = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/clienticon_new.png");
-var imgIconClicked = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/clienticon_new_clicked.png");
-var imgPlayButton = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/play_button.png");
-var imgPlayButtonClicked = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/play_button_clicked.png");
-var imgTwitterButton = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/twitter_button.png");
-var imgTwitterButtonClicked = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/twitter_button_clicked.png");
-var imgYouTubeButton = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/youtube_button.png");
-var imgYouTubeButtonClicked = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/youtube_button_clicked.png");
-var imgGitHubButton = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/github_button.png");
-var imgGitHubButtonClicked = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/github_button_clicked.png");
-var imgSteveHead = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/stevehead.png");
-var imgChristmasTree = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/christmas_tree.png");
-var iconClientGUI = new BitmapDrawable_(imgIcon);
-var iconClickedClientGUI = new BitmapDrawable_(imgIconClicked)
-var playButtonClientGUI = new BitmapDrawable_(imgPlayButton);
-var playButtonClickedClientGUI = new BitmapDrawable_(imgPlayButtonClicked);
-var splashTwitterButtonClientGUI = new BitmapDrawable_(imgTwitterButton);
-var splashTwitterButtonClickedClientGUI = new BitmapDrawable_(imgTwitterButtonClicked);
-var splashYouTubeButtonClientGUI = new BitmapDrawable_(imgYouTubeButton);
-var splashYouTubeButtonClickedClientGUI = new BitmapDrawable_(imgYouTubeButtonClicked);
-var splashGitHubButtonClientGUI = new BitmapDrawable_(imgGitHubButton);
-var splashGitHubButtonClickedClientGUI = new BitmapDrawable_(imgGitHubButtonClicked);
-var christmasTreeClientGUI = new BitmapDrawable_(imgChristmasTree);
+let imgLogo = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/vertex_logo_new.png");
+let imgIcon = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/clienticon_new.png");
+let imgIconClicked = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/clienticon_new_clicked.png");
+let imgPlayButton = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/play_button.png");
+let imgPlayButtonClicked = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/play_button_clicked.png");
+let imgTwitterButton = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/twitter_button.png");
+let imgTwitterButtonClicked = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/twitter_button_clicked.png");
+let imgYouTubeButton = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/youtube_button.png");
+let imgYouTubeButtonClicked = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/youtube_button_clicked.png");
+let imgGitHubButton = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/github_button.png");
+let imgGitHubButtonClicked = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/github_button_clicked.png");
+let imgSteveHead = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/stevehead.png");
+let imgChristmasTree = new BitmapFactory_.decodeFile("mnt/sdcard/games/com.mojang/christmas_tree.png");
+let iconClientGUI = new BitmapDrawable_(imgIcon);
+let iconClickedClientGUI = new BitmapDrawable_(imgIconClicked)
+let playButtonClientGUI = new BitmapDrawable_(imgPlayButton);
+let playButtonClickedClientGUI = new BitmapDrawable_(imgPlayButtonClicked);
+let splashTwitterButtonClientGUI = new BitmapDrawable_(imgTwitterButton);
+let splashTwitterButtonClickedClientGUI = new BitmapDrawable_(imgTwitterButtonClicked);
+let splashYouTubeButtonClientGUI = new BitmapDrawable_(imgYouTubeButton);
+let splashYouTubeButtonClickedClientGUI = new BitmapDrawable_(imgYouTubeButtonClicked);
+let splashGitHubButtonClientGUI = new BitmapDrawable_(imgGitHubButton);
+let splashGitHubButtonClickedClientGUI = new BitmapDrawable_(imgGitHubButtonClicked);
+let christmasTreeClientGUI = new BitmapDrawable_(imgChristmasTree);
 //*******************
-var fileDirt;
-var inputStreamDirt;
-var dirtBackgroundClientGUI;
+let fileDirt;
+let inputStreamDirt;
+let dirtBackgroundClientGUI;
 
-var fileRainbow;
-var inputStreamRainbow;
-var rainbowBackgroundClientGUI;
+let fileRainbow;
+let inputStreamRainbow;
+let rainbowBackgroundClientGUI;
 
 var getContext = function() {
 	return CONTEXT;
 };
 
 ModPE.goToURL = function(url) {
-	var uri = Uri_.parse(url);
-	var intent = new Intent_(Intent_.ACTION_VIEW, uri);
+	let uri = Uri_.parse(url);
+	let intent = new Intent_(Intent_.ACTION_VIEW, uri);
 	CONTEXT.startActivity(intent);
 };
 
@@ -6781,21 +6909,21 @@ ModPE.getClientId = function() {
 	return getTextFromFile(Environment_.getExternalStorageDirectory() + "/games/com.mojang/minecraftpe/clientId.txt");
 };
 
-function getTextFromUrl(urlToUse) {
+function getTextFromUrl(urlToUse) { //let test = new getTextFromUrl(URL); test.resultText;
 	try {
 		let text;
 
 		// download content
-		var url = new URL_(urlToUse);
-		var connection = url.openConnection();
+		let url = new URL_(urlToUse);
+		let connection = url.openConnection();
 
 		// get content
 		let inputStream = connection.getInputStream();
 
 		// read result
-		var loadedText = "";
-		var bufferedTextReader = new BufferedReader_(new InputStreamReader_(inputStream));
-		var rowText = "";
+		let loadedText = "";
+		let bufferedTextReader = new BufferedReader_(new InputStreamReader_(inputStream));
+		let rowText = "";
 		while((rowText = bufferedTextReader.readLine()) != null) {
 			loadedText += rowText;
 		}
@@ -6809,11 +6937,11 @@ function getTextFromUrl(urlToUse) {
 	} catch(err) {
 		ModPE.log("[Vertex Client PE] getTextFromUrl() caught an error: " + err);
 	} finally {
-		return text;
+		this.resultText = text;
 	}
 }
 
-function getTextFromFile(filePath) {//settingsPath
+function getTextFromFile(filePath) {
 	let file = new File_(filePath);
 	if(!file.exists()) {
 		return "";
@@ -7190,49 +7318,11 @@ VertexClientPE.tempDisable = function() {
 }
 
 VertexClientPE.showTempDisableDialog = function() {
-	let dialogTitle = clientTextView(i18n("Temporarily disable the client"));
-	dialogTitle.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
-	dialogTitle.setMarqueeRepeatLimit(-1);
-	dialogTitle.setSingleLine();
-	dialogTitle.setHorizontallyScrolling(true);
-	dialogTitle.setSelected(true);
-	dialogTitle.setTextSize(25);
-	let yesBtn = clientButton(i18n("Yes"));
-	yesBtn.setOnClickListener(new View_.OnClickListener() {
-		onClick: function(view) {
-			dialog.dismiss();
+	VertexClientPE.showConfirmDialog("Temporarily disable the client", "Are you sure you want to temporarily disable the client?", null,
+		function() {
 			VertexClientPE.tempDisable();
 		}
-	});
-	let noBtn = clientButton(i18n("No"));
-	noBtn.setOnClickListener(new View_.OnClickListener() {
-		onClick: function(view) {
-			dialog.dismiss();
-		}
-	});
-
-	let dialogLayout1 = new LinearLayout_(CONTEXT);
-	dialogLayout1.setBackgroundDrawable(backgroundGradient());
-	dialogLayout1.setOrientation(LinearLayout_.VERTICAL);
-	dialogLayout1.setPadding(10, 10, 10, 10);
-
-	let dialogScrollView = new ScrollView_(CONTEXT);
-	let dialogLayout = new LinearLayout_(CONTEXT);
-
-	dialogLayout.addView(clientTextView(i18n("Are you sure you want to temporarily disable the client?")));
-	dialogScrollView.addView(dialogLayout);
-
-	dialogLayout1.addView(dialogTitle);
-	dialogLayout1.addView(dialogScrollView);
-	dialogLayout1.addView(yesBtn);
-	dialogLayout1.addView(noBtn);
-
-	let dialog = new Dialog_(CONTEXT);
-	dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
-	dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-	dialog.setContentView(dialogLayout1);
-	dialog.setTitle(i18n("Temporarily disable the client"));
-	dialog.show();
+	);
 }
 
 let moreMenuIsOpen = false;
@@ -7618,7 +7708,7 @@ VertexClientPE.showMainButtonManagerDialog = function() {
 						mainButtonSizeSettingTitle.setText("Main button size: | " + mainButtonSizeSetting + " pixels");
 					}
 				});
-				
+
 				let mainButtonPositionSettingFunc = new settingButton("Main button position", "Sets the main menu's button position.", display.widthPixels - 20,
 					function(viewArg) {
 						mainButtonPositionSetting = "top-left";
@@ -8034,7 +8124,7 @@ VertexClientPE.showFeaturesDialog = function() {
 				let lastPlayerEnabled = playerEnabled;
 				let lastMiscEnabled = miscEnabled;
 				let lastSingleplayerEnabled = singleplayerEnabled;
-				
+
 				let settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
 				let settingsTitleLayout = new LinearLayout_(CONTEXT);
 				settingsTitleLayout.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
@@ -8292,29 +8382,29 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 				settingsTitleLayout.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
 				settingsTitleLayout.setGravity(Gravity_.CENTER);
 				settingsTitleLayout.addView(settingsTitle);
-				var dTitle = clientTextView(dialogTitle, true);
-				dTitle.setGravity(Gravity_.CENTER);
-				var cancelEnter = clientTextView("");
 
-				var doneButton = clientButton("Done");
+				let dTitle = clientTextView(dialogTitle, true);
+				dTitle.setGravity(Gravity_.CENTER);
+
+				let doneButton = clientButton("Done");
 				doneButton.setPadding(0.5, doneButton.getPaddingTop(), 0.5, doneButton.getPaddingBottom());
-				var cancelButton = clientButton("Cancel");
+				let cancelButton = clientButton("Cancel");
 				cancelButton.setPadding(0.5, cancelButton.getPaddingTop(), 0.5, cancelButton.getPaddingBottom());
 
-				var dScrollView = new ScrollView_(CONTEXT);
+				let dScrollView = new ScrollView_(CONTEXT);
 				dScrollView.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.FILL_PARENT, screenHeight / 2.5));
 				dScrollView.setScrollBarStyle(View_.SCROLLBARS_OUTSIDE_OVERLAY);
 				dScrollView.setFillViewport(true);
-				var dScrollInside = new LinearLayout_(CONTEXT);
+				let dScrollInside = new LinearLayout_(CONTEXT);
 				dScrollInside.setGravity(Gravity_.CENTER);
 				dScrollInside.setOrientation(1);
 				dScrollView.addView(dScrollInside);
 
-				var pickerButton0 = clientButton("Pick inner color");
+				let pickerButton0 = clientButton("Pick inner color");
 				pickerButton0.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
 						dialog.dismiss();
-						var pickerWindow = new ColorPickerWindow(newRed, newGreen, newBlue, function (color) {
+						let pickerWindow = new ColorPickerWindow(newRed, newGreen, newBlue, function (color) {
 							newRed = Color_.red(color);
 							newGreen = Color_.green(color);
 							newBlue = Color_.blue(color);
@@ -8328,11 +8418,11 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 					}
 				});
 
-				var pickerButton1 = clientButton("Pick stroke color");
+				let pickerButton1 = clientButton("Pick stroke color");
 				pickerButton1.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
 						dialog.dismiss();
-						var pickerWindow = new ColorPickerWindow(newRedStroke, newGreenStroke, newBlueStroke, function (color) {
+						let pickerWindow = new ColorPickerWindow(newRedStroke, newGreenStroke, newBlueStroke, function (color) {
 							newRedStroke = Color_.red(color);
 							newGreenStroke = Color_.green(color);
 							newBlueStroke = Color_.blue(color);
@@ -8346,8 +8436,8 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 					}
 				});
 
-				var redTitle = clientTextView("Red (inner): | " + newRed, true);
-				var redSlider = clientSeekBar();
+				let redTitle = clientTextView("Red (inner): | " + newRed, true);
+				let redSlider = clientSeekBar();
 				redSlider.setMax(255);
 				redSlider.setProgress(newRed);
 				redSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
@@ -8357,8 +8447,8 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 					}
 				});
 
-				var greenTitle = clientTextView("Green (inner): | " + newGreen, true);
-				var greenSlider = clientSeekBar();
+				let greenTitle = clientTextView("Green (inner): | " + newGreen, true);
+				let greenSlider = clientSeekBar();
 				greenSlider.setMax(255);
 				greenSlider.setProgress(newGreen);
 				greenSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
@@ -8368,8 +8458,8 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 					}
 				});
 
-				var blueTitle = clientTextView("Blue (inner): | " + newBlue, true);
-				var blueSlider = clientSeekBar();
+				let blueTitle = clientTextView("Blue (inner): | " + newBlue, true);
+				let blueSlider = clientSeekBar();
 				blueSlider.setMax(255);
 				blueSlider.setProgress(newBlue);
 				blueSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
@@ -8379,8 +8469,8 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 					}
 				});
 
-				var redStrokeTitle = clientTextView("Red (stroke): | " + newRedStroke, true);
-				var redStrokeSlider = clientSeekBar();
+				let redStrokeTitle = clientTextView("Red (stroke): | " + newRedStroke, true);
+				let redStrokeSlider = clientSeekBar();
 				redStrokeSlider.setMax(255);
 				redStrokeSlider.setProgress(newRedStroke);
 				redStrokeSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
@@ -8390,8 +8480,8 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 					}
 				});
 
-				var greenStrokeTitle = clientTextView("Green (stroke): | " + newGreenStroke, true);
-				var greenStrokeSlider = clientSeekBar();
+				let greenStrokeTitle = clientTextView("Green (stroke): | " + newGreenStroke, true);
+				let greenStrokeSlider = clientSeekBar();
 				greenStrokeSlider.setMax(255);
 				greenStrokeSlider.setProgress(newGreenStroke);
 				greenStrokeSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
@@ -8401,8 +8491,8 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 					}
 				});
 
-				var blueStrokeTitle = clientTextView("Blue (stroke): | " + newBlueStroke, true);
-				var blueStrokeSlider = clientSeekBar();
+				let blueStrokeTitle = clientTextView("Blue (stroke): | " + newBlueStroke, true);
+				let blueStrokeSlider = clientSeekBar();
 				blueStrokeSlider.setMax(255);
 				blueStrokeSlider.setProgress(newBlueStroke);
 				blueStrokeSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
@@ -8428,7 +8518,7 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 				dScrollInside.addView(blueStrokeSlider);
 				dScrollInside.addView(pickerButton1);
 
-				var dialogLayout = new LinearLayout_(CONTEXT);
+				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setGravity(Gravity_.CENTER);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
@@ -8438,11 +8528,11 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 				dialogLayout.addView(dTitle);
 				dialogLayout.addView(dScrollView);
 
-				dialogLayout.addView(cancelEnter);
+				dialogLayout.addView(clientTextView(""));
 				dialogLayout.addView(doneButton);
 				dialogLayout.addView(cancelButton);
 
-				var dialog = new Dialog_(CONTEXT);
+				let dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.setContentView(dialogLayout);
 				dialog.setTitle(dialogTitle);
@@ -8452,7 +8542,7 @@ VertexClientPE.showCustomRGBDialog = function(sRightButton, dialogTitle) {
 					}
 				});
 				dialog.show();
-				var window = dialog.getWindow();
+				let window = dialog.getWindow();
 				window.setLayout(display.widthPixels, display.heightPixels);
 				doneButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
@@ -8498,17 +8588,17 @@ VertexClientPE.showModEditorDialog = function(defaultName, modTitleView, modButt
 					modButtonView = panicModButtonView; //this code is needed to prevent a bug <<
 				}
 
-				var dialogLayout = new LinearLayout_(CONTEXT);
+				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setOrientation(1);
 				dialogLayout.setBackgroundDrawable(backgroundSpecial());
 				dialogLayout.setPadding(1.5, 0, 1, 1);
 
-				var modEditorTitleLayout = new LinearLayout_(CONTEXT);
+				let modEditorTitleLayout = new LinearLayout_(CONTEXT);
 				modEditorTitleLayout.setOrientation(LinearLayout_.HORIZONTAL);
 
-				var currentName = VertexClientPE.getCustomModName(defaultName);
+				let currentName = VertexClientPE.getCustomModName(defaultName);
 
-				var modEditorDialogEditText = clientEditText(currentName);
+				let modEditorDialogEditText = clientEditText(currentName);
 				modEditorDialogEditText.setInputType(InputType_.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 				modEditorDialogEditText.setTextSize(20);
 				modEditorDialogEditText.addTextChangedListener(new TextWatcher_() {
@@ -8522,7 +8612,7 @@ VertexClientPE.showModEditorDialog = function(defaultName, modTitleView, modButt
 				modEditorTitleLayout.addView(modEditorDialogEditText);
 				dialogLayout.addView(modEditorTitleLayout);
 
-				var dialog = new Dialog_(CONTEXT);
+				let dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
@@ -8552,8 +8642,8 @@ VertexClientPE.showModEditorDialog = function(defaultName, modTitleView, modButt
 					}
 				});
 				dialog.show();
-				var window = dialog.getWindow();
-				var windowParams = window.getAttributes();
+				let window = dialog.getWindow();
+				let windowParams = window.getAttributes();
 				windowParams.gravity = Gravity_.TOP | Gravity_.LEFT;
 				windowParams.y = 0;
 				window.setAttributes(windowParams);
@@ -8681,7 +8771,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
 					dialogLayout.addView(clientTextView(""));
 				}
 
-				var dialogExtraLayout = new LinearLayout_(CONTEXT);
+				let dialogExtraLayout = new LinearLayout_(CONTEXT);
 				dialogExtraLayout.setOrientation(LinearLayout_.HORIZONTAL);
 				dialogLayout.addView(dialogExtraLayout);
 				if(mod.name != "Prevent" && mod.name != "Target") {
@@ -8768,7 +8858,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
 					closeButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2, display.heightPixels / 10));
 					dialogExtraLayout.addView(closeButton);
 				}
-				var dialog = new Dialog_(CONTEXT);
+				let dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
@@ -9078,7 +9168,7 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 	}
 }
 
-VertexClientPE.showItemGiverDialog = function() {
+VertexClientPE.showItemGiverDialog = function() { //TODO: make faster, less layouts
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
@@ -9086,6 +9176,11 @@ VertexClientPE.showItemGiverDialog = function() {
 				itemGiverTitle.setTextSize(25);
 				let closeButton = clientButton("Close");
 				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
+				closeButton.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+					}
+				});
 				let dialogLayoutBase = new LinearLayout_(CONTEXT);
 				dialogLayoutBase.setOrientation(1);
 				dialogLayoutBase.setPadding(10, 10, 10, 10);
@@ -9104,16 +9199,18 @@ VertexClientPE.showItemGiverDialog = function() {
 				let dialogTableLayout = new TableLayout_(CONTEXT);
 				let dialogTableRow;
 				let itemNameText = clientTextView("Name: Unknown");
+				let itemIdText = clientTextView("Id:");
 				let itemIdInput = clientEditText();
 				itemIdInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
-				itemIdInput.setHint("Id");
+				itemIdInput.setHint("Id (0-4096)");
+				let itemAmountText = clientTextView("Amount:");
 				let itemAmountInput = clientEditText();
 				itemAmountInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
-				itemAmountInput.setHint("Amount");
+				itemAmountInput.setHint("Amount (number)");
+				let itemDataText = clientTextView("Data:");
 				let itemDataInput = clientEditText();
 				itemDataInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
-				itemDataInput.setHint("Data");
-
+				itemDataInput.setHint("Data (number)");
 				itemIdInput.addTextChangedListener(new TextWatcher_() {
 					onTextChanged: function() {
 						let itemId = itemIdInput.getText();
@@ -9150,19 +9247,27 @@ VertexClientPE.showItemGiverDialog = function() {
 				dialogRightLayout.setOrientation(1);
 
 				dialogRightLayout.addView(itemNameText);
+				dialogRightLayout.addView(itemIdText);
 				dialogRightLayout.addView(itemIdInput);
+				dialogRightLayout.addView(itemAmountText);
 				dialogRightLayout.addView(itemAmountInput);
+				dialogRightLayout.addView(itemDataText);
 				dialogRightLayout.addView(itemDataInput);
 				dialogRightLayout.addView(itemGiveButton);
-				dialogRightLayout.addView(clientTextView("\n"));
 				dialogRightLayout.addView(closeButton);
 				dialogLayoutBase.setBackgroundDrawable(backgroundGradient());
 				dialogLayoutBase.addView(itemGiverTitle);
-				dialogLayoutBodyLeftScroll.addView(dialogTableLayout);
+
+				if(itemGiverModeSetting == "advanced") {
+					dialogLayoutBodyLeftScroll.addView(dialogTableLayout);
+					dialogLayoutBodyLeftWrap.addView(dialogLayoutBodyLeftScroll);
+					dialogLayoutBody.addView(dialogLayoutBodyLeftWrap);
+				} else {
+					dialogLayoutBase.setGravity(Gravity_.CENTER);
+				}
+
 				dialogLayoutBodyRightScroll.addView(dialogRightLayout);
-				dialogLayoutBodyLeftWrap.addView(dialogLayoutBodyLeftScroll);
 				dialogLayoutBodyRightWrap.addView(dialogLayoutBodyRightScroll);
-				dialogLayoutBody.addView(dialogLayoutBodyLeftWrap);
 				dialogLayoutBody.addView(dialogLayoutBodyRightWrap);
 				dialogLayoutBase.addView(dialogLayoutBody);
 
@@ -9172,39 +9277,37 @@ VertexClientPE.showItemGiverDialog = function() {
 				dialog.setContentView(dialogLayoutBase);
 				dialog.setTitle("ItemGiver");
 				dialog.show();
-				let window = dialog.getWindow();
-				window.setLayout(display.widthPixels, display.heightPixels);
-				closeButton.setOnClickListener(new View_.OnClickListener() {
-					onClick: function(view) {
-						dialog.dismiss();
-					}
-				});
-				
-				itemGiverItems.forEach(function(element, index, array) {
-					let tempButton = clientButton(Item.getName(element.toString()));
-					tempButton.setSingleLine(true);
-					tempButton.setLayoutParams(new TableRow_.LayoutParams((display.widthPixels - display.widthPixels / 3 - 10 - dip2px(1)) / 2, LinearLayout_.LayoutParams.WRAP_CONTENT));
-					tempButton.setPadding(0, 0, 0, 0);
-					tempButton.setOnClickListener(new View_.OnClickListener() {
-						onClick: function(viewArg) {
-							itemIdInput.setText(element.toString());
-						}
-					});
-					if(index % 2 == 1) {
-						if(!dialogTableRow) {
+
+				if(itemGiverModeSetting == "advanced") {
+					let window = dialog.getWindow();
+					window.setLayout(display.widthPixels, display.heightPixels);
+
+					itemGiverItems.forEach(function(element, index, array) {
+						let tempButton = clientButton(Item.getName(element.toString()));
+						tempButton.setSingleLine(true);
+						tempButton.setLayoutParams(new TableRow_.LayoutParams((display.widthPixels - display.widthPixels / 3 - 10 - dip2px(1)) / 2, LinearLayout_.LayoutParams.WRAP_CONTENT));
+						tempButton.setPadding(0, 0, 0, 0);
+						tempButton.setOnClickListener(new View_.OnClickListener() {
+							onClick: function(viewArg) {
+								itemIdInput.setText(element.toString());
+							}
+						});
+						if(index % 2 == 1) {
+							if(!dialogTableRow) {
+								dialogTableRow = new TableRow_(CONTEXT);
+							}
+							dialogTableRow.addView(tempButton);
+							dialogTableLayout.addView(dialogTableRow);
+							dialogTableRow = null;
+						} else {
 							dialogTableRow = new TableRow_(CONTEXT);
+							dialogTableRow.addView(tempButton);
 						}
-						dialogTableRow.addView(tempButton);
+						tempButton = null;
+					});
+					if(dialogTableRow != null) {
 						dialogTableLayout.addView(dialogTableRow);
-						dialogTableRow = null;
-					} else {
-						dialogTableRow = new TableRow_(CONTEXT);
-						dialogTableRow.addView(tempButton);
 					}
-					tempButton = null;
-				});
-				if(dialogTableRow != null) {
-					dialogTableLayout.addView(dialogTableRow);
 				}
 			} catch(e) {
 				print("Error: " + e);
@@ -9243,12 +9346,14 @@ VertexClientPE.showEnchantItDialog = function() {
 				let dialogTableLayout = new TableLayout_(CONTEXT);
 				let dialogTableRow;
 				let enchantmentNameText = clientTextView("Enchantment: " + selectedEnchantment[0]);
+				let slotText = clientTextView("Slot:");
 				let slotInput = clientEditText();
 				slotInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
-				slotInput.setHint("Slot");
+				slotInput.setHint("Slot (1-9)");
+				let levelText = clientTextView("Level:");
 				let levelInput = clientEditText();
 				levelInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
-				levelInput.setHint("Level");
+				levelInput.setHint("Level (number)");
 
 				let enchantmentAddButton = clientButton("Add enchantment");
 				enchantmentAddButton.setOnClickListener(new View_.OnClickListener() {
@@ -9282,10 +9387,11 @@ VertexClientPE.showEnchantItDialog = function() {
 				dialogRightLayout.setOrientation(1);
 
 				dialogRightLayout.addView(enchantmentNameText);
+				dialogRightLayout.addView(slotText);
 				dialogRightLayout.addView(slotInput);
+				dialogRightLayout.addView(levelText);
 				dialogRightLayout.addView(levelInput);
 				dialogRightLayout.addView(enchantmentAddButton);
-				dialogRightLayout.addView(clientTextView("\n"));
 				dialogRightLayout.addView(closeButton);
 				dialogLayoutBase.setBackgroundDrawable(backgroundGradient());
 				dialogLayoutBase.addView(enchantItTitle);
@@ -9310,7 +9416,7 @@ VertexClientPE.showEnchantItDialog = function() {
 						dialog.dismiss();
 					}
 				});
-				
+
 				enchantItArray.forEach(function(element, index, array) {
 					let tempButton = clientButton(element[0].toString());
 					tempButton.setSingleLine(true);
@@ -9320,6 +9426,162 @@ VertexClientPE.showEnchantItDialog = function() {
 						onClick: function(viewArg) {
 							selectedEnchantment = element;
 							enchantmentNameText.setText("Enchantment: " + selectedEnchantment[0].toString());
+						}
+					});
+					if(index % 2 == 1) {
+						if(!dialogTableRow) {
+							dialogTableRow = new TableRow_(CONTEXT);
+						}
+						dialogTableRow.addView(tempButton);
+						dialogTableLayout.addView(dialogTableRow);
+						dialogTableRow = null;
+					} else {
+						dialogTableRow = new TableRow_(CONTEXT);
+						dialogTableRow.addView(tempButton);
+					}
+					tempButton = null;
+				});
+				if(dialogTableRow != null) {
+					dialogTableLayout.addView(dialogTableRow);
+				}
+			} catch(e) {
+				print("Error: " + e);
+				VertexClientPE.showBugReportDialog(e);
+			}
+		}
+	});
+}
+
+const nausea = 9
+const levitation = 25;
+const effectGiverArray = [["Absorption", MobEffect.absorption], ["Blindness", MobEffect.blindness], ["Confusion", MobEffect.confusion], ["Strength", MobEffect.damageBoost], ["Resistance", MobEffect.damageResistance], ["Mining Fatigue", MobEffect.digSlowdown], ["Haste", MobEffect.digSpeed], ["Fire Resistance", MobEffect.fireResistance], ["Instant Damage (Harm)", MobEffect.harm], ["Instant Health (Heal)", MobEffect.heal], ["Health Boost", MobEffect.healthBoost], ["Hunger", MobEffect.hunger], ["Invisibility", MobEffect.invisibility], ["Jump Boost", MobEffect.jump], /*["Levitation", levitation], */["Slowness", MobEffect.movementSlowdown], ["Speed", MobEffect.movementSpeed], /*["Nausea", nausea],*/ ["Night Vision", MobEffect.nightVision], ["Poison", MobEffect.poison], ["Regeneration", MobEffect.regeneration], ["Saturation", MobEffect.saturation], ["Water Breathing", MobEffect.waterBreathing], ["Weakness", MobEffect.weakness], ["Wither", MobEffect.wither]]; //todo: nausea, levitation
+
+let selectedEffect = ["None", null];
+VertexClientPE.showEffectGiverDialog = function() {
+	CONTEXT.runOnUiThread(new Runnable_() {
+		run: function() {
+			try {
+				let effectGiverTitle = clientTextView("EffectGiver", true);
+				effectGiverTitle.setTextSize(25);
+				let closeButton = clientButton("Close");
+				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
+				let dialogLayoutBase = new LinearLayout_(CONTEXT);
+				dialogLayoutBase.setOrientation(1);
+				dialogLayoutBase.setPadding(10, 10, 10, 10);
+				let dialogLayoutBody = new LinearLayout_(CONTEXT);
+				dialogLayoutBody.setOrientation(LinearLayout_.HORIZONTAL);
+				let dialogLayoutBodyLeftWrap = new LinearLayout_(CONTEXT);
+				dialogLayoutBodyLeftWrap.setOrientation(1);
+				dialogLayoutBodyLeftWrap.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels - display.widthPixels / 3 - 10, LinearLayout_.LayoutParams.WRAP_CONTENT));
+				dialogLayoutBodyLeftWrap.setPadding(0, 0, dip2px(1), 0);
+				let dialogLayoutBodyLeftScroll = new ScrollView_(CONTEXT);
+				let dialogLayoutBodyRightWrap = new LinearLayout_(CONTEXT);
+				dialogLayoutBodyRightWrap.setOrientation(1);
+				dialogLayoutBodyRightWrap.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3 - 10, LinearLayout_.LayoutParams.WRAP_CONTENT));
+				dialogLayoutBodyRightWrap.setPadding(dip2px(1), 0, 0, 0);
+				let dialogLayoutBodyRightScroll = new ScrollView_(CONTEXT);
+				let dialogTableLayout = new TableLayout_(CONTEXT);
+				let dialogTableRow;
+				let effectNameText = clientTextView("Effect: " + selectedEffect[0]);
+				let durationText = clientTextView("Duration:");
+				let durationInput = clientEditText();
+				durationInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
+				durationInput.setHint("Duration (seconds)");
+				let amplificationText = clientTextView("Amplification:");
+				let amplificationInput = clientEditText();
+				amplificationInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
+				amplificationInput.setHint("Amplification (1-256)");
+				let showParticlesCheckBox = clientCheckBox("Show particles");
+
+				let effectAddButton = clientButton("Add effect");
+				effectAddButton.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(viewArg) {
+						let duration = parseInt(durationInput.getText()) * 20;
+						let amplification = parseInt(amplificationInput.getText());
+						let showParticles = showParticlesCheckBox.isChecked();
+						if(selectedEffect[0] == "None") {
+							VertexClientPE.toast("No effect selected!");
+							return;
+						}
+						if(duration == "") {
+							VertexClientPE.toast("No duration chosen!");
+							return;
+						}
+						if(amplification == "") {
+							VertexClientPE.toast("No amplification chosen!");
+							return;
+						}
+						if(duration < 1) {
+							VertexClientPE.toast("Duration too low!");
+							return;
+						}
+						if(amplification < 1) {
+							VertexClientPE.toast("Amplification too low!");
+							return;
+						}
+						if(amplification > 256) {
+							VertexClientPE.toast("Amplification too high!");
+							return;
+						}
+						Entity.addEffect(getPlayerEnt(), selectedEffect[1], duration, amplification - 1, false, showParticles);
+						VertexClientPE.toast("Successfully given " + selectedEffect[0] + " (amplification: " + amplification + ", duration: " + duration + " ticks) effect!");
+						//VertexClientPE.toast("Failed to give " + selectedEffect[0] + " (amplification: " + amplification + ", duration: " + duration + " ticks) effect!");
+					}
+				});
+
+				let removeAllEffectsButton = clientButton("Remove all effects");
+				removeAllEffectsButton.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(viewArg) {
+						Entity.removeAllEffects(getPlayerEnt());
+						VertexClientPE.toast("Successfully removed all effects!");
+					}
+				});
+
+				let dialogRightLayout = new LinearLayout_(CONTEXT);
+				dialogRightLayout.setOrientation(1);
+
+				dialogRightLayout.addView(effectNameText);
+				dialogRightLayout.addView(durationText);
+				dialogRightLayout.addView(durationInput);
+				dialogRightLayout.addView(amplificationText);
+				dialogRightLayout.addView(amplificationInput);
+				//dialogRightLayout.addView(showParticlesCheckBox);
+				dialogRightLayout.addView(effectAddButton);
+				dialogRightLayout.addView(removeAllEffectsButton);
+				dialogRightLayout.addView(closeButton);
+				dialogLayoutBase.setBackgroundDrawable(backgroundGradient());
+				dialogLayoutBase.addView(effectGiverTitle);
+				dialogLayoutBodyLeftScroll.addView(dialogTableLayout);
+				dialogLayoutBodyRightScroll.addView(dialogRightLayout);
+				dialogLayoutBodyLeftWrap.addView(dialogLayoutBodyLeftScroll);
+				dialogLayoutBodyRightWrap.addView(dialogLayoutBodyRightScroll);
+				dialogLayoutBody.addView(dialogLayoutBodyLeftWrap);
+				dialogLayoutBody.addView(dialogLayoutBodyRightWrap);
+				dialogLayoutBase.addView(dialogLayoutBody);
+
+				let dialog = new Dialog_(CONTEXT);
+				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
+				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+				dialog.setContentView(dialogLayoutBase);
+				dialog.setTitle("EffectGiver");
+				dialog.show();
+				let window = dialog.getWindow();
+				window.setLayout(display.widthPixels, display.heightPixels);
+				closeButton.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+					}
+				});
+
+				effectGiverArray.forEach(function(element, index, array) {
+					let tempButton = clientButton(element[0].toString());
+					tempButton.setSingleLine(true);
+					tempButton.setLayoutParams(new TableRow_.LayoutParams((display.widthPixels - display.widthPixels / 3 - 10 - dip2px(1)) / 2, LinearLayout_.LayoutParams.WRAP_CONTENT));
+					tempButton.setPadding(0, 0, 0, 0);
+					tempButton.setOnClickListener(new View_.OnClickListener() {
+						onClick: function(viewArg) {
+							selectedEffect = element;
+							effectNameText.setText("Effect: " + selectedEffect[0].toString());
 						}
 					});
 					if(index % 2 == 1) {
@@ -9374,15 +9636,18 @@ VertexClientPE.showTeleportDialog = function() {
 				let dialogTableRow;
 				let tempButton;
 				let teleportNameText = clientTextView("Teleport location: Unknown");
+				let teleportXText = clientTextView("X:");
 				let teleportXInput = clientEditText();
 				teleportXInput.setInputType(InputType_.TYPE_CLASS_NUMBER | InputType_.TYPE_NUMBER_FLAG_SIGNED);
-				teleportXInput.setHint("X");
+				teleportXInput.setHint("X (number)");
+				let teleportYText = clientTextView("Y:");
 				let teleportYInput = clientEditText();
 				teleportYInput.setInputType(InputType_.TYPE_CLASS_NUMBER | InputType_.TYPE_NUMBER_FLAG_SIGNED);
-				teleportYInput.setHint("Y");
+				teleportYInput.setHint("Y (number)");
+				let teleportZText = clientTextView("Z:");
 				let teleportZInput = clientEditText();
 				teleportZInput.setInputType(InputType_.TYPE_CLASS_NUMBER | InputType_.TYPE_NUMBER_FLAG_SIGNED);
-				teleportZInput.setHint("Z");
+				teleportZInput.setHint("Z (number)");
 
 				teleportXInput.addTextChangedListener(new TextWatcher_() {
 					onTextChanged: function() {
@@ -9455,11 +9720,13 @@ VertexClientPE.showTeleportDialog = function() {
 				dialogRightLayout.setOrientation(1);
 
 				dialogRightLayout.addView(teleportNameText);
+				dialogRightLayout.addView(teleportXText);
 				dialogRightLayout.addView(teleportXInput);
+				dialogRightLayout.addView(teleportYText);
 				dialogRightLayout.addView(teleportYInput);
+				dialogRightLayout.addView(teleportZText);
 				dialogRightLayout.addView(teleportZInput);
 				dialogRightLayout.addView(teleportButton);
-				dialogRightLayout.addView(clientTextView("\n"));
 				dialogRightLayout.addView(closeButton);
 				dialogLayoutBase.setBackgroundDrawable(backgroundGradient());
 				dialogLayoutBase.addView(teleportTitle);
@@ -9533,7 +9800,7 @@ VertexClientPE.showAddAccountDialog = function(showBackButton, title) {
 						}
 						//accountClientId = accountClientIdInput.getText().toString();
 						if(VertexClientPE.accounts.length() != undefined && VertexClientPE.accounts.length() != undefined) {
-							for(var i = 0; i < VertexClientPE.accounts.length(); i++) {
+							for(let i = 0; i < VertexClientPE.accounts.length(); i++) {
 								if(VertexClientPE.accounts.get(i) == accountName) {
 									VertexClientPE.toast("This account already exists in your accounts list!");
 									return;
@@ -9594,7 +9861,7 @@ VertexClientPE.showAddFriendDialog = function(showBackButton, title, icon) {
 							return;
 						}
 						if(VertexClientPE.friends.length() != undefined && VertexClientPE.friends.length() != undefined) {
-							for(var i = 0; i < VertexClientPE.friends.length(); i++) {
+							for(let i = 0; i < VertexClientPE.friends.length(); i++) {
 								if(VertexClientPE.friends.get(i) == friendName) {
 									VertexClientPE.toast("This username already exists in your friends list!");
 									return;
@@ -9725,6 +9992,59 @@ VertexClientPE.showBasicDialog = function(title, view, onDialogDismiss, extraVie
 	});
 }
 
+VertexClientPE.showConfirmDialog = function(title, question, onDialogDismiss, onYesClick) {
+	let dialogTitle = clientTextView(title);
+	dialogTitle.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
+	dialogTitle.setMarqueeRepeatLimit(-1);
+	dialogTitle.setSingleLine();
+	dialogTitle.setHorizontallyScrolling(true);
+	dialogTitle.setSelected(true);
+	dialogTitle.setTextSize(25);
+	let yesBtn = clientButton("Yes");
+	yesBtn.setOnClickListener(new View_.OnClickListener() {
+		onClick: function(view) {
+			dialog.dismiss();
+			onYesClick();
+		}
+	});
+	let noBtn = clientButton("No");
+	noBtn.setOnClickListener(new View_.OnClickListener() {
+		onClick: function(view) {
+			dialog.dismiss();
+		}
+	});
+
+	let dialogLayout1 = new LinearLayout_(CONTEXT);
+	dialogLayout1.setBackgroundDrawable(backgroundGradient());
+	dialogLayout1.setOrientation(LinearLayout_.VERTICAL);
+	dialogLayout1.setPadding(10, 10, 10, 10);
+
+	let dialogScrollView = new ScrollView_(CONTEXT);
+	let dialogLayout = new LinearLayout_(CONTEXT);
+
+	dialogLayout.addView(clientTextView(question));
+	dialogScrollView.addView(dialogLayout);
+
+	dialogLayout1.addView(dialogTitle);
+	dialogLayout1.addView(dialogScrollView);
+	dialogLayout1.addView(yesBtn);
+	dialogLayout1.addView(noBtn);
+
+	let dialog = new Dialog_(CONTEXT);
+	dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
+	dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+	dialog.setContentView(dialogLayout1);
+	dialog.setTitle(title);
+	dialog.setOnDismissListener(new DialogInterface_.OnDismissListener() {
+		onDismiss: function() {
+			if(onDialogDismiss != null) {
+				onDialogDismiss();
+			}
+		}
+	});
+	dialog.show();
+}
+
 VertexClientPE.showWhatsNewDialog = function() {
 	VertexClientPE.showBasicDialog("What's New", clientTextView("Thanks for upgrading to v" + VertexClientPE.currentVersion + "!\nTo see what's new, please go to the Update Center.\nThe Update Center can by accessed from the 'More' dialog, which can be opened by tapping and holding the menu button."),
 		function() {
@@ -9742,7 +10062,7 @@ VertexClientPE.showTipDialog = function() {
 		openText = "click on the main button";
 	}
 
-	VertexClientPE.showBasicDialog("Shortcuts", clientTextView("Are there any mods you use regularly? Have you tried out Shortcuts yet? The Shortcuts allow you to toggle mods and tiles faster than ever! Please go to the Help screen (" + openText + " --> Dashboard --> Help) to find out how to add them."),
+	VertexClientPE.showBasicDialog("Shortcuts", clientTextView("Are there any mods you use regularly? Have you tried out shortcuts yet? The shortcuts allow you to toggle mods and tiles faster than ever! Please go to the Help screen (" + openText + " --> Dashboard --> Help) to find out how to add them."),
 		function() {
 			VertexClientPE.setHasShownTipDialog(true);
 		}
@@ -10074,8 +10394,7 @@ VertexClientPE.switchGameMode = function() {
 }
 
 VertexClientPE.clientMessage = function(message) {
-	var clientName = VertexClientPE.getName();
-	clientMessage(ChatColor.RED + "[" + ChatColor.DARK_GREEN + clientName + ChatColor.RED + "] " + ChatColor.WHITE + message);
+	clientMessage(ChatColor.RED + "[" + ChatColor.DARK_GREEN + VertexClientPE.getName() + ChatColor.RED + "] " + ChatColor.WHITE + message);
 }
 
 VertexClientPE.debugMessage = function(message) {
@@ -10111,26 +10430,6 @@ VertexClientPE.toast = function(message, vibrate) {
 	}));
 }
 
-VertexClientPE.addonLoadToast = function(message) {
-	CONTEXT.runOnUiThread(new Runnable_({
-		run: function() {
-			let layout = new LinearLayout_(CONTEXT);
-			layout.setBackground(backgroundSpecial(true));
-			let icon = new android.widget.ImageView(CONTEXT);
-			icon.setImageResource(android.R.drawable.ic_menu_more);
-			let title = VertexClientPE.getName();
-			let text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message), true, "diff");
-			layout.addView(icon);
-			layout.addView(text);
-			let addonToast = new Toast_(CONTEXT);
-			addonToast.setDuration(Toast_.LENGTH_LONG);
-			addonToast.setView(layout);
-			addonToast.setGravity(Gravity_.CENTER | Gravity_.TOP, 0, 0);
-			addonToast.show();
-		}
-	}));
-}
-
 VertexClientPE.loadToast = function(message) {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
@@ -10139,8 +10438,8 @@ VertexClientPE.loadToast = function(message) {
 			let loadProg = new android.widget.ProgressBar(CONTEXT);
 			loadProg.setIndeterminate(true);
 			loadProg.getIndeterminateDrawable().setColorFilter(getColor("stroke"), android.graphics.PorterDuff.Mode.SRC_IN);
-			/* var title = VertexClientPE.getName();
-			var text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message), true, "diff"); */
+			/* let title = VertexClientPE.getName();
+			let text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message), true, "diff"); */
 			layout.addView(loadProg);
 			//layout.addView(text);
 			if(loadingToast != null) {
@@ -10154,37 +10453,46 @@ VertexClientPE.loadToast = function(message) {
 	}));
 }
 
-VertexClientPE.updateToast = function(message) {
+VertexClientPE.screenToast = function(screenIcon, screenName, text) {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			let layout = new LinearLayout_(CONTEXT);
-			layout.setBackground(backgroundSpecial(true));
+			layout.setBackground(backgroundSpecial(true, "#70212121|#70ffffff"));
+			layout.setGravity(Gravity_.CENTER);
 			let icon = new android.widget.ImageView(CONTEXT);
-			icon.setImageResource(android.R.drawable.ic_menu_compass);
-			let title = VertexClientPE.getName();
-			let text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message), true, "diff");
+			icon.setImageResource(screenIcon);
+			let textView = clientTextView(new Html_.fromHtml("<b>" + screenName + "</b> " + text), true, "diff");
 			layout.addView(icon);
-			layout.addView(text);
-			let updateToast = new Toast_(CONTEXT);
-			updateToast.setDuration(Toast_.LENGTH_LONG);
-			updateToast.setView(layout);
-			updateToast.setGravity(Gravity_.CENTER | Gravity_.TOP, 0, 0);
-			updateToast.show();
+			layout.addView(textView);
+			let screenToast = new Toast_(CONTEXT);
+			screenToast.setDuration(Toast_.LENGTH_LONG);
+			screenToast.setView(layout);
+			screenToast.setGravity(Gravity_.CENTER | Gravity_.TOP, 0, 0);
+			screenToast.show();
 		}
 	}));
+}
+
+VertexClientPE.addonLoadToast = function(message) {
+	VertexClientPE.screenToast(android.R.drawable.ic_menu_more, "Addons", message);
+}
+
+VertexClientPE.updateToast = function(message) {
+	VertexClientPE.screenToast(android.R.drawable.ic_menu_compass, "Update Center", message);
 }
 
 VertexClientPE.showChristmasToast = function(daysLeft) {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			let layout = new LinearLayout_(CONTEXT);
-			layout.setBackground(backgroundSpecial(true));
+			layout.setBackground(backgroundSpecial(true, "#70212121|#70ffffff"));
+			layout.setGravity(Gravity_.CENTER);
 			let icon = new android.widget.ImageView(CONTEXT);
 			icon.setImageResource(android.R.drawable.ic_menu_agenda);
 			let icon1 = new android.widget.ImageView(CONTEXT);
 			icon1.setImageBitmap(imgChristmasTree);
 			icon1.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(16), dip2px(16)));
-			let title = VertexClientPE.getName();
+			let title = "Christmas";
 			let cText = daysLeft == null ? "Merry Christmas!" : (daysLeft + " days left until Christmas!");
 			let text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + cText), true, "diff");
 			layout.addView(icon);
@@ -10257,6 +10565,11 @@ let mpTotalDurationView;
 let mpSeekBarView;
 let mpLayout;
 
+/*
+var log1 = (Math.log(maxVolume-currVolume)/Math.log(maxVolume));
+yourMediaPlayer.setVolume(1-log1);
+*/
+
 VertexClientPE.MusicUtils = {
 	milliSecToMinString: function(mSec) {
 		let minutes = parseInt(((mSec / (1000*60)) % 60)).toString();
@@ -10271,6 +10584,13 @@ VertexClientPE.MusicUtils = {
 			seconds = "00";
 		}
 		return minutes + ":" + seconds;
+	},
+	getVolume: function() {
+		
+	},
+	setVolume: function(currVolume) {
+		let log1 = (Math.log(maxVolume-currVolume)/Math.log(maxVolume));
+		this.mp.setVolume(1-log1);
 	},
 	songList: [],
 	tempSongList: [],
@@ -10335,11 +10655,15 @@ VertexClientPE.MusicUtils = {
 				if(mpPlayButton != null) {
 					mpPlayButton.setBackgroundResource(android.R.drawable.ic_media_pause);
 				}
+				mp.start();
 				if(playMusicSetting != "shuffle" && song == null && VertexClientPE.MusicUtils.playingFirstTime) {
-					mp.pause();
-					VertexClientPE.MusicUtils.isPaused = true;
-				} else {
-					mp.start();
+					let musicHandler = new Handler_();
+					musicHandler.postDelayed(new Runnable() {
+						run: function() {
+							mp.pause();
+							VertexClientPE.MusicUtils.isPaused = true;
+						}
+					}, 1500);
 				}
 			}
 		});
@@ -10347,7 +10671,7 @@ VertexClientPE.MusicUtils = {
 			onBufferingUpdate: function(arg0) {
 				//onBufferingUpdate
 			}
-		})
+		});
 		this.mp.setOnCompletionListener(new MediaPlayer_.OnCompletionListener() {
 			onCompletion: function(arg0) {
 				VertexClientPE.MusicUtils.loadNextSong();
@@ -10365,9 +10689,7 @@ function Song(songTitle, songArtist, songUrl, songGenre) {
 	this.url = songUrl;
 }
 
-VertexClientPE.MusicUtils.registerSong(new Song("Hello", "OMFG", "http://download1481.mediafireuserdownload.com/xd59md9vw2rg/gb97ihc1xl83s2b/OMFG+-+Hello.mp3", "Electronic"));
-VertexClientPE.MusicUtils.registerSong(new Song("Neopolitan Dreams (Nilow Remix)", "Lisa Mitchell", "http://download1337.mediafireuserdownload.com/xkcpwv4eewmg/5qbuk6k29uvme7m/Lisa+Mitchell+-+Neopolitan+Dreams+%28Nilow+Rmx%29.mp3", "Dubstep"));
-VertexClientPE.MusicUtils.registerSong(new Song("Adventure (feat. Alexa Lusader)", "William Ekh", "http://files-cdn.nocopyrightsounds.co.uk/William%20Ekh%20-%20Adventure%20%28feat.%20Alexa%20Lusader%29.mp3", "House"));
+/* VertexClientPE.MusicUtils.registerSong(new Song("Adventure (feat. Alexa Lusader)", "William Ekh", "http://files-cdn.nocopyrightsounds.co.uk/William%20Ekh%20-%20Adventure%20%28feat.%20Alexa%20Lusader%29.mp3", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("Blank [NCS Release]", "Disfigure", "http://files-cdn.nocopyrightsounds.co.uk/Disfigure%20-%20Blank.mp3", "Dubstep"));
 VertexClientPE.MusicUtils.registerSong(new Song("Can't Wait (feat. Anna Yvette) [NCS Release]", "Jim Yosef", "http://download1890.mediafireuserdownload.com/ni4dsv3d5khg/bpgdjbqy0p09biw/Jim+Yosef+-+Can%5C%27t+Wait+%28feat.+Anna+Yvette%29.mp3", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("Candyland [NCS Release]", "Tobu", "http://files-cdn.nocopyrightsounds.co.uk/Tobu%20-%20Candyland.mp3", "House"));
@@ -10387,19 +10709,23 @@ VertexClientPE.MusicUtils.registerSong(new Song("Get Up Again (feat. Axol) [NCS 
 VertexClientPE.MusicUtils.registerSong(new Song("Gravity (feat. Liz Kretschmer) [NCS Release]", "Umpire", "http://files-cdn.nocopyrightsounds.co.uk/Umpire%20-%20Gravity%20%28feat.%20Liz%20Kretschmer%29.mp3", "Chillstep"));
 VertexClientPE.MusicUtils.registerSong(new Song("Halcyon [NCS Release]", "JJD", "http://download936.mediafireuserdownload.com/rtgmmhaa2rag/7a8m5f4mwhv468j/JJD+-+Halcyon.mp3", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("Happy Accidents [NCS Release]", "Inukshuk", "http://files-cdn.nocopyrightsounds.co.uk/Inukshuk%20-%20Happy%20Accidents.mp3", "Electronic"));
+VertexClientPE.MusicUtils.registerSong(new Song("Hello", "OMFG", "http://download1481.mediafireuserdownload.com/xd59md9vw2rg/gb97ihc1xl83s2b/OMFG+-+Hello.mp3", "Electronic"));
 VertexClientPE.MusicUtils.registerSong(new Song("Hollah! [NCS Release]", "Disfigure", "http://files-cdn.nocopyrightsounds.co.uk/Disfigure%20-%20Hollah%21.mp3", "Chillstep"));
 VertexClientPE.MusicUtils.registerSong(new Song("Invincible [NCS Release]", "DEAF KEV", "http://files-cdn.nocopyrightsounds.co.uk/DEAF%20KEV%20-%20Invincible.mp3", "Trap"));
 VertexClientPE.MusicUtils.registerSong(new Song("Lights [NCS Release]", "Jim Yosef", "http://files-cdn.nocopyrightsounds.co.uk/Jim%20Yosef%20-%20Lights.mp3", "House"));
+VertexClientPE.MusicUtils.registerSong(new Song("Make Me Move (feat. Karra) [NCS Release]", "Culture Code", "http://download1327.mediafireuserdownload.com/th2ftl28fozg/e9esqtbevi25ud3/Culture+Code+-+Make+Me+Move+%28feat.+Karra%29.mp3", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("Moments [NCS Release]", "Alex Skrindo & Stahl!", "http://files-cdn.nocopyrightsounds.co.uk/Alex%20Skrindo%20%26%20Stahl%21%20-%20Moments.mp3", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("My Heart [NCS Release]", "Different Heaven & EH!DE", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20%26%20EH%21DE%20-%20My%20Heart.mp3", "Drumstep"));
 VertexClientPE.MusicUtils.registerSong(new Song("Nekozilla", "Different Heaven", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20-%20Nekozilla.mp3", "Electronic"));
+VertexClientPE.MusicUtils.registerSong(new Song("Neopolitan Dreams (Nilow Remix)", "Lisa Mitchell", "http://download1337.mediafireuserdownload.com/xkcpwv4eewmg/5qbuk6k29uvme7m/Lisa+Mitchell+-+Neopolitan+Dreams+%28Nilow+Rmx%29.mp3", "Dubstep"));
 VertexClientPE.MusicUtils.registerSong(new Song("Nova [NCS Release]", "Ahrix", "http://files-cdn.nocopyrightsounds.co.uk/Ahrix%20-%20Nova.mp3", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("Puzzle [NCS Release]", "RetroVision", "http://download1289.mediafireuserdownload.com/634st8i63zrg/2puhc3ijy7uyy0p/RetroVision+-+Puzzle.mp3", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("Roots [NCS Release]", "Tobu", "http://download1498.mediafireuserdownload.com/xxywxedjxgdg/gqya3cgqc40iwjx/Tobu+-+Roots.mp3", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("Savannah (feat. Philly K) [NCS Release]", "Diviners", "http://download1496.mediafireuserdownload.com/3ftt3otfxmkg/ft25eqaforf51ee/Diviners+-+Savannah+%28ft.+Philly+K%29.mp3", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("Time Leap [NCS Release]", "Aero Chord", "http://files-cdn.nocopyrightsounds.co.uk/Aero%20Chord%20-%20Time%20Leap.mp3", "Drum&Bass"));
-VertexClientPE.MusicUtils.registerSong(new Song("Tropic Love [NCS Release]", "Diviners feat. Contacreast", "http://files-cdn.nocopyrightsounds.co.uk/Diviners%20ft.%20Contacreast%20-%20Tropic%20Love%20%28Original%20Mix%29.mp3", "House"));
-//VertexClientPE.MusicUtils.registerSong(new Song("", "", ""));
+VertexClientPE.MusicUtils.registerSong(new Song("Tropic Love [NCS Release]", "Diviners feat. Contacreast", "http://files-cdn.nocopyrightsounds.co.uk/Diviners%20ft.%20Contacreast%20-%20Tropic%20Love%20%28Original%20Mix%29.mp3", "House")); */
+VertexClientPE.MusicUtils.registerSong(new Song("Dummy Song", "Example", "http://example.org/", "Unknown"));
+//VertexClientPE.MusicUtils.registerSong(new Song(String name, String artist, String url, String genre));
 
 VertexClientPE.initHealthTags = function() {
 	if(healthTagsNameSetting == "blue") {
@@ -10604,9 +10930,9 @@ VertexClientPE.nuke = function(x, y, z, range, mode) {
 	let destroyFunction = bypassState?Level.destroyBlock:setTile;
 	let destroyLastParam = bypassState?false:0;
 	if(mode == "cube") {
-		for(var blockX = - range; blockX <= range; blockX++) {
-			for(var blockY = - range; blockY <= range; blockY++) {
-				for(var blockZ = - range; blockZ <= range; blockZ++) {
+		for(let blockX = - range; blockX <= range; blockX++) {
+			for(let blockY = - range; blockY <= range; blockY++) {
+				for(let blockZ = - range; blockZ <= range; blockZ++) {
 					let tileX = Math.floor(x + blockX);
 					let tileY = Math.floor(y + blockY);
 					let tileZ = Math.floor(z + blockZ);
@@ -10616,10 +10942,10 @@ VertexClientPE.nuke = function(x, y, z, range, mode) {
 				}
 			}
 		}
-	} if(mode == "flat") {
-		for(var blockX = - range; blockX <= range; blockX++) {
-			for(var blockY = -1; blockY <= range; blockY++) {
-				for(var blockZ = - range; blockZ <= range; blockZ++) {
+	} else if(mode == "flat") {
+		for(let blockX = - range; blockX <= range; blockX++) {
+			for(let blockY = -1; blockY <= range; blockY++) {
+				for(let blockZ = - range; blockZ <= range; blockZ++) {
 					let tileX = Math.floor(x + blockX);
 					let tileY = Math.floor(y + blockY);
 					let tileZ = Math.floor(z + blockZ);
@@ -10629,10 +10955,10 @@ VertexClientPE.nuke = function(x, y, z, range, mode) {
 				}
 			}
 		}
-	} if(mode == "smash") {
-		for(var blockX = - range; blockX <= range; blockX++) {
-			for(var blockY = - range; blockY <= range; blockY++) {
-				for(var blockZ = - range; blockZ <= range; blockZ++) {
+	} else if(mode == "smash") {
+		for(let blockX = - range; blockX <= range; blockX++) {
+			for(let blockY = - range; blockY <= range; blockY++) {
+				for(let blockZ = - range; blockZ <= range; blockZ++) {
 					let tileX = Math.floor(x + blockX);
 					let tileY = Math.floor(y + blockY);
 					let tileZ = Math.floor(z + blockZ);
@@ -11031,9 +11357,9 @@ VertexClientPE.loadDeathCoords = function() {
 
 VertexClientPE.saveDeathCoords = function() {
 	File_(settingsPath).mkdirs();
-	var newFile = new File_(worldsPath + Level.getWorldDir() + "/" + "death.dat");
+	let newFile = new File_(worldsPath + Level.getWorldDir() + "/" + "death.dat");
 	newFile.createNewFile();
-	var outWrite = new OutputStreamWriter_(new FileOutputStream_(newFile));
+	let outWrite = new OutputStreamWriter_(new FileOutputStream_(newFile));
 	outWrite.append(VertexClientPE.currentWorld.deathX.toString());
 	outWrite.append("," + VertexClientPE.currentWorld.deathY.toString());
 	outWrite.append("," + VertexClientPE.currentWorld.deathZ.toString());
@@ -11089,25 +11415,21 @@ VertexClientPE.saveFloatingMenus = function(category) {
 		editor.putFloat("VertexClientPE.combattpopy", parseInt(combattpopy));
 		editor.putBoolean("VertexClientPE.combatMenuShown", combatMenuShown);
 	}
-	//---
 	if(category == "world" || category == "all") {
 		editor.putFloat("VertexClientPE.worldtpopx", parseInt(worldtpopx));
 		editor.putFloat("VertexClientPE.worldtpopy", parseInt(worldtpopy));
 		editor.putBoolean("VertexClientPE.worldMenuShown", worldMenuShown);
 	}
-	//---
 	if(category == "movement" || category == "all") {
 		editor.putFloat("VertexClientPE.movementtpopx", parseInt(movementtpopx));
 		editor.putFloat("VertexClientPE.movementtpopy", parseInt(movementtpopy));
 		editor.putBoolean("VertexClientPE.movementMenuShown", movementMenuShown);
 	}
-	//---
 	if(category == "player" || category == "all") {
 		editor.putFloat("VertexClientPE.playertpopx", parseInt(playertpopx));
 		editor.putFloat("VertexClientPE.playertpopy", parseInt(playertpopy));
 		editor.putBoolean("VertexClientPE.playerMenuShown", playerMenuShown);
 	}
-	//---
 	if(category == "misc" || category == "all") {
 		editor.putFloat("VertexClientPE.misctpopx", parseInt(misctpopx));
 		editor.putFloat("VertexClientPE.misctpopy", parseInt(misctpopy));
@@ -11230,6 +11552,9 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + healthTagsNameSetting.toString());
 	outWrite.append("," + healthTagsHealthSetting.toString());
 	outWrite.append("," + healthTagsShowHeartSetting.toString());
+	outWrite.append("," + modsStayEnabledSetting.toString());
+	outWrite.append("," + itemGiverModeSetting.toString());
+	outWrite.append("," + targetMyTeamSetting.toString());
 
 	outWrite.close();
 
@@ -11507,6 +11832,15 @@ VertexClientPE.loadMainSettings = function () {
 	if (arr[85] != null && arr[85] != undefined) {
 		healthTagsShowHeartSetting = arr[85];
 	}
+	if (arr[86] != null && arr[86] != undefined) {
+		modsStayEnabledSetting = arr[86];
+	}
+	if (arr[87] != null && arr[87] != undefined) {
+		itemGiverModeSetting = arr[87];
+	}
+	if (arr[88] != null && arr[88] != undefined) {
+		targetMyTeamSetting = arr[88];
+	}
 
 	VertexClientPE.loadCustomRGBSettings();
 	VertexClientPE.loadAutoSpammerMessage();
@@ -11588,7 +11922,7 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 	if(style != "android" && style != "invisible") {
 		let bg = GradientDrawable_();
 		if(round == true) {
-			bg.setCornerRadius(10);
+			bg.setCornerRadius(10); //TODO: check if corner radius is right?
 		} else if(round != false && round != null) {
 			let radiiFloatArray = Array_.newInstance(Float_.TYPE, 9);
 			let radius = 0;
@@ -11647,7 +11981,7 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 
 		buttonView.setOnTouchListener(new View_.OnTouchListener() {
 			onTouch: function(v, event) {
-				var action = event.getActionMasked();
+				let action = event.getActionMasked();
 				if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
 					if(style != "android") {
 						if(style == "transparent") {
@@ -11665,7 +11999,7 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 					}
 
 					if(style != "tile") {
-						var rect = new android.graphics.Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+						let rect = new android.graphics.Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
 						if(rect.contains(v.getLeft() + event.getX(), v.getTop() + event.getY())) { // detect if the event happens inside the view
 							// onClick will run soon
 
@@ -11698,9 +12032,9 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 	} else {
 		buttonView.setOnTouchListener(new View_.OnTouchListener() {
 			onTouch: function(v, event) {
-				var action = event.getActionMasked();
+				let action = event.getActionMasked();
 				if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
-					var rect = new android.graphics.Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+					let rect = new android.graphics.Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
 					if(rect.contains(v.getLeft() + event.getX(), v.getTop() + event.getY())) { // detect if the event happens inside the view
 						// onClick will run soon
 
@@ -11734,8 +12068,8 @@ VertexClientPE.setupButton = function(buttonView, text, color, round, forceLight
 const TYPE_WIFI = 1;
 const TYPE_MOBILE = 2;
 const TYPE_NOT_CONNECTED = 0;
-	
-	
+
+
 function getConnectivityStatus(context) {
 	let cm = context.getSystemService(Context_.CONNECTIVITY_SERVICE);
 
@@ -11847,7 +12181,7 @@ function songButton(song, barLayout) {
 	songLayout.setOrientation(LinearLayout_.HORIZONTAL);
 	let songLeftWidth = display.widthPixels;
 	let songClientButton = clientButton(songButtonText);
-	songClientButton.setLayoutParams(new LinearLayout_.LayoutParams(songLeftWidth - dip2px(10) - dip2px(50), LinearLayout_.LayoutParams.WRAP_CONTENT));
+	songClientButton.setLayoutParams(new LinearLayout_.LayoutParams(songLeftWidth - 20 - dip2px(50), LinearLayout_.LayoutParams.WRAP_CONTENT));
 	songClientButton.setOnClickListener(new View_.OnClickListener() {
 		onClick: function(v) {
 			VertexClientPE.loadToast();
@@ -12044,7 +12378,7 @@ function updatePaneButton(updateVersion, updateDesc, isDev) {
 	} else {
 		updatePaneLayoutRight.addView(updatePaneTypeText);
 	}
-	
+
 	if(isDev) {
 		updatePaneLayoutRight.addView(updatePaneCopyButton);
 	} else {
@@ -12221,7 +12555,7 @@ function modButton(mod, buttonOnly, customSize, shouldUpdateGUI, cornerEnabled) 
 	if(menuType != "halfscreen") {
 		modButtonLayout.setPadding(10, 5, 10, 5);
 	}
-	
+
 	/* let modButtonLayoutLeft = new LinearLayout_(CONTEXT);
 	modButtonLayoutLeft.setOrientation(1);
 	if(menuType == "halfscreen") {
@@ -12377,11 +12711,11 @@ function modButton(mod, buttonOnly, customSize, shouldUpdateGUI, cornerEnabled) 
 }
 
 function addonButton(addon) {
-	var addonButtonLayout = new LinearLayout_(CONTEXT);
+	let addonButtonLayout = new LinearLayout_(CONTEXT);
 	addonButtonLayout.setOrientation(LinearLayout_.HORIZONTAL);
 	addonButtonLayout.setGravity(Gravity_.CENTER);
 
-	var defaultClientButton = clientButton(addon.name + " v" + addon.current_version, addon.desc);
+	let defaultClientButton = clientButton(addon.name + " v" + addon.current_version, addon.desc);
 	defaultClientButton.setLayoutParams(new LinearLayout_.LayoutParams(display.heightPixels / 2, display.heightPixels / 8));
 	defaultClientButton.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
 	defaultClientButton.setMarqueeRepeatLimit(-1);
@@ -12400,7 +12734,7 @@ function addonButton(addon) {
 		}
 	});
 
-	var removeButton = clientButton("x");
+	let removeButton = clientButton("x");
 	removeButton.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.WRAP_CONTENT, display.heightPixels / 8));
 	removeButton.setOnClickListener(new View_.OnClickListener({
 		onClick: function(viewArg) {
@@ -12422,7 +12756,7 @@ function addonButton(addon) {
 }
 
 function categoryTab(category) {
-	var categoryTabLayout = new LinearLayout_(CONTEXT);
+	let categoryTabLayout = new LinearLayout_(CONTEXT);
 	categoryTabLayout.setOrientation(1);
 	categoryTabLayout.setGravity(Gravity_.CENTER);
 
@@ -12442,10 +12776,10 @@ function categoryTab(category) {
 		currentTab = "Combat";
 	}
 
-	var categoryName = VertexClientPE.category.toName(category);
-	var categoryRealName = VertexClientPE.category.toRealName(category);
+	let categoryName = VertexClientPE.category.toName(category);
+	let categoryRealName = VertexClientPE.category.toRealName(category);
 
-	var defaultClientButton = clientButton(categoryName);
+	let defaultClientButton = clientButton(categoryName);
 	defaultClientButton.setAlpha(0.54);
 	if(currentTab == categoryRealName) {
 		defaultClientButton.setTextColor(Color_.GREEN);
@@ -12479,7 +12813,7 @@ function categoryTab(category) {
 						if(element.hasOwnProperty("isExpMod") && element.isExpMod() && !VertexClientPE.isExpMode()) {
 							return;
 						}
-						if(element.hasOwnProperty("checkBeforeAdding") && !element.checkBeforeAdding()) {
+						if(element.hasOwnProperty("shouldAdd") && !element.shouldAdd()) {
 							return;
 						}
 						menuRightLayout.addView(modButton(element, null, null, null, shouldHaveCorner));
@@ -12500,16 +12834,16 @@ function categoryTab(category) {
 	return categoryTabLayout;
 }
 
-var currentMPTab = "All";
+let currentMPTab = "All";
 
 function musicPlayerTab(name, tabLayout, songLayout, playBar) {
-	var musicPlayerTabHolderLayout = new LinearLayout_(CONTEXT);
+	let musicPlayerTabHolderLayout = new LinearLayout_(CONTEXT);
 	musicPlayerTabHolderLayout.setOrientation(1);
 	musicPlayerTabHolderLayout.setGravity(Gravity_.CENTER);
 
-	var defaultClientButton = clientButton(name);
+	let defaultClientButton = clientButton(name);
 	defaultClientButton.setAlpha(0.54);
-	defaultClientButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2 - dip2px(5), LinearLayout_.LayoutParams.WRAP_CONTENT));
+	defaultClientButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 2 - 10, LinearLayout_.LayoutParams.WRAP_CONTENT));
 	if(currentMPTab == name) {
 		defaultClientButton.setTextColor(Color_.GREEN);
 		if(fontSetting != "minecraft") {
@@ -12532,7 +12866,7 @@ function musicPlayerTab(name, tabLayout, songLayout, playBar) {
 				tabLayout.removeAllViews();
 				songLayout.removeAllViews();
 
-				var categories = ["All", "Favorite"];
+				let categories = ["All", "Favorite"];
 
 				categories.forEach(function(element, index, array) {
 					tabLayout.addView(new musicPlayerTab(element, tabLayout, songLayout, playBar));
@@ -12553,13 +12887,13 @@ function musicPlayerTab(name, tabLayout, songLayout, playBar) {
 	return musicPlayerTabHolderLayout;
 }
 
-var currentTabGUICategory;
+let currentTabGUICategory;
 
 function tabGUICategoryButton(category, layout, layoutToBeOpened, layoutMain) {
-	var tabGUICategoryButtonLayout = new LinearLayout_(CONTEXT);
+	let tabGUICategoryButtonLayout = new LinearLayout_(CONTEXT);
 	tabGUICategoryButtonLayout.setOrientation(1);
 
-	var categoryButton = clientButton(VertexClientPE.category.toName(category));
+	let categoryButton = clientButton(VertexClientPE.category.toName(category));
 	categoryButton.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.MATCH_PARENT, (CONTEXT.getWindowManager().getDefaultDisplay().getHeight() / 3) / 5));
 	categoryButton.setOnClickListener(new View_.OnClickListener({
 		onClick: function(viewArg) {
@@ -12583,32 +12917,33 @@ function tabGUICategoryButton(category, layout, layoutToBeOpened, layoutMain) {
 				}
 				currentTabGUICategory = null;
 			}
-			for(var i = 0; i < layout.getChildCount(); i++) {
-				if(layout.getChildAt(i).getChildAt(0) != categoryButton) {
+			for(let i = 0; i < layout.getChildCount(); i++) {
+				let layoutChild = layout.getChildAt(i).getChildAt(0);
+				if(layoutChild != categoryButton) {
 					if(themeSetting == "white") {
-						layout.getChildAt(i).getChildAt(0).setTextColor(Color_.BLACK);
+						layoutChild.setTextColor(Color_.BLACK);
 						if(fontSetting != "minecraft") {
-							layout.getChildAt(i).getChildAt(0).setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
+							layoutChild.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.WHITE);
 						}
 					} else {
-						layout.getChildAt(i).getChildAt(0).setTextColor(Color_.WHITE);
+						layoutChild.setTextColor(Color_.WHITE);
 						if(fontSetting != "minecraft") {
-							layout.getChildAt(i).getChildAt(0).setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
+							layoutChild.setShadowLayer(dip2px(1), dip2px(1), dip2px(1), Color_.BLACK);
 						}
 					}
 				}
 			}
 			if(currentTabGUICategory != null) {
+				let layoutToBeOpenedScrollView = new ScrollView_(CONTEXT);
+				let layoutToBeOpened1 = new LinearLayout_(CONTEXT);
+				layoutToBeOpened1.setOrientation(1);
 				if(layoutMain.getChildCount() == 1) {
 					layoutMain.addView(layoutToBeOpened);
-					var layoutToBeOpenedScrollView = new ScrollView_(CONTEXT);
-					var layoutToBeOpened1 = new LinearLayout_(CONTEXT);
-					layoutToBeOpened1.setOrientation(1);
-					layoutToBeOpened.addView(layoutToBeOpenedScrollView);
 					layoutToBeOpenedScrollView.addView(layoutToBeOpened1);
+					layoutToBeOpened.addView(layoutToBeOpenedScrollView);
 					VertexClientPE.modules.forEach(function(element, index, array) {
 						if(element.category == category && (element.type == "Mod" || element.type == "Special")) {
-							if(element.hasOwnProperty("isExpMod") && element.isExpMod() && !VertexClientPE.isExpMode()) {
+							if((element.hasOwnProperty("isExpMod") && element.isExpMod() && !VertexClientPE.isExpMode()) || (element.hasOwnProperty("shouldAdd") && !element.shouldAdd())) {
 								return;
 							}
 							layoutToBeOpened1.addView(modButton(element, true, null, true));
@@ -12620,17 +12955,11 @@ function tabGUICategoryButton(category, layout, layoutToBeOpened, layoutMain) {
 				} else if(layoutMain.getChildCount() == 2) {
 					//layoutToBeOpened.addView for all modButtons
 					layoutToBeOpened.removeAllViews();
-					var layoutToBeOpenedScrollView = new ScrollView_(CONTEXT);
-					var layoutToBeOpened1 = new LinearLayout_(CONTEXT);
-					layoutToBeOpened1.setOrientation(1);
-					layoutToBeOpened.addView(layoutToBeOpenedScrollView);
 					layoutToBeOpenedScrollView.addView(layoutToBeOpened1);
+					layoutToBeOpened.addView(layoutToBeOpenedScrollView);
 					VertexClientPE.modules.forEach(function(element, index, array) {
 						if(element.category == category && (element.type == "Mod" || element.type == "Special")) {
-							if(element.hasOwnProperty("isExpMod") && element.isExpMod() && !VertexClientPE.isExpMode()) {
-								return;
-							}
-							if(element.hasOwnProperty("checkBeforeAdding") && !element.checkBeforeAdding()) {
+							if((element.hasOwnProperty("isExpMod") && element.isExpMod() && !VertexClientPE.isExpMode()) || (element.hasOwnProperty("shouldAdd") && !element.shouldAdd())) {
 								return;
 							}
 							layoutToBeOpened1.addView(modButton(element, true, null, true));
@@ -12660,9 +12989,9 @@ function tabGUICategoryButton(category, layout, layoutToBeOpened, layoutMain) {
 }
 
 function accountButton(account, layout) {
-	var playerName = account.toString();
+	let playerName = account.toString();
 
-	var accountManagerAccountLayout = new LinearLayout_(CONTEXT);
+	let accountManagerAccountLayout = new LinearLayout_(CONTEXT);
 	accountManagerAccountLayout.setOrientation(LinearLayout_.HORIZONTAL);
 	accountManagerAccountLayout.setPadding(dip2px(10), 0, dip2px(10), 0);
 	//accountManagerAccountLayout.setBackgroundDrawable();
@@ -12670,31 +12999,31 @@ function accountButton(account, layout) {
 		accountManagerAccountLayout.setBackgroundDrawable(backgroundSpecial(null, "green"));
 	}
 
-	var accountManagerAccountLayoutLeft = new LinearLayout_(CONTEXT);
+	let accountManagerAccountLayoutLeft = new LinearLayout_(CONTEXT);
 	accountManagerAccountLayoutLeft.setOrientation(1);
 	accountManagerAccountLayoutLeft.setGravity(Gravity_.CENTER_VERTICAL);
 	accountManagerAccountLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3, display.heightPixels / 10));
 	accountManagerAccountLayout.addView(accountManagerAccountLayoutLeft);
 
-	var accountManagerAccountLayoutCenter = new LinearLayout_(CONTEXT);
+	let accountManagerAccountLayoutCenter = new LinearLayout_(CONTEXT);
 	accountManagerAccountLayoutCenter.setOrientation(1);
 	accountManagerAccountLayoutCenter.setGravity(Gravity_.CENTER);
 	accountManagerAccountLayoutCenter.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3, display.heightPixels / 10));
 	accountManagerAccountLayout.addView(accountManagerAccountLayoutCenter);
 
-	var accountManagerAccountLayoutRight = new LinearLayout_(CONTEXT);
+	let accountManagerAccountLayoutRight = new LinearLayout_(CONTEXT);
 	accountManagerAccountLayoutRight.setOrientation(LinearLayout_.HORIZONTAL);
 	accountManagerAccountLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 3, display.heightPixels / 10));
 	accountManagerAccountLayout.addView(accountManagerAccountLayoutRight);
-	var usernameText = clientTextView(account);
+	let usernameText = clientTextView(account);
 	usernameText.setTextSize(15);
 	accountManagerAccountLayoutLeft.addView(usernameText);
-	var useButton = clientButton("Use");
+	let useButton = clientButton("Use");
 	useButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 4  - dip2px(10), display.heightPixels / 10));
 	useButton.setOnClickListener(new View_.OnClickListener({
 		onClick: function(viewArg) {
-			//var playerClientId = account.clientId.toString();
-			var shouldRestart = false;
+			//let playerClientId = account.clientId.toString();
+			let shouldRestart = false;
 			if(playerName != ModPE.getPlayerName()) {
 				ModPE.setPlayerName(playerName);
 				shouldRestart = true;
@@ -12712,7 +13041,7 @@ function accountButton(account, layout) {
 		}
 	}));
 	accountManagerAccountLayoutRight.addView(useButton);
-	var deleteButton = clientButton("x");
+	let deleteButton = clientButton("x");
 	deleteButton.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels / 3 - display.widthPixels / 4  - dip2px(10), display.heightPixels / 10));
 	deleteButton.setOnClickListener(new View_.OnClickListener({
 		onClick: function(viewArg) {
@@ -12729,30 +13058,30 @@ function friendButton(friend, layout) {
 
 	let delButtonWidth = display.widthPixels / 3 - display.widthPixels / 4  - dip2px(10);
 
-	var friendManagerAccountLayout = new LinearLayout_(CONTEXT);
+	let friendManagerAccountLayout = new LinearLayout_(CONTEXT);
 	friendManagerAccountLayout.setOrientation(LinearLayout_.HORIZONTAL);
 	friendManagerAccountLayout.setPadding(dip2px(10), 0, dip2px(10), 0);
 	//friendManagerAccountLayout.setGravity(Gravity_.CENTER);
 
-	var friendManagerAccountLayoutLeft_ = new LinearLayout_(CONTEXT);
+	let friendManagerAccountLayoutLeft_ = new LinearLayout_(CONTEXT);
 	friendManagerAccountLayoutLeft_.setOrientation(1);
 	friendManagerAccountLayoutLeft_.setGravity(Gravity_.CENTER_VERTICAL);
 	friendManagerAccountLayoutLeft_.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 4, display.heightPixels / 10));
 	friendManagerAccountLayout.addView(friendManagerAccountLayoutLeft_);
 
-	var friendManagerAccountLayoutLeft = new LinearLayout_(CONTEXT);
+	let friendManagerAccountLayoutLeft = new LinearLayout_(CONTEXT);
 	friendManagerAccountLayoutLeft.setOrientation(LinearLayout_.HORIZONTAL);
 	friendManagerAccountLayoutLeft.setGravity(Gravity_.CENTER_VERTICAL);
 	friendManagerAccountLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 4 - delButtonWidth, display.heightPixels / 10));
 	friendManagerAccountLayout.addView(friendManagerAccountLayoutLeft);
 
-	var friendManagerAccountLayoutRight = new LinearLayout_(CONTEXT);
+	let friendManagerAccountLayoutRight = new LinearLayout_(CONTEXT);
 	friendManagerAccountLayoutRight.setOrientation(LinearLayout_.HORIZONTAL);
 	friendManagerAccountLayoutRight.setGravity(Gravity_.RIGHT);
 	friendManagerAccountLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 4 + delButtonWidth, display.heightPixels / 10));
 	friendManagerAccountLayout.addView(friendManagerAccountLayoutRight);
 
-	var usernameText = clientTextView(friendName);
+	let usernameText = clientTextView(friendName);
 	usernameText.setTextSize(15);
 	usernameText.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
 	usernameText.setMarqueeRepeatLimit(-1);
@@ -12761,7 +13090,7 @@ function friendButton(friend, layout) {
 	usernameText.setSelected(true);
 	friendManagerAccountLayoutLeft.addView(usernameText);
 
-	var deleteButton = clientButton("x");
+	let deleteButton = clientButton("x");
 	deleteButton.setLayoutParams(new LinearLayout_.LayoutParams(delButtonWidth, display.heightPixels / 10));
 	deleteButton.setOnClickListener(new View_.OnClickListener({
 		onClick: function(viewArg) {
@@ -12863,11 +13192,11 @@ function clientSwitch(text, parentBackgroundColor) {
 }
 
 function clientSectionTitle(text, style) {
-	var defaultTextView = new TextView_(CONTEXT);
+	let defaultTextView = new TextView_(CONTEXT);
 	defaultTextView.setText(text);
 
 	if(style == "rainbow") {
-		var rainbowInt = Array_.newInstance(Integer_.TYPE, 7);
+		let rainbowInt = Array_.newInstance(Integer_.TYPE, 7);
 		rainbowInt[0] = Color_.RED;
 		rainbowInt[1] = Color_.MAGENTA;
 		rainbowInt[2] = Color_.BLUE;
@@ -12875,15 +13204,15 @@ function clientSectionTitle(text, style) {
 		rainbowInt[4] = Color_.GREEN;
 		rainbowInt[5] = Color_.YELLOW;
 		rainbowInt[6] = Color_.RED;
-		var rainbowBg = new GradientDrawable_(GradientDrawable_.Orientation.LEFT_RIGHT, rainbowInt);
+		let rainbowBg = new GradientDrawable_(GradientDrawable_.Orientation.LEFT_RIGHT, rainbowInt);
 		defaultTextView.setBackgroundDrawable(rainbowBg);
 		VertexClientPE.addTextStyleToView(defaultTextView, "diff");
 	} else {
 		if(style == "theme") {
-			var colorInt = Array_.newInstance(Integer_.TYPE, 2);
+			let colorInt = Array_.newInstance(Integer_.TYPE, 2);
 			colorInt[0] = getColor("inner");
 			colorInt[1] = getColor("stroke");
-			var colorBg = new GradientDrawable_(GradientDrawable_.Orientation.LEFT_RIGHT, colorInt);
+			let colorBg = new GradientDrawable_(GradientDrawable_.Orientation.LEFT_RIGHT, colorInt);
 			defaultTextView.setBackgroundDrawable(colorBg);
 			VertexClientPE.addTextStyleToView(defaultTextView);
 		} else {
@@ -12915,56 +13244,47 @@ function clientScreenTitle(defaultText, icon, parentBackgroundColor) {
 }
 
 function clientHR() {//horizontal divider
-	var defaultView = new View_(CONTEXT);
+	let defaultView = new View_(CONTEXT);
 	defaultView.setLayoutParams(new LinearLayout_.LayoutParams(ViewGroup_.LayoutParams.MATCH_PARENT, 5));
 	defaultView.setBackgroundColor(Color_.parseColor("#B3B3B3"));
 
 	return defaultView;
 }
 
-function categoryTitle(text, editOnly) {
-	if(editOnly == null) {
-		editOnly = false;
-	}
-	
-	var categoryTitleLayout = new LinearLayout_(CONTEXT);
+function categoryTitle(text) {
+
+	let categoryTitleLayout = new LinearLayout_(CONTEXT);
 	categoryTitleLayout.setOrientation(LinearLayout_.HORIZONTAL);
 
-	var categoryTitleLayoutLeft = new LinearLayout_(CONTEXT);
+	let categoryTitleLayoutLeft = new LinearLayout_(CONTEXT);
 	categoryTitleLayoutLeft.setOrientation(1);
 	categoryTitleLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.heightPixels / 3 - display.heightPixels / 4, display.heightPixels / 20));
 	categoryTitleLayout.addView(categoryTitleLayoutLeft);
 
-	var categoryTitleLayoutMiddle = new LinearLayout_(CONTEXT);
+	let categoryTitleLayoutMiddle = new LinearLayout_(CONTEXT);
 	categoryTitleLayoutMiddle.setOrientation(1);
 	categoryTitleLayoutMiddle.setLayoutParams(new ViewGroup_.LayoutParams(display.heightPixels / 3, display.heightPixels / 20));
 	categoryTitleLayout.addView(categoryTitleLayoutMiddle);
 
-	var categoryTitleLayoutRight = new LinearLayout_(CONTEXT);
+	let categoryTitleLayoutRight = new LinearLayout_(CONTEXT);
 	categoryTitleLayoutRight.setOrientation(1);
 	categoryTitleLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.heightPixels / 3 - display.heightPixels / 4, display.heightPixels / 20));
 	categoryTitleLayout.addView(categoryTitleLayoutRight);
 
-	var defaultSettingsButton = clientButton("\u270E", null, null, "left", null, true, dip2px(2));
+	let defaultSettingsButton = clientButton("\u270E", null, null, "left", null, true, dip2px(2));
 	defaultSettingsButton.setLayoutParams(new LinearLayout_.LayoutParams(display.heightPixels / 3 - display.heightPixels / 4, display.heightPixels / 20));
 	defaultSettingsButton.setAlpha(0.54);
 	categoryTitleLayoutLeft.addView(defaultSettingsButton);
 
-	var defaultTitle = coloredSubTitle(text);
-	if(editOnly) {
-		defaultTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.heightPixels / 3 + display.heightPixels / 4, display.heightPixels / 20));
-	} else {
-		defaultTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.heightPixels / 3, display.heightPixels / 20));
-	}
+	let defaultTitle = coloredSubTitle(text);
+	defaultTitle.setLayoutParams(new LinearLayout_.LayoutParams(display.heightPixels / 3, display.heightPixels / 20));
 	defaultTitle.setGravity(Gravity_.CENTER);
 	categoryTitleLayoutMiddle.addView(defaultTitle);
 
-	var defaultArrowButton = clientButton("\u25BD", null, null, "right", null, true, dip2px(2));
+	let defaultArrowButton = clientButton("\u25BD", null, null, "right", null, true, dip2px(2));
 	defaultArrowButton.setLayoutParams(new LinearLayout_.LayoutParams(display.heightPixels / 3 - display.heightPixels / 4, display.heightPixels / 20));
 	defaultArrowButton.setAlpha(0.54);
-	if(!editOnly) {
-		categoryTitleLayoutRight.addView(defaultArrowButton);
-	}
+	categoryTitleLayoutRight.addView(defaultArrowButton);
 
 	this.getName = function() {
 		return text;
@@ -12992,32 +13312,32 @@ function settingButton(text, desc, parentWidth, resetFunc) {
 		parentWidth = display.widthPixels - dip2px(4);
 	}
 
-	var settingButtonLayout = new LinearLayout_(CONTEXT);
+	let settingButtonLayout = new LinearLayout_(CONTEXT);
 	settingButtonLayout.setOrientation(LinearLayout_.HORIZONTAL);
 
-	var settingButtonLayoutLeft = new LinearLayout_(CONTEXT);
+	let settingButtonLayoutLeft = new LinearLayout_(CONTEXT);
 	settingButtonLayoutLeft.setOrientation(1);
 	settingButtonLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(parentWidth / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
 	settingButtonLayout.addView(settingButtonLayoutLeft);
 
-	var settingButtonLayoutMiddle = new LinearLayout_(CONTEXT);
+	let settingButtonLayoutMiddle = new LinearLayout_(CONTEXT);
 	settingButtonLayoutMiddle.setOrientation(1);
 	settingButtonLayoutMiddle.setGravity(Gravity_.RIGHT);
 	settingButtonLayoutMiddle.setLayoutParams(new ViewGroup_.LayoutParams(parentWidth / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
 	settingButtonLayout.addView(settingButtonLayoutMiddle);
 
-	var settingButtonLayoutRight = new LinearLayout_(CONTEXT);
+	let settingButtonLayoutRight = new LinearLayout_(CONTEXT);
 	settingButtonLayoutRight.setOrientation(1);
 	settingButtonLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(parentWidth / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
 	settingButtonLayout.addView(settingButtonLayoutRight);
 
-	var defaultTitle = clientTextView(text, true);
+	let defaultTitle = clientTextView(text, true);
 	defaultTitle.setLayoutParams(new LinearLayout_.LayoutParams(parentWidth / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
 	defaultTitle.setGravity(Gravity_.CENTER_VERTICAL);
 
 	settingButtonLayoutLeft.addView(defaultTitle);
 
-	var resetButton;
+	let resetButton;
 	if(resetFunc) {
 		resetButton = clientButton("Reset");
 		resetButton.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
@@ -13036,7 +13356,7 @@ function settingButton(text, desc, parentWidth, resetFunc) {
 		settingButtonLayoutMiddle.addView(resetButton);
 	}
 
-	var defaultSettingsButton = clientButton("Unknown", desc);
+	let defaultSettingsButton = clientButton("Unknown", desc);
 	defaultSettingsButton.setLayoutParams(new LinearLayout_.LayoutParams(parentWidth / 3, LinearLayout_.LayoutParams.WRAP_CONTENT));
 	settingButtonLayoutRight.addView(defaultSettingsButton);
 
@@ -13247,12 +13567,12 @@ function getColor(part, colorString, useLightColor) {
 
 function coloredSubTitle(subtitle) // TextView with colored background (edited by peacestorm)
 {
-	var bg = GradientDrawable_();
+	let bg = GradientDrawable_();
 	bg.setColor(getColor("inner"));
 	bg.setStroke(dip2px(2), getColor("stroke"));
 	bg.setShape(GradientDrawable_.RECTANGLE);
 
-	var title = clientTextView(subtitle, true);
+	let title = clientTextView(subtitle, true);
 	title.setAlpha(0.54);
 	title.setBackgroundDrawable(bg);
 
@@ -13260,15 +13580,15 @@ function coloredSubTitle(subtitle) // TextView with colored background (edited b
 }
 
 function backgroundSpecial(round, color, showProLine, lightColor) {
-	var bg = GradientDrawable_();
-	var rgbArray = [customRGBRed, customRGBGreen, customRGBBlue];
+	let bg = GradientDrawable_();
+	let rgbArray = [customRGBRed, customRGBGreen, customRGBBlue];
 	if(round == true) {
 		bg.setCornerRadius(8);
 	} else if(round != false && round != null) {
-		var radiiFloatArray = Array_.newInstance(Float_.TYPE, 9);
-		var radius = 0;
+		let radiiFloatArray = Array_.newInstance(Float_.TYPE, 9);
+		let radius = 0;
 		if(round == "left") {
-			for(var i = 0; i <= 7; i++) {
+			for(let i = 0; i <= 7; i++) {
 				if(i == 0 || i == 1 || i == 6 || i == 7) {
 					radiiFloatArray[i] = 8;
 				} else {
@@ -13277,7 +13597,7 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
 			}
 			bg.setCornerRadii(radiiFloatArray);
 		} else if(round == "right") {
-			for(var i = 0; i <= 7; i++) {
+			for(let i = 0; i <= 7; i++) {
 				if(i == 2 || i == 3 || i == 4 || i == 5) {
 					radiiFloatArray[i] = 8;
 				} else {
@@ -13286,7 +13606,7 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
 			}
 			bg.setCornerRadii(radiiFloatArray);
 		} else if(round == "cornerleft") {
-			for(var i = 0; i <= 7; i++) {
+			for(let i = 0; i <= 7; i++) {
 				if(i == 6 || i == 7) {
 					radiiFloatArray[i] = 180;
 				} else {
@@ -13295,7 +13615,7 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
 			}
 			bg.setCornerRadii(radiiFloatArray);
 		} else if(round == "cornerright") {
-			for(var i = 0; i <= 7; i++) {
+			for(let i = 0; i <= 7; i++) {
 				if(i == 4 || i == 5) {
 					radiiFloatArray[i] = 180;
 				} else {
@@ -13304,7 +13624,7 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
 			}
 			bg.setCornerRadii(radiiFloatArray);
 		} else if(round == "cornerleft_") {
-			for(var i = 0; i <= 7; i++) {
+			for(let i = 0; i <= 7; i++) {
 				if(i == 0 || i == 1) {
 					radiiFloatArray[i] = 180;
 				} else {
@@ -13313,7 +13633,7 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
 			}
 			bg.setCornerRadii(radiiFloatArray);
 		} else if(round == "cornerright_") {
-			for(var i = 0; i <= 7; i++) {
+			for(let i = 0; i <= 7; i++) {
 				if(i == 2 || i == 3) {
 					radiiFloatArray[i] = 180;
 				} else {
@@ -13322,7 +13642,7 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
 			}
 			bg.setCornerRadii(radiiFloatArray);
 		} else if(round == "bottom") {
-			for(var i = 0; i <= 7; i++) {
+			for(let i = 0; i <= 7; i++) {
 				if(i >= 4) {
 					radiiFloatArray[i] = 8;
 				} else {
@@ -13331,7 +13651,7 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
 			}
 			bg.setCornerRadii(radiiFloatArray);
 		} else if(round == "bottomleft") {
-			for(var i = 0; i <= 7; i++) {
+			for(let i = 0; i <= 7; i++) {
 				if(i >= 4 && i <= 5) {
 					radiiFloatArray[i] = 8;
 				} else {
@@ -13340,7 +13660,7 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
 			}
 			bg.setCornerRadii(radiiFloatArray);
 		} else if(round == "bottomright") {
-			for(var i = 0; i <= 7; i++) {
+			for(let i = 0; i <= 7; i++) {
 				if(i >= 6) {
 					radiiFloatArray[i] = 8;
 				} else {
@@ -13349,7 +13669,7 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
 			}
 			bg.setCornerRadii(radiiFloatArray);
 		} else if(round == "top") {
-			for(var i = 0; i <= 7; i++) {
+			for(let i = 0; i <= 7; i++) {
 				if(i <= 3) {
 					radiiFloatArray[i] = 8;
 				} else {
@@ -13358,7 +13678,7 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
 			}
 			bg.setCornerRadii(radiiFloatArray);
 		} else if(round == "invertcornerright") {
-			for(var i = 0; i <= 7; i++) {
+			for(let i = 0; i <= 7; i++) {
 				if(i == 2 || i == 3) {
 					radiiFloatArray[i] = -180;
 				} else {
@@ -13412,7 +13732,7 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
 		if (color.indexOf("|") < 0) {
 			bg.setColor(Color_.parseColor(color));
 		} else {
-			var arr = color.split("|");
+			let arr = color.split("|");
 			bg.setColor(Color_.parseColor(arr[0]));
 			bg.setStroke(dip2px(1), Color_.parseColor(arr[1]));
 		}
@@ -13434,7 +13754,7 @@ VertexClientPE.setupGradient = function(gradientDrawable, color, strokeColor, rg
 	if(style == "normal_noinner") {
 		gradientDrawable.setColor(Color_.TRANSPARENT);
 	}
-	var preset = transparent?"#70":"#";
+	let preset = transparent?"#70":"#";
 	if(rgbArray == null) {
 		if(style != "normal_noinner") {
 			gradientDrawable.setColor(Color_.parseColor(preset + color));
@@ -13471,11 +13791,11 @@ function backgroundGradient(round, style, transparent) // TextView with colored 
 	}
 	transparent = transparent=="on";
 	if(style == "normal" || style == "normal_nostrokes" || style == "normal_noinner") {
-		var bg = GradientDrawable_();
-		var radius = 0;
+		let bg = GradientDrawable_();
+		let radius = 0;
 		if(round == true) {
-			var radiiFloatArray = Array_.newInstance(Float_.TYPE, 9);
-			for(var i = 0; i <= 7; i++) {
+			let radiiFloatArray = Array_.newInstance(Float_.TYPE, 9);
+			for(let i = 0; i <= 7; i++) {
 				if(i >= 4) {
 					radiiFloatArray[i] = 16;
 				} else {
@@ -13484,8 +13804,8 @@ function backgroundGradient(round, style, transparent) // TextView with colored 
 			}
 			bg.setCornerRadii(radiiFloatArray);
 		} else if(round == "bottomright") {
-			var radiiFloatArray = Array_.newInstance(Float_.TYPE, 9);
-			for(var i = 0; i <= 7; i++) {
+			let radiiFloatArray = Array_.newInstance(Float_.TYPE, 9);
+			for(let i = 0; i <= 7; i++) {
 				if(i >= 4 && i <= 5) {
 					radiiFloatArray[i] = 16;
 				} else {
@@ -13494,8 +13814,8 @@ function backgroundGradient(round, style, transparent) // TextView with colored 
 			}
 			bg.setCornerRadii(radiiFloatArray);
 		} else if(round == "bottomleft") {
-			var radiiFloatArray = Array_.newInstance(Float_.TYPE, 9);
-			for(var i = 0; i <= 7; i++) {
+			let radiiFloatArray = Array_.newInstance(Float_.TYPE, 9);
+			for(let i = 0; i <= 7; i++) {
 				if(i >= 6) {
 					radiiFloatArray[i] = 16;
 				} else {
@@ -13504,8 +13824,8 @@ function backgroundGradient(round, style, transparent) // TextView with colored 
 			}
 			bg.setCornerRadii(radiiFloatArray);
 		} else if(round == "bottomleft_") {
-			var radiiFloatArray = Array_.newInstance(Float_.TYPE, 9);
-			for(var i = 0; i <= 7; i++) {
+			let radiiFloatArray = Array_.newInstance(Float_.TYPE, 9);
+			for(let i = 0; i <= 7; i++) {
 				if(i == 0 || i == 1) {
 					radiiFloatArray[i] = 16;
 				} else {
@@ -13514,8 +13834,8 @@ function backgroundGradient(round, style, transparent) // TextView with colored 
 			}
 			bg.setCornerRadii(radiiFloatArray);
 		} else if(round == "bottomright_") {
-			var radiiFloatArray = Array_.newInstance(Float_.TYPE, 9);
-			for(var i = 0; i <= 7; i++) {
+			let radiiFloatArray = Array_.newInstance(Float_.TYPE, 9);
+			for(let i = 0; i <= 7; i++) {
 				if(i == 2 || i == 3) {
 					radiiFloatArray[i] = 16;
 				} else {
@@ -13633,16 +13953,16 @@ function getRandomInt(min, max) {
 VertexClientPE.checkForUpdates = function() {
 	try {
 		// download content
-		var url = new URL_("https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/update/Updater/Version");
-		var connection = url.openConnection();
+		let url = new URL_("https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/update/Updater/Version");
+		let connection = url.openConnection();
 
 		// get content
 		inputStream = connection.getInputStream();
 
 		// read result
-		var loadedVersion = "";
-		var bufferedVersionReader = new BufferedReader_(new InputStreamReader_(inputStream));
-		var rowVersion = "";
+		let loadedVersion = "";
+		let bufferedVersionReader = new BufferedReader_(new InputStreamReader_(inputStream));
+		let rowVersion = "";
 		while((rowVersion = bufferedVersionReader.readLine()) != null) {
 			loadedVersion += rowVersion;
 		}
@@ -13676,16 +13996,16 @@ VertexClientPE.checkForUpdates = function() {
 VertexClientPE.loadUpdateDescription = function() {
 	try {
 		// download content
-		var url = new URL_("https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/update/Updater/Version-Desc/" + VertexClientPE.latestVersion);
-		var connection = url.openConnection();
+		let url = new URL_("https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/update/Updater/Version-Desc/" + VertexClientPE.latestVersion);
+		let connection = url.openConnection();
 
 		// get content
 		inputStream = connection.getInputStream();
 
 		// read result
-		var loadedUpdateDesc = "";
-		var bufferedUpdateDescReader = new BufferedReader_(new InputStreamReader_(inputStream));
-		var rowUpdateDesc = "";
+		let loadedUpdateDesc = "";
+		let bufferedUpdateDescReader = new BufferedReader_(new InputStreamReader_(inputStream));
+		let rowUpdateDesc = "";
 		while((rowUpdateDesc = bufferedUpdateDescReader.readLine()) != null) {
 			loadedUpdateDesc += rowUpdateDesc;
 		}
@@ -13744,11 +14064,11 @@ VertexClientPE.loadNews = function() {
 	}
 }
 
-var _0x498b=["\x6C\x6F\x61\x64\x53\x75\x70\x70\x6F\x72\x74","\x68\x74\x74\x70\x73\x3A\x2F\x2F\x72\x61\x77\x2E\x67\x69\x74\x68\x75\x62\x75\x73\x65\x72\x63\x6F\x6E\x74\x65\x6E\x74\x2E\x63\x6F\x6D\x2F\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2F\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2D\x50\x45\x2F\x75\x70\x64\x61\x74\x65\x2F\x53\x75\x70\x70\x6F\x72\x74\x2F","\x63\x75\x72\x72\x65\x6E\x74\x56\x65\x72\x73\x69\x6F\x6E","\x2F\x73\x75\x70\x70\x6F\x72\x74","\x6E\x65\x74","\x6F\x70\x65\x6E\x43\x6F\x6E\x6E\x65\x63\x74\x69\x6F\x6E","\x67\x65\x74\x49\x6E\x70\x75\x74\x53\x74\x72\x65\x61\x6D","","\x69\x6F","\x72\x65\x61\x64\x4C\x69\x6E\x65","\x20","\x73\x70\x6C\x69\x74","\x75\x6E\x73\x75\x70\x70\x6F\x72\x74\x65\x64","\x63\x6C\x6F\x73\x65","\x56\x65\x72\x74\x65\x78\x43\x6C\x69\x65\x6E\x74\x50\x45\x2E\x69\x73\x53\x75\x70\x70\x6F\x72\x74\x65\x64\x5F","\x67\x65\x74\x53\x74\x72\x69\x6E\x67","\x66\x61\x6C\x73\x65","\x5B\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x5D\x20\x56\x65\x72\x74\x65\x78\x43\x6C\x69\x65\x6E\x74\x50\x45\x2E\x6C\x6F\x61\x64\x53\x75\x70\x70\x6F\x72\x74\x28\x29\x20\x63\x61\x75\x67\x68\x74\x20\x61\x6E\x20\x65\x72\x72\x6F\x72\x3A\x20","\x6C\x6F\x67","\x70\x75\x74\x53\x74\x72\x69\x6E\x67","\x63\x6F\x6D\x6D\x69\x74","\x53\x75\x70\x70\x6F\x72\x74","\x54\x68\x69\x73\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x69\x73\x20\x6E\x6F\x74\x20\x73\x75\x70\x70\x6F\x72\x74\x65\x64\x20\x61\x6E\x79\x6D\x6F\x72\x65\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x75\x70\x67\x72\x61\x64\x65\x20\x74\x6F\x20\x74\x68\x65\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x2E","\x73\x68\x6F\x77\x42\x61\x73\x69\x63\x44\x69\x61\x6C\x6F\x67"];VertexClientPE[_0x498b[0]]= function(){try{var _0x6663x1= new java[_0x498b[4]].URL(_0x498b[1]+ VertexClientPE[_0x498b[2]]+ _0x498b[3]);var _0x6663x2=_0x6663x1[_0x498b[5]]();supportInputStream= _0x6663x2[_0x498b[6]]();var _0x6663x3=_0x498b[7];var _0x6663x4= new java[_0x498b[8]].BufferedReader( new java[_0x498b[8]].InputStreamReader(supportInputStream));var _0x6663x5=_0x498b[7];while((_0x6663x5= _0x6663x4[_0x498b[9]]())!= null){_0x6663x3+= _0x6663x5};isSupported= _0x6663x3.toString()[_0x498b[11]](_0x498b[10])[0]== _0x498b[12]?false:true;_0x6663x4[_0x498b[13]]()}catch(err){if(sharedPref[_0x498b[15]](_0x498b[14]+ VertexClientPE[_0x498b[2]],null)== _0x498b[16]){isSupported= false}else {isSupported= true};ModPE[_0x498b[18]](_0x498b[17]+ err);return};editor[_0x498b[19]](_0x498b[14]+ VertexClientPE[_0x498b[2]],isSupported.toString());editor[_0x498b[20]]();if(!isSupported){VertexClientPE[_0x498b[23]](_0x498b[21],clientTextView(_0x498b[22]))}}
+let _0x498b=["\x6C\x6F\x61\x64\x53\x75\x70\x70\x6F\x72\x74","\x68\x74\x74\x70\x73\x3A\x2F\x2F\x72\x61\x77\x2E\x67\x69\x74\x68\x75\x62\x75\x73\x65\x72\x63\x6F\x6E\x74\x65\x6E\x74\x2E\x63\x6F\x6D\x2F\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2F\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2D\x50\x45\x2F\x75\x70\x64\x61\x74\x65\x2F\x53\x75\x70\x70\x6F\x72\x74\x2F","\x63\x75\x72\x72\x65\x6E\x74\x56\x65\x72\x73\x69\x6F\x6E","\x2F\x73\x75\x70\x70\x6F\x72\x74","\x6E\x65\x74","\x6F\x70\x65\x6E\x43\x6F\x6E\x6E\x65\x63\x74\x69\x6F\x6E","\x67\x65\x74\x49\x6E\x70\x75\x74\x53\x74\x72\x65\x61\x6D","","\x69\x6F","\x72\x65\x61\x64\x4C\x69\x6E\x65","\x20","\x73\x70\x6C\x69\x74","\x75\x6E\x73\x75\x70\x70\x6F\x72\x74\x65\x64","\x63\x6C\x6F\x73\x65","\x56\x65\x72\x74\x65\x78\x43\x6C\x69\x65\x6E\x74\x50\x45\x2E\x69\x73\x53\x75\x70\x70\x6F\x72\x74\x65\x64\x5F","\x67\x65\x74\x53\x74\x72\x69\x6E\x67","\x66\x61\x6C\x73\x65","\x5B\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x5D\x20\x56\x65\x72\x74\x65\x78\x43\x6C\x69\x65\x6E\x74\x50\x45\x2E\x6C\x6F\x61\x64\x53\x75\x70\x70\x6F\x72\x74\x28\x29\x20\x63\x61\x75\x67\x68\x74\x20\x61\x6E\x20\x65\x72\x72\x6F\x72\x3A\x20","\x6C\x6F\x67","\x70\x75\x74\x53\x74\x72\x69\x6E\x67","\x63\x6F\x6D\x6D\x69\x74","\x53\x75\x70\x70\x6F\x72\x74","\x54\x68\x69\x73\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x69\x73\x20\x6E\x6F\x74\x20\x73\x75\x70\x70\x6F\x72\x74\x65\x64\x20\x61\x6E\x79\x6D\x6F\x72\x65\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x75\x70\x67\x72\x61\x64\x65\x20\x74\x6F\x20\x74\x68\x65\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x2E","\x73\x68\x6F\x77\x42\x61\x73\x69\x63\x44\x69\x61\x6C\x6F\x67"];VertexClientPE[_0x498b[0]]= function(){try{var _0x6663x1= new java[_0x498b[4]].URL(_0x498b[1]+ VertexClientPE[_0x498b[2]]+ _0x498b[3]);var _0x6663x2=_0x6663x1[_0x498b[5]]();supportInputStream= _0x6663x2[_0x498b[6]]();var _0x6663x3=_0x498b[7];var _0x6663x4= new java[_0x498b[8]].BufferedReader( new java[_0x498b[8]].InputStreamReader(supportInputStream));var _0x6663x5=_0x498b[7];while((_0x6663x5= _0x6663x4[_0x498b[9]]())!= null){_0x6663x3+= _0x6663x5};isSupported= _0x6663x3.toString()[_0x498b[11]](_0x498b[10])[0]== _0x498b[12]?false:true;_0x6663x4[_0x498b[13]]()}catch(err){if(sharedPref[_0x498b[15]](_0x498b[14]+ VertexClientPE[_0x498b[2]],null)== _0x498b[16]){isSupported= false}else {isSupported= true};ModPE[_0x498b[18]](_0x498b[17]+ err);return};editor[_0x498b[19]](_0x498b[14]+ VertexClientPE[_0x498b[2]],isSupported.toString());editor[_0x498b[20]]();if(!isSupported){VertexClientPE[_0x498b[23]](_0x498b[21],clientTextView(_0x498b[22]))}}
 
-/* var lastLoop = new Date;
+/* let lastLoop = new Date;
 function gameLoop() {
-	var thisLoop = new Date;
+	let thisLoop = new Date;
 	VertexClientPE.Utils.tps = 1000 / (thisLoop - lastLoop);
 	lastLoop = thisLoop;
 } */
@@ -13765,7 +14085,7 @@ VertexClientPE.clientTick = function() {
 				run: function() {
 					let isGUIShowing = VertexClientPE.isGUIShowing();
 					try {
-						var _0x43af=["\x61\x75\x74\x68\x6F\x72","\x70\x65\x61\x63\x65\x73\x74\x6F\x72\x6D"];if(VertexClientPE[_0x43af[0]]!= _0x43af[1]){isAuthorized= false}
+						let _0x43af=["\x61\x75\x74\x68\x6F\x72","\x70\x65\x61\x63\x65\x73\x74\x6F\x72\x6D"];if(VertexClientPE[_0x43af[0]]!= _0x43af[1]){isAuthorized= false}
 						if(isGUIShowing) {
 							if(Launcher.isBlockLauncher()) {
 								ScriptManager__.isRemote = true;
@@ -13837,8 +14157,8 @@ VertexClientPE.specialTick = function() {
 	}).start();
 }
 
-var secondTickTimer = 0;
-var lagTimer = 0;
+let secondTickTimer = 0;
+let lagTimer = 0;
 
 VertexClientPE.secondTick = function() {
 	new Thread_(new Runnable_() {
@@ -13892,7 +14212,7 @@ VertexClientPE.secondTick = function() {
 			if(healthDisplayUI != null && healthDisplayUI.isShowing()) {
 				CONTEXT.runOnUiThread(new Runnable_({
 					run: function() {
-						healthDisplayView.setText(Entity.getHealth(getPlayerEnt()) + "/" + Entity.getMaxHealth(getPlayerEnt()) + " ❤");
+						healthDisplayView.setText(Entity.getHealth(getPlayerEnt()) + "/" + Entity.getMaxHealth(getPlayerEnt()) + " \u2764");
 					}
 				}));
 			}
@@ -13951,7 +14271,7 @@ VertexClientPE.showSplashScreen = function () {
 	}));
 };
 
-var hasShownDialog = false;
+let hasShownDialog = false;
 
 VertexClientPE.showStartScreenBar = function(screen) {
 	if(screen == null) {
@@ -13991,17 +14311,15 @@ VertexClientPE.showStartScreenBar = function(screen) {
 					onTouch: function(v, event) {
 						youTubeButton.setSoundEffectsEnabled(false);
 						let action = event.getActionMasked();
+						let bNP;
 						if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
-							var bNP = splashYouTubeButtonClientGUI;
-							bNP.setFilterBitmap(false);
-							bNP.setAntiAlias(false);
-							youTubeButton.setBackgroundDrawable(bNP);
+							bNP = splashYouTubeButtonClientGUI;
 						} else {
-							var bNP = splashYouTubeButtonClickedClientGUI;
-							bNP.setFilterBitmap(false);
-							bNP.setAntiAlias(false);
-							youTubeButton.setBackgroundDrawable(bNP);
+							bNP = splashYouTubeButtonClickedClientGUI;
 						}
+						bNP.setFilterBitmap(false);
+						bNP.setAntiAlias(false);
+						youTubeButton.setBackgroundDrawable(bNP);
 						return false;
 					}
 				});
@@ -14014,17 +14332,15 @@ VertexClientPE.showStartScreenBar = function(screen) {
 					onTouch: function(v, event) {
 						twitterButton.setSoundEffectsEnabled(false);
 						let action = event.getActionMasked();
+						let bNP;
 						if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
-							let bNP = splashTwitterButtonClientGUI;
-							bNP.setFilterBitmap(false);
-							bNP.setAntiAlias(false);
-							twitterButton.setBackgroundDrawable(bNP);
+							bNP = splashTwitterButtonClientGUI;
 						} else {
-							let bNP = splashTwitterButtonClickedClientGUI;
-							bNP.setFilterBitmap(false);
-							bNP.setAntiAlias(false);
-							twitterButton.setBackgroundDrawable(bNP);
+							bNP = splashTwitterButtonClickedClientGUI;
 						}
+						bNP.setFilterBitmap(false);
+						bNP.setAntiAlias(false);
+						twitterButton.setBackgroundDrawable(bNP);
 						return false;
 					}
 				});
@@ -14037,17 +14353,15 @@ VertexClientPE.showStartScreenBar = function(screen) {
 					onTouch: function(v, event) {
 						gitHubButton.setSoundEffectsEnabled(false);
 						let action = event.getActionMasked();
+						let bNP;
 						if(action == MotionEvent_.ACTION_CANCEL || action == MotionEvent_.ACTION_UP) {
-							let bNP = splashGitHubButtonClientGUI;
-							bNP.setFilterBitmap(false);
-							bNP.setAntiAlias(false);
-							gitHubButton.setBackgroundDrawable(bNP);
+							bNP = splashGitHubButtonClientGUI;
 						} else {
-							let bNP = splashGitHubButtonClickedClientGUI;
-							bNP.setFilterBitmap(false);
-							bNP.setAntiAlias(false);
-							gitHubButton.setBackgroundDrawable(bNP);
+							bNP = splashGitHubButtonClickedClientGUI;
 						}
+						bNP.setFilterBitmap(false);
+						bNP.setAntiAlias(false);
+						gitHubButton.setBackgroundDrawable(bNP);
 						return false;
 					}
 				});
@@ -14106,19 +14420,15 @@ VertexClientPE.showUpdate = function() {
 					VertexClientPE.updateToast("There is a new version available (v" + VertexClientPE.latestVersion + " for Minecraft Pocket Edition v" + VertexClientPE.latestPocketEditionVersion + ")!");
 				}
 			} else {
-				CONTEXT.runOnUiThread(new Runnable_() {
-					run: function() {
-						if(showUpdateToastsSetting == "on") {
-							VertexClientPE.updateToast("You have the latest version");
-						}
-					}
-				});
+				if(showUpdateToastsSetting == "on") {
+					VertexClientPE.updateToast("You have the latest version");
+				}
 			}
 		}
 	}).start();
 }
 
-var currentStep = 1;
+let currentStep = 1;
 
 VertexClientPE.showSetupScreen = function() {
 	CONTEXT.runOnUiThread(new Runnable_({
@@ -14293,7 +14603,7 @@ VertexClientPE.showSetupScreen = function() {
 									VertexClientPE.specialTick();
 									VertexClientPE.secondTick();
 									VertexClientPE.setupMCPEGUI();
-									VertexClientPE.initMods();
+									VertexClientPE.initMods(null, false);
 								}
 							}));
 						}
@@ -14660,20 +14970,14 @@ VertexClientPE.showAccountManager = function(showBackButton, title) {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
-				if(GUI != null) {
-					if(GUI.isShowing()) {
-						GUI.dismiss();
-					}
+				if(GUI != null && GUI.isShowing()) {
+					GUI.dismiss();
 				}
-				if(accountManagerGUI != null) {
-					if(accountManagerGUI.isShowing()) {
-						accountManagerGUI.dismiss();
-					}
+				if(accountManagerGUI != null && accountManagerGUI.isShowing()) {
+					accountManagerGUI.dismiss();
 				}
-				if(mainMenuTextList != null) {
-					if(mainMenuTextList.isShowing()) {
-						mainMenuTextList.dismiss();
-					}
+				if(mainMenuTextList != null && mainMenuTextList.isShowing()) {
+					mainMenuTextList.dismiss();
 				}
 
 				let accountManagerLayout1 = new LinearLayout_(CONTEXT);
@@ -14755,21 +15059,7 @@ VertexClientPE.showFriendManager = function(showBackButton, title, icon) {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
-				if(GUI != null) {
-					if(GUI.isShowing()) {
-						GUI.dismiss();
-					}
-				}
-				if(accountManagerGUI != null) {
-					if(accountManagerGUI.isShowing()) {
-						accountManagerGUI.dismiss();
-					}
-				}
-				if(mainMenuTextList != null) {
-					if(mainMenuTextList.isShowing()) {
-						mainMenuTextList.dismiss();
-					}
-				}
+				VertexClientPE.checkGUINeedsDismiss();
 
 				let friendManagerLayout1 = new LinearLayout_(CONTEXT);
 				friendManagerLayout1.setOrientation(1);
@@ -14872,12 +15162,17 @@ VertexClientPE.Utils.day = VertexClientPE.Utils.cal.get(java.util.Calendar.DAY_O
 VertexClientPE.Utils.month = VertexClientPE.Utils.cal.get(java.util.Calendar.MONTH);
 VertexClientPE.Utils.year = VertexClientPE.Utils.cal.get(java.util.Calendar.YEAR);
 
-var itemGiverItems = [];
+let itemGiverItems = [];
+
+const match_technical_tile = /^tile\.[0-9]+\.name$/;
 
 VertexClientPE.loadItemGiverItems = function() {
-	for(var i = 1; i <= 4096; i++) {
+	for(let i = 1; i <= 4096; i++) {
 		if(Item.isValidItem(i)) {
-			itemGiverItems.push(i);
+			let name = Item.getName(i);
+			if(!(name === Item.getName(i, null, true) && match_technical_tile.test(name)) && name != undefined) {
+				itemGiverItems.push(i);
+			}
 		}
 	}
 }
@@ -14901,15 +15196,15 @@ VertexClientPE.setup = function() {
 			} finally {
 				CONTEXT.runOnUiThread(new Runnable_({
 					run: function() {
-						if(!VertexClientPE.getHasUsedCurrentVersion()) {
-							userIsNewToCurrentVersion = true;
-						}
-
 						VertexClientPE.setupModButtonColors();
-
 						if(VertexClientPE.loadMainSettings() == null) {
+							VertexClientPE.setHasUsedCurrentVersion(true);
+							userIsNewToCurrentVersion = false;
 							VertexClientPE.showSetupScreen();
 						} else {
+							if(!VertexClientPE.getHasUsedCurrentVersion()) {
+								userIsNewToCurrentVersion = true;
+							}
 							VertexClientPE.editCopyrightText();
 							VertexClientPE.clientTick();
 							VertexClientPE.inGameTick();
@@ -14919,7 +15214,7 @@ VertexClientPE.setup = function() {
 							VertexClientPE.AddonUtils.loadAddons();
 							VertexClientPE.loadFloatingMenus();
 							showMenuButton();
-							VertexClientPE.initMods();
+							VertexClientPE.initMods(null, modsStayEnabledSetting=="on");
 						}
 
 						if(ModPE.getMinecraftVersion() < VertexClientPE.minVersion) {
@@ -14972,7 +15267,7 @@ function downloadFile(path, url, showNotification, replace) {
 	let res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png", "github_button.png", "github_button_clicked.png", "vertex_logo_new.png", "stevehead.png", "minecraft.ttf", "christmas_tree.png", "dirt_background.png", "rainbow_background.png"],
 		langs = ["en", "ko"],
 		isExisting = true;
-	for (var i = res.length; i--;) {
+	for (let i = res.length; i--;) {
 		if (!new File_(PATH, res[i]).exists()) {
 			downloadFile(PATH + res[i], GITHUB_URL + "bootstrap/img/" + res[i]);
 			isExisting = false;
@@ -15183,7 +15478,7 @@ Entity.renderTypeToName = function(rT) {
 
 VertexClientPE.setPlayerModel = function(rT, layout) {
 	Entity.setRenderType(getPlayerEnt(), rT);
-	for(var i = 0; i < layout.getChildCount(); i++) {
+	for(let i = 0; i < layout.getChildCount(); i++) {
 		let currentChild = layout.getChildAt(i);
 		if(currentChild.getText() == Entity.renderTypeToName(rT)) {
 			currentChild.setTextColor(Color_.GREEN);
@@ -15195,7 +15490,7 @@ VertexClientPE.setPlayerModel = function(rT, layout) {
 
 VertexClientPE.setTrailsMode = function(trailMode, layout) {
 	VertexClientPE.trailsMode = trailMode[0];
-	for(var i = 0; i < layout.getChildCount(); i++) {
+	for(let i = 0; i < layout.getChildCount(); i++) {
 		let currentChild = layout.getChildAt(i);
 		if(currentChild.getText() == trailMode[1]) {
 			currentChild.setTextColor(Color_.GREEN);
@@ -15206,7 +15501,7 @@ VertexClientPE.setTrailsMode = function(trailMode, layout) {
 }
 
 VertexClientPE.showTrails = function() {
-	var trailsParticleType;
+	let trailsParticleType;
 	switch(VertexClientPE.trailsMode) {
 		case "flame": {
 			trailsParticleType = ParticleType.flame;
@@ -15220,10 +15515,10 @@ VertexClientPE.showTrails = function() {
 }
 
 VertexClientPE.getMyScriptName = function() {
-	var scripts = net.zhuoweizhang.mcpelauncher.ScriptManager.scripts;
-    for(var i = 0; i < scripts.size(); i++) {
-        var script = scripts.get(i);
-        var scope = script.scope;
+	let scripts = net.zhuoweizhang.mcpelauncher.ScriptManager.scripts;
+    for(let i = 0; i < scripts.size(); i++) {
+        let script = scripts.get(i);
+        let scope = script.scope;
         if(org.mozilla.javascript.ScriptableObject.hasProperty(scope, "VertexClientPE"))
             return script.name;
 	}
@@ -15252,15 +15547,11 @@ function newLevel() {
 			lagTimer = 0;
 			CONTEXT.runOnUiThread(new Runnable_() {
 				run: function() {
-					if(accountManagerGUI != null) {
-						if(accountManagerGUI.isShowing()) {
-							accountManagerGUI.dismiss();
-						}
+					if(accountManagerGUI != null && accountManagerGUI.isShowing()) {
+						accountManagerGUI.dismiss();
 					}
-					if(mainMenuTextList != null) {
-						if(mainMenuTextList.isShowing()) {
-							mainMenuTextList.dismiss();
-						}
+					if(mainMenuTextList != null && mainMenuTextList.isShowing()) {
+						mainMenuTextList.dismiss();
 					}
 				}
 			});
@@ -15352,40 +15643,26 @@ VertexClientPE.checkGUINeedsDismiss = function() {
 	if(tabGUI != null && tabGUI.isShowing()) {
 		tabGUI.dismiss();
 	}
-	if(shortcutGUI != null) {
-		if(shortcutGUI.isShowing()) {
-			shortcutGUI.dismiss();
-		}
+	if(shortcutGUI != null && shortcutGUI.isShowing()) {
+		shortcutGUI.dismiss();
 	}
-	if(healthDisplayUI != null) {
-		if(healthDisplayUI.isShowing()) {
-			healthDisplayUI.dismiss();
-		}
+	if(healthDisplayUI != null && healthDisplayUI.isShowing()) {
+		healthDisplayUI.dismiss();
 	}
-	if(watermarkUI != null) {
-		if(watermarkUI.isShowing()) {
-			watermarkUI.dismiss();
-		}
+	if(watermarkUI != null && watermarkUI.isShowing()) {
+		watermarkUI.dismiss();
 	}
-	if(rotationPlusUI != null) {
-		if(rotationPlusUI.isShowing()) {
-			rotationPlusUI.dismiss();
-		}
+	if(rotationPlusUI != null && rotationPlusUI.isShowing()) {
+		rotationPlusUI.dismiss();
 	}
-	if(mainMenuTextList != null) {
-		if(mainMenuTextList.isShowing()) {
-			mainMenuTextList.dismiss();
-		}
+	if(mainMenuTextList != null && mainMenuTextList.isShowing()) {
+		mainMenuTextList.dismiss();
 	}
-	if(accountManagerGUI != null) {
-		if(accountManagerGUI.isShowing()) {
-			accountManagerGUI.dismiss();
-		}
+	if(accountManagerGUI != null && accountManagerGUI.isShowing()) {
+		accountManagerGUI.dismiss();
 	}
-	if(pauseUtilitiesUI != null) {
-		if(pauseUtilitiesUI.isShowing()) {
-			pauseUtilitiesUI.dismiss();
-		}
+	if(pauseUtilitiesUI != null && pauseUtilitiesUI.isShowing()) {
+		pauseUtilitiesUI.dismiss();
 	}
 }
 
@@ -15396,42 +15673,42 @@ function settingsScreen(fromDashboard) {
 			try {
 				VertexClientPE.checkGUINeedsDismiss();
 
-				var settingsMenuLayout = new LinearLayout_(CONTEXT);
+				let settingsMenuLayout = new LinearLayout_(CONTEXT);
 				settingsMenuLayout.setOrientation(1);
 				settingsMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 				settingsMenuLayout.setPadding(dip2px(2), 0, dip2px(2), 0);
 
-				var settingsMenuScroll = new ScrollView_(CONTEXT);
+				let settingsMenuScroll = new ScrollView_(CONTEXT);
 
-				var settingsMenuLayout1 = new LinearLayout_(CONTEXT);
+				let settingsMenuLayout1 = new LinearLayout_(CONTEXT);
 				settingsMenuLayout1.setOrientation(1);
 				settingsMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
 
 				settingsMenuScroll.addView(settingsMenuLayout);
 				settingsMenuLayout1.addView(settingsMenuScroll);
 
-				var generalTitle = clientSectionTitle("HUD", "theme");
+				let generalTitle = clientSectionTitle("HUD", "theme");
 
-				var hacksListManagerSettingFunc = new settingButton("Hacks list", "Manage the hacks list.");
-				var hacksListManagerSettingButton = hacksListManagerSettingFunc.getButton();
+				let hacksListManagerSettingFunc = new settingButton("Hacks list", "Manage the hacks list.");
+				let hacksListManagerSettingButton = hacksListManagerSettingFunc.getButton();
 				hacksListManagerSettingButton.setText("Manage");
 				hacksListManagerSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						VertexClientPE.showHacksListManagerDialog();
 					}
 				}));
-				
-				var mainButtonManagerSettingFunc = new settingButton("Main button", "Manage the main button.");
-				var mainButtonManagerSettingButton = mainButtonManagerSettingFunc.getButton();
+
+				let mainButtonManagerSettingFunc = new settingButton("Main button", "Manage the main button.");
+				let mainButtonManagerSettingButton = mainButtonManagerSettingFunc.getButton();
 				mainButtonManagerSettingButton.setText("Manage");
 				mainButtonManagerSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						VertexClientPE.showMainButtonManagerDialog();
 					}
 				}));
-				
-				var shortcutManagerSettingFunc = new settingButton("Shortcuts", "Manage the shortcut buttons.");
-				var shortcutManagerSettingButton = shortcutManagerSettingFunc.getButton();
+
+				let shortcutManagerSettingFunc = new settingButton("Shortcuts", "Manage the shortcut buttons.");
+				let shortcutManagerSettingButton = shortcutManagerSettingFunc.getButton();
 				shortcutManagerSettingButton.setText("Manage");
 				shortcutManagerSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
@@ -15439,13 +15716,13 @@ function settingsScreen(fromDashboard) {
 					}
 				}));
 
-				var tabGUIModeSettingFunc = new settingButton("TabGUI Mode", null, null,
+				let tabGUIModeSettingFunc = new settingButton("TabGUI Mode", null, null,
 					function(viewArg) {
 						tabGUIModeSetting = "off";
 						tabGUIModeSettingButton.setText("Hidden");
 					}
 				);
-				var tabGUIModeSettingButton = tabGUIModeSettingFunc.getButton();
+				let tabGUIModeSettingButton = tabGUIModeSettingFunc.getButton();
 				if(tabGUIModeSetting == "on") {
 					tabGUIModeSettingButton.setText("Shown");
 				} else if(tabGUIModeSetting == "off") {
@@ -15464,16 +15741,16 @@ function settingsScreen(fromDashboard) {
 					}
 				}));
 
-				var themeTitle = clientSectionTitle("Theme", "theme");
+				let themeTitle = clientSectionTitle("Theme", "theme");
 
-				var themeArray = ["Custom RGB", "Green", "Red", "Blue", "Purple", "Violet", "Yellow", "Orange", "Brown", "Grey", "White", "Black"];
-				var themeSettingFunc = new settingSelector("Color", "Choose a color.", "Color Selector", themeArray, capitalizeColorString(themeSetting), "themeSetting",
+				let themeArray = ["Custom RGB", "Green", "Red", "Blue", "Purple", "Violet", "Yellow", "Orange", "Brown", "Grey", "White", "Black"];
+				let themeSettingFunc = new settingSelector("Color", "Choose a color.", "Color Selector", themeArray, capitalizeColorString(themeSetting), "themeSetting",
 				function(sRightButton, dialogTitle) {
 					VertexClientPE.showCustomRGBDialog(sRightButton, dialogTitle);
 				});
-				var themeSettingButton = themeSettingFunc.getButton();
+				let themeSettingButton = themeSettingFunc.getButton();
 
-				var useLightThemeSettingFunc = new settingButton("Lighter theme colors", "Use light theme colors if available.", null,
+				let useLightThemeSettingFunc = new settingButton("Lighter theme colors", "Use light theme colors if available.", null,
 					function(viewArg) {
 						if(useLightThemeSetting != "off") {
 							useLightThemeSetting = "off";
@@ -15482,7 +15759,7 @@ function settingsScreen(fromDashboard) {
 						}
 					}
 				);
-				var useLightThemeSettingButton = useLightThemeSettingFunc.getButton();
+				let useLightThemeSettingButton = useLightThemeSettingFunc.getButton();
 				if(useLightThemeSetting == "on") {
 					useLightThemeSettingButton.setText("ON");
 				} else if(useLightThemeSetting == "off") {
@@ -15502,7 +15779,7 @@ function settingsScreen(fromDashboard) {
 					}
 				}));
 
-				var buttonStyleSettingFunc = new settingButton("Button style", "Change the button style.", null,
+				let buttonStyleSettingFunc = new settingButton("Button style", "Change the button style.", null,
 					function(viewArg) {
 						if(buttonStyleSetting != "normal") {
 							buttonStyleSetting = "normal";
@@ -15511,7 +15788,7 @@ function settingsScreen(fromDashboard) {
 						}
 					}
 				);
-				var buttonStyleSettingButton = buttonStyleSettingFunc.getButton();
+				let buttonStyleSettingButton = buttonStyleSettingFunc.getButton();
 				if(buttonStyleSetting == "normal") {
 					buttonStyleSettingButton.setText("Normal");
 				} else if(buttonStyleSetting == "normal_nostrokes") {
@@ -15556,8 +15833,8 @@ function settingsScreen(fromDashboard) {
 					}
 				}));
 
-				var buttonStrokeThicknessSettingFunc = new settingButton("Button stroke thickness", "Change the button stroke thickness.");
-				var buttonStrokeThicknessSettingButton = buttonStrokeThicknessSettingFunc.getButton();
+				let buttonStrokeThicknessSettingFunc = new settingButton("Button stroke thickness", "Change the button stroke thickness.");
+				let buttonStrokeThicknessSettingButton = buttonStrokeThicknessSettingFunc.getButton();
 				buttonStrokeThicknessSettingButton.setText("Change");
 				buttonStrokeThicknessSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
@@ -15565,13 +15842,13 @@ function settingsScreen(fromDashboard) {
 					}
 				}));
 
-				var backgroundStyleSettingFunc = new settingButton("Background style", "Changes the background style.", null,
+				let backgroundStyleSettingFunc = new settingButton("Background style", "Changes the background style.", null,
 					function(viewArg) {
 						backgroundStyleSetting = "normal";
 						backgroundStyleSettingButton.setText("Normal");
 					}
 				);
-				var backgroundStyleSettingButton = backgroundStyleSettingFunc.getButton();
+				let backgroundStyleSettingButton = backgroundStyleSettingFunc.getButton();
 				if(backgroundStyleSetting == "normal") {
 					backgroundStyleSettingButton.setText("Normal");
 				} else if(backgroundStyleSetting == "normal_nostrokes") {
@@ -15605,13 +15882,13 @@ function settingsScreen(fromDashboard) {
 					}
 				}));
 
-				var transparentBgSettingFunc = new settingButton("Transparent backgrounds", "Makes screens and dialogs transparent.", null,
+				let transparentBgSettingFunc = new settingButton("Transparent backgrounds", "Makes screens and dialogs transparent.", null,
 					function(viewArg) {
 						transparentBgSetting = "on";
 						transparentBgSettingButton.setText("ON");
 					}
 				);
-				var transparentBgSettingButton = transparentBgSettingFunc.getButton();
+				let transparentBgSettingButton = transparentBgSettingFunc.getButton();
 				if(transparentBgSetting == "on") {
 					transparentBgSettingButton.setText("ON");
 				} else if(transparentBgSetting == "off") {
@@ -15630,7 +15907,7 @@ function settingsScreen(fromDashboard) {
 					}
 				}));
 
-				var mcpeGUISettingFunc = new settingButton("MCPE GUI", "Change the MCPE GUI.", null,
+				let mcpeGUISettingFunc = new settingButton("MCPE GUI", "Change the MCPE GUI.", null,
 					function(viewArg) {
 						if(mcpeGUISetting != "default") {
 							mcpeGUISetting = "default";
@@ -15641,7 +15918,7 @@ function settingsScreen(fromDashboard) {
 						}
 					}
 				);
-				var mcpeGUISettingButton = mcpeGUISettingFunc.getButton();
+				let mcpeGUISettingButton = mcpeGUISettingFunc.getButton();
 				if(mcpeGUISetting == "default") {
 					mcpeGUISettingButton.setText("Default");
 				} else if(mcpeGUISetting == "green") {
@@ -15692,7 +15969,7 @@ function settingsScreen(fromDashboard) {
 				}
 				}));
 
-				var fontSettingFunc = new settingButton("Font", "Change the font/typeface.", null,
+				let fontSettingFunc = new settingButton("Font", "Change the font/typeface.", null,
 					function(viewArg) {
 						if(fontSetting != "default") {
 							fontSetting = "default";
@@ -15703,7 +15980,7 @@ function settingsScreen(fromDashboard) {
 						}
 					}
 				);
-				var fontSettingButton = fontSettingFunc.getButton();
+				let fontSettingButton = fontSettingFunc.getButton();
 				if(fontSetting == "default") {
 					fontSettingButton.setText("Default");
 				} else if(fontSetting == "minecraft") {
@@ -15725,7 +16002,7 @@ function settingsScreen(fromDashboard) {
 					}
 				}));
 
-				var modButtonColorBlockedSettingFunc = new settingButton("Mod button text color (blocked)", "Change the mod button blocked text color.", null,
+				let modButtonColorBlockedSettingFunc = new settingButton("Mod button text color (blocked)", "Change the mod button blocked text color.", null,
 					function(viewArg) {
 						if(modButtonColorBlockedSetting != "red") {
 							modButtonColorBlockedSetting = "red";
@@ -15735,7 +16012,7 @@ function settingsScreen(fromDashboard) {
 						}
 					}
 				);
-				var modButtonColorBlockedSettingButton = modButtonColorBlockedSettingFunc.getButton();
+				let modButtonColorBlockedSettingButton = modButtonColorBlockedSettingFunc.getButton();
 				if(modButtonColorBlockedSetting == "red") {
 					modButtonColorBlockedSettingButton.setText("Red");
 				} else if(modButtonColorBlockedSetting == "green") {
@@ -15776,7 +16053,7 @@ function settingsScreen(fromDashboard) {
 					}
 				}));
 
-				var modButtonColorEnabledSettingFunc = new settingButton("Mod button text color (enabled)", "Change the mod button enabled text color.", null,
+				let modButtonColorEnabledSettingFunc = new settingButton("Mod button text color (enabled)", "Change the mod button enabled text color.", null,
 					function(viewArg) {
 						if(modButtonColorEnabledSetting != "green") {
 							modButtonColorEnabledSetting = "green";
@@ -15786,7 +16063,7 @@ function settingsScreen(fromDashboard) {
 						}
 					}
 				);
-				var modButtonColorEnabledSettingButton = modButtonColorEnabledSettingFunc.getButton();
+				let modButtonColorEnabledSettingButton = modButtonColorEnabledSettingFunc.getButton();
 				if(modButtonColorEnabledSetting == "red") {
 					modButtonColorEnabledSettingButton.setText("Red");
 				} else if(modButtonColorEnabledSetting == "green") {
@@ -15827,7 +16104,7 @@ function settingsScreen(fromDashboard) {
 					}
 				}));
 
-				var modButtonColorDisabledSettingFunc = new settingButton("Mod button text color (disabled)", "Change the mod button disabled text color.", null,
+				let modButtonColorDisabledSettingFunc = new settingButton("Mod button text color (disabled)", "Change the mod button disabled text color.", null,
 					function(viewArg) {
 						if(modButtonColorDisabledSetting != "white") {
 							modButtonColorDisabledSetting = "white";
@@ -15837,7 +16114,7 @@ function settingsScreen(fromDashboard) {
 						}
 					}
 				);
-				var modButtonColorDisabledSettingButton = modButtonColorDisabledSettingFunc.getButton();
+				let modButtonColorDisabledSettingButton = modButtonColorDisabledSettingFunc.getButton();
 				if(modButtonColorDisabledSetting == "red") {
 					modButtonColorDisabledSettingButton.setText("Red");
 				} else if(modButtonColorDisabledSetting == "green") {
@@ -15878,15 +16155,15 @@ function settingsScreen(fromDashboard) {
 					}
 				}));
 
-				var menuTitle = clientSectionTitle("Menu", "theme");
+				let menuTitle = clientSectionTitle("Menu", "theme");
 
-				var menuTypeSettingFunc = new settingButton("Menu style", "Sets the Client's menu style.", null,
+				let menuTypeSettingFunc = new settingButton("Menu style", "Sets the Client's menu style.", null,
 					function(viewArg) {
 						menuType = "normal";
 						menuTypeSettingButton.setText("Normal");
 					}
 				);
-				var menuTypeSettingButton = menuTypeSettingFunc.getButton();
+				let menuTypeSettingButton = menuTypeSettingFunc.getButton();
 				if(menuType == "normal") {
 					menuTypeSettingButton.setText("Normal");
 				} else if(menuType == "table") {
@@ -15925,7 +16202,7 @@ function settingsScreen(fromDashboard) {
 				}
 				}));
 
-				var normalMenuTypeSizeFunc = new settingButton("Normal menu style size", "Change menu size to fit your screen size better (this only works for the normal menu style).", null,
+				let normalMenuTypeSizeFunc = new settingButton("Normal menu style size", "Change menu size to fit your screen size better (this only works for the normal menu style).", null,
 					function(viewArg) {
 						if(normalMenuTypeSize != "normal") {
 							normalMenuTypeSize = "normal";
@@ -15936,7 +16213,7 @@ function settingsScreen(fromDashboard) {
 						}
 					}
 				);
-				var normalMenuTypeSizeButton = normalMenuTypeSizeFunc.getButton();
+				let normalMenuTypeSizeButton = normalMenuTypeSizeFunc.getButton();
 				if(normalMenuTypeSize == "normal") {
 					normalMenuTypeSizeButton.setText("Normal");
 				} else if(normalMenuTypeSize == "small") {
@@ -15959,7 +16236,7 @@ function settingsScreen(fromDashboard) {
 					}
 				}));
 
-				var menuAnimationsSettingFunc = new settingButton("Menu animations", "Show menu animations.", null,
+				let menuAnimationsSettingFunc = new settingButton("Menu animations", "Show menu animations.", null,
 					function(viewArg) {
 						if(menuAnimationsSetting != "on") {
 							menuAnimationsSetting = "on";
@@ -15968,7 +16245,7 @@ function settingsScreen(fromDashboard) {
 						}
 					}
 				);
-				var menuAnimationsSettingButton = menuAnimationsSettingFunc.getButton();
+				let menuAnimationsSettingButton = menuAnimationsSettingFunc.getButton();
 				if(menuAnimationsSetting == "on") {
 					menuAnimationsSettingButton.setText("ON");
 				} else if(menuAnimationsSetting == "off") {
@@ -15988,9 +16265,9 @@ function settingsScreen(fromDashboard) {
 					}
 				}));
 
-				var soundsAndMusicTitle = clientSectionTitle("Sounds & music", "theme");
+				let soundsAndMusicTitle = clientSectionTitle("Sounds & music", "theme");
 
-				var buttonSoundSettingFunc = new settingButton("Button sound", "The sound that you hear when tapping a button.", null,
+				let buttonSoundSettingFunc = new settingButton("Button sound", "The sound that you hear when tapping a button.", null,
 					function(viewArg) {
 						if(buttonSoundSetting != "system") {
 							buttonSoundSetting = "system";
@@ -15999,7 +16276,7 @@ function settingsScreen(fromDashboard) {
 						}
 					}
 				);
-				var buttonSoundSettingButton = buttonSoundSettingFunc.getButton();
+				let buttonSoundSettingButton = buttonSoundSettingFunc.getButton();
 				if(buttonSoundSetting == "system") {
 					buttonSoundSettingButton.setText("System");
 				} else if(buttonSoundSetting == "minecraft") {
@@ -16024,13 +16301,13 @@ function settingsScreen(fromDashboard) {
 					}
 				}));
 
-				var playMusicSettingFunc = new settingButton("Automatically play music", "Automatically play music.", null,
+				let playMusicSettingFunc = new settingButton("Automatically play music", "Automatically play music.", null,
 					function(viewArg) {
 						playMusicSetting = "off";
 						playMusicSettingButton.setText("OFF");
 					}
 				);
-				var playMusicSettingButton = playMusicSettingFunc.getButton();
+				let playMusicSettingButton = playMusicSettingFunc.getButton();
 				if(playMusicSetting == "on") playMusicSetting = "off";
 				/*if(playMusicSetting == "on") {
 					playMusicSettingButton.setText("Normal");
@@ -16061,10 +16338,10 @@ function settingsScreen(fromDashboard) {
 					}
 				}));
 
-				var dashboardTitle = clientSectionTitle("Dashboard", "theme");
+				let dashboardTitle = clientSectionTitle("Dashboard", "theme");
 
-				var dashboardTileSizeSettingFunc = new settingButton("Tile size", "Sets the Dashboard tile style.");
-				var dashboardTileSizeSettingButton = dashboardTileSizeSettingFunc.getButton();
+				let dashboardTileSizeSettingFunc = new settingButton("Tile size", "Sets the Dashboard tile style.");
+				let dashboardTileSizeSettingButton = dashboardTileSizeSettingFunc.getButton();
 				dashboardTileSizeSettingButton.setText("Change");
 				dashboardTileSizeSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
@@ -16072,15 +16349,15 @@ function settingsScreen(fromDashboard) {
 					}
 				}));
 
-				var splashScreenTitle = clientSectionTitle("Splash Screen", "theme");
+				let splashScreenTitle = clientSectionTitle("Splash Screen", "theme");
 
-				var transparentSplashScreenSettingFunc = new settingButton("Transparent splash screen", "Makes the splash screen partly transparent.", null,
+				let transparentSplashScreenSettingFunc = new settingButton("Transparent splash screen", "Makes the splash screen partly transparent.", null,
 					function(viewArg) {
 						transparentSplashScreenSetting = "off";
 						transparentSplashScreenSettingButton.setText("OFF");
 					}
 				);
-				var transparentSplashScreenSettingButton = transparentSplashScreenSettingFunc.getButton();
+				let transparentSplashScreenSettingButton = transparentSplashScreenSettingFunc.getButton();
 				if(transparentSplashScreenSetting == "on") {
 					transparentSplashScreenSettingButton.setText("ON");
 				} else if(transparentSplashScreenSetting == "off") {
@@ -16100,15 +16377,15 @@ function settingsScreen(fromDashboard) {
 					}
 				}));
 
-				var commandsTitle = clientSectionTitle("Commands", "theme");
+				let commandsTitle = clientSectionTitle("Commands", "theme");
 
-				var commandsSettingFunc = new settingButton("Commands", "Toggle commands off to login on servers like Mineplex PE.", null,
+				let commandsSettingFunc = new settingButton("Commands", "Toggle commands off to login on servers like Mineplex PE.", null,
 					function(viewArg) {
 						commandsSetting = "on";
 						commandsSettingButton.setText("ON");
 					}
 				);
-				var commandsSettingButton = commandsSettingFunc.getButton();
+				let commandsSettingButton = commandsSettingFunc.getButton();
 				if(commandsSetting == "on") {
 					commandsSettingButton.setText("ON");
 				} else if(commandsSetting == "off") {
@@ -16128,13 +16405,13 @@ function settingsScreen(fromDashboard) {
 					}
 				}));
 
-				var cmdPrefixFunc = new settingButton("Command prefix", "Change the first character of all Vertex Client PE commands.", null,
+				let cmdPrefixFunc = new settingButton("Command prefix", "Change the first character of all Vertex Client PE commands.", null,
 					function(viewArg) {
 						cmdPrefix = ".";
 						cmdPrefixButton.setText(".");
 					}
 				);
-				var cmdPrefixButton = cmdPrefixFunc.getButton();
+				let cmdPrefixButton = cmdPrefixFunc.getButton();
 				cmdPrefixButton.setText(cmdPrefix);
 				cmdPrefixButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
@@ -16170,15 +16447,15 @@ function settingsScreen(fromDashboard) {
 					}
 				}));
 
-				var toastsTitle = clientSectionTitle("Toasts", "theme");
+				let toastsTitle = clientSectionTitle("Toasts", "theme");
 
-				var defaultToastPositionSettingFunc = new settingButton("Default toast position", "Allows you to choose the position of most client toasts.", null,
+				let defaultToastPositionSettingFunc = new settingButton("Default toast position", "Allows you to choose the position of most client toasts.", null,
 					function(viewArg) {
 						defaultToastPositionSetting = "bottom";
 						defaultToastPositionSettingButton.setText("Bottom");
 					}
 				);
-				var defaultToastPositionSettingButton = defaultToastPositionSettingFunc.getButton();
+				let defaultToastPositionSettingButton = defaultToastPositionSettingFunc.getButton();
 				if(defaultToastPositionSetting == "bottom") {
 					defaultToastPositionSettingButton.setText("Bottom");
 				} else if(defaultToastPositionSetting == "top") {
@@ -16197,13 +16474,13 @@ function settingsScreen(fromDashboard) {
 					}
 				}));
 
-				var showNewsSettingFunc = new settingButton("Show news toast at start", null, null,
+				let showNewsSettingFunc = new settingButton("Show news toast at start", null, null,
 					function(viewArg) {
 						showNewsSetting = "on";
 						showNewsSettingButton.setText("ON");
 					}
 				);
-				var showNewsSettingButton = showNewsSettingFunc.getButton();
+				let showNewsSettingButton = showNewsSettingFunc.getButton();
 				if(showNewsSetting == "on") {
 					showNewsSettingButton.setText("ON");
 				} else if(showNewsSetting == "off") {
@@ -16222,24 +16499,49 @@ function settingsScreen(fromDashboard) {
 					}
 				}));
 
-				var otherTitle = clientSectionTitle("Other", "theme");
+				let otherTitle = clientSectionTitle("Other", "theme");
 
-				var featuresSettingFunc = new settingButton("Opt in/out features", "Allows you to choose what categories/mods to show.");
-				var featuresSettingButton = featuresSettingFunc.getButton();
+				let featuresSettingFunc = new settingButton("Opt in/out features", "Allows you to choose what categories/mods to show.");
+				let featuresSettingButton = featuresSettingFunc.getButton();
 				featuresSettingButton.setText("Manage");
 				featuresSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						VertexClientPE.showFeaturesDialog();
 					}
 				}));
+				
+				let modsStayEnabledSettingFunc = new settingButton("Enabled mods stay enabled when restarting the launcher", null, null,
+					function(viewArg) {
+						modsStayEnabledSetting = "on";
+						modsStayEnabledSettingButton.setText("ON");
+					}
+				);
+				let modsStayEnabledSettingButton = modsStayEnabledSettingFunc.getButton();
+				if(modsStayEnabledSetting == "on") {
+					modsStayEnabledSettingButton.setText("ON");
+				} else if(modsStayEnabledSetting == "off") {
+					modsStayEnabledSettingButton.setText("OFF");
+				}
+				modsStayEnabledSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(modsStayEnabledSetting == "off") {
+							modsStayEnabledSetting = "on";
+							modsStayEnabledSettingButton.setText("ON");
+						} else if(modsStayEnabledSetting == "on") {
+							modsStayEnabledSetting = "off";
+							modsStayEnabledSettingButton.setText("OFF");
+						}
+						VertexClientPE.saveMainSettings();
+					}
+				}));
 
-				var showSnowInWinterSettingFunc = new settingButton("Show snowflakes on the start screen in the winter", null, null,
+				let showSnowInWinterSettingFunc = new settingButton("Show snowflakes on the start screen in the winter", null, null,
 					function(viewArg) {
 						showSnowInWinterSetting = "off";
 						showSnowInWinterSettingButton.setText("OFF");
 					}
 				);
-				var showSnowInWinterSettingButton = showSnowInWinterSettingFunc.getButton();
+				let showSnowInWinterSettingButton = showSnowInWinterSettingFunc.getButton();
 				if(showSnowInWinterSetting == "on") {
 					showSnowInWinterSettingButton.setText("ON");
 				} else if(showSnowInWinterSetting == "off") {
@@ -16257,14 +16559,14 @@ function settingsScreen(fromDashboard) {
 						VertexClientPE.saveMainSettings();
 					}
 				}));
-				
-				var f5ButtonModeSettingFunc = new settingButton("F5 button mode", null, null,
+
+				let f5ButtonModeSettingFunc = new settingButton("F5 button mode", null, null,
 					function(viewArg) {
 						f5ButtonModeSetting = "pause";
 						f5ButtonModeSettingButton.setText("Pause screen");
 					}
 				);
-				var f5ButtonModeSettingButton = f5ButtonModeSettingFunc.getButton();
+				let f5ButtonModeSettingButton = f5ButtonModeSettingFunc.getButton();
 				if(f5ButtonModeSetting == "pause") {
 					f5ButtonModeSettingButton.setText("Pause screen");
 				} else if(f5ButtonModeSetting == "ingame") {
@@ -16288,8 +16590,8 @@ function settingsScreen(fromDashboard) {
 					}
 				}));
 
-				var webBrowserStartPageSettingFunc = new settingButton("Webbrowser startpage", "Change the default webbrowser page.");
-				var webBrowserStartPageSettingButton = webBrowserStartPageSettingFunc.getButton();
+				let webBrowserStartPageSettingFunc = new settingButton("Webbrowser startpage", "Change the default webbrowser page.");
+				let webBrowserStartPageSettingButton = webBrowserStartPageSettingFunc.getButton();
 				webBrowserStartPageSettingButton.setText("Change");
 				webBrowserStartPageSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
@@ -16333,6 +16635,7 @@ function settingsScreen(fromDashboard) {
 				VertexClientPE.addView(settingsMenuLayout, showNewsSettingFunc);
 				settingsMenuLayout.addView(otherTitle);
 				VertexClientPE.addView(settingsMenuLayout, featuresSettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, modsStayEnabledSettingFunc);
 				VertexClientPE.addView(settingsMenuLayout, showSnowInWinterSettingFunc);
 				VertexClientPE.addView(settingsMenuLayout, f5ButtonModeSettingFunc);
 				VertexClientPE.addView(settingsMenuLayout, webBrowserStartPageSettingFunc);
@@ -16355,24 +16658,24 @@ function devSettingsScreen(fromDashboard) {
 			try {
 				VertexClientPE.checkGUINeedsDismiss();
 
-				var devSettingsMenuLayout = new LinearLayout_(CONTEXT);
+				let devSettingsMenuLayout = new LinearLayout_(CONTEXT);
 				devSettingsMenuLayout.setOrientation(1);
 				devSettingsMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 				devSettingsMenuLayout.setPadding(dip2px(2), 0, dip2px(2), 0);
 
-				var devSettingsMenuScroll = new ScrollView_(CONTEXT);
+				let devSettingsMenuScroll = new ScrollView_(CONTEXT);
 
-				var devSettingsMenuLayout1 = new LinearLayout_(CONTEXT);
+				let devSettingsMenuLayout1 = new LinearLayout_(CONTEXT);
 				devSettingsMenuLayout1.setOrientation(1);
 				devSettingsMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
 
 				devSettingsMenuScroll.addView(devSettingsMenuLayout);
 				devSettingsMenuLayout1.addView(devSettingsMenuScroll);
 
-				var generalTitle = clientSectionTitle("General", "theme");
+				let generalTitle = clientSectionTitle("General", "theme");
 
-				var debugModeSettingFunc = new settingButton("Debug mode", "Show debug messages.");
-				var debugModeSettingButton = debugModeSettingFunc.getButton();
+				let debugModeSettingFunc = new settingButton("Debug mode", "Show debug messages.");
+				let debugModeSettingButton = debugModeSettingFunc.getButton();
 				if(VertexClientPE.isDebugMode()) {
 					debugModeSettingButton.setText("ON");
 				} else {
@@ -16389,8 +16692,8 @@ function devSettingsScreen(fromDashboard) {
 					}
 				}));
 
-				var expModeSettingFunc = new settingButton("Experimental features", "Show experimental features that are still in development.");
-				var expModeSettingButton = expModeSettingFunc.getButton();
+				let expModeSettingFunc = new settingButton("Experimental features", "Show experimental features that are still in development.");
+				let expModeSettingButton = expModeSettingFunc.getButton();
 				if(VertexClientPE.isExpMode()) {
 					expModeSettingButton.setText("ON");
 				} else {
@@ -16407,14 +16710,48 @@ function devSettingsScreen(fromDashboard) {
 					}
 				}));
 
-				var dataTitle = clientSectionTitle("Data", "theme");
+				let dataTitle = clientSectionTitle("Data", "theme");
 
-				var resetDataSettingFunc = new settingButton("Reset all data", "Resets all data (including Pro).");
-				var resetDataSettingButton = resetDataSettingFunc.getButton();
+				let resetDataSettingFunc = new settingButton("Reset all launcher data", "Resets all launcher data.");
+				let resetDataSettingButton = resetDataSettingFunc.getButton();
 				resetDataSettingButton.setText("Reset");
 				resetDataSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
-						VertexClientPE.resetData();
+						VertexClientPE.showConfirmDialog("Reset all launcher data", "Are you sure you want to reset all launcher data?", null,
+							function() {
+								VertexClientPE.resetData();
+							}
+						);
+					}
+				}));
+				
+				let uiTestTitle = clientSectionTitle("UI test", "theme");
+				
+				let showTestToastFunc = new settingButton("Show test screen toast", "Shows a screen toast. Useful for testing.");
+				let showTestToastButton = showTestToastFunc.getButton();
+				showTestToastButton.setText("Show");
+				showTestToastButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						VertexClientPE.screenToast(android.R.drawable.ic_menu_report_image, "Developer Settings", "Test");
+					}
+				}));
+				
+				let editFloatingWindowCoordsFunc = new settingButton("Normal menu style coordinates", "Useful for debugging.");
+				let editFloatingWindowCoordsButton = editFloatingWindowCoordsFunc.getButton();
+				editFloatingWindowCoordsButton.setText("Set all to 0");
+				editFloatingWindowCoordsButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						combattpopx = 0;
+						combattpopy = 0;
+						worldtpopx = 0;
+						worldtpopy = 0;
+						movementtpopx = 0;
+						movementtpopy = 0;
+						playertpopx = 0;
+						playertpopy = 0;
+						misctpopx = 0;
+						misctpopy = 0;
+						VertexClientPE.saveFloatingMenus("all");
 					}
 				}));
 
@@ -16423,6 +16760,9 @@ function devSettingsScreen(fromDashboard) {
 				VertexClientPE.addView(devSettingsMenuLayout, expModeSettingFunc);
 				devSettingsMenuLayout.addView(dataTitle);
 				VertexClientPE.addView(devSettingsMenuLayout, resetDataSettingFunc);
+				devSettingsMenuLayout.addView(uiTestTitle);
+				VertexClientPE.addView(devSettingsMenuLayout, showTestToastFunc);
+				VertexClientPE.addView(devSettingsMenuLayout, editFloatingWindowCoordsFunc);
 
 				screenUI = new PopupWindow_(devSettingsMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
 				screenUI.setBackgroundDrawable(backgroundGradient());
@@ -16440,20 +16780,20 @@ function informationScreen(fromDashboard) {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
-				var display = CONTEXT.getWindowManager().getDefaultDisplay(),
+				let display = CONTEXT.getWindowManager().getDefaultDisplay(),
 				width = display.getWidth(),
 				height = display.getHeight();
-				
+
 				VertexClientPE.checkGUINeedsDismiss();
 
-				var informationMenuLayout1 = new LinearLayout_(CONTEXT);
+				let informationMenuLayout1 = new LinearLayout_(CONTEXT);
 				informationMenuLayout1.setOrientation(1);
 				informationMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
 				informationMenuLayout1.setPadding(dip2px(2), 0, dip2px(2), 0);
 
-				var informationMenuScrollView = new ScrollView_(CONTEXT);
+				let informationMenuScrollView = new ScrollView_(CONTEXT);
 
-				var informationMenuLayout = new LinearLayout_(CONTEXT);
+				let informationMenuLayout = new LinearLayout_(CONTEXT);
 				informationMenuLayout.setOrientation(1);
 				informationMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 
@@ -16464,7 +16804,7 @@ function informationScreen(fromDashboard) {
 				let logoViewer = new ImageView_(CONTEXT);
 				logoViewer.setImageBitmap(imgLogo);
 				logoViewer.setLayoutParams(new LinearLayout_.LayoutParams(width / 3, height / 3));
-				
+
 				let descText = new TextView_(CONTEXT);
 				descText.setText(VertexClientPE.currentVersionDesc.toUpperCase());
 				descText.setGravity(Gravity_.CENTER);
@@ -16475,46 +16815,39 @@ function informationScreen(fromDashboard) {
 				descText.setShadowLayer(1.6, 1.5, 1.3, Color_.parseColor("#008000"));
 				descText.setTextSize(50);
 
-				var hrView = clientHR();
-
-				var informationText = clientTextView("\u00A9 peacestorm, imYannic, _TXMO, LPMG, Astro36, AutoGrind and TimmyIsDa | 2015 - 2017. Some rights reserved. Thanks to @_TXMO for making some graphic designs and helping with choosing a name and @imYannic for some other graphic designs.", true);
-
-				var hrView1 = clientHR();
+				let informationText = clientTextView("\u00A9 peacestorm, imYannic, _TXMO, LPMG, Astro36, AutoGrind and TimmyIsDa | 2015 - 2017. Some rights reserved. Thanks to @_TXMO for making some graphic designs and helping with choosing a name and @imYannic for some other graphic designs.", true);
 
 				informationMenuLayout.addView(logoViewer);
 				informationMenuLayout.addView(descText);
 				informationMenuLayout.addView(clientTextView(""));
-				informationMenuLayout.addView(hrView);
+				informationMenuLayout.addView(clientHR());
 				informationMenuLayout.addView(clientTextView(""));
 				informationMenuLayout.addView(informationText);
 				informationMenuLayout.addView(clientTextView(""));
-				informationMenuLayout.addView(hrView1);
+				informationMenuLayout.addView(clientHR());
 				informationMenuLayout.addView(clientTextView(""));
 
-				var minecraftInfoTitle = clientSectionTitle("Minecraft info");
+				let minecraftInfoTitle = clientSectionTitle("Minecraft info");
 
-				var minecraftVersion = ModPE.getMinecraftVersion();
-				var minecraftVersionTextView = clientTextView("Version: " + minecraftVersion);
+				let minecraftVersionTextView = clientTextView("Version: " + ModPE.getMinecraftVersion());
 
-				var username = ModPE.getPlayerName();
-				var usernameTextView = clientTextView("Username: " + username);
+				let usernameTextView = clientTextView("Username: " + ModPE.getPlayerName());
 
-				var clientId = ModPE.getClientId();
-				var clientIdTextView = clientTextView("Client ID: " + clientId);
+				let clientIdTextView = clientTextView("Client ID: " + ModPE.getClientId());
 
-				var vertexInfoTitle = clientSectionTitle("Vertex info");
+				let vertexInfoTitle = clientSectionTitle("Vertex info");
 
-				var vertexVersion = VertexClientPE.currentVersion;
-				var vertexVersionTextView = clientTextView("Version: " + vertexVersion);
+				let vertexVersionTextView = clientTextView("Version: " + VertexClientPE.currentVersion);
 
-				var vertexEdition = VertexClientPE.edition;
-				var vertexEditionTextView = clientTextView("Edition: " + vertexEdition);
+				let vertexEditionTextView = clientTextView("Edition: " + VertexClientPE.edition);
 
-				var statusType = "normal user";
+				let statusType;
 				if(VertexClientPE.isDevMode()) {
 					statusType = "developer";
+				} else {
+					statusType = "normal user";
 				}
-				var statusTextView = clientTextView("Status: " + statusType);
+				let statusTextView = clientTextView("Status: " + statusType);
 				statusTextView.setOnClickListener(new android.view.View.OnClickListener() {
 					onClick: function(v) {
 						VertexClientPE.setIsDevMode(!VertexClientPE.isDevMode());
@@ -16531,13 +16864,11 @@ function informationScreen(fromDashboard) {
 					}
 				});
 
-				var deviceInfoTitle = clientSectionTitle("Device info");
+				let deviceInfoTitle = clientSectionTitle("Device info");
 
-				var androidVersion = ModPE.getAndroidVersion();
-				var androidVersionTextView = clientTextView("Android version: " + androidVersion);
+				let androidVersionTextView = clientTextView("Android version: " + ModPE.getAndroidVersion());
 
-				var deviceType = VertexClientPE.getDeviceName();
-				var deviceTextView = clientTextView("Device: " + deviceType);
+				let deviceTextView = clientTextView("Device: " + VertexClientPE.getDeviceName());
 
 				informationMenuLayout.addView(minecraftInfoTitle);
 				informationMenuLayout.addView(minecraftVersionTextView);
@@ -16588,7 +16919,7 @@ function getFavoriteTutorialView() {
 
 	return tutLayout;
 }
-var helpSections = [
+let helpSections = [
 	["Where do I report issues?", "You can report issues at http://bit.ly/VertexIssues.", null],
 	["How can I add shortcuts?", "Tap the star button in a mod's ... dialog or long click on a tile and then tap on the favorite button to make it favorite. The mod or tile will then have its own shortcut.", getFavoriteTutorialView],
 	["Where are the settings saved?", "The settings are mostly saved in the '/games/com.mojang/minecraftpe' folder. Some settings (custom mod names, if a mod is favorite, tile customizations etc.) are saved in the launcher data, though.", null],
@@ -16603,18 +16934,18 @@ function helpScreen(fromDashboard) {
 			try {
 				VertexClientPE.checkGUINeedsDismiss();
 
-				var helpMenuLayout = new LinearLayout_(CONTEXT);
+				let helpMenuLayout = new LinearLayout_(CONTEXT);
 				helpMenuLayout.setOrientation(1);
 				helpMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-				var helpMenuLayoutScroll = new ScrollView_(CONTEXT);
+				let helpMenuLayoutScroll = new ScrollView_(CONTEXT);
 
-				var helpMenuLayout1 = new LinearLayout_(CONTEXT);
+				let helpMenuLayout1 = new LinearLayout_(CONTEXT);
 				helpMenuLayout1.setOrientation(1);
 				helpMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
 				helpMenuLayout1.setPadding(10, 0, 10, 10);
 
-				var helpEnter = clientTextView("");
+				let helpEnter = clientTextView("");
 
 				helpMenuLayout1.addView(helpEnter);
 				helpMenuLayoutScroll.addView(helpMenuLayout);
@@ -16622,7 +16953,7 @@ function helpScreen(fromDashboard) {
 
 				helpSections.forEach(function(element, index, array) {
 					if(index != 0) {
-						var helpSectionEnter = clientTextView("\n", true, "diff");
+						let helpSectionEnter = clientTextView("\n", true, "diff");
 						helpSectionEnter.setTextSize(10);
 						helpMenuLayout.addView(helpSectionEnter);
 					}
@@ -17347,6 +17678,7 @@ function musicPlayerScreen(fromDashboard) {
 				}
 				mpPlayButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(v) {
+						VertexClientPE.MusicUtils.playingFirstTime = false;
 						if(VertexClientPE.MusicUtils.mp.isPlaying()) {
 							VertexClientPE.MusicUtils.mp.pause();
 							VertexClientPE.MusicUtils.isPaused = true;
@@ -17356,7 +17688,6 @@ function musicPlayerScreen(fromDashboard) {
 							VertexClientPE.MusicUtils.isPaused = false;
 							mpPlayButton.setBackgroundResource(android.R.drawable.ic_media_pause);
 						}
-						VertexClientPE.MusicUtils.playingFirstTime = false;
 					}
 				});
 				mpSeekBarView.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
@@ -17368,12 +17699,12 @@ function musicPlayerScreen(fromDashboard) {
 				mpNextButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(v) {
 						VertexClientPE.loadToast();
-						VertexClientPE.MusicUtils.loadNextSong();
 						VertexClientPE.MusicUtils.playingFirstTime = false;
+						VertexClientPE.MusicUtils.loadNextSong();
 					}
 				});
 
-				var mpTabLayout = new LinearLayout_(CONTEXT);
+				let mpTabLayout = new LinearLayout_(CONTEXT);
 				mpTabLayout.setOrientation(LinearLayout_.HORIZONTAL);
 
 				mpTabLayout.addView(musicPlayerTab("All", mpTabLayout, musicPlayerMenuLayout, musicPlayerBar));
@@ -17439,10 +17770,8 @@ function modManagerScreen() {
 				screenUI.setOnDismissListener(new PopupWindow_.OnDismissListener() {
 					onDismiss: function() {
 						/* VertexClientPE.menuIsShowing = false;
-						if(barUI != null) {
-							if(barUI.isShowing()) {
-								barUI.dismiss();
-							}
+						if(barUI != null && barUI.isShowing()) {
+							barUI.dismiss();
 						} */
 						VertexClientPE.saveMainSettings();
 					}
@@ -17479,7 +17808,7 @@ function dashboardScreen(title, icon) {
 				dashboardMenuLayout1.addView(dashboardMenuLayoutScroll);
 
 				VertexClientPE.tiles.forEach(function(element, index, array) {
-					if((element.hasOwnProperty("checkBeforeAdding") && element.checkBeforeAdding()) || !element.hasOwnProperty("checkBeforeAdding")) {
+					if((element.hasOwnProperty("shouldAdd") && element.shouldAdd()) || !element.hasOwnProperty("shouldAdd")) {
 						dashboardMenuLayout.addView(tileButton(element, true));
 					}
 				});
@@ -17558,7 +17887,7 @@ VertexClientPE.getEvalOutput = function() {
 	return VertexClientPE.latestOutput;
 }
 
-var webbrowserFullOutputText = "";
+let webbrowserFullOutputText = "";
 
 VertexClientPE.showF12Dialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
@@ -17567,38 +17896,38 @@ VertexClientPE.showF12Dialog = function() {
 				if(webBrowserWebView == null || webBrowserWebView == undefined) {
 					throw new Error("webBrowserWebView is not defined!");
 				}
-				var consoleDialogTitle = clientTextView("Developer Tools (F12)", true);
-				var enterButton = clientButton("Enter");
-				var closeButton = clientButton("Close");
-				var dialogLayout = new LinearLayout_(CONTEXT);
+				let consoleDialogTitle = clientTextView("Developer Tools (F12)", true);
+				let enterButton = clientButton("Enter");
+				let closeButton = clientButton("Close");
+				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
 				dialogLayout.setPadding(10, 10, 10, 10);
 
-				var dialogOutputLayout1 = new LinearLayout_(CONTEXT);
+				let dialogOutputLayout1 = new LinearLayout_(CONTEXT);
 				dialogOutputLayout1.setOrientation(LinearLayout_.VERTICAL);
 				dialogOutputLayout1.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - dip2px(10), display.heightPixels / 2));
 				dialogOutputLayout1.setBackgroundDrawable(backgroundSpecial());
 
-				var dialogOutputScroll = new ScrollView_(CONTEXT);
+				let dialogOutputScroll = new ScrollView_(CONTEXT);
 
-				var dialogOutputLayout = new LinearLayout_(CONTEXT);
+				let dialogOutputLayout = new LinearLayout_(CONTEXT);
 				dialogOutputLayout.setOrientation(LinearLayout_.VERTICAL);
 
-				var dialogInputLayout1 = new LinearLayout_(CONTEXT);
+				let dialogInputLayout1 = new LinearLayout_(CONTEXT);
 				dialogInputLayout1.setOrientation(LinearLayout_.VERTICAL);
 				dialogInputLayout1.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - dip2px(10), display.heightPixels / 6));
 				dialogInputLayout1.setBackgroundDrawable(backgroundSpecial(null, "#212121|#ffffff"));
 
-				var dialogInputScroll = new ScrollView_(CONTEXT);
+				let dialogInputScroll = new ScrollView_(CONTEXT);
 
-				var dialogInputLayout = new LinearLayout_(CONTEXT);
+				let dialogInputLayout = new LinearLayout_(CONTEXT);
 				dialogInputLayout.setOrientation(LinearLayout_.VERTICAL);
 
-				var outputTextView = clientTextView(webbrowserFullOutputText);
+				let outputTextView = clientTextView(webbrowserFullOutputText);
 				dialogOutputLayout.addView(outputTextView);
 
-				var inputBar = clientEditText("");
+				let inputBar = clientEditText("");
 				dialogInputLayout.addView(inputBar);
 
 				dialogOutputScroll.addView(dialogOutputLayout);
@@ -17612,18 +17941,19 @@ VertexClientPE.showF12Dialog = function() {
 				dialogLayout.addView(dialogInputLayout1);
 				dialogLayout.addView(enterButton);
 				dialogLayout.addView(closeButton);
-				var dialog = new Dialog_(CONTEXT);
+
+				let dialog = new Dialog_(CONTEXT);
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
 				dialog.setTitle("Developer Tools (F12)");
 				dialog.show();
-				var window = dialog.getWindow();
+				let window = dialog.getWindow();
 				window.setLayout(display.widthPixels, display.heightPixels);
 				enterButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
 						try {
-							var input = inputBar.getText();
+							let input = inputBar.getText();
 							VertexClientPE.evalJSOnWebView(input, webBrowserWebView);
 							new Thread_(new Runnable_() {
 								run: function() {
@@ -17632,8 +17962,8 @@ VertexClientPE.showF12Dialog = function() {
 									}
 									CONTEXT.runOnUiThread(new Runnable_() {
 										run: function() {
+											let outputText;
 											if(outputTextView.getText() == "") {
-												var outputText;
 												outputText = VertexClientPE.getEvalOutput();
 											} else {
 												outputText = outputTextView.getText() + "\n" + VertexClientPE.getEvalOutput();
@@ -17695,10 +18025,8 @@ function webBrowserScreen(fromDashboard) {
 				screenUI.setOnDismissListener(new PopupWindow_.OnDismissListener() {
 					onDismiss: function() {
 						webBrowserWebView.loadUrl("about:blank");
-						if(exitWebBrowserUI != null) {
-							if(exitWebBrowserUI.isShowing()) {
-								xWebBrowserButton.performClick();
-							}
+						if(exitWebBrowserUI != null && exitWebBrowserUI.isShowing()) {
+							xWebBrowserButton.performClick();
 						}
 						webbrowserFullOutputText = null;
 					}
@@ -17728,14 +18056,14 @@ VertexClientPE.showTipBar = function() {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
-				var tipBarWidth = CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 3;
+				let tipBarWidth = CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 3;
 
-				var tipBarLayout = new LinearLayout_(CONTEXT);
+				let tipBarLayout = new LinearLayout_(CONTEXT);
 				tipBarLayout.setOrientation(1);
 
-				var subject = mainButtonTapSetting=="menu"?"the Dashboard and the Shop":"the main menu";
+				let subject = mainButtonTapSetting=="menu"?"the Dashboard and the Shop":"the main menu";
 
-				var tipBarTextView = clientTextView("You can access " + subject + " by long tapping the main button.", true, "diff");
+				let tipBarTextView = clientTextView("You can access " + subject + " by long tapping the main button.", true, "diff");
 				tipBarTextView.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
 				tipBarTextView.setMarqueeRepeatLimit(-1);
 				tipBarTextView.setSingleLine();
@@ -17744,7 +18072,7 @@ VertexClientPE.showTipBar = function() {
 
 				tipBarLayout.addView(tipBarTextView);
 
-				tipBar = new PopupWindow_(tipBarLayout, tipBarWidth, screenHeight / 20);
+				tipBar = new PopupWindow_(tipBarLayout, tipBarWidth, LinearLayout_.LayoutParams.WRAP_CONTENT);
 				tipBar.setBackgroundDrawable(backgroundSpecial("bottom"));
 				tipBar.setTouchable(false);
 				tipBar.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.TOP, 0, 0);
@@ -17781,7 +18109,7 @@ VertexClientPE.showTipBar = function() {
  * @since v1.1
 */
 VertexClientPE.showMenu = function() {
-	var _0xff55=["\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x6F\x75\x74\x64\x61\x74\x65\x64\x2C\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C","\x74\x6F\x61\x73\x74","\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C"];if(!isAuthorized){if(!isSupported){VertexClientPE[_0xff55[1]](_0xff55[0])}else {VertexClientPE[_0xff55[1]](_0xff55[2])};return}
+	let _0xff55=["\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x6F\x75\x74\x64\x61\x74\x65\x64\x2C\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C","\x74\x6F\x61\x73\x74","\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C"];if(!isAuthorized){if(!isSupported){VertexClientPE[_0xff55[1]](_0xff55[0])}else {VertexClientPE[_0xff55[1]](_0xff55[2])};return}
 	if(mainButtonTapSetting == "menu" && mainButtonStyleSetting != "invisible_ghost" && !ghostModeState) {
 		menuBtn.setBackgroundDrawable(iconClickedClientGUI);
 	}
@@ -17841,15 +18169,13 @@ VertexClientPE.closeMenu = function() {
 		}
 	}
 	VertexClientPE.menuIsShowing = false;
-	if(GUI != null) {
-		if(GUI.isShowing()) {
-			if(mainButtonTapSetting == "menu" && mainButtonStyleSetting != "invisible_ghost" && !ghostModeState) {
-				menuBtn.setBackgroundDrawable(iconClientGUI);
-			}
-			if(currentScreen != ScreenType.start_screen && currentScreen != ScreenType.exit_dialog && currentScreen != ScreenType.ingame && currentScreen != ScreenType.hud && currentScreen != ScreenType.pause_screen) {
-				GUI.setTouchable(false);
-				GUI.update();
-			}
+	if(GUI != null && GUI.isShowing()) {
+		if(mainButtonTapSetting == "menu" && mainButtonStyleSetting != "invisible_ghost" && !ghostModeState) {
+			menuBtn.setBackgroundDrawable(iconClientGUI);
+		}
+		if(currentScreen != ScreenType.start_screen && currentScreen != ScreenType.exit_dialog && currentScreen != ScreenType.ingame && currentScreen != ScreenType.hud && currentScreen != ScreenType.pause_screen) {
+			GUI.setTouchable(false);
+			GUI.update();
 		}
 	}
 }
@@ -17857,7 +18183,7 @@ VertexClientPE.closeMenu = function() {
 VertexClientPE.showEmptyMenu = function() {
 	VertexClientPE.menuIsShowing = true;
 
-	var emptyMenuLayout = new LinearLayout_(CONTEXT);
+	let emptyMenuLayout = new LinearLayout_(CONTEXT);
 	emptyMenuLayout.setOrientation(1);
 	emptyMenuLayout.setGravity(Gravity_.CENTER);
 
@@ -17924,56 +18250,45 @@ VertexClientPE.showFullScreenMenu = function() {
 
 				let combatSectionTitle = coloredSubTitle(combatName);
 				combatSectionTitle.setGravity(Gravity_.CENTER);
+				combatSectionTitle.setOnLongClickListener(new View_.OnLongClickListener({
+					onLongClick: function(v, t) {
+						VertexClientPE.showCategoryDialog(combatSectionTitle, combatName, 0);
+						return true;
+					}
+				}));
 				let worldSectionTitle = coloredSubTitle(worldName);
 				worldSectionTitle.setGravity(Gravity_.CENTER);
+				worldSectionTitle.setOnLongClickListener(new View_.OnLongClickListener({
+					onLongClick: function(v, t) {
+						VertexClientPE.showCategoryDialog(worldSectionTitle, worldName, 1);
+						return true;
+					}
+				}));
 				let movementSectionTitle = coloredSubTitle(movementName);
 				movementSectionTitle.setGravity(Gravity_.CENTER);
+				movementSectionTitle.setOnLongClickListener(new View_.OnLongClickListener({
+					onLongClick: function(v, t) {
+						VertexClientPE.showCategoryDialog(movementSectionTitle, movementName, 2);
+						return true;
+					}
+				}));
 				let playerSectionTitle = coloredSubTitle(playerName);
 				playerSectionTitle.setGravity(Gravity_.CENTER);
+				playerSectionTitle.setOnLongClickListener(new View_.OnLongClickListener({
+					onLongClick: function(v, t) {
+						VertexClientPE.showCategoryDialog(playerSectionTitle, playerName, 3);
+						return true;
+					}
+				}));
 				let miscSectionTitle = coloredSubTitle(miscName);
 				miscSectionTitle.setGravity(Gravity_.CENTER);
-				/* let combatSectionTitle = new categoryTitle(combatName, true);
-				let combatSettings = combatSectionTitle.getLeftButton();
-				let worldSectionTitle = new categoryTitle(worldName, true);
-				let worldSettings = worldSectionTitle.getLeftButton();
-				let movementSectionTitle = new categoryTitle(movementName, true);
-				let movementSettings = movementSectionTitle.getLeftButton();
-				let playerSectionTitle = new categoryTitle(playerName, true);
-				let playerSettings = playerSectionTitle.getLeftButton();
-				let miscSectionTitle = new categoryTitle(miscName, true);
-				let miscSettings = miscSectionTitle.getLeftButton();
-				combatSettings.setOnClickListener(new View_.OnClickListener({
-					onClick() {
-						VertexClientPE.showCategoryDialog(combatSectionTitle, combatName, 0);
-					}
-				}));
-				worldSettings.setOnClickListener(new View_.OnClickListener({
-					onClick() {
-						VertexClientPE.showCategoryDialog(worldSectionTitle, worldName, 1);
-					}
-				}));
-				movementSettings.setOnClickListener(new View_.OnClickListener({
-					onClick() {
-						VertexClientPE.showCategoryDialog(movementSectionTitle, movementName, 2);
-					}
-				}));
-				playerSettings.setOnClickListener(new View_.OnClickListener({
-					onClick() {
-						VertexClientPE.showCategoryDialog(playerSectionTitle, playerName, 3);
-					}
-				}));
-				miscSettings.setOnClickListener(new View_.OnClickListener({
-					onClick() {
+				miscSectionTitle.setOnLongClickListener(new View_.OnLongClickListener({
+					onLongClick: function(v, t) {
 						VertexClientPE.showCategoryDialog(miscSectionTitle, miscName, 4);
+						return true;
 					}
 				}));
 
-				VertexClientPE.addView(fullScreenMenuLayout1Combat, combatSectionTitle);
-				VertexClientPE.addView(fullScreenMenuLayout1World, worldSectionTitle);
-				VertexClientPE.addView(fullScreenMenuLayout1Movement, movementSectionTitle);
-				VertexClientPE.addView(fullScreenMenuLayout1Player, playerSectionTitle);
-				VertexClientPE.addView(fullScreenMenuLayout1Misc, miscSectionTitle); */
-				
 				fullScreenMenuLayout1Combat.addView(combatSectionTitle);
 				fullScreenMenuLayout1World.addView(worldSectionTitle);
 				fullScreenMenuLayout1Movement.addView(movementSectionTitle);
@@ -18021,7 +18336,7 @@ VertexClientPE.showFullScreenMenu = function() {
 					fullScreenMenuLayout.addView(fullScreenMenuLayout1Misc);
 				}
 
-				var fullScreenMenuLayout1 = new LinearLayout_(CONTEXT);
+				let fullScreenMenuLayout1 = new LinearLayout_(CONTEXT);
 				fullScreenMenuLayout1.setOrientation(1);
 				fullScreenMenuLayout1.setGravity(Gravity_.CENTER_HORIZONTAL);
 				fullScreenMenuLayout1.setPadding(10, 0, 10, 0);
@@ -18036,7 +18351,7 @@ VertexClientPE.showFullScreenMenu = function() {
 						if(element.hasOwnProperty("isExpMod") && element.isExpMod() && !VertexClientPE.isExpMode()) {
 							return;
 						}
-						if(element.hasOwnProperty("checkBeforeAdding") && !element.checkBeforeAdding()) {
+						if(element.hasOwnProperty("shouldAdd") && !element.shouldAdd()) {
 							return;
 						}
 						if (element.category == VertexClientPE.category.COMBAT) {
@@ -18085,7 +18400,6 @@ VertexClientPE.showTableMenu = function() {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
-				
 				let dScrollView = new ScrollView_(CONTEXT);
 				dScrollView.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT));
 
@@ -18109,7 +18423,7 @@ VertexClientPE.showTableMenu = function() {
 					if(element.hasOwnProperty("isExpMod") && element.isExpMod() && !VertexClientPE.isExpMode()) {
 						return;
 					}
-					if(element.hasOwnProperty("checkBeforeAdding") && !element.checkBeforeAdding()) {
+					if(element.hasOwnProperty("shouldAdd") && !element.shouldAdd()) {
 						return;
 					}
 					realIndex++;
@@ -18143,7 +18457,7 @@ VertexClientPE.showTableMenu = function() {
 	}));
 }
 
-var currentTab = "Combat";
+let currentTab = "Combat";
 
 /**
  * function retroMenu()
@@ -18187,14 +18501,8 @@ function retroMenu() {
 					menuLayout.addView(menuRightScroll);
 					menuRightScroll.addView(menuRightLayout);
 				}
-				//--------Add Title--------//
-				var tabTitle = new TextView_(CONTEXT);
-				tabTitle.setText(currentTab);
-				tabTitle.setTextSize(20);
-				tabTitle.setGravity(Gravity_.CENTER);
-				//menuRightLayout.addView(tabTitle);
 
-				var categories = [VertexClientPE.category.COMBAT, VertexClientPE.category.WORLD, VertexClientPE.category.MOVEMENT, VertexClientPE.category.PLAYER, VertexClientPE.category.MISC];
+				let categories = [VertexClientPE.category.COMBAT, VertexClientPE.category.WORLD, VertexClientPE.category.MOVEMENT, VertexClientPE.category.PLAYER, VertexClientPE.category.MISC];
 
 				categories.forEach(function(element, index, array) {
 					if((index == 0 && combatEnabled == "on") || (index == 1 && worldEnabled == "on") || (index == 2 && movementEnabled == "on") || (index == 3 && playerEnabled == "on") || (index == 4 && miscEnabled == "on")) {
@@ -18208,7 +18516,7 @@ function retroMenu() {
 						if(element.hasOwnProperty("isExpMod") && element.isExpMod() && !VertexClientPE.isExpMode()) {
 							return;
 						}
-						if(element.hasOwnProperty("checkBeforeAdding") && !element.checkBeforeAdding()) {
+						if(element.hasOwnProperty("shouldAdd") && !element.shouldAdd()) {
 							return;
 						}
 						menuRightLayout.addView(modButton(element, null, null, null, shouldHaveCorner));
@@ -18245,7 +18553,7 @@ function retroMenu() {
 VertexClientPE.shouldUpdateGUI = false;
 
 VertexClientPE.getShouldUpdateGUI = function(popupWindow) {
-	return popupWindow == null || VertexClientPE.shouldUpdateGUI;
+	return popupWindow == null || popupWindow == undefined || VertexClientPE.shouldUpdateGUI;
 }
 
 let combatMenuLayout1, worldMenuLayout1, movementMenuLayout1, playerMenuLayout1, miscMenuLayout1;
@@ -18258,31 +18566,31 @@ VertexClientPE.showCategoryMenus = function () {
 				if(VertexClientPE.getShouldUpdateGUI(combatMenu)) {
 					let combatMenuLayout = new LinearLayout_(CONTEXT),
 						combatMenuScrollView = new ScrollView_(CONTEXT),
-						combat = new categoryTitle(combatName, true),
+						combat = new categoryTitle(combatName),
 						combatSettings = combat.getLeftButton(),
 						combatTitle = combat.getMiddleButton(),
 						combatArrow = combat.getRightButton(),
 						worldMenuLayout = new LinearLayout_(CONTEXT),
 						worldMenuScrollView = new ScrollView_(CONTEXT),
-						world = new categoryTitle(worldName, true);
+						world = new categoryTitle(worldName);
 						worldSettings = world.getLeftButton(),
 						worldTitle = world.getMiddleButton(),
 						worldArrow = world.getRightButton(),
 						movementMenuLayout = new LinearLayout_(CONTEXT),
 						movementMenuScrollView = new ScrollView_(CONTEXT),
-						movement = new categoryTitle(movementName, true),
+						movement = new categoryTitle(movementName),
 						movementSettings = movement.getLeftButton(),
 						movementTitle = movement.getMiddleButton(),
 						movementArrow = movement.getRightButton(),
 						playerMenuLayout = new LinearLayout_(CONTEXT),
 						playerMenuScrollView = new ScrollView_(CONTEXT),
-						player = new categoryTitle(playerName, true),
+						player = new categoryTitle(playerName),
 						playerSettings = player.getLeftButton(),
 						playerTitle = player.getMiddleButton(),
 						playerArrow = player.getRightButton(),
 						miscMenuLayout = new LinearLayout_(CONTEXT),
 						miscMenuScrollView = new ScrollView_(CONTEXT),
-						misc = new categoryTitle(miscName, true),
+						misc = new categoryTitle(miscName),
 						miscSettings = misc.getLeftButton(),
 						miscTitle = misc.getMiddleButton(),
 						miscArrow = misc.getRightButton();
@@ -18294,17 +18602,27 @@ VertexClientPE.showCategoryMenus = function () {
 					miscMenuLayout1 = new LinearLayout_(CONTEXT);
 
 					combatMenu = new PopupWindow_(CONTEXT);
+					combatMenu.setWidth(ViewGroup_.LayoutParams.WRAP_CONTENT);
+					combatMenu.setHeight(ViewGroup_.LayoutParams.WRAP_CONTENT);
 					worldMenu = new PopupWindow_(CONTEXT);
+					worldMenu.setWidth(ViewGroup_.LayoutParams.WRAP_CONTENT);
+					worldMenu.setHeight(ViewGroup_.LayoutParams.WRAP_CONTENT);
 					movementMenu = new PopupWindow_(CONTEXT);
+					movementMenu.setWidth(ViewGroup_.LayoutParams.WRAP_CONTENT);
+					movementMenu.setHeight(ViewGroup_.LayoutParams.WRAP_CONTENT);
 					playerMenu = new PopupWindow_(CONTEXT);
+					playerMenu.setWidth(ViewGroup_.LayoutParams.WRAP_CONTENT);
+					playerMenu.setHeight(ViewGroup_.LayoutParams.WRAP_CONTENT);
 					miscMenu = new PopupWindow_(CONTEXT);
+					miscMenu.setWidth(ViewGroup_.LayoutParams.WRAP_CONTENT);
+					miscMenu.setHeight(ViewGroup_.LayoutParams.WRAP_CONTENT);
 
 					VertexClientPE.modules.forEach(function (element, index, array) {
 						if (element.type == "Mod" || element.type == "Special") {
 							if(element.hasOwnProperty("isExpMod") && element.isExpMod() && !VertexClientPE.isExpMode()) {
 								return;
 							}
-							if(element.hasOwnProperty("checkBeforeAdding") && !element.checkBeforeAdding()) {
+							if(element.hasOwnProperty("shouldAdd") && !element.shouldAdd()) {
 								return;
 							}
 							if (element.category == VertexClientPE.category.COMBAT) {
@@ -18365,10 +18683,10 @@ VertexClientPE.showCategoryMenus = function () {
 					combatTitle.setOnTouchListener(new View_.OnTouchListener({
 						onTouch(v, e) {
 							if (combatdown) {
-								var a = e.getAction();
+								let a = e.getAction();
 								if (a == 2) {
-									var X = parseInt(e.getX() - combatmX) * -1 / 10;
-									var Y = parseInt(e.getY() - combatmY) * -1 / 10;
+									let X = parseInt(e.getX() - combatmX) * -1 / 10;
+									let Y = parseInt(e.getY() - combatmY) * -1 / 10;
 									combattpopx = parseInt(combattpopx + X);
 									combattpopy = parseInt(combattpopy + Y);
 									combatMenu.update(combattpopx, combattpopy, -1, -1);
@@ -18435,10 +18753,10 @@ VertexClientPE.showCategoryMenus = function () {
 					worldTitle.setOnTouchListener(new View_.OnTouchListener({
 						onTouch: function (v, e) {
 							if (worlddown) {
-								var a = e.getAction()
+								let a = e.getAction()
 								if (a == 2) {
-									var X = parseInt(e.getX() - worldmX) * -1 / 10;
-									var Y = parseInt(e.getY() - worldmY) * -1 / 10;
+									let X = parseInt(e.getX() - worldmX) * -1 / 10;
+									let Y = parseInt(e.getY() - worldmY) * -1 / 10;
 									worldtpopx = parseInt(worldtpopx + X);
 									worldtpopy = parseInt(worldtpopy + Y);
 									worldMenu.update(worldtpopx, worldtpopy, -1, -1);
@@ -18505,10 +18823,10 @@ VertexClientPE.showCategoryMenus = function () {
 					movementTitle.setOnTouchListener(new View_.OnTouchListener({
 						onTouch: function (v, e) {
 							if (movementdown) {
-								var a = e.getAction()
+								let a = e.getAction()
 								if (a == 2) {
-									var X = parseInt(e.getX() - movementmX) * -1 / 10;
-									var Y = parseInt(e.getY() - movementmY) * -1 / 10;
+									let X = parseInt(e.getX() - movementmX) * -1 / 10;
+									let Y = parseInt(e.getY() - movementmY) * -1 / 10;
 									movementtpopx = parseInt(movementtpopx + X);
 									movementtpopy = parseInt(movementtpopy + Y);
 									movementMenu.update(movementtpopx, movementtpopy, -1, -1);
@@ -18574,10 +18892,10 @@ VertexClientPE.showCategoryMenus = function () {
 					playerTitle.setOnTouchListener(new View_.OnTouchListener({
 						onTouch: function (v, e) {
 							if (playerdown) {
-								var a = e.getAction()
+								let a = e.getAction()
 								if (a == 2) {
-									var X = parseInt(e.getX() - playermX) * -1 / 10;
-									var Y = parseInt(e.getY() - playermY) * -1 / 10;
+									let X = parseInt(e.getX() - playermX) * -1 / 10;
+									let Y = parseInt(e.getY() - playermY) * -1 / 10;
 									playertpopx = parseInt(playertpopx + X);
 									playertpopy = parseInt(playertpopy + Y);
 									playerMenu.update(playertpopx, playertpopy, -1, -1);
@@ -18644,10 +18962,10 @@ VertexClientPE.showCategoryMenus = function () {
 					miscTitle.setOnTouchListener(new View_.OnTouchListener({
 						onTouch: function (v, e) {
 							if (miscdown) {
-								var a = e.getAction()
+								let a = e.getAction()
 								if (a == 2) {
-									var X = parseInt(e.getX() - miscmX) * -1 / 10;
-									var Y = parseInt(e.getY() - miscmY) * -1 / 10;
+									let X = parseInt(e.getX() - miscmX) * -1 / 10;
+									let Y = parseInt(e.getY() - miscmY) * -1 / 10;
 									misctpopx = parseInt(misctpopx + X);
 									misctpopy = parseInt(misctpopy + Y);
 									miscMenu.update(misctpopx, misctpopy, -1, -1);
@@ -18772,7 +19090,7 @@ function openMenuFromMenuButton(viewArg) {
 }
 
 function showMenuButton() {
-	var layout = new LinearLayout_(CONTEXT);
+	let layout = new LinearLayout_(CONTEXT);
 	layout.setOrientation(1);
 	layout.setGravity(Gravity_.TOP);
 	menuBtn = new Button_(CONTEXT);
@@ -18843,7 +19161,7 @@ function showMenuButton() {
 		GUI.setAnimationStyle(android.R.style.Animation_Translucent);
 	}
 
-	var background;
+	let background;
 	if(mainButtonStyleSetting == "no_background" || mainButtonStyleSetting == "invisible_ghost" || ghostModeState) {
 		background = new ColorDrawable_(Color_.TRANSPARENT);
 	} else if(mainButtonStyleSetting == "normal") {
@@ -18914,7 +19232,7 @@ function showMenuButton() {
 						background.setColor(Color_.parseColor("#70141414"));
 					}
 
-					var rect = new android.graphics.Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+					let rect = new android.graphics.Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
 					if(rect.contains(v.getLeft() + event.getX(), v.getTop() + event.getY())) { // detect if the event happens inside the view
 						// onClick will run soon
 
@@ -19183,7 +19501,6 @@ function showHacksList() {
 						hacksListLayoutRight.addView(musicTextView);
 					} else {
 						hacksListLayoutRight.addView(versionText);
-						
 						// TODO
 					}
 					if(hacksList == null || !hacksList.isShowing()) { // < Todo: remove this line?
@@ -19333,7 +19650,7 @@ function showShortcuts() {
 
 					VertexClientPE.modules.forEach(function (element, index, array) {
 						if(sharedPref.getString("VertexClientPE.mods." + element.name + ".isFavorite", "false") == "true") {
-							if(element.hasOwnProperty("checkBeforeAdding") && !element.checkBeforeAdding()) {
+							if(element.hasOwnProperty("shouldAdd") && !element.shouldAdd()) {
 								return;
 							}
 							shortcutCount++;
@@ -19343,7 +19660,7 @@ function showShortcuts() {
 
 					VertexClientPE.tiles.forEach(function (element, index, array) {
 						if(sharedPref.getString("VertexClientPE.tiles." + element.text + ".isFavorite", "false") == "true") {
-							if((element.hasOwnProperty("checkBeforeAdding") && element.checkBeforeAdding()) || !element.hasOwnProperty("checkBeforeAdding")) {
+							if((element.hasOwnProperty("shouldAdd") && element.shouldAdd()) || !element.hasOwnProperty("shouldAdd")) {
 								shortcutCount++;
 								shortcutGUILayout.addView(tileButton(element, false));
 							}
@@ -19388,14 +19705,14 @@ function showShortcuts() {
 	}));
 }
 
-var healthDisplayView;
+let healthDisplayView;
 
 function showHealthDisplay() {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
 				let healthDisplayLayout = new LinearLayout_(CONTEXT);
-				healthDisplayView = clientTextView(Entity.getHealth(getPlayerEnt()) + "/" + Entity.getMaxHealth(getPlayerEnt()) + " ❤", true);
+				healthDisplayView = clientTextView(Entity.getHealth(getPlayerEnt()) + "/" + Entity.getMaxHealth(getPlayerEnt()) + " \u2764", true);
 				healthDisplayLayout.addView(healthDisplayView);
 
 				healthDisplayUI = new PopupWindow_(healthDisplayLayout, dip2px(40), dip2px(40));
@@ -19485,10 +19802,10 @@ function showRotationPlus() {
 				rotationPlusMiddleCenterView.setOnTouchListener(new View_.OnTouchListener({
 					onTouch(v, e) {
 						if (rotationdown) {
-							var a = e.getAction();
+							let a = e.getAction();
 							if (a == 2) {
-								var X = parseInt(e.getX() - rotationmX) * -1 / 10;
-								var Y = parseInt(e.getY() - rotationmY) * -1 / 10;
+								let X = parseInt(e.getX() - rotationmX) * -1 / 10;
+								let Y = parseInt(e.getY() - rotationmY) * -1 / 10;
 								rotationtpopx = rotationtpopx + X;
 								rotationtpopy = rotationtpopy + Y;
 								rotationPlusUI.update(parseInt(rotationtpopx), parseInt(rotationtpopy), -1, -1);
@@ -19548,12 +19865,12 @@ function showPauseUtilities() {
 					}));
 				}
 				if(pauseUtilitiesUI == null || !pauseUtilitiesUI.isShowing()) {
-					var pauseUtilitiesLayout = new LinearLayout_(CONTEXT);
-					var playerViewButton = clientButton("F5");
+					let pauseUtilitiesLayout = new LinearLayout_(CONTEXT);
+					let playerViewButton = clientButton("F5");
 					playerViewButton.setOnClickListener(new View_.OnClickListener({
 						onClick: function(viewArg) {
 							if(Launcher.isToolbox()) {
-								var currentView = ModPE.getPlayerViewPerspective();
+								let currentView = ModPE.getPlayerViewPerspective();
 								if(currentView < 2) {
 									ModPE.setPlayerViewPerspective(currentView + 1);
 								} else {
@@ -19898,9 +20215,9 @@ function destroyBlock(x, y, z, side) {
 		preventDefault();
 		return;
 	}
-	var data = Level.getData(x, y, z);
-	var tile = Level.getTile(x, y, z);
-	var gamemode = Level.getGameMode();
+	let data = Level.getData(x, y, z);
+	let tile = Level.getTile(x, y, z);
+	let gamemode = Level.getGameMode();
 	if(gamemode == 0) {
 		if(stackDropState == true) {
 			if(tile == 1 && getCarriedItem() == 270 || tile == 1 && getCarriedItem() == 257 || tile == 1 && getCarriedItem() == 274 || tile == 1 && getCarriedItem() == 278 || tile == 1 && getCarriedItem() == 285 || tile == 4 && getCarriedItem() == 270 || tile == 4 && getCarriedItem() == 257 || tile == 4 && getCarriedItem() == 274 || tile == 4 && getCarriedItem() == 278 || tile == 4 && getCarriedItem() == 285) {
