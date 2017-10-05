@@ -106,7 +106,7 @@
     "Error: page number is too low!": "Error: page number is too low!",
     "Error: page number is too high!": "Error: page number is too high!",
     "Experimental features aren't enabled!": "Experimental features aren't enabled!",
-    "You didn't unlock this feature yet!": "You didn't unlock this feature yet!",
+    "You haven't unlocked this feature yet!": "You haven't unlocked this feature yet!",
     "This mod is blocked by %0!": "This mod is blocked by %0!",
     "Module %0 can't be found/toggled!": "Module %0 can't be found/toggled!",
     "Successfully teleported player to %0, %1, %2!": "Successfully teleported player to %0, %1, %2!",
