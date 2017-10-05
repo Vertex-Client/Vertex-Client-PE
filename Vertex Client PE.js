@@ -135,6 +135,37 @@ let Gravity = android.view.Gravity;
 EntityType.ENDER_PEARL = 87;
 
 /**
+ * Internationalization: Language Support
+ * Thanks for testing i18n function: NenkaLab<nenka@naver.com>, and ManDongI<boomingsky@naver.com>
+ * @author Astro36<astr36@naver.com>
+ * @function i18n
+ * @memberOf global
+ * @param {String} text
+ * @param {Array.<String>} [args]
+ * @returns {String}
+ */
+const i18n = (function () {
+    const lang = CONTEXT.getResources().getConfiguration().locale.getLanguage(),
+        langPath = PATH + "/lang/" + lang + ".json";
+    if (new File_(langPath).exists()) {
+        const langObj = JSON.parse(getTextFromFile(langPath));
+        return function (text, args) {
+            if (text in langObj) {
+                return langObj[text].replace(/(\{%\d+\})/g, function ($1) {
+                    return args[$1.match(/\{%(\d+)\}/)[1]];
+                });
+            }
+            return text.replace(/(\{%\d+\})/g, function ($1) {
+                return args[$1.match(/\{%(\d+)\}/)[1]];
+            });
+        };
+    }
+    return function (text) {
+        return text;
+    };
+})();
+
+/**
  * ##########
  *  SETTINGS
  * ##########
@@ -2342,7 +2373,7 @@ VertexClientPE.getFeatureCount = function() {
 
 var panic = {
 	name: "Panic",
-	desc: "Disables all modules of the selected categories at once.",
+	desc: i18n("Disables all modules of the selected categories at once."),
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	getSettingsLayout: function() {
@@ -2441,7 +2472,7 @@ var panic = {
 
 var bypass = {
 	name: "Bypass",
-	desc: "Blocks mods that cannot bypass common anti cheat plugins.",
+	desc: i18n("Blocks mods that cannot bypass common anti cheat plugins."),
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	state: false,
@@ -2472,7 +2503,7 @@ var bypass = {
 
 var switchGamemode = {
 	name: "Switch Gamemode",
-	desc: "Switches your gamemode.",
+	desc: i18n("Switches your gamemode."),
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	getSettingsLayout: function() {
@@ -2521,7 +2552,7 @@ var switchGamemode = {
 
 var killAura = {
 	name: "Killaura",
-	desc: "Automatically kills all the near entities.",
+	desc: i18n("Automatically kills all the near entities."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -2591,7 +2622,7 @@ var killAura = {
 
 var freezeAura = {
 	name: "FreezeAura",
-	desc: "Automatically freezes all the near entities.",
+	desc: i18n("Automatically freezes all the near entities."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -2615,7 +2646,7 @@ var freezeAura = {
 
 var fireAura = {
 	name: "FireAura",
-	desc: "Sets all the near entities on fire.",
+	desc: i18n("Sets all the near entities on fire."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -2639,7 +2670,7 @@ var fireAura = {
 
 var autoSword = {
 	name: "AutoSword",
-	desc: "Automatically selects the best sword for you when attacking entities if available.",
+	desc: i18n("Automatically selects the best sword for you when attacking entities if available."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -2658,7 +2689,7 @@ var autoSword = {
 
 var homeCommand = {
 	name: "/home",
-	desc: "Runs the /home command if the server or world you're on has it.",
+	desc: i18n("Runs the /home command if the server or world you're on has it."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -2677,7 +2708,7 @@ var homeCommand = {
 
 var timer = {
 	name: "Timer",
-	desc: "Makes the speed of the game faster.",
+	desc: i18n("Makes the speed of the game faster."),
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
@@ -2719,7 +2750,7 @@ var timer = {
 
 var nuker = {
 	name: "Nuker",
-	desc: "Automatically destroys blocks around you. Can be used on servers when Bypass is enabled.",
+	desc: i18n("Automatically destroys blocks around you. Can be used on servers when Bypass is enabled."),
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
@@ -2827,7 +2858,7 @@ var nuker = {
 
 var fancyChat = {
 	name: "FancyChat",
-	desc: "Replaces characters in sent chat messages by fancy unicode characters. Can be used to bypass curse word filters on some servers.",
+	desc: i18n("Replaces characters in sent chat messages by fancy unicode characters. Can be used to bypass curse word filters on some servers."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -2853,7 +2884,7 @@ var fancyChat = {
 
 var noHurt = {
 	name: "NoHurt",
-	desc: "Prevents you from getting hurt.",
+	desc: i18n("Prevents you from getting hurt."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -2873,7 +2904,7 @@ var noHurt = {
 
 var ride = {
 	name: "Ride",
-	desc: "Automatically makes you ride an entity on tap.",
+	desc: i18n("Automatically makes you ride an entity on tap."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -2894,7 +2925,7 @@ var ride = {
 
 var onlyDay = {
 	name: "OnlyDay",
-	desc: "Sets the time to day all the time.",
+	desc: i18n("Sets the time to day all the time."),
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	state: false,
@@ -2911,7 +2942,7 @@ var onlyDay = {
 
 var flight = {
 	name: "Flight",
-	desc: "Makes you able to fly, even when you're in survival.",
+	desc: i18n("Makes you able to fly, even when you're in survival."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -2947,7 +2978,7 @@ var flight = {
 
 var pointTeleport = {
 	name: "PointTeleport",
-	desc: "Teleports you to the block you're pointing at.",
+	desc: i18n("Teleports you to the block you're pointing at."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -2966,7 +2997,7 @@ var pointTeleport = {
 
 var tapTeleport = {
 	name: "TapTeleport",
-	desc: "Teleports you wherever you tap.",
+	desc: i18n("Teleports you wherever you tap."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -2986,7 +3017,7 @@ var tapTeleport = {
 
 var phase = {
 	name: "Phase",
-	desc: "Makes you able to walk through walls.",
+	desc: i18n("Makes you able to walk through walls."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -3001,7 +3032,7 @@ var phase = {
 
 var fastBreak = {
 	name: "FastBreak",
-	desc: "Allows you to decrease block destroy times.",
+	desc: i18n("Allows you to decrease block destroy times."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -3054,7 +3085,7 @@ var chatRepeatStage = 0;
 
 var chatRepeat = {
 	name: "ChatRepeat",
-	desc: "Automatically repeats all the received chat messages. Can be very annoying.",
+	desc: i18n("Automatically repeats all the received chat messages. Can be very annoying."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -3076,7 +3107,7 @@ var chatRepeat = {
 
 var autoSpammer = {
 	name: "AutoSpammer",
-	desc: "Automatically spams the player.",
+	desc: i18n("Automatically spams the player."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -3165,7 +3196,7 @@ var tpAuraStage = 0;
 
 var tpAura = {
 	name: "TP-Aura",
-	desc: "Automatically teleports you behind entities to prevent you from getting hurt by others.",
+	desc: i18n("Automatically teleports you behind entities to prevent you from getting hurt by others."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -3237,7 +3268,7 @@ let powerExplosionsStage = 0;
 
 var powerExplosions = {
 	name: "PowerExplosions",
-	desc: "Makes explosions more powerful.",
+	desc: i18n("Makes explosions more powerful."),
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
@@ -3283,7 +3314,7 @@ var powerExplosions = {
 
 var tapExplosion = {
 	name: "TapExplosion",
-	desc: "Makes blocks explode wherever you tap.",
+	desc: i18n("Makes blocks explode wherever you tap."),
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
@@ -3300,7 +3331,7 @@ var tapExplosion = {
 
 var signEditor = {
 	name: "SignEditor",
-	desc: "Allows you to edit signs.",
+	desc: i18n("Allows you to edit signs."),
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
@@ -3321,7 +3352,7 @@ var signEditor = {
 
 var instaKill = {
 	name: "InstaKill",
-	desc: "Makes you able to kill an entity in one hit.",
+	desc: i18n("Makes you able to kill an entity in one hit."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -3342,7 +3373,7 @@ var instaKill = {
 
 var derp = {
 	name: "Derp",
-	desc: "Rotates the player all the time.",
+	desc: i18n("Rotates the player all the time."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -3362,7 +3393,7 @@ var derp = {
 
 var glide = {
 	name: "Glide",
-	desc: "Reduces fall damage by slowing the player down when falling.",
+	desc: i18n("Reduces fall damage by slowing the player down when falling."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -3381,7 +3412,7 @@ var glide = {
 
 var autoMine = {
 	name: "AutoMine",
-	desc: "Automatically mines the block you're looking at.",
+	desc: i18n("Automatically mines the block you're looking at."),
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
@@ -3402,7 +3433,7 @@ let followStage = 0;
 
 var follow = {
 	name: "Follow",
-	desc: "Automatically follow nearby entities.",
+	desc: i18n("Automatically follow nearby entities."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -3440,7 +3471,7 @@ var follow = {
 
 var tapNuker = {
 	name: "TapNuker",
-	desc: "Destroys blocks wherever you tap.",
+	desc: i18n("Destroys blocks wherever you tap."),
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
@@ -3478,7 +3509,7 @@ var tapNuker = {
 
 var tapRemover = {
 	name: "TapRemover",
-	desc: "Removes blocks and entities on tap.",
+	desc: i18n("Removes blocks and entities on tap."),
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
@@ -3504,7 +3535,7 @@ var tapRemover = {
 
 var autoPlace = {
 	name: "AutoPlace",
-	desc: "Automatically places the block you're holding wherever you look.",
+	desc: i18n("Automatically places the block you're holding wherever you look."),
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
@@ -3532,7 +3563,7 @@ var autoPlace = {
 
 var regen = {
 	name: "Regen",
-	desc: "Instantly refills your health.",
+	desc: i18n("Instantly refills your health."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -3551,7 +3582,7 @@ var regen = {
 
 var godMode = {
 	name: "God Mode",
-	desc: "Gives you many hearts.",
+	desc: i18n("Gives you many hearts."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -3569,7 +3600,7 @@ var godMode = {
 
 var criticals = {
 	name: "Criticals",
-	desc: "Automatically jumps to make the second attack critical, make sure you attack again after hitting an entity and before hitting the ground to make it work.",
+	desc: i18n("Automatically jumps to make the second attack critical, make sure you attack again after hitting an entity and before hitting the ground to make it work."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -3587,7 +3618,7 @@ var criticals = {
 
 var arrowGun = {
 	name: "ArrowGun",
-	desc: "Automatically shoots arrows wherever you look.",
+	desc: i18n("Automatically shoots arrows wherever you look."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -3678,7 +3709,7 @@ var arrowGun = {
 
 var orderAPizza = {
 	name: "Order a Pizza",
-	desc: "Order a pizza of Pizza Hut.",
+	desc: i18n("Order a pizza of Pizza Hut."),
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	isStateMod: function() {
@@ -3691,7 +3722,7 @@ var orderAPizza = {
 
 var zoom = {
 	name: "Zoom",
-	desc: "Changes the FOV to zoom in.",
+	desc: i18n("Changes the FOV to zoom in."),
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	state: false,
@@ -3706,7 +3737,7 @@ var zoom = {
 
 var coordsDisplay = {
 	name: "CoordsDisplay",
-	desc: "Displays the player's coordinates.",
+	desc: i18n("Displays the player's coordinates."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -3723,7 +3754,7 @@ var coordsDisplay = {
 
 var itemGiver = {
 	name: "ItemGiver",
-	desc: "Adds items to your inventory.",
+	desc: i18n("Adds items to your inventory."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -3792,7 +3823,7 @@ var itemGiver = {
 
 var healthTags = {
 	name: "HealthTags",
-	desc: "Displays an entity's name and health in its nametag.",
+	desc: i18n("Displays an entity's name and health in its nametag."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -3945,7 +3976,7 @@ var healthTags = {
 
 var autoSwitch = {
 	name: "AutoSwitch",
-	desc: "Switches the item in your hand all the time.",
+	desc: i18n("Switches the item in your hand all the time."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -3976,7 +4007,7 @@ let playerWalkSpeed = 0.2;
 
 var autoWalk = {
 	name: "AutoWalk",
-	desc: "Makes your player walk automatically.",
+	desc: i18n("Makes your player walk automatically."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -4062,7 +4093,7 @@ var autoWalk = {
 
 var enderProjectiles = {
 	name: "EnderProjectiles",
-	desc: "Turns every projectile into an Ender Pearl.",
+	desc: i18n("Turns every projectile into an Ender Pearl."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -4082,7 +4113,7 @@ var enderProjectiles = {
 
 var stackDrop = {
 	name: "StackDrop",
-	desc: "Makes every block drop itself 64 times.",
+	desc: i18n("Makes every block drop itself 64 times."),
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
@@ -4097,7 +4128,7 @@ var stackDrop = {
 
 var liquidWalk = {
 	name: "LiquidWalk",
-	desc: "Makes you able to walk on liquids.",
+	desc: i18n("Makes you able to walk on liquids."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -4121,7 +4152,7 @@ var liquidWalk = {
 
 var highJump = {
 	name: "HighJump",
-	desc: "Allows you to jump 2 blocks high.",
+	desc: i18n("Allows you to jump 2 blocks high."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -4173,7 +4204,7 @@ let zDiff;
 
 var fastWalk = {
 	name: "FastWalk",
-	desc: "Makes you walk faster.",
+	desc: i18n("Makes you walk faster."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -4209,7 +4240,7 @@ let useKillauraRangeCheckBox;
 
 var aimbot = {
 	name: "Aimbot",
-	desc: "Makes you point at entities.",
+	desc: i18n("Makes you point at entities."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -4275,7 +4306,7 @@ var aimbot = {
 
 var chestTracers = {
 	name: "ChestTracers",
-	desc: "Allows you to find chests more easily by moving particles from the chest to underneath you.",
+	desc: i18n("Allows you to find chests more easily by moving particles from the chest to underneath you."),
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
@@ -4412,7 +4443,7 @@ var chestTracers = {
 
 var remoteView = {
 	name: "RemoteView",
-	desc: "Allows you to see the world as someone else (an entity).",
+	desc: i18n("Allows you to see the world as someone else (an entity)."),
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	state: false,
@@ -4462,7 +4493,7 @@ var remoteView = {
 
 var antiAFK = {
 	name: "AntiAFK",
-	desc: "Makes the player walk around to prevent you from getting disconnected. Also keeps the screen on as long as the 'Keep screen on' checkbox is checked.",
+	desc: i18n("Makes the player walk around to prevent you from getting disconnected. Also keeps the screen on as long as the 'Keep screen on' checkbox is checked."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	batteryUsage: "Normal (high when 'Keep screen on' is enabled)",
@@ -4524,7 +4555,7 @@ var antiAFK = {
 
 var autoLeave = {
 	name: "AutoLeave",
-	desc: "Automatically makes the game restart when your health is (below) 8.",
+	desc: i18n("Automatically makes the game restart when your health is (below) 8."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -4544,7 +4575,7 @@ var autoLeave = {
 
 var noDownGlide = {
 	name: "NoDownGlide",
-	desc: "Prevents you from flying upwards and downwards (and falling).",
+	desc: i18n("Prevents you from flying upwards and downwards (and falling)."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -4564,7 +4595,7 @@ var noDownGlide = {
 
 var teleport = {
 	name: "Teleport",
-	desc: "Teleports you to the given coordinates.",
+	desc: i18n("Teleports you to the given coordinates."),
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	isStateMod: function() {
@@ -4577,7 +4608,7 @@ var teleport = {
 
 var antiKnockback = {
 	name: "AntiKnockback",
-	desc: "Prevents you from getting knockback while being attacked.",
+	desc: i18n("Prevents you from getting knockback while being attacked."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -4611,7 +4642,7 @@ var antiKnockback = {
 
 var antiBurn = {
 	name: "AntiBurn",
-	desc: "Prevents you from getting burned down.",
+	desc: i18n("Prevents you from getting burned down."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -4643,7 +4674,7 @@ var antiBurn = {
 
 var lifeSaver = {
 	name: "LifeSaver",
-	desc: "Prevents you from getting in touch with dangerous blocks.",
+	desc: i18n("Prevents you from getting in touch with dangerous blocks."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -4669,7 +4700,7 @@ var lifeSaver = {
 
 var autoBuild = {
 	name: "AutoBuild",
-	desc: "Automatically build structures.",
+	desc: i18n("Automatically build structures."),
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
@@ -4689,7 +4720,7 @@ var autoBuild = {
 
 var speedHack = {
 	name: "SpeedHack",
-	desc: "Allows you to walk really fast on the ground.",
+	desc: i18n("Allows you to walk really fast on the ground."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -4745,7 +4776,7 @@ var speedHack = {
 
 var storageESP = {
 	name: "StorageESP",
-	desc: "Allows you to find chests, dispensers and droppers easily by showing boxes around them.",
+	desc: i18n("Allows you to find chests, dispensers and droppers easily by showing boxes around them."),
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
@@ -4790,7 +4821,7 @@ var storageESP = {
 
 var twerk = {
 	name: "Twerk",
-	desc: "Automatically makes you twerk all the time.",
+	desc: i18n("Automatically makes you twerk all the time."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -4813,7 +4844,7 @@ var twerk = {
 
 var actionLog = {
 	name: "ActionLog",
-	desc: "Automatically logs your actions (attacks and chat messages).",
+	desc: i18n("Automatically logs your actions (attacks and chat messages)."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Special",
 	isStateMod: function() {
@@ -4884,7 +4915,7 @@ var actionLog = {
 
 var fastBridge = {
 	name: "FastBridge",
-	desc: "Automatically teleports you on top of placed blocks.",
+	desc: i18n("Automatically teleports you on top of placed blocks."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -4913,7 +4944,7 @@ var fastBridge = {
 
 var noInvisBedrock = {
 	name: "NoInvisBedrock",
-	desc: "Allows you to walk through invisible bedrock.",
+	desc: i18n("Allows you to walk through invisible bedrock."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -4930,7 +4961,7 @@ var noInvisBedrock = {
 
 var tapJumpRun = {
 	name: "TapJumpRun",
-	desc: "Allows you to walk and jump to a block automatically on tap.",
+	desc: i18n("Allows you to walk and jump to a block automatically on tap."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -4963,7 +4994,7 @@ var tapJumpRun = {
 
 var tapAimbot = {
 	name: "TapAimbot",
-	desc: "Makes you aim at entities on tap.",
+	desc: i18n("Makes you aim at entities on tap."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -5019,7 +5050,7 @@ var tapAimbot = {
 
 var randomTP = {
 	name: "RandomTP",
-	desc: "Teleports you to a random entity when tapping the ground.",
+	desc: i18n("Teleports you to a random entity when tapping the ground."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -5053,7 +5084,7 @@ var randomTP = {
 
 var fullBright = {
 	name: "Fullbright",
-	desc: "Makes air light up.",
+	desc: i18n("Makes air light up."),
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
@@ -5072,7 +5103,7 @@ var fullBright = {
 
 var step = {
 	name: "Step",
-	desc: "Similar to MCPE's built-in Auto jump, except that it works on multiple heights.",
+	desc: i18n("Similar to MCPE's built-in Auto jump, except that it works on multiple heights."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -5093,7 +5124,7 @@ var foundItems = false;
 
 var dropLocator = {
 	name: "DropLocator",
-	desc: "Locates dropped items and experience.",
+	desc: i18n("Locates dropped items and experience."),
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	isStateMod: function() {
@@ -5132,7 +5163,7 @@ var dropLocator = {
 
 var playerLocator = {
 	name: "PlayerLocator",
-	desc: "Locates players.",
+	desc: i18n("Locates players."),
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	isStateMod: function() {
@@ -5163,7 +5194,7 @@ var playerLocator = {
 
 var safeWalk = {
 	name: "SafeWalk",
-	desc: "Automatically sneaks when you're at the edge of a block so that you can still move with normal speed.",
+	desc: i18n("Automatically sneaks when you're at the edge of a block so that you can still move with normal speed."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -5183,7 +5214,7 @@ var safeWalk = {
 
 var letItSnow = {
 	name: "LetItSnow",
-	desc: "Makes snowballs spawn above you.",
+	desc: i18n("Makes snowballs spawn above you."),
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	state: false,
@@ -5209,7 +5240,7 @@ var letItSnow = {
 
 var frostWalk = {
 	name: "FrostWalk",
-	desc: "Turns water blocks into ice blocks and lava blocks into cobblestone blocks when you step on them.",
+	desc: i18n("Turns water blocks into ice blocks and lava blocks into cobblestone blocks when you step on them."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -5239,7 +5270,7 @@ var frostWalk = {
 
 var target = {
 	name: "Target",
-	desc: "Allows you to choose if you want to target mobs, players or both in modules like Aimbot.",
+	desc: i18n("Allows you to choose if you want to target mobs, players or both in modules like Aimbot."),
 	category: VertexClientPE.category.MISC,
 	type: "Special",
 	getSettingsLayout: function() {
@@ -5308,7 +5339,7 @@ var target = {
 
 var hitboxes = {
 	name: "Hitboxes",
-	desc: "Increases collision sizes of other players so that you can hit them easily.",
+	desc: i18n("Increases collision sizes of other players so that you can hit them easily."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -5384,8 +5415,8 @@ var hitboxes = {
 
 var elytraBoost = {
 	name: "ElytraBoost",
-	//desc: "Boosts elytra (Toolbox only).",
-	desc: "Boosts elytra.",
+	//desc: i18n("Boosts elytra (Toolbox only)."),
+	desc: i18n("Boosts elytra."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -5411,7 +5442,7 @@ var elytraBoost = {
 
 var prevent = {
 	name: "Prevent",
-	desc: "Prevent user interaction (you can't prevent incoming attacks though).",
+	desc: i18n("Prevent user interaction (you can't prevent incoming attacks though)."),
 	category: VertexClientPE.category.MISC,
 	type: "Special",
 	getSettingsLayout: function() {
@@ -5470,7 +5501,7 @@ var prevent = {
 
 var attackTeleport = {
 	name: "AttackTeleport",
-	desc: "Teleports you to an entity when hitting it.",
+	desc: i18n("Teleports you to an entity when hitting it."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -5490,7 +5521,7 @@ var attackTeleport = {
 
 var healthDisplay = {
 	name: "HealthDisplay",
-	desc: "Shows your health in the bottom left corner.",
+	desc: i18n("Shows your health in the bottom left corner."),
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	state: false,
@@ -5523,7 +5554,7 @@ var healthDisplay = {
 
 var attackShock = {
 	name: "AttackShock",
-	desc: "Makes your device vibrate when hitting an entity.",
+	desc: i18n("Makes your device vibrate when hitting an entity."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	batteryUsage: "High",
@@ -5567,7 +5598,7 @@ let serverInfoStage = 0;
 
 var serverInfo = {
 	name: "ServerInfo",
-	desc: "Shows information about the server you're on.",
+	desc: i18n("Shows information about the server you're on."),
 	category: VertexClientPE.category.MISC,
 	type: "Special",
 	state: false,
@@ -5600,7 +5631,7 @@ var serverInfo = {
 
 var switchAimbot = {
 	name: "SwitchAimbot",
-	desc: "Makes you point at entities but changes target all the time.",
+	desc: i18n("Makes you point at entities but changes target all the time."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -5655,7 +5686,7 @@ var switchAimbot = {
 
 var strafeAura = {
 	name: "StrafeAura",
-	desc: "Makes you walk around entities.",
+	desc: i18n("Makes you walk around entities."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
@@ -5752,7 +5783,7 @@ var strafeAura = {
 
 var noFall = {
 	name: "NoFall",
-	desc: "Immediately teleports you to the first (non-air) block underneath yourself when falling (and blocks fall damage by doing so).",
+	desc: i18n("Immediately teleports you to the first (non-air) block underneath yourself when falling (and blocks fall damage by doing so)."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -5777,7 +5808,7 @@ var noFall = {
 
 var rotationPlus = {
 	name: "Rotation+",
-	desc: "Shows an additional D-pad, but for rotation instead of movement.",
+	desc: i18n("Shows an additional D-pad, but for rotation instead of movement."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -5799,7 +5830,7 @@ var rotationPlus = {
 
 var glitchCam = {
 	name: "GlitchCam",
-	desc: "Reduces the camera movement speed and makes it look dizzy.",
+	desc: i18n("Reduces the camera movement speed and makes it look dizzy."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -5842,7 +5873,7 @@ var glitchCam = {
 
 var bunnyHop = {
 	name: "BunnyHop",
-	desc: "Makes the player jump automatically.",
+	desc: i18n("Makes the player jump automatically."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
@@ -5880,7 +5911,7 @@ var bunnyHop = {
 
 var foodHack = {
 	name: "Foodhack",
-	desc: "Makes all items edible. Turning it off won't reset the items to their original state, though.",
+	desc: i18n("Makes all items edible. Turning it off won't reset the items to their original state, though."),
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	state: false,
@@ -5917,7 +5948,7 @@ var foodHack = {
 
 var antiHunger = {
 	name: "AntiHunger",
-	desc: "Automatically refills your hunger bar.",
+	desc: i18n("Automatically refills your hunger bar."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
@@ -5936,7 +5967,7 @@ var antiHunger = {
 
 var watermark = {
 	name: "Watermark",
-	desc: "Shows a custom (text) watermark. Text can be formatted using HTML.",
+	desc: i18n("Shows a custom (text) watermark. Text can be formatted using HTML."),
 	category: VertexClientPE.category.MISC,
 	type: "Mod",
 	state: false,
@@ -6003,7 +6034,7 @@ var watermark = {
 
 var enchantIt = {
 	name: "EnchantIt",
-	desc: "Adds enchantments to items in your inventory.",
+	desc: i18n("Adds enchantments to items in your inventory."),
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	isStateMod: function() {
@@ -6358,7 +6389,7 @@ VertexClientPE.getHighestHelpPageNumber = function() {
 }
 
 VertexClientPE.showHelpPage = function(page) {
-	VertexClientPE.clientMessage("Showing help page " + page + "/" + VertexClientPE.getHighestHelpPageNumber());
+	VertexClientPE.clientMessage(i18n("Showing help page %0/%1", [page, VertexClientPE.getHighestHelpPageNumber()]));
 	VertexClientPE.commands.forEach(function(element, index, array) {
 		if(element.syntax != null) {
 			if(index >= 8*(page-1) && index <= 8*page-1) {
@@ -6378,9 +6409,9 @@ var help = {
 			if(commandSplit[1] != "1" && commandSplit[1] > 1 && commandSplit[1] <= VertexClientPE.getHighestHelpPageNumber()) {
 				VertexClientPE.showHelpPage(commandSplit[1]);
 			} else if(commandSplit[1] <= 0) {
-				VertexClientPE.clientMessage(ChatColor.RED + "Error: page number is too low!");
+				VertexClientPE.clientMessage(ChatColor.RED + i18n("Error: page number is too low!"));
 			} else {
-				VertexClientPE.clientMessage(ChatColor.RED + "Error: page number is too high!");
+				VertexClientPE.clientMessage(ChatColor.RED + i18n("Error: page number is too high!"));
 			}
 		}
 	}
@@ -6397,7 +6428,7 @@ var toggle = {
 				VertexClientPE.modules.forEach(function (element, index, array) {
 					if ((element.name.toLowerCase() == cmdNoPrefix.toLowerCase() || VertexClientPE.getCustomModName(element.name).toLowerCase() == cmdNoPrefix.toLowerCase())) {
 						if(element.hasOwnProperty("isExpMod") && element.isExpMod() && !VertexClientPE.isExpMode()) {
-							VertexClientPE.toast("Experimental features aren't enabled!");
+							VertexClientPE.toast(i18n("Experimental features aren't enabled!"));
 							return;
 						}
 						if(element.hasOwnProperty("shouldAdd") && !element.shouldAdd()) {
@@ -6412,14 +6443,14 @@ var toggle = {
 								element.state = true;
 								VertexClientPE.shouldUpdateGUI = true;
 							} else if(!element.isStateMod()) {
-								VertexClientPE.toast("This mod is blocked by " + VertexClientPE.getCustomModName("Bypass") + "!");
+								VertexClientPE.toast(i18n("This mod is blocked by %0!", [VertexClientPE.getCustomModName("Bypass")]));
 							}
 						}
 						VertexClientPE.setSavedModState(element.name, element.state);
 						if(hacksList != null && hacksList.isShowing()) {
 							updateHacksList();
 						}
-						VertexClientPE.toast("Sucessfully toggled module " + VertexClientPE.getCustomModName(element.name));
+						VertexClientPE.toast(i18n("Sucessfully toggled module %0", [VertexClientPE.getCustomModName(element.name)]));
 						/*
 							VertexClientPE.toast(VertexClientPE.getCustomModName(element.name) + " can't be toggled using the .t(oggle) command!");
 						*/
@@ -6430,7 +6461,7 @@ var toggle = {
 				if(shouldReturn) {
 					return;
 				}
-				VertexClientPE.toast("Module " + cmdNoPrefix + " can't be found/toggled!");
+				VertexClientPE.toast(i18n("Module %0 can't be found/toggled!", [cmdNoPrefix]));
 			} else {
 				throw new SyntaxError();
 			}
@@ -6547,7 +6578,7 @@ var tp = {
 			}
 			if(getTile(x, y, z) != null) {
 				Entity.setPosition(getPlayerEnt(), x, y, z);
-				VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully teleported player to " + x + ", " + y + ", " + z + "!");
+				VertexClientPE.clientMessage(ChatColor.GREEN + i18n("Successfully teleported player to %0, %1, %2!", [x, y, z]));
 			} else {
 				VertexClientPE.syntaxError(cmdPrefix + this.syntax);
 			}
@@ -6591,7 +6622,7 @@ var gamemode = {
 	syntax: "gamemode",
 	onCall: function(cmd) {
 		VertexClientPE.switchGameMode();
-		VertexClientPE.clientMessage("Your gamemode has been updated!");
+		VertexClientPE.clientMessage(i18n("Your gamemode has been updated!"));
 	}
 }
 
@@ -6617,11 +6648,11 @@ var rename = {
 		let renameItem = Player.getInventorySlot(renameSlot);
 		if(renameName  != null && renameName.replaceAll(" ", "") != "" && renameItem != 0) {
 			Player.setItemCustomName(renameSlot, renameName);
-			VertexClientPE.clientMessage(ChatColor.GREEN + "Successfully renamed item to " + renameName + "!");
+			VertexClientPE.clientMessage(ChatColor.GREEN + i18n("Successfully renamed item to %0!", [renameName]));
 		} else if(renameName.replaceAll(" ", "") == "") {
-			VertexClientPE.clientMessage(ChatColor.RED + "Error: please enter a valid name!");
+			VertexClientPE.clientMessage(ChatColor.RED + i18n("Error: please enter a valid name!"));
 		} else if(renameItem == 0) {
-			VertexClientPE.clientMessage(ChatColor.RED + "Error: the selected inventory slot is empty!");
+			VertexClientPE.clientMessage(ChatColor.RED + i18n("Error: the selected inventory slot is empty!"));
 		}
 	}
 }
@@ -6916,9 +6947,10 @@ function getTextFromFile(filePath) {
 		return "";
 	}
 	let br = new BufferedReader_(new InputStreamReader_(new FileInputStream_(file)));
-	let read, text;
+	let read,
+		text = "";
 	while((read = br.readLine()) != null) {
-		text = read;
+		text += read;
 		break;
 	}
 	br.close();
@@ -7019,7 +7051,7 @@ function pizzaOrderDialog() {
 				let b = new AlertDialog_.Builder(CONTEXT);
 				b.setTitle(URL);
 				b.setView(wwv);
-				b.setNegativeButton("Close", new DialogInterface_.OnClickListener() {
+				b.setNegativeButton(i18n("Close"), new DialogInterface_.OnClickListener() {
 					onClick: function (di, v1) {
 						di.dismiss();
 					}
@@ -7027,7 +7059,7 @@ function pizzaOrderDialog() {
 				let a = b.create();
 				a.show();
 			} catch (err) {
-				print("Cannot open window: " + err + ".")
+				print(i18n("Cannot open window: ") + err + ".")
 				VertexClientPE.showBugReportDialog(err);;
 			}
 		}
@@ -7038,9 +7070,9 @@ VertexClientPE.showSignEditorDialog = function(signX, signY, signZ) {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				let signEditorTitle = clientTextView("SignEditor", true);
-				let btn = clientButton("Ok");
-				let btn1 = clientButton("Cancel");
+				let signEditorTitle = clientTextView(i18n("SignEditor"), true);
+				let btn = clientButton(i18n("Ok"));
+				let btn1 = clientButton(i18n("Cancel"));
 				let inputBar = clientEditText();
 				let inputBar1 = clientEditText();
 				let inputBar2 = clientEditText();
@@ -7060,17 +7092,17 @@ VertexClientPE.showSignEditorDialog = function(signX, signY, signZ) {
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
-				dialog.setTitle("SignEditor");
-				inputBar.setHint("Line 1");
+				dialog.setTitle(i18n("SignEditor"));
+				inputBar.setHint(i18n("Line 1"));
 				inputBar.setText(Level.getSignText(signX, signY, signZ, 0));
 				inputBar.setTextColor(Color_.WHITE);
-				inputBar1.setHint("Line 2");
+				inputBar1.setHint(i18n("Line 2"));
 				inputBar1.setText(Level.getSignText(signX, signY, signZ, 1));
 				inputBar1.setTextColor(Color_.WHITE);
-				inputBar2.setHint("Line 3");
+				inputBar2.setHint(i18n("Line 3"));
 				inputBar2.setText(Level.getSignText(signX, signY, signZ, 2));
 				inputBar2.setTextColor(Color_.WHITE);
-				inputBar3.setHint("Line 4");
+				inputBar3.setHint(i18n("Line 4"));
 				inputBar3.setText(Level.getSignText(signX, signY, signZ, 3));
 				inputBar3.setTextColor(Color_.WHITE);
 				dialog.show();
@@ -7104,14 +7136,14 @@ VertexClientPE.showBugReportDialog = function(exception) {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				let bugReportTitle = clientTextView("An error occurred", true);
-				let btn = clientButton("Copy error code & start a new issue on GitHub");
+				let bugReportTitle = clientTextView(i18n("An error occurred"), true);
+				let btn = clientButton(i18n("Copy error code & start a new issue on GitHub"));
 				btn.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
 				btn.setMarqueeRepeatLimit(-1);
 				btn.setSingleLine();
 				btn.setHorizontallyScrolling(true);
 				btn.setSelected(true);
-				let btn1 = clientButton("Close");
+				let btn1 = clientButton(i18n("Close"));
 				let exceptionTextView = clientTextView(exception);
 				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
@@ -7135,12 +7167,12 @@ VertexClientPE.showBugReportDialog = function(exception) {
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout1);
-				dialog.setTitle("An error occurred");
+				dialog.setTitle(i18n("An error occurred"));
 				dialog.show();
 				btn.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
 						copyToClipboard(exception);
-						VertexClientPE.toast("Successfully copied the error message to clipboard. Paste it in the issue input.");
+						VertexClientPE.toast(i18n("Successfully copied the error message to clipboard. Paste it in the issue input."));
 						ModPE.goToURL("https://github.com/Vertex-Client/Vertex-Client-PE/issues/new");
 						dialog.dismiss();
 					}
@@ -7161,9 +7193,9 @@ VertexClientPE.showRemoteViewTargetDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				let rvTitle = clientTextView("RemoteView | Target player by username", true);
-				let btn = clientButton("Apply");
-				let btn1 = clientButton("Close");
+				let rvTitle = clientTextView(i18n("RemoteView | Target player by username"), true);
+				let btn = clientButton(i18n("Apply"));
+				let btn1 = clientButton(i18n("Close"));
 				let inputBar = clientEditText();
 				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
@@ -7177,8 +7209,8 @@ VertexClientPE.showRemoteViewTargetDialog = function() {
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
-				dialog.setTitle("RemoteView | Target by username");
-				inputBar.setHint("Username");
+				dialog.setTitle(i18n("RemoteView | Target by username"));
+				inputBar.setHint(i18n("Username"));
 				dialog.show();
 				btn.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
@@ -7198,9 +7230,9 @@ VertexClientPE.showRemoteViewTargetDialog = function() {
 							}
 						});
 						if(rvTargetDone) {
-							VertexClientPE.toast("Your new RemoteView target is " + username + "!");
+							VertexClientPE.toast(i18n("Your new RemoteView target is %0!", [username]));
 						} else {
-							VertexClientPE.toast(username + " couldn't be found!");
+							VertexClientPE.toast(i18n("%0 couldn't be found!", [username]));
 						}
 					}
 				});
@@ -7232,8 +7264,8 @@ VertexClientPE.resetMenuPos = function() {
 	misctpopx = misctpopx_def;
 	misctpopy = misctpopy_def;
 	miscMenu.update(misctpopx, misctpopy, -1, -1);
-	VertexClientPE.saveFloatingMenus("all");
-	VertexClientPE.toast("Successfully reset all menu positions!");
+	VertexClientPE.saveFloatingMenus("all"); //don't add translation as this is a parameter
+	VertexClientPE.toast(i18n("Successfully reset all menu positions!"));
 }
 
 VertexClientPE.tempDisable = function() {
@@ -7282,7 +7314,7 @@ VertexClientPE.tempDisable = function() {
 		}
 	});
 	VertexClientPE.modules = [];
-	VertexClientPE.toast("Successfully disabled Vertex Client PE! Restart to get the functionality back.");
+	VertexClientPE.toast(i18n("Successfully disabled Vertex Client PE! Restart to get the functionality back."));
 }
 
 VertexClientPE.showTempDisableDialog = function() {
@@ -7308,23 +7340,23 @@ VertexClientPE.showMoreDialog = function() {
 					return;
 				}
 				moreMenuIsOpen = true;
-				let moreTitle = clientTextView("More", true);
+				let moreTitle = clientTextView(i18n("More"), true);
 				let moreHR = clientHR();
 
-				let ghostModeTitle = "Ghost mode | ";
+				let ghostModeTitle = i18n("Ghost mode | ");
 				if(ghostModeState) {
-					ghostModeTitle += "ON";
+					ghostModeTitle += i18n("ON");
 				} else {
-					ghostModeTitle += "OFF";
+					ghostModeTitle += i18n("OFF");
 				}
 
-				let dashboardButton = clientButton("Dashboard");
-				let webBrowserButton = clientButton("Webbrowser");
-				let playerCustomizerButton = clientButton("Player Customizer");
-				let optiFineButton = clientButton("OptiFine");
-				let hideMenuButton = clientButton("Temporarily disable the client");
+				let dashboardButton = clientButton(i18n("Dashboard"));
+				let webBrowserButton = clientButton(i18n("Webbrowser"));
+				let playerCustomizerButton = clientButton(i18n("Player Customizer"));
+				let optiFineButton = clientButton(i18n("OptiFine"));
+				let hideMenuButton = clientButton(i18n("Temporarily disable the client"));
 				let ghostModeButton = clientButton(ghostModeTitle);
-				let resetPosButton = clientButton("Reset moveable menu positions");
+				let resetPosButton = clientButton(i18n("Reset moveable menu positions"));
 
 				if(buttonStyleSetting != "android") {
 					dashboardButton.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.ic_dialog_dialer, 0, 0);
@@ -7352,8 +7384,8 @@ VertexClientPE.showMoreDialog = function() {
 					resetPosButton.setCompoundDrawablesRelativeWithIntrinsicBounds(android.R.drawable.stat_notify_sync, 0, 0, 0);
 				}
 
-				let screenshotButton = clientButton("Take a screenshot");
-				let rvTargetButton = clientButton("RemoteView | Target player by username");
+				let screenshotButton = clientButton(i18n("Take a screenshot"));
+				let rvTargetButton = clientButton(i18n("RemoteView | Target player by username"));
 				let dialogLayout1 = new LinearLayout_(CONTEXT);
 				dialogLayout1.setBackgroundDrawable(backgroundGradient());
 				dialogLayout1.setOrientation(LinearLayout_.VERTICAL);
@@ -7385,7 +7417,7 @@ VertexClientPE.showMoreDialog = function() {
 				moreDialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				moreDialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				moreDialog.setContentView(dialogLayout1);
-				moreDialog.setTitle("More");
+				moreDialog.setTitle(i18n("More"));
 				moreDialog.setOnDismissListener(new DialogInterface_.OnDismissListener() {
 					onDismiss: function() {
 						moreMenuIsOpen = false;
@@ -7396,7 +7428,7 @@ VertexClientPE.showMoreDialog = function() {
 					onClick: function(view) {
 						moreDialog.dismiss();
 						VertexClientPE.closeMenu();
-						dashboardScreen("Dashboard", android.R.drawable.ic_dialog_dialer);
+						dashboardScreen(i18n("Dashboard"), android.R.drawable.ic_dialog_dialer);
 					}
 				});
 				webBrowserButton.setOnClickListener(new View_.OnClickListener() {
@@ -7411,14 +7443,14 @@ VertexClientPE.showMoreDialog = function() {
 					onClick: function(view) {
 						moreDialog.dismiss();
 						VertexClientPE.closeMenu();
-						playerCustomizerScreen(false, "Player Customizer", android.R.drawable.presence_online);
+						playerCustomizerScreen(false, i18n("Player Customizer"), android.R.drawable.presence_online);
 					}
 				});
 				optiFineButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(view) {
 						moreDialog.dismiss();
 						VertexClientPE.closeMenu();
-						optiFineScreen(false, "OptiFine", android.R.drawable.ic_menu_zoom);
+						optiFineScreen(false, i18n("OptiFine"), android.R.drawable.ic_menu_zoom);
 					}
 				});
 				hideMenuButton.setOnClickListener(new View_.OnClickListener() {
@@ -7431,7 +7463,7 @@ VertexClientPE.showMoreDialog = function() {
 					onClick: function(view) {
 						ghostModeState = !ghostModeState;
 						if(ghostModeState) {
-							ghostModeTitle = "Ghost mode | ON";
+							ghostModeTitle = i18n("Ghost mode | ON");
 							if(hacksList != null && hacksList.isShowing()) {
 								hacksList.dismiss();
 							}
@@ -7451,7 +7483,7 @@ VertexClientPE.showMoreDialog = function() {
 								mainMenuTextList.dismiss();
 							}
 						} else {
-							ghostModeTitle = "Ghost mode | OFF";
+							ghostModeTitle = i18n("Ghost mode | OFF");
 						}
 						if(screenUI == null || !screenUI.isShowing()) {
 							if(GUI != null && GUI.isShowing()) {
@@ -7515,10 +7547,10 @@ VertexClientPE.showHacksListManagerDialog = function() {
 				settingsTitleLayout.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
 				settingsTitleLayout.setGravity(Gravity_.CENTER);
 				settingsTitleLayout.addView(settingsTitle);
-				let hacksListManagerTitle = clientTextView("Hacks list Manager", true);
+				let hacksListManagerTitle = clientTextView(i18n("Hacks list Manager"), true);
 				hacksListManagerTitle.setGravity(Gravity_.CENTER);
 				let hacksListManagerEnter = clientTextView("");
-				let closeButton = clientButton("Close");
+				let closeButton = clientButton(i18n("Close"));
 				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
 				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
@@ -7536,69 +7568,69 @@ VertexClientPE.showHacksListManagerDialog = function() {
 				dialogScrollView.addView(dialogLayout);
 				dialogLayout1.addView(dialogScrollView);
 
-				let hacksListModeSettingFunc = new settingButton("Hacks list mode", null, display.widthPixels - 20,
+				let hacksListModeSettingFunc = new settingButton(i18n("Hacks list mode"), null, display.widthPixels - 20,
 					function(viewArg) {
 						hacksListModeSetting = "on";
-						hacksListModeSettingButton.setText("Normal");
+						hacksListModeSettingButton.setText(i18n("Normal"));
 					}
 				);
 				let hacksListModeSettingButton = hacksListModeSettingFunc.getButton();
 				if(hacksListModeSetting == "on") {
-					hacksListModeSettingButton.setText("Normal");
+					hacksListModeSettingButton.setText(i18n("Normal"));
 				} else if(hacksListModeSetting == "counter") {
-					hacksListModeSettingButton.setText("Counter");
+					hacksListModeSettingButton.setText(i18n("Counter"));
 				} else if(hacksListModeSetting == "logo") {
-					hacksListModeSettingButton.setText("Logo");
+					hacksListModeSettingButton.setText(i18n("Logo"));
 				} else if(hacksListModeSetting == "off") {
-					hacksListModeSettingButton.setText("Hidden");
+					hacksListModeSettingButton.setText(i18n("Hidden"));
 				}
 				hacksListModeSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						if(hacksListModeSetting == "off") {
 							hacksListModeSetting = "on";
-							hacksListModeSettingButton.setText("Normal");
+							hacksListModeSettingButton.setText(i18n("Normal"));
 							VertexClientPE.saveMainSettings();
 						} else if(hacksListModeSetting == "on"){
 							hacksListModeSetting = "counter";
-							hacksListModeSettingButton.setText("Counter");
+							hacksListModeSettingButton.setText(i18n("Counter"));
 							VertexClientPE.saveMainSettings();
 						} else if(hacksListModeSetting == "counter"){
 							hacksListModeSetting = "logo";
-							hacksListModeSettingButton.setText("Logo");
+							hacksListModeSettingButton.setText(i18n("Logo"));
 							VertexClientPE.saveMainSettings();
 						} else if(hacksListModeSetting == "logo"){
 							hacksListModeSetting = "off";
-							hacksListModeSettingButton.setText("Hidden");
+							hacksListModeSettingButton.setText(i18n("Hidden"));
 							VertexClientPE.saveMainSettings();
 						}
 					}
 				}));
 
-				let hacksListPosSettingFunc = new settingButton("Hacks list position", null, display.widthPixels - 20,
+				let hacksListPosSettingFunc = new settingButton(i18n("Hacks list position"), null, display.widthPixels - 20,
 					function(viewArg) {
 						hacksListPosSetting = "top-center";
-						hacksListPosSettingButton.setText("Top-center");
+						hacksListPosSettingButton.setText(i18n("Top-center"));
 					}
 				);
 				let hacksListPosSettingButton = hacksListPosSettingFunc.getButton();
 				if(hacksListPosSetting == "top-left") {
-					hacksListPosSettingButton.setText("Top-left");
+					hacksListPosSettingButton.setText(i18n("Top-left"));
 				} else if(hacksListPosSetting == "top-center") {
-					hacksListPosSettingButton.setText("Top-center");
+					hacksListPosSettingButton.setText(i18n("Top-center"));
 				} else if(hacksListPosSetting == "top-right") {
-					hacksListPosSettingButton.setText("Top-right");
+					hacksListPosSettingButton.setText(i18n("Top-right"));
 				}
 				hacksListPosSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						if(hacksListPosSetting == "top-left") {
 							hacksListPosSetting = "top-center";
-							hacksListPosSettingButton.setText("Top-center");
+							hacksListPosSettingButton.setText(i18n("Top-center"));
 						} else if(hacksListPosSetting == "top-center"){
 							hacksListPosSetting = "top-right";
-							hacksListPosSettingButton.setText("Top-right");
+							hacksListPosSettingButton.setText(i18n("Top-right"));
 						} else if(hacksListPosSetting == "top-right"){
 							hacksListPosSetting = "top-left";
-							hacksListPosSettingButton.setText("Top-left");
+							hacksListPosSettingButton.setText(i18n("Top-left"));
 						}
 						VertexClientPE.saveMainSettings();
 					}
@@ -7613,7 +7645,7 @@ VertexClientPE.showHacksListManagerDialog = function() {
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout1);
-				dialog.setTitle("Hacks list Manager");
+				dialog.setTitle(i18n("Hacks list Manager"));
 				dialog.setOnDismissListener(new DialogInterface_.OnDismissListener() {
 					onDismiss: function() {
 						VertexClientPE.saveMainSettings();
@@ -15233,10 +15265,17 @@ function downloadFile(path, url, showNotification, replace) {
 
 (function checkFiles() {
 	let res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png", "github_button.png", "github_button_clicked.png", "vertex_logo_new.png", "stevehead.png", "minecraft.ttf", "christmas_tree.png", "dirt_background.png", "rainbow_background.png"],
+		langs = ["en", "ko"],
 		isExisting = true;
 	for (let i = res.length; i--;) {
 		if (!new File_(PATH, res[i]).exists()) {
 			downloadFile(PATH + res[i], GITHUB_URL + "bootstrap/img/" + res[i]);
+			isExisting = false;
+		}
+	}
+	for (var i = langs.length; i--;) {
+		if (!new File_(PATH + "/lang/", langs[i] + ".json").exists()) {
+			downloadFile(PATH + "/lang/" + langs[i] + ".json", "https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/feature/i18n/lang/" + langs[i] + ".json");
 			isExisting = false;
 		}
 	}
