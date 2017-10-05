@@ -134,7 +134,16 @@ var Gravity = android.view.Gravity;
 
 EntityType.ENDER_PEARL = 87;
 
-// Internationalization: Language Support
+/**
+ * Internationalization: Language Support
+ * Thanks for testing i18n function: NenkaLab <nenka@naver.com>
+ * @author Astro36 <astr36@naver.com>
+ * @function i18n
+ * @memberOf global
+ * @param {String} text
+ * @param {Array.<String>} [args]
+ * @returns {String}
+ */
 const i18n = (function () {
     const lang = CONTEXT.getResources().getConfiguration().locale.getLanguage(),
         langPath = PATH + "/lang/" + lang + ".json";
