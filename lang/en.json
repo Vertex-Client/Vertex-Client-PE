@@ -157,7 +157,6 @@
     "Top-right": "Top-right",
     "You can't give a mod an empty name!": "You can't give a mod an empty name!",
     "There's already a mod with that (default or custom) name!": "There's already a mod with that (default or custom) name!",
-    "This mod is blocked by %0!": "This mod is blocked by %0!",
     "Successfully added item with id %0.": "Successfully added item with id %0.",
     "Item doesn't exist!": "Item doesn't exist!"
 }
