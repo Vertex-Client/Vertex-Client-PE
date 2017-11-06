@@ -1,7 +1,7 @@
 /**
  * ##################################################################################################
  * @name Vertex Client PE
- * @version v2.5
+ * @version v2.5-pre1
  * @author peacestorm (@AgameR_Modder)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36, AutoGrind, TimmyIsDa
  *
@@ -134,6 +134,8 @@ let Gravity = android.view.Gravity;
 
 EntityType.ENDER_PEARL = 87;
 
+let useCustomLangTest = false;
+
 /**
  * Internationalization: Language Support
  * Thanks for testing i18n function: NenkaLab<nenka@naver.com>, and ManDongI<boomingsky@naver.com>
@@ -147,7 +149,7 @@ EntityType.ENDER_PEARL = 87;
 const i18n = (function () {
     const lang = CONTEXT.getResources().getConfiguration().locale.getLanguage(),
         langPath = PATH + "/lang/" + lang + ".json";
-    if (new File_(langPath).exists()) {
+    if (new File_(langPath).exists() && useCustomLangTest) {
         const langObj = JSON.parse(getTextFromFile(langPath));
         return function (text, args) {
             if (text in langObj) {
@@ -263,6 +265,7 @@ let healthTagsShowHeartSetting = "on";
 let modsStayEnabledSetting = "on";
 let itemGiverModeSetting = "fast";
 let targetMyTeamSetting = "off";
+let shouldShowTipDialogsSetting = "on";
 //------------------------------------
 let antiAFKDistancePerTick = 0.25;
 //------------------------------------
@@ -1317,7 +1320,7 @@ VertexClientPE.isRemote = function() {
 
 VertexClientPE.playerIsInGame = false;
 
-VertexClientPE.currentVersion = "2.5";
+VertexClientPE.currentVersion = "2.5-pre1";
 VertexClientPE.currentVersionDesc = "The Combat Update";
 VertexClientPE.targetVersion = "MCPE v1.0.x";
 VertexClientPE.minVersion = "1.0.0";
@@ -3935,23 +3938,23 @@ var healthTags = {
 		let healthTagsShowHeartSettingFunc = new settingButton("Show heart icon on nametag", null, width,
 			function(viewArg) {
 				healthTagsShowHeartSetting = "on";
-				healthTagsShowHeartSettingButton.setText("ON");
+				healthTagsShowHeartSettingButton.setText(i18n("ON"));
 			}
 		);
 		let healthTagsShowHeartSettingButton = healthTagsShowHeartSettingFunc.getButton();
 		if(healthTagsShowHeartSetting == "on") {
-			healthTagsShowHeartSettingButton.setText("ON");
+			healthTagsShowHeartSettingButton.setText(i18n("ON"));
 		} else if(healthTagsShowHeartSetting == "off") {
-			healthTagsShowHeartSettingButton.setText("OFF");
+			healthTagsShowHeartSettingButton.setText(i18n("OFF"));
 		}
 		healthTagsShowHeartSettingButton.setOnClickListener(new View_.OnClickListener({
 			onClick: function(viewArg) {
 				if(healthTagsShowHeartSetting == "on") {
 					healthTagsShowHeartSetting = "off";
-					healthTagsShowHeartSettingButton.setText("OFF");
+					healthTagsShowHeartSettingButton.setText(i18n("OFF"));
 				} else if(healthTagsShowHeartSetting == "off") {
 					healthTagsShowHeartSetting = "on";
-					healthTagsShowHeartSettingButton.setText("ON");
+					healthTagsShowHeartSettingButton.setText(i18n("ON"));
 				}
 				VertexClientPE.saveMainSettings();
 			}
@@ -7345,9 +7348,9 @@ VertexClientPE.showMoreDialog = function() {
 
 				let ghostModeTitle = i18n("Ghost mode") + " | ";
 				if(ghostModeState) {
-					ghostModeTitle += i18n("ON");
+					ghostModeTitle += i18n(i18n("ON"));
 				} else {
-					ghostModeTitle += i18n("OFF");
+					ghostModeTitle += i18n(i18n("OFF"));
 				}
 
 				let dashboardButton = clientButton(i18n("Dashboard"));
@@ -7463,7 +7466,7 @@ VertexClientPE.showMoreDialog = function() {
 					onClick: function(view) {
 						ghostModeState = !ghostModeState;
 						if(ghostModeState) {
-							ghostModeTitle = i18n("Ghost mode") + " | " + i18n("ON");
+							ghostModeTitle = i18n("Ghost mode") + " | " + i18n(i18n("ON"));
 							if(hacksList != null && hacksList.isShowing()) {
 								hacksList.dismiss();
 							}
@@ -7483,7 +7486,7 @@ VertexClientPE.showMoreDialog = function() {
 								mainMenuTextList.dismiss();
 							}
 						} else {
-							ghostModeTitle = i18n("Ghost mode") + " | " + i18n("OFF");
+							ghostModeTitle = i18n("Ghost mode") + " | " + i18n(i18n("OFF"));
 						}
 						if(screenUI == null || !screenUI.isShowing()) {
 							if(GUI != null && GUI.isShowing()) {
@@ -7976,23 +7979,23 @@ VertexClientPE.showShortcutManagerDialog = function() {
 				let showIconsOnTileShortcutsSettingFunc = new settingButton("Show icons on tile/screen shortcuts", null, display.widthPixels - 20,
 					function(viewArg) {
 						showIconsOnTileShortcutsSetting = "on";
-						showIconsOnTileShortcutsSettingButton.setText("ON");
+						showIconsOnTileShortcutsSettingButton.setText(i18n("ON"));
 					}
 				);
 				let showIconsOnTileShortcutsSettingButton = showIconsOnTileShortcutsSettingFunc.getButton();
 				if(showIconsOnTileShortcutsSetting == "off") {
-					showIconsOnTileShortcutsSettingButton.setText("OFF");
+					showIconsOnTileShortcutsSettingButton.setText(i18n("OFF"));
 				} else if(showIconsOnTileShortcutsSetting == "on") {
-					showIconsOnTileShortcutsSettingButton.setText("ON");
+					showIconsOnTileShortcutsSettingButton.setText(i18n("ON"));
 				}
 				showIconsOnTileShortcutsSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						if(showIconsOnTileShortcutsSetting == "off") {
 							showIconsOnTileShortcutsSetting = "on";
-							showIconsOnTileShortcutsSettingButton.setText("ON");
+							showIconsOnTileShortcutsSettingButton.setText(i18n("ON"));
 						} else if(showIconsOnTileShortcutsSetting == "on") {
 							showIconsOnTileShortcutsSetting = "off";
-							showIconsOnTileShortcutsSettingButton.setText("OFF");
+							showIconsOnTileShortcutsSettingButton.setText(i18n("OFF"));
 						}
 						VertexClientPE.saveMainSettings();
 					}
@@ -10056,15 +10059,36 @@ VertexClientPE.showWhatsNewDialog = function() {
 
 VertexClientPE.showTipDialog = function() {
 	let openText;
-	if(mainButtonTapSetting == "menu") {
-		openText = "long tap on the main button";
-	} else {
-		openText = "click on the main button";
+	let desc;
+	let title;
+
+	let scramble = getRandomInt(1, 2);
+	if(scramble == 1) {
+		if(mainButtonTapSetting == "menu") {
+			openText = "long tap on the main button";
+		} else {
+			openText = "click on the main button";
+		}
+		desc = "Are there any mods you use regularly? Have you tried out shortcuts yet? The shortcuts allow you to toggle mods and tiles faster than ever! Please go to the Help screen (" + openText + " --> Dashboard --> Help) to find out how to add them.";
+		title = "Shortcuts";
+	} else if(scramble == 2) {
+		desc = "YouTube";
+		title = "Subscribe to AgameR on YouTube for exclusive previews.";
 	}
 
-	VertexClientPE.showBasicDialog("Shortcuts", clientTextView("Are there any mods you use regularly? Have you tried out shortcuts yet? The shortcuts allow you to toggle mods and tiles faster than ever! Please go to the Help screen (" + openText + " --> Dashboard --> Help) to find out how to add them."),
+	let dialogInnerLayout = new LinearLayout_(CONTEXT);
+	dialogInnerLayout.setOrientation(1);
+	
+	let dialogCheckBox = clientCheckBox("Don't show these tip dialogs anymore");
+	dialogCheckBox.setChecked(false);
+
+	dialogInnerLayout.addView(clientTextView(desc));
+	dialogInnerLayout.addView(dialogCheckBox);
+
+	VertexClientPE.showBasicDialog(title, dialogInnerLayout,
 		function() {
-			VertexClientPE.setHasShownTipDialog(true);
+			shouldShowTipDialogsSetting = dialogCheckBox.isChecked()?"off":"on";
+			VertexClientPE.saveMainSettings();
 		}
 	);
 }
@@ -11555,6 +11579,7 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + modsStayEnabledSetting.toString());
 	outWrite.append("," + itemGiverModeSetting.toString());
 	outWrite.append("," + targetMyTeamSetting.toString());
+	outWrite.append("," + shouldShowTipDialogsSetting.toString());
 
 	outWrite.close();
 
@@ -11840,6 +11865,9 @@ VertexClientPE.loadMainSettings = function () {
 	}
 	if (arr[88] != null && arr[88] != undefined) {
 		targetMyTeamSetting = arr[88];
+	}
+	if (arr[89] != null && arr[89] != undefined) {
+		shouldShowTipDialogsSetting = arr[89];
 	}
 
 	VertexClientPE.loadCustomRGBSettings();
@@ -12293,7 +12321,7 @@ function musicBar() {
 	}
 }
 
-function updatePaneButton(updateVersion, updateDesc, isDev) {
+function updatePaneButton(updateVersion, updateDesc, type) {
 	isDev = isDev || false;
 
 	let updatePaneLayout = new LinearLayout_(CONTEXT);
@@ -12311,7 +12339,7 @@ function updatePaneButton(updateVersion, updateDesc, isDev) {
 	updatePaneLayout.addView(updatePaneLayoutLeft);
 	updatePaneLayout.addView(updatePaneLayoutRight);
 	let updatePaneText;
-	if(isDev) {
+	if(type == "dev") {
 		updatePaneText = clientTextView(updateVersion);
 	} else {
 		updatePaneText = clientTextView("v" + updateVersion);
@@ -12332,7 +12360,7 @@ function updatePaneButton(updateVersion, updateDesc, isDev) {
 				updateGithubVersion = updateGithubVersion.split(" ")[0] + "-" + updateGithubVersion.split(" ")[1];
 			}
 			let dest;
-			if(isDev) {
+			if(type == "dev") {
 				dest = "/sdcard/Download/Vertex_Client_PE_Dev.js";
 				downloadFile(dest, "https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/master/Vertex%20Client%20PE.js", true, true);
 			} else {
@@ -12344,7 +12372,7 @@ function updatePaneButton(updateVersion, updateDesc, isDev) {
 	});
 	let updatePaneCopyButton;
 	let updatePaneInformationButton;
-	if(isDev) {
+	if(type == "dev") {
 		updatePaneCopyButton = clientButton("Copy URL");
 		updatePaneCopyButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_input_get, 0, 0, 0);
 		updatePaneCopyButton.setLayoutParams(new LinearLayout_.LayoutParams(LinearLayout_.LayoutParams.MATCH_PARENT, display.heightPixels / 8));
@@ -12373,13 +12401,13 @@ function updatePaneButton(updateVersion, updateDesc, isDev) {
 	let updatePaneTypeText = clientTextView("Current (" + support + ")");
 	VertexClientPE.addTextStyleToView(updatePaneTypeText, "diff");
 
-	if(updateVersion != VertexClientPE.currentVersion || isDev) {
+	if(updateVersion != VertexClientPE.currentVersion || type == "dev") {
 		updatePaneLayoutRight.addView(updatePaneDownloadButton);
 	} else {
 		updatePaneLayoutRight.addView(updatePaneTypeText);
 	}
 
-	if(isDev) {
+	if(type == "dev") {
 		updatePaneLayoutRight.addView(updatePaneCopyButton);
 	} else {
 		updatePaneLayoutRight.addView(updatePaneInformationButton);
@@ -14280,8 +14308,9 @@ VertexClientPE.showStartScreenBar = function(screen) {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
-				let snowEffect = new SnowEffect();
+				let snowEffect;
 				if(showSnowInWinterSetting == "on" && (VertexClientPE.Utils.month == java.util.Calendar.DECEMBER || VertexClientPE.Utils.month == java.util.Calendar.JANUARY || (VertexClientPE.Utils.month == java.util.Calendar.FEBRUARY && VertexClientPE.Utils.day <= 28))) {
+					snowEffect = new SnowEffect();
 					snowEffect.start();
 				}
 
@@ -14291,7 +14320,7 @@ VertexClientPE.showStartScreenBar = function(screen) {
 					} else {
 						if(!VertexClientPE.getHasShownWarningDialog()) {
 							VertexClientPE.showWarningDialog();
-						} else if(!VertexClientPE.getHasShownTipDialog()) {
+						} else if(shouldShowTipDialogsSetting == "on") {
 							VertexClientPE.showTipDialog();
 						}
 					}
@@ -14399,7 +14428,10 @@ VertexClientPE.showStartScreenBar = function(screen) {
 
 						mainMenuTextList.setOnDismissListener(new PopupWindow_.OnDismissListener({
 							onDismiss() {
-								snowEffect.finish();
+								if(snowEffect != null) {
+									snowEffect.finish();
+									snowEffect = null;
+								}
 							}
 						}));
 					}
@@ -15133,18 +15165,6 @@ VertexClientPE.setHasUsedCurrentVersion = function(opt) {
 	editor.commit();
 }
 
-VertexClientPE.getHasShownTipDialog = function() {
-	return sharedPref.getBoolean("VertexClientPE.hasShownTipDialog", false);
-}
-
-VertexClientPE.setHasShownTipDialog = function(opt) {
-	if(opt != true && opt != false) {
-		return;
-	}
-	editor.putBoolean("VertexClientPE.hasShownTipDialog", opt);
-	editor.commit();
-}
-
 VertexClientPE.getHasShownWarningDialog = function() {
 	return sharedPref.getBoolean("VertexClientPE.hasShownWarningDialog", false);
 }
@@ -15242,12 +15262,12 @@ VertexClientPE.setup = function() {
 	})).start();
 }
 
-function downloadFile(path, url, showNotification, replace) {
+function downloadFile(path, url, showNotification, shouldReplace) {
 	try {
 		showNotification = showNotification || false;
-		replace = replace || false;
+		shouldReplace = shouldReplace || false;
 		let file = new File_(path);
-		if(replace && file.exists()) {
+		if(shouldReplace && file.exists()) {
 			file.delete();
 		}
 		let filename = file.getName(),
@@ -15265,7 +15285,7 @@ function downloadFile(path, url, showNotification, replace) {
 
 (function checkFiles() {
 	let res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png", "github_button.png", "github_button_clicked.png", "vertex_logo_new.png", "stevehead.png", "minecraft.ttf", "christmas_tree.png", "dirt_background.png", "rainbow_background.png"],
-		langs = ["en", "ko"],
+		langs = ["en", "ko", "nl"],
 		isExisting = true;
 	for (let i = res.length; i--;) {
 		if (!new File_(PATH, res[i]).exists()) {
@@ -15320,7 +15340,7 @@ VertexClientPE.getHighestBlockDifference = function() {
 }
 
 const trailsModes = [
-	["off", "OFF"],
+	["off", i18n("OFF")],
 	["flame", "Flame"],
 	["redstone", "Redstone"]
 ];
@@ -15754,25 +15774,25 @@ function settingsScreen(fromDashboard) {
 					function(viewArg) {
 						if(useLightThemeSetting != "off") {
 							useLightThemeSetting = "off";
-							useLightThemeSettingButton.setText("OFF");
+							useLightThemeSettingButton.setText(i18n("OFF"));
 							VertexClientPE.shouldUpdateGUI = true;
 						}
 					}
 				);
 				let useLightThemeSettingButton = useLightThemeSettingFunc.getButton();
 				if(useLightThemeSetting == "on") {
-					useLightThemeSettingButton.setText("ON");
+					useLightThemeSettingButton.setText(i18n("ON"));
 				} else if(useLightThemeSetting == "off") {
-					useLightThemeSettingButton.setText("OFF");
+					useLightThemeSettingButton.setText(i18n("OFF"));
 				}
 				useLightThemeSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						if(useLightThemeSetting == "on") {
 							useLightThemeSetting = "off";
-							useLightThemeSettingButton.setText("OFF");
+							useLightThemeSettingButton.setText(i18n("OFF"));
 						} else if(useLightThemeSetting == "off") {
 							useLightThemeSetting = "on";
-							useLightThemeSettingButton.setText("ON");
+							useLightThemeSettingButton.setText(i18n("ON"));
 						}
 						VertexClientPE.saveMainSettings();
 						VertexClientPE.shouldUpdateGUI = true;
@@ -15885,23 +15905,23 @@ function settingsScreen(fromDashboard) {
 				let transparentBgSettingFunc = new settingButton("Transparent backgrounds", "Makes screens and dialogs transparent.", null,
 					function(viewArg) {
 						transparentBgSetting = "on";
-						transparentBgSettingButton.setText("ON");
+						transparentBgSettingButton.setText(i18n("ON"));
 					}
 				);
 				let transparentBgSettingButton = transparentBgSettingFunc.getButton();
 				if(transparentBgSetting == "on") {
-					transparentBgSettingButton.setText("ON");
+					transparentBgSettingButton.setText(i18n("ON"));
 				} else if(transparentBgSetting == "off") {
-					transparentBgSettingButton.setText("OFF");
+					transparentBgSettingButton.setText(i18n("OFF"));
 				}
 				transparentBgSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						if(transparentBgSetting == "on") {
 							transparentBgSetting = "off";
-							transparentBgSettingButton.setText("OFF");
+							transparentBgSettingButton.setText(i18n("OFF"));
 						} else if(transparentBgSetting == "off") {
 							transparentBgSetting = "on";
-							transparentBgSettingButton.setText("ON");
+							transparentBgSettingButton.setText(i18n("ON"));
 						}
 						VertexClientPE.saveMainSettings();
 					}
@@ -16240,25 +16260,25 @@ function settingsScreen(fromDashboard) {
 					function(viewArg) {
 						if(menuAnimationsSetting != "on") {
 							menuAnimationsSetting = "on";
-							menuAnimationsSettingButton.setText("ON");
+							menuAnimationsSettingButton.setText(i18n("ON"));
 							VertexClientPE.shouldUpdateGUI = true;
 						}
 					}
 				);
 				let menuAnimationsSettingButton = menuAnimationsSettingFunc.getButton();
 				if(menuAnimationsSetting == "on") {
-					menuAnimationsSettingButton.setText("ON");
+					menuAnimationsSettingButton.setText(i18n("ON"));
 				} else if(menuAnimationsSetting == "off") {
-					menuAnimationsSettingButton.setText("OFF");
+					menuAnimationsSettingButton.setText(i18n("OFF"));
 				}
 				menuAnimationsSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						if(menuAnimationsSetting == "on") {
 							menuAnimationsSetting = "off";
-							menuAnimationsSettingButton.setText("OFF");
+							menuAnimationsSettingButton.setText(i18n("OFF"));
 						} else if(menuAnimationsSetting == "off") {
 							menuAnimationsSetting = "on";
-							menuAnimationsSettingButton.setText("ON");
+							menuAnimationsSettingButton.setText(i18n("ON"));
 						}
 						VertexClientPE.saveMainSettings();
 						VertexClientPE.shouldUpdateGUI = true;
@@ -16282,7 +16302,7 @@ function settingsScreen(fromDashboard) {
 				} else if(buttonSoundSetting == "minecraft") {
 					buttonSoundSettingButton.setText("Minecraft");
 				} else if(buttonSoundSetting == "off") {
-					buttonSoundSettingButton.setText("OFF");
+					buttonSoundSettingButton.setText(i18n("OFF"));
 				}
 				buttonSoundSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
@@ -16294,7 +16314,7 @@ function settingsScreen(fromDashboard) {
 							buttonSoundSettingButton.setText("Minecraft");
 						} else if(buttonSoundSetting == "minecraft") {
 							buttonSoundSetting = "off";
-							buttonSoundSettingButton.setText("OFF");
+							buttonSoundSettingButton.setText(i18n("OFF"));
 						}
 						VertexClientPE.saveMainSettings();
 						VertexClientPE.shouldUpdateGUI = true;
@@ -16304,7 +16324,7 @@ function settingsScreen(fromDashboard) {
 				let playMusicSettingFunc = new settingButton("Automatically play music", "Automatically play music.", null,
 					function(viewArg) {
 						playMusicSetting = "off";
-						playMusicSettingButton.setText("OFF");
+						playMusicSettingButton.setText(i18n("OFF"));
 					}
 				);
 				let playMusicSettingButton = playMusicSettingFunc.getButton();
@@ -16314,7 +16334,7 @@ function settingsScreen(fromDashboard) {
 				} else */if(playMusicSetting == "shuffle") {
 					playMusicSettingButton.setText("Shuffle");
 				} else if(playMusicSetting == "off") {
-					playMusicSettingButton.setText("OFF");
+					playMusicSettingButton.setText(i18n("OFF"));
 				}
 				playMusicSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
@@ -16324,7 +16344,7 @@ function settingsScreen(fromDashboard) {
 							playMusicSettingButton.setText("Shuffle");
 						} else if(playMusicSetting == "shuffle") {
 							playMusicSetting = "off";
-							playMusicSettingButton.setText("OFF");
+							playMusicSettingButton.setText(i18n("OFF"));
 						}/* else if(playMusicSetting == "off") {
 							playMusicSetting = "on";
 							playMusicSettingButton.setText("Normal");
@@ -16354,24 +16374,24 @@ function settingsScreen(fromDashboard) {
 				let transparentSplashScreenSettingFunc = new settingButton("Transparent splash screen", "Makes the splash screen partly transparent.", null,
 					function(viewArg) {
 						transparentSplashScreenSetting = "off";
-						transparentSplashScreenSettingButton.setText("OFF");
+						transparentSplashScreenSettingButton.setText(i18n("OFF"));
 					}
 				);
 				let transparentSplashScreenSettingButton = transparentSplashScreenSettingFunc.getButton();
 				if(transparentSplashScreenSetting == "on") {
-					transparentSplashScreenSettingButton.setText("ON");
+					transparentSplashScreenSettingButton.setText(i18n("ON"));
 				} else if(transparentSplashScreenSetting == "off") {
-					transparentSplashScreenSettingButton.setText("OFF");
+					transparentSplashScreenSettingButton.setText(i18n("OFF"));
 				}
 				transparentSplashScreenSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						if(transparentSplashScreenSetting == "on") {
 							transparentSplashScreenSetting = "off";
-							transparentSplashScreenSettingButton.setText("OFF");
+							transparentSplashScreenSettingButton.setText(i18n("OFF"));
 							VertexClientPE.saveMainSettings();
 						} else if(transparentSplashScreenSetting == "off") {
 							transparentSplashScreenSetting = "on";
-							transparentSplashScreenSettingButton.setText("ON");
+							transparentSplashScreenSettingButton.setText(i18n("ON"));
 							VertexClientPE.saveMainSettings();
 						}
 					}
@@ -16382,24 +16402,24 @@ function settingsScreen(fromDashboard) {
 				let commandsSettingFunc = new settingButton("Commands", "Toggle commands off to login on servers like Mineplex PE.", null,
 					function(viewArg) {
 						commandsSetting = "on";
-						commandsSettingButton.setText("ON");
+						commandsSettingButton.setText(i18n("ON"));
 					}
 				);
 				let commandsSettingButton = commandsSettingFunc.getButton();
 				if(commandsSetting == "on") {
-					commandsSettingButton.setText("ON");
+					commandsSettingButton.setText(i18n("ON"));
 				} else if(commandsSetting == "off") {
-					commandsSettingButton.setText("OFF");
+					commandsSettingButton.setText(i18n("OFF"));
 				}
 				commandsSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						if(commandsSetting == "on") {
 							commandsSetting = "off";
-							commandsSettingButton.setText("OFF");
+							commandsSettingButton.setText(i18n("OFF"));
 							VertexClientPE.saveMainSettings();
 						} else if(commandsSetting == "off") {
 							commandsSetting = "on";
-							commandsSettingButton.setText("ON");
+							commandsSettingButton.setText(i18n("ON"));
 							VertexClientPE.saveMainSettings();
 						}
 					}
@@ -16477,23 +16497,23 @@ function settingsScreen(fromDashboard) {
 				let showNewsSettingFunc = new settingButton("Show news toast at start", null, null,
 					function(viewArg) {
 						showNewsSetting = "on";
-						showNewsSettingButton.setText("ON");
+						showNewsSettingButton.setText(i18n("ON"));
 					}
 				);
 				let showNewsSettingButton = showNewsSettingFunc.getButton();
 				if(showNewsSetting == "on") {
-					showNewsSettingButton.setText("ON");
+					showNewsSettingButton.setText(i18n("ON"));
 				} else if(showNewsSetting == "off") {
-					showNewsSettingButton.setText("OFF");
+					showNewsSettingButton.setText(i18n("OFF"));
 				}
 				showNewsSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						if(showNewsSetting == "on") {
 							showNewsSetting = "off";
-							showNewsSettingButton.setText("OFF");
+							showNewsSettingButton.setText(i18n("OFF"));
 						} else if(showNewsSetting == "off") {
 							showNewsSetting = "on";
-							showNewsSettingButton.setText("ON");
+							showNewsSettingButton.setText(i18n("ON"));
 						}
 						VertexClientPE.saveMainSettings();
 					}
@@ -16513,23 +16533,23 @@ function settingsScreen(fromDashboard) {
 				let modsStayEnabledSettingFunc = new settingButton("Enabled mods stay enabled when restarting the launcher", null, null,
 					function(viewArg) {
 						modsStayEnabledSetting = "on";
-						modsStayEnabledSettingButton.setText("ON");
+						modsStayEnabledSettingButton.setText(i18n("ON"));
 					}
 				);
 				let modsStayEnabledSettingButton = modsStayEnabledSettingFunc.getButton();
 				if(modsStayEnabledSetting == "on") {
-					modsStayEnabledSettingButton.setText("ON");
+					modsStayEnabledSettingButton.setText(i18n("ON"));
 				} else if(modsStayEnabledSetting == "off") {
-					modsStayEnabledSettingButton.setText("OFF");
+					modsStayEnabledSettingButton.setText(i18n("OFF"));
 				}
 				modsStayEnabledSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						if(modsStayEnabledSetting == "off") {
 							modsStayEnabledSetting = "on";
-							modsStayEnabledSettingButton.setText("ON");
+							modsStayEnabledSettingButton.setText(i18n("ON"));
 						} else if(modsStayEnabledSetting == "on") {
 							modsStayEnabledSetting = "off";
-							modsStayEnabledSettingButton.setText("OFF");
+							modsStayEnabledSettingButton.setText(i18n("OFF"));
 						}
 						VertexClientPE.saveMainSettings();
 					}
@@ -16538,23 +16558,23 @@ function settingsScreen(fromDashboard) {
 				let showSnowInWinterSettingFunc = new settingButton("Show snowflakes on the start screen in the winter", null, null,
 					function(viewArg) {
 						showSnowInWinterSetting = "off";
-						showSnowInWinterSettingButton.setText("OFF");
+						showSnowInWinterSettingButton.setText(i18n("OFF"));
 					}
 				);
 				let showSnowInWinterSettingButton = showSnowInWinterSettingFunc.getButton();
 				if(showSnowInWinterSetting == "on") {
-					showSnowInWinterSettingButton.setText("ON");
+					showSnowInWinterSettingButton.setText(i18n("ON"));
 				} else if(showSnowInWinterSetting == "off") {
-					showSnowInWinterSettingButton.setText("OFF");
+					showSnowInWinterSettingButton.setText(i18n("OFF"));
 				}
 				showSnowInWinterSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						if(showSnowInWinterSetting == "off") {
 							showSnowInWinterSetting = "on";
-							showSnowInWinterSettingButton.setText("ON");
+							showSnowInWinterSettingButton.setText(i18n("ON"));
 						} else if(showSnowInWinterSetting == "on") {
 							showSnowInWinterSetting = "off";
-							showSnowInWinterSettingButton.setText("OFF");
+							showSnowInWinterSettingButton.setText(i18n("OFF"));
 						}
 						VertexClientPE.saveMainSettings();
 					}
@@ -16677,17 +16697,17 @@ function devSettingsScreen(fromDashboard) {
 				let debugModeSettingFunc = new settingButton("Debug mode", "Show debug messages.");
 				let debugModeSettingButton = debugModeSettingFunc.getButton();
 				if(VertexClientPE.isDebugMode()) {
-					debugModeSettingButton.setText("ON");
+					debugModeSettingButton.setText(i18n("ON"));
 				} else {
-					debugModeSettingButton.setText("OFF");
+					debugModeSettingButton.setText(i18n("OFF"));
 				}
 				debugModeSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						VertexClientPE.setIsDebugMode(!VertexClientPE.isDebugMode());
 						if(VertexClientPE.isDebugMode()) {
-							debugModeSettingButton.setText("ON");
+							debugModeSettingButton.setText(i18n("ON"));
 						} else {
-							debugModeSettingButton.setText("OFF");
+							debugModeSettingButton.setText(i18n("OFF"));
 						}
 					}
 				}));
@@ -16695,17 +16715,17 @@ function devSettingsScreen(fromDashboard) {
 				let expModeSettingFunc = new settingButton("Experimental features", "Show experimental features that are still in development.");
 				let expModeSettingButton = expModeSettingFunc.getButton();
 				if(VertexClientPE.isExpMode()) {
-					expModeSettingButton.setText("ON");
+					expModeSettingButton.setText(i18n("ON"));
 				} else {
-					expModeSettingButton.setText("OFF");
+					expModeSettingButton.setText(i18n("OFF"));
 				}
 				expModeSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						VertexClientPE.setIsExpMode(!VertexClientPE.isExpMode());
 						if(VertexClientPE.isExpMode()) {
-							expModeSettingButton.setText("ON");
+							expModeSettingButton.setText(i18n("ON"));
 						} else {
-							expModeSettingButton.setText("OFF");
+							expModeSettingButton.setText(i18n("OFF"));
 						}
 					}
 				}));
@@ -17567,7 +17587,7 @@ function optiFineScreen(fromDashboard, title, icon) {
 	}));
 }
 
-function updateCenterScreen(fromDashboard) {
+function updateCenterScreen(fromDashboard) { //TODO: Add support for pre-releases
 	VertexClientPE.menuIsShowing = true;
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
@@ -17604,7 +17624,7 @@ function updateCenterScreen(fromDashboard) {
 				updateCenterMenuLayoutScroll.addView(updateCenterMenuLayout);
 				updateCenterMenuLayout1.addView(updateCenterMenuLayoutScroll);
 
-				let devUpdateView = updatePaneButton("Latest dev version", "http://bit.ly/VertexDev", true);
+				let devUpdateView = updatePaneButton("Latest dev version", "http://bit.ly/VertexDev", "dev");
 				let updateDevEnterView = new TextView_(CONTEXT);
 				updateDevEnterView.setText("\n");
 				let latestUpdateView = updatePaneButton(VertexClientPE.latestVersion, VertexClientPE.latestVersionDesc);
@@ -17620,6 +17640,12 @@ function updateCenterScreen(fromDashboard) {
 					updateCenterMenuLayout.addView(latestUpdateView);
 					updateCenterMenuLayout.addView(updateEnterView);
 				}
+				/*
+				if(VertexClientPE.latestVersion != VertexClientPE.currentVersion) {
+					updateCenterMenuLayout.addView(latestUpdateView);
+					updateCenterMenuLayout.addView(updateEnterView);
+				
+				}*/
 				updateCenterMenuLayout.addView(currentUpdateView);
 
 				screenUI = new PopupWindow_(updateCenterMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
