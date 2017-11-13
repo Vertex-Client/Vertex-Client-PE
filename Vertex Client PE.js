@@ -10064,16 +10064,16 @@ VertexClientPE.showTipDialog = function() {
 
 	let scramble = getRandomInt(1, 2);
 	if(scramble == 1) {
+		title = "Shortcuts";
 		if(mainButtonTapSetting == "menu") {
 			openText = "long tap on the main button";
 		} else {
 			openText = "click on the main button";
 		}
 		desc = "Are there any mods you use regularly? Have you tried out shortcuts yet? The shortcuts allow you to toggle mods and tiles faster than ever! Please go to the Help screen (" + openText + " --> Dashboard --> Help) to find out how to add them.";
-		title = "Shortcuts";
 	} else if(scramble == 2) {
-		desc = "YouTube";
-		title = "Subscribe to AgameR on YouTube for exclusive previews.";
+		title = "YouTube";
+		desc = "Subscribe to AgameR on YouTube for exclusive previews.";
 	}
 
 	let dialogInnerLayout = new LinearLayout_(CONTEXT);
@@ -12322,8 +12322,6 @@ function musicBar() {
 }
 
 function updatePaneButton(updateVersion, updateDesc, type) {
-	isDev = isDev || false;
-
 	let updatePaneLayout = new LinearLayout_(CONTEXT);
 	updatePaneLayout.setOrientation(LinearLayout_.HORIZONTAL);
 	updatePaneLayout.setGravity(Gravity_.CENTER);
@@ -12338,12 +12336,17 @@ function updatePaneButton(updateVersion, updateDesc, type) {
 	updatePaneLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 2 - dip2px(10), display.heightPixels / 4));
 	updatePaneLayout.addView(updatePaneLayoutLeft);
 	updatePaneLayout.addView(updatePaneLayoutRight);
-	let updatePaneText;
+	let tempUpdateVersion;
 	if(type == "dev") {
-		updatePaneText = clientTextView(updateVersion);
+		tempUpdateVersion = updateVersion;
 	} else {
-		updatePaneText = clientTextView("v" + updateVersion);
+		if(type == "latest") {
+			tempUpdateVersion = "v" + updateVersion + " (latest release)";
+		} else if(type == "current") {
+			tempUpdateVersion = "v" + updateVersion + " (current)";
+		}
 	}
+	let updatePaneText = clientTextView(tempUpdateVersion);
 	VertexClientPE.addTextStyleToView(updatePaneText, "diff");
 	updatePaneText.setTypeface(VertexClientPE.font, Typeface_.BOLD);
 	let updatePaneDescText = clientTextView(updateDesc);
@@ -12397,8 +12400,7 @@ function updatePaneButton(updateVersion, updateDesc, type) {
 		});
 	}
 
-	let support = isSupported?"supported":"unsupported";
-	let updatePaneTypeText = clientTextView("Current (" + support + ")");
+	let updatePaneTypeText = clientTextView(capitalizeFirstLetter(isSupported?"supported":"unsupported"));
 	VertexClientPE.addTextStyleToView(updatePaneTypeText, "diff");
 
 	if(updateVersion != VertexClientPE.currentVersion || type == "dev") {
@@ -17606,7 +17608,7 @@ function updateCenterScreen(fromDashboard) { //TODO: Add support for pre-release
 				updateCenterMenuLayout1.setPadding(10, 0, 10, 10);
 
 				let showUpdateToastsSettingSwitch = clientSwitch();
-				showUpdateToastsSettingSwitch.setText("Show update toasts on start");
+				showUpdateToastsSettingSwitch.setText("Show update toasts (for stable releases) on start");
 				showUpdateToastsSettingSwitch.setChecked(showUpdateToastsSetting == "on");
 				showUpdateToastsSettingSwitch.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
 					onCheckedChanged: function() {
@@ -17627,10 +17629,10 @@ function updateCenterScreen(fromDashboard) { //TODO: Add support for pre-release
 				let devUpdateView = updatePaneButton("Latest dev version", "http://bit.ly/VertexDev", "dev");
 				let updateDevEnterView = new TextView_(CONTEXT);
 				updateDevEnterView.setText("\n");
-				let latestUpdateView = updatePaneButton(VertexClientPE.latestVersion, VertexClientPE.latestVersionDesc);
+				let latestUpdateView = updatePaneButton(VertexClientPE.latestVersion, VertexClientPE.latestVersionDesc, "latest");
 				let updateEnterView = new TextView_(CONTEXT);
 				updateEnterView.setText("\n");
-				let currentUpdateView = updatePaneButton(VertexClientPE.currentVersion, VertexClientPE.currentVersionDesc);
+				let currentUpdateView = updatePaneButton(VertexClientPE.currentVersion, VertexClientPE.currentVersionDesc, "current");
 
 				if(VertexClientPE.isDevMode()) {
 					updateCenterMenuLayout.addView(devUpdateView);
