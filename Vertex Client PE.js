@@ -16556,6 +16556,31 @@ function settingsScreen(fromDashboard) {
 						VertexClientPE.saveMainSettings();
 					}
 				}));
+				
+				let shouldShowTipDialogsSettingFunc = new settingButton("Show tip dialog upon start", null, null,
+					function(viewArg) {
+						shouldShowTipDialogsSetting = "on";
+						shouldShowTipDialogsSettingButton.setText(i18n("ON"));
+					}
+				);
+				let shouldShowTipDialogsSettingButton = shouldShowTipDialogsSettingFunc.getButton();
+				if(shouldShowTipDialogsSetting == "on") {
+					shouldShowTipDialogsSettingButton.setText(i18n("ON"));
+				} else if(shouldShowTipDialogsSetting == "off") {
+					shouldShowTipDialogsSettingButton.setText(i18n("OFF"));
+				}
+				shouldShowTipDialogsSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(shouldShowTipDialogsSetting == "off") {
+							shouldShowTipDialogsSetting = "on";
+							shouldShowTipDialogsSettingButton.setText(i18n("ON"));
+						} else if(shouldShowTipDialogsSetting == "on") {
+							shouldShowTipDialogsSetting = "off";
+							shouldShowTipDialogsSettingButton.setText(i18n("OFF"));
+						}
+						VertexClientPE.saveMainSettings();
+					}
+				}));
 
 				let showSnowInWinterSettingFunc = new settingButton("Show snowflakes on the start screen in the winter", null, null,
 					function(viewArg) {
@@ -16658,6 +16683,7 @@ function settingsScreen(fromDashboard) {
 				settingsMenuLayout.addView(otherTitle);
 				VertexClientPE.addView(settingsMenuLayout, featuresSettingFunc);
 				VertexClientPE.addView(settingsMenuLayout, modsStayEnabledSettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, shouldShowTipDialogsSettingFunc);
 				VertexClientPE.addView(settingsMenuLayout, showSnowInWinterSettingFunc);
 				VertexClientPE.addView(settingsMenuLayout, f5ButtonModeSettingFunc);
 				VertexClientPE.addView(settingsMenuLayout, webBrowserStartPageSettingFunc);
