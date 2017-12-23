@@ -6106,6 +6106,37 @@ var fastLadder = {
 	}
 }
 
+let blockDetectorStage = 0;
+
+var blockDetector = {
+	name: "BlockDetector",
+	desc: i18n("Allows you to find a specific block (category)."),
+	category: VertexClientPE.category.WORLD,
+	type: "Mod",
+	state: false,
+	isExpMod: function() {
+		return true;
+	},
+	getSettingsLayout: function() {
+		return new LinearLayout_(CONTEXT);
+	},
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onUseItem: function(x, y, z, i, b, s) {
+		if(blockDetectorStage != 1) {
+			blockDetectorStage = 1;
+			while(getTile(x, y, z) != 0) {
+				y--;
+			}
+			blockDetectorStage = 0;
+		}
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(aimbot);
 VertexClientPE.registerModule(antiBurn);
@@ -6160,6 +6191,7 @@ VertexClientPE.registerModule(tapTeleport);
 VertexClientPE.registerModule(autoBuild);
 VertexClientPE.registerModule(autoMine);
 VertexClientPE.registerModule(autoPlace);
+VertexClientPE.registerModule(blockDetector);
 VertexClientPE.registerModule(chestTracers);
 VertexClientPE.registerModule(fullBright);
 VertexClientPE.registerModule(nuker);
@@ -10517,7 +10549,7 @@ VertexClientPE.showChristmasToast = function(daysLeft) {
 			icon1.setImageBitmap(imgChristmasTree);
 			icon1.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(16), dip2px(16)));
 			let title = "Christmas";
-			let cText = daysLeft == null ? "Merry Christmas!" : (daysLeft + " days left until Christmas!");
+			let cText = daysLeft == null ? "Merry Christmas!" : (daysLeft + " day(s) left until Christmas!");
 			let text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + cText), true, "diff");
 			layout.addView(icon);
 			layout.addView(icon1);
@@ -16755,6 +16787,7 @@ function devSettingsScreen(fromDashboard) {
 						} else {
 							expModeSettingButton.setText(i18n("OFF"));
 						}
+						VertexClientPE.shouldUpdateGUI = true;
 					}
 				}));
 
@@ -17365,7 +17398,7 @@ function christmasScreen(fromDashboard) {
 
 				let circleText;
 				if(daysLeft != null && daysLeft != 0) {
-					circleText = daysLeft.toString() + " days left until Christmas!";
+					circleText = daysLeft.toString() + " day(s) left until Christmas!";
 				} else if(daysLeft == 0) {
 					circleText = "Christmas Day";
 				} else {
