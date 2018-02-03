@@ -50,7 +50,7 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [x] Criticals
 - [x] FancyChat
 - [ ] LogSpammer
-- [ ] BunnyHop
+- [x] BunnyHop
 - [x] Timer settings
 - [ ] Improve Nuker
   - [x] Range settings
@@ -59,10 +59,10 @@ License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.m
 - [x] KillAura range setting
 - [x] Music Player
 - [x] YesCheat+ (makes some hacks work better on servers)
-- [ ] ChatLogger [aimed for v1.2]
+- [x] ActionLog
 - [ ] New BowAimbot
-- [ ] AutoBridge
-- [ ] Fix typeface/font issues [aimed for v1.2]
+- [x] ScaffoldWalk
+- [ ] Fix typeface/font issues
 
 ![Vertex Client PE - Menu](http://i.imgur.com/2cp7ZSa.png)
 ![Vertex Client PE - ItemGiver](http://i.imgur.com/ccOhpjz.png)
