@@ -1,7 +1,7 @@
 /**
  * ##################################################################################################
  * @name Vertex Client PE
- * @version v2.5-pre1
+ * @version v3.0
  * @author peacestorm (@AgameR_Modder)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36, AutoGrind, TimmyIsDa
  *
@@ -1085,8 +1085,10 @@ let VertexClientPE = {
 			isTeamMember: function(entity) {
 				let myName = Entity.getNameTag(getPlayerEnt());
 				let otherName = Entity.getNameTag(entity);
-				if(!(myName.charAt(0) != "\u00A7" || otherName.charAt(0) != "\u00A7") && myName.charAt(1) == otherName.charAt(1)) {
-					return true;
+				if(myName != null) {
+					if(!(myName.charAt(0) != "\u00A7" || otherName.charAt(0) != "\u00A7") && myName.charAt(1) == otherName.charAt(1)) {
+						return true;
+					}
 				}
 				return false;
 			},
@@ -1320,7 +1322,7 @@ VertexClientPE.isRemote = function() {
 
 VertexClientPE.playerIsInGame = false;
 
-VertexClientPE.currentVersion = "2.5-pre1";
+VertexClientPE.currentVersion = "3.0";
 VertexClientPE.currentVersionDesc = "The Combat Update";
 VertexClientPE.targetVersion = "MCPE v1.0.x";
 VertexClientPE.minVersion = "1.0.0";
@@ -2200,7 +2202,7 @@ VertexClientPE.registerTile(friendManagerTile);
 VertexClientPE.registerTile(informationTile);
 VertexClientPE.registerTile(updateCenterTile);
 //VertexClientPE.registerTile(chatTile);
-VertexClientPE.registerTile(musicPlayerTile);
+//VertexClientPE.registerTile(musicPlayerTile);
 VertexClientPE.registerTile(christmasTile);
 VertexClientPE.registerTile(previewTile);
 VertexClientPE.registerTile(feedbackTile);
@@ -9250,10 +9252,10 @@ VertexClientPE.showItemGiverDialog = function() { //TODO: make faster, less layo
 				let dialogTableLayout = new TableLayout_(CONTEXT);
 				let dialogTableRow;
 				let itemNameText = clientTextView("Name: Unknown");
-				let itemIdText = clientTextView("Id:");
+				let itemIdText = clientTextView("ID:");
 				let itemIdInput = clientEditText();
 				itemIdInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
-				itemIdInput.setHint("Id (0-4096)");
+				itemIdInput.setHint("ID (0-4096)");
 				let itemAmountText = clientTextView("Amount:");
 				let itemAmountInput = clientEditText();
 				itemAmountInput.setInputType(InputType_.TYPE_CLASS_NUMBER);
@@ -10761,14 +10763,14 @@ function Song(songTitle, songArtist, songUrl, songGenre) {
 	this.url = songUrl;
 }
 
-//VertexClientPE.MusicUtils.registerSong(new Song("Adventure (feat. Alexa Lusader)", "William Ekh", "http://files-cdn.nocopyrightsounds.co.uk/William%20Ekh%20-%20Adventure%20%28feat.%20Alexa%20Lusader%29.mp3", "House"));
+/* //VertexClientPE.MusicUtils.registerSong(new Song("Adventures (feat. Alexa Lusader)", "William Ekh", "http://files-cdn.nocopyrightsounds.co.uk/William%20Ekh%20-%20Adventure%20%28feat.%20Alexa%20Lusader%29.mp3", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("Blank [NCS Release]", "Disfigure", "http://download1644.mediafire.com/i9266f1gnalg/hdxvcde2t8v1hb8/Disfigure+-+Blank.mp3", "Dubstep"));
 VertexClientPE.MusicUtils.registerSong(new Song("Can't Wait (feat. Anna Yvette) [NCS Release]", "Jim Yosef", "http://download1478.mediafire.com/hi9bhnr23gvg/bpgdjbqy0p09biw/Jim+Yosef+-+Can%5C%27t+Wait+%28feat.+Anna+Yvette%29.mp3", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("Candyland [NCS Release]", "Tobu", "http://download1593.mediafire.com/kic5eufk5fxg/dhi67bfn9dcq28b/Tobu+-+Candyland.mp3", "House"));
 //VertexClientPE.MusicUtils.registerSong(new Song("Cast Away ft. Ayve [NCS Release]", "T & Sugah", "http://files-cdn.nocopyrightsounds.co.uk/T%20%26%20Sugah%20-%20Cast%20Away%20%28ft.%20Ayve%29.mp3","Drum&Bass"));
 //VertexClientPE.MusicUtils.registerSong(new Song("Cloud 9 [NCS Release]", "Itro & Tobu", "http://files-cdn.nocopyrightsounds.co.uk/Itro%20%26%20Tobu%20-%20Cloud%209.mp3", "House"));
 //VertexClientPE.MusicUtils.registerSong(new Song("Coming Home [NCS Release]", "SirensCeol", "http://files-cdn.nocopyrightsounds.co.uk/SirensCeol%20-%20Coming%20Home.mp3", "Dubstep"));
-VertexClientPE.MusicUtils.registerSong(new Song("Daydreamer", "Ahxello & Alex Skrindo", "http://download1518.mediafire.com/mnwl85yr6meg/6cjo7cj1l15077m/Ahxello+%26+Alex+Skrindo+-+Daydreamer.mp3", "House"));
+VertexClientPE.MusicUtils.registerSong(new Song("Daydreamer", "Ahxello & Alex Skrindo", "http://s000.tinyupload.com/download.php?file_id=88996261727724886040&t=8899626172772488604031406", "House"));
 VertexClientPE.MusicUtils.registerSong(new Song("Dusk [NCS Release]", "Tobu & Syndec", "http://download943.mediafire.com/8m4c14x573eg/6ma4m2u3s3s1cbb/Tobu+%26+Syndec+-+Dusk.mp3", "House"));
 //VertexClientPE.MusicUtils.registerSong(new Song("Eclipse [NCS Release]", "Jim Yosef", "http://files-cdn.nocopyrightsounds.co.uk/Jim%20Yosef%20-%20Eclipse.mp3", "House"));
 //VertexClientPE.MusicUtils.registerSong(new Song("Elevate [NCS Release]", "Arcien", "http://files-cdn.nocopyrightsounds.co.uk/Arcien%20-%20Elevate.mp3", "Drum&Bass"));
@@ -10796,7 +10798,7 @@ VertexClientPE.MusicUtils.registerSong(new Song("Roots [NCS Release]", "Tobu", "
 VertexClientPE.MusicUtils.registerSong(new Song("Savannah (feat. Philly K) [NCS Release]", "Diviners", "http://download1496.mediafire.com/4e8tcja9c9tg/ft25eqaforf51ee/Diviners+-+Savannah+%28ft.+Philly+K%29.mp3", "House"));
 //VertexClientPE.MusicUtils.registerSong(new Song("Time Leap [NCS Release]", "Aero Chord", "http://files-cdn.nocopyrightsounds.co.uk/Aero%20Chord%20-%20Time%20Leap.mp3", "Drum&Bass"));
 VertexClientPE.MusicUtils.registerSong(new Song("Tropic Love [NCS Release]", "Diviners feat. Contacreast", "http://download1127.mediafire.com/vpvp9zgbae9g/f6u3p2ekz9207xx/Diviners+ft.+Contacreast+-+Tropic+Love+%28Original+Mix%29.mp3", "House"));
-VertexClientPE.MusicUtils.registerSong(new Song("You [NCS Release]", "Axol x Alex Skrindo", "http://download2134.mediafire.com/r078c7bm2mhg/i43j6xe94684mzz/Axol+x+Alex+Skrindo+-+You.mp3", "House"));
+VertexClientPE.MusicUtils.registerSong(new Song("You [NCS Release]", "Axol x Alex Skrindo", "http://download2134.mediafire.com/r078c7bm2mhg/i43j6xe94684mzz/Axol+x+Alex+Skrindo+-+You.mp3", "House")); */
 
 //VertexClientPE.MusicUtils.registerSong(new Song(String name, String artist, String url, String genre));
 
@@ -14602,10 +14604,10 @@ VertexClientPE.showSetupScreen = function() {
 							step4Button.setTextColor(Color_.WHITE);
 							setupTextView.startAnimation(textAnim);
 							setupTextView.setText(setupStep2Text);
-							setupScreenLayoutBottomLeft.addView(setupButtonGreen);
+							setupScreenLayoutBottomCenter.addView(setupButtonGreen);
 							setupScreenLayoutBottomCenter.addView(setupButtonRed);
 							setupScreenLayoutBottomCenter1.addView(setupButtonBlue);
-							setupScreenLayoutBottomRight.addView(setupButtonPurple);
+							setupScreenLayoutBottomCenter1.addView(setupButtonPurple);
 							doneButton.setText("\u2794");
 							doneButton.setOnClickListener(new View_.OnClickListener({
 								onClick: function(viewArg) {
@@ -14709,15 +14711,23 @@ VertexClientPE.showSetupScreen = function() {
 				setupStepRow.addView(step3Button);
 				setupStepRow.addView(space3, dip2px(8), dip2px(1));
 				setupStepRow.addView(step4Button);
+				
+				let setupSpaceAbove = clientTextView("");
+				setupSpaceAbove.setGravity(Gravity_.CENTER);
+				setupScreenLayout.addView(setupSpaceAbove);
 
 				let setupTextView = clientTextView("");
 				setupTextView.setGravity(Gravity_.CENTER);
 				setupScreenLayout.addView(setupTextView);
+				
+				let setupSpaceBelow = clientTextView("");
+				setupSpaceBelow.setGravity(Gravity_.CENTER);
+				setupScreenLayout.addView(setupSpaceBelow);
 
 				let setupStep1Text = "Thanks for choosing Vertex Client PE!\nGo to the next step to choose your favourite color. :)";
-				let setupStep2Text = "You can always change the color on the settings screen.\nEven more colors are available there.";
-				let setupStep3Text = "Now you can optimize your experience by choosing the mod categories you want to use. You'll be able to change this on the settings screen anytime.";
-				let setupStep4Text = "That's it! Your experience begins here.\nHere's some additional help to get started:\n- You can open the Dashboard and some other features from the 'More' dialog,\nwhich can be opened by long tapping the menu button.\n- More help is available on the Help screen which is also accessible from the Dashboard.";
+				let setupStep2Text = "Feel free to choose one of the theme colors below.\nYou can always change the color on the settings screen.\nEven more colors are available there.";
+				let setupStep3Text = "Now you can optimize your experience by choosing the mod categories you want to use.\nYou'll be able to change this on the settings screen anytime.";
+				let setupStep4Text = "That's it! Your experience begins here.\n\nHere's some additional help to get started:\n- You can open the Dashboard and some other features from the 'More' dialog,\nwhich can be opened by long tapping the menu button.\n- More help is available on the Help screen which is also accessible from the Dashboard.";
 
 				setupTextView.setText(setupStep1Text);
 
@@ -15298,14 +15308,14 @@ VertexClientPE.setup = function() {
 							VertexClientPE.showChristmasToast();
 						}
 
-						VertexClientPE.MusicUtils.initMusicPlayer();
-						VertexClientPE.MusicUtils.startMusicPlayer();
+						/* VertexClientPE.MusicUtils.initMusicPlayer();
+						VertexClientPE.MusicUtils.startMusicPlayer(); */ //temp removed music player, songs unavailable
 
 						if(showNewsSetting == "on") {
 							VertexClientPE.toast(news);
 						}
 
-						VertexClientPE.showTipBar();
+						//VertexClientPE.showTipBar();
 					}
 				}));
 			}
@@ -15737,6 +15747,17 @@ VertexClientPE.checkGUINeedsDismiss = function() {
 	}
 }
 
+let settingsMenuScroll;
+let scrollPosition;
+
+function refreshSettingsScreen() {
+	scrollPosition = [settingsMenuScroll.getScrollX(), settingsMenuScroll.getScrollY()];
+	barUI.dismiss()
+	screenUI.dismiss();
+	settingsMenuScroll = null;
+	settingsTile.onClick(true);
+}
+
 function settingsScreen(fromDashboard) {
 	VertexClientPE.menuIsShowing = true;
 	CONTEXT.runOnUiThread(new Runnable_({
@@ -15749,7 +15770,7 @@ function settingsScreen(fromDashboard) {
 				settingsMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 				settingsMenuLayout.setPadding(dip2px(2), 0, dip2px(2), 0);
 
-				let settingsMenuScroll = new ScrollView_(CONTEXT);
+				settingsMenuScroll = new ScrollView_(CONTEXT);
 
 				let settingsMenuLayout1 = new LinearLayout_(CONTEXT);
 				settingsMenuLayout1.setOrientation(1);
@@ -15950,6 +15971,7 @@ function settingsScreen(fromDashboard) {
 							backgroundStyleSettingButton.setText("Normal");
 						}
 						VertexClientPE.saveMainSettings();
+						//refreshSettingsScreen();
 					}
 				}));
 
@@ -16736,6 +16758,11 @@ function settingsScreen(fromDashboard) {
 				VertexClientPE.addView(settingsMenuLayout, showSnowInWinterSettingFunc);
 				VertexClientPE.addView(settingsMenuLayout, f5ButtonModeSettingFunc);
 				VertexClientPE.addView(settingsMenuLayout, webBrowserStartPageSettingFunc);
+				
+				if(scrollPosition != null) {
+					settingsMenuScroll.scrollTo(scrollPosition[0], scrollPosition[1]);
+					scrollPosition = null;
+				}
 
 				screenUI = new PopupWindow_(settingsMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
 				screenUI.setBackgroundDrawable(backgroundGradient());
@@ -19602,7 +19629,7 @@ function showHacksList() {
 					hacksListLayoutLeft.addView(logoViewer2);
 					if(hacksListModeSetting != "logo") {
 						hacksListLayoutRight.addView(statesTextView);
-						hacksListLayoutRight.addView(musicTextView);
+						//hacksListLayoutRight.addView(musicTextView); music player temp disabled
 					} else {
 						hacksListLayoutRight.addView(versionText);
 						// TODO
