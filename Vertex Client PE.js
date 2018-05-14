@@ -1,7 +1,7 @@
 /**
  * ##################################################################################################
  * @name Vertex Client PE
- * @version v3.0
+ * @version v3.0.1
  * @author peacestorm (@AgameR_Modder)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36, AutoGrind, TimmyIsDa
  *
@@ -1322,7 +1322,7 @@ VertexClientPE.isRemote = function() {
 
 VertexClientPE.playerIsInGame = false;
 
-VertexClientPE.currentVersion = "3.0";
+VertexClientPE.currentVersion = "3.0.1";
 VertexClientPE.currentVersionDesc = "The Combat Update";
 VertexClientPE.targetVersion = "MCPE v1.0.x";
 VertexClientPE.minVersion = "1.0.0";
@@ -4987,7 +4987,7 @@ var tapJumpRun = {
 	onTick: function() {
 		if(this.destVector != null) {
 			if(getPlayerX() != this.destVector.x && getPlayerZ() != this.destVector.z) {
-				Entity.setPosition(getPlayerEnt(), getPlayerX(), this.destVector.y + 2, getPlayerZ());
+				Entity.setPosition(getPlayerEnt(), getPlayerX(), this.destVector.y + 1.8, getPlayerZ());
 				Entity.setVelX(getPlayerEnt(), (this.destVector.x - getPlayerX()) * playerWalkSpeed);
 				Entity.setVelZ(getPlayerEnt(), (this.destVector.z - getPlayerZ()) * playerWalkSpeed);
 			} else if(this.destVector.x == getPlayerX() && this.destVector.z == getPlayerZ()) {
@@ -8738,7 +8738,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
 				let modTitle = clientTextView(VertexClientPE.getCustomModName(mod.name), true);
 				modTitle.setTextSize(20);
 				let modEditButton = new Button_(CONTEXT);
-				modEditButton.setLayoutParams(new LinearLayout_.LayoutParams(64, 64));
+				modEditButton.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(64), dip2px(64)));
 				modEditButton.setBackgroundDrawable(CONTEXT.getResources().getDrawable(android.R.drawable.ic_menu_edit));
 				modEditButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(v) {
@@ -8746,7 +8746,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
 					}
 				});
 				let modFavButton = new Button_(CONTEXT);
-				modFavButton.setLayoutParams(new LinearLayout_.LayoutParams(64, 64));
+				modFavButton.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(64), dip2px(64)));
 				if(sharedPref.getString("VertexClientPE.mods." + mod.name + ".isFavorite", "false") == "true") {
 					modFavButton.setBackgroundDrawable(CONTEXT.getResources().getDrawable(android.R.drawable.btn_star_big_on));
 				} else {
@@ -19500,7 +19500,9 @@ function showAccountManagerButton(screen) {
 			if(tabGUI != null) {
 				tabGUI.dismiss();
 			}
-			GUI.dismiss();
+			if(GUI != null) {
+				GUI.dismiss();
+			}
 			accountManagerGUI.dismiss();
 			VertexClientPE.showAccountManager(false, "Account Manager");
 		}
@@ -19543,7 +19545,9 @@ function showHacksList() {
 			if(hacksList != null) {
 				hacksList.dismiss();
 			}
-			if(hacksList == null || !hacksList.isShowing()) {
+			if(hacksListModeSetting == "off") {
+				hacksList = new PopupWindow_(new LinearLayout_(CONTEXT), LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT);
+			} else if(hacksList == null || !hacksList.isShowing()) {
 				try {
 					enabledHacksCounter = 0;
 
@@ -19640,7 +19644,7 @@ function showHacksList() {
 							hacksList.setAnimationStyle(android.R.style.Animation_Translucent);
 						}
 						hacksList.setTouchable(false);
-						if(hacksListModeSetting != "off" && !ghostModeState) {
+						if(!ghostModeState) {
 							if(hacksListPosSetting == "top-left") {
 								hacksList.setBackgroundDrawable(backgroundGradient("bottomright"));
 								hacksList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
@@ -19666,36 +19670,37 @@ function updateHacksList() {
 		CONTEXT.runOnUiThread(new Runnable_({
 			run: function() {
 				try {
-					enabledHacksCounter = 0;
+					if(statesTextView != null) {
+						enabledHacksCounter = 0;
 
-					let statesText = "";
-					VertexClientPE.modules.forEach(function (element, index, array) {
-						if(element.isStateMod() && element.state) {
-							if(bypassState && element.hasOwnProperty("canBypassBypassMod") && !element.canBypassBypassMod()) {
-								return;
+						let statesText = "";
+						VertexClientPE.modules.forEach(function (element, index, array) {
+							if(element.isStateMod() && element.state) {
+								if(bypassState && element.hasOwnProperty("canBypassBypassMod") && !element.canBypassBypassMod()) {
+									return;
+								}
+								if(enabledHacksCounter != 0) {
+									statesText += " - "
+								}
+								statesText += VertexClientPE.getCustomModName(element.name);
+								if(element.hasOwnProperty("getExtraInfo")) {
+									statesText += " [" + element.getExtraInfo() + "]";
+								}
+								enabledHacksCounter++;
 							}
-							if(enabledHacksCounter != 0) {
-								statesText += " - "
-							}
-							statesText += VertexClientPE.getCustomModName(element.name);
-							if(element.hasOwnProperty("getExtraInfo")) {
-								statesText += " [" + element.getExtraInfo() + "]";
-							}
-							enabledHacksCounter++;
-						}
-					});
-
-					statesTextView.setText(statesText);
-					if(hacksListModeSetting == "on") {
+						});
 						statesTextView.setText(statesText);
-					} else if(hacksListModeSetting == "counter") {
-						statesTextView.setText(enabledHacksCounter.toString() + " mods enabled");
-					}
+						if(hacksListModeSetting == "on") {
+							statesTextView.setText(statesText);
+						} else if(hacksListModeSetting == "counter") {
+							statesTextView.setText(enabledHacksCounter.toString() + " mods enabled");
+						}
 
-					if(VertexClientPE.MusicUtils.isPaused) {
-						musicTextView.setText("\u266B Currently paused: " + musicText);
-					} else {
-						musicTextView.setText("\u266B Currently playing: " + musicText);
+						if(VertexClientPE.MusicUtils.isPaused) {
+							musicTextView.setText("\u266B Currently paused: " + musicText);
+						} else {
+							musicTextView.setText("\u266B Currently playing: " + musicText);
+						}
 					}
 				} catch(error) {
 					print("An error occurred: " + error);
@@ -19711,7 +19716,9 @@ function showTabGUI() {
 			if(tabGUI != null) {
 				tabGUI.dismiss();
 			}
-			if(tabGUI == null || !tabGUI.isShowing()) {
+			if(tabGUIModeSetting == "off") {
+				tabGUI = new PopupWindow_(new LinearLayout_(CONTEXT), LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT);
+			} else if(tabGUI == null || !tabGUI.isShowing()) {
 				try {
 					let tabGUILayout = new LinearLayout_(CONTEXT);
 					tabGUILayout.setOrientation(LinearLayout_.HORIZONTAL);
@@ -19743,7 +19750,7 @@ function showTabGUI() {
 							tabGUI.setAnimationStyle(android.R.style.Animation_Translucent);
 						}
 						tabGUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-						if(tabGUIModeSetting != "off" && !ghostModeState) {
+						if(!ghostModeState) {
 							tabGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, dip2px(70));
 						}
 					}
@@ -19762,7 +19769,9 @@ function showShortcuts() {
 			if(shortcutGUI != null) {
 				shortcutGUI.dismiss();
 			}
-			if(shortcutGUI == null || !shortcutGUI.isShowing()) {
+			if(shortcutUIModeSetting == "off") {
+				shortcutGUI = new PopupWindow_(new LinearLayout_(CONTEXT), LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT);
+			} else if(shortcutGUI == null || !shortcutGUI.isShowing()) {
 				try {
 					let shortcutGUILayout1 = new LinearLayout_(CONTEXT);
 					shortcutGUILayout1.setOrientation(1);
@@ -19811,7 +19820,7 @@ function showShortcuts() {
 							shortcutGUI.setAnimationStyle(android.R.style.Animation_Translucent);
 						}
 						shortcutGUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-						if(shortcutUIModeSetting != "off" && !ghostModeState) {
+						if(!ghostModeState) {
 							if(shortcutUIPosSetting == "left-bottom") {
 								shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
 							} else if(shortcutUIPosSetting == "left-center") {
@@ -19989,11 +19998,7 @@ function showPauseUtilities() {
 		run: function() {
 			try {
 				if(pauseUtilitiesUI != null) {
-					CONTEXT.runOnUiThread(new Runnable_({
-						run: function() {
-							pauseUtilitiesUI.dismiss();
-						}
-					}));
+					pauseUtilitiesUI.dismiss();
 				}
 				if(pauseUtilitiesUI == null || !pauseUtilitiesUI.isShowing()) {
 					let pauseUtilitiesLayout = new LinearLayout_(CONTEXT);
