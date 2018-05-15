@@ -8735,10 +8735,11 @@ VertexClientPE.showModDialog = function(mod, btn) {
 			try {
 				let modTitleLayout = new LinearLayout_(CONTEXT);
 				modTitleLayout.setOrientation(LinearLayout_.HORIZONTAL);
+				modTitleLayout.setGravity(Gravity_.CENTER_VERTICAL);
 				let modTitle = clientTextView(VertexClientPE.getCustomModName(mod.name), true);
 				modTitle.setTextSize(20);
 				let modEditButton = new Button_(CONTEXT);
-				modEditButton.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(64), dip2px(64)));
+				modEditButton.setLayoutParams(new LinearLayout_.LayoutParams(64, 64));
 				modEditButton.setBackgroundDrawable(CONTEXT.getResources().getDrawable(android.R.drawable.ic_menu_edit));
 				modEditButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(v) {
@@ -8746,7 +8747,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
 					}
 				});
 				let modFavButton = new Button_(CONTEXT);
-				modFavButton.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(64), dip2px(64)));
+				modFavButton.setLayoutParams(new LinearLayout_.LayoutParams(64, 64));
 				if(sharedPref.getString("VertexClientPE.mods." + mod.name + ".isFavorite", "false") == "true") {
 					modFavButton.setBackgroundDrawable(CONTEXT.getResources().getDrawable(android.R.drawable.btn_star_big_on));
 				} else {
