@@ -83,6 +83,7 @@ const AlarmManager_ = android.app.AlarmManager,
 	SeekBar_ = android.widget.SeekBar,
 	ScrollView_ = android.widget.ScrollView,
 	Switch_ = android.widget.Switch,
+	Spinner_ = android.widget.Spinner,
 	TableLayout_ = android.widget.TableLayout,
 	TableRow_ = android.widget.TableRow,
 	TextView_ = android.widget.TextView,
@@ -852,11 +853,13 @@ function screenChangeHook(screenName) {
 					rotationPlusUI.dismiss();
 				}
 				if(screenName == ScreenType.start_screen || screenName == ScreenType.exit_dialog) {
-					if((mainMenuTextList == null || !mainMenuTextList.isShowing()) && !VertexClientPE.menuIsShowing) {
-						VertexClientPE.showStartScreenBar(screenName);
-					}
-					if((accountManagerGUI == null || !accountManagerGUI.isShowing()) && !VertexClientPE.menuIsShowing) {
-						showAccountManagerButton(screenName);
+					if(VertexClientPE.loadMainSettings() != null) {
+						if((mainMenuTextList == null || !mainMenuTextList.isShowing()) && !VertexClientPE.menuIsShowing) {
+							VertexClientPE.showStartScreenBar(screenName);
+						}
+						if((accountManagerGUI == null || !accountManagerGUI.isShowing()) && !VertexClientPE.menuIsShowing) {
+							showAccountManagerButton(screenName);
+						}
 					}
 				} else {
 					if(mainMenuTextList != null && mainMenuTextList.isShowing()) {
@@ -14571,10 +14574,14 @@ VertexClientPE.showSetupScreen = function() {
 							setupScreenLayoutBottomCenter.removeAllViews();
 							setupScreenLayoutBottomCenter1.removeAllViews();
 							setupScreenLayoutBottomRight.removeAllViews();
+							if(presetSpinner.getParent() != null) {
+								presetSpinner.getParent().removeView(presetSpinner);
+							}
 							step1Button.setTextColor(Color_.parseColor("#0080FF"));
 							step2Button.setTextColor(Color_.WHITE);
 							step3Button.setTextColor(Color_.WHITE);
 							step4Button.setTextColor(Color_.WHITE);
+							step5Button.setTextColor(Color_.WHITE);
 							setupTextView.startAnimation(textAnim);
 							setupTextView.setText(setupStep1Text);
 							doneButton.setText("\u2794");
@@ -14586,6 +14593,7 @@ VertexClientPE.showSetupScreen = function() {
 						}
 					}
 				});
+
 				let step2Button = new Button_(CONTEXT);
 				step2Button.setBackgroundDrawable(drawCircle(Color_.parseColor("#80ffffff")));
 				step2Button.setText("2");
@@ -14599,10 +14607,14 @@ VertexClientPE.showSetupScreen = function() {
 							setupScreenLayoutBottomCenter.removeAllViews();
 							setupScreenLayoutBottomCenter1.removeAllViews();
 							setupScreenLayoutBottomRight.removeAllViews();
+							if(presetSpinner.getParent() != null) {
+								presetSpinner.getParent().removeView(presetSpinner);
+							}
 							step1Button.setTextColor(Color_.WHITE);
 							step2Button.setTextColor(Color_.parseColor("#0080FF"));
 							step3Button.setTextColor(Color_.WHITE);
 							step4Button.setTextColor(Color_.WHITE);
+							step5Button.setTextColor(Color_.WHITE);
 							setupTextView.startAnimation(textAnim);
 							setupTextView.setText(setupStep2Text);
 							setupScreenLayoutBottomCenter.addView(setupButtonGreen);
@@ -14618,6 +14630,7 @@ VertexClientPE.showSetupScreen = function() {
 						}
 					}
 				});
+
 				let step3Button = new Button_(CONTEXT);
 				step3Button.setBackgroundDrawable(drawCircle(Color_.parseColor("#80ffffff")));
 				step3Button.setText("3");
@@ -14631,10 +14644,14 @@ VertexClientPE.showSetupScreen = function() {
 							setupScreenLayoutBottomCenter.removeAllViews();
 							setupScreenLayoutBottomCenter1.removeAllViews();
 							setupScreenLayoutBottomRight.removeAllViews();
+							if(presetSpinner.getParent() != null) {
+								presetSpinner.getParent().removeView(presetSpinner);
+							}
 							step1Button.setTextColor(Color_.WHITE);
 							step2Button.setTextColor(Color_.WHITE);
 							step3Button.setTextColor(Color_.parseColor("#0080FF"));
 							step4Button.setTextColor(Color_.WHITE);
+							step5Button.setTextColor(Color_.WHITE);
 							setupTextView.startAnimation(textAnim);
 							setupTextView.setText(setupStep3Text);
 							setupScreenLayoutBottomCenter.addView(combatEnabledSettingButton);
@@ -14652,6 +14669,7 @@ VertexClientPE.showSetupScreen = function() {
 						}
 					}
 				});
+				
 				let step4Button = new Button_(CONTEXT);
 				step4Button.setBackgroundDrawable(drawCircle(Color_.parseColor("#80ffffff")));
 				step4Button.setText("4");
@@ -14669,12 +14687,59 @@ VertexClientPE.showSetupScreen = function() {
 							step2Button.setTextColor(Color_.WHITE);
 							step3Button.setTextColor(Color_.WHITE);
 							step4Button.setTextColor(Color_.parseColor("#0080FF"));
+							step5Button.setTextColor(Color_.WHITE);
 							setupTextView.startAnimation(textAnim);
 							setupTextView.setText(setupStep4Text);
+							setupScreenLayout.addView(presetSpinner);
+							doneButton.setText("\u2794");
+							doneButton.setOnClickListener(new View_.OnClickListener({
+								onClick: function(viewArg) {
+									step5Button.performClick();
+								}
+							}));
+						}
+					}
+				});
+
+				let step5Button = new Button_(CONTEXT);
+				step5Button.setBackgroundDrawable(drawCircle(Color_.parseColor("#80ffffff")));
+				step5Button.setText("5");
+				step5Button.setTextColor(Color_.WHITE);
+				step5Button.setLayoutParams(new LinearLayout_.LayoutParams(CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16, CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 16));
+				step5Button.setOnClickListener(new android.view.View.OnClickListener() {
+					onClick: function(v) {
+						if(currentStep != 5) {
+							currentStep = 5;
+							setupScreenLayoutBottomLeft.removeAllViews();
+							setupScreenLayoutBottomCenter.removeAllViews();
+							setupScreenLayoutBottomCenter1.removeAllViews();
+							setupScreenLayoutBottomRight.removeAllViews();
+							if(presetSpinner.getParent() != null) {
+								presetSpinner.getParent().removeView(presetSpinner);
+							}
+							step1Button.setTextColor(Color_.WHITE);
+							step2Button.setTextColor(Color_.WHITE);
+							step3Button.setTextColor(Color_.WHITE);
+							step4Button.setTextColor(Color_.WHITE);
+							step5Button.setTextColor(Color_.parseColor("#0080FF"));
+							setupTextView.startAnimation(textAnim);
+							setupTextView.setText(setupStep5Text);
 							doneButton.setText("\u2713");
 							doneButton.setOnClickListener(new View_.OnClickListener({
 								onClick: function(viewArg) {
 									themeSetting = setupColor;
+									if(selectedPresetNum == 1) {
+										//allin
+										tabGUIModeSetting = "on";
+										showSnowInWinterSetting = "on";
+										playMusicSetting = "shuffle";
+									} else if(selectedPresetNum == 2) {
+										//high perf
+										hacksListModeSetting = "off";
+										f5ButtonModeSetting = "off";
+										buttonStyleSetting = "android";
+										menuType = "halfscreen";
+									}
 									VertexClientPE.saveMainSettings();
 									VertexClientPE.editCopyrightText();
 									logoViewer3.clearAnimation();
@@ -14705,6 +14770,9 @@ VertexClientPE.showSetupScreen = function() {
 				let space3 = new TextView_(CONTEXT);
 				space3.setBackgroundDrawable(new ColorDrawable_(Color_.WHITE));
 
+				let space4 = new TextView_(CONTEXT);
+				space4.setBackgroundDrawable(new ColorDrawable_(Color_.WHITE));
+
 				setupStepRow.addView(step1Button);
 				setupStepRow.addView(space1, dip2px(8), dip2px(1));
 				setupStepRow.addView(step2Button);
@@ -14712,6 +14780,8 @@ VertexClientPE.showSetupScreen = function() {
 				setupStepRow.addView(step3Button);
 				setupStepRow.addView(space3, dip2px(8), dip2px(1));
 				setupStepRow.addView(step4Button);
+				setupStepRow.addView(space4, dip2px(8), dip2px(1));
+				setupStepRow.addView(step5Button);
 				
 				let setupSpaceAbove = clientTextView("");
 				setupSpaceAbove.setGravity(Gravity_.CENTER);
@@ -14727,8 +14797,9 @@ VertexClientPE.showSetupScreen = function() {
 
 				let setupStep1Text = "Thanks for choosing Vertex Client PE!\nGo to the next step to choose your favourite color. :)";
 				let setupStep2Text = "Feel free to choose one of the theme colors below.\nYou can always change the color on the settings screen.\nEven more colors are available there.";
-				let setupStep3Text = "Now you can optimize your experience by choosing the mod categories you want to use.\nYou'll be able to change this on the settings screen anytime.";
-				let setupStep4Text = "That's it! Your experience begins here.\n\nHere's some additional help to get started:\n- You can open the Dashboard and some other features from the 'More' dialog,\nwhich can be opened by long tapping the menu button.\n- More help is available on the Help screen which is also accessible from the Dashboard.";
+				let setupStep3Text = "Now you can optimize your experience by choosing the mod categories you want to use.\nYou'll be able to change this on the settings screen at any time.";
+				let setupStep4Text = "Please choose a settings preset. High performance is best when you want less lag,\ndefault is to use default settings and 'All-in' means all features including optional ones\n(TabGUI for example) will be enabled.";
+				let setupStep5Text = "That's it! Your experience starts here.\n\nHere's some additional help to get started:\n- You can open the Dashboard and some other features from the 'More' dialog,\nwhich can be opened by long tapping the menu button.\n- More help is available on the Help screen which is also accessible from the Dashboard.";
 
 				setupTextView.setText(setupStep1Text);
 
@@ -14871,6 +14942,25 @@ VertexClientPE.showSetupScreen = function() {
 						VertexClientPE.saveFeaturesSettings();
 					}
 				}));
+				
+				let selectedPresetNum = 0;
+				let presetNames = ["Default", "All-in", "High performance"];
+				let arrayAdapter = new android.widget.ArrayAdapter(CONTEXT, android.R.layout.simple_spinner_item, presetNames);
+				arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+				let presetSpinner = new Spinner_(CONTEXT, Spinner_.MODE_DIALOG);
+				presetSpinner.setAdapter(arrayAdapter);
+				presetSpinner.setSelection(selectedPresetNum);
+				presetSpinner.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener({
+					onItemSelected: function(parent, v, pos, id) {
+						if(selectedPresetNum == pos) {
+							return;
+						}
+						selectedPresetNum = pos;
+					},
+					onNothingSelected: function(parent) {
+						presetSpinner.setSelection(selectedPresetNum);
+					}
+				}));
 
 				let doneLayout = new LinearLayout_(CONTEXT);
 				let doneButton = new Button_(CONTEXT);
@@ -14879,7 +14969,6 @@ VertexClientPE.showSetupScreen = function() {
 				doneButton.setPadding(0, dip2px(8), dip2px(8), 0);
 				doneButton.setText("\u2794");//Text
 				doneButton.setTextSize(20);
-				//doneButton.getBackground().setColorFilter(Color_.parseColor("#008000"), PorterDuff_.Mode.MULTIPLY);
 				doneButton.setTextColor(Color_.WHITE);
 				doneButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
