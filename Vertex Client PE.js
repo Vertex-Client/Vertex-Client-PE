@@ -20,6 +20,7 @@
 
 const AlarmManager_ = android.app.AlarmManager,
 	AlertDialog_ = android.app.AlertDialog,
+	ArrayAdapter_ = android.widget.ArrayAdapter,
 	DownloadManager_ = android.app.DownloadManager,
 	Dialog_ = android.app.Dialog,
 	Notification_ = android.app.Notification,
@@ -2084,8 +2085,7 @@ let feedbackTile = {
 	forceLightColor: true,
 	shouldDismissDashboard: true,
 	onClick: function(fromDashboard) {
-		feedbackScreen();
-		VertexClientPE.showExitButtons(fromDashboard, this.text, this.icon);
+		VertexClientPE.showFeedbackDialog();
 	}
 }
 
@@ -8090,6 +8090,7 @@ VertexClientPE.showShortcutManagerDialog = function() {
 
 let chatWebView;
 let chatDialogOpen = false;
+let chatUrl = "https://www.rumbletalk.com/client/chat.php?yfv-:rmp";
 
 VertexClientPE.showChatDialog = function() {
 	if(!chatDialogOpen) {
@@ -8127,7 +8128,7 @@ VertexClientPE.showChatDialog = function() {
 						chatWebView.setWebChromeClient(new WebChromeClient_());
 						chatWebView.setWebViewClient(new WebViewClient_());
 
-						chatWebView.loadUrl("https://www.rumbletalk.com/client/chat.php?yfv-:rmp");
+						chatWebView.loadUrl(chatUrl);
 					}
 
 					dialogLayout.addView(chatWebView);
@@ -8149,7 +8150,87 @@ VertexClientPE.showChatDialog = function() {
 					refreshButton.setOnClickListener(new View_.OnClickListener({
 						onClick: function(viewArg) {
 							if(chatWebView != null) {
-								chatWebView.loadUrl("https://www.rumbletalk.com/client/chat.php?yfv-:rmp");
+								chatWebView.loadUrl(chatUrl);
+							}
+						}
+					}));
+					closeButton.setOnClickListener(new View_.OnClickListener() {
+						onClick: function(view) {
+							dialog.dismiss();
+						}
+					});
+				} catch(e) {
+					print("Error: " + e);
+					VertexClientPE.showBugReportDialog(e);
+				}
+			}
+		});
+	}
+}
+
+let feedbackWebView;
+let feedbackDialogOpen = false;
+let feedbackData = "<html><body><center><iframe src='https://docs.google.com/forms/d/e/1FAIpQLSeMITAXYXh895mqS4gS4AGru0CZjCeYg1B1ClJClyKTAHEYVg/viewform?embedded=true' width='100%' height='800' frameborder='0' marginheight='0' marginwidth='0'>Loading...</iframe></center></body></html>";
+
+VertexClientPE.showFeedbackDialog = function() {
+	if(!feedbackDialogOpen) {
+		feedbackDialogOpen = true;
+		CONTEXT.runOnUiThread(new Runnable_() {
+			run: function() {
+				try {
+					let feedbackTopLayout = new LinearLayout_(CONTEXT);
+					feedbackTopLayout.setOrientation(LinearLayout_.HORIZONTAL);
+					let feedbackTitle = clientScreenTitle("Feedback", feedbackTile.icon, themeSetting);
+					let feedbackTitleLayout = new LinearLayout_(CONTEXT);
+					feedbackTitleLayout.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
+					feedbackTitleLayout.setGravity(Gravity_.CENTER);
+					let refreshButton = clientButton("\u21BB");
+					refreshButton.setLayoutParams(new LinearLayout_.LayoutParams(barLayoutHeight, barLayoutHeight));
+					let closeButton = clientButton("X");
+					closeButton.setLayoutParams(new LinearLayout_.LayoutParams(barLayoutHeight, barLayoutHeight));
+					feedbackTitleLayout.addView(feedbackTitle);
+					feedbackTopLayout.addView(refreshButton);
+					feedbackTopLayout.addView(feedbackTitleLayout);
+					feedbackTopLayout.addView(closeButton);
+					let dialogLayout = new LinearLayout_(CONTEXT);
+					dialogLayout.setBackgroundDrawable(backgroundGradient());
+					dialogLayout.setOrientation(LinearLayout_.VERTICAL);
+					dialogLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
+					dialogLayout.addView(feedbackTopLayout);
+
+					if(feedbackWebView == null) {
+						feedbackWebView = new WebView_(CONTEXT);
+
+						let wS = feedbackWebView.getSettings();
+
+						wS.setJavaScriptEnabled(true);
+						wS.setDomStorageEnabled(true);
+						feedbackWebView.setWebChromeClient(new WebChromeClient_());
+						feedbackWebView.setWebViewClient(new WebViewClient_());
+
+						feedbackWebView.loadData(feedbackData, "text/html", "utf-8");
+					}
+
+					dialogLayout.addView(feedbackWebView);
+
+					let dialog = new Dialog_(CONTEXT);
+					dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
+					dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+					dialog.setContentView(dialogLayout);
+					dialog.setTitle("Feedback");
+					dialog.setOnDismissListener(new DialogInterface_.OnDismissListener() {
+						onDismiss: function() {
+							dialogLayout.removeView(feedbackWebView);
+							feedbackDialogOpen = false;
+						}
+					});
+					dialog.show();
+					let window = dialog.getWindow();
+					window.setLayout(display.widthPixels, display.heightPixels);
+					refreshButton.setOnClickListener(new View_.OnClickListener({
+						onClick: function(viewArg) {
+							if(feedbackWebView != null) {
+								feedbackWebView.loadData(feedbackData, "text/html", "utf-8");
 							}
 						}
 					}));
@@ -14957,7 +15038,7 @@ VertexClientPE.showSetupScreen = function() {
 				
 				let selectedPresetNum = 0;
 				let presetNames = ["Default", "All-in", "High performance"];
-				let arrayAdapter = new android.widget.ArrayAdapter(CONTEXT, android.R.layout.simple_spinner_item, presetNames);
+				let arrayAdapter = new ArrayAdapter_(CONTEXT, android.R.layout.simple_spinner_item, presetNames);
 				arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 				let presetSpinner = new Spinner_(CONTEXT, Spinner_.MODE_DIALOG);
 				presetSpinner.setAdapter(arrayAdapter);
@@ -17238,49 +17319,6 @@ function previewScreen(fromDashboard) {
 				screenUI.setOnDismissListener(new PopupWindow_.OnDismissListener() {
 					onDismiss: function() {
 						previewWebView.loadUrl("about:blank");
-					}
-				});
-				screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
-			} catch(error) {
-				print("An error occurred: " + error);
-			}
-		}
-	}));
-}
-
-function feedbackScreen(fromDashboard) {
-	VertexClientPE.menuIsShowing = true;
-	CONTEXT.runOnUiThread(new Runnable_({
-		run: function() {
-			try {
-				let display = CONTEXT.getWindowManager().getDefaultDisplay(),
-				width = display.getWidth(),
-				height = display.getHeight();
-
-				VertexClientPE.checkGUINeedsDismiss();
-
-				let feedbackMenuLayout = new LinearLayout_(CONTEXT);
-				feedbackMenuLayout.setOrientation(1);
-				feedbackMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
-
-				let feedbackWebView = new WebView_(CONTEXT);
-				let wS = feedbackWebView.getSettings();
-
-				let frameForm = "<html><body><center><iframe src='https://docs.google.com/forms/d/e/1FAIpQLSeMITAXYXh895mqS4gS4AGru0CZjCeYg1B1ClJClyKTAHEYVg/viewform?embedded=true' width='100%' height='800' frameborder='0' marginheight='0' marginwidth='0'>Loading...</iframe></center></body></html>";
-
-				wS.setJavaScriptEnabled(true);
-				feedbackWebView.setWebChromeClient(new WebChromeClient_());
-				feedbackWebView.setWebViewClient(new WebViewClient_());
-
-				feedbackWebView.loadData(frameForm, "text/html", "utf-8");
-
-				feedbackMenuLayout.addView(feedbackWebView);
-
-				screenUI = new PopupWindow_(feedbackMenuLayout, width, height - barLayoutHeight);
-				screenUI.setBackgroundDrawable(backgroundGradient());
-				screenUI.setOnDismissListener(new PopupWindow_.OnDismissListener() {
-					onDismiss: function() {
-						feedbackWebView.loadUrl("about:blank");
 					}
 				});
 				screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
