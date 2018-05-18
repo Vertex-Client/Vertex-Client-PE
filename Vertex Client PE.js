@@ -2083,7 +2083,6 @@ let feedbackTile = {
 	color: "red",
 	icon: android.R.drawable.ic_dialog_email,
 	forceLightColor: true,
-	shouldDismissDashboard: true,
 	onClick: function(fromDashboard) {
 		VertexClientPE.showFeedbackDialog();
 	}
