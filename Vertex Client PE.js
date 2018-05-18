@@ -312,6 +312,8 @@ let customHeight = topBarHeight / 2;
 let sharedPref = CONTEXT.getPreferences(CONTEXT.MODE_PRIVATE);
 let editor = sharedPref.edit();
 
+let screenChangedHookActive = false;
+
 //MENU START
 const combattpopx_def = screenWidth / 3, combattpopy_def = 0;
 let combattpopx = combattpopx_def, combattpopy = combattpopy_def;
@@ -795,94 +797,94 @@ function VectorLib() {
 let currentScreen = ScreenType.start_screen;
 
 function screenChangeHook(screenName) {
-	CONTEXT.runOnUiThread(new Runnable_({
-		run: function() {
-			if(pauseUtilitiesUI != null && pauseUtilitiesUI.isShowing()) {
-				pauseUtilitiesUI.dismiss();
-			}
-			if(screenName == ScreenType.start_screen || screenName == ScreenType.exit_dialog || screenName == ScreenType.hud || screenName == ScreenType.ingame || screenName == ScreenType.pause_screen) {
-				if(GUI != null) {
-					GUI.setTouchable(true);
-					GUI.update();
+	if(screenChangedHookActive) {
+		CONTEXT.runOnUiThread(new Runnable_({
+			run: function() {
+				if(pauseUtilitiesUI != null && pauseUtilitiesUI.isShowing()) {
+					pauseUtilitiesUI.dismiss();
 				}
-			} else {
-				if(!VertexClientPE.menuIsShowing) {
+				if(screenName == ScreenType.start_screen || screenName == ScreenType.exit_dialog || screenName == ScreenType.hud || screenName == ScreenType.ingame || screenName == ScreenType.pause_screen) {
 					if(GUI != null) {
-						GUI.setTouchable(false);
+						GUI.setTouchable(true);
 						GUI.update();
 					}
-				}
-			}
-			if(screenName == ScreenType.hud || screenName == ScreenType.ingame) {
-				VertexClientPE.Render.initViews();
-				if((hacksList == null || !hacksList.isShowing()) && !VertexClientPE.menuIsShowing) {
-					showHacksList();
-					showTabGUI();
-					showShortcuts();
-					if(healthDisplayState) {
-						showHealthDisplay();
-					}
-					if(rotationPlusState) {
-						showRotationPlus();
-					}
-					if(watermarkState) {
-						showWatermark();
-					}
-					if(f5ButtonModeSetting == "ingame") {
-						showPauseUtilities();
+				} else {
+					if(!VertexClientPE.menuIsShowing) {
+						if(GUI != null) {
+							GUI.setTouchable(false);
+							GUI.update();
+						}
 					}
 				}
-			} else {
-				VertexClientPE.Render.deinitViews();
-				if(hacksList != null) {
-					hacksList.dismiss();
-				}
-				if(tabGUI != null) {
-					tabGUI.dismiss();
-				}
-				if(shortcutGUI != null) {
-					shortcutGUI.dismiss();
-				}
-				if(healthDisplayUI != null) {
-					healthDisplayUI.dismiss();
-				}
-				if(watermarkUI != null) {
-					watermarkUI.dismiss();
-				}
-				if(rotationPlusUI != null) {
-					rotationPlusUI.dismiss();
-				}
-				if(screenName == ScreenType.start_screen || screenName == ScreenType.exit_dialog) {
-					if(VertexClientPE.loadMainSettings() != null) {
+				if(screenName == ScreenType.hud || screenName == ScreenType.ingame) {
+					VertexClientPE.Render.initViews();
+					if((hacksList == null || !hacksList.isShowing()) && !VertexClientPE.menuIsShowing) {
+						showHacksList();
+						showTabGUI();
+						showShortcuts();
+						if(healthDisplayState) {
+							showHealthDisplay();
+						}
+						if(rotationPlusState) {
+							showRotationPlus();
+						}
+						if(watermarkState) {
+							showWatermark();
+						}
+						if(f5ButtonModeSetting == "ingame") {
+							showPauseUtilities();
+						}
+					}
+				} else {
+					VertexClientPE.Render.deinitViews();
+					if(hacksList != null) {
+						hacksList.dismiss();
+					}
+					if(tabGUI != null) {
+						tabGUI.dismiss();
+					}
+					if(shortcutGUI != null) {
+						shortcutGUI.dismiss();
+					}
+					if(healthDisplayUI != null) {
+						healthDisplayUI.dismiss();
+					}
+					if(watermarkUI != null) {
+						watermarkUI.dismiss();
+					}
+					if(rotationPlusUI != null) {
+						rotationPlusUI.dismiss();
+					}
+					if(screenName == ScreenType.start_screen || screenName == ScreenType.exit_dialog) {
 						if((mainMenuTextList == null || !mainMenuTextList.isShowing()) && !VertexClientPE.menuIsShowing) {
 							VertexClientPE.showStartScreenBar(screenName);
 						}
 						if((accountManagerGUI == null || !accountManagerGUI.isShowing()) && !VertexClientPE.menuIsShowing) {
 							showAccountManagerButton(screenName);
 						}
+					} else {
+						if(mainMenuTextList != null && mainMenuTextList.isShowing()) {
+							mainMenuTextList.dismiss();
+						}
+						if(accountManagerGUI != null && accountManagerGUI.isShowing()) {
+							accountManagerGUI.dismiss();
+						}
+					}
+				}
+				if(screenName == ScreenType.pause_screen) {
+					VertexClientPE.isPaused = true;
+					if(!VertexClientPE.menuIsShowing && f5ButtonModeSetting == "pause") {
+						showPauseUtilities();
 					}
 				} else {
-					if(mainMenuTextList != null && mainMenuTextList.isShowing()) {
-						mainMenuTextList.dismiss();
-					}
-					if(accountManagerGUI != null && accountManagerGUI.isShowing()) {
-						accountManagerGUI.dismiss();
+					if(screenName != ScreenType.options_screen) {
+						VertexClientPE.isPaused = false;
 					}
 				}
+				currentScreen = screenName;
 			}
-			if(screenName == ScreenType.pause_screen) {
-				VertexClientPE.isPaused = true;
-				if(!VertexClientPE.menuIsShowing && f5ButtonModeSetting == "pause") {
-					showPauseUtilities();
-				}
-			} else {
-				if(screenName != ScreenType.options_screen) {
-					VertexClientPE.isPaused = false;
-				}
-			}
-			currentScreen = screenName;
-		}
-	}));
+		}));
+	}
 }
 
 /* function keyEvent(par1, par2) {
@@ -8086,6 +8088,8 @@ VertexClientPE.showShortcutManagerDialog = function() {
 	});
 }
 
+let chatWebView;
+
 VertexClientPE.showChatDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
@@ -14342,6 +14346,7 @@ VertexClientPE.showSplashScreen = function () {
 							run: function () {
 								screenUI.dismiss();
 								screenUI = null;
+								screenChangedHookActive = true;
 							}
 						});
 					}
@@ -17236,56 +17241,6 @@ function previewScreen(fromDashboard) {
 	}));
 }
 
-let chatWebView;
-
-function chatScreen(fromDashboard) {
-	VertexClientPE.menuIsShowing = true;
-	CONTEXT.runOnUiThread(new Runnable_({
-		run: function() {
-			try {
-				let display = CONTEXT.getWindowManager().getDefaultDisplay(),
-				width = display.getWidth(),
-				height = display.getHeight();
-
-				VertexClientPE.checkGUINeedsDismiss();
-
-				let chatMenuLayout = new LinearLayout_(CONTEXT);
-				chatMenuLayout.setOrientation(1);
-				chatMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
-
-				if(chatWebView == null) {
-					chatWebView = new WebView_(CONTEXT);
-					let wS = chatWebView.getSettings();
-
-					let frameChat = "<html><body><center><iframe src='https://docs.google.com/forms/d/e/1FAIpQLSeMITAXYXh895mqS4gS4AGru0CZjCeYg1B1ClJClyKTAHEYVg/viewform?embedded=true' width='100%' height='800' frameborder='0' marginheight='0' marginwidth='0'>Loading...</iframe></center></body></html>";
-
-					wS.setJavaScriptEnabled(true);
-					chatWebView.setWebChromeClient(new WebChromeClient_());
-					chatWebView.setWebViewClient(new WebViewClient_());
-
-					chatWebView.loadData(frameChat, "text/html", "utf-8");
-				}
-
-				chatMenuLayout.addView(chatWebView);
-
-				screenUI = new PopupWindow_(chatMenuLayout, width, height - barLayoutHeight, true);
-				screenUI.setBackgroundDrawable(backgroundGradient());
-				screenUI.setOnDismissListener(new PopupWindow_.OnDismissListener() {
-					onDismiss: function() {
-						if(barUI != null && barUI.isShowing()) {
-							barUI.dismiss();
-						}
-						chatMenuLayout.removeView(chatWebView);
-					}
-				});
-				screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
-			} catch(error) {
-				print("An error occurred: " + error);
-			}
-		}
-	}));
-}
-
 function feedbackScreen(fromDashboard) {
 	VertexClientPE.menuIsShowing = true;
 	CONTEXT.runOnUiThread(new Runnable_({
@@ -19635,7 +19590,7 @@ function showHacksList() {
 			if(hacksList != null) {
 				hacksList.dismiss();
 			}
-			if(hacksListModeSetting == "off") {
+			if(hacksListModeSetting == "off" || ghostModeState) {
 				hacksList = new PopupWindow_(new LinearLayout_(CONTEXT), LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT);
 			} else if(hacksList == null || !hacksList.isShowing()) {
 				try {
@@ -19689,6 +19644,10 @@ function showHacksList() {
 							enabledHacksCounter++;
 						}
 					});
+					
+					if(enabledHacksCounter == 0) {
+						statesText = "No mods enabled";
+					}
 
 					statesTextView = clientTextView(statesText, true);
 					if(hacksListModeSetting == "on") {
@@ -19734,17 +19693,15 @@ function showHacksList() {
 							hacksList.setAnimationStyle(android.R.style.Animation_Translucent);
 						}
 						hacksList.setTouchable(false);
-						if(!ghostModeState) {
-							if(hacksListPosSetting == "top-left") {
-								hacksList.setBackgroundDrawable(backgroundGradient("bottomright"));
-								hacksList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-							} else if(hacksListPosSetting == "top-center") {
-								hacksList.setBackgroundDrawable(backgroundGradient(true));
-								hacksList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.TOP, 0, 0);
-							} else if(hacksListPosSetting == "top-right") {
-								hacksList.setBackgroundDrawable(backgroundGradient("bottomleft"));
-								hacksList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
-							}
+						if(hacksListPosSetting == "top-left") {
+							hacksList.setBackgroundDrawable(backgroundGradient("bottomright"));
+							hacksList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+						} else if(hacksListPosSetting == "top-center") {
+							hacksList.setBackgroundDrawable(backgroundGradient(true));
+							hacksList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.TOP, 0, 0);
+						} else if(hacksListPosSetting == "top-right") {
+							hacksList.setBackgroundDrawable(backgroundGradient("bottomleft"));
+							hacksList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
 						}
 					}
 				} catch(error) {
@@ -19806,7 +19763,7 @@ function showTabGUI() {
 			if(tabGUI != null) {
 				tabGUI.dismiss();
 			}
-			if(tabGUIModeSetting == "off") {
+			if(tabGUIModeSetting == "off" || ghostModeState) {
 				tabGUI = new PopupWindow_(new LinearLayout_(CONTEXT), LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT);
 			} else if(tabGUI == null || !tabGUI.isShowing()) {
 				try {
@@ -19840,9 +19797,7 @@ function showTabGUI() {
 							tabGUI.setAnimationStyle(android.R.style.Animation_Translucent);
 						}
 						tabGUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-						if(!ghostModeState) {
-							tabGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, dip2px(70));
-						}
+						tabGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, dip2px(70));
 					}
 				} catch(error) {
 					print("An error occurred: " + error);
@@ -19859,7 +19814,7 @@ function showShortcuts() {
 			if(shortcutGUI != null) {
 				shortcutGUI.dismiss();
 			}
-			if(shortcutUIModeSetting == "off") {
+			if(shortcutUIModeSetting == "off" || ghostModeState) {
 				shortcutGUI = new PopupWindow_(new LinearLayout_(CONTEXT), LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT);
 			} else if(shortcutGUI == null || !shortcutGUI.isShowing()) {
 				try {
@@ -19910,20 +19865,18 @@ function showShortcuts() {
 							shortcutGUI.setAnimationStyle(android.R.style.Animation_Translucent);
 						}
 						shortcutGUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-						if(!ghostModeState) {
-							if(shortcutUIPosSetting == "left-bottom") {
-								shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
-							} else if(shortcutUIPosSetting == "left-center") {
-								shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.CENTER, 0, 0);
-							} else if(shortcutUIPosSetting == "left-top") {
-								shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
-							} else if(shortcutUIPosSetting == "right-bottom") {
-								shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.BOTTOM, 0, 0);
-							} else if(shortcutUIPosSetting == "right-center") {
-								shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.CENTER, 0, 0);
-							} else if(shortcutUIPosSetting == "right-top") {
-								shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
-							}
+						if(shortcutUIPosSetting == "left-bottom") {
+							shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
+						} else if(shortcutUIPosSetting == "left-center") {
+							shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.CENTER, 0, 0);
+						} else if(shortcutUIPosSetting == "left-top") {
+							shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
+						} else if(shortcutUIPosSetting == "right-bottom") {
+							shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.BOTTOM, 0, 0);
+						} else if(shortcutUIPosSetting == "right-center") {
+							shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.CENTER, 0, 0);
+						} else if(shortcutUIPosSetting == "right-top") {
+							shortcutGUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
 						}
 					}
 				} catch(error) {
