@@ -2475,6 +2475,8 @@ var panic = {
 					updateHacksList();
 				}
 			}
+		} else {
+			VertexClientPE.clientMessage("There are no mods to turn off.");
 		}
 	}
 };
@@ -8738,7 +8740,7 @@ VertexClientPE.showModEditorDialog = function(defaultName, modTitleView, modButt
 				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setOrientation(1);
 				dialogLayout.setBackgroundDrawable(backgroundSpecial());
-				dialogLayout.setPadding(1.5, 0, 1, 1);
+				//dialogLayout.setPadding(0, 0, 0, 0);
 
 				let modEditorTitleLayout = new LinearLayout_(CONTEXT);
 				modEditorTitleLayout.setOrientation(LinearLayout_.HORIZONTAL);
