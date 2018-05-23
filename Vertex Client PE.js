@@ -1,7 +1,7 @@
 /**
  * ##################################################################################################
  * @name Vertex Client PE
- * @version v3.0.1
+ * @version v3.1
  * @author peacestorm (@AgameR_Modder)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36, AutoGrind, TimmyIsDa
  *
@@ -164,8 +164,10 @@ const i18n = (function () {
             });
         };
     }
-    return function (text) {
-        return text;
+    return function (text, args) {
+        return text.replace(/(\{%\d+\})/g, function ($1) {
+			return args[$1.match(/\{%(\d+)\}/)[1]];
+		});
     };
 })();
 
@@ -832,7 +834,7 @@ function screenChangeHook(screenName) {
 						if(watermarkState) {
 							showWatermark();
 						}
-						if(f5ButtonModeSetting == "ingame") {
+						if(f5ButtonModeSetting == "ingame" && !ghostModeState) {
 							showPauseUtilities();
 						}
 					}
@@ -874,7 +876,7 @@ function screenChangeHook(screenName) {
 				}
 				if(screenName == ScreenType.pause_screen) {
 					VertexClientPE.isPaused = true;
-					if(!VertexClientPE.menuIsShowing && f5ButtonModeSetting == "pause") {
+					if(!VertexClientPE.menuIsShowing && f5ButtonModeSetting == "pause" && !ghostModeState) {
 						showPauseUtilities();
 					}
 				} else {
@@ -1328,8 +1330,8 @@ VertexClientPE.isRemote = function() {
 
 VertexClientPE.playerIsInGame = false;
 
-VertexClientPE.currentVersion = "3.0.1";
-VertexClientPE.currentVersionDesc = "The Combat Update";
+VertexClientPE.currentVersion = "3.1";
+VertexClientPE.currentVersionDesc = "The ? Update";
 VertexClientPE.targetVersion = "MCPE v1.0.x";
 VertexClientPE.minVersion = "1.0.0";
 VertexClientPE.edition = "Normal";
@@ -4499,7 +4501,7 @@ var remoteView = {
 			this.targetEntity = v;
 			ModPE.setCamera(v);
 		}
-	}
+	},
 }
 
 var antiAFK = {
@@ -6161,6 +6163,33 @@ var caveFinder = {
 	}
 }
 
+var float_mod = {
+	name: "Float",
+	desc: i18n("Allows you to float a specific amount of blocks above the ground."),
+	category: VertexClientPE.category.MOVEMENT,
+	type: "Mod",
+	state: false,
+	/* getSettingsLayout: function() {
+		return new LinearLayout_(CONTEXT);
+	}, */
+	isExpMod: function() {
+		return true;
+	},
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onTick: function() {
+		let y = getPlayerY() - 1.8;
+		while(getTile(getPlayerX(), y, getPlayerZ()) == 0) {
+			y--;
+		}
+		Entity.setPosition(getPlayerEnt(), getPlayerX(), y + 1.8, getPlayerZ());
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(aimbot);
 VertexClientPE.registerModule(antiBurn);
@@ -6194,6 +6223,7 @@ VertexClientPE.registerModule(fastLadder);
 VertexClientPE.registerModule(fastWalk);
 //VertexClientPE.registerModule(fenceJump);
 VertexClientPE.registerModule(flight);
+//VertexClientPE.registerModule(float_mod);
 VertexClientPE.registerModule(follow);
 VertexClientPE.registerModule(frostWalk);
 VertexClientPE.registerModule(glide);
@@ -16924,7 +16954,7 @@ function settingsScreen(fromDashboard) {
 				VertexClientPE.addView(settingsMenuLayout, menuAnimationsSettingFunc);
 				settingsMenuLayout.addView(soundsAndMusicTitle);
 				VertexClientPE.addView(settingsMenuLayout, buttonSoundSettingFunc);
-				VertexClientPE.addView(settingsMenuLayout, playMusicSettingFunc);
+				//VertexClientPE.addView(settingsMenuLayout, playMusicSettingFunc);
 				settingsMenuLayout.addView(dashboardTitle);
 				VertexClientPE.addView(settingsMenuLayout, dashboardTileSizeSettingFunc);
 				settingsMenuLayout.addView(splashScreenTitle);
@@ -19702,11 +19732,11 @@ function showHacksList() {
 						statesTextView.setText(enabledHacksCounter.toString() + " mods enabled");
 					}
 
-					if(VertexClientPE.MusicUtils.isPaused) {
+					/* if(VertexClientPE.MusicUtils.isPaused) {
 						musicTextView = clientTextView("\u266B Currently paused: " + musicText, true);
 					} else {
 						musicTextView = clientTextView("\u266B Currently playing: " + musicText, true);
-					}
+					} */
 
 					statesTextView.setTextSize(16);
 					statesTextView.setPadding(0, 0, dip2px(8), 0);
@@ -19715,13 +19745,13 @@ function showHacksList() {
 					statesTextView.setSingleLine();
 					statesTextView.setHorizontallyScrolling(true);
 					statesTextView.setSelected(true);
-					musicTextView.setTextSize(16);
+					/* musicTextView.setTextSize(16);
 					musicTextView.setPadding(0, 0, dip2px(8), 0);
 					musicTextView.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
 					musicTextView.setMarqueeRepeatLimit(-1);
 					musicTextView.setSingleLine();
 					musicTextView.setHorizontallyScrolling(true);
-					musicTextView.setSelected(true);
+					musicTextView.setSelected(true); */
 					logoViewer2.setPadding(dip2px(8), 0, dip2px(8), 0);
 					versionText.setPadding(dip2px(8), 0, dip2px(8), 0);
 					proText.setPadding(dip2px(8), 0, dip2px(8), 0);
@@ -19782,6 +19812,11 @@ function updateHacksList() {
 								enabledHacksCounter++;
 							}
 						});
+
+						if(enabledHacksCounter == 0) {
+							statesText = "No mods enabled";
+						}
+
 						statesTextView.setText(statesText);
 						if(hacksListModeSetting == "on") {
 							statesTextView.setText(statesText);
@@ -19789,11 +19824,11 @@ function updateHacksList() {
 							statesTextView.setText(enabledHacksCounter.toString() + " mods enabled");
 						}
 
-						if(VertexClientPE.MusicUtils.isPaused) {
+						/* if(VertexClientPE.MusicUtils.isPaused) {
 							musicTextView.setText("\u266B Currently paused: " + musicText);
 						} else {
 							musicTextView.setText("\u266B Currently playing: " + musicText);
-						}
+						} */
 					}
 				} catch(error) {
 					print("An error occurred: " + error);
@@ -19802,6 +19837,7 @@ function updateHacksList() {
 			}
 		}));
 }
+
 
 function showTabGUI() {
 	CONTEXT.runOnUiThread(new Runnable_({
@@ -20110,12 +20146,10 @@ function showPauseUtilities() {
 
 					pauseUtilitiesUI = new PopupWindow_(pauseUtilitiesLayout, dip2px(40), dip2px(40));
 					pauseUtilitiesUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-					if(!ghostModeState) {
-						if(f5ButtonModeSetting == "pause") {
-							pauseUtilitiesUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, dip2px(80));
-						} else if(f5ButtonModeSetting == "ingame") {
-							pauseUtilitiesUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
-						}
+					if(f5ButtonModeSetting == "pause") {
+						pauseUtilitiesUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, dip2px(80));
+					} else if(f5ButtonModeSetting == "ingame") {
+						pauseUtilitiesUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
 					}
 				}
 			} catch(exception) {
@@ -20705,4 +20739,4 @@ function blockEventHook(x, y, z, e, d) {
 	}
 }
 
-//What are you doing here? ;-))
+//What are you doing here? ;-)
