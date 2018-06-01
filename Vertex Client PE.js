@@ -6972,7 +6972,7 @@ ModPE.getPlayerName = function() {
 ModPE.getFov = function() {
 	let file = new File_(Environment_.getExternalStorageDirectory() + "/games/com.mojang/minecraftpe/options.txt");
 	if(!file.exists()) {
-		return 70;
+		return 70; // return 60 if version is > 1.5
 	}
 	let br = new BufferedReader_(new InputStreamReader_(new FileInputStream_(file)));
 	let read, fov;
@@ -10250,7 +10250,7 @@ VertexClientPE.showTipDialog = function() {
 		desc = "Are there any mods you use regularly? Have you tried out shortcuts yet? The shortcuts allow you to toggle mods and tiles faster than ever! Please go to the Help screen (" + openText + " --> Dashboard --> Help) to find out how to add them.";
 	} else if(scramble == 2) {
 		title = "YouTube";
-		desc = "Subscribe to AgameR on YouTube for exclusive previews.";
+		desc = "Subscribe to AgameR // Vertex on YouTube for exclusive previews.";
 	}
 
 	let dialogInnerLayout = new LinearLayout_(CONTEXT);
@@ -10859,7 +10859,7 @@ VertexClientPE.MusicUtils = {
 				mp.start();
 				if(playMusicSetting != "shuffle" && song == null && VertexClientPE.MusicUtils.playingFirstTime) {
 					let musicHandler = new Handler_();
-					musicHandler.postDelayed(new Runnable() {
+					musicHandler.postDelayed(new Runnable_() {
 						run: function() {
 							mp.pause();
 							VertexClientPE.MusicUtils.isPaused = true;
@@ -10890,42 +10890,43 @@ function Song(songTitle, songArtist, songUrl, songGenre) {
 	this.url = songUrl;
 }
 
-/* //VertexClientPE.MusicUtils.registerSong(new Song("Adventures (feat. Alexa Lusader)", "William Ekh", "http://files-cdn.nocopyrightsounds.co.uk/William%20Ekh%20-%20Adventure%20%28feat.%20Alexa%20Lusader%29.mp3", "House"));
-VertexClientPE.MusicUtils.registerSong(new Song("Blank [NCS Release]", "Disfigure", "http://download1644.mediafire.com/i9266f1gnalg/hdxvcde2t8v1hb8/Disfigure+-+Blank.mp3", "Dubstep"));
-VertexClientPE.MusicUtils.registerSong(new Song("Can't Wait (feat. Anna Yvette) [NCS Release]", "Jim Yosef", "http://download1478.mediafire.com/hi9bhnr23gvg/bpgdjbqy0p09biw/Jim+Yosef+-+Can%5C%27t+Wait+%28feat.+Anna+Yvette%29.mp3", "House"));
-VertexClientPE.MusicUtils.registerSong(new Song("Candyland [NCS Release]", "Tobu", "http://download1593.mediafire.com/kic5eufk5fxg/dhi67bfn9dcq28b/Tobu+-+Candyland.mp3", "House"));
+//VertexClientPE.MusicUtils.registerSong(new Song("Adventures (feat. Alexa Lusader)", "William Ekh", "http://files-cdn.nocopyrightsounds.co.uk/William%20Ekh%20-%20Adventure%20%28feat.%20Alexa%20Lusader%29.mp3", "House"));
+//VertexClientPE.MusicUtils.registerSong(new Song("Blank [NCS Release]", "Disfigure", "http://download1644.mediafire.com/i9266f1gnalg/hdxvcde2t8v1hb8/Disfigure+-+Blank.mp3", "Dubstep"));
+//VertexClientPE.MusicUtils.registerSong(new Song("Can't Wait (feat. Anna Yvette) [NCS Release]", "Jim Yosef", "http://download1478.mediafire.com/hi9bhnr23gvg/bpgdjbqy0p09biw/Jim+Yosef+-+Can%5C%27t+Wait+%28feat.+Anna+Yvette%29.mp3", "House"));
+//VertexClientPE.MusicUtils.registerSong(new Song("Candyland [NCS Release]", "Tobu", "http://download1593.mediafire.com/kic5eufk5fxg/dhi67bfn9dcq28b/Tobu+-+Candyland.mp3", "House"));
 //VertexClientPE.MusicUtils.registerSong(new Song("Cast Away ft. Ayve [NCS Release]", "T & Sugah", "http://files-cdn.nocopyrightsounds.co.uk/T%20%26%20Sugah%20-%20Cast%20Away%20%28ft.%20Ayve%29.mp3","Drum&Bass"));
 //VertexClientPE.MusicUtils.registerSong(new Song("Cloud 9 [NCS Release]", "Itro & Tobu", "http://files-cdn.nocopyrightsounds.co.uk/Itro%20%26%20Tobu%20-%20Cloud%209.mp3", "House"));
 //VertexClientPE.MusicUtils.registerSong(new Song("Coming Home [NCS Release]", "SirensCeol", "http://files-cdn.nocopyrightsounds.co.uk/SirensCeol%20-%20Coming%20Home.mp3", "Dubstep"));
-VertexClientPE.MusicUtils.registerSong(new Song("Daydreamer", "Ahxello & Alex Skrindo", "http://s000.tinyupload.com/download.php?file_id=88996261727724886040&t=8899626172772488604031406", "House"));
-VertexClientPE.MusicUtils.registerSong(new Song("Dusk [NCS Release]", "Tobu & Syndec", "http://download943.mediafire.com/8m4c14x573eg/6ma4m2u3s3s1cbb/Tobu+%26+Syndec+-+Dusk.mp3", "House"));
+//VertexClientPE.MusicUtils.registerSong(new Song("Daydreamer", "Ahxello & Alex Skrindo", "http://s000.tinyupload.com/download.php?file_id=88996261727724886040&t=8899626172772488604031406", "House"));
+//VertexClientPE.MusicUtils.registerSong(new Song("Donuts [NCS Release]", "Jensation", "https://vocaroo.com/media_command.php?media=s0c2yP42QTf8&command=download_mp3", "House"));
+//VertexClientPE.MusicUtils.registerSong(new Song("Dusk [NCS Release]", "Tobu & Syndec", "http://download943.mediafire.com/8m4c14x573eg/6ma4m2u3s3s1cbb/Tobu+%26+Syndec+-+Dusk.mp3", "House"));
 //VertexClientPE.MusicUtils.registerSong(new Song("Eclipse [NCS Release]", "Jim Yosef", "http://files-cdn.nocopyrightsounds.co.uk/Jim%20Yosef%20-%20Eclipse.mp3", "House"));
 //VertexClientPE.MusicUtils.registerSong(new Song("Elevate [NCS Release]", "Arcien", "http://files-cdn.nocopyrightsounds.co.uk/Arcien%20-%20Elevate.mp3", "Drum&Bass"));
 //VertexClientPE.MusicUtils.registerSong(new Song("Entropy", "Distrion & Alex Skrindo", "http://files-cdn.nocopyrightsounds.co.uk/Distrion%20%26%20Alex%20Skrindo%20-%20Entropy.mp3","House"));
 //VertexClientPE.MusicUtils.registerSong(new Song("Fall To Light [NCS Release]", "Laszlo", "http://files-cdn.nocopyrightsounds.co.uk/Laszlo%20-%20Fall%20to%20Light.mp3", "Drum&Bass"));
-VertexClientPE.MusicUtils.registerSong(new Song("Feel Good [NCS Release]", "Syn Cole", "http://download1510.mediafire.com/9x4ghqon4k9g/klxi61x2qgzp67b/Syn+Cole+-+Feel+Good+%28Radio+Edit%29+%5BNCS%5D.mp3", "House"));
+//VertexClientPE.MusicUtils.registerSong(new Song("Feel Good [NCS Release]", "Syn Cole", "http://download1510.mediafire.com/9x4ghqon4k9g/klxi61x2qgzp67b/Syn+Cole+-+Feel+Good+%28Radio+Edit%29+%5BNCS%5D.mp3", "House"));
 //VertexClientPE.MusicUtils.registerSong(new Song("Firefly [NCS Release]", "Jim Yosef", "http://files-cdn.nocopyrightsounds.co.uk/jim-yosef-firefly-ncs-release.mp3", "House"));
 //VertexClientPE.MusicUtils.registerSong(new Song("Fly Away [NCS Release]", "Krys Talk", "http://files-cdn.nocopyrightsounds.co.uk/Krys%20Talk%20-%20Fly%20Away.mp3", "Dubstep"));
-VertexClientPE.MusicUtils.registerSong(new Song("Get Up Again (feat. Axol) [NCS Release]", "Alex Skrindo", "http://download1648.mediafire.com/y86dfd85fjog/rtbbv42vl04sa91/Alex+Skrindo+-+Get+Up+Again+%28Feat.+Axol%29+%5BNCS+Release%5D.mp3", "House"));
+//VertexClientPE.MusicUtils.registerSong(new Song("Get Up Again (feat. Axol) [NCS Release]", "Alex Skrindo", "https://vocaroo.com/media_command.php?media=s0LvkrRl5FdY&command=download_mp3", "House"));
 //VertexClientPE.MusicUtils.registerSong(new Song("Gravity (feat. Liz Kretschmer) [NCS Release]", "Umpire", "http://files-cdn.nocopyrightsounds.co.uk/Umpire%20-%20Gravity%20%28feat.%20Liz%20Kretschmer%29.mp3", "Chillstep"));
-VertexClientPE.MusicUtils.registerSong(new Song("Halcyon [NCS Release]", "JJD", "http://download936.mediafire.com/bsvzwx1f7fbg/7a8m5f4mwhv468j/JJD+-+Halcyon.mp3", "House"));
+//VertexClientPE.MusicUtils.registerSong(new Song("Halcyon [NCS Release]", "JJD", "http://download936.mediafire.com/bsvzwx1f7fbg/7a8m5f4mwhv468j/JJD+-+Halcyon.mp3", "House"));
 //VertexClientPE.MusicUtils.registerSong(new Song("Happy Accidents [NCS Release]", "Inukshuk", "http://files-cdn.nocopyrightsounds.co.uk/Inukshuk%20-%20Happy%20Accidents.mp3", "Electronic"));
-VertexClientPE.MusicUtils.registerSong(new Song("Hello", "OMFG", "http://download1481.mediafire.com/7mat2n6c06hg/gb97ihc1xl83s2b/OMFG+-+Hello.mp3", "Electronic"));
+//VertexClientPE.MusicUtils.registerSong(new Song("Hello", "OMFG", "http://download1481.mediafire.com/7mat2n6c06hg/gb97ihc1xl83s2b/OMFG+-+Hello.mp3", "Electronic"));
 //VertexClientPE.MusicUtils.registerSong(new Song("Hollah! [NCS Release]", "Disfigure", "http://files-cdn.nocopyrightsounds.co.uk/Disfigure%20-%20Hollah%21.mp3", "Chillstep"));
-VertexClientPE.MusicUtils.registerSong(new Song("Invincible [NCS Release]", "DEAF KEV", "http://download1512.mediafire.com/pfj81r6r7log/m2wtpceouotlme2/DEAF+KEV+-+Invincible.mp3", "Trap"));
+//VertexClientPE.MusicUtils.registerSong(new Song("Invincible [NCS Release]", "DEAF KEV", "http://download1512.mediafire.com/pfj81r6r7log/m2wtpceouotlme2/DEAF+KEV+-+Invincible.mp3", "Trap"));
 //VertexClientPE.MusicUtils.registerSong(new Song("Lights [NCS Release]", "Jim Yosef", "http://files-cdn.nocopyrightsounds.co.uk/Jim%20Yosef%20-%20Lights.mp3", "House"));
-VertexClientPE.MusicUtils.registerSong(new Song("Make Me Move (feat. Karra) [NCS Release]", "Culture Code", "http://download1327.mediafire.com/8i3vnga3ifrg/e9esqtbevi25ud3/Culture+Code+-+Make+Me+Move+%28feat.+Karra%29.mp3", "House"));
+//VertexClientPE.MusicUtils.registerSong(new Song("Make Me Move (feat. Karra) [NCS Release]", "Culture Code", "http://download1327.mediafire.com/8i3vnga3ifrg/e9esqtbevi25ud3/Culture+Code+-+Make+Me+Move+%28feat.+Karra%29.mp3", "House"));
 //VertexClientPE.MusicUtils.registerSong(new Song("Moments [NCS Release]", "Alex Skrindo & Stahl!", "http://files-cdn.nocopyrightsounds.co.uk/Alex%20Skrindo%20%26%20Stahl%21%20-%20Moments.mp3", "House"));
 //VertexClientPE.MusicUtils.registerSong(new Song("My Heart [NCS Release]", "Different Heaven & EH!DE", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20%26%20EH%21DE%20-%20My%20Heart.mp3", "Drumstep"));
 //VertexClientPE.MusicUtils.registerSong(new Song("Nekozilla", "Different Heaven", "http://files-cdn.nocopyrightsounds.co.uk/Different%20Heaven%20-%20Nekozilla.mp3", "Electronic"));
-VertexClientPE.MusicUtils.registerSong(new Song("Neopolitan Dreams (Nilow Remix)", "Lisa Mitchell", "http://download1337.mediafire.com/ohxmhmrmkohg/5qbuk6k29uvme7m/Lisa+Mitchell+-+Neopolitan+Dreams+%28Nilow+Rmx%29.mp3", "Dubstep"));
-//VertexClientPE.MusicUtils.registerSong(new Song("Nova [NCS Release]", "Ahrix", "http://files-cdn.nocopyrightsounds.co.uk/Ahrix%20-%20Nova.mp3", "House"));
-VertexClientPE.MusicUtils.registerSong(new Song("Puzzle [NCS Release]", "RetroVision", "http://download941.mediafire.com/raw9diwdrjdg/2puhc3ijy7uyy0p/RetroVision+-+Puzzle.mp3", "House"));
-VertexClientPE.MusicUtils.registerSong(new Song("Roots [NCS Release]", "Tobu", "http://download1498.mediafire.com/ck14cgg3gqzg/gqya3cgqc40iwjx/Tobu+-+Roots.mp3", "House"));
-VertexClientPE.MusicUtils.registerSong(new Song("Savannah (feat. Philly K) [NCS Release]", "Diviners", "http://download1496.mediafire.com/4e8tcja9c9tg/ft25eqaforf51ee/Diviners+-+Savannah+%28ft.+Philly+K%29.mp3", "House"));
+//VertexClientPE.MusicUtils.registerSong(new Song("Neopolitan Dreams (Nilow Remix)", "Lisa Mitchell", "http://download1337.mediafire.com/ohxmhmrmkohg/5qbuk6k29uvme7m/Lisa+Mitchell+-+Neopolitan+Dreams+%28Nilow+Rmx%29.mp3", "Dubstep"));
+//VertexClientPE.MusicUtils.registerSong(new Song("Nova [NCS Release]", "Ahrix", "https://vocaroo.com/media_command.php?media=s10Jr2fGG6aa&command=download_mp3", "House"));
+//VertexClientPE.MusicUtils.registerSong(new Song("Puzzle [NCS Release]", "RetroVision", "http://download941.mediafire.com/raw9diwdrjdg/2puhc3ijy7uyy0p/RetroVision+-+Puzzle.mp3", "House"));
+//VertexClientPE.MusicUtils.registerSong(new Song("Roots [NCS Release]", "Tobu", "http://download1498.mediafire.com/ck14cgg3gqzg/gqya3cgqc40iwjx/Tobu+-+Roots.mp3", "House"));
+//VertexClientPE.MusicUtils.registerSong(new Song("Savannah (feat. Philly K) [NCS Release]", "Diviners", "http://download1496.mediafire.com/4e8tcja9c9tg/ft25eqaforf51ee/Diviners+-+Savannah+%28ft.+Philly+K%29.mp3", "House"));
 //VertexClientPE.MusicUtils.registerSong(new Song("Time Leap [NCS Release]", "Aero Chord", "http://files-cdn.nocopyrightsounds.co.uk/Aero%20Chord%20-%20Time%20Leap.mp3", "Drum&Bass"));
-VertexClientPE.MusicUtils.registerSong(new Song("Tropic Love [NCS Release]", "Diviners feat. Contacreast", "http://download1127.mediafire.com/vpvp9zgbae9g/f6u3p2ekz9207xx/Diviners+ft.+Contacreast+-+Tropic+Love+%28Original+Mix%29.mp3", "House"));
-VertexClientPE.MusicUtils.registerSong(new Song("You [NCS Release]", "Axol x Alex Skrindo", "http://download2134.mediafire.com/r078c7bm2mhg/i43j6xe94684mzz/Axol+x+Alex+Skrindo+-+You.mp3", "House")); */
+//VertexClientPE.MusicUtils.registerSong(new Song("Tropic Love [NCS Release]", "Diviners feat. Contacreast", "http://download1127.mediafire.com/vpvp9zgbae9g/f6u3p2ekz9207xx/Diviners+ft.+Contacreast+-+Tropic+Love+%28Original+Mix%29.mp3", "House"));
+//VertexClientPE.MusicUtils.registerSong(new Song("You [NCS Release]", "Axol x Alex Skrindo", "http://download2134.mediafire.com/r078c7bm2mhg/i43j6xe94684mzz/Axol+x+Alex+Skrindo+-+You.mp3", "House"));
 
 //VertexClientPE.MusicUtils.registerSong(new Song(String name, String artist, String url, String genre));
 
@@ -15523,13 +15524,11 @@ VertexClientPE.setup = function() {
 						}
 
 						/* VertexClientPE.MusicUtils.initMusicPlayer();
-						VertexClientPE.MusicUtils.startMusicPlayer(); */ //temp removed music player, songs unavailable
+						VertexClientPE.MusicUtils.startMusicPlayer(); //temp removed music player, songs unavailable */
 
 						if(showNewsSetting == "on") {
 							VertexClientPE.toast(news);
 						}
-
-						//VertexClientPE.showTipBar();
 					}
 				}));
 			}
@@ -18304,57 +18303,6 @@ function reshowMenuButton() {
 	}
 }
 
-VertexClientPE.showTipBar = function() {
-	CONTEXT.runOnUiThread(new Runnable_({
-		run: function() {
-			try {
-				let tipBarWidth = CONTEXT.getWindowManager().getDefaultDisplay().getWidth() / 3;
-
-				let tipBarLayout = new LinearLayout_(CONTEXT);
-				tipBarLayout.setOrientation(1);
-
-				let subject = mainButtonTapSetting=="menu"?"the Dashboard and the Shop":"the main menu";
-
-				let tipBarTextView = clientTextView("You can access " + subject + " by long tapping the main button.", true, "diff");
-				tipBarTextView.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
-				tipBarTextView.setMarqueeRepeatLimit(-1);
-				tipBarTextView.setSingleLine();
-				tipBarTextView.setHorizontallyScrolling(true);
-				tipBarTextView.setSelected(true);
-
-				tipBarLayout.addView(tipBarTextView);
-
-				tipBar = new PopupWindow_(tipBarLayout, tipBarWidth, LinearLayout_.LayoutParams.WRAP_CONTENT);
-				tipBar.setBackgroundDrawable(backgroundSpecial("bottom"));
-				tipBar.setTouchable(false);
-				tipBar.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.TOP, 0, 0);
-
-				new Thread_({
-					run: function () {
-						Thread_.sleep(10000);
-						CONTEXT.runOnUiThread({
-							run: function () {
-								tipBarLayout.startAnimation(fadeOut(500));
-							}
-						});
-						Thread_.sleep(500);
-						CONTEXT.runOnUiThread({
-							run: function () {
-								if(tipBar != null) {
-									tipBar.dismiss();
-									tipBarLayout = null;
-								}
-							}
-						});
-					}
-				}).start();
-			} catch(error) {
-				print("An error occurred: " + error);
-			}
-		}
-	}));
-}
-
 /**
  * function VertexClientPE.showMenu()
  * @author peacestorm
@@ -19758,7 +19706,7 @@ function showHacksList() {
 					hacksListLayoutLeft.addView(logoViewer2);
 					if(hacksListModeSetting != "logo") {
 						hacksListLayoutRight.addView(statesTextView);
-						//hacksListLayoutRight.addView(musicTextView); music player temp disabled
+						//hacksListLayoutRight.addView(musicTextView);
 					} else {
 						hacksListLayoutRight.addView(versionText);
 						// TODO
