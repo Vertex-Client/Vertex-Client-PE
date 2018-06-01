@@ -220,7 +220,7 @@ let cmdPrefix = ".";
 let commandsSetting = "on";
 let shortcutSizeSetting = 32;
 let aimbotRangeSetting = 4;
-let speedHackFriction = 0.1;
+let speedHackFriction = 0.33;
 let remoteViewTeleportSetting = "off";
 let switchGamemodeSendCommandSetting = "off";
 let betterPauseSetting = "off";
@@ -4602,7 +4602,8 @@ var noDownGlide = {
 	},
 	onTick: function() {
 		Entity.setVelY(getPlayerEnt(), -0.000000000001);
-		Entity.setPosition(getPlayerEnt(), getPlayerX(), this.yCoord, getPlayerZ());
+		//Entity.setPosition(getPlayerEnt(), getPlayerX(), this.yCoord, getPlayerZ());
+		Entity.setPositionRelative(getPlayerEnt(), 0, this.yCoord - getPlayerY(), 0);
 	}
 }
 
@@ -5191,7 +5192,7 @@ var playerLocator = {
 						let player = players[i];
 						let name = "player " + Player.getName(player);
 						if(name != null && player[i] != getPlayerEnt()) {
-							VertexClientPE.clientMessage("Located " + name + " at " + parseInt(Entity.getX(player)) + " " + parseInt(Entity.getY(player)) + " " + parseInt(Entity.getZ(player)));
+							VertexClientPE.clientMessage("Located " + name + ChatColor.WHITE + " at " + parseInt(Entity.getX(player)) + " " + parseInt(Entity.getY(player)) + " " + parseInt(Entity.getZ(player)));
 							Thread_.sleep(1000);
 						} else {
 							continue;
