@@ -19914,14 +19914,19 @@ function showHealthDisplay() {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
-				let healthDisplayLayout = new LinearLayout_(CONTEXT);
-				healthDisplayView = clientTextView(Entity.getHealth(getPlayerEnt()) + "/" + Entity.getMaxHealth(getPlayerEnt()) + " \u2764", true);
-				healthDisplayLayout.addView(healthDisplayView);
+				if(healthDisplayUI != null) {
+					healthDisplayUI.dismiss();
+				}
+				if(healthDisplayUI == null || !healthDisplayUI.isShowing()) {
+					let healthDisplayLayout = new LinearLayout_(CONTEXT);
+					healthDisplayView = clientTextView(Entity.getHealth(getPlayerEnt()) + "/" + Entity.getMaxHealth(getPlayerEnt()) + " \u2764", true);
+					healthDisplayLayout.addView(healthDisplayView);
 
-				healthDisplayUI = new PopupWindow_(healthDisplayLayout, dip2px(40), dip2px(40));
-				healthDisplayUI.setTouchable(false);
-				healthDisplayUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-				healthDisplayUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
+					healthDisplayUI = new PopupWindow_(healthDisplayLayout, dip2px(40), dip2px(40));
+					healthDisplayUI.setTouchable(false);
+					healthDisplayUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+					healthDisplayUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
+				}
 			} catch(exception) {
 				print(exception);
 				VertexClientPE.showBugReportDialog(exception);
@@ -19934,16 +19939,21 @@ function showWatermark() {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
-				let rotationPlusLayout = new LinearLayout_(CONTEXT);
-				rotationPlusLayout.setOrientation(1);
+				if(watermarkUI != null) {
+					watermarkUI.dismiss();
+				}
+				if(watermarkUI == null || !watermarkUI.isShowing()) {
+					let rotationPlusLayout = new LinearLayout_(CONTEXT);
+					rotationPlusLayout.setOrientation(1);
 
-				let watermarkTextView = clientTextView(new Html_.fromHtml(watermarkTextSetting), true, "diff");
-				rotationPlusLayout.addView(watermarkTextView);
+					let watermarkTextView = clientTextView(new Html_.fromHtml(watermarkTextSetting), true, "diff");
+					rotationPlusLayout.addView(watermarkTextView);
 
-				watermarkUI = new PopupWindow_(rotationPlusLayout, -2, -2);
-				watermarkUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-				watermarkUI.setTouchable(false);
-				watermarkUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.BOTTOM, 0, dip2px(50));
+					watermarkUI = new PopupWindow_(rotationPlusLayout, -2, -2);
+					watermarkUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+					watermarkUI.setTouchable(false);
+					watermarkUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.BOTTOM, 0, dip2px(50));
+				}
 			} catch(exception) {
 				print(exception);
 				VertexClientPE.showBugReportDialog(exception);
@@ -19961,93 +19971,98 @@ function showRotationPlus() {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			try {
-				let rotationPlusLayout = new LinearLayout_(CONTEXT);
-				rotationPlusLayout.setOrientation(1);
-				let rotationPlusLayoutTop = new LinearLayout_(CONTEXT);
-				rotationPlusLayoutTop.setOrientation(LinearLayout_.HORIZONTAL);
-				rotationPlusLayoutTop.setGravity(Gravity_.CENTER);
-				let rotationPlusLayoutMiddle = new LinearLayout_(CONTEXT);
-				rotationPlusLayoutMiddle.setOrientation(LinearLayout_.HORIZONTAL);
-				let rotationPlusLayoutBottom = new LinearLayout_(CONTEXT);
-				rotationPlusLayoutBottom.setOrientation(LinearLayout_.HORIZONTAL);
-				rotationPlusLayoutBottom.setGravity(Gravity_.CENTER);
+				if(rotationPlusUI != null) {
+					rotationPlusUI.dismiss();
+				}
+				if(rotationPlusUI == null || !rotationPlusUI.isShowing()) {
+					let rotationPlusLayout = new LinearLayout_(CONTEXT);
+					rotationPlusLayout.setOrientation(1);
+					let rotationPlusLayoutTop = new LinearLayout_(CONTEXT);
+					rotationPlusLayoutTop.setOrientation(LinearLayout_.HORIZONTAL);
+					rotationPlusLayoutTop.setGravity(Gravity_.CENTER);
+					let rotationPlusLayoutMiddle = new LinearLayout_(CONTEXT);
+					rotationPlusLayoutMiddle.setOrientation(LinearLayout_.HORIZONTAL);
+					let rotationPlusLayoutBottom = new LinearLayout_(CONTEXT);
+					rotationPlusLayoutBottom.setOrientation(LinearLayout_.HORIZONTAL);
+					rotationPlusLayoutBottom.setGravity(Gravity_.CENTER);
 
-				rotationPlusLayout.addView(rotationPlusLayoutTop);
-				rotationPlusLayout.addView(rotationPlusLayoutMiddle);
-				rotationPlusLayout.addView(rotationPlusLayoutBottom);
+					rotationPlusLayout.addView(rotationPlusLayoutTop);
+					rotationPlusLayout.addView(rotationPlusLayoutMiddle);
+					rotationPlusLayout.addView(rotationPlusLayoutBottom);
 
-				let rotationPlusTopCenterView = clientButton("\u21E7");
-				rotationPlusTopCenterView.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(40), dip2px(40)));
-				rotationPlusTopCenterView.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewArg) {
-						let newPitch = getPitch() - 45;
-						Entity.setRot(getPlayerEnt(), getYaw(), newPitch);
-					}
-				}));
-
-				let rotationPlusMiddleLeftView = clientButton("\u21E6");
-				rotationPlusMiddleLeftView.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(40), dip2px(40)));
-				rotationPlusMiddleLeftView.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewArg) {
-						Entity.setRot(getPlayerEnt(), getYaw() - 90, getPitch());
-					}
-				}));
-
-				let rotationPlusMiddleCenterView = clientTextView("MOVE");
-				rotationPlusMiddleCenterView.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(40), dip2px(40)));
-				rotationPlusMiddleCenterView.setOnLongClickListener(new View_.OnLongClickListener() {
-					onLongClick(v, t) {
-						rotationdown = true;
-						VertexClientPE.toast("Now you can move the menu!");
-						return true;
-					}
-				});
-				rotationPlusMiddleCenterView.setOnTouchListener(new View_.OnTouchListener({
-					onTouch(v, e) {
-						if (rotationdown) {
-							let a = e.getAction();
-							if (a == 2) {
-								let X = parseInt(e.getX() - rotationmX) * -1 / 10;
-								let Y = parseInt(e.getY() - rotationmY) * -1 / 10;
-								rotationtpopx = rotationtpopx + X;
-								rotationtpopy = rotationtpopy + Y;
-								rotationPlusUI.update(parseInt(rotationtpopx), parseInt(rotationtpopy), -1, -1);
-							}
-							if (a == 1) rotationdown = false;
-						} else {
-							rotationmX = e.getX();
-							rotationmY = e.getY();
+					let rotationPlusTopCenterView = clientButton("\u21E7");
+					rotationPlusTopCenterView.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(40), dip2px(40)));
+					rotationPlusTopCenterView.setOnClickListener(new View_.OnClickListener({
+						onClick: function(viewArg) {
+							let newPitch = getPitch() - 45;
+							Entity.setRot(getPlayerEnt(), getYaw(), newPitch);
 						}
-						return false;
-					}
-				}));
+					}));
 
-				let rotationPlusMiddleRightView = clientButton("\u21E8");
-				rotationPlusMiddleRightView.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(40), dip2px(40)));
-				rotationPlusMiddleRightView.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewArg) {
-						Entity.setRot(getPlayerEnt(), getYaw() + 90, getPitch());
-					}
-				}));
+					let rotationPlusMiddleLeftView = clientButton("\u21E6");
+					rotationPlusMiddleLeftView.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(40), dip2px(40)));
+					rotationPlusMiddleLeftView.setOnClickListener(new View_.OnClickListener({
+						onClick: function(viewArg) {
+							Entity.setRot(getPlayerEnt(), getYaw() - 90, getPitch());
+						}
+					}));
 
-				let rotationPlusBottomCenterView = clientButton("\u21E9");
-				rotationPlusBottomCenterView.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(40), dip2px(40)));
-				rotationPlusBottomCenterView.setOnClickListener(new View_.OnClickListener({
-					onClick: function(viewArg) {
-						let newPitch = getPitch() + 45;
-						Entity.setRot(getPlayerEnt(), getYaw(), newPitch);
-					}
-				}));
+					let rotationPlusMiddleCenterView = clientTextView("MOVE");
+					rotationPlusMiddleCenterView.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(40), dip2px(40)));
+					rotationPlusMiddleCenterView.setOnLongClickListener(new View_.OnLongClickListener() {
+						onLongClick(v, t) {
+							rotationdown = true;
+							VertexClientPE.toast("Now you can move the menu!");
+							return true;
+						}
+					});
+					rotationPlusMiddleCenterView.setOnTouchListener(new View_.OnTouchListener({
+						onTouch(v, e) {
+							if (rotationdown) {
+								let a = e.getAction();
+								if (a == 2) {
+									let X = parseInt(e.getX() - rotationmX) * -1 / 10;
+									let Y = parseInt(e.getY() - rotationmY) * -1 / 10;
+									rotationtpopx = rotationtpopx + X;
+									rotationtpopy = rotationtpopy + Y;
+									rotationPlusUI.update(parseInt(rotationtpopx), parseInt(rotationtpopy), -1, -1);
+								}
+								if (a == 1) rotationdown = false;
+							} else {
+								rotationmX = e.getX();
+								rotationmY = e.getY();
+							}
+							return false;
+						}
+					}));
 
-				rotationPlusLayoutTop.addView(rotationPlusTopCenterView);
-				rotationPlusLayoutMiddle.addView(rotationPlusMiddleLeftView);
-				rotationPlusLayoutMiddle.addView(rotationPlusMiddleCenterView);
-				rotationPlusLayoutMiddle.addView(rotationPlusMiddleRightView);
-				rotationPlusLayoutBottom.addView(rotationPlusBottomCenterView);
+					let rotationPlusMiddleRightView = clientButton("\u21E8");
+					rotationPlusMiddleRightView.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(40), dip2px(40)));
+					rotationPlusMiddleRightView.setOnClickListener(new View_.OnClickListener({
+						onClick: function(viewArg) {
+							Entity.setRot(getPlayerEnt(), getYaw() + 90, getPitch());
+						}
+					}));
 
-				rotationPlusUI = new PopupWindow_(rotationPlusLayout, dip2px(120), dip2px(120));
-				rotationPlusUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
-				rotationPlusUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.BOTTOM, rotationtpopx, rotationtpopy);
+					let rotationPlusBottomCenterView = clientButton("\u21E9");
+					rotationPlusBottomCenterView.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(40), dip2px(40)));
+					rotationPlusBottomCenterView.setOnClickListener(new View_.OnClickListener({
+						onClick: function(viewArg) {
+							let newPitch = getPitch() + 45;
+							Entity.setRot(getPlayerEnt(), getYaw(), newPitch);
+						}
+					}));
+
+					rotationPlusLayoutTop.addView(rotationPlusTopCenterView);
+					rotationPlusLayoutMiddle.addView(rotationPlusMiddleLeftView);
+					rotationPlusLayoutMiddle.addView(rotationPlusMiddleCenterView);
+					rotationPlusLayoutMiddle.addView(rotationPlusMiddleRightView);
+					rotationPlusLayoutBottom.addView(rotationPlusBottomCenterView);
+
+					rotationPlusUI = new PopupWindow_(rotationPlusLayout, dip2px(120), dip2px(120));
+					rotationPlusUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+					rotationPlusUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.BOTTOM, rotationtpopx, rotationtpopy);
+				}
 			} catch(exception) {
 				print(exception);
 				VertexClientPE.showBugReportDialog(exception);
