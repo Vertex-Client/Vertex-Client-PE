@@ -2544,25 +2544,14 @@ var switchGamemode = {
 		return false;
 	},
 	onToggle: function() {
-		if(Level.getGameMode() == 0) {
-			Level.setGameMode(1);
-			if(switchGamemodeSendCommandSetting == "on") {
-				let cmd = "/gamemode 1";
-				if(Level.executeCommand != undefined) {
-					Level.executeCommand(cmd);
-				} else {
-					Server.sendChat(cmd);
-				}
-			}
-		} else if(Level.getGameMode() == 1) {
-			Level.setGameMode(0);
-			if(switchGamemodeSendCommandSetting == "on") {
-				let cmd = "/gamemode 0";
-				if(Level.executeCommand != undefined) {
-					Level.executeCommand(cmd);
-				} else {
-					Server.sendChat(cmd);
-				}
+		let newGameMode = Level.getGameMode()==0?1:0;
+		Level.setGameMode(newGameMode);
+		if(switchGamemodeSendCommandSetting == "on") {
+			let cmd = "/gamemode " + newGameMode.toString();
+			if(Level.executeCommand != undefined) {
+				Level.executeCommand(cmd);
+			} else {
+				Server.sendChat(cmd);
 			}
 		}
 	}
@@ -2726,7 +2715,7 @@ var homeCommand = {
 
 var timer = {
 	name: "Timer",
-	desc: i18n("Makes the speed of the game faster."),
+	desc: i18n("Changes the speed of the game."),
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
