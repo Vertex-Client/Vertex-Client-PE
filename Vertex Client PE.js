@@ -1332,7 +1332,7 @@ VertexClientPE.playerIsInGame = false;
 
 VertexClientPE.currentVersion = "3.1";
 VertexClientPE.currentVersionDesc = "The ? Update";
-VertexClientPE.targetVersion = "MCPE v1.0.x";
+VertexClientPE.targetVersion = "MCPE v1.4.x";
 VertexClientPE.minVersion = "1.0.0";
 VertexClientPE.edition = "Normal";
 VertexClientPE.latestVersion;
@@ -10450,9 +10450,8 @@ VertexClientPE.showButtonStrokeThicknessDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				let buttonStrokeThicknessDialogTitle = clientTextView("Change button stroke thickness", true);
 				let btn = clientButton("Close");
-				let buttonStrokeThicknessSettingDialogTitle = clientTextView("Button stroke thickness: | " + buttonStrokeThicknessSetting + " pixel(s)");
+				let buttonStrokeThicknessSettingTitle = clientTextView("Button stroke thickness: | " + buttonStrokeThicknessSetting + " pixel(s)");
 				let buttonStrokeThicknessSettingDialogSlider = clientSeekBar();
 				let minButtonStrokeThickness = 1;
 				let maxButtonStrokeThickness = 10;
@@ -10461,16 +10460,14 @@ VertexClientPE.showButtonStrokeThicknessDialog = function() {
 				buttonStrokeThicknessSettingDialogSlider.setOnSeekBarChangeListener(new SeekBar_.OnSeekBarChangeListener() {
 					onProgressChanged: function() {
 						buttonStrokeThicknessSetting = buttonStrokeThicknessSettingDialogSlider.getProgress() + minButtonStrokeThickness;
-						buttonStrokeThicknessSettingDialogTitle.setText("Button stroke thickness: | " + buttonStrokeThicknessSetting + " pixel(s)");
+						buttonStrokeThicknessSettingTitle.setText("Button stroke thickness: | " + buttonStrokeThicknessSetting + " pixel(s)");
 					}
 				});
 				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
 				dialogLayout.setPadding(10, 10, 10, 10);
-				dialogLayout.addView(buttonStrokeThicknessDialogTitle);
-				dialogLayout.addView(clientTextView("\n"));
-				dialogLayout.addView(buttonStrokeThicknessSettingDialogTitle);
+				dialogLayout.addView(buttonStrokeThicknessSettingTitle);
 				dialogLayout.addView(buttonStrokeThicknessSettingDialogSlider);
 				dialogLayout.addView(btn);
 				let dialog = new Dialog_(CONTEXT);
@@ -10502,7 +10499,6 @@ VertexClientPE.showDashboardTileSizeDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				let dashboardTileSizeDialogTitle = clientTextView("Change Dashboard tile size", true);
 				let btn = clientButton("Close");
 				let dashboardTileSizeSettingTitle = clientTextView("Dashboard tile size: | Screen width / " + dashboardTileSize);
 				let dashboardTileSizeSettingSlider = clientSeekBar();
@@ -10519,8 +10515,6 @@ VertexClientPE.showDashboardTileSizeDialog = function() {
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
 				dialogLayout.setPadding(10, 10, 10, 10);
-				dialogLayout.addView(dashboardTileSizeDialogTitle);
-				dialogLayout.addView(clientTextView("\n"));
 				dialogLayout.addView(dashboardTileSizeSettingTitle);
 				dialogLayout.addView(dashboardTileSizeSettingSlider);
 				dialogLayout.addView(btn);
@@ -10552,14 +10546,14 @@ VertexClientPE.showWebbrowserStartPageDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				let webBrowserStartPageDialogTitle = clientTextView("Change Webbrowser startpage", true);
+				let webBrowserStartPageSettingTitle = clientTextView("Webbrowser startpage:");
 				let btn = clientButton("Close");
 				let inputBar = clientEditText();
 				let dialogLayout = new LinearLayout_(CONTEXT);
 				dialogLayout.setBackgroundDrawable(backgroundGradient());
 				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
 				dialogLayout.setPadding(10, 10, 10, 10);
-				dialogLayout.addView(webBrowserStartPageDialogTitle);
+				dialogLayout.addView(webBrowserStartPageSettingTitle);
 				dialogLayout.addView(inputBar);
 				dialogLayout.addView(btn);
 				let dialog = new Dialog_(CONTEXT);
@@ -15099,7 +15093,7 @@ VertexClientPE.showSetupScreen = function() {
 				doneButton.setBackgroundDrawable(drawQuarterCircle(Color_.parseColor("#80ffffff"), dip2px(60)));
 				doneButton.setGravity(Gravity_.RIGHT | Gravity_.TOP);
 				doneButton.setPadding(0, dip2px(8), dip2px(8), 0);
-				doneButton.setText("\u2794");//Text
+				doneButton.setText("\u2794");
 				doneButton.setTextSize(20);
 				doneButton.setTextColor(Color_.WHITE);
 				doneButton.setOnClickListener(new View_.OnClickListener({
