@@ -1696,34 +1696,39 @@ VertexClientPE.Render.renderer = new Renderer({
 	},
 	onDrawFrame: function(gl) {
 
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		if(storageESPState) {
+			gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
-		gl.glLoadIdentity();
+			gl.glLoadIdentity();
 
-		gl.glDisable(GL10.GL_LIGHTING);
+			gl.glDisable(GL10.GL_LIGHTING);
 
-		let yaw = getYaw() % 360;
-		let pitch = getPitch() % 360;
+			let yaw = getYaw() % 360;
+			let pitch = getPitch() % 360;
 
-		let eyeX = getPlayerX(0);
-		let eyeY = getPlayerY(1) + 1;
-		let eyeZ = getPlayerZ(2);
+			let eyeX = getPlayerX(0);
+			let eyeY = getPlayerY(1) + 1;
+			let eyeZ = getPlayerZ(2);
 
-		let dCenterX = Math.sin(yaw / 180 * Math.PI);
-		let dCenterZ = Math.cos(yaw / 180 * Math.PI);
-		let dCenterY = Math.sqrt(dCenterX * dCenterX + dCenterZ * dCenterZ) * Math.tan((pitch - 180) / 180 * Math.PI);
+			let dCenterX = Math.sin(yaw / 180 * Math.PI);
+			let dCenterZ = Math.cos(yaw / 180 * Math.PI);
+			let dCenterY = Math.sqrt(dCenterX * dCenterX + dCenterZ * dCenterZ) * Math.tan((pitch - 180) / 180 * Math.PI);
 
-		let centerX = eyeX - dCenterX;
-		let centerZ = eyeZ + dCenterZ;
-		let centerY = eyeY - dCenterY;
+			let centerX = eyeX - dCenterX;
+			let centerZ = eyeZ + dCenterZ;
+			let centerY = eyeY - dCenterY;
 
-		GLU.gluLookAt(gl, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, 0, 1, 0);
+			GLU.gluLookAt(gl, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, 0, 1, 0);
 
-		VertexClientPE.modules.forEach(function(element, index, array) {
-			if(element.state && element.hasOwnProperty("onRender")) {
-				element.onRender(gl);
-			}
-		});
+			/* VertexClientPE.modules.forEach(function(element, index, array) {
+				if(element.state && element.hasOwnProperty("onRender")) {
+					element.onRender(gl);
+				}
+			}); */
+			
+			storageESP.onRender(gl);
+		}
+		
 	},
 });
 
@@ -6536,7 +6541,9 @@ var toggle = {
 								VertexClientPE.toast(i18n("This mod is blocked by %0!", [VertexClientPE.getCustomModName("Bypass")]));
 							}
 						}
-						VertexClientPE.setSavedModState(element.name, element.state);
+						if(element.isStateMod()) {
+							VertexClientPE.setSavedModState(element.name, element.state);
+						}
 						if(hacksList != null && hacksList.isShowing()) {
 							updateHacksList();
 						}
@@ -9633,9 +9640,8 @@ VertexClientPE.showEnchantItDialog = function() {
 	});
 }
 
-const nausea = 9
 const levitation = 25;
-const effectGiverArray = [["Absorption", MobEffect.absorption], ["Blindness", MobEffect.blindness], ["Confusion", MobEffect.confusion], ["Strength", MobEffect.damageBoost], ["Resistance", MobEffect.damageResistance], ["Mining Fatigue", MobEffect.digSlowdown], ["Haste", MobEffect.digSpeed], ["Fire Resistance", MobEffect.fireResistance], ["Instant Damage (Harm)", MobEffect.harm], ["Instant Health (Heal)", MobEffect.heal], ["Health Boost", MobEffect.healthBoost], ["Hunger", MobEffect.hunger], ["Invisibility", MobEffect.invisibility], ["Jump Boost", MobEffect.jump], /*["Levitation", levitation], */["Slowness", MobEffect.movementSlowdown], ["Speed", MobEffect.movementSpeed], /*["Nausea", nausea],*/ ["Night Vision", MobEffect.nightVision], ["Poison", MobEffect.poison], ["Regeneration", MobEffect.regeneration], ["Saturation", MobEffect.saturation], ["Water Breathing", MobEffect.waterBreathing], ["Weakness", MobEffect.weakness], ["Wither", MobEffect.wither]]; //todo: nausea, levitation
+const effectGiverArray = [["Absorption", MobEffect.absorption], ["Blindness", MobEffect.blindness], ["Nausea", MobEffect.confusion], ["Strength", MobEffect.damageBoost], ["Resistance", MobEffect.damageResistance], ["Mining Fatigue", MobEffect.digSlowdown], ["Haste", MobEffect.digSpeed], ["Fire Resistance", MobEffect.fireResistance], ["Instant Damage (Harm)", MobEffect.harm], ["Instant Health (Heal)", MobEffect.heal], ["Health Boost", MobEffect.healthBoost], ["Hunger", MobEffect.hunger], ["Invisibility", MobEffect.invisibility], ["Jump Boost", MobEffect.jump], /*["Levitation", levitation], */["Slowness", MobEffect.movementSlowdown], ["Speed", MobEffect.movementSpeed], ["Night Vision", MobEffect.nightVision], ["Poison", MobEffect.poison], ["Regeneration", MobEffect.regeneration], ["Saturation", MobEffect.saturation], ["Water Breathing", MobEffect.waterBreathing], ["Weakness", MobEffect.weakness], ["Wither", MobEffect.wither]]; //todo: levitation
 
 let selectedEffect = ["None", null];
 VertexClientPE.showEffectGiverDialog = function() {
