@@ -7355,7 +7355,9 @@ VertexClientPE.resetMenuPos = function() {
 }
 
 VertexClientPE.tempDisable = function() {
-	VertexClientPE.MusicUtils.mp.reset();
+	if(VertexClientPE.MusicUtils.mp != null) {
+		VertexClientPE.MusicUtils.mp.reset();
+	}
 	ModPE.langEdit("menu.copyright", "\u00A9Mojang AB");
 	leaveGame();
 	screenChangeHook("Yo Mama");
@@ -7378,10 +7380,6 @@ VertexClientPE.tempDisable = function() {
 	VertexClientPE.inGameTick = function() {};
 	VertexClientPE.specialTick = function() {};
 	VertexClientPE.secondTick = function() {};
-	if(tipBar != null && tipBar.isShowing()) {
-		tipBar.dismiss();
-		tipBar = null;
-	}
 	if(GUI != null && GUI.isShowing()) {
 		GUI.dismiss();
 		GUI = null;
