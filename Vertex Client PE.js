@@ -17123,7 +17123,7 @@ function informationScreen(fromDashboard) {
 				informationMenuLayout.setOrientation(1);
 				informationMenuLayout.setGravity(Gravity_.CENTER_HORIZONTAL);
 
-				informationMenuLayout1.addView(clientTextView(""));
+				informationMenuLayout.addView(clientTextView(""));
 				informationMenuScrollView.addView(informationMenuLayout);
 				informationMenuLayout1.addView(informationMenuScrollView);
 
