@@ -5139,7 +5139,7 @@ var dropLocator = {
 		let items = Entity.getAll();
 		new Thread_(new Runnable_({
 			run: function() {
-				if(items != null && items != undefined && items.length != -1) {
+				if(items != null && items != undefined && !(items.length <= 0)) {
 					for(let i = 0; i < items.length; i++) {
 						let type = Entity.getEntityTypeId(items[i]);
 						let name;
@@ -5176,7 +5176,7 @@ var playerLocator = {
 	},
 	onToggle: function() {
 		let players = Server.getAllPlayers();
-		if(players != null && players != undefined && players.length != -1 && !(players.length == 1 && players[0] == getPlayerEnt())) {
+		if(players != null && players != undefined && !(players.length <= 0) && !(players.length == 1 && players[0] == getPlayerEnt())) {
 			new Thread_(new Runnable_({
 				run: function() {
 					for(let i = 0; i < players.length; i++) {
@@ -9829,7 +9829,7 @@ VertexClientPE.showTeleportDialog = function() {
 						let teleportZ = teleportZInput.getText();
 						if(teleportX == VertexClientPE.currentWorld.deathX && teleportY == VertexClientPE.currentWorld.deathY && teleportZ == VertexClientPE.currentWorld.deathZ) {
 							teleportName = "Last death";
-						} else if(VertexClientPE.currentWorld.waypoints.length != -1) {
+						} else if(VertexClientPE.currentWorld.waypoints.length != 0) {
 							VertexClientPE.currentWorld.waypoints.forEach(function(element, index, array) {
 								if(teleportX == element.x && teleportY == element.y && teleportZ == element.z) {
 									teleportName = element.name;
@@ -9849,7 +9849,7 @@ VertexClientPE.showTeleportDialog = function() {
 						let teleportZ = teleportZInput.getText();
 						if(teleportX == VertexClientPE.currentWorld.deathX && teleportY == VertexClientPE.currentWorld.deathY && teleportZ == VertexClientPE.currentWorld.deathZ) {
 							teleportName = "Last death";
-						} else if(VertexClientPE.currentWorld.waypoints.length != -1) {
+						} else if(VertexClientPE.currentWorld.waypoints.length != 0) {
 							VertexClientPE.currentWorld.waypoints.forEach(function(element, index, array) {
 								if(teleportX == element.x && teleportY == element.y && teleportZ == element.z) {
 									teleportName = element.name;
@@ -9869,7 +9869,7 @@ VertexClientPE.showTeleportDialog = function() {
 						let teleportZ = teleportZInput.getText();
 						if(teleportX == VertexClientPE.currentWorld.deathX && teleportY == VertexClientPE.currentWorld.deathY && teleportZ == VertexClientPE.currentWorld.deathZ) {
 							teleportName = "Last death";
-						} else if(VertexClientPE.currentWorld.waypoints.length != -1) {
+						} else if(VertexClientPE.currentWorld.waypoints.length != 0) {
 							VertexClientPE.currentWorld.waypoints.forEach(function(element, index, array) {
 								if(teleportX == element.x && teleportY == element.y && teleportZ == element.z) {
 									teleportName = element.name;
@@ -9938,7 +9938,7 @@ VertexClientPE.showTeleportDialog = function() {
 					waypointsIndex = 1;
 				}
 
-				if(VertexClientPE.currentWorld.waypoints.length != -1) {
+				if(VertexClientPE.currentWorld.waypoints.length != 0) {
 					VertexClientPE.currentWorld.waypoints.forEach(function(element, index, array) {
 						let tempButton = clientButton(element.name);
 						tempButton.setSingleLine(true);
@@ -9951,6 +9951,12 @@ VertexClientPE.showTeleportDialog = function() {
 								teleportZInput.setText(element.z);
 							}
 						});
+						tempButton.setOnLongClickListener(new View_.OnLongClickListener({
+							onLongClick(v) {
+								VertexClientPE.showRemoveWaypointDialog(element);
+								return true;
+							}
+						}));
 						if(waypointsIndex % 2 == 1) {
 							if(!dialogTableRow) {
 								dialogTableRow = new TableRow_(CONTEXT);
@@ -10079,6 +10085,16 @@ VertexClientPE.showAddWaypointDialog = function(x, y, z) {
 	dialog.setContentView(dialogLayout);
 	dialog.setTitle("Add waypoint");
 	dialog.show();
+}
+
+VertexClientPE.showRemoveWaypointDialog = function(waypoint) {
+	VertexClientPE.showConfirmDialog("Remove waypoint", "Are you sure you want to remove this waypoint (\"" + waypoint.name + "\")?", null,
+		function() {
+			VertexClientPE.removeWaypoint(waypoint);
+			teleportDialog.dismiss();
+			VertexClientPE.showTeleportDialog();
+		}
+	);
 }
 
 let accountNameInput;
@@ -11711,7 +11727,7 @@ VertexClientPE.loadWaypoints = function() {
 	let fileDir = new File_(waypointsPath);
 	let fileList = fileDir.listFiles();
 
-	if(fileList.length != -1) {
+	if(fileList.length != 0) {
 		let newWaypoints = [];
 		fileList.forEach(function(element, index, array) {
 			let currentFileName = element.getName();
@@ -11734,8 +11750,7 @@ VertexClientPE.loadWaypoints = function() {
 VertexClientPE.saveWaypoints = function() {
 	let waypointsPath = worldsPath + Level.getWorldDir() + "/waypoints/";
 
-	File_(waypointsPath).mkdirs();
-	if(VertexClientPE.currentWorld.waypoints.length != -1) {
+	if(VertexClientPE.currentWorld.waypoints.length != 0) {
 		VertexClientPE.currentWorld.waypoints.forEach(function(element, index, array) {
 			let newFile = new File_(waypointsPath + element.name.toString() + ".dat");
 			newFile.createNewFile();
@@ -15387,9 +15402,18 @@ VertexClientPE.removeFriend = function(str, layout, view) {
 	VertexClientPE.saveFriends();
 }
 
-VertexClientPE.removeWaypoint = function(name) {
-	VertexClientPE.toast("Removing waypoints is not supported yet");
-	return;
+VertexClientPE.removeWaypoint = function(waypoint) {
+	let waypointsPath = worldsPath + Level.getWorldDir() + "/waypoints/";
+	let tempWaypoints = [];
+
+	VertexClientPE.currentWorld.waypoints.forEach(function(element, index, array) {
+		if(element.name != waypoint.name) {
+			tempWaypoints.push(element);
+		}
+	});
+	VertexClientPE.currentWorld.waypoints = tempWaypoints;
+
+	new File_(waypointsPath + waypoint.name + ".dat").delete();
 }
 
 VertexClientPE.showDirectUseAccountDialog = function() {
@@ -17445,6 +17469,7 @@ function getFavoriteTutorialView() {
 let helpSections = [
 	["Where do I report issues?", "You can report issues at http://bit.ly/VertexIssues.", null],
 	["How can I add shortcuts?", "Tap the star button in a mod's ... dialog or long click on a tile and then tap on the favorite button to make it favorite. The mod or tile will then have its own shortcut.", getFavoriteTutorialView],
+	["How can I remove waypoints from Teleport?", "To remove a waypoint, simply tap and hold a waypoint in the Teleport dialog. You'll then be asked for confirmation, tap 'Yes' and the waypoint will be removed."],
 	["Where are the settings saved?", "The settings are mostly saved in the '/games/com.mojang/minecraftpe' folder. Some settings (custom mod names, if a mod is favorite, tile customizations etc.) are saved in the launcher data, though.", null],
 	["Website", "Our website is http://Vertex-Client.ml/.", null],
 	["Twitter", "Our Twitter account is @VertexHX.", null]
