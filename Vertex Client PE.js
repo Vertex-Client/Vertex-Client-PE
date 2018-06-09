@@ -5628,7 +5628,7 @@ var serverInfo = {
 					VertexClientPE.toast(i18n("Loading..."));
 					let server = myServerStatus.set(Server.getAddress(), parseInt(Server.getPort()));
 					Thread_.sleep(3000);
-					let serverString = "Name: " + server.names;
+					let serverString = "Name: " + server.names["html"];
 					serverString += "\nAddress: " + server.address;
 					serverString += "\nSoftware: " + server.software;
 					serverString += "\nPlugins: " + server.plugins;
