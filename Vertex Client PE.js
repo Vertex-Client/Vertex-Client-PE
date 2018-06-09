@@ -9824,9 +9824,9 @@ VertexClientPE.showTeleportDialog = function() {
 				teleportXInput.addTextChangedListener(new TextWatcher_() {
 					onTextChanged: function() {
 						let teleportName = "Unknown";
-						let teleportX = teleportXInput.getText();
-						let teleportY = teleportYInput.getText();
-						let teleportZ = teleportZInput.getText();
+						let teleportX = parseFloat(teleportXInput.getText());
+						let teleportY = parseFloat(teleportYInput.getText());
+						let teleportZ = parseFloat(teleportZInput.getText());
 						if(teleportX == VertexClientPE.currentWorld.deathX && teleportY == VertexClientPE.currentWorld.deathY && teleportZ == VertexClientPE.currentWorld.deathZ) {
 							teleportName = "Last death";
 						} else if(VertexClientPE.currentWorld.waypoints.length != 0) {
@@ -9844,9 +9844,9 @@ VertexClientPE.showTeleportDialog = function() {
 				teleportYInput.addTextChangedListener(new TextWatcher_() {
 					onTextChanged: function() {
 						let teleportName = "Unknown";
-						let teleportX = teleportXInput.getText();
-						let teleportY = teleportYInput.getText();
-						let teleportZ = teleportZInput.getText();
+						let teleportX = parseFloat(teleportXInput.getText());
+						let teleportY = parseFloat(teleportYInput.getText());
+						let teleportZ = parseFloat(teleportZInput.getText());
 						if(teleportX == VertexClientPE.currentWorld.deathX && teleportY == VertexClientPE.currentWorld.deathY && teleportZ == VertexClientPE.currentWorld.deathZ) {
 							teleportName = "Last death";
 						} else if(VertexClientPE.currentWorld.waypoints.length != 0) {
@@ -9864,9 +9864,9 @@ VertexClientPE.showTeleportDialog = function() {
 				teleportZInput.addTextChangedListener(new TextWatcher_() {
 					onTextChanged: function() {
 						let teleportName = "Unknown";
-						let teleportX = teleportXInput.getText();
-						let teleportY = teleportYInput.getText();
-						let teleportZ = teleportZInput.getText();
+						let teleportX = parseFloat(teleportXInput.getText());
+						let teleportY = parseFloat(teleportYInput.getText());
+						let teleportZ = parseFloat(teleportZInput.getText());
 						if(teleportX == VertexClientPE.currentWorld.deathX && teleportY == VertexClientPE.currentWorld.deathY && teleportZ == VertexClientPE.currentWorld.deathZ) {
 							teleportName = "Last death";
 						} else if(VertexClientPE.currentWorld.waypoints.length != 0) {
@@ -9884,9 +9884,9 @@ VertexClientPE.showTeleportDialog = function() {
 				let teleportButton = clientButton("Teleport");
 				teleportButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(viewArg) {
-						let tpX = teleportXInput.getText();
-						let tpY = teleportYInput.getText();
-						let tpZ = teleportZInput.getText();
+						let tpX = parseFloat(teleportXInput.getText());
+						let tpY = parseFloat(teleportYInput.getText());
+						let tpZ = parseFloat(teleportZInput.getText());
 						if(tpX != null && tpY != null && tpZ != null && tpX != "" && tpY != "" && tpZ != "" && !isNaN(tpX) && !isNaN(tpY) && !isNaN(tpZ)) {
 							Entity.setPosition(getPlayerEnt(), tpX,  tpY,  tpZ);
 							VertexClientPE.toast("Successfully teleported player to " + tpX + ", " + tpY + ", " + tpZ);
@@ -9899,9 +9899,9 @@ VertexClientPE.showTeleportDialog = function() {
 				let addWaypointButton = clientButton("Add waypoint");
 				addWaypointButton.setOnClickListener(new View_.OnClickListener() {
 					onClick: function(viewArg) {
-						let tpX = teleportXInput.getText();
-						let tpY = teleportYInput.getText();
-						let tpZ = teleportZInput.getText();
+						let tpX = parseFloat(teleportXInput.getText());
+						let tpY = parseFloat(teleportYInput.getText());
+						let tpZ = parseFloat(teleportZInput.getText());
 						let showError = false;
 						VertexClientPE.currentWorld.waypoints.forEach(function(element, index, array) {
 							if(tpX == element.x && tpY == element.y && tpZ == element.z) {
@@ -9946,9 +9946,9 @@ VertexClientPE.showTeleportDialog = function() {
 						tempButton.setPadding(0, 0, 0, 0);
 						tempButton.setOnClickListener(new View_.OnClickListener() {
 							onClick: function(viewArg) {
-								teleportXInput.setText(element.x);
-								teleportYInput.setText(element.y);
-								teleportZInput.setText(element.z);
+								teleportXInput.setText(element.x.toString());
+								teleportYInput.setText(element.y.toString());
+								teleportZInput.setText(element.z.toString());
 							}
 						});
 						tempButton.setOnLongClickListener(new View_.OnLongClickListener({
@@ -9957,6 +9957,7 @@ VertexClientPE.showTeleportDialog = function() {
 								return true;
 							}
 						}));
+						
 						if(waypointsIndex % 2 == 1) {
 							if(!dialogTableRow) {
 								dialogTableRow = new TableRow_(CONTEXT);
@@ -11699,13 +11700,13 @@ VertexClientPE.loadDeathCoords = function() {
 	}
 	let arr = fileText.split(",");
 	if(arr[0] != null && arr[0] != undefined) {
-		VertexClientPE.currentWorld.deathX = parseInt(arr[0]);
+		VertexClientPE.currentWorld.deathX = parseFloat(arr[0]);
 	}
 	if(arr[1] != null && arr[1] != undefined) {
-		VertexClientPE.currentWorld.deathY = parseInt(arr[1]);
+		VertexClientPE.currentWorld.deathY = parseFloat(arr[1]);
 	}
 	if(arr[2] != null && arr[2] != undefined) {
-		VertexClientPE.currentWorld.deathZ = parseInt(arr[2]);
+		VertexClientPE.currentWorld.deathZ = parseFloat(arr[2]);
 	}
 	return true;
 }
@@ -11737,9 +11738,9 @@ VertexClientPE.loadWaypoints = function() {
 
 			newWaypoints.push({
 				name: currentFileName.substring(0, currentFileName.lastIndexOf('.')),
-				x: arr_split[0],
-				y: arr_split[1],
-				z: arr_split[2]
+				x: parseFloat(arr_split[0]),
+				y: parseFloat(arr_split[1]),
+				z: parseFloat(arr_split[2])
 			});
 		});
 
