@@ -972,7 +972,7 @@ var myServerStatus = {
 		}
 	},
 	connect: function(){
-		var data = ModPE.getFromUrl("http://serverstatus.ml/info.php?address=" + this.ip + ":" + this.port);
+		var data = ModPE.getFromUrl("http://edroid.tk/projects/serverstatus/info.php?address=" + this.ip + ":" + this.port);
 		if(data != false){
 			myServerStatus.json = ModPE.JSON.parse(data);
 			myServerStatus.setVariables();
@@ -981,13 +981,14 @@ var myServerStatus = {
 	},
 	setVariables: function(){
 		this.status = this.json["status"];
-		this.name = this.json["name"];
+		this.names = this.json["names"];
 		this.address = this.json["address"];
 		this.version = this.json["version"];
 		this.software = this.json["software"];
 		this.online = this.json["online"];
 		this.list = this.json["players"];
 		this.plugins = this.json["plugins"];
+		this.map = this.json["map"];
 	}
 };
 
@@ -5625,12 +5626,14 @@ var serverInfo = {
 			new Thread_(new Runnable_({
 				run: function() {
 					VertexClientPE.toast(i18n("Loading..."));
-					let serverInfo = myServerStatus.set(Server.getAddress(), parseInt(Server.getPort()));
+					let server = myServerStatus.set(Server.getAddress(), parseInt(Server.getPort()));
 					Thread_.sleep(3000);
-					let serverString = "Name: " + serverInfo.name;
-					serverString += "\nAddress: " + serverInfo.address;
-					serverString += "\nSoftware: " + serverInfo.software;
-					serverString += "\nPlugins: " + serverInfo.plugins;
+					let serverString = "Name: " + server.names;
+					serverString += "\nAddress: " + server.address;
+					serverString += "\nSoftware: " + server.software;
+					serverString += "\nPlugins: " + server.plugins;
+					serverString += "\nMap: " + server.map;
+					serverString += "\nOnline: " + server.online;
 					VertexClientPE.showBasicDialog(VertexClientPE.getCustomModName(serverInfo.name) + " - Display", clientTextView(serverString));
 					serverInfoStage = 0;
 				}
