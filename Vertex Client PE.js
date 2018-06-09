@@ -11727,7 +11727,7 @@ VertexClientPE.loadWaypoints = function() {
 	let fileDir = new File_(waypointsPath);
 	let fileList = fileDir.listFiles();
 
-	if(fileList.length != 0) {
+	if(fileList != null && fileList.length != 0) {
 		let newWaypoints = [];
 		fileList.forEach(function(element, index, array) {
 			let currentFileName = element.getName();
@@ -11749,6 +11749,7 @@ VertexClientPE.loadWaypoints = function() {
 
 VertexClientPE.saveWaypoints = function() {
 	let waypointsPath = worldsPath + Level.getWorldDir() + "/waypoints/";
+	File_(waypointsPath).mkdirs();
 
 	if(VertexClientPE.currentWorld.waypoints.length != 0) {
 		VertexClientPE.currentWorld.waypoints.forEach(function(element, index, array) {
