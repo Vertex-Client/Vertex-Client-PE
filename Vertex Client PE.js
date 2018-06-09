@@ -5179,20 +5179,25 @@ var playerLocator = {
 		if(players != null && players != undefined && !(players.length <= 0) && !(players.length == 1 && players[0] == getPlayerEnt())) {
 			new Thread_(new Runnable_({
 				run: function() {
+					let playerText = "";
 					for(let i = 0; i < players.length; i++) {
 						let player = players[i];
 						let name = "player " + Player.getName(player);
 						if(name != null && player[i] != getPlayerEnt()) {
-							VertexClientPE.clientMessage("Located " + name + ChatColor.WHITE + " at " + parseInt(Entity.getX(player)) + " " + parseInt(Entity.getY(player)) + " " + parseInt(Entity.getZ(player)));
-							Thread_.sleep(1000);
+							if(i != 0) {
+								playerText += "\n";
+							}
+							playerText += "Located " + name + " at " + parseInt(Entity.getX(player)) + " " + parseInt(Entity.getY(player)) + " " + parseInt(Entity.getZ(player));
 						} else {
 							continue;
 						}
 					}
+					Thread_.sleep(1000);
+					VertexClientPE.showBasicDialog(VertexClientPE.getCustomModName(playerLocator.name) + " - Display", clientTextView(playerText));
 				}
 			})).start();
 		} else {
-			VertexClientPE.clientMessage("We couldn't locate any players.");
+			VertexClientPE.toast("We couldn't locate any players.");
 		}
 	}
 }
@@ -5626,7 +5631,7 @@ var serverInfo = {
 					serverString += "\nAddress: " + serverInfo.address;
 					serverString += "\nSoftware: " + serverInfo.software;
 					serverString += "\nPlugins: " + serverInfo.plugins;
-					VertexClientPE.showBasicDialog(VertexClientPE.getCustomModName(this.name) + " - Display", clientTextView(serverString));
+					VertexClientPE.showBasicDialog(VertexClientPE.getCustomModName(serverInfo.name) + " - Display", clientTextView(serverString));
 					serverInfoStage = 0;
 				}
 			})).start();
