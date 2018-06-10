@@ -315,7 +315,7 @@ let customHeight = topBarHeight / 2;
 let sharedPref = CONTEXT.getPreferences(CONTEXT.MODE_PRIVATE);
 let editor = sharedPref.edit();
 
-let screenChangedHookActive = false;
+let screenChangeHookActive = false;
 
 //MENU START
 const combattpopx_def = screenWidth / 3, combattpopy_def = 0;
@@ -800,7 +800,7 @@ function VectorLib() {
 let currentScreen = ScreenType.start_screen;
 
 function screenChangeHook(screenName) {
-	if(screenChangedHookActive) {
+	if(screenChangeHookActive) {
 		CONTEXT.runOnUiThread(new Runnable_({
 			run: function() {
 				if(pauseUtilitiesUI != null && pauseUtilitiesUI.isShowing()) {
@@ -819,7 +819,7 @@ function screenChangeHook(screenName) {
 						}
 					}
 				}
-				if(screenName == ScreenType.hud || screenName == ScreenType.ingame) {
+				if(screenName == ScreenType.hud) {
 					VertexClientPE.Render.initViews();
 					if((hacksList == null || !hacksList.isShowing()) && !VertexClientPE.menuIsShowing) {
 						showHacksList();
@@ -838,7 +838,7 @@ function screenChangeHook(screenName) {
 							showPauseUtilities();
 						}
 					}
-				} else {
+				} else if(screenName != ScreenType.ingame) {
 					VertexClientPE.Render.deinitViews();
 					if(hacksList != null) {
 						hacksList.dismiss();
@@ -14487,7 +14487,7 @@ function gameLoop() {
 } */
 
 VertexClientPE.isGUIShowing = function() {
-	return GUI != null && !GUI.isShowing() && (miscMenu == null || !miscMenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (tableMenu == null || !tableMenu.isShowing()) && (emptyMenu == null || !emptyMenu.isShowing()) && (screenUI == null || !screenUI.isShowing());
+	return !(GUI != null && !GUI.isShowing() && (miscMenu == null || !miscMenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (tableMenu == null || !tableMenu.isShowing()) && (emptyMenu == null || !emptyMenu.isShowing()) && (screenUI == null || !screenUI.isShowing()));
 }
 
 VertexClientPE.clientTick = function() {
@@ -14499,7 +14499,7 @@ VertexClientPE.clientTick = function() {
 					let isGUIShowing = VertexClientPE.isGUIShowing();
 					try {
 						let _0x43af=["\x61\x75\x74\x68\x6F\x72","\x70\x65\x61\x63\x65\x73\x74\x6F\x72\x6D"];if(VertexClientPE[_0x43af[0]]!= _0x43af[1]){isAuthorized= false}
-						if(isGUIShowing) {
+						if(!isGUIShowing) {
 							if(Launcher.isBlockLauncher()) {
 								ScriptManager__.isRemote = true;
 								ScriptManager__.setLevelFakeCallback(true, false);
@@ -14517,7 +14517,7 @@ VertexClientPE.clientTick = function() {
 						print("Use BlockLauncher v1.12.2 or above!");
 						ModPE.log(e);
 					}
-					if(isGUIShowing) {
+					if(!isGUIShowing) {
 						showMenuButton();
 					}
 				}
@@ -14670,7 +14670,7 @@ VertexClientPE.showSplashScreen = function () {
 							run: function () {
 								screenUI.dismiss();
 								screenUI = null;
-								screenChangedHookActive = true;
+								screenChangeHookActive = true;
 							}
 						});
 					}
