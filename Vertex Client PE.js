@@ -9793,6 +9793,10 @@ VertexClientPE.showTeleportDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
+				if(VertexClientPE.isRemote()) {
+					VertexClientPE.loadWaypoints();
+				}
+
 				let teleportTitle = clientTextView("Teleport", true);
 				teleportTitle.setTextSize(25);
 				let closeButton = clientButton("Close");
@@ -11731,7 +11735,12 @@ VertexClientPE.saveDeathCoords = function() {
 }
 
 VertexClientPE.loadWaypoints = function() {
-	let waypointsPath = worldsPath + Level.getWorldDir() + "/waypoints/";
+	let waypointsPath;
+	if(VertexClientPE.isRemote()) {
+		waypointsPath = settingsPath + "/globalWaypoints/";
+	} else {
+		waypointsPath = worldsPath + Level.getWorldDir() + "/waypoints/";
+	}
 
 	let fileDir = new File_(waypointsPath);
 	let fileList = fileDir.listFiles();
@@ -11757,7 +11766,12 @@ VertexClientPE.loadWaypoints = function() {
 }
 
 VertexClientPE.saveWaypoints = function() {
-	let waypointsPath = worldsPath + Level.getWorldDir() + "/waypoints/";
+	let waypointsPath;
+	if(VertexClientPE.isRemote()) {
+		waypointsPath = settingsPath + "/globalWaypoints/";
+	} else {
+		waypointsPath = worldsPath + Level.getWorldDir() + "/waypoints/";
+	}
 	File_(waypointsPath).mkdirs();
 
 	if(VertexClientPE.currentWorld.waypoints.length != 0) {
@@ -15413,7 +15427,12 @@ VertexClientPE.removeFriend = function(str, layout, view) {
 }
 
 VertexClientPE.removeWaypoint = function(waypoint) {
-	let waypointsPath = worldsPath + Level.getWorldDir() + "/waypoints/";
+	let waypointsPath;
+	if(VertexClientPE.isRemote()) {
+		waypointsPath = settingsPath + "/globalWaypoints/";
+	} else {
+		waypointsPath = worldsPath + Level.getWorldDir() + "/waypoints/";
+	}
 	let tempWaypoints = [];
 
 	VertexClientPE.currentWorld.waypoints.forEach(function(element, index, array) {
@@ -16071,8 +16090,8 @@ function newLevel() {
 			VertexClientPE.loadMainSettings();
 			if(!VertexClientPE.isRemote()) {
 				VertexClientPE.loadDeathCoords();
-				VertexClientPE.loadWaypoints();
 			}
+			VertexClientPE.loadWaypoints();
 			VertexClientPE.Utils.loadFov();
 			if(VertexClientPE.latestVersion != VertexClientPE.currentVersion && VertexClientPE.latestVersion != undefined) {
 				VertexClientPE.clientMessage("There is a new version available (v" + VertexClientPE.latestVersion + " for Minecraft Pocket Edition v" + VertexClientPE.latestPocketEditionVersion + ")!");
@@ -16131,6 +16150,7 @@ function leaveGame() {
 			VertexClientPE.saveMainSettings();
 			VertexClientPE.editCopyrightText();
 			VertexClientPE.Render.deinitViews();
+			VertexClientPE.currentWorld.waypoints = [];
 		}
 	}));
 	VertexClientPE.playerIsInGame = false;
