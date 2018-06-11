@@ -5152,6 +5152,7 @@ var dropLocator = {
 		let items = Entity.getAll();
 		new Thread_(new Runnable_({
 			run: function() {
+				let itemText = "";
 				if(items != null && items != undefined && !(items.length <= 0)) {
 					for(let i = 0; i < items.length; i++) {
 						let type = Entity.getEntityTypeId(items[i]);
@@ -5163,15 +5164,19 @@ var dropLocator = {
 							name = "experience"
 						}
 						if(name != null) {
-							VertexClientPE.clientMessage("Located " + name + " at " + parseInt(Entity.getX(items[i])) + " " + parseInt(Entity.getY(items[i])) + " " + parseInt(Entity.getZ(items[i])));
+							if(itemText != "") {
+								itemText += "\n";
+							}
+							itemText += "Located " + name + " at " + parseInt(Entity.getX(items[i])) + " " + parseInt(Entity.getY(items[i])) + " " + parseInt(Entity.getZ(items[i]));
 							foundItems = true;
-							Thread_.sleep(1000);
 						} else {
 							continue;
 						}
 					}
 				}
-				if(!foundItems) {
+				if(foundItems) {
+					VertexClientPE.showBasicDialog(VertexClientPE.getCustomModName(dropLocator.name) + " - Display", clientTextView(itemText));
+				} else {
 					VertexClientPE.clientMessage("We couldn't locate any drops.");
 				}
 			}
@@ -5205,7 +5210,7 @@ var playerLocator = {
 							continue;
 						}
 					}
-					Thread_.sleep(1000);
+					Thread_.sleep(500);
 					VertexClientPE.showBasicDialog(VertexClientPE.getCustomModName(playerLocator.name) + " - Display", clientTextView(playerText));
 				}
 			})).start();
@@ -11542,7 +11547,9 @@ VertexClientPE.setupMCPEGUI = function() {
 	if(mcpeGUISetting == "default") {
 		ModPE.resetImages();
 	}
-	if(mcpeGUISetting == "green") {
+	
+	//vanilla/textures/ui/title.png
+	/* if(mcpeGUISetting == "green") {
 		ModPE.overrideTexture("images/gui/spritesheet.png", "http://i.imgur.com/BCA6vgv.png");
 		ModPE.overrideTexture("images/gui/touchgui.png", "http://i.imgur.com/dY3c1Jl.png");
 	}
@@ -11569,8 +11576,8 @@ VertexClientPE.setupMCPEGUI = function() {
 	if(mcpeGUISetting == "black") {
 		ModPE.overrideTexture("images/gui/spritesheet.png", "http://i.imgur.com/l7nG7ZU.png");
 		ModPE.overrideTexture("images/gui/touchgui.png", "http://i.imgur.com/MZeX8XN.png");
-	}
-	ModPE.overrideTexture("images/gui/title.png", "http://Vertex-Client.github.io/bootstrap/img/title.png");
+	} */
+	ModPE.overrideTexture("resources_packs/vanilla/textures/ui/title.png", "http://Vertex-Client.github.io/bootstrap/img/title.png");
 }
 
 VertexClientPE.saveAutoSpammerMessage = function() {
