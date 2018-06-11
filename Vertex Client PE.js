@@ -165,9 +165,21 @@ const i18n = (function () {
         };
     }
     return function (text, args) {
-        return text.replace(/(\{%\d+\})/g, function ($1) {
+		if(args != null) {
+			if(args[0] != null) {
+				text = text.replace("%0", args[0]);
+			}
+			if(args[1] != null) {
+				text = text.replace("%1", args[1]);
+			}
+			if(args[2] != null) {
+				text = text.replace("%2", args[2]);
+			}
+		}
+		return text;
+		/* return text.replace(/(\{%\d+\})/g, function ($1) {
 			return args[$1.match(/\{%(\d+)\}/)[1]];
-		});
+		}); */
     };
 })();
 
@@ -6573,6 +6585,8 @@ var t = {
 	}
 }
 
+let sayMsg;
+
 var say = {
 	syntax: "say <message>",
 	onCall: function(cmd) {
@@ -6748,8 +6762,8 @@ var rename = {
 	}
 }
 
-var w = {
-	syntax: "w <url>",
+var website = {
+	syntax: "website <url>",
 	onCall: function(cmd) {
 		let url = cmd.split(" ")[1];
 		if(url == null || url == "" || url.replaceAll(" ", "") == "") {
@@ -6760,10 +6774,24 @@ var w = {
 	}
 }
 
-var website = {
-	syntax: "website <url>",
+var web = {
+	syntax: "web <url>",
 	onCall: function(cmd) {
-		w.onCall(cmd);
+		website.onCall(cmd);
+	}
+}
+
+var position = {
+	syntax: "position",
+	onCall: function(cmd) {
+		VertexClientPE.clientMessage("Your current position is X: " + getPlayerX() + " Y: " + getPlayerY() + " Z: " + getPlayerZ() + ".");
+	}
+}
+
+var pos = {
+	syntax: "pos",
+	onCall: function(cmd) {
+		position.onCall(cmd);
 	}
 }
 
@@ -6775,13 +6803,15 @@ VertexClientPE.registerCommand(gm);
 VertexClientPE.registerCommand(js);
 VertexClientPE.registerCommand(p);
 VertexClientPE.registerCommand(panic_cmd);
+VertexClientPE.registerCommand(pos);
+VertexClientPE.registerCommand(position);
 VertexClientPE.registerCommand(rename);
 VertexClientPE.registerCommand(say);
 VertexClientPE.registerCommand(t);
 VertexClientPE.registerCommand(toggle);
 VertexClientPE.registerCommand(tp);
 VertexClientPE.registerCommand(version);
-VertexClientPE.registerCommand(w);
+VertexClientPE.registerCommand(web);
 VertexClientPE.registerCommand(website);
 
 /**
@@ -9793,7 +9823,7 @@ VertexClientPE.showTeleportDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				if(VertexClientPE.isRemote()) {
+				if(VertexClientPE.isRemote() && VertexClientPE.currentWorld.waypoints.length <= 0) {
 					VertexClientPE.loadWaypoints();
 				}
 
@@ -10896,8 +10926,6 @@ VertexClientPE.getVersion = function(type) {
 }
 
 let p, y, xx, yy, zz;
-
-let sayMsg;
 
 VertexClientPE.commandManager = function(cmd) {
 	let _0xff55=["\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x6F\x75\x74\x64\x61\x74\x65\x64\x2C\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C","\x74\x6F\x61\x73\x74","\x59\x6F\x75\x27\x76\x65\x20\x63\x61\x6D\x65\x20\x61\x63\x72\x6F\x73\x73\x20\x61\x6E\x20\x65\x64\x69\x74\x65\x64\x20\x61\x6E\x64\x20\x75\x6E\x61\x75\x74\x68\x6F\x72\x69\x7A\x65\x64\x20\x56\x65\x72\x74\x65\x78\x20\x43\x6C\x69\x65\x6E\x74\x20\x50\x45\x20\x73\x63\x72\x69\x70\x74\x21\x20\x50\x6C\x65\x61\x73\x65\x20\x64\x6F\x77\x6E\x6C\x6F\x61\x64\x20\x74\x68\x65\x20\x6F\x66\x66\x69\x63\x69\x61\x6C\x20\x6C\x61\x74\x65\x73\x74\x20\x76\x65\x72\x73\x69\x6F\x6E\x20\x6F\x6E\x20\x6F\x75\x72\x20\x77\x65\x62\x73\x69\x74\x65\x3A\x20\x56\x65\x72\x74\x65\x78\x2D\x43\x6C\x69\x65\x6E\x74\x2E\x6D\x6C"];if(!isAuthorized){if(!isSupported){VertexClientPE[_0xff55[1]](_0xff55[0])}else {VertexClientPE[_0xff55[1]](_0xff55[2])};return}
