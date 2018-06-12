@@ -165,21 +165,9 @@ const i18n = (function () {
         };
     }
     return function (text, args) {
-		if(args != null) {
-			if(args[0] != null) {
-				text = text.replace("%0", args[0]);
-			}
-			if(args[1] != null) {
-				text = text.replace("%1", args[1]);
-			}
-			if(args[2] != null) {
-				text = text.replace("%2", args[2]);
-			}
-		}
-		return text;
-		/* return text.replace(/(\{%\d+\})/g, function ($1) {
+		return text.replace(/(\{%\d+\})/g, function ($1) {
 			return args[$1.match(/\{%(\d+)\}/)[1]];
-		}); */
+		});
     };
 })();
 
@@ -2354,7 +2342,7 @@ function registerAddon(name, desc, current_version, target_version, mods, songs,
 	}
 
 	if(shouldMessage) {
-		VertexClientPE.addonLoadToast(i18n("Successfully loaded the %0 addon!", [name]));
+		VertexClientPE.addonLoadToast(i18n("Successfully loaded the {%0} addon!", [name]));
 	}
 }
 
@@ -6495,7 +6483,7 @@ VertexClientPE.getHighestHelpPageNumber = function() {
 }
 
 VertexClientPE.showHelpPage = function(page) {
-	VertexClientPE.clientMessage(i18n("Showing help page %0/%1", [page, VertexClientPE.getHighestHelpPageNumber()]));
+	VertexClientPE.clientMessage(i18n("Showing help page {%0}/{%1}", [page, VertexClientPE.getHighestHelpPageNumber()]));
 	VertexClientPE.commands.forEach(function(element, index, array) {
 		if(element.syntax != null) {
 			if(index >= 8*(page-1) && index <= 8*page-1) {
@@ -6549,7 +6537,7 @@ var toggle = {
 								element.state = true;
 								VertexClientPE.shouldUpdateGUI = true;
 							} else if(!element.isStateMod()) {
-								VertexClientPE.toast(i18n("This mod is blocked by %0!", [VertexClientPE.getCustomModName("Bypass")]));
+								VertexClientPE.toast(i18n("This mod is blocked by {%0}!", [VertexClientPE.getCustomModName("Bypass")]));
 							}
 						}
 						if(element.isStateMod()) {
@@ -6558,7 +6546,7 @@ var toggle = {
 						if(hacksList != null && hacksList.isShowing()) {
 							updateHacksList();
 						}
-						VertexClientPE.toast(i18n("Sucessfully toggled module %0", [VertexClientPE.getCustomModName(element.name)]));
+						VertexClientPE.toast(i18n("Sucessfully toggled module {%0}", [VertexClientPE.getCustomModName(element.name)]));
 						/*
 							VertexClientPE.toast(VertexClientPE.getCustomModName(element.name) + " can't be toggled using the .t(oggle) command!");
 						*/
@@ -6569,7 +6557,7 @@ var toggle = {
 				if(shouldReturn) {
 					return;
 				}
-				VertexClientPE.toast(i18n("Module %0 can't be found/toggled!", [cmdNoPrefix]));
+				VertexClientPE.toast(i18n("Module {%0} can't be found/toggled!", [cmdNoPrefix]));
 			} else {
 				throw new SyntaxError();
 			}
@@ -6688,7 +6676,7 @@ var tp = {
 			}
 			if(getTile(x, y, z) != null) {
 				Entity.setPosition(getPlayerEnt(), x, y, z);
-				VertexClientPE.clientMessage(ChatColor.GREEN + i18n("Successfully teleported player to %0, %1, %2!", [x, y, z]));
+				VertexClientPE.clientMessage(ChatColor.GREEN + i18n("Successfully teleported player to {%0}, {%1}, {%2}!", [x, y, z]));
 			} else {
 				VertexClientPE.syntaxError(cmdPrefix + this.syntax);
 			}
@@ -6758,7 +6746,7 @@ var rename = {
 		let renameItem = Player.getInventorySlot(renameSlot);
 		if(renameName  != null && renameName.replaceAll(" ", "") != "" && renameItem != 0) {
 			Player.setItemCustomName(renameSlot, renameName);
-			VertexClientPE.clientMessage(ChatColor.GREEN + i18n("Successfully renamed item to %0!", [renameName]));
+			VertexClientPE.clientMessage(ChatColor.GREEN + i18n("Successfully renamed item to {%0}!", [renameName]));
 		} else if(renameName.replaceAll(" ", "") == "") {
 			VertexClientPE.clientMessage(ChatColor.RED + i18n("Error: please enter a valid name!"));
 		} else if(renameItem == 0) {
@@ -7219,16 +7207,16 @@ VertexClientPE.showSignEditorDialog = function(signX, signY, signZ) {
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
 				dialog.setTitle("SignEditor");
-				inputBar.setHint(i18n("Line %0", ["1"]));
+				inputBar.setHint(i18n("Line {%0}", ["1"]));
 				inputBar.setText(Level.getSignText(signX, signY, signZ, 0));
 				inputBar.setTextColor(Color_.WHITE);
-				inputBar1.setHint(i18n("Line %0", ["2"]));
+				inputBar1.setHint(i18n("Line {%0}", ["2"]));
 				inputBar1.setText(Level.getSignText(signX, signY, signZ, 1));
 				inputBar1.setTextColor(Color_.WHITE);
-				inputBar2.setHint(i18n("Line %0", ["3"]));
+				inputBar2.setHint(i18n("Line {%0}", ["3"]));
 				inputBar2.setText(Level.getSignText(signX, signY, signZ, 2));
 				inputBar2.setTextColor(Color_.WHITE);
-				inputBar3.setHint(i18n("Line %0", ["4"]));
+				inputBar3.setHint(i18n("Line {%0}", ["4"]));
 				inputBar3.setText(Level.getSignText(signX, signY, signZ, 3));
 				inputBar3.setTextColor(Color_.WHITE);
 				dialog.show();
@@ -7356,9 +7344,9 @@ VertexClientPE.showRemoteViewTargetDialog = function() {
 							}
 						});
 						if(rvTargetDone) {
-							VertexClientPE.toast(i18n("Your new RemoteView target is %0!", [username]));
+							VertexClientPE.toast(i18n("Your new RemoteView target is {%0}!", [username]));
 						} else {
-							VertexClientPE.toast(i18n("%0 couldn't be found!", [username]));
+							VertexClientPE.toast(i18n("{%0} couldn't be found!", [username]));
 						}
 					}
 				});
@@ -9028,7 +9016,7 @@ VertexClientPE.showModDialog = function(mod, btn) {
 								if(mod.isStateMod() && !mod.state) {
 									mod.state = true;
 								} else if(!mod.isStateMod()) {
-									VertexClientPE.toast(i18n("This mod is blocked by %0!", [VertexClientPE.getCustomModName("Bypass")]));
+									VertexClientPE.toast(i18n("This mod is blocked by {%0}!", [VertexClientPE.getCustomModName("Bypass")]));
 								}
 							}
 							if(mod.isStateMod()) {
@@ -9451,7 +9439,7 @@ VertexClientPE.showItemGiverDialog = function() { //TODO: make faster, less layo
 						let data = itemDataInput.getText();
 						if(Item.isValidItem(itemId)) {
 							Player.addItemInventory(itemId, amount, data);
-							VertexClientPE.toast(i18n("Successfully added item with id %0.", [itemId]));
+							VertexClientPE.toast(i18n("Successfully added item with id {%0}.", [itemId]));
 						} else {
 							VertexClientPE.toast(i18n("Item doesn't exist!"));
 						}
