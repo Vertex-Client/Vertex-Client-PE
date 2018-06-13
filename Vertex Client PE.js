@@ -1000,6 +1000,27 @@ let newYaw = 0;
 
 const PI_CIRCLE = Math.PI / 180;
 
+let entBlackList = {};
+(function initBlackList() {
+	entBlackList[EntityType.ARROW] = true;
+	entBlackList[EntityType.BOAT] = true;
+	entBlackList[EntityType.EGG] = true;
+	entBlackList[EntityType.ENDER_PEARL] = true;
+	entBlackList[EntityType.EXPERIENCE_ORB] = true;
+	entBlackList[EntityType.EXPERIENCE_POTION] = true;
+	entBlackList[EntityType.FALLING_BLOCK] = true;
+	entBlackList[EntityType.FIREBALL] = true;
+	entBlackList[EntityType.FISHING_HOOK] = true;
+	entBlackList[EntityType.ITEM] = true;
+	entBlackList[EntityType.LIGHTNING_BOLT] = true;
+	entBlackList[EntityType.MINECART] = true;
+	entBlackList[EntityType.PAINTING] = true;
+	entBlackList[EntityType.PRIMED_TNT] = true;
+	entBlackList[EntityType.SMALL_FIREBALL] = true;
+	entBlackList[EntityType.SNOWBALL] = true;
+	entBlackList[EntityType.THROWN_POTION] = true;
+})();
+
 let songDialog;
 
 let VertexClientPE = {
@@ -1173,7 +1194,7 @@ let VertexClientPE = {
 								continue;
 							}
 						}
-						if(Entity.getEntityTypeId(ent) != EntityType.ARROW && Entity.getEntityTypeId(ent) != EntityType.BOAT && Entity.getEntityTypeId(ent) != EntityType.EGG && Entity.getEntityTypeId(ent) != EntityType.ENDER_PEARL && Entity.getEntityTypeId(ent) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(ent) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(ent) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(ent) != EntityType.FIREBALL && Entity.getEntityTypeId(ent) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(ent) != EntityType.ITEM && Entity.getEntityTypeId(ent) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(ent) != EntityType.MINECART && Entity.getEntityTypeId(ent) != EntityType.PAINTING && Entity.getEntityTypeId(ent) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(ent) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(ent) != EntityType.SNOWBALL && Entity.getEntityTypeId(ent) != EntityType.THROWN_POTION && ent != getPlayerEnt()) {
+						if(!entBlackList[Entity.getEntityTypeId(ent)] && ent != getPlayerEnt()) {
 							return ent;
 						}
 					}
@@ -5675,7 +5696,7 @@ var switchAimbot = {
 				let y = Entity.getY(cMob) - getPlayerY();
 				let z = Entity.getZ(cMob) - getPlayerZ();
 				if(x*x+y*y+z*z <= range*range) {
-					if(Entity.getEntityTypeId(cMob) != EntityType.ARROW && Entity.getEntityTypeId(cMob) != EntityType.BOAT && Entity.getEntityTypeId(cMob) != EntityType.EGG && Entity.getEntityTypeId(cMob) != EntityType.ENDER_PEARL && Entity.getEntityTypeId(cMob) != EntityType.EXPERIENCE_ORB && Entity.getEntityTypeId(cMob) != EntityType.EXPERIENCE_POTION && Entity.getEntityTypeId(cMob) != EntityType.FALLING_BLOCK && Entity.getEntityTypeId(cMob) != EntityType.FIREBALL && Entity.getEntityTypeId(cMob) != EntityType.FISHING_HOOK && Entity.getEntityTypeId(cMob) != EntityType.ITEM && Entity.getEntityTypeId(cMob) != EntityType.LIGHTNING_BOLT && Entity.getEntityTypeId(cMob) != EntityType.MINECART && Entity.getEntityTypeId(cMob) != EntityType.PAINTING && Entity.getEntityTypeId(cMob) != EntityType.PRIMED_TNT && Entity.getEntityTypeId(cMob) != EntityType.SMALL_FIREBALL && Entity.getEntityTypeId(cMob) != EntityType.SNOWBALL && Entity.getEntityTypeId(cMob) != EntityType.THROWN_POTION && cMob != getPlayerEnt()) {
+					if(!entBlackList[Entity.getEntityTypeId(cMob)] && cMob != getPlayerEnt()) {
 						VertexClientPE.CombatUtils.aimAtEnt(cMob);
 					}
 				}
@@ -17233,15 +17254,15 @@ function settingsScreen(fromDashboard) {
 				VertexClientPE.addView(settingsMenuLayout, showSnowInWinterSettingFunc);
 				VertexClientPE.addView(settingsMenuLayout, f5ButtonModeSettingFunc);
 				VertexClientPE.addView(settingsMenuLayout, webBrowserStartPageSettingFunc);
-				
-				if(scrollPosition != null) {
-					settingsMenuScroll.scrollTo(scrollPosition[0], scrollPosition[1]);
-					scrollPosition = null;
-				}
 
 				screenUI = new PopupWindow_(settingsMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
 				screenUI.setBackgroundDrawable(backgroundGradient());
 				screenUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.BOTTOM, 0, 0);
+
+				if(scrollPosition != null) {
+					settingsMenuScroll.scrollTo(scrollPosition[0], scrollPosition[1]);
+					scrollPosition = null;
+				}
 			} catch(error) {
 				print('An error occured: ' + error);
 				VertexClientPE.showBugReportDialog(error);
