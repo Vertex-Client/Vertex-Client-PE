@@ -3311,7 +3311,7 @@ var powerExplosions = {
 		if(powerExplosionsStage == 0) {
 			powerExplosionsStage = 1;
 			preventDefault();
-			Level.explode(x, y, z, powerExplosionsPowerSetting);
+			explode(x, y, z, powerExplosionsPowerSetting);
 			powerExplosionsStage = 0;
 		}
 	}
@@ -3330,7 +3330,7 @@ var tapExplosion = {
 		this.state = !this.state;
 	},
 	onUseItem: function(x, y, z, itemId, blockId, side, blockDamage) {
-		Level.explode(x, y, z, 4);
+		explode(x, y, z, 4);
 	}
 }
 
