@@ -7872,28 +7872,28 @@ VertexClientPE.showMainButtonManagerDialog = function() {
 				let mainButtonPositionSettingFunc = new settingButton("Main button position", "Sets the main menu's button position.", display.widthPixels - 20,
 					function(viewArg) {
 						mainButtonPositionSetting = "top-left";
-						mainButtonPositionSettingButton.setText("Top-left");
+						mainButtonPositionSettingButton.setText(i18n("Top-left"));
 					}
 				);
 				let mainButtonPositionSettingButton = mainButtonPositionSettingFunc.getButton();
 				if(mainButtonPositionSetting == "top-right") {
-					mainButtonPositionSettingButton.setText("Top-right");
+					mainButtonPositionSettingButton.setText(i18n("Top-right"));
 				} else if(mainButtonPositionSetting == "top-left") {
-					mainButtonPositionSettingButton.setText("Top-left");
+					mainButtonPositionSettingButton.setText(i18n("Top-left"));
 				} else if(mainButtonPositionSetting == "bottom-left") {
-					mainButtonPositionSettingButton.setText("Bottom-left");
+					mainButtonPositionSettingButton.setText(i18n("Bottom-left"));
 				}
 				mainButtonPositionSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						if(mainButtonPositionSetting == "top-right") {
 							mainButtonPositionSetting = "top-left";
-							mainButtonPositionSettingButton.setText("Top-left");
+							mainButtonPositionSettingButton.setText(i18n("Top-left"));
 						} else if(mainButtonPositionSetting == "top-left") {
 							mainButtonPositionSetting = "bottom-left";
-							mainButtonPositionSettingButton.setText("Bottom-left");
+							mainButtonPositionSettingButton.setText(i18n("Bottom-left"));
 						} else if(mainButtonPositionSetting == "bottom-left") {
 							mainButtonPositionSetting = "top-right";
-							mainButtonPositionSettingButton.setText("Top-right");
+							mainButtonPositionSettingButton.setText(i18n("Top-right"));
 						}
 						VertexClientPE.saveMainSettings();
 					}
@@ -7902,12 +7902,12 @@ VertexClientPE.showMainButtonManagerDialog = function() {
 				let mainButtonStyleSettingFunc = new settingButton("Main button style", "Sets the main menu's button style.", display.widthPixels - 20,
 					function(viewArg) {
 						mainButtonStyleSetting = "normal";
-						mainButtonStyleSettingButton.setText("Normal");
+						mainButtonStyleSettingButton.setText(i18n("Normal"));
 					}
 				);
 				let mainButtonStyleSettingButton = mainButtonStyleSettingFunc.getButton();
 				if(mainButtonStyleSetting == "normal") {
-					mainButtonStyleSettingButton.setText("Normal");
+					mainButtonStyleSettingButton.setText(i18n("Normal"));
 				} else if(mainButtonStyleSetting == "global_background") {
 					mainButtonStyleSettingButton.setText("Global background (fits better)");
 				} else if(mainButtonStyleSetting == "no_background") {
@@ -7933,7 +7933,7 @@ VertexClientPE.showMainButtonManagerDialog = function() {
 							mainButtonStyleSettingButton.setText("Classic");
 						} else if(mainButtonStyleSetting == "classic") {
 							mainButtonStyleSetting = "normal";
-							mainButtonStyleSettingButton.setText("Normal");
+							mainButtonStyleSettingButton.setText(i18n("Normal"));
 						}
 						VertexClientPE.saveMainSettings();
 					}
@@ -8007,7 +8007,7 @@ VertexClientPE.showShortcutManagerDialog = function() {
 				settingsTitleLayout.setLayoutParams(new LinearLayout_.LayoutParams(display.widthPixels - barLayoutHeight * 2, barLayoutHeight));
 				settingsTitleLayout.setGravity(Gravity_.CENTER);
 				settingsTitleLayout.addView(settingsTitle);
-				let shortcutManagerTitle = clientTextView("Shortcut Manager", true);
+				let shortcutManagerTitle = clientTextView(i18n("Shortcut Manager"), true);
 				shortcutManagerTitle.setGravity(Gravity_.CENTER);
 				let shortcutManagerEnter = clientTextView("");
 				let closeButton = clientButton("Close");
@@ -8061,14 +8061,14 @@ VertexClientPE.showShortcutManagerDialog = function() {
 				let shortcutUIModeSettingFunc = new settingButton("Shortcut UI mode", null, display.widthPixels - 20,
 					function(viewArg) {
 						shortcutUIModeSetting = "on";
-						shortcutUIModeSettingButton.setText("Normal");
+						shortcutUIModeSettingButton.setText(i18n("Normal"));
 					}
 				);
 				let shortcutUIModeSettingButton = shortcutUIModeSettingFunc.getButton();
 				if(shortcutUIModeSetting == "off") {
-					shortcutUIModeSettingButton.setText("Hidden");
+					shortcutUIModeSettingButton.setText(i18n("Hidden"));
 				} else if(shortcutUIModeSetting == "on") {
-					shortcutUIModeSettingButton.setText("Normal");
+					shortcutUIModeSettingButton.setText(i18n("Normal"));
 				} else if(shortcutUIModeSetting == "multirow") {
 					shortcutUIModeSettingButton.setText("Multi-row");
 				}
@@ -8076,10 +8076,10 @@ VertexClientPE.showShortcutManagerDialog = function() {
 					onClick: function(viewArg) {
 						if(shortcutUIModeSetting == "on") {
 							shortcutUIModeSetting = "off";
-							shortcutUIModeSettingButton.setText("Hidden");
+							shortcutUIModeSettingButton.setText(i18n("Hidden"));
 						} else if(shortcutUIModeSetting == "off") {
 							shortcutUIModeSetting = "on";
-							shortcutUIModeSettingButton.setText("Normal");
+							shortcutUIModeSettingButton.setText(i18n("Normal"));
 						}/*  else if(shortcutUIModeSetting == "on") {
 							shortcutUIModeSetting = "multirow";
 							shortcutUIModeSettingButton.setText("Multi-row");
@@ -8096,38 +8096,38 @@ VertexClientPE.showShortcutManagerDialog = function() {
 				);
 				let shortcutUIPosSettingButton = shortcutUIPosSettingFunc.getButton();
 				if(shortcutUIPosSetting == "left-bottom") {
-					shortcutUIPosSettingButton.setText("Left-bottom");
+					shortcutUIPosSettingButton.setText(i18n("Left-bottom"));
 				} else if(shortcutUIPosSetting == "left-center") {
-					shortcutUIPosSettingButton.setText("Left-center");
+					shortcutUIPosSettingButton.setText(i18n("Left-center"));
 				} else if(shortcutUIPosSetting == "left-top") {
-					shortcutUIPosSettingButton.setText("Left-top");
+					shortcutUIPosSettingButton.setText(i18n("Left-top"));
 				} else if(shortcutUIPosSetting == "right-bottom") {
-					shortcutUIPosSettingButton.setText("Right-bottom");
+					shortcutUIPosSettingButton.setText(i18n("Right-bottom"));
 				} else if(shortcutUIPosSetting == "right-center") {
-					shortcutUIPosSettingButton.setText("Right-center");
+					shortcutUIPosSettingButton.setText(i18n("Right-center"));
 				} else if(shortcutUIPosSetting == "right-top") {
-					shortcutUIPosSettingButton.setText("Right-top");
+					shortcutUIPosSettingButton.setText(i18n("Right-top"));
 				}
 				shortcutUIPosSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						if(shortcutUIPosSetting == "left-bottom") {
 							shortcutUIPosSetting = "left-center";
-							shortcutUIPosSettingButton.setText("Left-center");
+							shortcutUIPosSettingButton.setText(i18n("Left-center"));
 						} else if(shortcutUIPosSetting == "left-center") {
 							shortcutUIPosSetting = "left-top";
-							shortcutUIPosSettingButton.setText("Left-top");
+							shortcutUIPosSettingButton.setText(i18n("Left-top"));
 						} else if(shortcutUIPosSetting == "left-top") {
 							shortcutUIPosSetting = "right-bottom";
-							shortcutUIPosSettingButton.setText("Right-bottom");
+							shortcutUIPosSettingButton.setText(i18n("Right-bottom"));
 						} else if(shortcutUIPosSetting == "right-bottom") {
 							shortcutUIPosSetting = "right-center";
-							shortcutUIPosSettingButton.setText("Right-center");
+							shortcutUIPosSettingButton.setText(i18n("Right-center"));
 						} else if(shortcutUIPosSetting == "right-center") {
 							shortcutUIPosSetting = "right-top";
-							shortcutUIPosSettingButton.setText("Right-top");
+							shortcutUIPosSettingButton.setText(i18n("Right-top"));
 						} else if(shortcutUIPosSetting == "right-top") {
 							shortcutUIPosSetting = "left-bottom";
-							shortcutUIPosSettingButton.setText("Left-bottom");
+							shortcutUIPosSettingButton.setText(i18n("Left-bottom"));
 						}
 						VertexClientPE.saveMainSettings();
 					}
@@ -16341,23 +16341,23 @@ function settingsScreen(fromDashboard) {
 				let tabGUIModeSettingFunc = new settingButton("TabGUI Mode", null, null,
 					function(viewArg) {
 						tabGUIModeSetting = "off";
-						tabGUIModeSettingButton.setText("Hidden");
+						tabGUIModeSettingButton.setText(i18n("Hidden"));
 					}
 				);
 				let tabGUIModeSettingButton = tabGUIModeSettingFunc.getButton();
 				if(tabGUIModeSetting == "on") {
-					tabGUIModeSettingButton.setText("Shown");
+					tabGUIModeSettingButton.setText(i18n("Shown"));
 				} else if(tabGUIModeSetting == "off") {
-					tabGUIModeSettingButton.setText("Hidden");
+					tabGUIModeSettingButton.setText(i18n("Hidden"));
 				}
 				tabGUIModeSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						if(tabGUIModeSetting == "on") {
 							tabGUIModeSetting = "off";
-							tabGUIModeSettingButton.setText("Hidden");
+							tabGUIModeSettingButton.setText(i18n("Hidden"));
 						} else if(tabGUIModeSetting == "off"){
 							tabGUIModeSetting = "on";
-							tabGUIModeSettingButton.setText("Shown");
+							tabGUIModeSettingButton.setText(i18n("Shown"));
 						}
 						VertexClientPE.saveMainSettings();
 					}
@@ -16405,14 +16405,14 @@ function settingsScreen(fromDashboard) {
 					function(viewArg) {
 						if(buttonStyleSetting != "normal") {
 							buttonStyleSetting = "normal";
-							buttonStyleSettingButton.setText("Normal");
+							buttonStyleSettingButton.setText(i18n("Normal"));
 							VertexClientPE.shouldUpdateGUI = true;
 						}
 					}
 				);
 				let buttonStyleSettingButton = buttonStyleSettingFunc.getButton();
 				if(buttonStyleSetting == "normal") {
-					buttonStyleSettingButton.setText("Normal");
+					buttonStyleSettingButton.setText(i18n("Normal"));
 				} else if(buttonStyleSetting == "normal_nostrokes") {
 					buttonStyleSettingButton.setText("Normal (no strokes)");
 				} else if(buttonStyleSetting == "transparent") {
@@ -16448,7 +16448,7 @@ function settingsScreen(fromDashboard) {
 							buttonStyleSettingButton.setText("Text only (less lag)");
 						} else if(buttonStyleSetting == "invisible") {
 							buttonStyleSetting = "normal";
-							buttonStyleSettingButton.setText("Normal");
+							buttonStyleSettingButton.setText(i18n("Normal"));
 						}
 						VertexClientPE.shouldUpdateGUI = true;
 						VertexClientPE.saveMainSettings();
@@ -16457,7 +16457,7 @@ function settingsScreen(fromDashboard) {
 
 				let buttonStrokeThicknessSettingFunc = new settingButton("Button stroke thickness", "Change the button stroke thickness.");
 				let buttonStrokeThicknessSettingButton = buttonStrokeThicknessSettingFunc.getButton();
-				buttonStrokeThicknessSettingButton.setText("Change");
+				buttonStrokeThicknessSettingButton.setText(i18n("Change"));
 				buttonStrokeThicknessSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						VertexClientPE.showButtonStrokeThicknessDialog();
@@ -16467,12 +16467,12 @@ function settingsScreen(fromDashboard) {
 				let backgroundStyleSettingFunc = new settingButton("Background style", "Changes the background style.", null,
 					function(viewArg) {
 						backgroundStyleSetting = "normal";
-						backgroundStyleSettingButton.setText("Normal");
+						backgroundStyleSettingButton.setText(i18n("Normal"));
 					}
 				);
 				let backgroundStyleSettingButton = backgroundStyleSettingFunc.getButton();
 				if(backgroundStyleSetting == "normal") {
-					backgroundStyleSettingButton.setText("Normal");
+					backgroundStyleSettingButton.setText(i18n("Normal"));
 				} else if(backgroundStyleSetting == "normal_nostrokes") {
 					backgroundStyleSettingButton.setText("Normal (no strokes)");
 				} else if(backgroundStyleSetting == "normal_noinner") {
@@ -16498,7 +16498,7 @@ function settingsScreen(fromDashboard) {
 							backgroundStyleSettingButton.setText("Rainbow");
 						} else if(backgroundStyleSetting == "rainbow") {
 							backgroundStyleSetting = "normal";
-							backgroundStyleSettingButton.setText("Normal");
+							backgroundStyleSettingButton.setText(i18n("Normal"));
 						}
 						VertexClientPE.saveMainSettings();
 						//refreshSettingsScreen();
@@ -16783,12 +16783,12 @@ function settingsScreen(fromDashboard) {
 				let menuTypeSettingFunc = new settingButton("Menu style", "Sets the Client's menu style.", null,
 					function(viewArg) {
 						menuType = "normal";
-						menuTypeSettingButton.setText("Normal");
+						menuTypeSettingButton.setText(i18n("Normal"));
 					}
 				);
 				let menuTypeSettingButton = menuTypeSettingFunc.getButton();
 				if(menuType == "normal") {
-					menuTypeSettingButton.setText("Normal");
+					menuTypeSettingButton.setText(i18n("Normal"));
 				} else if(menuType == "table") {
 					menuTypeSettingButton.setText("Table (DragOP)");
 				} else if(menuType == "fullscreen") {
@@ -16819,7 +16819,7 @@ function settingsScreen(fromDashboard) {
 						menuTypeSettingButton.setText("Tabbed (fullscreen)");
 					} else if(menuType == "tabbed_fullscreen") {
 						menuType = "normal";
-						menuTypeSettingButton.setText("Normal");
+						menuTypeSettingButton.setText(i18n("Normal"));
 					}
 					VertexClientPE.saveMainSettings();
 				}
@@ -16830,7 +16830,7 @@ function settingsScreen(fromDashboard) {
 						if(normalMenuTypeSize != "normal") {
 							normalMenuTypeSize = "normal";
 							customHeight = topBarHeight / 2;
-							normalMenuTypeSizeButton.setText("Normal");
+							normalMenuTypeSizeButton.setText(i18n("Normal"));
 							VertexClientPE.toast("You may need to restart your launcher to make it work (this only works for the normal menu style)!");
 							VertexClientPE.shouldUpdateGUI = true;
 						}
@@ -16838,7 +16838,7 @@ function settingsScreen(fromDashboard) {
 				);
 				let normalMenuTypeSizeButton = normalMenuTypeSizeFunc.getButton();
 				if(normalMenuTypeSize == "normal") {
-					normalMenuTypeSizeButton.setText("Normal");
+					normalMenuTypeSizeButton.setText(i18n("Normal"));
 				} else if(normalMenuTypeSize == "small") {
 					normalMenuTypeSizeButton.setText("Small");
 				}
@@ -16851,7 +16851,7 @@ function settingsScreen(fromDashboard) {
 						} else if(normalMenuTypeSize == "small") {
 							normalMenuTypeSize = "normal";
 							customHeight = topBarHeight / 2;
-							normalMenuTypeSizeButton.setText("Normal");
+							normalMenuTypeSizeButton.setText(i18n("Normal"));
 						}
 						VertexClientPE.saveMainSettings();
 						VertexClientPE.toast("Now restart your launcher to make it work (this only works for the normal menu style)!");
@@ -16894,14 +16894,14 @@ function settingsScreen(fromDashboard) {
 					function(viewArg) {
 						if(buttonSoundSetting != "system") {
 							buttonSoundSetting = "system";
-							buttonSoundSettingButton.setText("System");
+							buttonSoundSettingButton.setText(i18n("System"));
 							VertexClientPE.shouldUpdateGUI = true;
 						}
 					}
 				);
 				let buttonSoundSettingButton = buttonSoundSettingFunc.getButton();
 				if(buttonSoundSetting == "system") {
-					buttonSoundSettingButton.setText("System");
+					buttonSoundSettingButton.setText(i18n("System"));
 				} else if(buttonSoundSetting == "minecraft") {
 					buttonSoundSettingButton.setText("Minecraft");
 				} else if(buttonSoundSetting == "off") {
@@ -16911,7 +16911,7 @@ function settingsScreen(fromDashboard) {
 					onClick: function(viewArg) {
 						if(buttonSoundSetting == "off") {
 							buttonSoundSetting = "system";
-							buttonSoundSettingButton.setText("System");
+							buttonSoundSettingButton.setText(i18n("System"));
 						} else if(buttonSoundSetting == "system") {
 							buttonSoundSetting = "minecraft";
 							buttonSoundSettingButton.setText("Minecraft");
@@ -16965,7 +16965,7 @@ function settingsScreen(fromDashboard) {
 
 				let dashboardTileSizeSettingFunc = new settingButton("Tile size", "Sets the Dashboard tile style.");
 				let dashboardTileSizeSettingButton = dashboardTileSizeSettingFunc.getButton();
-				dashboardTileSizeSettingButton.setText("Change");
+				dashboardTileSizeSettingButton.setText(i18n("Change"));
 				dashboardTileSizeSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						VertexClientPE.showDashboardTileSizeDialog();
@@ -17075,23 +17075,23 @@ function settingsScreen(fromDashboard) {
 				let defaultToastPositionSettingFunc = new settingButton("Default toast position", "Allows you to choose the position of most client toasts.", null,
 					function(viewArg) {
 						defaultToastPositionSetting = "bottom";
-						defaultToastPositionSettingButton.setText("Bottom");
+						defaultToastPositionSettingButton.setText(i18n("Bottom"));
 					}
 				);
 				let defaultToastPositionSettingButton = defaultToastPositionSettingFunc.getButton();
 				if(defaultToastPositionSetting == "bottom") {
-					defaultToastPositionSettingButton.setText("Bottom");
+					defaultToastPositionSettingButton.setText(i18n("Bottom"));
 				} else if(defaultToastPositionSetting == "top") {
-					defaultToastPositionSettingButton.setText("Top");
+					defaultToastPositionSettingButton.setText(i18n("Top"));
 				}
 				defaultToastPositionSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						if(defaultToastPositionSetting == "top") {
 							defaultToastPositionSetting = "bottom";
-							defaultToastPositionSettingButton.setText("Bottom");
+							defaultToastPositionSettingButton.setText(i18n("Bottom"));
 						} else if(defaultToastPositionSetting == "bottom") {
 							defaultToastPositionSetting = "top";
-							defaultToastPositionSettingButton.setText("Top");
+							defaultToastPositionSettingButton.setText(i18n("Top"));
 						}
 						VertexClientPE.saveMainSettings();
 					}
@@ -17220,7 +17220,7 @@ function settingsScreen(fromDashboard) {
 				} else if(f5ButtonModeSetting == "ingame") {
 					f5ButtonModeSettingButton.setText("Ingame/HUD screen");
 				} else if(f5ButtonModeSetting == "off") {
-					f5ButtonModeSettingButton.setText("Hidden");
+					f5ButtonModeSettingButton.setText(i18n("Hidden"));
 				}
 				f5ButtonModeSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
@@ -17232,7 +17232,7 @@ function settingsScreen(fromDashboard) {
 							f5ButtonModeSettingButton.setText("Ingame/HUD screen");
 						} else if(f5ButtonModeSetting == "ingame") {
 							f5ButtonModeSetting = "off";
-							f5ButtonModeSettingButton.setText("Hidden");
+							f5ButtonModeSettingButton.setText(i18n("Hidden"));
 						}
 						VertexClientPE.saveMainSettings();
 					}
@@ -17240,7 +17240,7 @@ function settingsScreen(fromDashboard) {
 
 				let webBrowserStartPageSettingFunc = new settingButton("Webbrowser startpage", "Change the default webbrowser page.");
 				let webBrowserStartPageSettingButton = webBrowserStartPageSettingFunc.getButton();
-				webBrowserStartPageSettingButton.setText("Change");
+				webBrowserStartPageSettingButton.setText(i18n("Change"));
 				webBrowserStartPageSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						VertexClientPE.showWebbrowserStartPageDialog();
