@@ -150,9 +150,15 @@ let useCustomLangTest = false;
  */
 const i18n = (function () {
     const lang = CONTEXT.getResources().getConfiguration().locale.getLanguage(),
-        langPath = PATH + "/lang/" + lang + ".json";
+        langPath = PATH + "lang/" + lang + ".json";
     if (new File_(langPath).exists() && useCustomLangTest) {
-        const langObj = JSON.parse(getTextFromFile(langPath));
+		print(getTextFromFile(langPath));
+		let textFromFile = getTextFromFile(langPath);
+		/* while(textFromFile.replaceAll(" ", "") == "") {
+			//wait
+			print(textFromFile);
+		} */
+        const langObj = JSON.parse(textFromFile);
         return function (text, args) {
             if (text in langObj) {
                 return langObj[text].replace(/(\{%\d+\})/g, function ($1) {
@@ -887,6 +893,8 @@ function screenChangeHook(screenName) {
 				currentScreen = screenName;
 			}
 		}));
+	} else {
+		currentScreen = screenName;
 	}
 }
 
@@ -7077,19 +7085,22 @@ function getTextFromUrl(urlToUse) { //let test = new getTextFromUrl(URL); test.r
 }
 
 function getTextFromFile(filePath) {
-	let file = new File_(filePath);
-	if(!file.exists()) {
-		return "";
+	try {
+		let file = new File_(filePath);
+		if(file.exists()) {
+			return "";
+		}
+		let readed = (new BufferedReader_(new FileReader_(file)));
+		let data = new StringBuilder_();
+		let string;
+		while((string = readed.readLine()) != null) {
+			data.append(string);
+			data.append("\n");
+		}
+		return data.toString();
+	} catch(e) {
+		//error
 	}
-	let br = new BufferedReader_(new InputStreamReader_(new FileInputStream_(file)));
-	let read,
-		text = "";
-	while((read = br.readLine()) != null) {
-		text += read;
-		break;
-	}
-	br.close();
-	return text;
 }
 
 function changeFileText(filePath, newText) {
@@ -14728,7 +14739,6 @@ VertexClientPE.showSplashScreen = function () {
 							run: function () {
 								screenUI.dismiss();
 								screenUI = null;
-								screenChangeHookActive = true;
 							}
 						});
 					}
@@ -15133,6 +15143,7 @@ VertexClientPE.showSetupScreen = function() {
 									doneUI.dismiss(); //Close
 									screenUI.dismiss();
 									showMenuButton();
+									screenChangeHookActive = true;
 									VertexClientPE.showUpdate();
 									VertexClientPE.AddonUtils.loadAddons();
 									VertexClientPE.loadFloatingMenus();
@@ -15791,6 +15802,7 @@ VertexClientPE.setup = function() {
 							VertexClientPE.AddonUtils.loadAddons();
 							VertexClientPE.loadFloatingMenus();
 							showMenuButton();
+							screenChangeHookActive = true;
 							VertexClientPE.initMods(null, modsStayEnabledSetting=="on");
 						}
 
@@ -15849,8 +15861,8 @@ function downloadFile(path, url, showNotification, shouldReplace) {
 		}
 	}
 	for (var i = langs.length; i--;) {
-		if (!new File_(PATH + "/lang/", langs[i] + ".json").exists()) {
-			downloadFile(PATH + "/lang/" + langs[i] + ".json", "https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/feature/i18n/lang/" + langs[i] + ".json");
+		if (!new File_(PATH + "lang/", langs[i] + ".json").exists()) {
+			downloadFile(PATH + "lang/" + langs[i] + ".json", "https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/feature/i18n/lang/" + langs[i] + ".json");
 			isExisting = false;
 		}
 	}
