@@ -136,7 +136,28 @@ let Gravity = android.view.Gravity;
 
 EntityType.ENDER_PEARL = 87;
 
-let useCustomLangTest = false;
+readFile = (path_to_file) => {
+	let fos = null, str = null, file = null, ch = null;
+	try {
+		if (java.io.File(path_to_file).exists()) {
+			file = new java.io.File(path_to_file);
+			fos = new java.io.FileInputStream(file);
+			str = new java.lang.StringBuilder();
+			while ((ch = fos.read()) != -1) str.append(java.lang.Character(ch));
+			return String(str.toString());
+		}
+		return false;
+	} catch (e) {
+		print(e = "Load failed: " + e + " (" + e.fileName + " #" + e.lineNumber + ")");
+		clientMessage('\xa7c' + e);
+		return null;
+	}
+	finally {
+		try { fos.close(); } catch (_) {}
+	}
+}
+
+let languageSetting = "device";
 
 /**
  * Internationalization: Language Support
@@ -149,32 +170,28 @@ let useCustomLangTest = false;
  * @returns {String}
  */
 const i18n = (function () {
-    const lang = CONTEXT.getResources().getConfiguration().locale.getLanguage(),
-        langPath = PATH + "lang/" + lang + ".json";
-    if (new File_(langPath).exists() && useCustomLangTest) {
-		print(getTextFromFile(langPath));
-		let textFromFile = getTextFromFile(langPath);
-		/* while(textFromFile.replaceAll(" ", "") == "") {
-			//wait
-			print(textFromFile);
-		} */
-        const langObj = JSON.parse(textFromFile);
-        return function (text, args) {
-            if (text in langObj) {
-                return langObj[text].replace(/(\{%\d+\})/g, function ($1) {
-                    return args[$1.match(/\{%(\d+)\}/)[1]];
-                });
-            }
-            return text.replace(/(\{%\d+\})/g, function ($1) {
-                return args[$1.match(/\{%(\d+)\}/)[1]];
-            });
-        };
-    }
-    return function (text, args) {
+	const lang = CONTEXT.getResources().getConfiguration().locale.getLanguage(),
+		langPath = PATH + "lang/" + lang + ".json";
+	if (new File_(langPath).exists() && languageSetting == "device") {
+		let textFromFile = readFile(langPath);
+		print(textFromFile);
+		const langObj = JSON.parse(textFromFile);
+		return function (text, args) {
+			if (text in langObj) {
+				return langObj[text].replace(/(\{%\d+\})/g, function ($1) {
+					return args[$1.match(/\{%(\d+)\}/)[1]];
+				});
+			}
+			return text.replace(/(\{%\d+\})/g, function ($1) {
+				return args[$1.match(/\{%(\d+)\}/)[1]];
+			});
+		};
+	}
+	return function (text, args) {
 		return text.replace(/(\{%\d+\})/g, function ($1) {
 			return args[$1.match(/\{%(\d+)\}/)[1]];
 		});
-    };
+	};
 })();
 
 /**
@@ -7087,7 +7104,7 @@ function getTextFromUrl(urlToUse) { //let test = new getTextFromUrl(URL); test.r
 function getTextFromFile(filePath) {
 	try {
 		let file = new File_(filePath);
-		if(file.exists()) {
+		if(!file.exists()) {
 			return "";
 		}
 		let readed = (new BufferedReader_(new FileReader_(file)));
@@ -8339,7 +8356,7 @@ function setupAndroidUI() {
 	// Set the content to appear under the system bars so that the content
 	// doesn't resize when the system bars hide and show.
 	let decorView = CONTEXT.getWindow().getDecorView();
-    decorView.setSystemUiVisibility(
+	decorView.setSystemUiVisibility(
 			View_.SYSTEM_UI_FLAG_LAYOUT_STABLE
 			| View_.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 			| View_.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -12549,7 +12566,6 @@ const TYPE_WIFI = 1;
 const TYPE_MOBILE = 2;
 const TYPE_NOT_CONNECTED = 0;
 
-
 function getConnectivityStatus(context) {
 	let cm = context.getSystemService(Context_.CONNECTIVITY_SERVICE);
 
@@ -15834,7 +15850,8 @@ function downloadFile(path, url, showNotification, shouldReplace) {
 		showNotification = showNotification || false;
 		shouldReplace = shouldReplace || false;
 		let file = new File_(path);
-		if(shouldReplace && file.exists()) {
+		let internetAvailable = getConnectivityStatus(CONTEXT) != TYPE_NOT_CONNECTED;
+		if(internetAvailable && shouldReplace && file.exists()) {
 			file.delete();
 		}
 		let filename = file.getName(),
@@ -15861,10 +15878,11 @@ function downloadFile(path, url, showNotification, shouldReplace) {
 		}
 	}
 	for (var i = langs.length; i--;) {
-		if (!new File_(PATH + "lang/", langs[i] + ".json").exists()) {
-			downloadFile(PATH + "lang/" + langs[i] + ".json", "https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/feature/i18n/lang/" + langs[i] + ".json");
+		let langFile = new File_(PATH + "lang/", langs[i] + ".json");
+		if (!langFile.exists()) {
 			isExisting = false;
 		}
+		downloadFile(PATH + "lang/" + langs[i] + ".json", "https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/feature/i18n/lang/" + langs[i] + ".json", false, true);
 	}
 	if (isExisting) {
 		steveHead_SCALED = Bitmap_.createScaledBitmap(imgSteveHead, barLayoutHeight - dip2px(2), barLayoutHeight - dip2px(2), false);
@@ -16103,11 +16121,11 @@ VertexClientPE.showTrails = function() {
 
 VertexClientPE.getMyScriptName = function() {
 	let scripts = net.zhuoweizhang.mcpelauncher.ScriptManager.scripts;
-    for(let i = 0; i < scripts.size(); i++) {
-        let script = scripts.get(i);
-        let scope = script.scope;
-        if(org.mozilla.javascript.ScriptableObject.hasProperty(scope, "VertexClientPE"))
-            return script.name;
+	for(let i = 0; i < scripts.size(); i++) {
+		let script = scripts.get(i);
+		let scope = script.scope;
+		if(org.mozilla.javascript.ScriptableObject.hasProperty(scope, "VertexClientPE"))
+			return script.name;
 	}
 }
 
