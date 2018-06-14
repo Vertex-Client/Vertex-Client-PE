@@ -174,7 +174,6 @@ const i18n = (function () {
 		langPath = PATH + "lang/" + lang + ".json";
 	if (new File_(langPath).exists() && languageSetting == "device") {
 		let textFromFile = readFile(langPath);
-		print(textFromFile);
 		const langObj = JSON.parse(textFromFile);
 		return function (text, args) {
 			if (text in langObj) {
