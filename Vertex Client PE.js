@@ -15438,24 +15438,29 @@ let accountManagerLayoutLeft;
 let accountManagerLayoutCenter;
 let accountManagerLayoutRight;
 
-ModPE.restart = function () {
+ModPE.restart = function() {
 	try {
-		let alarmManager = CONTEXT.getSystemService("alarm"),
+		if(Launcher.isBlockLauncher()) {
+			VertexClientPE.toast("Restarting...");
+			net.zhuoweizhang.mcpelauncher.ui.NerdyStuffActivity.forceRestart(ctx, 500, true);
+		} else {
+			let alarmManager = CONTEXT.getSystemService("alarm"),
 			intent = CONTEXT.getPackageManager().getLaunchIntentForPackage(CONTEXT.getPackageName());
-		intent.addFlags(335544320);
-		alarmManager.set(3, SystemClock_.elapsedRealtime() + 500, PendingIntent_.getActivity(CONTEXT, 0, intent, 0));
-		new File_(CONTEXT.getFilesDir() + "/running.lock").delete();
-		new Thread_({
-			run() {
-				VertexClientPE.toast("Restarting...");
-				Thread_.sleep(500);
-				System_.exit(0);
-			}
-		}).start();
-	} catch (e) {
+			intent.addFlags(335544320);
+			alarmManager.set(3, SystemClock_.elapsedRealtime() + 500, PendingIntent_.getActivity(CONTEXT, 0, intent, 0));
+			new File_(CONTEXT.getFilesDir() + "/running.lock").delete();
+			new Thread_({
+				run() {
+					VertexClientPE.toast("Restarting...");
+					Thread_.sleep(500);
+					System_.exit(0);
+				}
+			}).start();
+		}
+	} catch(e) {
 		print("@" + e.lineNumber + ": " + e);
 	}
-};
+}
 
 VertexClientPE.removeAccount = function(str, layout, view) {
 	if(VertexClientPE.accounts.length() != null) {
