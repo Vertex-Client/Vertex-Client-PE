@@ -3891,41 +3891,41 @@ var healthTags = {
 		);
 		let healthTagsNameSettingButton = healthTagsNameSettingFunc.getButton();
 		if(healthTagsNameSetting == "blue") {
-			healthTagsNameSettingButton.setText("Blue");
+			healthTagsNameSettingButton.setText(i18n("Blue"));
 		} else if(healthTagsNameSetting == "green") {
-			healthTagsNameSettingButton.setText("Green");
+			healthTagsNameSettingButton.setText(i18n("Green"));
 		} else if(healthTagsNameSetting == "aqua") {
 			healthTagsNameSettingButton.setText("Aqua");
 		} else if(healthTagsNameSetting == "red") {
-			healthTagsNameSettingButton.setText("Red");
+			healthTagsNameSettingButton.setText(i18n("Red"));
 		} else if(healthTagsNameSetting == "light_purple") {
 			healthTagsNameSettingButton.setText("Light Purple");
 		} else if(healthTagsNameSetting == "yellow") {
-			healthTagsNameSettingButton.setText("Yellow");
+			healthTagsNameSettingButton.setText(i18n("Yellow"));
 		}
 		healthTagsNameSettingButton.setOnClickListener(new View_.OnClickListener({
 			onClick: function(viewArg) {
 				if(healthTagsNameSetting == "white") {
 					healthTagsNameSetting = "blue";
-					healthTagsNameSettingButton.setText("Blue");
+					healthTagsNameSettingButton.setText(i18n("Blue"));
 				} else if(healthTagsNameSetting == "blue") {
 					healthTagsNameSetting = "green";
-					healthTagsNameSettingButton.setText("Green");
+					healthTagsNameSettingButton.setText(i18n("Green"));
 				} else if(healthTagsNameSetting == "green") {
 					healthTagsNameSetting = "aqua";
 					healthTagsNameSettingButton.setText("Aqua");
 				} else if(healthTagsNameSetting == "aqua") {
 					healthTagsNameSetting = "red";
-					healthTagsNameSettingButton.setText("Red");
+					healthTagsNameSettingButton.setText(i18n("Red"));
 				} else if(healthTagsNameSetting == "red") {
 					healthTagsNameSetting = "light_purple";
 					healthTagsNameSettingButton.setText("Light Purple");
 				} else if(healthTagsNameSetting == "light_purple") {
 					healthTagsNameSetting = "yellow";
-					healthTagsNameSettingButton.setText("Yellow");
+					healthTagsNameSettingButton.setText(i18n("Yellow"));
 				} else if(healthTagsNameSetting == "yellow") {
 					healthTagsNameSetting = "white";
-					healthTagsNameSettingButton.setText("White");
+					healthTagsNameSettingButton.setText(i18n("White"));
 				}
 				VertexClientPE.saveMainSettings();
 				VertexClientPE.initHealthTags();
@@ -3935,47 +3935,47 @@ var healthTags = {
 		let healthTagsHealthSettingFunc = new settingButton("Mob health color on nametag", null, width,
 			function(viewArg) {
 				healthTagsHealthSetting = "red";
-				healthTagsHealthSettingButton.setText("Red");
+				healthTagsHealthSettingButton.setText(i18n("Red"));
 				VertexClientPE.initHealthTags();
 			}
 		);
 		let healthTagsHealthSettingButton = healthTagsHealthSettingFunc.getButton();
 		if(healthTagsHealthSetting == "blue") {
-			healthTagsHealthSettingButton.setText("Blue");
+			healthTagsHealthSettingButton.setText(i18n("Blue"));
 		} else if(healthTagsHealthSetting == "green") {
-			healthTagsHealthSettingButton.setText("Green");
+			healthTagsHealthSettingButton.setText(i18n("Green"));
 		} else if(healthTagsHealthSetting == "aqua") {
 			healthTagsHealthSettingButton.setText("Aqua");
 		} else if(healthTagsHealthSetting == "red") {
-			healthTagsHealthSettingButton.setText("Red");
+			healthTagsHealthSettingButton.setText(i18n("Red"));
 		} else if(healthTagsHealthSetting == "light_purple") {
 			healthTagsHealthSettingButton.setText("Light Purple");
 		} else if(healthTagsHealthSetting == "yellow") {
-			healthTagsHealthSettingButton.setText("Yellow");
+			healthTagsHealthSettingButton.setText(i18n("Yellow"));
 		}
 		healthTagsHealthSettingButton.setOnClickListener(new View_.OnClickListener({
 			onClick: function(viewArg) {
 				if(healthTagsHealthSetting == "white") {
 					healthTagsHealthSetting = "blue";
-					healthTagsHealthSettingButton.setText("Blue");
+					healthTagsHealthSettingButton.setText(i18n("Blue"));
 				} else if(healthTagsHealthSetting == "blue") {
 					healthTagsHealthSetting = "green";
-					healthTagsHealthSettingButton.setText("Green");
+					healthTagsHealthSettingButton.setText(i18n("Green"));
 				} else if(healthTagsHealthSetting == "green") {
 					healthTagsHealthSetting = "aqua";
 					healthTagsHealthSettingButton.setText("Aqua");
 				} else if(healthTagsHealthSetting == "aqua") {
 					healthTagsHealthSetting = "red";
-					healthTagsHealthSettingButton.setText("Red");
+					healthTagsHealthSettingButton.setText(i18n("Red"));
 				} else if(healthTagsHealthSetting == "red") {
 					healthTagsHealthSetting = "light_purple";
 					healthTagsHealthSettingButton.setText("Light Purple");
 				} else if(healthTagsHealthSetting == "light_purple") {
 					healthTagsHealthSetting = "yellow";
-					healthTagsHealthSettingButton.setText("Yellow");
+					healthTagsHealthSettingButton.setText(i18n("Yellow"));
 				} else if(healthTagsHealthSetting == "yellow") {
 					healthTagsHealthSetting = "white";
-					healthTagsHealthSettingButton.setText("White");
+					healthTagsHealthSettingButton.setText(i18n("White"));
 				}
 				VertexClientPE.saveMainSettings();
 				VertexClientPE.initHealthTags();
@@ -5476,7 +5476,6 @@ var hitboxes = {
 
 var elytraBoost = {
 	name: "ElytraBoost",
-	//desc: i18n("Boosts elytra (Toolbox only)."),
 	desc: i18n("Boosts elytra."),
 	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
@@ -7101,22 +7100,19 @@ function getTextFromUrl(urlToUse) { //let test = new getTextFromUrl(URL); test.r
 }
 
 function getTextFromFile(filePath) {
-	try {
-		let file = new File_(filePath);
-		if(!file.exists()) {
-			return "";
-		}
-		let readed = (new BufferedReader_(new FileReader_(file)));
-		let data = new StringBuilder_();
-		let string;
-		while((string = readed.readLine()) != null) {
-			data.append(string);
-			data.append("\n");
-		}
-		return data.toString();
-	} catch(e) {
-		//error
+	let file = new File_(filePath);
+	if(!file.exists()) {
+		return "";
 	}
+	let br = new BufferedReader_(new InputStreamReader_(new FileInputStream_(file)));
+	let read,
+		text = "";
+	while((read = br.readLine()) != null) {
+		text += read;
+		break;
+	}
+	br.close();
+	return text;
 }
 
 function changeFileText(filePath, newText) {
@@ -7371,7 +7367,7 @@ VertexClientPE.showRemoteViewTargetDialog = function() {
 				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 				dialog.setContentView(dialogLayout);
-				dialog.setTitle(i18n("RemoteView | Target by username"));
+				dialog.setTitle("RemoteView | Target player by username");
 				inputBar.setHint(i18n("Username"));
 				dialog.show();
 				btn.setOnClickListener(new View_.OnClickListener() {
@@ -8554,7 +8550,7 @@ VertexClientPE.showSettingSelectorDialog = function(sRightButton, dialogTitle, s
 				let tempButton;
 
 				selectionArray.forEach(function(element, index, array) {
-					tempButton = clientButton(element);
+					tempButton = clientButton(i18n(element));
 					tempButton.setLayoutParams(new TableRow_.LayoutParams(display.widthPixels / 2.5, LinearLayout_.LayoutParams.WRAP_CONTENT));
 					tempButton.setPadding(0, 0, 0, 0);
 					if(index == 0 && customFirstOnClick != null) {
@@ -8568,7 +8564,7 @@ VertexClientPE.showSettingSelectorDialog = function(sRightButton, dialogTitle, s
 						tempButton.setOnClickListener(new View_.OnClickListener() {
 							onClick: function(viewArg) {
 								eval(varToChange + " = '" + element.toLowerCase() + "'");
-								sRightButton.setText(element);
+								sRightButton.setText(i18n(element));
 								VertexClientPE.shouldUpdateGUI = true;
 								dialog.dismiss();
 							}
@@ -9318,41 +9314,41 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 					onClick: function(v) {
 						if(currentColor == "green") {
 							currentColor = "red";
-							tileDropDownCurrentColorButton.setText("Red");
+							tileDropDownCurrentColorButton.setText(i18n("Red"));
 						} else if(currentColor == "red") {
 							currentColor = "blue";
-							tileDropDownCurrentColorButton.setText("Blue");
+							tileDropDownCurrentColorButton.setText(i18n("Blue"));
 						} else if(currentColor == "blue") {
 							currentColor = "purple";
-							tileDropDownCurrentColorButton.setText("Purple");
+							tileDropDownCurrentColorButton.setText(i18n("Purple"));
 						} else if(currentColor == "purple") {
 							currentColor = "violet";
-							tileDropDownCurrentColorButton.setText("Violet");
+							tileDropDownCurrentColorButton.setText(i18n("Violet"));
 						} else if(currentColor == "violet") {
 							currentColor = "yellow";
-							tileDropDownCurrentColorButton.setText("Yellow");
+							tileDropDownCurrentColorButton.setText(i18n("Yellow"));
 						} else if(currentColor == "yellow") {
 							currentColor = "orange";
-							tileDropDownCurrentColorButton.setText("Orange");
+							tileDropDownCurrentColorButton.setText(i18n("Orange"));
 						} else if(currentColor == "orange") {
 							currentColor = "brown";
-							tileDropDownCurrentColorButton.setText("Brown");
+							tileDropDownCurrentColorButton.setText(i18n("Brown"));
 						} else if(currentColor == "brown") {
 							currentColor = "grey";
-							tileDropDownCurrentColorButton.setText("Grey");
+							tileDropDownCurrentColorButton.setText(i18n("Grey"));
 						} else if(currentColor == "grey") {
 							currentColor = "white";
-							tileDropDownCurrentColorButton.setText("White");
+							tileDropDownCurrentColorButton.setText(i18n("White"));
 						} else if(currentColor == "white") {
 							currentColor = "black";
-							tileDropDownCurrentColorButton.setText("Black");
+							tileDropDownCurrentColorButton.setText(i18n("Black"));
 						} else if(currentColor == "black") {
 							currentColor = "green";
-							tileDropDownCurrentColorButton.setText("Green");
+							tileDropDownCurrentColorButton.setText(i18n("Green"));
 						}
 						editor.putString("VertexClientPE.tiles." + defaultName + ".color", currentColor);
 						editor.commit();
-						tileDropDownUseLightColorCheckBox.setEnabled(!(currentColor != "green" && currentColor != "red" && currentColor != "blue"));
+						tileDropDownUseLightColorCheckBox.setEnabled(currentColor == "green" || currentColor == "red" || currentColor == "blue");
 						VertexClientPE.setupButton(tileView, currentName, currentColor, false, currentUseLightColor, "tile", 0.1);
 					}
 				}));
@@ -16366,7 +16362,7 @@ function settingsScreen(fromDashboard) {
 				let themeTitle = clientSectionTitle("Theme", "theme");
 
 				let themeArray = ["Custom RGB", "Green", "Red", "Blue", "Purple", "Violet", "Yellow", "Orange", "Brown", "Grey", "White", "Black"];
-				let themeSettingFunc = new settingSelector("Color", "Choose a color.", "Color Selector", themeArray, capitalizeColorString(themeSetting), "themeSetting",
+				let themeSettingFunc = new settingSelector(i18n("Color"), "Choose a color.", "Color Selector", themeArray, i18n(capitalizeColorString(themeSetting)), "themeSetting",
 				function(sRightButton, dialogTitle) {
 					VertexClientPE.showCustomRGBDialog(sRightButton, dialogTitle);
 				});
@@ -16545,43 +16541,43 @@ function settingsScreen(fromDashboard) {
 				if(mcpeGUISetting == "default") {
 					mcpeGUISettingButton.setText("Default");
 				} else if(mcpeGUISetting == "green") {
-					mcpeGUISettingButton.setText("Green");
+					mcpeGUISettingButton.setText(i18n("Green"));
 				} else if(mcpeGUISetting == "red") {
-					mcpeGUISettingButton.setText("Red");
+					mcpeGUISettingButton.setText(i18n("Red"));
 				} else if(mcpeGUISetting == "blue") {
-					mcpeGUISettingButton.setText("Blue");
+					mcpeGUISettingButton.setText(i18n("Blue"));
 				} else if(mcpeGUISetting == "purple") {
-					mcpeGUISettingButton.setText("Purple");
+					mcpeGUISettingButton.setText(i18n("Purple"));
 				} else if(mcpeGUISetting == "yellow") {
-					mcpeGUISettingButton.setText("Yellow");
+					mcpeGUISettingButton.setText(i18n("Yellow"));
 				} else if(mcpeGUISetting == "white") {
-					mcpeGUISettingButton.setText("White");
+					mcpeGUISettingButton.setText(i18n("White"));
 				} else if(mcpeGUISetting == "black") {
-					mcpeGUISettingButton.setText("Black");
+					mcpeGUISettingButton.setText(i18n("Black"));
 				}
 				mcpeGUISettingButton.setOnClickListener(new View_.OnClickListener({
 				onClick: function(viewArg) {
 					if(mcpeGUISetting == "default") {
 						mcpeGUISetting = "green";
-						mcpeGUISettingButton.setText("Green");
+						mcpeGUISettingButton.setText(i18n("Green"));
 					} else if(mcpeGUISetting == "green") {
 						mcpeGUISetting = "red";
-						mcpeGUISettingButton.setText("Red");
+						mcpeGUISettingButton.setText(i18n("Red"));
 					} else if(mcpeGUISetting == "red") {
 						mcpeGUISetting = "blue";
-						mcpeGUISettingButton.setText("Blue");
+						mcpeGUISettingButton.setText(i18n("Blue"));
 					} else if(mcpeGUISetting == "blue") {
 						mcpeGUISetting = "purple";
-						mcpeGUISettingButton.setText("Purple");
+						mcpeGUISettingButton.setText(i18n("Purple"));
 					} else if(mcpeGUISetting == "purple") {
 						mcpeGUISetting = "yellow";
-						mcpeGUISettingButton.setText("Yellow");
+						mcpeGUISettingButton.setText(i18n("Yellow"));
 					} else if(mcpeGUISetting == "yellow") {
 						mcpeGUISetting = "white";
-						mcpeGUISettingButton.setText("White");
+						mcpeGUISettingButton.setText(i18n("White"));
 					} else if(mcpeGUISetting == "white") {
 						mcpeGUISetting = "black";
-						mcpeGUISettingButton.setText("Black");
+						mcpeGUISettingButton.setText(i18n("Black"));
 					} else if(mcpeGUISetting == "black") {
 						mcpeGUISetting = "default";
 						mcpeGUISettingButton.setText("Default");
@@ -16629,7 +16625,7 @@ function settingsScreen(fromDashboard) {
 					function(viewArg) {
 						if(modButtonColorBlockedSetting != "red") {
 							modButtonColorBlockedSetting = "red";
-							modButtonColorBlockedSettingButton.setText("Red");
+							modButtonColorBlockedSettingButton.setText(i18n("Red"));
 							VertexClientPE.setupModButtonColors();
 							VertexClientPE.shouldUpdateGUI = true;
 						}
@@ -16637,38 +16633,38 @@ function settingsScreen(fromDashboard) {
 				);
 				let modButtonColorBlockedSettingButton = modButtonColorBlockedSettingFunc.getButton();
 				if(modButtonColorBlockedSetting == "red") {
-					modButtonColorBlockedSettingButton.setText("Red");
+					modButtonColorBlockedSettingButton.setText(i18n("Red"));
 				} else if(modButtonColorBlockedSetting == "green") {
-					modButtonColorBlockedSettingButton.setText("Green");
+					modButtonColorBlockedSettingButton.setText(i18n("Green"));
 				} else if(modButtonColorBlockedSetting == "blue") {
-					modButtonColorBlockedSettingButton.setText("Blue");
+					modButtonColorBlockedSettingButton.setText(i18n("Blue"));
 				} else if(modButtonColorBlockedSetting == "yellow") {
-					modButtonColorBlockedSettingButton.setText("Yellow");
+					modButtonColorBlockedSettingButton.setText(i18n("Yellow"));
 				} else if(modButtonColorBlockedSetting == "white") {
-					modButtonColorBlockedSettingButton.setText("White");
+					modButtonColorBlockedSettingButton.setText(i18n("White"));
 				} else if(modButtonColorBlockedSetting == "black") {
-					modButtonColorBlockedSettingButton.setText("Black");
+					modButtonColorBlockedSettingButton.setText(i18n("Black"));
 				}
 				modButtonColorBlockedSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						if(modButtonColorBlockedSetting == "red") {
 							modButtonColorBlockedSetting = "green";
-							modButtonColorBlockedSettingButton.setText("Green");
+							modButtonColorBlockedSettingButton.setText(i18n("Green"));
 						} else if(modButtonColorBlockedSetting == "green") {
 							modButtonColorBlockedSetting = "blue";
-							modButtonColorBlockedSettingButton.setText("Blue");
+							modButtonColorBlockedSettingButton.setText(i18n("Blue"));
 						} else if(modButtonColorBlockedSetting == "blue") {
 							modButtonColorBlockedSetting = "yellow";
-							modButtonColorBlockedSettingButton.setText("Yellow");
+							modButtonColorBlockedSettingButton.setText(i18n("Yellow"));
 						} else if(modButtonColorBlockedSetting == "yellow") {
 							modButtonColorBlockedSetting = "white";
-							modButtonColorBlockedSettingButton.setText("White");
+							modButtonColorBlockedSettingButton.setText(i18n("White"));
 						} else if(modButtonColorBlockedSetting == "white") {
 							modButtonColorBlockedSetting = "black";
-							modButtonColorBlockedSettingButton.setText("Black");
+							modButtonColorBlockedSettingButton.setText(i18n("Black"));
 						} else if(modButtonColorBlockedSetting == "black") {
 							modButtonColorBlockedSetting = "red";
-							modButtonColorBlockedSettingButton.setText("Red");
+							modButtonColorBlockedSettingButton.setText(i18n("Red"));
 						}
 						VertexClientPE.setupModButtonColors();
 						VertexClientPE.saveMainSettings();
@@ -16680,7 +16676,7 @@ function settingsScreen(fromDashboard) {
 					function(viewArg) {
 						if(modButtonColorEnabledSetting != "green") {
 							modButtonColorEnabledSetting = "green";
-							modButtonColorEnabledSettingButton.setText("Green");
+							modButtonColorEnabledSettingButton.setText(i18n("Green"));
 							VertexClientPE.setupModButtonColors();
 							VertexClientPE.shouldUpdateGUI = true;
 						}
@@ -16688,38 +16684,38 @@ function settingsScreen(fromDashboard) {
 				);
 				let modButtonColorEnabledSettingButton = modButtonColorEnabledSettingFunc.getButton();
 				if(modButtonColorEnabledSetting == "red") {
-					modButtonColorEnabledSettingButton.setText("Red");
+					modButtonColorEnabledSettingButton.setText(i18n("Red"));
 				} else if(modButtonColorEnabledSetting == "green") {
-					modButtonColorEnabledSettingButton.setText("Green");
+					modButtonColorEnabledSettingButton.setText(i18n("Green"));
 				} else if(modButtonColorEnabledSetting == "blue") {
-					modButtonColorEnabledSettingButton.setText("Blue");
+					modButtonColorEnabledSettingButton.setText(i18n("Blue"));
 				} else if(modButtonColorEnabledSetting == "yellow") {
-					modButtonColorEnabledSettingButton.setText("Yellow");
+					modButtonColorEnabledSettingButton.setText(i18n("Yellow"));
 				} else if(modButtonColorEnabledSetting == "white") {
-					modButtonColorEnabledSettingButton.setText("White");
+					modButtonColorEnabledSettingButton.setText(i18n("White"));
 				} else if(modButtonColorEnabledSetting == "black") {
-					modButtonColorEnabledSettingButton.setText("Black");
+					modButtonColorEnabledSettingButton.setText(i18n("Black"));
 				}
 				modButtonColorEnabledSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						if(modButtonColorEnabledSetting == "red") {
 							modButtonColorEnabledSetting = "green";
-							modButtonColorEnabledSettingButton.setText("Green");
+							modButtonColorEnabledSettingButton.setText(i18n("Green"));
 						} else if(modButtonColorEnabledSetting == "green") {
 							modButtonColorEnabledSetting = "blue";
-							modButtonColorEnabledSettingButton.setText("Blue");
+							modButtonColorEnabledSettingButton.setText(i18n("Blue"));
 						} else if(modButtonColorEnabledSetting == "blue") {
 							modButtonColorEnabledSetting = "yellow";
-							modButtonColorEnabledSettingButton.setText("Yellow");
+							modButtonColorEnabledSettingButton.setText(i18n("Yellow"));
 						} else if(modButtonColorEnabledSetting == "yellow") {
 							modButtonColorEnabledSetting = "white";
-							modButtonColorEnabledSettingButton.setText("White");
+							modButtonColorEnabledSettingButton.setText(i18n("White"));
 						} else if(modButtonColorEnabledSetting == "white") {
 							modButtonColorEnabledSetting = "black";
-							modButtonColorEnabledSettingButton.setText("Black");
+							modButtonColorEnabledSettingButton.setText(i18n("Black"));
 						} else if(modButtonColorEnabledSetting == "black") {
 							modButtonColorEnabledSetting = "red";
-							modButtonColorEnabledSettingButton.setText("Red");
+							modButtonColorEnabledSettingButton.setText(i18n("Red"));
 						}
 						VertexClientPE.setupModButtonColors();
 						VertexClientPE.saveMainSettings();
@@ -16731,7 +16727,7 @@ function settingsScreen(fromDashboard) {
 					function(viewArg) {
 						if(modButtonColorDisabledSetting != "white") {
 							modButtonColorDisabledSetting = "white";
-							modButtonColorDisabledSettingButton.setText("White");
+							modButtonColorDisabledSettingButton.setText(i18n("White"));
 							VertexClientPE.setupModButtonColors();
 							VertexClientPE.shouldUpdateGUI = true;
 						}
@@ -16739,38 +16735,38 @@ function settingsScreen(fromDashboard) {
 				);
 				let modButtonColorDisabledSettingButton = modButtonColorDisabledSettingFunc.getButton();
 				if(modButtonColorDisabledSetting == "red") {
-					modButtonColorDisabledSettingButton.setText("Red");
+					modButtonColorDisabledSettingButton.setText(i18n("Red"));
 				} else if(modButtonColorDisabledSetting == "green") {
-					modButtonColorDisabledSettingButton.setText("Green");
+					modButtonColorDisabledSettingButton.setText(i18n("Green"));
 				} else if(modButtonColorDisabledSetting == "blue") {
-					modButtonColorDisabledSettingButton.setText("Blue");
+					modButtonColorDisabledSettingButton.setText(i18n("Blue"));
 				} else if(modButtonColorDisabledSetting == "yellow") {
-					modButtonColorDisabledSettingButton.setText("Yellow");
+					modButtonColorDisabledSettingButton.setText(i18n("Yellow"));
 				} else if(modButtonColorDisabledSetting == "white") {
-					modButtonColorDisabledSettingButton.setText("White");
+					modButtonColorDisabledSettingButton.setText(i18n("White"));
 				} else if(modButtonColorDisabledSetting == "black") {
-					modButtonColorDisabledSettingButton.setText("Black");
+					modButtonColorDisabledSettingButton.setText(i18n("Black"));
 				}
 				modButtonColorDisabledSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						if(modButtonColorDisabledSetting == "red") {
 							modButtonColorDisabledSetting = "green";
-							modButtonColorDisabledSettingButton.setText("Green");
+							modButtonColorDisabledSettingButton.setText(i18n("Green"));
 						} else if(modButtonColorDisabledSetting == "green") {
 							modButtonColorDisabledSetting = "blue";
-							modButtonColorDisabledSettingButton.setText("Blue");
+							modButtonColorDisabledSettingButton.setText(i18n("Blue"));
 						} else if(modButtonColorDisabledSetting == "blue") {
 							modButtonColorDisabledSetting = "yellow";
-							modButtonColorDisabledSettingButton.setText("Yellow");
+							modButtonColorDisabledSettingButton.setText(i18n("Yellow"));
 						} else if(modButtonColorDisabledSetting == "yellow") {
 							modButtonColorDisabledSetting = "white";
-							modButtonColorDisabledSettingButton.setText("White");
+							modButtonColorDisabledSettingButton.setText(i18n("White"));
 						} else if(modButtonColorDisabledSetting == "white") {
 							modButtonColorDisabledSetting = "black";
-							modButtonColorDisabledSettingButton.setText("Black");
+							modButtonColorDisabledSettingButton.setText(i18n("Black"));
 						} else if(modButtonColorDisabledSetting == "black") {
 							modButtonColorDisabledSetting = "red";
-							modButtonColorDisabledSettingButton.setText("Red");
+							modButtonColorDisabledSettingButton.setText(i18n("Red"));
 						}
 						VertexClientPE.setupModButtonColors();
 						VertexClientPE.saveMainSettings();
@@ -17211,14 +17207,14 @@ function settingsScreen(fromDashboard) {
 				let f5ButtonModeSettingFunc = new settingButton("F5 button mode", null, null,
 					function(viewArg) {
 						f5ButtonModeSetting = "pause";
-						f5ButtonModeSettingButton.setText("Pause screen");
+						f5ButtonModeSettingButton.setText(i18n("Pause screen"));
 					}
 				);
 				let f5ButtonModeSettingButton = f5ButtonModeSettingFunc.getButton();
 				if(f5ButtonModeSetting == "pause") {
-					f5ButtonModeSettingButton.setText("Pause screen");
+					f5ButtonModeSettingButton.setText(i18n("Pause screen"));
 				} else if(f5ButtonModeSetting == "ingame") {
-					f5ButtonModeSettingButton.setText("Ingame/HUD screen");
+					f5ButtonModeSettingButton.setText(i18n("Ingame/HUD screen"));
 				} else if(f5ButtonModeSetting == "off") {
 					f5ButtonModeSettingButton.setText(i18n("Hidden"));
 				}
@@ -17226,10 +17222,10 @@ function settingsScreen(fromDashboard) {
 					onClick: function(viewArg) {
 						if(f5ButtonModeSetting == "off") {
 							f5ButtonModeSetting = "pause";
-							f5ButtonModeSettingButton.setText("Pause screen");
+							f5ButtonModeSettingButton.setText(i18n("Pause screen"));
 						} else if(f5ButtonModeSetting == "pause") {
 							f5ButtonModeSetting = "ingame";
-							f5ButtonModeSettingButton.setText("Ingame/HUD screen");
+							f5ButtonModeSettingButton.setText(i18n("Ingame/HUD screen"));
 						} else if(f5ButtonModeSetting == "ingame") {
 							f5ButtonModeSetting = "off";
 							f5ButtonModeSettingButton.setText(i18n("Hidden"));
