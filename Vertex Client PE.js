@@ -1077,6 +1077,7 @@ let VertexClientPE = {
 	isSupported: function() {
 		return isSupported;
 	},
+	filterWords: new JSONArray_(),
 	accounts: new JSONArray_(),
 	friends: new JSONArray_(),
 	currentWorld: {
@@ -3375,6 +3376,7 @@ var tapExplosion = {
 		this.state = !this.state;
 	},
 	onUseItem: function(x, y, z, itemId, blockId, side, blockDamage) {
+		//preventDefault();
 		explode(x, y, z, 4);
 	}
 }
@@ -5535,6 +5537,15 @@ var prevent = {
 				VertexClientPE.saveMainSettings();
 			}
 		});
+		
+		let preventChatCheckBox = clientCheckBox("Prevent explosions");
+		preventChatCheckBox.setChecked(preventExplosionsSetting == "on");
+		preventChatCheckBox.setOnClickListener(new View_.OnClickListener() {
+			onClick: function(v) {
+				preventExplosionsSetting = v.isChecked()?"on":"off";
+				VertexClientPE.saveMainSettings();
+			}
+		});
 
 		let preventExplosionsCheckBox = clientCheckBox("Prevent explosions");
 		preventExplosionsCheckBox.setChecked(preventExplosionsSetting == "on");
@@ -6239,6 +6250,57 @@ var float_mod = {
 	}
 }
 
+var chatFilter = {
+	name: "ChatFilter",
+	desc: i18n("Allows you to filter specific words from the chat."),
+	category: VertexClientPE.category.PLAYER,
+	type: "Mod",
+	state: false,
+	getSettingsLayout: function() {
+		let chatFilterLayout = new LinearLayout_(CONTEXT);
+		chatFilterLayout.setOrientation(LinearLayout_.HORIZONTAL);
+
+		let chatFilterWordsLength = VertexClientPE.filterWords.length();
+		if(!(chatFilterWordsLength <= 0)) {
+			for(let i = 0; i < chatFilterWordsLength; i++) {
+				let chatFilterButton = filterWordButton(VertexClientPE.filterWords.get(i), chatFilterLayout);
+				chatFilterLayout.addView(chatFilterButton);
+			}
+		}
+
+		return chatFilterLayout;
+	},
+	isExpMod: function() {
+		return true;
+	},
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onChatReceivePrevent: true,
+	onServerMessageReceivePrevent: true,
+	onChatReceive: function(message, sender) {
+		//print(message);
+		this.onChatReceivePrevent = false;
+		if(!this.state) return;
+		if(VertexClientPE.shouldFilterWord(message)) {
+			//preventDefault();
+			this.onChatReceivePrevent = true;
+		}
+	},
+	onServerMessageReceive: function(message, sender) {
+		//sender is unknown
+		this.onServerMessageReceivePrevent = false;
+		if(!this.state) return;
+		if(VertexClientPE.shouldFilterWord(message)) {
+			//preventDefault();
+			this.onServerMessageReceivePrevent = true;
+		}
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(aimbot);
 VertexClientPE.registerModule(antiBurn);
@@ -6313,6 +6375,7 @@ VertexClientPE.registerModule(antiHunger);
 VertexClientPE.registerModule(autoLeave);
 VertexClientPE.registerModule(autoSpammer);
 VertexClientPE.registerModule(autoSwitch);
+VertexClientPE.registerModule(chatFilter);
 VertexClientPE.registerModule(chatRepeat);
 VertexClientPE.registerModule(coordsDisplay);
 VertexClientPE.registerModule(derp);
@@ -6473,7 +6536,24 @@ function chatReceiveHook(text, sender) {
 	});
 }
 
-function textPacketReceiveHook(type, sender, message) {
+function serverMessageReceiveHook(text) {
+	let sender = "null";
+	VertexClientPE.modules.forEach(function(element, index, array) {
+		if(element.hasOwnProperty("onServerMessageReceive")) {
+			if(bypassState && element.hasOwnProperty("canBypassBypassMod")) {
+				if(!element.canBypassBypassMod()) {
+					return;
+				}
+			}
+
+			if(Launcher.isBlockLauncher()) {
+				element.onChatReceive(text, sender);
+			}
+		}
+	});
+}
+
+/* function textPacketReceiveHook(type, sender, message) {
 	if(type != 0) {
 		VertexClientPE.modules.forEach(function(element, index, array) {
 			if(element.onChatReceive) {
@@ -6486,7 +6566,7 @@ function textPacketReceiveHook(type, sender, message) {
 			}
 		});
 	}
-}
+} */
 
 function chatHook(text) {
 	if(text.startsWith(cmdPrefix) && commandsSetting == "on") {
@@ -11712,6 +11792,18 @@ VertexClientPE.loadCategorySettings = function() {
 	return true;
 }
 
+VertexClientPE.saveFilterWords = function() {
+	File_(settingsPath).mkdirs();
+	let newFile = new File_(settingsPath, "vertexclientpe_filter_words.dat");
+	newFile.createNewFile();
+	let stream = new FileOutputStream_(newFile);
+	try {
+		stream.write(VertexClientPE.filterWords.toString().getBytes());
+	} finally {
+		stream.close();
+	}
+}
+
 VertexClientPE.saveAccounts = function() {
 	File_(settingsPath).mkdirs();
 	let newFile = new File_(settingsPath, "vertexclientpe_accounts.dat");
@@ -11733,6 +11825,24 @@ VertexClientPE.saveFriends = function() {
 		stream.write(VertexClientPE.friends.toString().getBytes());
 	} finally {
 		stream.close();
+	}
+}
+
+VertexClientPE.loadFilterWords = function() {
+	try {
+		if(!File_(settingsPath + "vertexclientpe_filter_words.dat").exists())
+			return;
+		let file = new File_(settingsPath + "vertexclientpe_filter_words.dat");
+		let readed = (new BufferedReader_(new FileReader_(file)));
+		let data = new StringBuilder_();
+		let string;
+		while((string = readed.readLine()) != null) {
+			data.append(string);
+			data.append("\n");
+		}
+		VertexClientPE.filterWords = new JSONArray_(data.toString());
+	} catch(e) {
+		//error
 	}
 }
 
@@ -13595,6 +13705,49 @@ function friendButton(friend, layout) {
 	return friendManagerAccountLayout;
 }
 
+function filterWordButton(filterWord, layout) {
+	let filter = filterWord.toString();
+
+	let delButtonWidth = display.widthPixels / 3 - display.widthPixels / 4  - dip2px(10);
+
+	let filterWordLayout = new LinearLayout_(CONTEXT);
+	filterWordLayout.setOrientation(LinearLayout_.HORIZONTAL);
+	filterWordLayout.setPadding(dip2px(10), 0, dip2px(10), 0);
+	filterWordLayout.setGravity(Gravity_.CENTER);
+
+	let filterWordLayoutLeft = new LinearLayout_(CONTEXT);
+	filterWordLayoutLeft.setOrientation(LinearLayout_.HORIZONTAL);
+	filterWordLayoutLeft.setGravity(Gravity_.CENTER_VERTICAL);
+	filterWordLayoutLeft.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 4 - delButtonWidth, display.heightPixels / 10));
+	filterWordLayout.addView(filterWordLayoutLeft);
+
+	let filterWordLayoutRight = new LinearLayout_(CONTEXT);
+	filterWordLayoutRight.setOrientation(LinearLayout_.HORIZONTAL);
+	filterWordLayoutRight.setGravity(Gravity_.RIGHT);
+	filterWordLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.widthPixels / 4 + delButtonWidth, display.heightPixels / 10));
+	filterWordLayout.addView(filterWordLayoutRight);
+
+	let filterWordText = clientTextView(filter);
+	filterWordText.setTextSize(15);
+	filterWordText.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
+	filterWordText.setMarqueeRepeatLimit(-1);
+	filterWordText.setSingleLine();
+	filterWordText.setHorizontallyScrolling(true);
+	filterWordText.setSelected(true);
+	filterWordLayoutLeft.addView(filterWordText);
+
+	let deleteButton = clientButton("x");
+	deleteButton.setLayoutParams(new LinearLayout_.LayoutParams(delButtonWidth, display.heightPixels / 10));
+	deleteButton.setOnClickListener(new View_.OnClickListener({
+		onClick: function(viewArg) {
+			VertexClientPE.removeFilterWord(filter, layout, filterWordLayout);
+		}
+	}));
+	filterWordLayoutRight.addView(deleteButton);
+
+	return filterWordLayout;
+}
+
 VertexClientPE.addTextStyleToView = function(view, parentBackgroundColor) {
 	if(parentBackgroundColor == null) {
 		parentBackgroundColor = themeSetting;
@@ -13764,7 +13917,7 @@ function categoryTitle(text) {
 	categoryTitleLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(display.heightPixels / 3 - display.heightPixels / 4, display.heightPixels / 20));
 	categoryTitleLayout.addView(categoryTitleLayoutRight);
 
-	let defaultSettingsButton = clientButton("\u270E", null, null, "left", null, true, dip2px(2));
+	let defaultSettingsButton = clientButton("\u270E", null, null, "left", null, true, dip2px(1));
 	defaultSettingsButton.setLayoutParams(new LinearLayout_.LayoutParams(display.heightPixels / 3 - display.heightPixels / 4, display.heightPixels / 20));
 	defaultSettingsButton.setAlpha(0.54);
 	categoryTitleLayoutLeft.addView(defaultSettingsButton);
@@ -13774,7 +13927,7 @@ function categoryTitle(text) {
 	defaultTitle.setGravity(Gravity_.CENTER);
 	categoryTitleLayoutMiddle.addView(defaultTitle);
 
-	let defaultArrowButton = clientButton("\u25BD", null, null, "right", null, true, dip2px(2));
+	let defaultArrowButton = clientButton("\u25BD", null, null, "right", null, true, dip2px(1));
 	defaultArrowButton.setLayoutParams(new LinearLayout_.LayoutParams(display.heightPixels / 3 - display.heightPixels / 4, display.heightPixels / 20));
 	defaultArrowButton.setAlpha(0.54);
 	categoryTitleLayoutRight.addView(defaultArrowButton);
@@ -14062,7 +14215,7 @@ function coloredSubTitle(subtitle) // TextView with colored background (edited b
 {
 	let bg = GradientDrawable_();
 	bg.setColor(getColor("inner"));
-	bg.setStroke(dip2px(2), getColor("stroke"));
+	bg.setStroke(dip2px(1), getColor("stroke"));
 	bg.setShape(GradientDrawable_.RECTANGLE);
 
 	let title = clientTextView(subtitle, true);
@@ -14232,7 +14385,7 @@ function backgroundSpecial(round, color, showProLine, lightColor) {
 	}
 
 	if (showProLine == true) {
-		bg.setStroke(dip2px(2), Color_.parseColor("#70DAA520"));
+		bg.setStroke(dip2px(1), Color_.parseColor("#70DAA520"));
 	}
 	bg.setShape(GradientDrawable_.RECTANGLE);
 
@@ -15147,6 +15300,7 @@ VertexClientPE.showSetupScreen = function() {
 										f5ButtonModeSetting = "off";
 										buttonStyleSetting = "android";
 										menuType = "halfscreen";
+										menuAnimationsSetting = "off";
 									}
 									VertexClientPE.saveMainSettings();
 									VertexClientPE.editCopyrightText();
@@ -15437,7 +15591,7 @@ ModPE.restart = function() {
 	try {
 		if(Launcher.isBlockLauncher()) {
 			VertexClientPE.toast("Restarting...");
-			net.zhuoweizhang.mcpelauncher.ui.NerdyStuffActivity.forceRestart(ctx, 500, true);
+			net.zhuoweizhang.mcpelauncher.ui.NerdyStuffActivity.forceRestart(CONTEXT, 500, true);
 		} else {
 			let alarmManager = CONTEXT.getSystemService("alarm"),
 			intent = CONTEXT.getPackageManager().getLaunchIntentForPackage(CONTEXT.getPackageName());
@@ -15455,6 +15609,39 @@ ModPE.restart = function() {
 	} catch(e) {
 		print("@" + e.lineNumber + ": " + e);
 	}
+}
+
+VertexClientPE.shouldFilterWord = function(str) {
+	let filterWords = VertexClientPE.filterWords;
+	if(filterWords.length() != null) {
+		for(let i = 0; i < filterWords.length(); i++) {
+			if(filterWords.get(i) == str) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+VertexClientPE.removeFilterWord = function(str, layout, view) {
+	if(VertexClientPE.filterWords.length() != null) {
+		let tempFilterWords = new JSONArray_();
+		for(let i = 0; i < VertexClientPE.filterWords.length(); i++) {
+			let filterWord = VertexClientPE.filterWords.get(i);
+			if(filterWord != str) {
+				tempFilterWords.put(filterWord);
+			}
+		}
+		VertexClientPE.filterWords = tempFilterWords;
+	}
+	if(layout != null && view != null) {
+		try {
+			layout.removeView(view);
+		} catch(e) {
+			//error
+		}
+	}
+	VertexClientPE.saveFilterWords();
 }
 
 VertexClientPE.removeAccount = function(str, layout, view) {
@@ -15794,6 +15981,7 @@ VertexClientPE.setup = function() {
 				VertexClientPE.loadUpdateDescription();
 				VertexClientPE.loadNews();
 				VertexClientPE.loadItemGiverItems();
+				VertexClientPE.loadFilterWords();
 				VertexClientPE.loadAccounts();
 				VertexClientPE.loadFriends();
 				Thread_.sleep(3000);
@@ -16309,7 +16497,7 @@ function settingsScreen(fromDashboard) {
 
 				let hacksListManagerSettingFunc = new settingButton("Hacks list", "Manage the hacks list.");
 				let hacksListManagerSettingButton = hacksListManagerSettingFunc.getButton();
-				hacksListManagerSettingButton.setText("Manage");
+				hacksListManagerSettingButton.setText(i18n("Manage"));
 				hacksListManagerSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						VertexClientPE.showHacksListManagerDialog();
@@ -16318,7 +16506,7 @@ function settingsScreen(fromDashboard) {
 
 				let mainButtonManagerSettingFunc = new settingButton("Main button", "Manage the main button.");
 				let mainButtonManagerSettingButton = mainButtonManagerSettingFunc.getButton();
-				mainButtonManagerSettingButton.setText("Manage");
+				mainButtonManagerSettingButton.setText(i18n("Manage"));
 				mainButtonManagerSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						VertexClientPE.showMainButtonManagerDialog();
@@ -16327,7 +16515,7 @@ function settingsScreen(fromDashboard) {
 
 				let shortcutManagerSettingFunc = new settingButton("Shortcuts", "Manage the shortcut buttons.");
 				let shortcutManagerSettingButton = shortcutManagerSettingFunc.getButton();
-				shortcutManagerSettingButton.setText("Manage");
+				shortcutManagerSettingButton.setText(i18n("Manage"));
 				shortcutManagerSettingButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						VertexClientPE.showShortcutManagerDialog();
