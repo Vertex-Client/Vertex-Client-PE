@@ -292,6 +292,7 @@ let modsStayEnabledSetting = "on";
 let itemGiverModeSetting = "fast";
 let targetMyTeamSetting = "off";
 let shouldShowTipDialogsSetting = "on";
+let preventChatSetting = "off";
 //------------------------------------
 let antiAFKDistancePerTick = 0.25;
 //------------------------------------
@@ -1379,7 +1380,7 @@ VertexClientPE.isRemote = function() {
 VertexClientPE.playerIsInGame = false;
 
 VertexClientPE.currentVersion = "3.1";
-VertexClientPE.currentVersionDesc = "The ? Update";
+VertexClientPE.currentVersionDesc = "The Talkative Update";
 VertexClientPE.targetVersion = "MCPE v1.4.x";
 VertexClientPE.minVersion = "1.0.0";
 VertexClientPE.edition = "Normal";
@@ -5538,11 +5539,11 @@ var prevent = {
 			}
 		});
 		
-		let preventChatCheckBox = clientCheckBox("Prevent explosions");
-		preventChatCheckBox.setChecked(preventExplosionsSetting == "on");
+		let preventChatCheckBox = clientCheckBox("Prevent sending and receiving chat messages");
+		preventChatCheckBox.setChecked(preventchatsetting == "on");
 		preventChatCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
-				preventExplosionsSetting = v.isChecked()?"on":"off";
+				preventChatSetting = v.isChecked()?"on":"off";
 				VertexClientPE.saveMainSettings();
 			}
 		});
@@ -5559,11 +5560,22 @@ var prevent = {
 		preventSettingsLayout.addView(preventDiggingCheckBox);
 		preventSettingsLayout.addView(preventPlacingCheckBox);
 		preventSettingsLayout.addView(preventAttacksCheckBox);
+		preventSettingsLayout.addView(preventChatCheckBox);
 		preventSettingsLayout.addView(preventExplosionsCheckBox);
 		return preventSettingsLayout;
 	},
 	isStateMod: function() {
 		return false;
+	},
+	onChatReceive: function(message, sender) {
+		if(preventChatSetting == "on") {
+			preventDefault();
+		}
+	},
+	onServerMessageReceive: function(message, sender) {
+		if(preventChatSetting == "on") {
+			preventDefault();
+		}
 	},
 	onToggle: function() {
 		VertexClientPE.showModDialog(this);
