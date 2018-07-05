@@ -12166,6 +12166,7 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + itemGiverModeSetting.toString());
 	outWrite.append("," + targetMyTeamSetting.toString());
 	outWrite.append("," + shouldShowTipDialogsSetting.toString());
+	outWrite.append("," + preventChatSetting.toString());
 
 	outWrite.close();
 
@@ -12454,6 +12455,9 @@ VertexClientPE.loadMainSettings = function () {
 	}
 	if (arr[89] != null && arr[89] != undefined) {
 		shouldShowTipDialogsSetting = arr[89];
+	}
+	if (arr[90] != null && arr[90] != undefined) {
+		preventChatSetting = arr[90];
 	}
 
 	VertexClientPE.loadCustomRGBSettings();
