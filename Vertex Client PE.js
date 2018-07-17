@@ -134,7 +134,17 @@ let GL10 = javax.microedition.khronos.opengles.GL10;
 let RelativeLayout = android.widget.RelativeLayout;
 let Gravity = android.view.Gravity;
 
+EntityType.ARMOR_STAND = 61;
+EntityType.CHEST_MINECART = 98;
+EntityType.COMMAND_BLOCK_MINECART = 100;
+EntityType.ENDER_CRYSTAL = 71;
 EntityType.ENDER_PEARL = 87;
+EntityType.FIREWORKS_ROCKET = 72;
+EntityType.HOPPER_MINECART = 96;
+EntityType.LINGERING_POTION = 101;
+EntityType.SPLASH_POTION = 86;
+EntityType.THROWN_TRIDENT = 73;
+EntityType.TNT_MINECART = 97;
 
 readFile = (path_to_file) => {
 	let fos = null, str = null, file = null, ch = null;
@@ -172,6 +182,7 @@ let languageSetting = "device";
 const i18n = (function () {
 	const lang = CONTEXT.getResources().getConfiguration().locale.getLanguage(),
 		langPath = PATH + "lang/" + lang + ".json";
+	loadLanguageSettings();
 	if (new File_(langPath).exists() && languageSetting == "device") {
 		let textFromFile = readFile(langPath);
 		const langObj = JSON.parse(textFromFile);
@@ -315,6 +326,8 @@ let movementEnabled = "on";
 let playerEnabled = "on";
 let miscEnabled = "on";
 let singleplayerEnabled = "on";
+//------------------------------------
+let updateLangFilesSetting = "on";
 //End of settings
 
 let modButtonColorBlocked = Color_.RED;
@@ -1027,15 +1040,21 @@ const PI_CIRCLE = Math.PI / 180;
 
 let entBlackList = {};
 (function initBlackList() {
+	entBlackList[EntityType.ARMOR_STAND] = true;
 	entBlackList[EntityType.ARROW] = true;
 	entBlackList[EntityType.BOAT] = true;
+	entBlackList[EntityType.CHEST_MINECART] = true;
+	entBlackList[EntityType.COMMAND_BLOCK_MINECART] = true;
 	entBlackList[EntityType.EGG] = true;
+	entBlackList[EntityType.ENDER_CRYSTAL] = true;
 	entBlackList[EntityType.ENDER_PEARL] = true;
 	entBlackList[EntityType.EXPERIENCE_ORB] = true;
 	entBlackList[EntityType.EXPERIENCE_POTION] = true;
 	entBlackList[EntityType.FALLING_BLOCK] = true;
 	entBlackList[EntityType.FIREBALL] = true;
+	entBlackList[EntityType.FIREWORKS_ROCKET] = true;
 	entBlackList[EntityType.FISHING_HOOK] = true;
+	entBlackList[EntityType.HOPPER_MINECART] = true;
 	entBlackList[EntityType.ITEM] = true;
 	entBlackList[EntityType.LIGHTNING_BOLT] = true;
 	entBlackList[EntityType.MINECART] = true;
@@ -1043,7 +1062,11 @@ let entBlackList = {};
 	entBlackList[EntityType.PRIMED_TNT] = true;
 	entBlackList[EntityType.SMALL_FIREBALL] = true;
 	entBlackList[EntityType.SNOWBALL] = true;
+	entBlackList[EntityType.SPLASH_POTION] = true;
 	entBlackList[EntityType.THROWN_POTION] = true;
+	entBlackList[EntityType.THROWN_TRIDENT] = true;
+	entBlackList[EntityType.TNT_MINECART] = true;
+	entBlackList[EntityType.LINGERING_POTION] = true;
 })();
 
 let songDialog;
@@ -11299,14 +11322,12 @@ VertexClientPE.healthTags = function() {
 		let yq = Entity.getY(mob) - getPlayerY();
 		let zq = Entity.getZ(mob) - getPlayerZ();
 
-
-
 		if(xq * xq + yq * yq + zq * zq <= 14 * 14 && mob != getPlayerEnt()) {
 
 			/* the 14 stands for, that the entities you want to give (as example) a nametag need to be in a radius of 14 blocks */
 
 			/* You can disable it by removing the above script. */
-			let mobName;
+			let mobName = "Unknown";
 
 			if(Entity.getEntityTypeId(mob) == 10) {
 				mobName = "Chicken";
@@ -11368,6 +11389,12 @@ VertexClientPE.healthTags = function() {
 			if(Entity.getEntityTypeId(mob) == 29) {
 				mobName = "Llama";
 			}
+			if(Entity.getEntityTypeId(mob) == 30) {
+				mobName = "Parrot";
+			}
+			if(Entity.getEntityTypeId(mob) == 31) {
+				mobName = "Dolphin";
+			}
 			if(Entity.getEntityTypeId(mob) == 32) {
 				mobName = "Zombie";
 			}
@@ -11428,11 +11455,26 @@ VertexClientPE.healthTags = function() {
 			if(Entity.getEntityTypeId(mob) == 57) {
 				mobName = "Vindicator";
 			}
+			if(Entity.getEntityTypeId(mob) == 74) {
+				mobName = "Turtle";
+			}
 			if(Entity.getEntityTypeId(mob) == 104) {
 				mobName = "Evoker";
 			}
 			if(Entity.getEntityTypeId(mob) == 105) {
 				mobName = "Vex";
+			}
+			if(Entity.getEntityTypeId(mob) == 108) {
+				mobName = "Pufferfish";
+			}
+			if(Entity.getEntityTypeId(mob) == 109) {
+				mobName = "Salmon";
+			}
+			if(Entity.getEntityTypeId(mob) == 110) {
+				mobName = "Drowned";
+			}
+			if(Entity.getEntityTypeId(mob) == 111) {
+				mobName = "Tropical fish";
 			}
 
 			let divider;
@@ -12478,7 +12520,7 @@ VertexClientPE.resetData = function() {
 	VertexClientPE.toast("Successfully reset all data!");
 }
 
-let createUiThread = function(func) {
+/* let createUiThread = function(func) {
 	getContext().runOnUiThread(new Runnable_({
 		run: function() {
 			func(getContext());
@@ -12524,7 +12566,7 @@ let getStretchedImage = function(bm, x, y, stretchWidth, stretchHeight, width, h
 	canvas.drawBitmap(part9, width - bm.getWidth() + stretchWidth + x, height - bm.getHeight() + stretchHeight + y, null);
 
 	return new BitmapDrawable_(blank);
-};
+}; */
 
 VertexClientPE.setupButton = function(buttonView, text, color, round, forceLightColor, style, thickness) {
 	buttonView.setText(text);
@@ -16049,32 +16091,61 @@ VertexClientPE.setup = function() {
 	})).start();
 }
 
-function downloadFile(path, url, showNotification, shouldReplace) {
+function downloadFile(path, url, showNotification, shouldReplace, shouldBlockMobile) {
 	try {
 		showNotification = showNotification || false;
 		shouldReplace = shouldReplace || false;
+		shouldBlockMobile = shouldBlockMobile || false;
 		let file = new File_(path);
-		let internetAvailable = getConnectivityStatus(CONTEXT) != TYPE_NOT_CONNECTED;
-		if(internetAvailable && shouldReplace && file.exists()) {
-			file.delete();
+		let connectivityStatus = getConnectivityStatus(CONTEXT);
+		let internetAvailable = (connectivityStatus != TYPE_NOT_CONNECTED) && (connectivityStatus != TYPE_MOBILE && shouldBlockMobile);
+		if(internetAvailable) {
+			if(shouldReplace && file.exists()) {
+				file.delete();
+			}
+			let filename = file.getName(),
+				downloadManager = new DownloadManager_.Request(new Uri_.parse(url));
+			downloadManager.setTitle(filename);
+			if(!showNotification) {
+				downloadManager.setNotificationVisibility(0);
+			}
+			downloadManager.setDestinationInExternalPublicDir(file.getParent().replace("/sdcard", ""), filename);
+			CONTEXT.getSystemService(Context_.DOWNLOAD_SERVICE).enqueue(downloadManager);
 		}
-		let filename = file.getName(),
-			downloadManager = new DownloadManager_.Request(new Uri_.parse(url));
-		downloadManager.setTitle(filename);
-		if(!showNotification) {
-			downloadManager.setNotificationVisibility(0);
-		}
-		downloadManager.setDestinationInExternalPublicDir(file.getParent().replace("/sdcard", ""), filename);
-		CONTEXT.getSystemService(Context_.DOWNLOAD_SERVICE).enqueue(downloadManager);
 	} catch (e) {
 		print("@" + e.lineNumber + ": " + e);
 	}
 };
 
+function saveLanguageSettings() {
+	File_(settingsPath).mkdirs();
+	let newFile = new File_(settingsPath, "vertex_language.txt");
+	newFile.createNewFile();
+	let outWrite = new OutputStreamWriter_(new FileOutputStream_(newFile));
+	outWrite.append(languageSetting.toString());
+	outWrite.append("," + updateLangFilesSetting.toString());
+
+	outWrite.close();
+}
+
+function loadLanguageSettings() {
+	let langSettings = getTextFromFile(settingsPath + "vertex_language.txt");
+	if(langSettings != null) {
+		langSettings = langSettings.split(",");
+		if(langSettings[0] != "" && langSettings[0] != null && langSettings[0] != undefined) {
+			languageSetting = langSettings[0];
+		}
+		if(langSettings[0] != "" && langSettings[1] != null && langSettings[1] != undefined) {
+			updateLangFilesSetting = langSettings[1];
+		}
+	}
+}
+
 (function checkFiles() {
 	let res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png", "github_button.png", "github_button_clicked.png", "vertex_logo_new.png", "stevehead.png", "minecraft.ttf", "christmas_tree.png", "dirt_background.png", "rainbow_background.png"],
 		langs = ["en", "ko", "nl"],
 		isExisting = true;
+	loadLanguageSettings();
 	for (let i = res.length; i--;) {
 		if (!new File_(PATH, res[i]).exists()) {
 			downloadFile(PATH + res[i], GITHUB_URL + "bootstrap/img/" + res[i]);
@@ -16086,7 +16157,9 @@ function downloadFile(path, url, showNotification, shouldReplace) {
 		if (!langFile.exists()) {
 			isExisting = false;
 		}
-		downloadFile(PATH + "lang/" + langs[i] + ".json", "https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/feature/i18n/lang/" + langs[i] + ".json", false, true);
+		if(!langFile.exists() || updateLangFilesSetting == "on") {
+			downloadFile(PATH + "lang/" + langs[i] + ".json", "https://raw.githubusercontent.com/Vertex-Client/Vertex-Client-PE/feature/i18n/lang/" + langs[i] + ".json", false, true);
+		}
 	}
 	if (isExisting) {
 		steveHead_SCALED = Bitmap_.createScaledBitmap(imgSteveHead, barLayoutHeight - dip2px(2), barLayoutHeight - dip2px(2), false);
@@ -16560,6 +16633,58 @@ function settingsScreen(fromDashboard) {
 							tabGUIModeSettingButton.setText(i18n("Shown"));
 						}
 						VertexClientPE.saveMainSettings();
+					}
+				}));
+
+				let languageTitle = clientSectionTitle("Language", "theme");
+
+				let languageSettingFunc = new settingButton("Display language", "Choose the language you want Vertex Client PE to use.", null,
+					function(viewArg) {
+						languageSetting = "device";
+						languageSettingButton.setText(i18n("Device language"));
+					}
+				);
+				let languageSettingButton = languageSettingFunc.getButton();
+				if(languageSetting == "device") {
+					languageSettingButton.setText(i18n("Device language"));
+				} else if(languageSetting == "default") {
+					languageSettingButton.setText(i18n("Default (English)"));
+				}
+				languageSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(languageSetting == "device") {
+							languageSetting = "default";
+							languageSettingButton.setText(i18n("Default (English)"));
+						} else if(languageSetting == "default") {
+							languageSetting = "device";
+							languageSettingButton.setText(i18n("Device language"));
+						}
+						saveLanguageSettings();
+					}
+				}));
+
+				let updateLangFilesSettingFunc = new settingButton("Automatically update lang files", "Automatically redownload language files upon start of the client.", null,
+					function(viewArg) {
+						updateLangFilesSetting = "on";
+						updateLangFilesSettingButton.setText(i18n("ON"));
+					}
+				);
+				let updateLangFilesSettingButton = updateLangFilesSettingFunc.getButton();
+				if(updateLangFilesSetting == "on") {
+					updateLangFilesSettingButton.setText(i18n("ON"));
+				} else if(updateLangFilesSetting == "off") {
+					updateLangFilesSettingButton.setText(i18n("OFF"));
+				}
+				updateLangFilesSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(updateLangFilesSetting == "on") {
+							updateLangFilesSetting = "off";
+							updateLangFilesSettingButton.setText(i18n("OFF"));
+						} else if(updateLangFilesSetting == "off") {
+							updateLangFilesSetting = "on";
+							updateLangFilesSettingButton.setText(i18n("ON"));
+						}
+						saveLanguageSettings();
 					}
 				}));
 
@@ -17452,6 +17577,9 @@ function settingsScreen(fromDashboard) {
 				VertexClientPE.addView(settingsMenuLayout, mainButtonManagerSettingFunc);
 				VertexClientPE.addView(settingsMenuLayout, shortcutManagerSettingFunc);
 				VertexClientPE.addView(settingsMenuLayout, tabGUIModeSettingFunc);
+				settingsMenuLayout.addView(languageTitle);
+				VertexClientPE.addView(settingsMenuLayout, languageSettingFunc);
+				VertexClientPE.addView(settingsMenuLayout, updateLangFilesSettingFunc);
 				settingsMenuLayout.addView(themeTitle);
 				VertexClientPE.addView(settingsMenuLayout, themeSettingFunc);
 				VertexClientPE.addView(settingsMenuLayout, useLightThemeSettingFunc);
