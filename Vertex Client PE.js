@@ -141,6 +141,7 @@ EntityType.ENDER_CRYSTAL = 71;
 EntityType.ENDER_PEARL = 87;
 EntityType.FIREWORKS_ROCKET = 72;
 EntityType.HOPPER_MINECART = 96;
+EntityType.LEASH_KNOT = 88;
 EntityType.LINGERING_POTION = 101;
 EntityType.SPLASH_POTION = 86;
 EntityType.THROWN_TRIDENT = 73;
@@ -168,6 +169,19 @@ readFile = (path_to_file) => {
 }
 
 let languageSetting = "device";
+
+function loadLanguageSettings() {
+	let langSettings = getTextFromFile(settingsPath + "vertex_language.txt");
+	if(langSettings != null) {
+		langSettings = langSettings.split(",");
+		if(langSettings[0] != "" && langSettings[0] != null && langSettings[0] != undefined) {
+			languageSetting = langSettings[0];
+		}
+		if(langSettings[0] != "" && langSettings[1] != null && langSettings[1] != undefined) {
+			updateLangFilesSetting = langSettings[1];
+		}
+	}
+}
 
 /**
  * Internationalization: Language Support
@@ -1056,7 +1070,9 @@ let entBlackList = {};
 	entBlackList[EntityType.FISHING_HOOK] = true;
 	entBlackList[EntityType.HOPPER_MINECART] = true;
 	entBlackList[EntityType.ITEM] = true;
+	entBlackList[EntityType.LEASH_KNOT] = true;
 	entBlackList[EntityType.LIGHTNING_BOLT] = true;
+	entBlackList[EntityType.LINGERING_POTION] = true;
 	entBlackList[EntityType.MINECART] = true;
 	entBlackList[EntityType.PAINTING] = true;
 	entBlackList[EntityType.PRIMED_TNT] = true;
@@ -1066,7 +1082,6 @@ let entBlackList = {};
 	entBlackList[EntityType.THROWN_POTION] = true;
 	entBlackList[EntityType.THROWN_TRIDENT] = true;
 	entBlackList[EntityType.TNT_MINECART] = true;
-	entBlackList[EntityType.LINGERING_POTION] = true;
 })();
 
 let songDialog;
@@ -11443,6 +11458,9 @@ VertexClientPE.healthTags = function() {
 			if(Entity.getEntityTypeId(mob) == 47) {
 				mobName = "Husk";
 			}
+			if(Entity.getEntityTypeId(mob) == 48) {
+				mobName = "Wither Skeleton";
+			}
 			if(Entity.getEntityTypeId(mob) == 49) {
 				mobName = "Guardian";
 			}
@@ -11451,6 +11469,9 @@ VertexClientPE.healthTags = function() {
 			}
 			if(Entity.getEntityTypeId(mob) == 54) {
 				mobName = "Shulker";
+			}
+			if(Entity.getEntityTypeId(mob) == 55) {
+				mobName = "Endermite";
 			}
 			if(Entity.getEntityTypeId(mob) == 57) {
 				mobName = "Vindicator";
@@ -11475,6 +11496,9 @@ VertexClientPE.healthTags = function() {
 			}
 			if(Entity.getEntityTypeId(mob) == 111) {
 				mobName = "Tropical fish";
+			}
+			if(Entity.getEntityTypeId(mob) == 112) {
+				mobName = "Cod";
 			}
 
 			let divider;
@@ -16126,19 +16150,6 @@ function saveLanguageSettings() {
 	outWrite.append("," + updateLangFilesSetting.toString());
 
 	outWrite.close();
-}
-
-function loadLanguageSettings() {
-	let langSettings = getTextFromFile(settingsPath + "vertex_language.txt");
-	if(langSettings != null) {
-		langSettings = langSettings.split(",");
-		if(langSettings[0] != "" && langSettings[0] != null && langSettings[0] != undefined) {
-			languageSetting = langSettings[0];
-		}
-		if(langSettings[0] != "" && langSettings[1] != null && langSettings[1] != undefined) {
-			updateLangFilesSetting = langSettings[1];
-		}
-	}
 }
 
 (function checkFiles() {
