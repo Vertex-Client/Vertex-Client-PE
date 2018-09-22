@@ -177,11 +177,12 @@ function loadLanguageSettings() {
 		if(langSettings[0] != "" && langSettings[0] != null && langSettings[0] != undefined) {
 			languageSetting = langSettings[0];
 		}
-		if(langSettings[0] != "" && langSettings[1] != null && langSettings[1] != undefined) {
+		if(langSettings[1] != "" && langSettings[1] != null && langSettings[1] != undefined) {
 			updateLangFilesSetting = langSettings[1];
 		}
 	}
 }
+loadLanguageSettings();
 
 /**
  * Internationalization: Language Support
@@ -5578,7 +5579,7 @@ var prevent = {
 		});
 		
 		let preventChatCheckBox = clientCheckBox("Prevent sending and receiving chat messages");
-		preventChatCheckBox.setChecked(preventchatsetting == "on");
+		preventChatCheckBox.setChecked(preventChatSetting == "on");
 		preventChatCheckBox.setOnClickListener(new View_.OnClickListener() {
 			onClick: function(v) {
 				preventChatSetting = v.isChecked()?"on":"off";
@@ -14924,7 +14925,7 @@ VertexClientPE.secondTick = function() {
 				}
 			}
 
-			if(mpCurrentPositionView != null && mpSeekBarView != null) {
+			/* if(mpCurrentPositionView != null && mpSeekBarView != null) {
 				CONTEXT.runOnUiThread(new Runnable_({
 					run: function() {
 						try{
@@ -14935,7 +14936,7 @@ VertexClientPE.secondTick = function() {
 						}
 					}
 				}));
-			}
+			} */
 
 			if(healthDisplayUI != null && healthDisplayUI.isShowing()) {
 				CONTEXT.runOnUiThread(new Runnable_({
@@ -16127,13 +16128,13 @@ function downloadFile(path, url, showNotification, shouldReplace, shouldBlockMob
 			if(shouldReplace && file.exists()) {
 				file.delete();
 			}
-			let filename = file.getName(),
+			let fileName = file.getName(),
 				downloadManager = new DownloadManager_.Request(new Uri_.parse(url));
-			downloadManager.setTitle(filename);
+			downloadManager.setTitle(fileName);
 			if(!showNotification) {
 				downloadManager.setNotificationVisibility(0);
 			}
-			downloadManager.setDestinationInExternalPublicDir(file.getParent().replace("/sdcard", ""), filename);
+			downloadManager.setDestinationInExternalPublicDir(file.getParent().replace("/sdcard", ""), fileName);
 			CONTEXT.getSystemService(Context_.DOWNLOAD_SERVICE).enqueue(downloadManager);
 		}
 	} catch (e) {
@@ -16154,7 +16155,7 @@ function saveLanguageSettings() {
 
 (function checkFiles() {
 	let res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png", "github_button.png", "github_button_clicked.png", "vertex_logo_new.png", "stevehead.png", "minecraft.ttf", "christmas_tree.png", "dirt_background.png", "rainbow_background.png"],
-		langs = ["en", "ko", "nl"],
+		langs = ["en", "nl"],
 		isExisting = true;
 	loadLanguageSettings();
 	for (let i = res.length; i--;) {
@@ -16647,7 +16648,7 @@ function settingsScreen(fromDashboard) {
 					}
 				}));
 
-				let languageTitle = clientSectionTitle("Language", "theme");
+				let languageTitle = clientSectionTitle("Language & resources", "theme");
 
 				let languageSettingFunc = new settingButton("Display language", "Choose the language you want Vertex Client PE to use.", null,
 					function(viewArg) {
