@@ -2,7 +2,7 @@
  * ##################################################################################################
  * @name Vertex Client PE
  * @version v3.1
- * @author peacestorm (@AgameR_Modder)
+ * @author peacestorm (@AgameR_Gaming)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36, AutoGrind, TimmyIsDa
  *
  * Thanks to NoCopyrightSounds and all artists for the music!
@@ -169,6 +169,7 @@ readFile = (path_to_file) => {
 }
 
 let languageSetting = "device";
+let langSettingsLoaded;
 
 function loadLanguageSettings() {
 	let langSettings = getTextFromFile(settingsPath + "vertex_language.txt");
@@ -181,6 +182,7 @@ function loadLanguageSettings() {
 			updateLangFilesSetting = langSettings[1];
 		}
 	}
+	langSettingsLoaded = true;
 }
 loadLanguageSettings();
 
@@ -194,10 +196,13 @@ loadLanguageSettings();
  * @param {Array.<String>} [args]
  * @returns {String}
  */
-const i18n = (function () {
+ 
+let i18n = (function () {
+	if(!langSettingsLoaded) {
+		loadLanguageSettings();
+	}
 	const lang = CONTEXT.getResources().getConfiguration().locale.getLanguage(),
 		langPath = PATH + "lang/" + lang + ".json";
-	loadLanguageSettings();
 	if (new File_(langPath).exists() && languageSetting == "device") {
 		let textFromFile = readFile(langPath);
 		const langObj = JSON.parse(textFromFile);
@@ -1420,7 +1425,7 @@ VertexClientPE.playerIsInGame = false;
 
 VertexClientPE.currentVersion = "3.1";
 VertexClientPE.currentVersionDesc = "The Talkative Update";
-VertexClientPE.targetVersion = "MCPE v1.4.x";
+VertexClientPE.targetVersion = "MCPE v1.8.x";
 VertexClientPE.minVersion = "1.0.0";
 VertexClientPE.edition = "Normal";
 VertexClientPE.latestVersion;
@@ -6691,9 +6696,10 @@ var toggle = {
 	onCall: function(cmd) {
 		try {
 			let commandSplit = cmd.split(" ");
-			if (cmd.substring(2, cmd.length) != null && cmd.substring(2, cmd.length) != undefined && commandSplit[1] != null) {
+			let firstSplitLength = commandSplit[0].length + 1;
+			if (cmd.substring(firstSplitLength, cmd.length) != null && cmd.substring(firstSplitLength, cmd.length) != undefined && commandSplit[1] != null) {
 				let shouldReturn = false;
-				let cmdNoPrefix = cmd.substring(2, cmd.length);
+				let cmdNoPrefix = cmd.substring(firstSplitLength, cmd.length);
 				VertexClientPE.modules.forEach(function (element, index, array) {
 					if ((element.name.toLowerCase() == cmdNoPrefix.toLowerCase() || VertexClientPE.getCustomModName(element.name).toLowerCase() == cmdNoPrefix.toLowerCase())) {
 						if(element.hasOwnProperty("isExpMod") && element.isExpMod() && !VertexClientPE.isExpMode()) {
@@ -10348,7 +10354,7 @@ VertexClientPE.showAddAccountDialog = function(showBackButton, title) {
 							return;
 						}
 						//accountClientId = accountClientIdInput.getText().toString();
-						if(VertexClientPE.accounts.length() != undefined && VertexClientPE.accounts.length() != undefined) {
+						if(VertexClientPE.accounts.length() != undefined && VertexClientPE.accounts.length() != null) {
 							for(let i = 0; i < VertexClientPE.accounts.length(); i++) {
 								if(VertexClientPE.accounts.get(i) == accountName) {
 									VertexClientPE.toast("This account already exists in your accounts list!");
@@ -10363,6 +10369,65 @@ VertexClientPE.showAddAccountDialog = function(showBackButton, title) {
 						screenUI.dismiss();
 						barUI.dismiss();
 						VertexClientPE.showAccountManager(showBackButton, title);
+					}
+				});
+				cancelButton.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+					}
+				});
+			} catch(e) {
+				print("Error: " + e);
+				VertexClientPE.showBugReportDialog(e);
+			}
+		}
+	});
+}
+
+VertexClientPE.showAddWordFilterDialog = function(showBackButton, title, icon) {
+	CONTEXT.runOnUiThread(new Runnable_() {
+		run: function() {
+			try {
+				let wordFilterTitle = clientTextView("Add word filter", true);
+				wordFilterInput = clientEditText();
+				wordFilterInput.setSingleLine(true);
+				wordFilterInput.setHint("Enter a word to filter");
+				let okButton = clientButton("Ok");
+				let cancelButton = clientButton("Cancel");
+				let dialogLayout = new LinearLayout_(CONTEXT);
+				dialogLayout.setBackgroundDrawable(backgroundGradient());
+				dialogLayout.setOrientation(LinearLayout_.VERTICAL);
+				dialogLayout.setPadding(10, 10, 10, 10);
+				dialogLayout.addView(wordFilterTitle);
+				dialogLayout.addView(wordFilterInput);
+				dialogLayout.addView(okButton);
+				dialogLayout.addView(cancelButton);
+				let dialog = new Dialog_(CONTEXT);
+				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
+				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+				dialog.setContentView(dialogLayout);
+				dialog.setTitle("Add word filter");
+				dialog.show();
+				okButton.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(view) {
+						let filterWord = wordFilterInput.getText().toString();
+						if(filterWord == null || filterWord == "" || filterWord.replaceAll(" ", "") == "") {
+							VertexClientPE.toast("Enter a word to filter!");
+							return;
+						}
+						if(VertexClientPE.filterWords.length() != undefined && VertexClientPE.filterWords.length() != null) {
+							let filterWords = VertexClientPE.filterWords;
+							for(let i = 0; i < filterWords; i++) {
+								if(filterWords.get(i) == filterWord) {
+									VertexClientPE.toast("This word already exists in your filter list!");
+									return;
+								}
+							}
+						}
+						VertexClientPE.filterWords.put(filterWord);
+						//print("\'" + filterWord + "\'");
+						VertexClientPE.saveFilterWords();
+						dialog.dismiss();
 					}
 				});
 				cancelButton.setOnClickListener(new View_.OnClickListener() {
@@ -10409,7 +10474,7 @@ VertexClientPE.showAddFriendDialog = function(showBackButton, title, icon) {
 							VertexClientPE.toast("Enter an username!");
 							return;
 						}
-						if(VertexClientPE.friends.length() != undefined && VertexClientPE.friends.length() != undefined) {
+						if(VertexClientPE.friends.length() != undefined && VertexClientPE.friends.length() != null) {
 							for(let i = 0; i < VertexClientPE.friends.length(); i++) {
 								if(VertexClientPE.friends.get(i) == friendName) {
 									VertexClientPE.toast("This username already exists in your friends list!");
@@ -13184,6 +13249,10 @@ function userBar() {
 	defaultUserLayout.setOrientation(LinearLayout_.HORIZONTAL);
 	defaultUserLayout.setGravity(Gravity_.CENTER);
 	defaultUserLayout.setLayoutParams(new LinearLayout_.LayoutParams(barLayoutHeight, barLayoutHeight));
+	
+	if(steveHead_SCALED == null) {
+		createSteveHead();
+	}
 
 	let steveHeadView = new ImageView_(CONTEXT);
 	steveHeadView.setImageBitmap(steveHead_SCALED);
@@ -16123,7 +16192,8 @@ function downloadFile(path, url, showNotification, shouldReplace, shouldBlockMob
 		shouldBlockMobile = shouldBlockMobile || false;
 		let file = new File_(path);
 		let connectivityStatus = getConnectivityStatus(CONTEXT);
-		let internetAvailable = (connectivityStatus != TYPE_NOT_CONNECTED) && (connectivityStatus != TYPE_MOBILE && shouldBlockMobile);
+		let internetAvailable = /* (connectivityStatus != TYPE_NOT_CONNECTED) && (connectivityStatus != TYPE_MOBILE && shouldBlockMobile) */true;
+		//print(shouldBlockMobile + "]sbm & internetAvailable[" + internetAvailable + "] & noConnect[" + (connectivityStatus == TYPE_NOT_CONNECTED).toString());
 		if(internetAvailable) {
 			if(shouldReplace && file.exists()) {
 				file.delete();
@@ -16136,6 +16206,8 @@ function downloadFile(path, url, showNotification, shouldReplace, shouldBlockMob
 			}
 			downloadManager.setDestinationInExternalPublicDir(file.getParent().replace("/sdcard", ""), fileName);
 			CONTEXT.getSystemService(Context_.DOWNLOAD_SERVICE).enqueue(downloadManager);
+		} else {
+			VertexClientPE.toast("The files couldn't be downloaded.");
 		}
 	} catch (e) {
 		print("@" + e.lineNumber + ": " + e);
@@ -16153,6 +16225,10 @@ function saveLanguageSettings() {
 	outWrite.close();
 }
 
+function createSteveHead() {
+	steveHead_SCALED = Bitmap_.createScaledBitmap(imgSteveHead, barLayoutHeight - dip2px(2), barLayoutHeight - dip2px(2), false);
+}
+
 (function checkFiles() {
 	let res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png", "github_button.png", "github_button_clicked.png", "vertex_logo_new.png", "stevehead.png", "minecraft.ttf", "christmas_tree.png", "dirt_background.png", "rainbow_background.png"],
 		langs = ["en", "nl"],
@@ -16164,7 +16240,7 @@ function saveLanguageSettings() {
 			isExisting = false;
 		}
 	}
-	for (var i = langs.length; i--;) {
+	for (let i = langs.length; i--;) {
 		let langFile = new File_(PATH + "lang/", langs[i] + ".json");
 		if (!langFile.exists()) {
 			isExisting = false;
@@ -16185,7 +16261,7 @@ function saveLanguageSettings() {
 					for (let i = res.length; i--;) {
 						if (!new File_(PATH, res[i]).exists()) {
 							isExisting = false;
-							break;
+							break;                         
 						} else {
 							isExisting = true;
 						}
@@ -16434,8 +16510,10 @@ VertexClientPE.refreshEnabledMods = function() {
 	//REFRESHED MODS
 }
 
-function newLevel() {
+//function newLevel() {
+function selectLevelHook() {
 	try {
+		screenChangeHookActive = true;
 		if(!VertexClientPE.playerIsInGame) {
 			VertexClientPE.playerIsInGame = true;
 			lagTimer = 0;
@@ -17810,7 +17888,7 @@ function informationScreen(fromDashboard) {
 				descText.setShadowLayer(1.6, 1.5, 1.3, Color_.parseColor("#008000"));
 				descText.setTextSize(50);
 
-				let informationText = clientTextView("\u00A9 peacestorm, imYannic, _TXMO, LPMG, Astro36, AutoGrind and TimmyIsDa | 2015 - 2017. Some rights reserved. Thanks to @_TXMO for making some graphic designs and helping with choosing a name and @imYannic for some other graphic designs.", true);
+				let informationText = clientTextView("\u00A9 peacestorm, imYannic, _TXMO, LPMG, Astro36, AutoGrind and TimmyIsDa | 2015 - 2018. Some rights reserved. Thanks to @_TXMO for making some graphic designs and helping with choosing a name and @imYannic for some other graphic designs and creating some mods.", true);
 
 				informationMenuLayout.addView(logoViewer);
 				informationMenuLayout.addView(descText);
@@ -21342,7 +21420,7 @@ function destroyBlock(x, y, z, side) {
 }
 
 function blockEventHook(x, y, z, e, d) {
-	if(VertexClientPE.isExpMode()) {
+	/* if(VertexClientPE.isExpMode()) {
 		if(d == 1) {
 			isChestOpen = true;
 			if(chestUI == null || !chestUI.isShowing()) {
@@ -21357,7 +21435,7 @@ function blockEventHook(x, y, z, e, d) {
 				VertexClientPE.stealChestContent(x, y, z);
 			}
 		}
-	}
+	} */
 }
 
 //What are you doing here? ;-)
