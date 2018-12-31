@@ -18154,7 +18154,7 @@ function informationScreen(fromDashboard) {
 				descText.setShadowLayer(1.6, 1.5, 1.3, Color_.parseColor("#008000"));
 				descText.setTextSize(50);
 
-				let informationText = clientTextView("\u00A9 peacestorm, imYannic, _TXMO, LPMG, Astro36, AutoGrind and TimmyIsDa | 2015 - 2018. Some rights reserved. Thanks to @_TXMO for making some graphic designs and helping with choosing a name and @imYannic for some other graphic designs and creating some mods.", true);
+				let informationText = clientTextView("\u00A9 peacestorm, imYannic, _TXMO, LPMG, Astro36, AutoGrind and TimmyIsDa | 2015 - 2018. Some rights reserved. Thanks to @_TXMO for making some graphic designs and helping with choosing a name and @imYannic for the Vertex logo and some other graphic designs and mods.", true);
 
 				informationMenuLayout.addView(logoViewer);
 				informationMenuLayout.addView(descText);
