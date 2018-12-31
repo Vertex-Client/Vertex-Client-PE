@@ -324,6 +324,14 @@ let itemGiverModeSetting = "fast";
 let targetMyTeamSetting = "off";
 let shouldShowTipDialogsSetting = "on";
 let preventChatSetting = "off";
+let treasureFinderGoldSetting = "on";
+let treasureFinderIronSetting = "on";
+let treasureFinderCoalSetting = "on";
+let treasureFinderLapisSetting = "on";
+let treasureFinderDiamondSetting = "on";
+let treasureFinderChestSetting = "on";
+let treasureFinderRedstoneSetting = "on";
+let treasureFinderEmeraldSetting = "on";
 //------------------------------------
 let antiAFKDistancePerTick = 0.25;
 //------------------------------------
@@ -6357,6 +6365,187 @@ var chatFilter = {
 	}
 }
 
+let treasureFinderStage = 0;
+let treasureList = [14, 15, 16, 21, 56, 73, 74, 129];
+
+var treasureFinder = {
+	name: "TreasureFinder",
+	desc: i18n("Allows you to find possible ores, chests and other special blocks by tapping the ground."),
+	category: VertexClientPE.category.WORLD,
+	type: "Mod",
+	state: false,
+	getSettingsLayout: function() {
+		let treasureFinderSettingsLayout = new LinearLayout_(CONTEXT);
+		treasureFinderSettingsLayout.setOrientation(1);
+
+		let goldCheckBox = clientCheckBox("Gold Ore");
+		goldCheckBox.setChecked(treasureFinderGoldSetting == "on");
+		goldCheckBox.setOnClickListener(new View_.OnClickListener() {
+			onClick: function(v) {
+				treasureFinderGoldSetting = v.isChecked()?"on":"off";
+				VertexClientPE.saveMainSettings();
+				VertexClientPE.setupTreasureIds();
+			}
+		});
+
+		let ironCheckBox = clientCheckBox("Iron Ore");
+		ironCheckBox.setChecked(treasureFinderIronSetting == "on");
+		ironCheckBox.setOnClickListener(new View_.OnClickListener() {
+			onClick: function(v) {
+				treasureFinderIronSetting = v.isChecked()?"on":"off";
+				VertexClientPE.saveMainSettings();
+				VertexClientPE.setupTreasureIds();
+			}
+		});
+
+		let coalCheckBox = clientCheckBox("Coal Ore");
+		coalCheckBox.setChecked(treasureFinderCoalSetting == "on");
+		coalCheckBox.setOnClickListener(new View_.OnClickListener() {
+			onClick: function(v) {
+				treasureFinderCoalSetting = v.isChecked()?"on":"off";
+				VertexClientPE.saveMainSettings();
+				VertexClientPE.setupTreasureIds();
+			}
+		});
+		
+		let lapisCheckBox = clientCheckBox("Lapis Lazuli Ore");
+		lapisCheckBox.setChecked(treasureFinderLapisSetting == "on");
+		lapisCheckBox.setOnClickListener(new View_.OnClickListener() {
+			onClick: function(v) {
+				treasureFinderLapisSetting = v.isChecked()?"on":"off";
+				VertexClientPE.saveMainSettings();
+				VertexClientPE.setupTreasureIds();
+			}
+		});
+
+		let diamondCheckBox = clientCheckBox("Diamond Ore");
+		diamondCheckBox.setChecked(treasureFinderDiamondSetting == "on");
+		diamondCheckBox.setOnClickListener(new View_.OnClickListener() {
+			onClick: function(v) {
+				treasureFinderDiamondSetting = v.isChecked()?"on":"off";
+				VertexClientPE.saveMainSettings();
+				VertexClientPE.setupTreasureIds();
+			}
+		});
+
+		let redstoneCheckBox = clientCheckBox("Redstone Ore");
+		redstoneCheckBox.setChecked(treasureFinderRedstoneSetting == "on");
+		redstoneCheckBox.setOnClickListener(new View_.OnClickListener() {
+			onClick: function(v) {
+				treasureFinderRedstoneSetting = v.isChecked()?"on":"off";
+				VertexClientPE.saveMainSettings();
+				VertexClientPE.setupTreasureIds();
+			}
+		});
+
+		let emeraldCheckBox = clientCheckBox("Emerald Ore");
+		emeraldCheckBox.setChecked(treasureFinderEmeraldSetting == "on");
+		emeraldCheckBox.setOnClickListener(new View_.OnClickListener() {
+			onClick: function(v) {
+				treasureFinderEmeraldSetting = v.isChecked()?"on":"off";
+				VertexClientPE.saveMainSettings();
+				VertexClientPE.setupTreasureIds();
+			}
+		});
+		
+		let chestCheckBox = clientCheckBox("Chests");
+		chestCheckBox.setChecked(treasureFinderChestSetting == "on");
+		chestCheckBox.setOnClickListener(new View_.OnClickListener() {
+			onClick: function(v) {
+				treasureFinderChestSetting = v.isChecked()?"on":"off";
+				VertexClientPE.saveMainSettings();
+				VertexClientPE.setupTreasureIds();
+			}
+		});
+
+		treasureFinderSettingsLayout.addView(goldCheckBox);
+		treasureFinderSettingsLayout.addView(ironCheckBox);
+		treasureFinderSettingsLayout.addView(coalCheckBox);
+		treasureFinderSettingsLayout.addView(lapisCheckBox);
+		treasureFinderSettingsLayout.addView(diamondCheckBox);
+		treasureFinderSettingsLayout.addView(redstoneCheckBox);
+		treasureFinderSettingsLayout.addView(emeraldCheckBox);
+		treasureFinderSettingsLayout.addView(chestCheckBox);
+		return treasureFinderSettingsLayout;
+	},
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onUseItem: function(x, y, z, i, b, s) {
+		if(treasureFinderStage != 1) {
+			treasureFinderStage = 1;
+			while(treasureList.indexOf(getTile(x, y, z)) < 0) { //check for ores and chests
+				y--;
+				if(y < 0) {
+					VertexClientPE.clientMessage("No possible treasures found.");
+					treasureFinderStage = 0;
+					return;
+				}
+			}
+			let foundBlockId = getTile(x, y, z);
+			let foundBlockName;
+			switch(foundBlockId) {
+				case 14: {
+					foundBlockName = "Gold Ore";
+					break;
+				}
+				case 15: {
+					foundBlockName = "Iron Ore";
+					break;
+				}
+				case 16: {
+					foundBlockName = "Coal Ore";
+					break;
+				}
+				case 21: {
+					foundBlockName = "Lapis Lazuli Ore";
+					break;
+				}
+				case 54: {
+					foundBlockName = "Chest";
+					break;
+				}
+				case 56: {
+					foundBlockName = "Diamond Ore";
+					break;
+				}
+				case 73:
+				case 74: {
+					foundBlockName = "Redstone Ore";
+					break;
+				}
+				case 129: {
+					foundBlockName = "Emerald Ore";
+					break;
+				}
+				default: {
+					break;
+				}
+			}
+			if(foundBlockName == "Chest") {
+				let isEmpty = true;
+				for(i = 0; i < 54; i++) {
+					if(Level.getChestSlot(x, y, z, i) > 0) {
+						isEmpty = false;
+						break;
+					}
+				}
+				if(isEmpty) {
+					VertexClientPE.clientMessage("Empty chest found at y=" + y + ".");
+				} else {
+					VertexClientPE.clientMessage("Treasure chest found at y=" + y + ".");
+				}
+			} else if(foundBlockName != null) {
+				VertexClientPE.clientMessage(foundBlockName + " found at y=" + y + ".");
+			}
+			treasureFinderStage = 0;
+		}
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(aimbot);
 VertexClientPE.registerModule(antiBurn);
@@ -6424,6 +6613,7 @@ VertexClientPE.registerModule(tapExplosion);
 VertexClientPE.registerModule(tapNuker);
 VertexClientPE.registerModule(tapRemover);
 VertexClientPE.registerModule(timer);
+VertexClientPE.registerModule(treasureFinder);
 //PLAYER
 VertexClientPE.registerModule(actionLog);
 VertexClientPE.registerModule(antiAFK);
@@ -9598,17 +9788,13 @@ VertexClientPE.showItemGiverDialog = function() { //TODO: make faster, less layo
 				itemIdInput.addTextChangedListener(new TextWatcher_() {
 					onTextChanged: function() {
 						let itemId = itemIdInput.getText();
-						let itemName;
+						let itemName = "Unknown";
 						if(Item.isValidItem(itemId)) {
-							if(Item.getName(itemId) == null) {
-								itemName = "Unknown";
-							} else {
+							if(Item.getName(itemId) != null) {
 								itemName = Item.getName(itemId);
 							}
-							itemNameText.setText("Name: " + itemName);
-						} else {
-							itemNameText.setText("Name: Unknown");
 						}
+						itemNameText.setText("Name: " + itemName);
 					}
 				});
 
@@ -12299,6 +12485,14 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + targetMyTeamSetting.toString());
 	outWrite.append("," + shouldShowTipDialogsSetting.toString());
 	outWrite.append("," + preventChatSetting.toString());
+	outWrite.append("," + treasureFinderGoldSetting.toString());
+	outWrite.append("," + treasureFinderIronSetting.toString());
+	outWrite.append("," + treasureFinderCoalSetting.toString());
+	outWrite.append("," + treasureFinderLapisSetting.toString());
+	outWrite.append("," + treasureFinderDiamondSetting.toString());
+	outWrite.append("," + treasureFinderChestSetting.toString());
+	outWrite.append("," + treasureFinderRedstoneSetting.toString());
+	outWrite.append("," + treasureFinderEmeraldSetting.toString());
 
 	outWrite.close();
 
@@ -12591,17 +12785,72 @@ VertexClientPE.loadMainSettings = function () {
 	if (arr[90] != null && arr[90] != undefined) {
 		preventChatSetting = arr[90];
 	}
+	if (arr[91] != null && arr[91] != undefined) {
+		treasureFinderGoldSetting = arr[91];
+	}
+	if (arr[92] != null && arr[92] != undefined) {
+		treasureFinderIronSetting = arr[92];
+	}
+	if (arr[93] != null && arr[93] != undefined) {
+		treasureFinderCoalSetting = arr[93];
+	}
+	if (arr[94] != null && arr[94] != undefined) {
+		treasureFinderLapisSetting = arr[94];
+	}
+	if (arr[96] != null && arr[96] != undefined) {
+		treasureFinderDiamondSetting = arr[96];
+	}
+	if (arr[95] != null && arr[95] != undefined) {
+		treasureFinderChestSetting = arr[95];
+	}
+	if (arr[97] != null && arr[97] != undefined) {
+		treasureFinderRedstoneSetting = arr[97];
+	}
+	if (arr[98] != null && arr[98] != undefined) {
+		treasureFinderEmeraldSetting = arr[98];
+	}
 
 	VertexClientPE.loadCustomRGBSettings();
 	VertexClientPE.loadAutoSpammerMessage();
 	VertexClientPE.loadWatermarkText();
 	VertexClientPE.loadCategorySettings();
 	VertexClientPE.initHealthTags();
+	VertexClientPE.setupTreasureIds();
 
 	VertexClientPE.font = fontSetting=="minecraft"?Typeface_.createFromFile(new File_(PATH, "minecraft.ttf")):VertexClientPE.defaultFont;
 	MinecraftButtonLibrary.ProcessedResources.font = VertexClientPE.font;
 
 	return true;
+}
+
+VertexClientPE.setupTreasureIds = function() {
+	treasureListTemp = [];
+	if(treasureFinderGoldSetting == "on") {
+		treasureListTemp.push(14);
+	}
+	if(treasureFinderIronSetting == "on") {
+		treasureListTemp.push(15);
+	}
+	if(treasureFinderCoalSetting == "on") {
+		treasureListTemp.push(16);
+	}
+	if(treasureFinderLapisSetting == "on") {
+		treasureListTemp.push(21);
+	}
+	if(treasureFinderChestSetting == "on") {
+		treasureListTemp.push(54);
+	}
+	if(treasureFinderDiamondSetting == "on") {
+		treasureListTemp.push(56);
+	}
+	if(treasureFinderRedstoneSetting == "on") {
+		treasureListTemp.push(73);
+		treasureListTemp.push(74);
+	}
+	if(treasureFinderEmeraldSetting == "on") {
+		treasureListTemp.push(129);
+	}
+	treasureList = treasureListTemp;
 }
 
 VertexClientPE.resetData = function() {
@@ -17802,7 +18051,7 @@ function devSettingsScreen(fromDashboard) {
 				
 				let showTestToastFunc = new settingButton("Show test screen toast", "Shows a screen toast. Useful for testing.");
 				let showTestToastButton = showTestToastFunc.getButton();
-				showTestToastButton.setText("Show");
+				showTestToastButton.setText(i18n("Show"));
 				showTestToastButton.setOnClickListener(new View_.OnClickListener({
 					onClick: function(viewArg) {
 						VertexClientPE.screenToast(android.R.drawable.ic_menu_report_image, "Developer Settings", "Test");
