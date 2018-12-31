@@ -6272,9 +6272,10 @@ var caveFinder = {
 				caveFinderStage = 0;
 				return;
 			}
-			for(let pX = -1; pX < 1; pX++) {
-				for(let pY = -1; pY < 1; pY++) {
-					for(let pZ = -1; pZ < 1; pZ++) {
+			for(let pX = -1; pX <= 1; pX++) {
+				for(let pY = -1; pY <= 0; pY++) {
+					for(let pZ = -1; pZ <= 1; pZ++) {
+						if(pX == 0 && pY == 0 && pZ == 0) continue;
 						if(getTile(x + pX, y + pY, z + pZ) == 0) {
 							VertexClientPE.clientMessage("Possible cave found at y=" + y + ".");
 							caveFinderStage = 0;
@@ -6283,6 +6284,8 @@ var caveFinder = {
 					}
 				}
 			}
+			VertexClientPE.clientMessage("No possible caves found.");
+			caveFinderStage = 0;
 		}
 	}
 }
@@ -6527,19 +6530,33 @@ var treasureFinder = {
 			}
 			if(foundBlockName == "Chest") {
 				let isEmpty = true;
-				for(i = 0; i < 54; i++) {
+				for(let i = 0; i < 27; i++) {
 					if(Level.getChestSlot(x, y, z, i) > 0) {
 						isEmpty = false;
 						break;
 					}
 				}
 				if(isEmpty) {
+					for(let xX = -1; xX <= 1; xX++) {
+						for(let zZ = -1; zZ <= 1; zZ++) {
+							if(xX == 0 && zZ == 0) continue;
+							if(getTile(x + xX, y, z + zZ) == 54) {
+								VertexClientPE.clientMessage("Possible double chest found at y=" + y + ".");
+								treasureFinderStage = 0;
+								return;
+							}
+						}
+					}
 					VertexClientPE.clientMessage("Empty chest found at y=" + y + ".");
 				} else {
 					VertexClientPE.clientMessage("Treasure chest found at y=" + y + ".");
 				}
 			} else if(foundBlockName != null) {
 				VertexClientPE.clientMessage(foundBlockName + " found at y=" + y + ".");
+			}
+			
+			if(foundBlockName == null) {
+				VertexClientPE.clientMessage("No possible treasures found.");
 			}
 			treasureFinderStage = 0;
 		}
