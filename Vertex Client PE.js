@@ -134,15 +134,18 @@ let GL10 = javax.microedition.khronos.opengles.GL10;
 let RelativeLayout = android.widget.RelativeLayout;
 let Gravity = android.view.Gravity;
 
+EntityType.AREA_EFFECT_CLOUD = 95;
 EntityType.ARMOR_STAND = 61;
 EntityType.CHEST_MINECART = 98;
 EntityType.COMMAND_BLOCK_MINECART = 100;
 EntityType.ENDER_CRYSTAL = 71;
 EntityType.ENDER_PEARL = 87;
+EntityType.EVOCATION_FANG = 103;
 EntityType.FIREWORKS_ROCKET = 72;
 EntityType.HOPPER_MINECART = 96;
 EntityType.LEASH_KNOT = 88;
 EntityType.LINGERING_POTION = 101;
+EntityType.LLAMA_SPIT = 102;
 EntityType.SPLASH_POTION = 86;
 EntityType.THROWN_TRIDENT = 73;
 EntityType.TNT_MINECART = 97;
@@ -1068,6 +1071,7 @@ const PI_CIRCLE = Math.PI / 180;
 
 let entBlackList = {};
 (function initBlackList() {
+	entBlackList[EntityType.AREA_EFFECT_CLOUD] = true;
 	entBlackList[EntityType.ARMOR_STAND] = true;
 	entBlackList[EntityType.ARROW] = true;
 	entBlackList[EntityType.BOAT] = true;
@@ -1076,6 +1080,7 @@ let entBlackList = {};
 	entBlackList[EntityType.EGG] = true;
 	entBlackList[EntityType.ENDER_CRYSTAL] = true;
 	entBlackList[EntityType.ENDER_PEARL] = true;
+	entBlackList[EntityType.EVOCATION_FANG] = true;
 	entBlackList[EntityType.EXPERIENCE_ORB] = true;
 	entBlackList[EntityType.EXPERIENCE_POTION] = true;
 	entBlackList[EntityType.FALLING_BLOCK] = true;
@@ -1087,6 +1092,7 @@ let entBlackList = {};
 	entBlackList[EntityType.LEASH_KNOT] = true;
 	entBlackList[EntityType.LIGHTNING_BOLT] = true;
 	entBlackList[EntityType.LINGERING_POTION] = true;
+	entBlackList[EntityType.LLAMA_SPIT] = true;
 	entBlackList[EntityType.MINECART] = true;
 	entBlackList[EntityType.PAINTING] = true;
 	entBlackList[EntityType.PRIMED_TNT] = true;
@@ -6566,16 +6572,19 @@ var treasureFinder = {
 var freeCam = {
 	name: "FreeCam",
 	desc: i18n("Allows you to move in an external body that is invisible to others."),
-	category: VertexClientPE.category.PLAYER,
+	category: VertexClientPE.category.MOVEMENT,
 	type: "Mod",
 	state: false,
-	getSettingsLayout: function() {
+	/* getSettingsLayout: function() {
 		let freeCamLayout = new LinearLayout_(CONTEXT);
 		freeCamLayout.setOrientation(LinearLayout_.HORIZONTAL);
 
 		//nothing
 
 		return freeCamLayout;
+	}, */
+	isExpMod: function() {
+		return true;
 	},
 	isStateMod: function() {
 		return true;
@@ -6585,6 +6594,28 @@ var freeCam = {
 		VertexClientPE.setFreeCam(this.state?1:0);
 		
 		//disable RemoteView to prevent bugs
+	}
+}
+
+var antiTarget = {
+	name: "AntiTarget",
+	desc: i18n("Allows you to force other entities to stop targeting you."),
+	category: VertexClientPE.category.PLAYER,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onTick: function() {
+		let mobs = Entity.getAll();
+		mobs.forEach(function(element, index, array) {
+			if(element != null && !entBlackList[Entity.getEntityTypeId(element)] && ent != getPlayerEnt()) {
+				Entity.setTarget(element, null);
+			}
+		});
 	}
 }
 
@@ -6616,7 +6647,6 @@ VertexClientPE.registerModule(bunnyHop);
 VertexClientPE.registerModule(elytraBoost);
 VertexClientPE.registerModule(enderProjectiles);
 VertexClientPE.registerModule(fastBridge);
-VertexClientPE.registerModule(noFall);
 VertexClientPE.registerModule(fastLadder);
 VertexClientPE.registerModule(fastWalk);
 //VertexClientPE.registerModule(fenceJump);
@@ -6630,6 +6660,7 @@ VertexClientPE.registerModule(highJump);
 VertexClientPE.registerModule(lifeSaver);
 VertexClientPE.registerModule(liquidWalk);
 VertexClientPE.registerModule(noDownGlide);
+VertexClientPE.registerModule(noFall);
 //VertexClientPE.registerModule(noInvisBedrock);
 VertexClientPE.registerModule(pointTeleport);
 VertexClientPE.registerModule(randomTP);
@@ -6664,6 +6695,7 @@ VertexClientPE.registerModule(antiHunger);
 VertexClientPE.registerModule(autoLeave);
 VertexClientPE.registerModule(autoSpammer);
 VertexClientPE.registerModule(autoSwitch);
+VertexClientPE.registerModule(antiTarget);
 VertexClientPE.registerModule(chatFilter);
 VertexClientPE.registerModule(chatRepeat);
 VertexClientPE.registerModule(coordsDisplay);
@@ -9855,6 +9887,21 @@ VertexClientPE.showItemGiverDialog = function() { //TODO: make faster, less layo
 						}
 					}
 				});
+				
+				let setOffhandButton = clientButton("Set offhand slot");
+				setOffhandButton.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(viewArg) {
+						let itemId = itemIdInput.getText();
+						let amount = itemAmountInput.getText();
+						let data = itemDataInput.getText();
+						if(Item.isValidItem(itemId)) {
+							Entity.setOffhandSlot(getPlayerEnt(), itemId, amount, data);
+							VertexClientPE.toast(i18n("Successfully set offhand slot to item with id {%0}.", [itemId]));
+						} else {
+							VertexClientPE.toast(i18n("Item doesn't exist!"));
+						}
+					}
+				});
 
 				let dialogRightLayout = new LinearLayout_(CONTEXT);
 				dialogRightLayout.setOrientation(1);
@@ -9867,6 +9914,7 @@ VertexClientPE.showItemGiverDialog = function() { //TODO: make faster, less layo
 				dialogRightLayout.addView(itemDataText);
 				dialogRightLayout.addView(itemDataInput);
 				dialogRightLayout.addView(itemGiveButton);
+				dialogRightLayout.addView(setOffhandButton);
 				dialogRightLayout.addView(closeButton);
 				dialogLayoutBase.setBackgroundDrawable(backgroundGradient());
 				dialogLayoutBase.addView(itemGiverTitle);
@@ -10065,7 +10113,7 @@ VertexClientPE.showEnchantItDialog = function() {
 	});
 }
 
-const effectGiverArray = [["Absorption", MobEffect.absorption], ["Blindness", MobEffect.blindness], ["Nausea", MobEffect.confusion], ["Strength", MobEffect.damageBoost], ["Resistance", MobEffect.damageResistance], ["Mining Fatigue", MobEffect.digSlowdown], ["Haste", MobEffect.digSpeed], ["Fatal Poison", MobEffect.fatalPoison], ["Fire Resistance", MobEffect.fireResistance], ["Instant Damage (Harm)", MobEffect.harm], ["Instant Health (Heal)", MobEffect.heal], ["Health Boost", MobEffect.healthBoost], ["Hunger", MobEffect.hunger], ["Invisibility", MobEffect.invisibility], ["Jump Boost", MobEffect.jump], ["Levitation", MobEffect.levitation], ["Slowness", MobEffect.movementSlowdown], ["Speed", MobEffect.movementSpeed], ["Night Vision", MobEffect.nightVision], ["Poison", MobEffect.poison], ["Regeneration", MobEffect.regeneration], ["Saturation", MobEffect.saturation], ["Water Breathing", MobEffect.waterBreathing], ["Weakness", MobEffect.weakness], ["Wither", MobEffect.wither]]; //todo: levitation
+const effectGiverArray = [["Absorption", MobEffect.absorption], ["Blindness", MobEffect.blindness], ["Nausea", MobEffect.confusion], ["Strength", MobEffect.damageBoost], ["Resistance", MobEffect.damageResistance], ["Mining Fatigue", MobEffect.digSlowdown], ["Haste", MobEffect.digSpeed], ["Fatal Poison", MobEffect.fatalPoison], ["Fire Resistance", MobEffect.fireResistance], ["Instant Damage (Harm)", MobEffect.harm], ["Instant Health (Heal)", MobEffect.heal], ["Health Boost", MobEffect.healthBoost], ["Hunger", MobEffect.hunger], ["Invisibility", MobEffect.invisibility], ["Jump Boost", MobEffect.jump], ["Levitation", MobEffect.levitation], ["Slowness", MobEffect.movementSlowdown], ["Speed", MobEffect.movementSpeed], ["Night Vision", MobEffect.nightVision], ["Poison", MobEffect.poison], ["Regeneration", MobEffect.regeneration], ["Saturation", MobEffect.saturation], ["Water Breathing", MobEffect.waterBreathing], ["Weakness", MobEffect.weakness], ["Wither", MobEffect.wither]];
 
 let selectedEffect = ["None", null];
 VertexClientPE.showEffectGiverDialog = function() {
