@@ -1,7 +1,7 @@
 /**
  * ##################################################################################################
  * @name Vertex Client PE
- * @version v3.1
+ * @version v3.2
  * @author peacestorm (@AgameR_Gaming)
  * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36, AutoGrind, TimmyIsDa
  *
@@ -1431,8 +1431,8 @@ VertexClientPE.isRemote = function() {
 
 VertexClientPE.playerIsInGame = false;
 
-VertexClientPE.currentVersion = "3.1";
-VertexClientPE.currentVersionDesc = "The Talkative Update";
+VertexClientPE.currentVersion = "3.2";
+VertexClientPE.currentVersionDesc = "The ? Update";
 VertexClientPE.targetVersion = "MCPE v1.8.x";
 VertexClientPE.minVersion = "1.0.0";
 VertexClientPE.edition = "Normal";
@@ -3094,7 +3094,7 @@ var pointTeleport = {
 	},
 	onTick: function() {
 		if(getTile(Player.getPointedBlockX(), Player.getPointedBlockY(), Player.getPointedBlockZ()) != 0) {
-			VertexClientPE.teleporter(Player.getPointedBlockX(), Player.getPointedBlockY() + 3, Player.getPointedBlockZ());
+			VertexClientPE.teleportTo(Player.getPointedBlockX(), Player.getPointedBlockY() + 3, Player.getPointedBlockZ());
 		}
 	}
 };
@@ -3114,7 +3114,7 @@ var tapTeleport = {
 	},
 	onUseItem: function(x, y, z, itemId, blockId, side, blockDamage) {
 		if(getTile(x, y, z) != 0) {
-			VertexClientPE.teleporter(x, y + 3, z);
+			VertexClientPE.teleportTo(x, y + 3, z);
 		}
 	}
 };
@@ -6563,6 +6563,31 @@ var treasureFinder = {
 	}
 }
 
+var freeCam = {
+	name: "FreeCam",
+	desc: i18n("Allows you to move in an external body that is invisible to others."),
+	category: VertexClientPE.category.PLAYER,
+	type: "Mod",
+	state: false,
+	getSettingsLayout: function() {
+		let freeCamLayout = new LinearLayout_(CONTEXT);
+		freeCamLayout.setOrientation(LinearLayout_.HORIZONTAL);
+
+		//nothing
+
+		return freeCamLayout;
+	},
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+		VertexClientPE.setFreeCam(this.state?1:0);
+		
+		//disable RemoteView to prevent bugs
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(aimbot);
 VertexClientPE.registerModule(antiBurn);
@@ -6598,6 +6623,7 @@ VertexClientPE.registerModule(fastWalk);
 VertexClientPE.registerModule(flight);
 //VertexClientPE.registerModule(float_mod);
 VertexClientPE.registerModule(follow);
+VertexClientPE.registerModule(freeCam);
 VertexClientPE.registerModule(frostWalk);
 VertexClientPE.registerModule(glide);
 VertexClientPE.registerModule(highJump);
@@ -9904,7 +9930,7 @@ VertexClientPE.showItemGiverDialog = function() { //TODO: make faster, less layo
 	});
 }
 
-const enchantItArray = [["Aqua Affinity", Enchantment.AQUA_AFFINITY], ["Bane of Arthropods", Enchantment.BANE_OF_ARTHROPODS], ["Blast Protection", Enchantment.BLAST_PROTECTION], ["Depth Strider", Enchantment.DEPTH_STRIDER], ["Efficiency", Enchantment.EFFICIENCY], ["Feather Falling", Enchantment.FEATHER_FALLING], ["Fire Aspect", Enchantment.FIRE_ASPECT], ["Fire Protection", Enchantment.FIRE_PROTECTION], ["Flame", Enchantment.FLAME], ["Fortune", Enchantment.FORTUNE], ["Infinity", Enchantment.INFINITY], ["Knockback", Enchantment.KNOCKBACK], ["Looting", Enchantment.LOOTING], ["Luck of the Sea", Enchantment.LUCK_OF_THE_SEA], ["Lure", Enchantment.LURE], ["Power", Enchantment.POWER], ["Projectile Protection", Enchantment.PROJECTILE_PROTECTION], ["Protection", Enchantment.PROTECTION], ["Punch", Enchantment.PUNCH], ["Respiration", Enchantment.RESPIRATION], ["Sharpness", Enchantment.SHARPNESS], ["Silk Touch", Enchantment.SILK_TOUCH], ["Smite", Enchantment.SMITE], ["Thorns", Enchantment.THORNS], ["Unbreaking", Enchantment.UNBREAKING]];
+const enchantItArray = [["Aqua Affinity", Enchantment.AQUA_AFFINITY], ["Bane of Arthropods", Enchantment.BANE_OF_ARTHROPODS], ["Blast Protection", Enchantment.BLAST_PROTECTION], ["Depth Strider", Enchantment.DEPTH_STRIDER], ["Efficiency", Enchantment.EFFICIENCY], ["Feather Falling", Enchantment.FEATHER_FALLING], ["Fire Aspect", Enchantment.FIRE_ASPECT], ["Fire Protection", Enchantment.FIRE_PROTECTION], ["Flame", Enchantment.FLAME], ["Fortune", Enchantment.FORTUNE], ["Frost Walker", Enchantment.FROST_WALKER], ["Infinity", Enchantment.INFINITY], ["Knockback", Enchantment.KNOCKBACK], ["Looting", Enchantment.LOOTING], ["Luck of the Sea", Enchantment.LUCK_OF_THE_SEA], ["Lure", Enchantment.LURE], ["Mending", Enchantment.MENDING], ["Power", Enchantment.POWER], ["Projectile Protection", Enchantment.PROJECTILE_PROTECTION], ["Protection", Enchantment.PROTECTION], ["Punch", Enchantment.PUNCH], ["Respiration", Enchantment.RESPIRATION], ["Sharpness", Enchantment.SHARPNESS], ["Silk Touch", Enchantment.SILK_TOUCH], ["Smite", Enchantment.SMITE], ["Thorns", Enchantment.THORNS], ["Unbreaking", Enchantment.UNBREAKING]];
 
 let selectedEnchantment = ["None", null];
 VertexClientPE.showEnchantItDialog = function() {
@@ -11933,10 +11959,32 @@ VertexClientPE.autoSpammer = function() {
 	Entity.setNameTag(getPlayerEnt(), username);
 }
 
-VertexClientPE.teleporter = function(x, y, z) {
+VertexClientPE.teleportTo = function(x, y, z) {
 	setPosition(getPlayerEnt(), x, y, z);
 	while(getTile(getPlayerX(), getPlayerY() - 2, getPlayerZ()) != 0) {
 		Entity.setPosition(getPlayerEnt(), getPlayerX(), getPlayerY() + 1, getPlayerZ());
+	}
+}
+
+let freeCamEntity;
+
+VertexClientPE.setFreeCam = function(onOrOff) {
+	switch(onOrOff) {
+		case 0: {
+			ModPE.setCamera(Player.getEntity());
+			if(freeCamEntity != null) {
+				Entity.remove(freeCamEntity);
+			}
+			freeCamEntity = null;
+			break;
+		} case 1: {
+			freeCamEntity = Level.spawnMob(getPlayerX(), getPlayerY(), getPlayerZ(), EntityType.CHICKEN);
+			Entity.setImmobile(freeCamEntity, true);
+			Entity.setCollisionSize(freeCamEntity, 0, 0);
+			Entity.setRenderType(freeCamEntity, EntityRenderType.human);
+			ModPE.setCamera(freeCamEntity);
+			break;
+		}
 	}
 }
 
@@ -18154,7 +18202,7 @@ function informationScreen(fromDashboard) {
 				descText.setShadowLayer(1.6, 1.5, 1.3, Color_.parseColor("#008000"));
 				descText.setTextSize(50);
 
-				let informationText = clientTextView("\u00A9 peacestorm, imYannic, _TXMO, LPMG, Astro36, AutoGrind and TimmyIsDa | 2015 - 2018. Some rights reserved. Thanks to @_TXMO for making some graphic designs and helping with choosing a name and @imYannic for the Vertex logo and some other graphic designs and mods.", true);
+				let informationText = clientTextView("\u00A9 peacestorm, imYannic, _TXMO, LPMG, Astro36, AutoGrind and TimmyIsDa | 2015 - 2019. Some rights reserved. Thanks to @_TXMO for making some graphic designs and helping with choosing a name and @imYannic for the Vertex logo and some other graphic designs and mods.", true);
 
 				informationMenuLayout.addView(logoViewer);
 				informationMenuLayout.addView(descText);
