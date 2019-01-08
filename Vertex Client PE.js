@@ -149,6 +149,8 @@ EntityType.LLAMA_SPIT = 102;
 EntityType.SPLASH_POTION = 86;
 EntityType.THROWN_TRIDENT = 73;
 EntityType.TNT_MINECART = 97;
+EntityType.WITHER_SKULL = 98;
+EntityType.EYE_OF_ENDER = 89;
 
 readFile = (path_to_file) => {
 	let fos = null, str = null, file = null, ch = null;
@@ -335,6 +337,7 @@ let treasureFinderDiamondSetting = "on";
 let treasureFinderChestSetting = "on";
 let treasureFinderRedstoneSetting = "on";
 let treasureFinderEmeraldSetting = "on";
+let targetSpecialSetting = "on";
 //------------------------------------
 let antiAFKDistancePerTick = 0.25;
 //------------------------------------
@@ -1070,6 +1073,7 @@ let newYaw = 0;
 const PI_CIRCLE = Math.PI / 180;
 
 let entBlackList = {};
+let projectileBlackList = {};
 (function initBlackList() {
 	entBlackList[EntityType.AREA_EFFECT_CLOUD] = true;
 	entBlackList[EntityType.ARMOR_STAND] = true;
@@ -1084,7 +1088,6 @@ let entBlackList = {};
 	entBlackList[EntityType.EXPERIENCE_ORB] = true;
 	entBlackList[EntityType.EXPERIENCE_POTION] = true;
 	entBlackList[EntityType.FALLING_BLOCK] = true;
-	entBlackList[EntityType.FIREBALL] = true;
 	entBlackList[EntityType.FIREWORKS_ROCKET] = true;
 	entBlackList[EntityType.FISHING_HOOK] = true;
 	entBlackList[EntityType.HOPPER_MINECART] = true;
@@ -1102,7 +1105,15 @@ let entBlackList = {};
 	entBlackList[EntityType.THROWN_POTION] = true;
 	entBlackList[EntityType.THROWN_TRIDENT] = true;
 	entBlackList[EntityType.TNT_MINECART] = true;
+	
+	projectileBlackList[EntityType.EYE_OF_ENDER] = true;
+	projectileBlackList[EntityType.WITHER_SKULL] = true;
+	projectileBlackList[EntityType.FIREBALL] = true;
 })();
+
+function isBlackListedEnt(entTypeId, allowProjectiles) {
+	return entBlackList[entTypeId] && allowProjectiles?false:(projectileBlackList[entTypeId]);
+}
 
 let songDialog;
 
@@ -1278,7 +1289,7 @@ let VertexClientPE = {
 								continue;
 							}
 						}
-						if(!entBlackList[Entity.getEntityTypeId(ent)] && ent != getPlayerEnt()) {
+						if(!isBlackListedEnt(Entity.getEntityTypeId(ent), targetSpecialSetting=="on") && ent != getPlayerEnt()) {
 							return ent;
 						}
 					}
@@ -1385,12 +1396,12 @@ function getEditedFunction(func, newBegin, newEnd) {
 	return func; // alerts "This ok function alerts your message!"
 }
 
-VertexClientPE.clickListener = function(obj) {
+/* VertexClientPE.clickListener = function(obj) {
 	if(buttonSoundSetting == "minecraft") {
 		obj.onClick = getEditedFunction(obj.onClick, 'Level.playSound(Player.getX(), Player.getY(), Player.getZ(), "random.click", 100, 0);');
 	}
 	return new View_.OnClickListener(obj);
-}
+} */
 
 VertexClientPE.menuIsShowing = false;
 VertexClientPE.isPaused = false;
@@ -5800,7 +5811,7 @@ var switchAimbot = {
 				let y = Entity.getY(cMob) - getPlayerY();
 				let z = Entity.getZ(cMob) - getPlayerZ();
 				if(x*x+y*y+z*z <= range*range) {
-					if(!entBlackList[Entity.getEntityTypeId(cMob)] && cMob != getPlayerEnt()) {
+					if(!isBlackListedEnt(Entity.getEntityTypeId(cMob), targetSpecialSetting=="on") && cMob != getPlayerEnt()) {
 						VertexClientPE.CombatUtils.aimAtEnt(cMob);
 					}
 				}
@@ -6612,7 +6623,8 @@ var antiTarget = {
 	onTick: function() {
 		let mobs = Entity.getAll();
 		mobs.forEach(function(element, index, array) {
-			if(element != null && !entBlackList[Entity.getEntityTypeId(element)] && ent != getPlayerEnt()) {
+			if(element != null && !isBlackListedEnt(Entity.getEntityTypeId(element), false) && element != getPlayerEnt()) {
+				clientMessage(Entity.getEntityTypeId(element));
 				Entity.setTarget(element, null);
 			}
 		});
@@ -12025,7 +12037,7 @@ VertexClientPE.setFreeCam = function(onOrOff) {
 			freeCamEntity = null;
 			break;
 		} case 1: {
-			freeCamEntity = Level.spawnMob(getPlayerX(), getPlayerY(), getPlayerZ(), EntityType.CHICKEN);
+			freeCamEntity = Level.spawnChicken(getPlayerX(), getPlayerY(), getPlayerZ());
 			Entity.setImmobile(freeCamEntity, true);
 			Entity.setCollisionSize(freeCamEntity, 0, 0);
 			Entity.setRenderType(freeCamEntity, EntityRenderType.human);
