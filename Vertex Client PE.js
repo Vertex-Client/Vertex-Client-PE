@@ -338,6 +338,7 @@ let treasureFinderChestSetting = "on";
 let treasureFinderRedstoneSetting = "on";
 let treasureFinderEmeraldSetting = "on";
 let targetSpecialSetting = "on";
+let renderFpsCounterSetting = "on";
 //------------------------------------
 let antiAFKDistancePerTick = 0.25;
 //------------------------------------
@@ -1075,6 +1076,7 @@ const PI_CIRCLE = Math.PI / 180;
 let entBlackList = {};
 let projectileBlackList = {};
 (function initBlackList() {
+	entBlackList[0] = true;
 	entBlackList[EntityType.AREA_EFFECT_CLOUD] = true;
 	entBlackList[EntityType.ARMOR_STAND] = true;
 	entBlackList[EntityType.ARROW] = true;
@@ -1111,8 +1113,22 @@ let projectileBlackList = {};
 	projectileBlackList[EntityType.FIREBALL] = true;
 })();
 
-function isBlackListedEnt(entTypeId, allowProjectiles) {
-	return entBlackList[entTypeId] && allowProjectiles?false:(projectileBlackList[entTypeId]);
+function isBlackListedEnt(entTypeId) {
+	return entBlackList[entTypeId];
+}
+
+function isBlackListedProjectile(entTypeId) {
+	return projectileBlackList[entTypeId];
+}
+
+function isEntityAllowed(entTypeId, targetMobs, targetSpecial) {
+	if(targetMobs == null) {
+		targetMobs = targetMobsSetting;
+	}
+	if(targetSpecial == null) {
+		targetSpecial = targetSpecialSetting;
+	}
+	return !isBlackListedEnt(entTypeId) && !(isBlackListedProjectile(entTypeId) && targetSpecial == "off") && !(!isBlackListedProjectile(entTypeId) && targetSpecial == "on" && targetMobs == "off");
 }
 
 let songDialog;
@@ -1275,7 +1291,7 @@ let VertexClientPE = {
 			},
 			getNearestMob: function(range, minRange) {
 				let mobs = Entity.getAll();
-				if(targetMobsSetting == "on") {
+				if(targetMobsSetting == "on" || targetSpecialSetting == "on") {
 					for(let i = 0; i < mobs.length; i++) {
 						let ent = mobs[i];
 						let x = Entity.getX(ent) - getPlayerX();
@@ -1289,7 +1305,7 @@ let VertexClientPE = {
 								continue;
 							}
 						}
-						if(!isBlackListedEnt(Entity.getEntityTypeId(ent), targetSpecialSetting=="on") && ent != getPlayerEnt()) {
+						if(isEntityAllowed(Entity.getEntityTypeId(ent)) && ent != getPlayerEnt()) {
 							return ent;
 						}
 					}
@@ -1767,6 +1783,8 @@ VertexClientPE.Render.getFloatBuffer = function(floatArray) {
 	return floatBuffer;
 }
 
+// let timeThisRound, timeLastRound, deltaTimeThisRound, fpm;
+
 VertexClientPE.Render.getShortBuffer = function(shortArray) {
 	let byteBuffer = ByteBuffer.allocateDirect(shortArray.length * 2);
 	byteBuffer.order(ByteOrder.nativeOrder());
@@ -1778,11 +1796,22 @@ VertexClientPE.Render.getShortBuffer = function(shortArray) {
 	return shortBuffer;
 }
 
+let lastFrame = System_.nanoTime();
+
+VertexClientPE.Render.calculateFPS = function() {
+	let time = (System_.nanoTime() - lastFrame);
+	VertexClientPE.Utils.fps = 1/(time/1000000000.0);
+	lastFrame = System_.nanoTime();
+}
+
 let virtualWorldView;
+let fpsTextView, fpsPopup, fpsLayout;
 
 let parentView = CONTEXT.getWindow().getDecorView();
 
 let width, height;
+
+let shouldClearRender = false;
 
 VertexClientPE.Render.renderer = new Renderer({
 	onSurfaceCreated: function(gl, config) {
@@ -1845,6 +1874,24 @@ VertexClientPE.Render.renderer = new Renderer({
 			}); */
 			
 			storageESP.onRender(gl);
+		} else {
+			if(shouldClearRender) {
+				shouldClearRender = false;
+				VertexClientPE.Render.clearCubes(gl);
+			}
+		}
+		
+		if(renderFpsCounterSetting == "on") {
+			VertexClientPE.Render.calculateFPS();
+			if(fpsTextView != "null") {
+				CONTEXT.runOnUiThread(new Runnable_() {
+					run: function() {
+						if(renderFpsCounterSetting == "on") {
+							fpsTextView.setText(Math.round(VertexClientPE.Utils.fps).toString() + " FPS (Render)");
+						}
+					}
+				});
+			}
 		}
 		
 	},
@@ -1862,8 +1909,21 @@ VertexClientPE.Render.initViews = function() {
 				virtualWorldView.getHolder().setFormat(PixelFormat_.TRANSLUCENT);
 				virtualWorldView.setRenderer(VertexClientPE.Render.renderer);
 			}
+			if(fpsTextView == null) {
+				fpsLayout = new LinearLayout_(CONTEXT);
+				fpsPopup = new PopupWindow_(fpsLayout, LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT);
+				fpsPopup.setBackgroundDrawable(backgroundSpecial());
+				fpsPopup.setTouchable(false);
+				fpsTextView = clientTextView(renderFpsCounterSetting=="on"?"? FPS (Render)":"");
+				fpsLayout.addView(fpsTextView);
+			}
 			if(!isRenderInit) {
 				parentView.addView(virtualWorldView);
+				if(mainButtonPositionSetting == "top-right") {
+					fpsPopup.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.TOP | Gravity_.LEFT, 0, 0);
+				} else {
+					fpsPopup.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.TOP | Gravity_.RIGHT, 0, 0);
+				}
 				isRenderInit = true;
 			}
 		}
@@ -1873,6 +1933,7 @@ VertexClientPE.Render.initViews = function() {
 VertexClientPE.Render.deinitViews = function() {
 	if(virtualWorldView != null && virtualWorldView != undefined) {
 		parentView.removeView(virtualWorldView);
+		fpsPopup.dismiss();
 		isRenderInit = false;
 	}
 }
@@ -1910,7 +1971,7 @@ VertexClientPE.Render.index = [
 const vertexBuffer = VertexClientPE.Render.getFloatBuffer(VertexClientPE.Render.vertex);
 const indexBuffer = VertexClientPE.Render.getShortBuffer(VertexClientPE.Render.index);
 
-VertexClientPE.drawCubeShapedBox = function(gl, x, y, z) { //many thanks to GodSoft029, be sure to follow him on Twitter
+VertexClientPE.Render.drawCubeShapedBox = function(gl, x, y, z) { //many thanks to GodSoft029, be sure to follow him on Twitter
 	gl.glTranslatef(x, y, z);
 	gl.glFrontFace(GL10.GL_CCW);
 	gl.glEnable(GL10.GL_BLEND);
@@ -1920,6 +1981,11 @@ VertexClientPE.drawCubeShapedBox = function(gl, x, y, z) { //many thanks to GodS
 	gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
 	gl.glDrawElements(GL10.GL_LINES, VertexClientPE.Render.index.length, GL10.GL_UNSIGNED_SHORT, indexBuffer);
 	gl.glTranslatef(-x, -y, -z);
+}
+
+VertexClientPE.Render.clearCubes = function(gl) {
+	/* gl.glClearColor(0.0, 1.0, 0.0, 0.0);
+	gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT); */
 }
 
 let userIsNewToCurrentVersion = false;
@@ -3870,7 +3936,7 @@ var coordsDisplay = {
 		this.state = !this.state;
 	},
 	onTick: function() {
-		ModPE.showTipMessage("\n\n\n" + "X: " + parseInt(getPlayerX()) + " Y: " + parseInt(getPlayerY()) + " Z: " + parseInt(getPlayerZ()));
+		ModPE.showTipMessage("\n\n\nX: " + parseInt(getPlayerX()) + " Y: " + parseInt(getPlayerY()) + " Z: " + parseInt(getPlayerZ()));
 	}
 }
 
@@ -4933,11 +4999,13 @@ var storageESP = {
 		if(this.state) {
 			VertexClientPE.Utils.loadFov();
 			VertexClientPE.Utils.loadChests();
+		} else {
+			shouldClearRender = true;
 		}
 	},
 	onRender: function(gl) {
 		VertexClientPE.Utils.getChests().forEach(function(element, index, array) {
-			VertexClientPE.drawCubeShapedBox(gl, element.x + 1 / 16, element.y + 1, element.z + 1 / 16);
+			VertexClientPE.Render.drawCubeShapedBox(gl, element.x + 1 / 16, element.y + 1, element.z + 1 / 16);
 		});
 	}
 }
@@ -5419,6 +5487,16 @@ var target = {
 				VertexClientPE.saveMainSettings();
 			}
 		});
+		
+		let targetSpecialCheckBox = clientCheckBox();
+		targetSpecialCheckBox.setChecked(targetSpecialSetting == "on");
+		targetSpecialCheckBox.setText("Special (Wither Skulls, Fireballs...)");
+		targetSpecialCheckBox.setOnClickListener(new View_.OnClickListener() {
+			onClick: function(v) {
+				targetSpecialSetting = v.isChecked()?"on":"off";
+				VertexClientPE.saveMainSettings();
+			}
+		});
 
 		let targetPlayersCheckBox = clientCheckBox();
 		targetPlayersCheckBox.setChecked(targetPlayersSetting == "on");
@@ -5456,6 +5534,7 @@ var target = {
 		});
 
 		targetSettingsLayout.addView(targetMobsCheckBox);
+		targetSettingsLayout.addView(targetSpecialCheckBox);
 		targetSettingsLayout.addView(targetPlayersCheckBox);
 		targetSettingsLayout.addView(targetFriendsCheckBox);
 		targetSettingsLayout.addView(targetMyTeamCheckBox);
@@ -5801,7 +5880,7 @@ var switchAimbot = {
 		let range = Level.getGameMode()==1?9:7;
 		let mobs = Entity.getAll();
 		let players = Server.getAllPlayers();
-		if(targetMobsSetting == "on") {
+		if(targetMobsSetting == "on" || targetSpecialSetting == "on") {
 			if(this.mobTargetNum >= mobs.length) {
 				this.mobTargetNum = 0;
 			}
@@ -5811,7 +5890,7 @@ var switchAimbot = {
 				let y = Entity.getY(cMob) - getPlayerY();
 				let z = Entity.getZ(cMob) - getPlayerZ();
 				if(x*x+y*y+z*z <= range*range) {
-					if(!isBlackListedEnt(Entity.getEntityTypeId(cMob), targetSpecialSetting=="on") && cMob != getPlayerEnt()) {
+					if(!isEntityAllowed(Entity.getEntityTypeId(cMob)) && cMob != getPlayerEnt()) {
 						VertexClientPE.CombatUtils.aimAtEnt(cMob);
 					}
 				}
@@ -6621,13 +6700,17 @@ var antiTarget = {
 		this.state = !this.state;
 	},
 	onTick: function() {
-		let mobs = Entity.getAll();
-		mobs.forEach(function(element, index, array) {
-			if(element != null && !isBlackListedEnt(Entity.getEntityTypeId(element), false) && element != getPlayerEnt()) {
-				clientMessage(Entity.getEntityTypeId(element));
-				Entity.setTarget(element, null);
-			}
-		});
+		try{
+			let mobs = Entity.getAll();
+			mobs.forEach(function(element, index, array) {
+				if(element != null && !isEntityAllowed(Entity.getEntityTypeId(element), "on", "off") && element != getPlayerEnt()) {
+					VertexClientPE.toast(Entity.getEntityTypeId(element));
+					Entity.setTarget(element, null);
+				}
+			});
+		}catch(e){
+			VertexClientPE.showNotification("DebugError", e);
+		}
 	}
 }
 
@@ -7289,80 +7372,6 @@ VertexClientPE.showNotification = function(eventTitle, eventText) {
 
 	// Send the notification.
 	mNM.notify(eventTitle, 0, notification);
-}
-
-function showNotification() {
-	/* // Using RemoteViews to bind custom layouts into Notification
-	RemoteViews views = new RemoteViews(getPackageName(),
-	R.layout.status_bar);
-	RemoteViews bigViews = new RemoteViews(getPackageName(),
-	R.layout.status_bar_expanded);
-	 
-	// showing default album image
-	views.setViewVisibility(R.id.status_bar_icon, View.VISIBLE);
-	views.setViewVisibility(R.id.status_bar_album_art, View.GONE);
-	bigViews.setImageViewBitmap(R.id.status_bar_album_art,
-	Constants.getDefaultAlbumArt(this));
-	 
-	Intent notificationIntent = new Intent(this, MainActivity.class);
-	notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
-	notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-	| Intent.FLAG_ACTIVITY_CLEAR_TASK);
-	PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-	notificationIntent, 0);
-	 
-	Intent previousIntent = new Intent(this, NotificationService.class);
-	previousIntent.setAction(Constants.ACTION.PREV_ACTION);
-	PendingIntent ppreviousIntent = PendingIntent.getService(this, 0,
-	previousIntent, 0);
-	 
-	Intent playIntent = new Intent(this, NotificationService.class);
-	playIntent.setAction(Constants.ACTION.PLAY_ACTION);
-	PendingIntent pplayIntent = PendingIntent.getService(this, 0,
-	playIntent, 0);
-	 
-	Intent nextIntent = new Intent(this, NotificationService.class);
-	nextIntent.setAction(Constants.ACTION.NEXT_ACTION);
-	PendingIntent pnextIntent = PendingIntent.getService(this, 0,
-	nextIntent, 0);
-	 
-	Intent closeIntent = new Intent(this, NotificationService.class);
-	closeIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
-	PendingIntent pcloseIntent = PendingIntent.getService(this, 0,
-	closeIntent, 0);
-	 
-	views.setOnClickPendingIntent(R.id.status_bar_play, pplayIntent);
-	bigViews.setOnClickPendingIntent(R.id.status_bar_play, pplayIntent);
-	 
-	views.setOnClickPendingIntent(R.id.status_bar_next, pnextIntent);
-	bigViews.setOnClickPendingIntent(R.id.status_bar_next, pnextIntent);
-	 
-	views.setOnClickPendingIntent(R.id.status_bar_prev, ppreviousIntent);
-	bigViews.setOnClickPendingIntent(R.id.status_bar_prev, ppreviousIntent);
-	 
-	views.setOnClickPendingIntent(R.id.status_bar_collapse, pcloseIntent);
-	bigViews.setOnClickPendingIntent(R.id.status_bar_collapse, pcloseIntent);
-	 
-	views.setImageViewResource(R.id.status_bar_play,
-	R.drawable.apollo_holo_dark_pause);
-	bigViews.setImageViewResource(R.id.status_bar_play,
-	R.drawable.apollo_holo_dark_pause);
-	 
-	views.setTextViewText(R.id.status_bar_track_name, "Song Title");
-	bigViews.setTextViewText(R.id.status_bar_track_name, "Song Title");
-	 
-	views.setTextViewText(R.id.status_bar_artist_name, "Artist Name");
-	bigViews.setTextViewText(R.id.status_bar_artist_name, "Artist Name");
-	 
-	bigViews.setTextViewText(R.id.status_bar_album_name, "Album Name");
-	 
-	status = new Notification.Builder(this).build();
-	status.contentView = views;
-	status.bigContentView = bigViews;
-	status.flags = Notification.FLAG_ONGOING_EVENT;
-	status.icon = R.drawable.ic_launcher;
-	status.contentIntent = pendingIntent;
-	startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, status); */
 }
 
 let nameColor = "\u00A7b";
@@ -12617,6 +12626,8 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + treasureFinderChestSetting.toString());
 	outWrite.append("," + treasureFinderRedstoneSetting.toString());
 	outWrite.append("," + treasureFinderEmeraldSetting.toString());
+	outWrite.append("," + targetSpecialSetting.toString());
+	outWrite.append("," + renderFpsCounterSetting.toString());
 
 	outWrite.close();
 
@@ -12932,6 +12943,12 @@ VertexClientPE.loadMainSettings = function () {
 	}
 	if (arr[98] != null && arr[98] != undefined) {
 		treasureFinderEmeraldSetting = arr[98];
+	}
+	if (arr[99] != null && arr[99] != undefined) {
+		targetSpecialSetting = arr[99];
+	}
+	if (arr[100] != null && arr[100] != undefined) {
+		renderFpsCounterSetting = arr[100];
 	}
 
 	VertexClientPE.loadCustomRGBSettings();
@@ -16604,7 +16621,7 @@ function createSteveHead() {
 
 (function checkFiles() {
 	let res = ["clienticon_new.png", "clienticon_new_clicked.png", "play_button.png", "play_button_clicked.png", "twitter_button.png", "twitter_button_clicked.png", "youtube_button.png", "youtube_button_clicked.png", "github_button.png", "github_button_clicked.png", "vertex_logo_new.png", "stevehead.png", "minecraft.ttf", "christmas_tree.png", "dirt_background.png", "rainbow_background.png"],
-		langs = ["en", "nl"],
+		langs = ["en", "nl", "ko"],
 		isExisting = true;
 	loadLanguageSettings();
 	for (let i = res.length; i--;) {
@@ -17385,9 +17402,12 @@ function settingsScreen(fromDashboard) {
 						if(fontSetting != "default") {
 							fontSetting = "default";
 							fontSettingButton.setText("Default");
-							VertexClientPE.font = fontSetting=="minecraft"?Typeface_.createFromFile(new File_(PATH, "minecraft.ttf")):VertexClientPE.defaultFont;
+							VertexClientPE.font = VertexClientPE.defaultFont;
 							MinecraftButtonLibrary.ProcessedResources.font = VertexClientPE.font;
 							VertexClientPE.shouldUpdateGUI = true;
+							if(fpsTextView != null) {
+								VertexClientPE.addTextStyleToView(fpsTextView);
+							}
 						}
 					}
 				);
@@ -17410,6 +17430,9 @@ function settingsScreen(fromDashboard) {
 						MinecraftButtonLibrary.ProcessedResources.font = VertexClientPE.font;
 						VertexClientPE.saveMainSettings();
 						VertexClientPE.shouldUpdateGUI = true;
+						if(fpsTextView != null) {
+							VertexClientPE.addTextStyleToView(fpsTextView);
+						}
 					}
 				}));
 
@@ -17673,6 +17696,38 @@ function settingsScreen(fromDashboard) {
 						}
 						VertexClientPE.saveMainSettings();
 						VertexClientPE.shouldUpdateGUI = true;
+					}
+				}));
+				
+				let renderTitle = clientSectionTitle("Render (StorageESP etc.)", "theme");
+
+				let renderFpsCounterSettingFunc = new settingButton("Show fps counter of the render layer", "Shows a fps counter (fps is counted on the render layer which is used by mods like StorageESP).", null,
+					function(viewArg) {
+						if(renderFpsCounterSetting != "on") {
+							renderFpsCounterSetting = "on";
+							renderFpsCounterSettingButton.setText(i18n("ON"));
+						}
+					}
+				);
+				let renderFpsCounterSettingButton = renderFpsCounterSettingFunc.getButton();
+				if(renderFpsCounterSetting == "on") {
+					renderFpsCounterSettingButton.setText(i18n("ON"));
+				} else if(renderFpsCounterSetting == "off") {
+					renderFpsCounterSettingButton.setText(i18n("OFF"));
+				}
+				renderFpsCounterSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(renderFpsCounterSetting == "off") {
+							renderFpsCounterSetting = "on";
+							renderFpsCounterSettingButton.setText(i18n("ON"));
+						} else if(renderFpsCounterSetting == "on") {
+							renderFpsCounterSetting = "off";
+							renderFpsCounterSettingButton.setText(i18n("OFF"));
+							if(fpsTextView != null) {
+								fpsTextView.setText("");
+							}
+						}
+						VertexClientPE.saveMainSettings();
 					}
 				}));
 
@@ -18059,6 +18114,8 @@ function settingsScreen(fromDashboard) {
 				VertexClientPE.addView(settingsMenuLayout, menuTypeSettingFunc);
 				VertexClientPE.addView(settingsMenuLayout, normalMenuTypeSizeFunc);
 				VertexClientPE.addView(settingsMenuLayout, menuAnimationsSettingFunc);
+				settingsMenuLayout.addView(renderTitle);
+				VertexClientPE.addView(settingsMenuLayout, renderFpsCounterSettingFunc);
 				settingsMenuLayout.addView(soundsAndMusicTitle);
 				VertexClientPE.addView(settingsMenuLayout, buttonSoundSettingFunc);
 				//VertexClientPE.addView(settingsMenuLayout, playMusicSettingFunc);
