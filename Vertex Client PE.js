@@ -141,6 +141,7 @@ EntityType.COMMAND_BLOCK_MINECART = 100;
 EntityType.ENDER_CRYSTAL = 71;
 EntityType.ENDER_PEARL = 87;
 EntityType.EVOCATION_FANG = 103;
+EntityType.EYE_OF_ENDER = 89;
 EntityType.FIREWORKS_ROCKET = 72;
 EntityType.HOPPER_MINECART = 96;
 EntityType.LEASH_KNOT = 88;
@@ -150,7 +151,6 @@ EntityType.SPLASH_POTION = 86;
 EntityType.THROWN_TRIDENT = 73;
 EntityType.TNT_MINECART = 97;
 EntityType.WITHER_SKULL = 98;
-EntityType.EYE_OF_ENDER = 89;
 
 readFile = (path_to_file) => {
 	let fos = null, str = null, file = null, ch = null;
@@ -339,6 +339,8 @@ let treasureFinderRedstoneSetting = "on";
 let treasureFinderEmeraldSetting = "on";
 let targetSpecialSetting = "on";
 let renderFpsCounterSetting = "on";
+let hacksListOrientationSetting = "horizontal";
+let hacksListBackgroundSetting = "on";
 //------------------------------------
 let antiAFKDistancePerTick = 0.25;
 //------------------------------------
@@ -1465,7 +1467,7 @@ VertexClientPE.isRemote = function() {
 VertexClientPE.playerIsInGame = false;
 
 VertexClientPE.currentVersion = "3.2";
-VertexClientPE.currentVersionDesc = "The ? Update";
+VertexClientPE.currentVersionDesc = "The Render Update";
 VertexClientPE.targetVersion = "MCPE v1.8.x";
 VertexClientPE.minVersion = "1.0.0";
 VertexClientPE.edition = "Normal";
@@ -1821,6 +1823,8 @@ VertexClientPE.Render.renderer = new Renderer({
 
 		gl.glClearDepthf(1.0);
 
+		gl.glDisable(GL10.GL_DITHER);
+
 		gl.glEnable(GL10.GL_DEPTH_TEST);
 
 		gl.glDepthFunc(GL10.GL_LEQUAL);
@@ -1853,9 +1857,9 @@ VertexClientPE.Render.renderer = new Renderer({
 			let yaw = getYaw() % 360;
 			let pitch = getPitch() % 360;
 
-			let eyeX = getPlayerX(0);
-			let eyeY = getPlayerY(1) + 1;
-			let eyeZ = getPlayerZ(2);
+			let eyeX = getPlayerX();
+			let eyeY = getPlayerY() + 1;
+			let eyeZ = getPlayerZ();
 
 			let dCenterX = Math.sin(yaw / 180 * Math.PI);
 			let dCenterZ = Math.cos(yaw / 180 * Math.PI);
@@ -1908,6 +1912,7 @@ VertexClientPE.Render.initViews = function() {
 				virtualWorldView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
 				virtualWorldView.getHolder().setFormat(PixelFormat_.TRANSLUCENT);
 				virtualWorldView.setRenderer(VertexClientPE.Render.renderer);
+				virtualWorldView.setRenderMode(0);
 			}
 			if(fpsTextView == null) {
 				fpsLayout = new LinearLayout_(CONTEXT);
@@ -1975,11 +1980,13 @@ VertexClientPE.Render.drawCubeShapedBox = function(gl, x, y, z) { //many thanks 
 	gl.glTranslatef(x, y, z);
 	gl.glFrontFace(GL10.GL_CCW);
 	gl.glEnable(GL10.GL_BLEND);
+	gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 	gl.glLineWidth(4);
 	gl.glColor4f(0.0, 1.0, 0.0, 0.0);
 	gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 	gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
 	gl.glDrawElements(GL10.GL_LINES, VertexClientPE.Render.index.length, GL10.GL_UNSIGNED_SHORT, indexBuffer);
+	gl.glDisable(GL10.GL_LINE_SMOOTH);
 	gl.glTranslatef(-x, -y, -z);
 }
 
@@ -4966,6 +4973,7 @@ var speedHack = {
 var storageESP = {
 	name: "StorageESP",
 	desc: i18n("Allows you to find chests, dispensers and droppers easily by showing boxes around them."),
+	credits: "GodSoft029",
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
@@ -8184,6 +8192,56 @@ VertexClientPE.showHacksListManagerDialog = function() {
 						}
 					}
 				}));
+				
+				let hacksListBackgroundSettingFunc = new settingButton(i18n("Hacks list background"), null, display.widthPixels - 20,
+					function(viewArg) {
+						hacksListBackgroundSetting = "on";
+						hacksListBackgroundSettingButton.setText(i18n("ON") + " " + i18n("(use global background)"));
+					}
+				);
+				let hacksListBackgroundSettingButton = hacksListBackgroundSettingFunc.getButton();
+				if(hacksListBackgroundSetting == "on") {
+					hacksListBackgroundSettingButton.setText(i18n("ON") + " " + i18n("(use global background)"));
+				} else if(hacksListBackgroundSetting == "off") {
+					hacksListBackgroundSettingButton.setText(i18n("OFF"));
+				}
+				hacksListBackgroundSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(hacksListBackgroundSetting == "on") {
+							hacksListBackgroundSetting = "off";
+							hacksListBackgroundSettingButton.setText(i18n("OFF"));
+						} else if(hacksListBackgroundSetting == "off"){
+							hacksListBackgroundSetting = "on";
+							hacksListBackgroundSettingButton.setText(i18n("ON") + " " + i18n("(use global background)"));
+						}
+						VertexClientPE.saveMainSettings();
+					}
+				}));
+
+				let hacksListOrientationSettingFunc = new settingButton(i18n("Hacks list orientation"), null, display.widthPixels - 20,
+					function(viewArg) {
+						hacksListOrientationSetting = "horizontal";
+						hacksListOrientationSettingButton.setText(i18n("Horizontal"));
+					}
+				);
+				let hacksListOrientationSettingButton = hacksListOrientationSettingFunc.getButton();
+				if(hacksListOrientationSetting == "horizontal") {
+					hacksListOrientationSettingButton.setText(i18n("Horizontal"));
+				} else if(hacksListOrientationSetting == "vertical") {
+					hacksListOrientationSettingButton.setText(i18n("Vertical"));
+				}
+				hacksListOrientationSettingButton.setOnClickListener(new View_.OnClickListener({
+					onClick: function(viewArg) {
+						if(hacksListOrientationSetting == "horizontal") {
+							hacksListOrientationSetting = "vertical";
+							hacksListOrientationSettingButton.setText(i18n("Vertical"));
+						} else if(hacksListOrientationSetting == "vertical"){
+							hacksListOrientationSetting = "horizontal";
+							hacksListOrientationSettingButton.setText(i18n("Horizontal"));
+						}
+						VertexClientPE.saveMainSettings();
+					}
+				}));
 
 				let hacksListPosSettingFunc = new settingButton(i18n("Hacks list position"), null, display.widthPixels - 20,
 					function(viewArg) {
@@ -8216,6 +8274,8 @@ VertexClientPE.showHacksListManagerDialog = function() {
 				}));
 
 				VertexClientPE.addView(dialogLayout, hacksListModeSettingFunc);
+				VertexClientPE.addView(dialogLayout, hacksListBackgroundSettingFunc);
+				VertexClientPE.addView(dialogLayout, hacksListOrientationSettingFunc);
 				VertexClientPE.addView(dialogLayout, hacksListPosSettingFunc);
 				dialogLayout1.addView(clientTextView(""));
 				dialogLayout1.addView(closeButton);
@@ -12628,6 +12688,8 @@ VertexClientPE.saveMainSettings = function() {
 	outWrite.append("," + treasureFinderEmeraldSetting.toString());
 	outWrite.append("," + targetSpecialSetting.toString());
 	outWrite.append("," + renderFpsCounterSetting.toString());
+	outWrite.append("," + hacksListOrientationSetting.toString());
+	outWrite.append("," + hacksListBackgroundSetting.toString());
 
 	outWrite.close();
 
@@ -12949,6 +13011,12 @@ VertexClientPE.loadMainSettings = function () {
 	}
 	if (arr[100] != null && arr[100] != undefined) {
 		renderFpsCounterSetting = arr[100];
+	}
+	if (arr[101] != null && arr[101] != undefined) {
+		hacksListOrientationSetting = arr[101];
+	}
+	if (arr[102] != null && arr[102] != undefined) {
+		hacksListBackgroundSetting = arr[102];
 	}
 
 	VertexClientPE.loadCustomRGBSettings();
@@ -18223,6 +18291,7 @@ function devSettingsScreen(fromDashboard) {
 						VertexClientPE.showConfirmDialog("Reset all launcher data", "Are you sure you want to reset all launcher data?", null,
 							function() {
 								VertexClientPE.resetData();
+								VertexClientPE.shouldUpdateGUI = true;
 							}
 						);
 					}
@@ -18382,7 +18451,6 @@ function informationScreen(fromDashboard) {
 				informationMenuLayout.addView(vertexVersionTextView);
 				informationMenuLayout.addView(vertexEditionTextView);
 				informationMenuLayout.addView(statusTextView);
-				//informationMenuLayout.addView(proTextView);
 				//-------------------------------------------
 				informationMenuLayout.addView(deviceInfoTitle);
 				informationMenuLayout.addView(androidVersionTextView);
@@ -20787,7 +20855,11 @@ function showHacksList() {
 					enabledHacksCounter = 0;
 
 					let hacksListLayout = new LinearLayout_(CONTEXT);
-					hacksListLayout.setOrientation(LinearLayout_.HORIZONTAL);
+					if(hacksListOrientationSetting == "horizontal") {
+						hacksListLayout.setOrientation(LinearLayout_.HORIZONTAL);
+					} else {
+						hacksListLayout.setOrientation(LinearLayout_.VERTICAL);
+					}
 					hacksListLayout.setGravity(Gravity_.CENTER_VERTICAL);
 
 					let hacksListLayoutLeft = new LinearLayout_(CONTEXT);
@@ -20799,10 +20871,15 @@ function showHacksList() {
 					let hacksListLayoutRight = new LinearLayout_(CONTEXT);
 					hacksListLayoutRight.setOrientation(1);
 					hacksListLayoutRight.setGravity(Gravity_.CENTER);
-					if(hacksListModeSetting != "logo") {
+					if(hacksListModeSetting != "logo" && hacksListOrientationSetting == "horizontal") {
 						hacksListLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(width / 4, width / 15));
 					} else {
-						hacksListLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(LinearLayout_.LayoutParams.WRAP_CONTENT, width / 15));
+						if(hacksListModeSetting == "logo") {
+							hacksListLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(LinearLayout_.LayoutParams.WRAP_CONTENT, width / 15));
+						} else if(hacksListOrientationSetting == "vertical") {
+							hacksListLayoutRight.setLayoutParams(new ViewGroup_.LayoutParams(LinearLayout_.LayoutParams.WRAP_CONTENT, LinearLayout_.LayoutParams.WRAP_CONTENT));
+							hacksListLayoutRight.setPadding(dip2px(2), 0, dip2px(2), dip2px(2));
+						}
 					}
 
 					hacksListLayout.addView(hacksListLayoutRight);
@@ -20814,26 +20891,40 @@ function showHacksList() {
 					let versionText = clientTextView("v" + VertexClientPE.currentVersion, true);
 					versionText.setGravity(android.view.Gravity.CENTER);
 
-					let proText = clientTextView("Pro", true);
-					proText.setGravity(android.view.Gravity.CENTER);
-					proText.setTextColor(Color_.parseColor("#DAA520"));
-
 					let statesText = "";
-					VertexClientPE.modules.forEach(function (element, index, array) {
-						if(element.isStateMod() && element.state) {
-							if(bypassState && element.hasOwnProperty("canBypassBypassMod") && !element.canBypassBypassMod()) {
-								return;
+					if(hacksListOrientationSetting == "horizontal") {
+						VertexClientPE.modules.forEach(function (element, index, array) {
+							if(element.isStateMod() && element.state) {
+								if(bypassState && element.hasOwnProperty("canBypassBypassMod") && !element.canBypassBypassMod()) {
+									return;
+								}
+								if(enabledHacksCounter != 0) {
+									statesText += " - "
+								}
+								statesText += VertexClientPE.getCustomModName(element.name);
+								if(element.hasOwnProperty("getExtraInfo")) {
+									statesText += " [" + element.getExtraInfo() + "]";
+								}
+								enabledHacksCounter++;
 							}
-							if(enabledHacksCounter != 0) {
-								statesText += " - "
+						});
+					} else {
+						VertexClientPE.modules.forEach(function (element, index, array) {
+							if(element.isStateMod() && element.state) {
+								if(bypassState && element.hasOwnProperty("canBypassBypassMod") && !element.canBypassBypassMod()) {
+									return;
+								}
+								if(enabledHacksCounter != 0) {
+									statesText += "\n"
+								}
+								statesText += VertexClientPE.getCustomModName(element.name);
+								if(element.hasOwnProperty("getExtraInfo")) {
+									statesText += " [" + element.getExtraInfo() + "]";
+								}
+								enabledHacksCounter++;
 							}
-							statesText += VertexClientPE.getCustomModName(element.name);
-							if(element.hasOwnProperty("getExtraInfo")) {
-								statesText += " [" + element.getExtraInfo() + "]";
-							}
-							enabledHacksCounter++;
-						}
-					});
+						});
+					}
 					
 					if(enabledHacksCounter == 0) {
 						statesText = "No mods enabled";
@@ -20853,10 +20944,14 @@ function showHacksList() {
 					} */
 
 					statesTextView.setTextSize(16);
-					statesTextView.setPadding(0, 0, dip2px(8), 0);
-					statesTextView.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
-					statesTextView.setMarqueeRepeatLimit(-1);
-					statesTextView.setSingleLine();
+					if(hacksListOrientationSetting == "horizontal") {
+						statesTextView.setPadding(0, 0, dip2px(8), 0);
+						statesTextView.setEllipsize(TextUtils_.TruncateAt.MARQUEE);
+						statesTextView.setMarqueeRepeatLimit(-1);
+						statesTextView.setSingleLine();
+						statesTextView.setHorizontallyScrolling(true);
+						statesTextView.setSelected(true);
+					}
 					statesTextView.setHorizontallyScrolling(true);
 					statesTextView.setSelected(true);
 					/* musicTextView.setTextSize(16);
@@ -20868,7 +20963,6 @@ function showHacksList() {
 					musicTextView.setSelected(true); */
 					logoViewer2.setPadding(dip2px(8), 0, dip2px(8), 0);
 					versionText.setPadding(dip2px(8), 0, dip2px(8), 0);
-					proText.setPadding(dip2px(8), 0, dip2px(8), 0);
 					hacksListLayoutLeft.addView(logoViewer2);
 					if(hacksListModeSetting != "logo") {
 						hacksListLayoutRight.addView(statesTextView);
@@ -20884,13 +20978,40 @@ function showHacksList() {
 						}
 						hacksList.setTouchable(false);
 						if(hacksListPosSetting == "top-left") {
-							hacksList.setBackgroundDrawable(backgroundGradient("bottomright"));
+							if(hacksListOrientationSetting == "vertical") {
+								hacksListLayoutLeft.setGravity(Gravity_.LEFT);
+								hacksListLayoutRight.setGravity(Gravity_.LEFT);
+								hacksListLayout.setGravity(Gravity_.LEFT);
+							}
+							if(hacksListBackgroundSetting == "off") {
+								hacksList.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+							} else {
+								hacksList.setBackgroundDrawable(backgroundGradient("bottomright"));
+							}
 							hacksList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.LEFT | Gravity_.TOP, 0, 0);
 						} else if(hacksListPosSetting == "top-center") {
-							hacksList.setBackgroundDrawable(backgroundGradient(true));
+							if(hacksListOrientationSetting == "vertical") {
+								hacksListLayoutLeft.setGravity(Gravity_.CENTER);
+								hacksListLayoutRight.setGravity(Gravity_.CENTER);
+								hacksListLayout.setGravity(Gravity_.CENTER);
+							}
+							if(hacksListBackgroundSetting == "off") {
+								hacksList.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+							} else {
+								hacksList.setBackgroundDrawable(backgroundGradient(true));
+							}
 							hacksList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.CENTER | Gravity_.TOP, 0, 0);
 						} else if(hacksListPosSetting == "top-right") {
-							hacksList.setBackgroundDrawable(backgroundGradient("bottomleft"));
+							if(hacksListOrientationSetting == "vertical") {
+								hacksListLayoutLeft.setGravity(Gravity_.RIGHT);
+								hacksListLayoutRight.setGravity(Gravity_.RIGHT);
+								hacksListLayout.setGravity(Gravity_.RIGHT);
+							}
+							if(hacksListBackgroundSetting == "off") {
+								hacksList.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+							} else {
+								hacksList.setBackgroundDrawable(backgroundGradient("bottomleft"));
+							}
 							hacksList.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.TOP, 0, 0);
 						}
 					}
@@ -20911,21 +21032,39 @@ function updateHacksList() {
 						enabledHacksCounter = 0;
 
 						let statesText = "";
-						VertexClientPE.modules.forEach(function (element, index, array) {
-							if(element.isStateMod() && element.state) {
-								if(bypassState && element.hasOwnProperty("canBypassBypassMod") && !element.canBypassBypassMod()) {
-									return;
+						if(hacksListOrientationSetting == "horizontal") {
+							VertexClientPE.modules.forEach(function (element, index, array) {
+								if(element.isStateMod() && element.state) {
+									if(bypassState && element.hasOwnProperty("canBypassBypassMod") && !element.canBypassBypassMod()) {
+										return;
+									}
+									if(enabledHacksCounter != 0) {
+										statesText += " - "
+									}
+									statesText += VertexClientPE.getCustomModName(element.name);
+									if(element.hasOwnProperty("getExtraInfo")) {
+										statesText += " [" + element.getExtraInfo() + "]";
+									}
+									enabledHacksCounter++;
 								}
-								if(enabledHacksCounter != 0) {
-									statesText += " - "
+							});
+						} else {
+							VertexClientPE.modules.forEach(function (element, index, array) {
+								if(element.isStateMod() && element.state) {
+									if(bypassState && element.hasOwnProperty("canBypassBypassMod") && !element.canBypassBypassMod()) {
+										return;
+									}
+									if(enabledHacksCounter != 0) {
+										statesText += "\n"
+									}
+									statesText += VertexClientPE.getCustomModName(element.name);
+									if(element.hasOwnProperty("getExtraInfo")) {
+										statesText += " [" + element.getExtraInfo() + "]";
+									}
+									enabledHacksCounter++;
 								}
-								statesText += VertexClientPE.getCustomModName(element.name);
-								if(element.hasOwnProperty("getExtraInfo")) {
-									statesText += " [" + element.getExtraInfo() + "]";
-								}
-								enabledHacksCounter++;
-							}
-						});
+							});
+						}
 
 						if(enabledHacksCounter == 0) {
 							statesText = "No mods enabled";
