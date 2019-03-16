@@ -6202,7 +6202,7 @@ var antiHunger = {
 	onTick: function() {
 		if(Player.getHunger() < 20) {
 			Player.setHunger(20);
-		}
+		} //alternative mode: saturation/exhaustion
 	}
 }
 
@@ -6722,6 +6722,20 @@ var antiTarget = {
 	}
 }
 
+var expGiver = {
+	name: "ExpGiver",
+	desc: i18n("Gives the player experience points or levels."),
+	category: VertexClientPE.category.PLAYER,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return false;
+	},
+	onToggle: function() {
+		VertexClientPE.showExpGiverDialog();
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(aimbot);
 VertexClientPE.registerModule(antiBurn);
@@ -6805,6 +6819,7 @@ VertexClientPE.registerModule(coordsDisplay);
 VertexClientPE.registerModule(derp);
 VertexClientPE.registerModule(effectGiver);
 VertexClientPE.registerModule(enchantIt);
+VertexClientPE.registerModule(expGiver);
 VertexClientPE.registerModule(fancyChat);
 VertexClientPE.registerModule(fastBreak);
 VertexClientPE.registerModule(glitchCam);
@@ -10059,6 +10074,55 @@ VertexClientPE.showItemGiverDialog = function() { //TODO: make faster, less layo
 	});
 }
 
+VertexClientPE.showExpGiverDialog = function() {
+	CONTEXT.runOnUiThread(new Runnable_() {
+		run: function() {
+			try {
+				let expGiverTitle = clientTextView("ExpGiver", true);
+				expGiverTitle.setTextSize(25);
+				let closeButton = clientButton("Close");
+				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
+				closeButton.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(view) {
+						dialog.dismiss();
+					}
+				});
+				let dialogLayoutBase = new LinearLayout_(CONTEXT);
+				dialogLayoutBase.setOrientation(1);
+				dialogLayoutBase.setPadding(10, 10, 10, 10);
+
+				let expNumberPicker = new android.widget.NumberPicker(CONTEXT);
+				expNumberPicker.setMinValue(1);
+				expNumberPicker.setMaxValue(100);
+
+				let expGiveButton = clientButton("Give");
+				expGiveButton.setOnClickListener(new View_.OnClickListener() {
+					onClick: function(viewArg) {
+						Player.addExp(expNumberPicker.getValue());
+					}
+				});
+				
+				dialogLayoutBase.addView(expGiverTitle);
+				dialogLayoutBase.addView(expNumberPicker);
+				dialogLayoutBase.addView(expGiveButton);
+				dialogLayoutBase.addView(closeButton);
+				dialogLayoutBase.setBackgroundDrawable(backgroundGradient());
+				
+
+				let dialog = new Dialog_(CONTEXT);
+				dialog.requestWindowFeature(Window_.FEATURE_NO_TITLE);
+				dialog.getWindow().setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+				dialog.setContentView(dialogLayoutBase);
+				dialog.setTitle("ExpGiver");
+				dialog.show();
+			} catch(e) {
+				print("Error: " + e);
+				VertexClientPE.showBugReportDialog(e);
+			}
+		}
+	});
+}
+
 const enchantItArray = [["Aqua Affinity", Enchantment.AQUA_AFFINITY], ["Bane of Arthropods", Enchantment.BANE_OF_ARTHROPODS], ["Blast Protection", Enchantment.BLAST_PROTECTION], ["Depth Strider", Enchantment.DEPTH_STRIDER], ["Efficiency", Enchantment.EFFICIENCY], ["Feather Falling", Enchantment.FEATHER_FALLING], ["Fire Aspect", Enchantment.FIRE_ASPECT], ["Fire Protection", Enchantment.FIRE_PROTECTION], ["Flame", Enchantment.FLAME], ["Fortune", Enchantment.FORTUNE], ["Frost Walker", Enchantment.FROST_WALKER], ["Infinity", Enchantment.INFINITY], ["Knockback", Enchantment.KNOCKBACK], ["Looting", Enchantment.LOOTING], ["Luck of the Sea", Enchantment.LUCK_OF_THE_SEA], ["Lure", Enchantment.LURE], ["Mending", Enchantment.MENDING], ["Power", Enchantment.POWER], ["Projectile Protection", Enchantment.PROJECTILE_PROTECTION], ["Protection", Enchantment.PROTECTION], ["Punch", Enchantment.PUNCH], ["Respiration", Enchantment.RESPIRATION], ["Sharpness", Enchantment.SHARPNESS], ["Silk Touch", Enchantment.SILK_TOUCH], ["Smite", Enchantment.SMITE], ["Thorns", Enchantment.THORNS], ["Unbreaking", Enchantment.UNBREAKING]];
 
 let selectedEnchantment = ["None", null];
@@ -11390,11 +11454,14 @@ VertexClientPE.debugMessage = function(message) {
 let toast;
 let loadingToast;
 
-VertexClientPE.toast = function(message, vibrate) {
+VertexClientPE.toast = function(message, vibrate, allowSkip) {
 	CONTEXT.runOnUiThread(new Runnable_({
 		run: function() {
 			if(vibrate || vibrate == null) {
 				CONTEXT.getSystemService(Context_.VIBRATOR_SERVICE).vibrate(37);
+			}
+			if(allowSkip == null) {
+				allowSkip = true;
 			}
 			let layout = new LinearLayout_(CONTEXT);
 			layout.setPadding(dip2px(2), dip2px(2), dip2px(2), dip2px(2));
@@ -11402,7 +11469,7 @@ VertexClientPE.toast = function(message, vibrate) {
 			let title = VertexClientPE.getName();
 			let text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message));
 			layout.addView(text);
-			if(toast != null) {
+			if(toast != null && allowSkip) {
 				toast.cancel();
 			}
 			toast = new Toast_(CONTEXT);
@@ -16634,7 +16701,7 @@ VertexClientPE.setup = function() {
 						VertexClientPE.MusicUtils.startMusicPlayer(); //temp removed music player, songs unavailable */
 
 						if(showNewsSetting == "on") {
-							VertexClientPE.toast(news);
+							VertexClientPE.toast(news, null, false);
 						}
 					}
 				}));
