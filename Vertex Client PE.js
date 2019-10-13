@@ -9836,43 +9836,33 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 					}
 				});
 
-				let tileDropDownCurrentColorButton = clientButton(capitalizeColorString(currentColor));
+				let tileDropDownCurrentColorButton = clientButton(i18n(capitalizeColorString(currentColor)));
 				tileDropDownCurrentColorButton.setOnClickListener(new android.view.View.OnClickListener({
 					onClick: function(v) {
 						if(currentColor == "green") {
 							currentColor = "red";
-							tileDropDownCurrentColorButton.setText(i18n("Red"));
 						} else if(currentColor == "red") {
 							currentColor = "blue";
-							tileDropDownCurrentColorButton.setText(i18n("Blue"));
 						} else if(currentColor == "blue") {
 							currentColor = "purple";
-							tileDropDownCurrentColorButton.setText(i18n("Purple"));
 						} else if(currentColor == "purple") {
 							currentColor = "violet";
-							tileDropDownCurrentColorButton.setText(i18n("Violet"));
 						} else if(currentColor == "violet") {
 							currentColor = "yellow";
-							tileDropDownCurrentColorButton.setText(i18n("Yellow"));
 						} else if(currentColor == "yellow") {
 							currentColor = "orange";
-							tileDropDownCurrentColorButton.setText(i18n("Orange"));
 						} else if(currentColor == "orange") {
 							currentColor = "brown";
-							tileDropDownCurrentColorButton.setText(i18n("Brown"));
 						} else if(currentColor == "brown") {
 							currentColor = "grey";
-							tileDropDownCurrentColorButton.setText(i18n("Grey"));
 						} else if(currentColor == "grey") {
 							currentColor = "white";
-							tileDropDownCurrentColorButton.setText(i18n("White"));
 						} else if(currentColor == "white") {
 							currentColor = "black";
-							tileDropDownCurrentColorButton.setText(i18n("Black"));
 						} else if(currentColor == "black") {
 							currentColor = "green";
-							tileDropDownCurrentColorButton.setText(i18n("Green"));
 						}
+						tileDropDownCurrentColorButton.setText(i18n(capitalizeColorString(currentColor)));
 						editor.putString("VertexClientPE.tiles." + defaultName + ".color", currentColor);
 						editor.commit();
 						tileDropDownUseLightColorCheckBox.setEnabled(currentColor == "green" || currentColor == "red" || currentColor == "blue");
@@ -9900,7 +9890,7 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 						currentColor = defaultColor;
 						currentUseLightColor = defaultUseLightColor;
 						tileDropDownEditText.setText(currentName);
-						tileDropDownCurrentColorButton.setText(capitalizeColorString(currentColor));
+						tileDropDownCurrentColorButton.setText(i18n(capitalizeColorString(currentColor)));
 						tileDropDownUseLightColorCheckBox.setChecked(currentUseLightColor);
 						editor.putString("VertexClientPE.tiles." + defaultName + ".name", currentName);
 						editor.putString("VertexClientPE.tiles." + defaultName + ".color", currentColor);
@@ -9946,7 +9936,7 @@ VertexClientPE.showItemGiverDialog = function() { //TODO: make faster, less layo
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				let itemGiverTitle = clientTextView("ItemGiver", true);
+				let itemGiverTitle = clientTextView(VertexClientPE.getCustomModName("ItemGiver"), true);
 				itemGiverTitle.setTextSize(25);
 				let closeButton = clientButton("Close");
 				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
@@ -10107,7 +10097,7 @@ VertexClientPE.showExpGiverDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				let expGiverTitle = clientTextView("ExpGiver", true);
+				let expGiverTitle = clientTextView(VertexClientPE.getCustomModName("ExpGiver"), true);
 				expGiverTitle.setTextSize(25);
 				let closeButton = clientButton("Close");
 				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
@@ -10159,7 +10149,7 @@ VertexClientPE.showEnchantItDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				let enchantItTitle = clientTextView("EnchantIt", true);
+				let enchantItTitle = clientTextView(VertexClientPE.getCustomModName("EnchantIt"), true);
 				enchantItTitle.setTextSize(25);
 				let closeButton = clientButton("Close");
 				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
@@ -10294,7 +10284,7 @@ VertexClientPE.showEffectGiverDialog = function() {
 	CONTEXT.runOnUiThread(new Runnable_() {
 		run: function() {
 			try {
-				let effectGiverTitle = clientTextView("EffectGiver", true);
+				let effectGiverTitle = clientTextView(VertexClientPE.getCustomModName("EffectGiver"), true);
 				effectGiverTitle.setTextSize(25);
 				let closeButton = clientButton("Close");
 				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
@@ -10451,7 +10441,7 @@ VertexClientPE.showTeleportDialog = function() {
 					VertexClientPE.loadWaypoints();
 				}
 
-				let teleportTitle = clientTextView("Teleport", true);
+				let teleportTitle = clientTextView(VertexClientPE.getCustomModName("Teleport"), true);
 				teleportTitle.setTextSize(25);
 				let closeButton = clientButton("Close");
 				closeButton.setPadding(0.5, closeButton.getPaddingTop(), 0.5, closeButton.getPaddingBottom());
