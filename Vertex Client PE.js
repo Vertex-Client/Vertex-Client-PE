@@ -1817,6 +1817,7 @@ let parentView = CONTEXT.getWindow().getDecorView();
 let width, height;
 
 let shouldClearRender = false;
+let renderState = false;
 
 VertexClientPE.Render.renderer = new Renderer({
 	onSurfaceCreated: function(gl, config) {
@@ -15475,11 +15476,16 @@ VertexClientPE.inGameTick = function() {
 			Thread_.sleep(1000 / 20);
 			if(VertexClientPE.playerIsInGame) {
 				VertexClientPE.modules.forEach(function(element, index, array) {
-					if(element.isStateMod() && element.state && element.hasOwnProperty("onTick")) {
-						if(bypassState && element.hasOwnProperty("canBypassBypassMod") && !element.canBypassBypassMod()) {
-							return;
+					if((element.isStateMod() && element.state) || !element.isStateMod()) {
+						if(element.hasOwnProperty("onTick")) {
+							if(bypassState && element.hasOwnProperty("canBypassBypassMod") && !element.canBypassBypassMod()) {
+								return;
+							}
+							element.onTick();
 						}
-						element.onTick();
+						if(element.hasOwnProperty("onRender")) {
+							renderState = true;
+						}
 					}
 				});
 				if(betterPauseSetting == "on" && VertexClientPE.isPaused) {
