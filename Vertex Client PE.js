@@ -210,17 +210,19 @@ let i18n = (function () {
 		langPath = PATH + "lang/" + lang + ".json";
 	if (new File_(langPath).exists() && languageSetting == "device") {
 		let textFromFile = readFile(langPath);
-		const langObj = JSON.parse(textFromFile);
-		return function (text, args) {
-			if (text in langObj) {
-				return langObj[text].replace(/(\{%\d+\})/g, function ($1) {
+		if(textFromFile != null && textFromFile != "") {
+			const langObj = JSON.parse(textFromFile);
+			return function (text, args) {
+				if (text in langObj) {
+					return langObj[text].replace(/(\{%\d+\})/g, function ($1) {
+						return args[$1.match(/\{%(\d+)\}/)[1]];
+					});
+				}
+				return text.replace(/(\{%\d+\})/g, function ($1) {
 					return args[$1.match(/\{%(\d+)\}/)[1]];
 				});
-			}
-			return text.replace(/(\{%\d+\})/g, function ($1) {
-				return args[$1.match(/\{%(\d+)\}/)[1]];
-			});
-		};
+			};
+		}
 	}
 	return function (text, args) {
 		return text.replace(/(\{%\d+\})/g, function ($1) {
@@ -363,6 +365,7 @@ let movementEnabled = "on";
 let playerEnabled = "on";
 let miscEnabled = "on";
 let singleplayerEnabled = "on";
+let renderEnabled = "on";
 //------------------------------------
 let updateLangFilesSetting = "on";
 //End of settings
@@ -1817,37 +1820,41 @@ let shouldClearRender = false;
 
 VertexClientPE.Render.renderer = new Renderer({
 	onSurfaceCreated: function(gl, config) {
-		gl.glClearColor(0, 0, 0, 0);
+		if(renderState) {
+			gl.glClearColor(0, 0, 0, 0);
 
-		gl.glShadeModel(GL10.GL_SMOOTH);
+			gl.glShadeModel(GL10.GL_SMOOTH);
 
-		gl.glClearDepthf(1.0);
+			gl.glClearDepthf(1.0);
 
-		gl.glDisable(GL10.GL_DITHER);
+			gl.glDisable(GL10.GL_DITHER);
 
-		gl.glEnable(GL10.GL_DEPTH_TEST);
+			gl.glEnable(GL10.GL_DEPTH_TEST);
 
-		gl.glDepthFunc(GL10.GL_LEQUAL);
+			gl.glDepthFunc(GL10.GL_LEQUAL);
 
-		gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
+			gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
+		}
 	},
 	onSurfaceChanged: function(gl, w, h) {
-		width = w;
-		height = h;
+		if(renderState) {
+			width = w;
+			height = h;
 
-		gl.glMatrixMode(GL10.GL_PROJECTION);
+			gl.glMatrixMode(GL10.GL_PROJECTION);
 
-		gl.glLoadIdentity();
+			gl.glLoadIdentity();
 
-		GLU.gluPerspective(gl, VertexClientPE.Utils.getFov(), width / height, 0.1, 100);
+			GLU.gluPerspective(gl, VertexClientPE.Utils.getFov(), width / height, 0.1, 100);
 
-		gl.glMatrixMode(GL10.GL_MODELVIEW);
+			gl.glMatrixMode(GL10.GL_MODELVIEW);
 
-		gl.glLoadIdentity();
+			gl.glLoadIdentity();
+		}
 	},
 	onDrawFrame: function(gl) {
 
-		if(storageESPState) {
+		if(renderState) {
 			gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
 			gl.glLoadIdentity();
@@ -1871,11 +1878,11 @@ VertexClientPE.Render.renderer = new Renderer({
 
 			GLU.gluLookAt(gl, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, 0, 1, 0);
 
-			/* VertexClientPE.modules.forEach(function(element, index, array) {
+			VertexClientPE.modules.forEach(function(element, index, array) {
 				if(element.state && element.hasOwnProperty("onRender")) {
 					element.onRender(gl);
 				}
-			}); */
+			});
 			
 			storageESP.onRender(gl);
 		} else {
@@ -1891,7 +1898,11 @@ VertexClientPE.Render.renderer = new Renderer({
 				CONTEXT.runOnUiThread(new Runnable_() {
 					run: function() {
 						if(renderFpsCounterSetting == "on") {
-							fpsTextView.setText(Math.round(VertexClientPE.Utils.fps).toString() + " FPS (Render)");
+							if(renderState) {
+								fpsTextView.setText(Math.round(VertexClientPE.Utils.fps).toString() + " FPS (Render)");
+							} else {
+								fpsTextView.setText("Render mods off");
+							}							
 						}
 					}
 				});
@@ -2432,7 +2443,7 @@ VertexClientPE.initMods = function(switchedCat, shouldLoadModStates) {
 		if(shouldLoadModStates) {
 			let tempBypassState = VertexClientPE.getSavedModState("Bypass");
 			VertexClientPE.preInitModules.forEach(function(element, index, array) {
-				if(((element.pack == "Combat" && combatEnabled == "on") || (element.pack == "World" && worldEnabled == "on") || (element.pack == "Movement" && movementEnabled == "on") || (element.pack == "Player" && playerEnabled == "on") || (element.pack == "Misc" && miscEnabled == "on")) && !(element.singleplayerOnly && singleplayerEnabled == "off")) {
+				if(((element.pack == "Combat" && combatEnabled == "on") || (element.pack == "World" && worldEnabled == "on") || (element.pack == "Movement" && movementEnabled == "on") || (element.pack == "Player" && playerEnabled == "on") || (element.pack == "Misc" && miscEnabled == "on")) && !(element.singleplayerOnly && singleplayerEnabled == "off") && !(element.hasOwnProperty("onRender") && renderEnabled == "off")) {
 					// toggle mods on if enabled in save data
 					let tempElement = element;
 					if(VertexClientPE.getSavedModState(tempElement.name)) {
@@ -2451,7 +2462,7 @@ VertexClientPE.initMods = function(switchedCat, shouldLoadModStates) {
 		} else {
 			VertexClientPE.preInitModules.forEach(function(element, index, array) {
 				VertexClientPE.setSavedModState(element.name, false);
-				if(((element.pack == "Combat" && combatEnabled == "on") || (element.pack == "World" && worldEnabled == "on") || (element.pack == "Movement" && movementEnabled == "on") || (element.pack == "Player" && playerEnabled == "on") || (element.pack == "Misc" && miscEnabled == "on")) && !(element.singleplayerOnly && singleplayerEnabled == "off")) {
+				if(((element.pack == "Combat" && combatEnabled == "on") || (element.pack == "World" && worldEnabled == "on") || (element.pack == "Movement" && movementEnabled == "on") || (element.pack == "Player" && playerEnabled == "on") || (element.pack == "Misc" && miscEnabled == "on")) && !(element.singleplayerOnly && singleplayerEnabled == "off") && !(element.hasOwnProperty("onRender") && renderEnabled == "off")) {
 					VertexClientPE.modules.push(element);
 				}
 			});
@@ -7308,7 +7319,7 @@ var rename = {
 		let renameName = cmd.substring(7, cmd.length);
 		let renameSlot = Player.getSelectedSlotId();
 		let renameItem = Player.getInventorySlot(renameSlot);
-		if(renameName  != null && renameName.replaceAll(" ", "") != "" && renameItem != 0) {
+		if(renameName != null && renameName.replaceAll(" ", "") != "" && renameItem != 0) {
 			Player.setItemCustomName(renameSlot, renameName);
 			VertexClientPE.clientMessage(ChatColor.GREEN + i18n("Successfully renamed item to {%0}!", [renameName]));
 		} else if(renameName.replaceAll(" ", "") == "") {
@@ -8868,6 +8879,7 @@ VertexClientPE.showFeaturesDialog = function() {
 				let lastPlayerEnabled = playerEnabled;
 				let lastMiscEnabled = miscEnabled;
 				let lastSingleplayerEnabled = singleplayerEnabled;
+				let lastRenderEnabled = renderEnabled;
 
 				let settingsTitle = clientScreenTitle("Settings", settingsTile.icon, themeSetting);
 				let settingsTitleLayout = new LinearLayout_(CONTEXT);
@@ -8974,13 +8986,29 @@ VertexClientPE.showFeaturesDialog = function() {
 						VertexClientPE.saveFeaturesSettings();
 					}
 				}));
+				
+				let renderEnabledSettingButton = clientSwitch();
+				renderEnabledSettingButton.setText("Render mods (off = more performance)");
+				renderEnabledSettingButton.setChecked(renderEnabled == "on");
+				renderEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
+					onCheckedChanged: function() {
+						if(renderEnabled == "off") {
+							renderEnabled = "on";
+						} else if(renderEnabled == "on") {
+							renderEnabled = "off";
+						}
+						VertexClientPE.saveFeaturesSettings();
+					}
+				}));
 
 				dialogLayout.addView(combatEnabledSettingButton);
 				dialogLayout.addView(worldEnabledSettingButton);
 				dialogLayout.addView(movementEnabledSettingButton);
 				dialogLayout.addView(playerEnabledSettingButton);
 				dialogLayout.addView(miscEnabledSettingButton);
+				dialogLayout.addView(clientHR());
 				dialogLayout.addView(singleplayerEnabledSettingButton);
+				dialogLayout.addView(renderEnabledSettingButton);
 				dialogLayout.addView(clientTextView(""));
 				dialogLayout.addView(closeButton);
 
@@ -8990,7 +9018,7 @@ VertexClientPE.showFeaturesDialog = function() {
 				dialog.setTitle("Opt in/out features");
 				dialog.setOnDismissListener(new DialogInterface_.OnDismissListener() {
 					onDismiss: function() {
-						if(lastCombatEnabled != combatEnabled || lastWorldEnabled != worldEnabled || lastMovementEnabled != movementEnabled || lastPlayerEnabled != playerEnabled || lastMiscEnabled != miscEnabled || lastSingleplayerEnabled != singleplayerEnabled) {
+						if(lastCombatEnabled != combatEnabled || lastWorldEnabled != worldEnabled || lastMovementEnabled != movementEnabled || lastPlayerEnabled != playerEnabled || lastMiscEnabled != miscEnabled || lastSingleplayerEnabled != singleplayerEnabled || lastRenderEnabled != renderEnabled) {
 							VertexClientPE.shouldUpdateGUI = true;
 							VertexClientPE.initMods(true);
 						}
@@ -10747,7 +10775,7 @@ VertexClientPE.showAddAccountDialog = function(showBackButton, title) {
 				let accountTitle = clientTextView("Add account", true);
 				accountNameInput = clientEditText();
 				accountNameInput.setSingleLine(true);
-				accountNameInput.setHint("Enter an username");
+				accountNameInput.setHint("Enter a username");
 				/* accountClientIdInput = clientEditText();
 				accountClientIdInput.setHint("Enter a client id (wip, added later)"); */
 				let okButton = clientButton("Ok");
@@ -10771,7 +10799,7 @@ VertexClientPE.showAddAccountDialog = function(showBackButton, title) {
 					onClick: function(view) {
 						let accountName = accountNameInput.getText().toString();
 						if(accountName == null || accountName == "" || accountName.replaceAll(" ", "") == "") {
-							VertexClientPE.toast("Enter an username!");
+							VertexClientPE.toast("Enter a username!");
 							return;
 						}
 						//accountClientId = accountClientIdInput.getText().toString();
@@ -10871,7 +10899,7 @@ VertexClientPE.showAddFriendDialog = function(showBackButton, title, icon) {
 				let friendTitle = clientTextView("Add friend", true);
 				friendNameInput = clientEditText();
 				friendNameInput.setSingleLine(true);
-				friendNameInput.setHint("Enter an username");
+				friendNameInput.setHint("Enter a username");
 				let okButton = clientButton("Ok");
 				let cancelButton = clientButton("Cancel");
 				let dialogLayout = new LinearLayout_(CONTEXT);
@@ -10892,7 +10920,7 @@ VertexClientPE.showAddFriendDialog = function(showBackButton, title, icon) {
 					onClick: function(view) {
 						let friendName = friendNameInput.getText().toString();
 						if(friendName == null || friendName == "" || friendName.replaceAll(" ", "") == "") {
-							VertexClientPE.toast("Enter an username!");
+							VertexClientPE.toast("Enter a username!");
 							return;
 						}
 						if(VertexClientPE.friends.length() != undefined && VertexClientPE.friends.length() != null) {
@@ -12321,6 +12349,7 @@ VertexClientPE.saveFeaturesSettings = function() {
 	outWrite.append("," + playerEnabled.toString());
 	outWrite.append("," + miscEnabled.toString());
 	outWrite.append("," + singleplayerEnabled.toString());
+	outWrite.append("," + renderEnabled.toString());
 
 	outWrite.close();
 }
@@ -12348,6 +12377,9 @@ VertexClientPE.loadFeaturesSettings = function() {
 	}
 	if (arr[5] != null && arr[5] != undefined) {
 		singleplayerEnabled = arr[5];
+	}
+	if (arr[6] != null && arr[6] != undefined) {
+		renderEnabled = arr[6];
 	}
 	return true;
 }
@@ -15895,9 +15927,10 @@ VertexClientPE.showSetupScreen = function() {
 							setupScreenLayoutBottomCenter.addView(combatEnabledSettingButton);
 							setupScreenLayoutBottomCenter.addView(worldEnabledSettingButton);
 							setupScreenLayoutBottomCenter.addView(movementEnabledSettingButton);
-							setupScreenLayoutBottomCenter1.addView(playerEnabledSettingButton);
+							setupScreenLayoutBottomCenter.addView(playerEnabledSettingButton);
 							setupScreenLayoutBottomCenter1.addView(miscEnabledSettingButton);
 							setupScreenLayoutBottomCenter1.addView(singleplayerEnabledSettingButton);
+							setupScreenLayoutBottomCenter1.addView(renderEnabledSettingButton);
 							doneButton.setText("\u2794");
 							doneButton.setOnClickListener(new View_.OnClickListener({
 								onClick: function(viewArg) {
@@ -16183,6 +16216,20 @@ VertexClientPE.showSetupScreen = function() {
 					}
 				}));
 				
+				let renderEnabledSettingButton = clientSwitch();
+				renderEnabledSettingButton.setText("Render mods (off = more performance)");
+				renderEnabledSettingButton.setChecked(renderEnabled == "on");
+				renderEnabledSettingButton.setOnCheckedChangeListener(new CompoundButton_.OnCheckedChangeListener({
+					onCheckedChanged: function() {
+						if(renderEnabled == "off") {
+							renderEnabled = "on";
+						} else if(renderEnabled == "on") {
+							renderEnabled = "off";
+						}
+						VertexClientPE.saveFeaturesSettings();
+					}
+				}));
+				
 				let selectedPresetNum = 0;
 				let presetNames = ["Default", "All-in", "High performance"];
 				let arrayAdapter = new ArrayAdapter_(CONTEXT, android.R.layout.simple_spinner_item, presetNames);
@@ -16387,7 +16434,7 @@ VertexClientPE.showDirectUseAccountDialog = function() {
 				let accountTitle = clientTextView("Direct use account", true);
 				let accountNameInput = clientEditText();
 				accountNameInput.setSingleLine(true);
-				accountNameInput.setHint("Enter an username");
+				accountNameInput.setHint("Enter a username");
 				let accountClientIdInput = clientEditText();
 				accountClientIdInput.setHint("Enter a client id (leave blank for random)");
 				let okButton = clientButton("Ok");
@@ -16412,7 +16459,7 @@ VertexClientPE.showDirectUseAccountDialog = function() {
 						let accountName = accountNameInput.getText().toString();
 						let clientId = accountClientIdInput.getText().toString();
 						if(accountName == null || accountName == "" || accountName.replaceAll(" ", "") == "") {
-							VertexClientPE.toast("Enter an username!");
+							VertexClientPE.toast("Enter a username!");
 							return;
 						}
 						if(clientId == null || clientId == "" || clientId.replaceAll(" ", "") == "") {
@@ -21018,6 +21065,17 @@ function showHacksList() {
 						statesTextView.setSingleLine();
 						statesTextView.setHorizontallyScrolling(true);
 						statesTextView.setSelected(true);
+					}
+					if(hacksListOrientationSetting == "vertical") {
+						if(hacksListPosSetting == "top-left") {
+							statesTextView.setGravity(Gravity_.LEFT);
+						}
+						if(hacksListPosSetting == "top-center") {
+							statesTextView.setGravity(Gravity_.CENTER);
+						}
+						if(hacksListPosSetting == "top-right") {
+							statesTextView.setGravity(Gravity_.RIGHT);
+						}
 					}
 					statesTextView.setHorizontallyScrolling(true);
 					statesTextView.setSelected(true);
