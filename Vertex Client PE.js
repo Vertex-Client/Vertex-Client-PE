@@ -1488,6 +1488,7 @@ let menuMiddleLayout;
 let menuRightLayout;
 
 let ghostModeState = false;
+let renderState = false;
 
 let antiAFKState = false;
 let autoSpammerState = false;
@@ -1817,7 +1818,6 @@ let parentView = CONTEXT.getWindow().getDecorView();
 let width, height;
 
 let shouldClearRender = false;
-let renderState = false;
 
 VertexClientPE.Render.renderer = new Renderer({
 	onSurfaceCreated: function(gl, config) {
@@ -1884,8 +1884,6 @@ VertexClientPE.Render.renderer = new Renderer({
 					element.onRender(gl);
 				}
 			});
-			
-			storageESP.onRender(gl);
 		} else {
 			if(shouldClearRender) {
 				shouldClearRender = false;
