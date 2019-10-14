@@ -1128,12 +1128,12 @@ function isBlackListedProjectile(entTypeId) {
 
 function isEntityAllowed(entTypeId, targetMobs, targetSpecial) {
 	if(targetMobs == null) {
-		targetMobs = targetMobsSetting;
+		targetMobs = targetMobsSetting=="on"?true:false;
 	}
 	if(targetSpecial == null) {
-		targetSpecial = targetSpecialSetting;
+		targetSpecial = targetSpecialSetting=="on"?true:false;
 	}
-	return !isBlackListedEnt(entTypeId) && !(isBlackListedProjectile(entTypeId) && targetSpecial == "off") && !(!isBlackListedProjectile(entTypeId) && targetSpecial == "on" && targetMobs == "off");
+	return !isBlackListedEnt(entTypeId) && !(isBlackListedProjectile(entTypeId) && targetSpecial) && !(!isBlackListedProjectile(entTypeId) && targetSpecial && targetMobs);
 }
 
 let songDialog;
@@ -1148,10 +1148,10 @@ let VertexClientPE = {
 		return sharedPref.getBoolean("VertexClientPE.isDevMode", false);
 	},
 	isDebugMode: function() {
-		return sharedPref.getBoolean("VertexClientPE.isDebugMode", false);
+		return sharedPref.getBoolean("VertexClientPE.isDebugMode", false) && this.isDevMode;
 	},
 	isExpMode: function() {
-		return sharedPref.getBoolean("VertexClientPE.isExpMode", false);
+		return sharedPref.getBoolean("VertexClientPE.isExpMode", false) && this.isDevMode;
 	},
 	setIsDevMode: function(bool) {
 		editor.putBoolean("VertexClientPE.isDevMode", bool);
@@ -6723,7 +6723,7 @@ var antiTarget = {
 		try{
 			let mobs = Entity.getAll();
 			mobs.forEach(function(element, index, array) {
-				if(element != null && !isEntityAllowed(Entity.getEntityTypeId(element), "on", "off") && element != getPlayerEnt()) {
+				if(element != null && !isEntityAllowed(Entity.getEntityTypeId(element), true, false) && element != getPlayerEnt()) {
 					VertexClientPE.toast(Entity.getEntityTypeId(element));
 					Entity.setTarget(element, null);
 				}
@@ -12086,8 +12086,9 @@ VertexClientPE.fancyChat = function(str) {
 			break;
 	} */
 	let newMsg = "";
-	for(i in fancyChatMsg.toCharArray()) {
-		let chr = fancyChatMsg.toCharArray()[i];
+	let charArray = fancyChatMsg.toCharArray();
+	for(i in charArray) {
+		let chr = charArray[i];
 		if(chr >= 0x21 && chr <= 0x80) {
 			newMsg += new String_(Character_.toChars(chr + fancyChatEndChar));
 		} else {
@@ -19352,7 +19353,7 @@ function modManagerScreen() {
 				modManagerMenuLayout1.addView(modManagerMenuLayoutScroll);
 
 				VertexClientPE.modules.forEach(function(element, index, array) {
-					if(element.hasOwnProperty("getSettingsLayout")) {
+					if(element.hasOwnProperty("getSettingsLayout") && !(element.hasOwnProperty("isExpMod") && element.isExpMod() && !VertexClientPE.isExpMode())) {
 						let modTitle = clientSectionTitle(VertexClientPE.getCustomModName(element.name));
 						modTitle.setTypeface(VertexClientPE.font, Typeface_.BOLD);
 						modManagerMenuLayout.addView(modTitle);
