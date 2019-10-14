@@ -16,7 +16,7 @@
 // #############
 // # CONSTANTS #
 // #############
-// Underbar(_) is for preventing duplicate variables such as java.lang.String and String(Javascript)
+// Underbar(_) is for preventing duplicate variables such as java.lang.String and String (JavaScript)
 
 const AlarmManager_ = android.app.AlarmManager,
 	AlertDialog_ = android.app.AlertDialog,
@@ -6364,9 +6364,6 @@ var caveFinder = {
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
-	/* getSettingsLayout: function() {
-		return new LinearLayout_(CONTEXT);
-	}, */
 	isStateMod: function() {
 		return true;
 	},
@@ -6462,24 +6459,18 @@ var chatFilter = {
 	onToggle: function() {
 		this.state = !this.state;
 	},
-	onChatReceivePrevent: true,
-	onServerMessageReceivePrevent: true,
 	onChatReceive: function(message, sender) {
 		//print(message);
-		this.onChatReceivePrevent = false;
 		if(!this.state) return;
 		if(VertexClientPE.shouldFilterWord(message)) {
-			//preventDefault();
-			this.onChatReceivePrevent = true;
+			preventDefault();
 		}
 	},
 	onServerMessageReceive: function(message, sender) {
 		//sender is unknown
-		this.onServerMessageReceivePrevent = false;
 		if(!this.state) return;
 		if(VertexClientPE.shouldFilterWord(message)) {
-			//preventDefault();
-			this.onServerMessageReceivePrevent = true;
+			preventDefault();
 		}
 	}
 }
@@ -15767,17 +15758,53 @@ VertexClientPE.showStartScreenBar = function(screen) {
 	}));
 }
 
+VertexClientPE.compareVersion = function(a, b) {
+    if (a === b) {
+       return 0;
+    }
+
+    var a_components = a.split(".");
+    var b_components = b.split(".");
+
+    var len = Math.min(a_components.length, b_components.length);
+
+    // loop while the components are equal
+    for (var i = 0; i < len; i++) {
+        // A bigger than B
+        if (parseInt(a_components[i]) > parseInt(b_components[i])) {
+            return 1;
+        }
+
+        // B bigger than A
+        if (parseInt(a_components[i]) < parseInt(b_components[i])) {
+            return -1;
+        }
+    }
+
+    // If one's a prefix of the other, the longer one is greater.
+    if (a_components.length > b_components.length) {
+        return 1;
+    }
+
+    if (a_components.length < b_components.length) {
+        return -1;
+    }
+
+    // Otherwise they are the same.
+    return 0;
+}
+
 VertexClientPE.showUpdate = function() {
 	new Thread_(new Runnable_() {
 		run: function() {
 			VertexClientPE.checkForUpdates();
-			if(VertexClientPE.latestVersion != VertexClientPE.currentVersion && VertexClientPE.latestVersion != undefined) {
-				if(showUpdateToastsSetting == "on") {
-					VertexClientPE.updateToast("There is a new version available (v" + VertexClientPE.latestVersion + " for Minecraft Pocket Edition v" + VertexClientPE.latestPocketEditionVersion + ")!");
-				}
-			} else {
-				if(showUpdateToastsSetting == "on") {
-					VertexClientPE.updateToast("You have the latest version");
+			if(showUpdateToastsSetting == "on") {
+				if(VertexClientPE.latestVersion != VertexClientPE.currentVersion && VertexClientPE.latestVersion != undefined) {
+					if(VertexClientPE.compareVersion(VertexClientPE.latestVersion, VertexClientPE.currentVersion) == 1) {
+						VertexClientPE.updateToast("There is a new stable release available (v" + VertexClientPE.latestVersion + " for Minecraft Pocket Edition v" + VertexClientPE.latestPocketEditionVersion + ")!");
+					}
+				} else {
+					VertexClientPE.updateToast("You have the latest stable release");
 				}
 			}
 		}
@@ -16644,7 +16671,15 @@ VertexClientPE.downloadPro = function() {
 }
 
 VertexClientPE.getHasUsedCurrentVersion = function() {
-	return sharedPref.getString("VertexClientPE.lastUsedVersion", null) == VertexClientPE.currentVersion;
+	let lastUsedVersion = sharedPref.getString("VertexClientPE.lastUsedVersion", null);
+	let comparedVersion = VertexClientPE.compareVersion(lastUsedVersion, VertexClientPE.currentVersion);
+	if(lastUsedVersion != null && comparedVersion != -1) {
+		if(comparedVersion == 1) {
+			VertexClientPE.setHasUsedCurrentVersion(true);
+		}
+		return true;
+	}
+	return false;
 }
 
 VertexClientPE.setHasUsedCurrentVersion = function(opt) {
@@ -17104,7 +17139,9 @@ function selectLevelHook() {
 			VertexClientPE.loadWaypoints();
 			VertexClientPE.Utils.loadFov();
 			if(VertexClientPE.latestVersion != VertexClientPE.currentVersion && VertexClientPE.latestVersion != undefined) {
-				VertexClientPE.clientMessage("There is a new version available (v" + VertexClientPE.latestVersion + " for Minecraft Pocket Edition v" + VertexClientPE.latestPocketEditionVersion + ")!");
+				if(VertexClientPE.compareVersion(VertexClientPE.latestVersion, VertexClientPE.currentVersion) == 1) {
+					VertexClientPE.clientMessage("There is a new stable release available (v" + VertexClientPE.latestVersion + " for Minecraft Pocket Edition v" + VertexClientPE.latestPocketEditionVersion + ")!");
+				}
 			}
 			VertexClientPE.Render.initViews();
 			VertexClientPE.Utils.world.logMessages = [];
@@ -19210,12 +19247,6 @@ function updateCenterScreen(fromDashboard) { //TODO: Add support for pre-release
 					updateCenterMenuLayout.addView(latestUpdateView);
 					updateCenterMenuLayout.addView(updateEnterView);
 				}
-				/*
-				if(VertexClientPE.latestVersion != VertexClientPE.currentVersion) {
-					updateCenterMenuLayout.addView(latestUpdateView);
-					updateCenterMenuLayout.addView(updateEnterView);
-				
-				}*/
 				updateCenterMenuLayout.addView(currentUpdateView);
 
 				screenUI = new PopupWindow_(updateCenterMenuLayout1, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight() - barLayoutHeight);
