@@ -11460,6 +11460,7 @@ VertexClientPE.debugMessage = function(message) {
 }
 
 let toast;
+let unskipToast;
 let loadingToast;
 
 VertexClientPE.toast = function(message, vibrate, allowSkip) {
@@ -11477,16 +11478,27 @@ VertexClientPE.toast = function(message, vibrate, allowSkip) {
 			let title = VertexClientPE.getName();
 			let text = clientTextView(new Html_.fromHtml("<b>" + title + "</b> " + message));
 			layout.addView(text);
-			if(toast != null && allowSkip) {
-				toast.cancel();
+			if(allowSkip) {
+				if(toast != null) {
+					toast.cancel(); //allowSkip
+				}
+				toast = new Toast_(CONTEXT);
+				toast.setDuration(Toast_.LENGTH_LONG);
+				toast.setView(layout);
+				if(defaultToastPositionSetting == "top") {
+					toast.setGravity(Gravity_.CENTER | Gravity_.TOP, 0, 0);
+				}
+				toast.show();
+			} else {
+				unskipToast = new Toast_(CONTEXT);
+				unskipToast.setDuration(Toast_.LENGTH_LONG);
+				unskipToast.setView(layout);
+				if(defaultToastPositionSetting == "top") {
+					unskipToast.setGravity(Gravity_.CENTER | Gravity_.TOP, 0, 0);
+				}
+				unskipToast.show();
 			}
-			toast = new Toast_(CONTEXT);
-			toast.setDuration(Toast_.LENGTH_LONG);
-			toast.setView(layout);
-			if(defaultToastPositionSetting == "top") {
-				toast.setGravity(Gravity_.CENTER | Gravity_.TOP, 0, 0);
-			}
-			toast.show();
+			
 		}
 	}));
 }
