@@ -89,6 +89,7 @@ const AlarmManager_ = android.app.AlarmManager,
 	TableRow_ = android.widget.TableRow,
 	TextView_ = android.widget.TextView,
 	Toast_ = android.widget.Toast,
+	Instrumentation_ = android.app.Instrumentation,
 	ScriptManager_ = com.mcbox.pesdk.mcpelauncher.ScriptManager,
 	HardwareInformation_ = com.mojang.minecraftpe.HardwareInformation,
 	MainActivity_ = com.mojang.minecraftpe.MainActivity,
@@ -316,7 +317,7 @@ let targetFriendsSetting = "off";
 let antiAFKKeepScreenOnSetting = "on";
 let shortcutUIModeSetting = "on";
 let attackShockIntensity = 20;
-let f5ButtonModeSetting = "pause";
+let f5ButtonModeSetting = "ingame";
 let mainButtonSizeSetting = 40;
 let powerExplosionsPowerSetting = 10;
 let preventExplosionsSetting = "off";
@@ -340,7 +341,7 @@ let treasureFinderChestSetting = "on";
 let treasureFinderRedstoneSetting = "on";
 let treasureFinderEmeraldSetting = "on";
 let targetSpecialSetting = "on";
-let renderFpsCounterSetting = "on";
+let renderFpsCounterSetting = "off";
 let hacksListOrientationSetting = "horizontal";
 let hacksListBackgroundSetting = "on";
 //------------------------------------
@@ -1209,6 +1210,18 @@ let VertexClientPE = {
 					break;
 				}
 			}
+		},
+		simulateKeyDownUp: function(keyToPress) {
+			new Thread_(new Runnable_() {
+				run: function() {
+					try {
+						let instrument = new Instrumentation_;
+						instrument.sendKeyDownUpSync(parseInt(keyToPress));
+					} catch(e) {
+						VertexClientPE.showBugReportDialog(e);
+					}
+				}
+			}).start();
 		},
 		Block: { //thanks to GodSoft029
 			isLiquid: function (id) {
@@ -21569,7 +21582,11 @@ function showPauseUtilities() {
 									ModPE.setPlayerViewPerspective(0);
 								}
 							} else {
-								VertexClientPE.toast("Sorry, this feature only works on Toolbox!");
+								if(f5ButtonModeSetting == "ingame") {
+									VertexClientPE.Utils.simulateKeyDownUp(134);
+								} else {
+									VertexClientPE.toast("Sorry, this feature only works in the pause menu on Toolbox! If you want to use it, switch to ingame/hud.");
+								}
 							}
 						}
 					}));
