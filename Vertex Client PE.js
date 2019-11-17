@@ -1484,7 +1484,7 @@ VertexClientPE.playerIsInGame = false;
 
 VertexClientPE.currentVersion = "3.2";
 VertexClientPE.currentVersionDesc = "The Render Update";
-VertexClientPE.targetVersion = "MCPE v1.8.x";
+VertexClientPE.targetVersion = "MCPE v1.12.x";
 VertexClientPE.minVersion = "1.0.0";
 VertexClientPE.edition = "Normal";
 VertexClientPE.latestVersion;
@@ -11560,11 +11560,11 @@ VertexClientPE.screenToast = function(screenIcon, screenName, text) {
 }
 
 VertexClientPE.addonLoadToast = function(message) {
-	VertexClientPE.screenToast(android.R.drawable.ic_menu_more, "Addons", message);
+	VertexClientPE.screenToast(addonsTile.icon, "Addons", message);
 }
 
 VertexClientPE.updateToast = function(message) {
-	VertexClientPE.screenToast(android.R.drawable.ic_menu_compass, "Update Center", message);
+	VertexClientPE.screenToast(updateCenterTile.icon, "Update Center", message);
 }
 
 VertexClientPE.showChristmasToast = function(daysLeft) {
@@ -11574,7 +11574,7 @@ VertexClientPE.showChristmasToast = function(daysLeft) {
 			layout.setBackground(backgroundSpecial(true, "#70212121|#70ffffff"));
 			layout.setGravity(Gravity_.CENTER);
 			let icon = new android.widget.ImageView(CONTEXT);
-			icon.setImageResource(android.R.drawable.ic_menu_agenda);
+			icon.setImageResource(christmasTile.icon);
 			let icon1 = new android.widget.ImageView(CONTEXT);
 			icon1.setImageBitmap(imgChristmasTree);
 			icon1.setLayoutParams(new LinearLayout_.LayoutParams(dip2px(16), dip2px(16)));
@@ -12313,7 +12313,7 @@ VertexClientPE.setupMCPEGUI = function() {
 		ModPE.overrideTexture("images/gui/spritesheet.png", "http://i.imgur.com/l7nG7ZU.png");
 		ModPE.overrideTexture("images/gui/touchgui.png", "http://i.imgur.com/MZeX8XN.png");
 	} */
-	ModPE.overrideTexture("resources_packs/vanilla/textures/ui/title.png", "http://Vertex-Client.github.io/bootstrap/img/title.png");
+	ModPE.overrideTexture("resource_packs/vanilla/textures/ui/title.png", "http://Vertex-Client.github.io/bootstrap/img/title.png");
 }
 
 VertexClientPE.saveAutoSpammerMessage = function() {
