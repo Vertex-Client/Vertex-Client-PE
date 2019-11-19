@@ -874,6 +874,10 @@ function VectorLib() {
 	$.SnowParticle = SnowParticle;
 })(this);
 
+VertexClientPE.getCurrentScreen = function() {
+	return CONTEXT.nativeGetActiveScreen();
+}
+
 let currentScreen = ScreenType.start_screen;
 
 function screenChangeHook(screenName) {
@@ -1394,6 +1398,13 @@ let VertexClientPE = {
 			let y = Entity.getEntityTypeId(ent) == EntityType.PLAYER ? Entity.getY(ent) : Entity.getY(ent) + 1;
 			let z = Entity.getZ(ent);
 			this.aimAt(x, y, z);
+		},
+		isAimingAtEnt: function() {
+			let point = Entity.getEntityTypeId(Player.getPointedEntity());
+			if(!(point <= 0)) {
+				return true;
+			}
+			return false;
 		},
 		aimAtBlock: function(x, y, z) {
 			y += 1;
@@ -6750,6 +6761,42 @@ var expGiver = {
 	}
 }
 
+var triggerBot = {
+	name: "TriggerBot",
+	desc: i18n("Hits an entity if you aim at it. Possibly only works in singleplayer."),
+	category: VertexClientPE.category.COMBAT,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state != this.state;
+	},
+	onTick: function() {
+		if(VertexClientPE.CombatUtils.isAimingAtEnt()) {
+			VertexClientPE.Utils.simulateKeyDownUp(135);
+		}
+	}
+}
+
+var autoTapper = {
+	name: "AutoTapper",
+	desc: i18n("Automatically taps/clicks the screen."),
+	category: VertexClientPE.category.COMBAT,
+	type: "Mod",
+	state: false,
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state != this.state;
+	},
+	onTick: function() {
+		VertexClientPE.Utils.simulateKeyDownUp(135);
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(aimbot);
 VertexClientPE.registerModule(antiBurn);
@@ -6772,6 +6819,7 @@ VertexClientPE.registerModule(strafeAura);
 VertexClientPE.registerModule(switchAimbot);
 VertexClientPE.registerModule(tapAimbot);
 VertexClientPE.registerModule(tpAura);
+VertexClientPE.registerModule(triggerBot);
 //MOVEMENT
 VertexClientPE.registerModule(autoWalk);
 VertexClientPE.registerModule(bunnyHop);
@@ -6827,6 +6875,7 @@ VertexClientPE.registerModule(autoLeave);
 VertexClientPE.registerModule(autoSpammer);
 VertexClientPE.registerModule(autoSwitch);
 VertexClientPE.registerModule(antiTarget);
+VertexClientPE.registerModule(autoTapper);
 VertexClientPE.registerModule(chatFilter);
 VertexClientPE.registerModule(chatRepeat);
 VertexClientPE.registerModule(coordsDisplay);
@@ -8136,6 +8185,7 @@ VertexClientPE.showMoreDialog = function() {
 								moreDialog.dismiss();
 								Thread_.sleep(1000);
 								VertexClientPE.Utils.takeScreenshot(screenshotModeSetting);
+								//CONTEXT.saveScreenshot();
 							}
 						}).start();
 					}
