@@ -12,6 +12,7 @@ Vertex Client PE - A Hacked Client for MCPE
 
 More information: http://Vertex-Client.ml/
 License: https://github.com/Vertex-Client/Vertex-Client-PE/blob/master/LICENSE.md
+HNU Discord: https://discord.gg/AvU2RAG
 
 ### Todo
 - [x] Account Manager
