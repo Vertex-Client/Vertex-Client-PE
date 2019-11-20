@@ -15498,7 +15498,7 @@ VertexClientPE.clientTick = function() {
 	}
 	clientTickThread = new Thread_(new Runnable_() {
 		run: function() {
-			Thread_.sleep(1000 / 50);
+			Thread_.sleep(1000 / 70);
 			CONTEXT.runOnUiThread(new Runnable_({
 				run: function() {
 					let isGUIShowing = VertexClientPE.isGUIShowing();
@@ -15540,7 +15540,7 @@ VertexClientPE.inGameTick = function() {
 	}
 	inGameThread = new Thread_(new Runnable_() {
 		run: function() {
-			Thread_.sleep(1000 / 20);
+			Thread_.sleep(1000 / 50);
 			if(VertexClientPE.playerIsInGame) {
 				VertexClientPE.modules.forEach(function(element, index, array) {
 					if((element.isStateMod() && element.state) || !element.isStateMod()) {
