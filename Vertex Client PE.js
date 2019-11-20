@@ -15491,10 +15491,14 @@ VertexClientPE.isGUIShowing = function() {
 	return !(GUI != null && !GUI.isShowing() && (miscMenu == null || !miscMenu.isShowing()) && (menu == null || !menu.isShowing()) && (fullScreenMenu == null || !fullScreenMenu.isShowing()) && (tableMenu == null || !tableMenu.isShowing()) && (emptyMenu == null || !emptyMenu.isShowing()) && (screenUI == null || !screenUI.isShowing()));
 }
 
+let clientTickThread;
 VertexClientPE.clientTick = function() {
-	new Thread_(new Runnable_() {
+	if(clientTickThread != null) {
+		clientTickThread.interrupt();
+	}
+	clientTickThread = new Thread_(new Runnable_() {
 		run: function() {
-			Thread_.sleep(1000 / 70);
+			Thread_.sleep(1000 / 50);
 			CONTEXT.runOnUiThread(new Runnable_({
 				run: function() {
 					let isGUIShowing = VertexClientPE.isGUIShowing();
@@ -15525,11 +15529,16 @@ VertexClientPE.clientTick = function() {
 			}));
 			VertexClientPE.clientTick();
 		}
-	}).start();
+	});
+	clientTickThread.start();
 }
 
+let inGameThread;
 VertexClientPE.inGameTick = function() {
-	new Thread_(new Runnable_() {
+	if(inGameThread != null) {
+		inGameThread.interrupt();
+	}
+	inGameThread = new Thread_(new Runnable_() {
 		run: function() {
 			Thread_.sleep(1000 / 20);
 			if(VertexClientPE.playerIsInGame) {
@@ -15557,11 +15566,16 @@ VertexClientPE.inGameTick = function() {
 			}
 			VertexClientPE.inGameTick();
 		}
-	}).start();
+	});
+	inGameThread.start();
 }
 
+let specialThread;
 VertexClientPE.specialTick = function() {
-	new Thread_(new Runnable_() {
+	if(specialThread != null) {
+		specialThread.interrupt();
+	}
+	specialThread = new Thread_(new Runnable_() {
 		run: function() {
 			for (;;) {
 				Thread_.sleep(1000 * spamDelayTime);
@@ -15573,14 +15587,19 @@ VertexClientPE.specialTick = function() {
 				//VertexClientPE.specialTick();
 			}
 		}
-	}).start();
+	});
+	specialThread.start();
 }
 
 let secondTickTimer = 0;
 let lagTimer = 0;
 
+let secondThread;
 VertexClientPE.secondTick = function() {
-	new Thread_(new Runnable_() {
+	if(secondThread != null) {
+		secondThread.interrupt();
+	}
+	secondThread = new Thread_(new Runnable_() {
 		run: function() {
 			Thread_.sleep(1000);
 			VertexClientPE.modules.forEach(function(element, index, array) {
@@ -15638,7 +15657,8 @@ VertexClientPE.secondTick = function() {
 
 			VertexClientPE.secondTick();
 		}
-	}).start();
+	});
+	secondThread.start();
 }
 
 VertexClientPE.showSplashScreen = function () {
