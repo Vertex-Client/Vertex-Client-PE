@@ -874,9 +874,9 @@ function VectorLib() {
 	$.SnowParticle = SnowParticle;
 })(this);
 
-VertexClientPE.getCurrentScreen = function() {
+/*VertexClientPE.getCurrentScreen = function() {
 	return CONTEXT.nativeGetActiveScreen();
-}
+}*/
 
 let currentScreen = ScreenType.start_screen;
 
@@ -6726,6 +6726,9 @@ var antiTarget = {
 	category: VertexClientPE.category.PLAYER,
 	type: "Mod",
 	state: false,
+	isExpMod: function() {
+		return true;
+	},
 	isStateMod: function() {
 		return true;
 	},
