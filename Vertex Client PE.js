@@ -6774,7 +6774,7 @@ var triggerBot = {
 		return true;
 	},
 	onToggle: function() {
-		this.state != this.state;
+		this.state = !this.state;
 	},
 	onTick: function() {
 		if(VertexClientPE.CombatUtils.isAimingAtEnt()) {
@@ -6793,7 +6793,7 @@ var autoTapper = {
 		return true;
 	},
 	onToggle: function() {
-		this.state != this.state;
+		this.state = !this.state;
 	},
 	onTick: function() {
 		VertexClientPE.Utils.simulateKeyDownUp(135);
