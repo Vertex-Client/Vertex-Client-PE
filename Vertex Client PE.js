@@ -4346,6 +4346,7 @@ var stackDrop = {
 	category: VertexClientPE.category.WORLD,
 	type: "Mod",
 	state: false,
+	singleplayerOnly: true,
 	isStateMod: function() {
 		return true;
 	},
@@ -15570,12 +15571,8 @@ VertexClientPE.inGameTick = function() {
 	inGameThread.start();
 }
 
-let specialThread;
 VertexClientPE.specialTick = function() {
-	if(specialThread != null) {
-		specialThread.interrupt();
-	}
-	specialThread = new Thread_(new Runnable_() {
+	new Thread_(new Runnable_() {
 		run: function() {
 			for (;;) {
 				Thread_.sleep(1000 * spamDelayTime);
@@ -15584,11 +15581,9 @@ VertexClientPE.specialTick = function() {
 						VertexClientPE.autoSpammer();
 					}
 				}
-				//VertexClientPE.specialTick();
 			}
 		}
-	});
-	specialThread.start();
+	}).start();
 }
 
 let secondTickTimer = 0;
