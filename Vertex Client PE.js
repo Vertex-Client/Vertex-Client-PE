@@ -133,7 +133,6 @@ let Renderer = GLSurfaceView.Renderer;
 let GLU = android.opengl.GLU;
 let GL10 = javax.microedition.khronos.opengles.GL10;
 let RelativeLayout = android.widget.RelativeLayout;
-let Gravity = android.view.Gravity;
 
 EntityType.AREA_EFFECT_CLOUD = 95;
 EntityType.ARMOR_STAND = 61;
@@ -874,10 +873,6 @@ function VectorLib() {
 	$.SnowParticle = SnowParticle;
 })(this);
 
-/*VertexClientPE.getCurrentScreen = function() {
-	return CONTEXT.nativeGetActiveScreen();
-}*/
-
 let currentScreen = ScreenType.start_screen;
 
 function screenChangeHook(screenName) {
@@ -1037,7 +1032,7 @@ ModPE.getFromUrl = function(url, errs){
 */
 ModPE.JSON = {
 	parse: function(str){
-		return Function("return " + str)();
+		return eval('('+str+')');
 	}
 };
 
@@ -1214,6 +1209,9 @@ let VertexClientPE = {
 					break;
 				}
 			}
+		},
+		getCurrentScreen: function() {
+			return CONTEXT.nativeGetActiveScreen();
 		},
 		simulateKeyDownUp: function(keyToPress) {
 			new Thread_(new Runnable_() {
@@ -1649,7 +1647,7 @@ function MinecraftButton(textSize, enableSound, customTextColor)
 	MinecraftButtonLibrary.setButtonBackground(button, MinecraftButtonLibrary.ProcessedResources.mcNormalNineDrawable);
 	button.setTag(false); // is pressed?
 	button.setSoundEffectsEnabled(false);
-	button.setGravity(android.view.Gravity.CENTER);
+	button.setGravity(Gravity_.CENTER);
 	button.setTextColor(android.graphics.Color.parseColor(customTextColor));
 	button.setPadding(MinecraftButtonLibrary.convertDpToPixel(MinecraftButtonLibrary.defaultButtonPadding), MinecraftButtonLibrary.convertDpToPixel(MinecraftButtonLibrary.defaultButtonPadding), MinecraftButtonLibrary.convertDpToPixel(MinecraftButtonLibrary.defaultButtonPadding), MinecraftButtonLibrary.convertDpToPixel(MinecraftButtonLibrary.defaultButtonPadding));
 	MinecraftButtonLibrary.addMinecraftStyleToTextView(button, MinecraftButtonLibrary.defaultButtonTextShadowColor, MinecraftButtonLibrary.defaultButtonTextLineSpacing);
@@ -6801,6 +6799,28 @@ var autoTapper = {
 	}
 }
 
+var lsd = {
+	name: "LSD",
+	desc: i18n("LSD. U trippin yet?"),
+	category: VertexClientPE.category.MISC,
+	type: "Mod",
+	state: false,
+	isExpMod: function() {
+		return true;
+	},
+	isStateMod: function() {
+		return true;
+	},
+	onToggle: function() {
+		this.state = !this.state;
+	},
+	onTick: function() {
+		if(hacksList != null) {
+			hacksList.setBackgroundColor(Color.argb(255, 255, 255, 255));
+		}
+	}
+}
+
 //COMBAT
 VertexClientPE.registerModule(aimbot);
 VertexClientPE.registerModule(antiBurn);
@@ -7955,7 +7975,7 @@ VertexClientPE.tempDisable = function() {
 	entityHurtHook = null;
 	leaveGame = null;
 	modTick = null;
-	newLevel = null;
+	selectLevelHook = null;
 	projectileHitBlockHook = null;
 	screenChangeHook = null;
 	startDestroyBlock = null;
@@ -9855,7 +9875,7 @@ VertexClientPE.showTileDropDown = function(tileView, defaultName, defaultColor, 
 				let tileDropDownLayout = new LinearLayout_(CONTEXT);
 				tileDropDownLayout.setPadding(10, 10, 10, 10);
 				tileDropDownLayout.setOrientation(1);
-				tileDropDownLayout.setGravity(android.view.Gravity.CENTER);
+				tileDropDownLayout.setGravity(Gravity_.CENTER);
 
 				let currentName = sharedPref.getString("VertexClientPE.tiles." + defaultName + ".name", defaultName);
 				let currentColor = sharedPref.getString("VertexClientPE.tiles." + defaultName + ".color", defaultColor);
@@ -15514,7 +15534,7 @@ VertexClientPE.clientTick = function() {
 						if(Launcher.isToolbox()) {
 							if(Level.isRemote()) {
 								if(!VertexClientPE.playerIsInGame) {
-									newLevel();
+									selectLevelHook();
 									VertexClientPE.playerIsInGame = true;
 								}
 							}
@@ -16755,10 +16775,6 @@ VertexClientPE.showFriendManager = function(showBackButton, title, icon) {
 			}
 		}
 	}));
-}
-
-VertexClientPE.downloadPro = function() {
-	ModPE.goToURL("http://bit.ly/VertexProActivator");
 }
 
 VertexClientPE.getHasUsedCurrentVersion = function() {
@@ -21122,7 +21138,7 @@ function showHacksList() {
 					logoViewer2.setLayoutParams(new LinearLayout_.LayoutParams(width / 8, width / 16));
 
 					let versionText = clientTextView("v" + VertexClientPE.currentVersion, true);
-					versionText.setGravity(android.view.Gravity.CENTER);
+					versionText.setGravity(Gravity_.CENTER);
 
 					let statesText = "";
 					if(hacksListOrientationSetting == "horizontal") {
