@@ -12387,7 +12387,7 @@ VertexClientPE.setupMCPEGUI = function() {
 		ModPE.overrideTexture("images/gui/spritesheet.png", "http://i.imgur.com/l7nG7ZU.png");
 		ModPE.overrideTexture("images/gui/touchgui.png", "http://i.imgur.com/MZeX8XN.png");
 	} */
-	ModPE.overrideTexture("resource_packs/vanilla/textures/ui/title.png", "http://Vertex-Client.github.io/bootstrap/img/title.png");
+	ModPE.overrideTexture("images/ui/title.png", "http://Vertex-Client.github.io/bootstrap/img/title.png");
 }
 
 VertexClientPE.saveAutoSpammerMessage = function() {
