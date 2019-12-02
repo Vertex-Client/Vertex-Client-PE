@@ -6843,7 +6843,11 @@ var lsd = {
 	},
 	onInterval: function() {
 		if(lsdLayout != null) {
-			lsdLayout.setBackgroundColor(Color_.argb(getRandomInt(0, 255), getRandomInt(0, 255), getRandomInt(0, 255), getRandomInt(0, 255)));
+			CONTEXT.runOnUiThread(new Runnable_({
+				run: function() {
+					lsdLayout.setBackgroundColor(Color_.argb(getRandomInt(0, 255), getRandomInt(0, 255), getRandomInt(0, 255), getRandomInt(0, 255)));
+				}
+			}));
 		}
 	}
 }
