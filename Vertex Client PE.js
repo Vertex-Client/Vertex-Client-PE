@@ -5886,7 +5886,7 @@ var serverInfo = {
 			serverInfoStage = 1;
 			new Thread_(new Runnable_({
 				run: function() {
-					VertexClientPE.toast(i18n("Loading..."));
+					/* VertexClientPE.toast(i18n("Loading..."));
 					let server = myServerStatus.set(Server.getAddress(), parseInt(Server.getPort()));
 					Thread_.sleep(3000);
 					let serverString = "Name: " + server.names["html"];
@@ -5894,8 +5894,19 @@ var serverInfo = {
 					serverString += "\nSoftware: " + server.software;
 					serverString += "\nPlugins: " + server.plugins;
 					serverString += "\nMap: " + server.map;
-					serverString += "\nOnline: " + server.online;
-					VertexClientPE.showBasicDialog(VertexClientPE.getCustomModName(serverInfo.name) + " - Display", clientTextView(serverString));
+					serverString += "\nOnline: " + server.online; */\
+					let serverAddress = Server.getAddress().toString();
+					let serverPort = parseInt(Server.getPort()).toString();
+					let serverString = "Address (IP): " + serverAddress;
+					serverString += "\nPort: " + serverPort;
+					let copyButton = clientButton(i18n("Copy full IP and port"));
+					copyButton.setOnClickListener(new View_.OnClickListener() {
+						onClick: function(view) {
+							copyToClipboard(serverAddress + ":" + serverPort);
+							VertexClientPE.toast(i18n("Successfully copied the full ip in the format IP:port."));
+						}
+					});
+					VertexClientPE.showBasicDialog(VertexClientPE.getCustomModName(serverInfo.name) + " - Display", clientTextView(serverString), null, copyButton);
 					serverInfoStage = 0;
 				}
 			})).start();
