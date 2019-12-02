@@ -913,6 +913,9 @@ function screenChangeHook(screenName) {
 						if(f5ButtonModeSetting == "ingame" && !ghostModeState) {
 							showPauseUtilities();
 						}
+						if(lsdState) {
+							showLSD();
+						}
 					}
 				} else if(screenName != ScreenType.ingame) {
 					VertexClientPE.Render.deinitViews();
@@ -933,6 +936,9 @@ function screenChangeHook(screenName) {
 					}
 					if(rotationPlusUI != null) {
 						rotationPlusUI.dismiss();
+					}
+					if(lsdUI != null) {
+						lsdUI.dismiss();
 					}
 					if(screenName == ScreenType.start_screen || screenName == ScreenType.exit_dialog) {
 						if((mainMenuTextList == null || !mainMenuTextList.isShowing()) && !VertexClientPE.menuIsShowing) {
@@ -1527,6 +1533,7 @@ let stackDropState = false;
 let storageESPState = false;
 let timerState = false;
 let watermarkState = false;
+let lsdState = false;
 
 let showingMenu = false;
 
@@ -2043,6 +2050,7 @@ let pauseUtilitiesUI;
 let healthDisplayUI;
 let watermarkUI;
 let rotationPlusUI;
+let lsdUI;
 let hacksList;
 let tabGUI;
 let shortcutGUI;
@@ -6824,10 +6832,18 @@ var lsd = {
 	},
 	onToggle: function() {
 		this.state = !this.state;
+		lsdState = this.state;
+		if(this.state && (currentScreen == ScreenType.ingame || currentScreen == ScreenType.hud)) {
+			showLSD();
+		} else {
+			if(lsdUI != null && lsdUI.isShowing()) {
+				lsdUI.dismiss();
+			}
+		}
 	},
 	onInterval: function() {
-		if(hacksList != null) {
-			hacksList.setBackgroundColor(Color.argb(getRandomInt(0, 255), getRandomInt(0, 255), getRandomInt(0, 255), getRandomInt(0, 255)));
+		if(lsdLayout != null) {
+			lsdLayout.setBackgroundColor(Color.argb(getRandomInt(0, 255), getRandomInt(0, 255), getRandomInt(0, 255), getRandomInt(0, 255)));
 		}
 	}
 }
@@ -21022,6 +21038,9 @@ function showMenuButton() {
 				if(rotationPlusState) {
 					showRotationPlus();
 				}
+				if(lsdState) {
+					showLSD();
+				}
 			}
 		}
 	}
@@ -21649,6 +21668,32 @@ function showRotationPlus() {
 					rotationPlusUI = new PopupWindow_(rotationPlusLayout, dip2px(120), dip2px(120));
 					rotationPlusUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
 					rotationPlusUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.BOTTOM, rotationtpopx, rotationtpopy);
+				}
+			} catch(exception) {
+				print(exception);
+				VertexClientPE.showBugReportDialog(exception);
+			}
+		}
+	}));
+}
+
+let lsdLayout;
+function showLSD() {
+	CONTEXT.runOnUiThread(new Runnable_({
+		run: function() {
+			try {
+				if(lsdUI != null) {
+					lsdUI.dismiss();
+				}
+				if(lsdUI == null || !lsdUI.isShowing()) {
+					lsdLayout = new LinearLayout_(CONTEXT);
+					lsdLayout.setOrientation(1);
+					lsdLayout.setLayoutParams(new ViewGroup_.LayoutParams(ViewGroup_.LayoutParams.MATCH_PARENT, ViewGroup_.LayoutParams.MATCH_PARENT));
+
+					lsdUI = new PopupWindow_(lsdLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
+					lsdUI.setTouchable(false);
+					lsdUI.setBackgroundDrawable(new ColorDrawable_(Color_.TRANSPARENT));
+					lsdUI.showAtLocation(CONTEXT.getWindow().getDecorView(), Gravity_.RIGHT | Gravity_.BOTTOM, rotationtpopx, rotationtpopy);
 				}
 			} catch(exception) {
 				print(exception);
