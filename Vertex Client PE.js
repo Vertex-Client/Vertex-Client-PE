@@ -6843,7 +6843,7 @@ var lsd = {
 	},
 	onInterval: function() {
 		if(lsdLayout != null) {
-			lsdLayout.setBackgroundColor(Color.argb(getRandomInt(0, 255), getRandomInt(0, 255), getRandomInt(0, 255), getRandomInt(0, 255)));
+			lsdLayout.setBackgroundColor(Color_.argb(getRandomInt(0, 255), getRandomInt(0, 255), getRandomInt(0, 255), getRandomInt(0, 255)));
 		}
 	}
 }
