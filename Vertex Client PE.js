@@ -6845,7 +6845,7 @@ var lsd = {
 		if(lsdLayout != null) {
 			CONTEXT.runOnUiThread(new Runnable_({
 				run: function() {
-					lsdLayout.setBackgroundColor(Color_.argb(getRandomInt(0, 255), getRandomInt(0, 255), getRandomInt(0, 255), getRandomInt(0, 255)));
+					lsdLayout.setBackgroundColor(Color_.argb(getRandomInt(63, 191), getRandomInt(0, 255), getRandomInt(0, 255), getRandomInt(0, 255)));
 				}
 			}));
 		}
