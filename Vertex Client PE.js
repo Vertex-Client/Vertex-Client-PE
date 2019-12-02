@@ -1492,7 +1492,7 @@ VertexClientPE.isRemote = function() {
 VertexClientPE.playerIsInGame = false;
 
 VertexClientPE.currentVersion = "3.2";
-VertexClientPE.currentVersionDesc = "The Render Update";
+VertexClientPE.currentVersionDesc = "The Trigger Update";
 VertexClientPE.targetVersion = "MCPE v1.12.x";
 VertexClientPE.minVersion = "1.0.0";
 VertexClientPE.edition = "Normal";
