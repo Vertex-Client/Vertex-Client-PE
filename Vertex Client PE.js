@@ -6825,9 +6825,9 @@ var lsd = {
 	onToggle: function() {
 		this.state = !this.state;
 	},
-	onTick: function() {
+	onInterval: function() {
 		if(hacksList != null) {
-			hacksList.setBackgroundColor(Color.argb(255, 255, 255, 255));
+			hacksList.setBackgroundColor(Color.argb(getRandomInt(0, 255), getRandomInt(0, 255), getRandomInt(0, 255), getRandomInt(0, 255)));
 		}
 	}
 }
@@ -6934,6 +6934,7 @@ VertexClientPE.registerModule(dropLocator);
 VertexClientPE.registerModule(foodHack);
 VertexClientPE.registerModule(healthDisplay);
 VertexClientPE.registerModule(letItSnow);
+VertexClientPE.registerModule(lsd);
 VertexClientPE.registerModule(onlyDay);
 VertexClientPE.registerModule(orderAPizza);
 VertexClientPE.registerModule(playerLocator);
