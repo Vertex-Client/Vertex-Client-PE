@@ -89,6 +89,8 @@ const AlarmManager_ = android.app.AlarmManager,
 	TableRow_ = android.widget.TableRow,
 	TextView_ = android.widget.TextView,
 	Toast_ = android.widget.Toast,
+	ArgbEvaluator_ = android.animation.ArgbEvaluator,
+	ObjectAnimator_ = android.animation.ObjectAnimator,
 	Instrumentation_ = android.app.Instrumentation,
 	ScriptManager_ = com.mcbox.pesdk.mcpelauncher.ScriptManager,
 	HardwareInformation_ = com.mojang.minecraftpe.HardwareInformation,
@@ -6818,6 +6820,9 @@ var autoTapper = {
 	}
 }
 
+let currentLSDColor = Color_.TRANSPARENT;
+let newLSDColor;
+
 var lsd = {
 	name: "LSD",
 	desc: i18n("LSD. U trippin yet?"),
@@ -6845,7 +6850,13 @@ var lsd = {
 		if(lsdLayout != null) {
 			CONTEXT.runOnUiThread(new Runnable_({
 				run: function() {
-					lsdLayout.setBackgroundColor(Color_.argb(getRandomInt(63, 191), getRandomInt(0, 255), getRandomInt(0, 255), getRandomInt(0, 255)));
+					newLSDColor = Color_.argb(getRandomInt(63, 191), getRandomInt(0, 255), getRandomInt(0, 255), getRandomInt(0, 255));
+					colorFade = ObjectAnimator_.ofObject(lsdLayout, "backgroundColor", new ArgbEvaluator_(), currentLSDColor, newLSDColor);
+					colorFade.setDuration(1000);
+					//colorFade.setStartDelay(200);
+					colorFade.start();
+					currentLSDColor = newLSDColor;
+
 				}
 			}));
 		}
