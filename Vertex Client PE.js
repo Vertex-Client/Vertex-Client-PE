@@ -6852,11 +6852,12 @@ var lsd = {
 			CONTEXT.runOnUiThread(new Runnable_({
 				run: function() {
 					newLSDColor = Color_.argb(getRandomInt(63, 191), getRandomInt(0, 255), getRandomInt(0, 255), getRandomInt(0, 255));
-					colorFade = ObjectAnimator_.ofObject(lsdLayout.getBackground().mutate(), "tint", new ArgbEvaluator_(), currentLSDColor, newLSDColor);
+					colorFade = ObjectAnimator_.ofObject(lsdLayout, "backgroundColor", new ArgbEvaluator_(), currentLSDColor, newLSDColor);
+					colorFade.setDuration(1000);
 					//colorFade.setStartDelay(200);
-					colorFade.setStartDelay(1000);
 					colorFade.start();
 					currentLSDColor = newLSDColor;
+
 				}
 			}));
 		}
@@ -21704,6 +21705,7 @@ function showLSD() {
 					lsdLayout = new LinearLayout_(CONTEXT);
 					lsdLayout.setOrientation(1);
 					lsdLayout.setLayoutParams(new ViewGroup_.LayoutParams(ViewGroup_.LayoutParams.MATCH_PARENT, ViewGroup_.LayoutParams.MATCH_PARENT));
+					lsdLayout.setBackgroundColor(currentLSDColor);
 
 					lsdUI = new PopupWindow_(lsdLayout, CONTEXT.getWindowManager().getDefaultDisplay().getWidth(), CONTEXT.getWindowManager().getDefaultDisplay().getHeight());
 					lsdUI.setTouchable(false);
