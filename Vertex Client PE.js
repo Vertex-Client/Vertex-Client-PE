@@ -5753,7 +5753,7 @@ var attackTeleport = {
 	onAttack: function(a, v) {
 		if(!this.state) return;
 		if(a == getPlayerEnt()) {
-			Entity.setPosition(getPlayerEnt(), Entity.getX(v), Entity.getY(v) + 0.2, Entity.getZ(v));
+			Entity.setPosition(getPlayerEnt(), Entity.getX(v), Entity.getY(v) + 0.1, Entity.getZ(v));
 		}
 	}
 }
