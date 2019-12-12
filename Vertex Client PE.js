@@ -3,7 +3,7 @@
  * @name Vertex Client PE
  * @version v3.2
  * @author peacestorm (@AgameR_Gaming)
- * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36, AutoGrind, TimmyIsDa
+ * @credits _TXMO, MyNameIsTriXz, Godsoft029, ArceusMatt, LPMG, Astro36, AutoGrind, TimmyIsDa, Founder
  *
  * Thanks to NoCopyrightSounds and all artists for the music!
  *
@@ -5796,7 +5796,7 @@ var attackTeleport = {
 	onAttack: function(a, v) {
 		if(!this.state) return;
 		if(a == getPlayerEnt()) {
-			Entity.setPosition(getPlayerEnt(), Entity.getX(v), Entity.getY(v) + 2, Entity.getZ(v));
+			Entity.setPosition(getPlayerEnt(), Entity.getX(v), Entity.getY(v) + 0.1, Entity.getZ(v));
 		}
 	}
 }
