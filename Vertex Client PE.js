@@ -8078,9 +8078,9 @@ VertexClientPE.showMoreDialog = function() {
 
 				let ghostModeTitle = i18n("Ghost mode") + " | ";
 				if(ghostModeState) {
-					ghostModeTitle += i18n(i18n("ON"));
+					ghostModeTitle += i18n("ON");
 				} else {
-					ghostModeTitle += i18n(i18n("OFF"));
+					ghostModeTitle += i18n("OFF");
 				}
 
 				let dashboardButton = clientButton(i18n("Dashboard"));
@@ -8196,7 +8196,7 @@ VertexClientPE.showMoreDialog = function() {
 					onClick: function(view) {
 						ghostModeState = !ghostModeState;
 						if(ghostModeState) {
-							ghostModeTitle = i18n("Ghost mode") + " | " + i18n(i18n("ON"));
+							ghostModeTitle = i18n("Ghost mode") + " | " + i18n("ON");
 							if(hacksList != null && hacksList.isShowing()) {
 								hacksList.dismiss();
 							}
@@ -8216,7 +8216,7 @@ VertexClientPE.showMoreDialog = function() {
 								mainMenuTextList.dismiss();
 							}
 						} else {
-							ghostModeTitle = i18n("Ghost mode") + " | " + i18n(i18n("OFF"));
+							ghostModeTitle = i18n("Ghost mode") + " | " + i18n("OFF");
 						}
 						if(screenUI == null || !screenUI.isShowing()) {
 							if(GUI != null && GUI.isShowing()) {
