@@ -5783,7 +5783,7 @@ var prevent = {
 
 var attackTeleport = {
 	name: "AttackTeleport",
-	desc: i18n("Teleports you to an entity when hitting it."),
+	desc: i18n("Teleports you to an entity when hitting it. Works BEST in multiplayer."),
 	category: VertexClientPE.category.COMBAT,
 	type: "Mod",
 	state: false,
